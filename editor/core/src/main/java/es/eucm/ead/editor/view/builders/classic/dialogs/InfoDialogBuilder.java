@@ -38,44 +38,59 @@ package es.eucm.ead.editor.view.builders.classic.dialogs;
 
 import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
+
 import es.eucm.ead.editor.control.Controller;
 import es.eucm.ead.editor.view.builders.DialogBuilder;
 import es.eucm.ead.editor.view.controllers.DialogController;
+import es.eucm.ead.editor.view.controllers.DialogController.DialogButtonListener;
 import es.eucm.ead.editor.view.widgets.Dialog;
-import es.eucm.ead.editor.view.widgets.layouts.LinearLayout;
+import es.eucm.ead.engine.I18N;
 
 /**
- * Non-modal dialog without maximize button to show information.
- * 
- * Created by Angel-E-UCM on 28/03/14.
+ * Modal dialog to show an informative message.
+ * <dl>
+ * <dt><strong>Arguments</strong></dt>
+ * <dd><strong>args[0]</strong> <em>{@link String}</em> title for the dialog</dd>
+ * <dd><strong>args[1]</strong> <em>{@link String}</em> message of the dialog</dd>
+ * <dd><strong>args[2..n]</strong>
+ * <em>Couples  of {@link String} and {@link DialogButtonListener}</em>. If
+ * args[i] is a string, a button with that string is added. That button will be
+ * associated with the {@link DialogButtonListener} in args[i+1]</dd>
+ * </dl>
  */
 public class InfoDialogBuilder implements DialogBuilder {
 
-	public static String NAME = "infoDialog";
+	private I18N i18N;
 
 	private DialogController dialogController;
 
+	private Label infoLabel;
+
 	@Override
-	public String getName() {
-		return NAME;
+	public void initialize(Controller controller) {
+		i18N = controller.getApplicationAssets().getI18N();
+		Skin skin = controller.getApplicationAssets().getSkin();
+
+		dialogController = new DialogController(skin, true, false);
+		infoLabel = new Label("", skin);
+		infoLabel.setWidth(800);
+		dialogController.content(infoLabel);
 	}
 
 	@Override
-	public Dialog build(Controller controller, Object... arguments) {
+	public Dialog getDialog(Object... args) {
+		infoLabel.setText(i18N.m((String) args[1]));
+		dialogController.clearButtons().title(i18N.m((String) args[0]));
+		for (int i = 2; i < args.length - 1; i += 2) {
+			String buttonText = (String) args[i];
+			DialogButtonListener dialogButtonListener = (DialogButtonListener) args[i + 1];
+			dialogController.button(buttonText, dialogButtonListener);
+		}
+		return dialogController.getDialog();
+	}
 
-		// There are only one argument and last argument is the body of the
-		// dialog
-		String infoMessage = (String) arguments[0];
+	@Override
+	public void release(Controller controller) {
 
-		Skin skin = controller.getApplicationAssets().getSkin();
-
-		// creates a dialog non-modal and without maximizer button
-		dialogController = new DialogController(skin, false, false);
-
-		LinearLayout messageContainer = new LinearLayout(false);
-		Label label = new Label(infoMessage, skin);
-		messageContainer.add(label).top();
-
-		return dialogController.root(messageContainer).getDialog();
 	}
 }

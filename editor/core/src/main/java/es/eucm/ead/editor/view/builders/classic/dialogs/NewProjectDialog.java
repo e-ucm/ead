@@ -43,7 +43,7 @@ import com.badlogic.gdx.scenes.scene2d.utils.Drawable;
 import es.eucm.ead.editor.control.Controller;
 import es.eucm.ead.editor.control.actions.editor.NewGame;
 import es.eucm.ead.editor.model.Model;
-import es.eucm.ead.editor.view.builders.DialogBuilder;
+import es.eucm.ead.editor.view.builders.ViewBuilder;
 import es.eucm.ead.editor.view.controllers.DialogController;
 import es.eucm.ead.editor.view.controllers.DialogController.DialogButtonListener;
 import es.eucm.ead.editor.view.controllers.OptionsController;
@@ -62,9 +62,7 @@ import es.eucm.ead.schema.entities.ModelEntity;
 
 import java.util.Map;
 
-public class NewProjectDialog implements DialogBuilder {
-
-	public static String NAME = "newproject";
+public class NewProjectDialog implements ViewBuilder {
 
 	private Controller controller;
 
@@ -75,12 +73,11 @@ public class NewProjectDialog implements DialogBuilder {
 	}
 
 	@Override
-	public String getName() {
-		return NAME;
+	public void initialize(Controller controller) {
+		this.controller = controller;
 	}
 
-	public Dialog build(Controller c, Object... arguments) {
-		this.controller = c;
+	public Dialog getView(Object... arguments) {
 		I18N i18N = controller.getApplicationAssets().getI18N();
 		Skin skin = controller.getApplicationAssets().getSkin();
 
@@ -132,6 +129,11 @@ public class NewProjectDialog implements DialogBuilder {
 
 	}
 
+	@Override
+	public void release(Controller controller) {
+
+	}
+
 	private void createResolutionButtons(Skin skin) {
 		Drawable bg = skin.getDrawable("secondary-bg");
 
@@ -158,9 +160,9 @@ public class NewProjectDialog implements DialogBuilder {
 		final DialogController dialogController = new DialogController(skin);
 
 		Dialog dialog = dialogController.title(i18N.m("project.settings"))
-				.root(p).getDialog();
+				.content(p).getDialog();
 
-		dialogController.button(i18N.m("general.ok"), true,
+		dialogController.button(i18N.m("general.ok"),
 				new DialogButtonListener() {
 					@Override
 					public void selected() {
@@ -212,7 +214,7 @@ public class NewProjectDialog implements DialogBuilder {
 						gameData.setHeight(Math.round(baseResolution.y));
 
 						controller.action(NewGame.class, projectFolder, game);
-						dialogController.close();
+						dialogController.getDialog().hide();
 					}
 				});
 		dialogController.closeButton(i18N.m("general.cancel"));

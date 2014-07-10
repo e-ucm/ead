@@ -34,14 +34,44 @@
  *      You should have received a copy of the GNU Lesser General Public License
  *      along with eAdventure.  If not, see <http://www.gnu.org/licenses/>.
  */
-package es.eucm.ead.editor.view.builders;
+package es.eucm.ead.editor.editorui;
 
-import es.eucm.ead.editor.view.widgets.Dialog;
+import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.backends.lwjgl.LwjglApplication;
+import com.badlogic.gdx.scenes.scene2d.Group;
+import com.badlogic.gdx.scenes.scene2d.ui.Skin;
+import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
+import es.eucm.ead.editor.control.actions.editor.ShowDialog;
+import es.eucm.ead.editor.view.builders.classic.dialogs.InfoDialogBuilder;
+import es.eucm.ead.editor.view.controllers.DialogController.DialogButtonListener;
+import es.eucm.ead.editor.view.listeners.ActionOnClickListener;
+import es.eucm.ead.editor.view.widgets.layouts.LinearLayout;
 
-public interface DialogBuilder extends Builder {
+public class DialogsTest extends EditorUITest {
+	@Override
+	protected void builUI(Group root) {
+		Skin skin = controller.getApplicationAssets().getSkin();
 
-	/**
-	 * @return the view after processing the given arguments
-	 */
-	Dialog getDialog(Object... args);
+		LinearLayout container = new LinearLayout(true,
+				skin.getDrawable("blank"));
+		container.setFillParent(true);
+
+		TextButton button = new TextButton("Info dialog", skin);
+		button.addListener(new ActionOnClickListener(controller,
+				ShowDialog.class, InfoDialogBuilder.class, "Info message",
+				"This is some important information", "OK",
+				new DialogButtonListener() {
+					@Override
+					public void selected() {
+						Gdx.app.log("DialogsTest", "OK pressed");
+					}
+				}, "Close", null));
+		container.add(button);
+
+		root.addActor(container);
+	}
+
+	public static void main(String[] args) {
+		new LwjglApplication(new DialogsTest(), "Dialogs Test", 800, 600);
+	}
 }

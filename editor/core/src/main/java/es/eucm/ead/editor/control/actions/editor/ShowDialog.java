@@ -34,14 +34,31 @@
  *      You should have received a copy of the GNU Lesser General Public License
  *      along with eAdventure.  If not, see <http://www.gnu.org/licenses/>.
  */
-package es.eucm.ead.editor.view.builders;
+package es.eucm.ead.editor.control.actions.editor;
 
-import es.eucm.ead.editor.view.widgets.Dialog;
+import es.eucm.ead.editor.control.actions.EditorAction;
 
-public interface DialogBuilder extends Builder {
+/**
+ * <p>
+ * Shows a dialog
+ * </p>
+ * <dl>
+ * <dt><strong>Arguments</strong></dt>
+ * <dd><strong>args[0]</strong> <em>Class</em> The dialog class</dd>
+ * <dd><strong>args[1..n]</strong> <em>Object</em> Arguments for the dialog</dd>
+ * </dl>
+ */
+public class ShowDialog extends EditorAction {
 
-	/**
-	 * @return the view after processing the given arguments
-	 */
-	Dialog getDialog(Object... args);
+	@Override
+	public boolean validate(Object... args) {
+		return args.length > 0 && args[0] instanceof Class;
+	}
+
+	@Override
+	public void perform(Object... args) {
+		Object[] dialogArguments = new Object[args.length - 1];
+		System.arraycopy(args, 1, dialogArguments, 0, dialogArguments.length);
+		controller.getViews().showDialog((Class) args[0], dialogArguments);
+	}
 }

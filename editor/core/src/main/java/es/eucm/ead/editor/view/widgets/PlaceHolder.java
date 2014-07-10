@@ -72,4 +72,14 @@ public class PlaceHolder extends AbstractWidget {
 			setBounds(content, 0, 0, getWidth(), getHeight());
 		}
 	}
+
+	@Override
+	public float getPrefHeight() {
+		return content == null ? 0 : getPrefHeight(content);
+	}
+
+	@Override
+	public float getPrefWidth() {
+		return content == null ? 0 : getPrefWidth(content);
+	}
 }

@@ -320,7 +320,9 @@
             "titleFont": "bold",
             "titleFontColor": "black",
             "background": "blank-blackoutline1",
-            "titleBackground": "bg-dark"
+            "titleBackground": "bg-dark",
+            "close": "close",
+            "maximize": "maximize"
         }
     },
     "es.eucm.ead.editor.view.widgets.files.FilesListWidget$FilesListWidgetStyle": {

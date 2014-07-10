@@ -34,34 +34,28 @@
  *      You should have received a copy of the GNU Lesser General Public License
  *      along with eAdventure.  If not, see <http://www.gnu.org/licenses/>.
  */
-package es.eucm.ead.editor.widgets;
+package es.eucm.ead.editor.view.builders;
 
-import com.badlogic.gdx.backends.lwjgl.LwjglApplication;
 import es.eucm.ead.editor.control.Controller;
-import es.eucm.ead.editor.view.builders.classic.dialogs.InfoDialogBuilder;
-import es.eucm.ead.editor.view.widgets.AbstractWidget;
-import es.eucm.ead.editor.view.widgets.Dialog;
 
 /**
- * This test previews
- * {@link es.eucm.ead.editor.view.builders.classic.dialogs.InfoDialogBuilder}
- * (this is not a JUNIT test)
- * 
+ * Created by angel on 9/07/14.
  */
-public class InfoDialogBuilderTest extends AbstractWidgetTest {
+public interface Builder {
+	/**
+	 * Initialize this view. This method is only called once per view
+	 * 
+	 * @param controller
+	 *            the editor controller
+	 */
+	void initialize(Controller controller);
 
-	@Override
-	public AbstractWidget createWidget(Controller controller) {
-
-		InfoDialogBuilder messageDialog = new InfoDialogBuilder();
-		Dialog dialog = messageDialog.build(controller,
-				"check, check, check, 1,2 ,1,2, check, check");
-
-		return dialog;
-	}
-
-	public static void main(String args[]) {
-		new LwjglApplication(new InfoDialogBuilderTest(),
-				"Test for InfoDialogBuilderTest", 800, 600);
-	}
+	/**
+	 * Called whenever this view is removed from the UI. Release the necessary
+	 * resources
+	 * 
+	 * @param controller
+	 *            the editor controller
+	 */
+	void release(Controller controller);
 }

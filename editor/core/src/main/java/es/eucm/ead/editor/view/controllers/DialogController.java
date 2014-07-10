@@ -36,11 +36,14 @@
  */
 package es.eucm.ead.editor.view.controllers;
 
+import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
-import com.badlogic.gdx.scenes.scene2d.InputListener;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
-import com.badlogic.gdx.scenes.scene2d.ui.WidgetGroup;
+import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import es.eucm.ead.editor.view.widgets.Dialog;
+
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  * There are two constructors: one for creating default dialog (modal and with
@@ -51,19 +54,17 @@ public class DialogController {
 
 	private Dialog dialog;
 
+	private Map<String, ButtonInputListener> inputListenerMap;
+
 	/**
 	 * Creates the default dialog: modal and with maximize button.
-	 * 
-	 * @param skin
 	 */
 	public DialogController(Skin skin) {
-		dialog = new Dialog(skin);
+		this(skin, true, true);
 	}
 
 	/**
 	 * Creates a modal dialog
-	 * 
-	 * @param skin
 	 * 
 	 * @param isModal
 	 *            sets if the dialog will be modal or not
@@ -75,15 +76,67 @@ public class DialogController {
 	public DialogController(Skin skin, boolean isModal, boolean hasMaximizer) {
 		dialog = new Dialog(skin, hasMaximizer);
 		dialog.setModal(isModal);
+		inputListenerMap = new HashMap<String, ButtonInputListener>();
 	}
 
+	/**
+	 * Sets title of the dialog
+	 */
 	public DialogController title(String title) {
 		dialog.title(title);
 		return this;
 	}
 
-	public DialogController root(WidgetGroup root) {
-		dialog.root(root);
+	/**
+	 * Sets content of the dialog
+	 */
+	public DialogController content(Actor content) {
+		dialog.root(content);
+		return this;
+	}
+
+	/**
+	 * Sets the listener for the button with the given text. If the button does
+	 * not exist, it is created..
+	 */
+	public DialogController button(String text,
+			DialogButtonListener dialogListener) {
+		ButtonInputListener buttonInputListener = inputListenerMap.get(text);
+		if (buttonInputListener == null) {
+			buttonInputListener = new ButtonInputListener();
+			dialog.button(text).addListener(buttonInputListener);
+			inputListenerMap.put(text, buttonInputListener);
+		}
+
+		buttonInputListener.setDialogButtonListener(dialogListener);
+		return this;
+	}
+
+	/**
+	 * Add a button with the given text. When the button is pressed, it closes
+	 * the dialog with no further consequences
+	 */
+	public void closeButton(String text) {
+		button(text, new DialogButtonListener() {
+			@Override
+			public void selected() {
+				dialog.hide();
+			}
+		});
+	}
+
+	/**
+	 * 
+	 Sets whether the dialog is modal
+	 */
+	public DialogController modal(boolean isModal) {
+		dialog.setModal(isModal);
+		return this;
+	}
+
+	public DialogController clearButtons() {
+		inputListenerMap.clear();
+		dialog.clearButtons();
 		return this;
 	}
 
@@ -91,50 +144,28 @@ public class DialogController {
 		return dialog;
 	}
 
-	public DialogController button(String text, boolean main,
-			final DialogButtonListener dialogListener) {
-		dialog.button(text, main).addListener(new InputListener() {
-			@Override
-			public boolean touchDown(InputEvent event, float x, float y,
-					int pointer, int button) {
-				dialogListener.selected();
-				return true;
+	private class ButtonInputListener extends ClickListener {
+
+		private DialogButtonListener dialogButtonListener;
+
+		public void setDialogButtonListener(
+				DialogButtonListener dialogButtonListener) {
+			this.dialogButtonListener = dialogButtonListener;
+		}
+
+		@Override
+		public void clicked(InputEvent event, float x, float y) {
+			if (dialogButtonListener != null) {
+				dialogButtonListener.selected();
 			}
-		});
-		return this;
-	}
-
-	public void closeButton(String text) {
-		closeButton(text, new DialogButtonListener() {
-			@Override
-			public void selected() {
-				close();
-			}
-		});
-	}
-
-	public void closeButton(String text, DialogButtonListener listener) {
-		button(text, false, listener);
-	}
-
-	public void close() {
-		dialog.remove();
-	}
-
-	public void setModal(boolean isModal) {
-		dialog.setModal(isModal);
-	}
-
-	public boolean isModal() {
-		return dialog.isModal();
-	}
-
-	public boolean hasMaximizer() {
-		return dialog.isMaximizable();
+			dialog.hide();
+		}
 	}
 
 	public interface DialogButtonListener {
-		// FIXME This needs a new name, or doc, or both!!
+		/**
+		 * The button in the dialog has been pressed
+		 */
 		void selected();
 	}
 }

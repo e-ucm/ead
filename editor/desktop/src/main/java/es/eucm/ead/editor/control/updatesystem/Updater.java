@@ -336,7 +336,7 @@ public class Updater {
 		controller
 				.getViews()
 				.showDialog(
-						ConfirmationDialogBuilder.class.getCanonicalName(),
+						ConfirmationDialogBuilder.class,
 						i18N.m("update.title"),
 						i18N.m("update.message", i18N.m("general.ok")),
 						new ConfirmationDialogBuilder.ConfirmationDialogClosedListener() {
