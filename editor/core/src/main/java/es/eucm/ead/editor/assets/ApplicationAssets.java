@@ -42,8 +42,6 @@ import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.utils.Json;
 import com.badlogic.gdx.utils.ObjectMap;
-import com.badlogic.gdx.utils.SerializationException;
-
 import es.eucm.ead.editor.assets.loaders.ExtendedSkinLoader;
 import es.eucm.ead.editor.control.Preferences;
 import es.eucm.ead.editor.control.appdata.ReleaseInfo;
@@ -203,18 +201,7 @@ public class ApplicationAssets extends Assets {
 		ReleaseInfo releaseInfo = null;
 		FileHandle releaseFH = this.resolve(releaseFile);
 		if (releaseFH.exists()) {
-			try {
-				releaseInfo = this.fromJson(ReleaseInfo.class, releaseFH);
-			} catch (SerializationException e) {
-				// If this type of exception is thrown, that's because the file
-				// was not defined in compliance with
-				// the ReleaseInfo json-schema. Log it and create a default
-				// releaseInfo later on
-				Gdx.app.debug(
-						this.getClass().getCanonicalName(),
-						"Error parsing the release.json file. Default release object will be used.",
-						e);
-			}
+			releaseInfo = this.fromJson(ReleaseInfo.class, releaseFH);
 		} else {
 			Gdx.app.debug(this.getClass().getCanonicalName(),
 					"release.json file not found. Default release object will be used.");

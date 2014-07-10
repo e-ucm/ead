@@ -112,7 +112,6 @@ public class OpenGameTest extends ActionTest implements
 		try {
 			controller.action(OpenGame.class, invalidGame.file()
 					.getAbsolutePath());
-			fail("An exception must be thrown");
 		} catch (GdxRuntimeException e) {
 
 		}

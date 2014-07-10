@@ -4,7 +4,9 @@
     "properties": {
         "appVersion": {
             "type": "string",
+            "default": "0.0.0",
             "description": "The release version given as three numbers separated by dots (e.g. 2.0.0)"
+
         },
         "releaseType": {
             "type": "string",
@@ -13,6 +15,7 @@
         },
         "dev" : {
             "type": "boolean",
+            "default": false,
             "description": "true if this is a dev working copy, not an actual release. If true, the update system is disabled."
         },
         "tracking":{

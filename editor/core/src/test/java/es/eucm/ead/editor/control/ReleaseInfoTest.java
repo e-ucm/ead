@@ -38,13 +38,13 @@ package es.eucm.ead.editor.control;
 
 import com.badlogic.gdx.Gdx;
 import es.eucm.ead.editor.EditorTest;
-import es.eucm.ead.editor.control.appdata.OS;
 import es.eucm.ead.editor.control.appdata.ReleaseInfo;
 import org.junit.Test;
 
 import java.lang.reflect.Field;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.fail;
 
 /**
  * This class testes {@link es.eucm.ead.editor.control.appdata.ReleaseInfo}:
@@ -73,29 +73,6 @@ public class ReleaseInfoTest extends EditorTest {
 		assertNotNull(
 				"The release info must have a not null os (if it is not defined in the file, multiplatform should be returned)",
 				releaseInfo.getOs().toString());
-	}
-
-	@Test
-	/**
-	 * Tests that {@link es.eucm.ead.editor.assets.EditorAssets} is able to create default release objects
-	 * when the release.json file is not well formed or some attributes are missing
-	 */
-	public void testInvalidReleaseInfoHandling() {
-		testNotValidRelaseFile("appdata/invalidrelease.json");
-		testNotValidRelaseFile("appdata/invalidrelease_02.json");
-	}
-
-	public void testNotValidRelaseFile(String filePath) {
-		setReleasePath(filePath);
-		ReleaseInfo releaseInfo = controller.getApplicationAssets()
-				.loadReleaseInfo();
-		assertTrue("Default releaseInfo should have appVersion=0.0.0",
-				releaseInfo.getAppVersion().equals("0.0.0"));
-		assertTrue("Default releaseInfo should have os=multiplatform",
-				releaseInfo.getOs() == OS.MULTIPLATFORM);
-		assertFalse("Default releaseInfo should have dev=false",
-				releaseInfo.isDev());
-
 	}
 
 	/**
