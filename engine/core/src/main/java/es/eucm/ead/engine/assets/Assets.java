@@ -58,7 +58,8 @@ import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.utils.Json;
-
+import com.badlogic.gdx.utils.JsonValue;
+import com.badlogic.gdx.utils.SerializationException;
 import es.eucm.ead.engine.I18N;
 
 /**
@@ -191,6 +192,16 @@ public abstract class Assets extends Json implements FileHandleResolver {
 			path = prefix + path;
 		}
 		return path;
+	}
+
+	@Override
+	public void readFields(Object object, JsonValue jsonMap) {
+		try {
+			super.readFields(object, jsonMap);
+		} catch (SerializationException e) {
+			Gdx.app.error("Assets", "Error reading fields " + jsonMap + " to "
+					+ object, e);
+		}
 	}
 
 	/**
