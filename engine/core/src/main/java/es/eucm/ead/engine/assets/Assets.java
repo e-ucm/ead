@@ -194,6 +194,17 @@ public abstract class Assets extends Json implements FileHandleResolver {
 		return path;
 	}
 
+	/**
+	 * @param type
+	 *            May be null if the type is unknown.
+	 * @param path
+	 *            the path of the json file
+	 * @return May be null.
+	 */
+	public <T> T fromJsonPath(Class<T> type, String path) {
+		return fromJson(type, resolve(path));
+	}
+
 	@Override
 	public void readFields(Object object, JsonValue jsonMap) {
 		try {

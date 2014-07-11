@@ -46,7 +46,7 @@ import es.eucm.ead.schemax.entities.ResourceCategory;
 /**
  * Commands to add/remove entities pending directly from the {@link Model}
  */
-public class RootEntityCommand extends Command {
+public class ResourceCommand extends Command {
 
 	private Model model;
 
@@ -58,7 +58,7 @@ public class RootEntityCommand extends Command {
 
 	private boolean add;
 
-	public RootEntityCommand(Model model, String id, ModelEntity modelEntity,
+	public ResourceCommand(Model model, String id, ModelEntity modelEntity,
 			ResourceCategory category, boolean add) {
 		this.model = model;
 		this.id = id;
@@ -99,17 +99,17 @@ public class RootEntityCommand extends Command {
 		return false;
 	}
 
-	public static class AddRootEntityCommand extends RootEntityCommand {
+	public static class AddResourceCommand extends ResourceCommand {
 
-		public AddRootEntityCommand(Model model, String id,
+		public AddResourceCommand(Model model, String id,
 				ModelEntity modelEntity, ResourceCategory category) {
 			super(model, id, modelEntity, category, true);
 		}
 	}
 
-	public static class RemoveRootEntityCommand extends RootEntityCommand {
+	public static class RemoveResourceCommand extends ResourceCommand {
 
-		public RemoveRootEntityCommand(Model model, String id,
+		public RemoveResourceCommand(Model model, String id,
 				ModelEntity modelEntity, ResourceCategory category) {
 			super(model, id, modelEntity, category, false);
 		}

@@ -34,39 +34,53 @@
  *      You should have received a copy of the GNU Lesser General Public License
  *      along with eAdventure.  If not, see <http://www.gnu.org/licenses/>.
  */
-package es.eucm.ead.editor.control.actions.model.scene;
+package es.eucm.ead.editor.indexes;
 
-import es.eucm.ead.editor.control.actions.ModelAction;
-import es.eucm.ead.editor.control.commands.CompositeCommand;
-import es.eucm.ead.editor.control.commands.ListCommand.AddToListCommand;
-import es.eucm.ead.editor.control.commands.ResourceCommand.AddResourceCommand;
+import es.eucm.ead.editor.control.Controller;
 import es.eucm.ead.editor.model.Model;
+import es.eucm.ead.editor.model.Model.ModelListener;
 import es.eucm.ead.editor.model.Q;
-import es.eucm.ead.schema.editor.components.EditState;
+import es.eucm.ead.editor.model.events.ResourceEvent;
+import es.eucm.ead.schema.editor.components.Documentation;
 import es.eucm.ead.schema.entities.ModelEntity;
 import es.eucm.ead.schemax.entities.ResourceCategory;
 
+import java.util.Map.Entry;
+
 /**
- * Creates a new empty scene and sets it as the current edited scene. This
- * actions receives no arguments
+ * Relates scene names (stored in {@link Documentation} component) with scene
+ * ids
  */
-public class NewScene extends ModelAction {
+public class SceneNamesIndex extends ControllerIndex implements
+		ModelListener<ResourceEvent> {
 
 	@Override
-	public CompositeCommand perform(Object... args) {
+	public void initialize(Controller controller) {
 		Model model = controller.getModel();
+		model.addResourceListener(this);
+		for (Entry<String, Object> resource : model.getResources(
+				ResourceCategory.SCENE).entrySet()) {
+			ModelEntity scene = (ModelEntity) resource.getValue();
+			addScene(resource.getKey(), scene);
+		}
+	}
 
-		String id = model.createId(ResourceCategory.SCENE);
-		ModelEntity scene = controller.getTemplates().createScene(id);
+	private void addScene(String id, ModelEntity scene) {
+		addTerm(Q.getName(scene, ""), id);
+	}
 
-		EditState editState = Q.getComponent(model.getGame(), EditState.class);
-
-		CompositeCommand compositeCommand = new CompositeCommand();
-		compositeCommand.addCommand(new AddResourceCommand(model, id, scene,
-				ResourceCategory.SCENE));
-		compositeCommand.addCommand(new AddToListCommand(editState, editState
-				.getSceneorder(), id));
-
-		return compositeCommand;
+	@Override
+	public void modelChanged(ResourceEvent event) {
+		if (event.getCategory() == ResourceCategory.SCENE) {
+			switch (event.getType()) {
+			case ADDED:
+				addScene(event.getId(), (ModelEntity) event.getResource());
+				break;
+			case REMOVED:
+				removeTerm(event.getId(),
+						Q.getName((ModelEntity) event.getResource(), ""));
+				break;
+			}
+		}
 	}
 }

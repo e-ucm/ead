@@ -34,47 +34,50 @@
  *      You should have received a copy of the GNU Lesser General Public License
  *      along with eAdventure.  If not, see <http://www.gnu.org/licenses/>.
  */
-package es.eucm.ead.editor.commands;
+package es.eucm.ead.editor.indexes;
 
-import es.eucm.ead.editor.control.commands.RootEntityCommand.AddRootEntityCommand;
-import es.eucm.ead.editor.control.commands.RootEntityCommand.RemoveRootEntityCommand;
-import es.eucm.ead.schema.entities.ModelEntity;
-import es.eucm.ead.schemax.entities.ResourceCategory;
-import org.junit.Test;
+import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.utils.Array;
+import com.badlogic.gdx.utils.reflect.ClassReflection;
+import com.badlogic.gdx.utils.reflect.ReflectionException;
 
-import static org.junit.Assert.assertNull;
-import static org.junit.Assert.assertSame;
+import es.eucm.ead.editor.control.Controller;
+import es.eucm.ead.engine.I18N;
+import es.eucm.ead.engine.assets.GameAssets;
+import es.eucm.ead.schema.effects.Effect;
 
 /**
- * Created by angel on 22/05/14.
+ * An index relating the short string representation of an effect (translated to
+ * the current language) and its class
  */
-public class RootEntityCommandTest extends CommandTest {
+public class EffectsIndex extends ControllerIndex {
 
-	@Test
-	public void testAddEntity() {
-		ModelEntity modelEntity = new ModelEntity();
-		AddRootEntityCommand addEntityCommand = new AddRootEntityCommand(model,
-				"scene", modelEntity, ResourceCategory.SCENE);
-		addEntityCommand.doCommand();
-		assertSame(model.getResource("scene", ResourceCategory.SCENE),
-				modelEntity);
-		addEntityCommand.undoCommand();
-		assertNull(model.getResource("scene", ResourceCategory.SCENE));
+	@SuppressWarnings("unchecked")
+	@Override
+	public void initialize(Controller controller) {
+		I18N i18N = controller.getApplicationAssets().getI18N();
+		Array<String> bindings = controller.getApplicationAssets()
+				.fromJsonPath(Array.class, GameAssets.ENGINE_BINDINGS);
+
+		String classPackage = null;
+		for (String line : bindings) {
+			if (line.contains(".")) {
+				classPackage = line;
+			} else {
+				try {
+					Class effectClass = ClassReflection.forName(classPackage
+							+ "." + line);
+
+					if (ClassReflection.isAssignableFrom(Effect.class,
+							effectClass)) {
+						addTerm(i18N.m(effectClass.getSimpleName()),
+								effectClass);
+					}
+				} catch (ReflectionException e) {
+					Gdx.app.error("EffectsIndex", "No class for "
+							+ classPackage + "." + line, e);
+				}
+			}
+		}
 	}
-
-	@Test
-	public void testRemoveEntity() {
-		ModelEntity modelEntity = new ModelEntity();
-
-		model.putResource("scene", ResourceCategory.SCENE, modelEntity);
-
-		RemoveRootEntityCommand removeEntityCommand = new RemoveRootEntityCommand(
-				model, "scene", modelEntity, ResourceCategory.SCENE);
-		removeEntityCommand.doCommand();
-		assertNull(model.getResource("scene", ResourceCategory.SCENE));
-		removeEntityCommand.undoCommand();
-		assertSame(model.getResource("scene", ResourceCategory.SCENE),
-				modelEntity);
-	}
-
 }

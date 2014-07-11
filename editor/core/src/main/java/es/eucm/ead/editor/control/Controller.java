@@ -41,6 +41,7 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.scenes.scene2d.Group;
 import com.badlogic.gdx.utils.reflect.ClassReflection;
+import com.badlogic.gdx.utils.reflect.ReflectionException;
 import es.eucm.ead.editor.assets.ApplicationAssets;
 import es.eucm.ead.editor.assets.EditorGameAssets;
 import es.eucm.ead.editor.control.actions.ArgumentsValidationException;
@@ -51,12 +52,16 @@ import es.eucm.ead.editor.control.commands.Command;
 import es.eucm.ead.editor.control.engine.Engine;
 import es.eucm.ead.editor.control.pastelisteners.BehaviorCopyListener;
 import es.eucm.ead.editor.control.pastelisteners.ModelEntityCopyListener;
+import es.eucm.ead.editor.indexes.ControllerIndex;
 import es.eucm.ead.editor.model.Model;
 import es.eucm.ead.editor.platform.Platform;
 import es.eucm.ead.editor.view.builders.ViewBuilder;
 import es.eucm.ead.schema.components.behaviors.Behavior;
 import es.eucm.ead.schema.entities.ModelEntity;
 import es.eucm.network.requests.RequestHelper;
+
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  * Mediator and main controller of the editor's functionality
@@ -129,6 +134,8 @@ public class Controller {
 
 	private Engine engine;
 
+	private Map<Class, ControllerIndex> indexes;
+
 	public Controller(Platform platform, Files files, Group viewsContainer,
 			Group modalsContainer) {
 		this.shapeRenderer = new ShapeRenderer();
@@ -152,6 +159,7 @@ public class Controller {
 		setTracker();
 		setClipboard();
 		loadPreferences();
+		indexes = new HashMap<Class, ControllerIndex>();
 	}
 
 	protected ApplicationAssets createApplicationAssets(Files files) {
@@ -361,6 +369,24 @@ public class Controller {
 	 */
 	public String getEngineLibPath() {
 		return releaseInfo.getEngineLibPath();
+	}
+
+	/**
+	 * Returnst the index of the given class
+	 */
+	public <T extends ControllerIndex> T getIndex(Class<T> indexClass) {
+		ControllerIndex controllerIndex = indexes.get(indexClass);
+		if (controllerIndex == null) {
+			try {
+				controllerIndex = ClassReflection.newInstance(indexClass);
+				controllerIndex.initialize(this);
+				indexes.put(indexClass, controllerIndex);
+			} catch (ReflectionException e) {
+				Gdx.app.error("Model", "Impossible to create index "
+						+ indexClass);
+			}
+		}
+		return (T) controllerIndex;
 	}
 
 	/**

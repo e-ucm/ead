@@ -34,39 +34,42 @@
  *      You should have received a copy of the GNU Lesser General Public License
  *      along with eAdventure.  If not, see <http://www.gnu.org/licenses/>.
  */
-package es.eucm.ead.editor.control.actions.model.scene;
+package es.eucm.ead.editor.indexes;
 
-import es.eucm.ead.editor.control.actions.ModelAction;
-import es.eucm.ead.editor.control.commands.CompositeCommand;
-import es.eucm.ead.editor.control.commands.ListCommand.AddToListCommand;
-import es.eucm.ead.editor.control.commands.ResourceCommand.AddResourceCommand;
-import es.eucm.ead.editor.model.Model;
-import es.eucm.ead.editor.model.Q;
-import es.eucm.ead.schema.editor.components.EditState;
-import es.eucm.ead.schema.entities.ModelEntity;
-import es.eucm.ead.schemax.entities.ResourceCategory;
+import com.badlogic.gdx.utils.Array;
+import com.badlogic.gdx.utils.reflect.ClassReflection;
+import com.badlogic.gdx.utils.reflect.ReflectionException;
+import es.eucm.ead.editor.EditorTest;
+import es.eucm.ead.engine.assets.GameAssets;
+import es.eucm.ead.schema.effects.Effect;
+import org.junit.Test;
 
-/**
- * Creates a new empty scene and sets it as the current edited scene. This
- * actions receives no arguments
- */
-public class NewScene extends ModelAction {
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertTrue;
 
-	@Override
-	public CompositeCommand perform(Object... args) {
-		Model model = controller.getModel();
+public class EffectsIndexTest extends EditorTest {
 
-		String id = model.createId(ResourceCategory.SCENE);
-		ModelEntity scene = controller.getTemplates().createScene(id);
+	@SuppressWarnings("unchecked")
+	@Test
+	public void test() throws ReflectionException {
+		FuzzyIndex index = controller.getIndex(EffectsIndex.class);
 
-		EditState editState = Q.getComponent(model.getGame(), EditState.class);
+		Array<String> bindings = controller.getApplicationAssets()
+				.fromJsonPath(Array.class, GameAssets.ENGINE_BINDINGS);
 
-		CompositeCommand compositeCommand = new CompositeCommand();
-		compositeCommand.addCommand(new AddResourceCommand(model, id, scene,
-				ResourceCategory.SCENE));
-		compositeCommand.addCommand(new AddToListCommand(editState, editState
-				.getSceneorder(), id));
+		assertTrue(index.getTerms().size > 0);
+		String classPackage = null;
+		for (String line : bindings) {
+			if (line.contains(".")) {
+				classPackage = line;
+			} else {
+				Class effectClass = ClassReflection.forName(classPackage + "."
+						+ line);
 
-		return compositeCommand;
+				if (ClassReflection.isAssignableFrom(Effect.class, effectClass)) {
+					assertNotNull(index.getTerm(effectClass));
+				}
+			}
+		}
 	}
 }

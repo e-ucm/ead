@@ -34,39 +34,47 @@
  *      You should have received a copy of the GNU Lesser General Public License
  *      along with eAdventure.  If not, see <http://www.gnu.org/licenses/>.
  */
-package es.eucm.ead.editor.control.actions.model.scene;
+package es.eucm.ead.editor.commands;
 
-import es.eucm.ead.editor.control.actions.ModelAction;
-import es.eucm.ead.editor.control.commands.CompositeCommand;
-import es.eucm.ead.editor.control.commands.ListCommand.AddToListCommand;
 import es.eucm.ead.editor.control.commands.ResourceCommand.AddResourceCommand;
-import es.eucm.ead.editor.model.Model;
-import es.eucm.ead.editor.model.Q;
-import es.eucm.ead.schema.editor.components.EditState;
+import es.eucm.ead.editor.control.commands.ResourceCommand.RemoveResourceCommand;
 import es.eucm.ead.schema.entities.ModelEntity;
 import es.eucm.ead.schemax.entities.ResourceCategory;
+import org.junit.Test;
+
+import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertSame;
 
 /**
- * Creates a new empty scene and sets it as the current edited scene. This
- * actions receives no arguments
+ * Created by angel on 22/05/14.
  */
-public class NewScene extends ModelAction {
+public class ResourceCommandTest extends CommandTest {
 
-	@Override
-	public CompositeCommand perform(Object... args) {
-		Model model = controller.getModel();
-
-		String id = model.createId(ResourceCategory.SCENE);
-		ModelEntity scene = controller.getTemplates().createScene(id);
-
-		EditState editState = Q.getComponent(model.getGame(), EditState.class);
-
-		CompositeCommand compositeCommand = new CompositeCommand();
-		compositeCommand.addCommand(new AddResourceCommand(model, id, scene,
-				ResourceCategory.SCENE));
-		compositeCommand.addCommand(new AddToListCommand(editState, editState
-				.getSceneorder(), id));
-
-		return compositeCommand;
+	@Test
+	public void testAddEntity() {
+		ModelEntity modelEntity = new ModelEntity();
+		AddResourceCommand addEntityCommand = new AddResourceCommand(model,
+				"scene", modelEntity, ResourceCategory.SCENE);
+		addEntityCommand.doCommand();
+		assertSame(model.getResource("scene", ResourceCategory.SCENE),
+				modelEntity);
+		addEntityCommand.undoCommand();
+		assertNull(model.getResource("scene", ResourceCategory.SCENE));
 	}
+
+	@Test
+	public void testRemoveEntity() {
+		ModelEntity modelEntity = new ModelEntity();
+
+		model.putResource("scene", ResourceCategory.SCENE, modelEntity);
+
+		RemoveResourceCommand removeEntityCommand = new RemoveResourceCommand(
+				model, "scene", modelEntity, ResourceCategory.SCENE);
+		removeEntityCommand.doCommand();
+		assertNull(model.getResource("scene", ResourceCategory.SCENE));
+		removeEntityCommand.undoCommand();
+		assertSame(model.getResource("scene", ResourceCategory.SCENE),
+				modelEntity);
+	}
+
 }

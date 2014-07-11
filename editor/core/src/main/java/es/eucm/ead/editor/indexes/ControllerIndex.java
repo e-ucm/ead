@@ -34,39 +34,19 @@
  *      You should have received a copy of the GNU Lesser General Public License
  *      along with eAdventure.  If not, see <http://www.gnu.org/licenses/>.
  */
-package es.eucm.ead.editor.control.actions.model.scene;
+package es.eucm.ead.editor.indexes;
 
-import es.eucm.ead.editor.control.actions.ModelAction;
-import es.eucm.ead.editor.control.commands.CompositeCommand;
-import es.eucm.ead.editor.control.commands.ListCommand.AddToListCommand;
-import es.eucm.ead.editor.control.commands.ResourceCommand.AddResourceCommand;
-import es.eucm.ead.editor.model.Model;
-import es.eucm.ead.editor.model.Q;
-import es.eucm.ead.schema.editor.components.EditState;
-import es.eucm.ead.schema.entities.ModelEntity;
-import es.eucm.ead.schemax.entities.ResourceCategory;
+import es.eucm.ead.editor.control.Controller;
 
 /**
- * Creates a new empty scene and sets it as the current edited scene. This
- * actions receives no arguments
+ * An index with some information about the model. Indexes are created on-demand
+ * through reflection, so all of them should have an empty constructor
  */
-public class NewScene extends ModelAction {
+public abstract class ControllerIndex extends FuzzyIndex {
 
-	@Override
-	public CompositeCommand perform(Object... args) {
-		Model model = controller.getModel();
+	/**
+	 * Initialize the index and adds the necessary hooks the keep itself updated
+	 */
+	public abstract void initialize(Controller controller);
 
-		String id = model.createId(ResourceCategory.SCENE);
-		ModelEntity scene = controller.getTemplates().createScene(id);
-
-		EditState editState = Q.getComponent(model.getGame(), EditState.class);
-
-		CompositeCommand compositeCommand = new CompositeCommand();
-		compositeCommand.addCommand(new AddResourceCommand(model, id, scene,
-				ResourceCategory.SCENE));
-		compositeCommand.addCommand(new AddToListCommand(editState, editState
-				.getSceneorder(), id));
-
-		return compositeCommand;
-	}
 }
