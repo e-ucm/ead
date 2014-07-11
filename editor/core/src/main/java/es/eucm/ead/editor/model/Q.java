@@ -107,7 +107,7 @@ public class Q {
 	 * @param defaultValue
 	 *            value if the name is null
 	 */
-	public String getName(ModelEntity modelEntity, String defaultValue) {
+	public static String getName(ModelEntity modelEntity, String defaultValue) {
 		Documentation documentation = getComponent(modelEntity,
 				Documentation.class);
 		return documentation.getName() == null ? defaultValue : documentation
