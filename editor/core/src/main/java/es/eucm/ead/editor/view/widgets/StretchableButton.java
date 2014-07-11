@@ -53,6 +53,12 @@ import es.eucm.ead.editor.view.widgets.layouts.LinearLayout;
  */
 public class StretchableButton extends LinearLayout {
 
+	/**
+	 * Using in {@link DraggablePart} to resize the {@link StretchableButton}
+	 */
+	private static final Vector2 vector = new Vector2();
+	private static final Vector2 parentVector = new Vector2();
+	
 	private Container container;
 
 	private boolean leftDragged;
@@ -151,29 +157,19 @@ public class StretchableButton extends LinearLayout {
 	 */
 	private class DraggablePart extends TextButton {
 
-		private Vector2 vector;
-		private Vector2 vCoor;
-
 		public DraggablePart(Skin skin, final StretchableButton parent,
 				final Container container, final boolean first) {
 			super(" ", skin);
 
-			vector = new Vector2();
-			vCoor = new Vector2();
-
 			this.addListener(new InputListener() {
-
-				private float lastX;
-
-				private float lastWidth;
 
 				@Override
 				public boolean touchDown(InputEvent event, float x, float y,
 						int pointer, int button) {
-					vector.set(x, 0);
-					localToStageCoordinates(vector);
-					lastX = vector.x;
-					lastWidth = container.getWidth();
+					
+					vector.set(getX(), 0);
+					localToAscendantCoordinates(parent.getParent(), vector);
+
 					if (first && container.getWidth() >= 0) {
 						parent.rightDragged = false;
 						parent.leftDragged = true;
@@ -187,46 +183,29 @@ public class StretchableButton extends LinearLayout {
 				@Override
 				public void touchDragged(InputEvent event, float x, float y,
 						int pointer) {
+					
 					vector.set(x, 0);
-					localToStageCoordinates(vector);
-					vCoor.set(DraggablePart.this.getX(), 0);
-					localToStageCoordinates(vCoor);
-
+					localToAscendantCoordinates(parent.getParent(), vector);
+					
 					if (first) {
-						if (vector.x > vCoor.x || !lockL2L) {
-							container.setWidth(container.getWidth()
-									+ (lastX - vector.x));
+						parentVector.set(parent.getX()+container.getWidth(), 0);
+						if (vector.x < parentVector.x || !lockL2L) {
+							container.setWidth(parentVector.x-vector.x);
 							if (container.getWidth() > 0) {
-								parent.setX(vCoor.x);
+								parent.setX(vector.x);
 							}
 						}
 					} else {
-						vCoor.set(parent.getX(), 0);
-						localToParentCoordinates(vCoor);
-						if (!lockR2R || vector.x - vCoor.x <= 0) {
-							container.setWidth(container.getWidth()
-									- (lastX - vector.x));
+						parentVector.set(parent.getX(), 0);
+						if (!lockR2R || vector.x - parentVector.x <= 0) {
+							parent.setTotalWidth(vector.x-parentVector.x);
 						}
 					}
 
-					if (container.getWidth() != lastWidth
-							&& container.getWidth() > 0) {
-						lastX = vector.x;
-					} else {
-						if (container.getWidth() <= 0) {
-							container.setWidth(0);
-						}
-						lastX = vCoor.x;
-					}
-
-					lastWidth = container.getWidth();
-					// if (container.getWidth() <= 0) {
-					// container.setWidth(0);
-					// lastX = vCoor.x;
-					// } else {
-					// lastX = vector.x;
-					// }
-
+					if (container.getWidth() <= 0) {
+						container.setWidth(0);
+					} 
+					
 					container.invalidateHierarchy();
 				}
 

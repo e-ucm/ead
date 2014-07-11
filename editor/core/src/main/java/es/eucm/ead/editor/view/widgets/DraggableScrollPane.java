@@ -53,26 +53,43 @@ import com.badlogic.gdx.scenes.scene2d.utils.DragAndDrop.Target;
 public class DraggableScrollPane extends ScrollPane {
 
 	private static final Vector2 TMP = new Vector2();
+	
+	private static final float DEFAULT_ACTION_ZONE = 90F;
+	private static final float DEAFULT_SPEED = 10F;
 
 	/**
 	 * The width/height of the left/up and right/down zone on which the scroll
 	 * is automatically increased/decreased.
 	 */
-	private static final float ACTION_ZONE = 90F;
+	private float actionZone;
 
 	/**
 	 * The factor that proportionally increases the scroll speed while in the
-	 * {@link #ACTION_ZONE}.
+	 * {@link #actionZone}.
 	 */
-	private static final float SCROLL_SPEED_MULTIPLIER = 10F;
+	private float scrollSpeed;
 
 	private DragAndDrop drag;
 
 	public DraggableScrollPane(Actor widget) {
-		super(widget);
-		drag = new DragAndDrop();
+		this(widget, DEFAULT_ACTION_ZONE, DEAFULT_SPEED);
 	}
-
+	
+	public DraggableScrollPane(Actor widget, DragAndDrop dragAndDrop) {
+		this(widget, dragAndDrop, DEFAULT_ACTION_ZONE, DEAFULT_SPEED);
+	}
+	
+	public DraggableScrollPane(Actor widget, float zone, float speed) {
+		this(widget, new DragAndDrop(), DEFAULT_ACTION_ZONE, DEAFULT_SPEED);
+	}
+	
+	public DraggableScrollPane(Actor widget, DragAndDrop dragAndDrop, float zone, float speed) {
+		super(widget);
+		actionZone = zone;
+		scrollSpeed = speed;
+		drag = dragAndDrop;
+	}
+	
 	@Override
 	public void act(float delta) {
 		super.act(delta);
@@ -84,23 +101,23 @@ public class DraggableScrollPane extends ScrollPane {
 			getStage().getRoot().stageToLocalCoordinates(
 					TMP.set(Gdx.input.getX(), Gdx.input.getY()));
 
-			if (TMP.x < ACTION_ZONE) {
-				float deltaX = (1f - TMP.x / ACTION_ZONE);
-				setScrollX(getScrollX() - deltaX * SCROLL_SPEED_MULTIPLIER);
+			if (TMP.x < actionZone) {
+				float deltaX = (1f - TMP.x / actionZone);
+				setScrollX(getScrollX() - deltaX * scrollSpeed);
 
-			} else if (TMP.x > getWidth() - ACTION_ZONE) {
-				float deltaX = (1f - (getWidth() - TMP.x) / ACTION_ZONE);
-				setScrollX(getScrollX() + deltaX * SCROLL_SPEED_MULTIPLIER);
+			} else if (TMP.x > getWidth() - actionZone) {
+				float deltaX = (1f - (getWidth() - TMP.x) / actionZone);
+				setScrollX(getScrollX() + deltaX * scrollSpeed);
 
 			}
 
-			if (TMP.y < ACTION_ZONE) {
-				float deltaY = (1f - TMP.y / ACTION_ZONE);
-				setScrollY(getScrollY() - deltaY * SCROLL_SPEED_MULTIPLIER);
+			if (TMP.y < actionZone) {
+				float deltaY = (1f - TMP.y / actionZone);
+				setScrollY(getScrollY() - deltaY * scrollSpeed);
 
-			} else if (TMP.y > getHeight() - ACTION_ZONE) {
-				float deltaY = (1f - (getHeight() - TMP.y) / ACTION_ZONE);
-				setScrollY(getScrollY() + deltaY * SCROLL_SPEED_MULTIPLIER);
+			} else if (TMP.y > getHeight() - actionZone) {
+				float deltaY = (1f - (getHeight() - TMP.y) / actionZone);
+				setScrollY(getScrollY() + deltaY * scrollSpeed);
 
 			}
 		}
@@ -124,6 +141,22 @@ public class DraggableScrollPane extends ScrollPane {
 
 	protected void clearDrag() {
 		drag.clear();
+	}
+
+	public float getActionZone() {
+		return actionZone;
+	}
+
+	public void setActionZone(float actionZone) {
+		this.actionZone = actionZone;
+	}
+
+	public float getScrollSpeed() {
+		return scrollSpeed;
+	}
+
+	public void setScrollSpeed(float scrollSpeed) {
+		this.scrollSpeed = scrollSpeed;
 	}
 
 }

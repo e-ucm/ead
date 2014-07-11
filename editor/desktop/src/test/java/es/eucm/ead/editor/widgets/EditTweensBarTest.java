@@ -44,6 +44,7 @@ import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.scenes.scene2d.utils.DragAndDrop;
 
 import es.eucm.ead.editor.editorui.EditorUITest;
+import es.eucm.ead.editor.view.widgets.DraggableScrollPane;
 import es.eucm.ead.editor.view.widgets.EditTweensBar;
 import es.eucm.ead.editor.view.widgets.IconTextButton;
 import es.eucm.ead.editor.view.widgets.IconTextButton.Position;
@@ -94,9 +95,10 @@ public class EditTweensBarTest extends EditorUITest {
 		Table t = new Table(skin);
 
 		Table tracks = new Table(skin);
-		ScrollPane sp = new ScrollPane(tracks);
 
 		DragAndDrop tracksDragNDrop = new DragAndDrop();
+		
+		ScrollPane sp = new DraggableScrollPane(tracks, tracksDragNDrop, 20, 50);
 
 		EditTweensBar bar = new EditTweensBar(skin.getDrawable("blank"),
 				skin.getDrawable("bg-dark"), tracksDragNDrop, controller);
