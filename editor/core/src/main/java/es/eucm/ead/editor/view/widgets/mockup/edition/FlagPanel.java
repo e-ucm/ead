@@ -49,8 +49,9 @@ import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
 import com.badlogic.gdx.scenes.scene2d.utils.Align;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.utils.Array;
+
 import es.eucm.ead.editor.control.Controller;
-import es.eucm.ead.editor.model.Model;
+import es.eucm.ead.editor.model.Q;
 import es.eucm.ead.editor.view.widgets.mockup.buttons.FlagButton;
 import es.eucm.ead.editor.view.widgets.mockup.panels.GridPanel;
 import es.eucm.ead.editor.view.widgets.mockup.panels.HiddenPanel;
@@ -87,7 +88,7 @@ public class FlagPanel extends HiddenPanel {
 
 		final I18N i18n = controller.getApplicationAssets().getI18N();
 		this.viewport = controller.getPlatform().getSize();
-		this.flags = Model.getComponent(controller.getModel().getGame(),
+		this.flags = Q.getComponent(controller.getModel().getGame(),
 				Variables.class).getVariablesDefinitions();
 		this.skin = skin;
 

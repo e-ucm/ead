@@ -42,7 +42,7 @@ import es.eucm.ead.editor.control.actions.editor.OpenGame;
 import es.eucm.ead.editor.control.actions.editor.Save;
 import es.eucm.ead.editor.control.views.HomeView;
 import es.eucm.ead.editor.control.views.SceneView;
-import es.eucm.ead.editor.model.Model;
+import es.eucm.ead.editor.model.Q;
 import es.eucm.ead.editor.nogui.EditorGUITest;
 import es.eucm.ead.editor.nogui.actions.OpenMockGame;
 import es.eucm.ead.editor.nogui.actions.OpenMockGame.Game;
@@ -69,7 +69,7 @@ public class RememberEditStateTest extends EditorGUITest {
 				controller.action(Save.class);
 
 				// assert edit state has changed in save
-				EditState editState = Model.getComponent(controller.getModel()
+				EditState editState = Q.getComponent(controller.getModel()
 						.getGame(), EditState.class);
 
 				assertEquals(editState.getView(), controller.getViews()

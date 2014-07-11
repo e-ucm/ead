@@ -49,6 +49,7 @@ import es.eucm.ead.editor.control.actions.model.RemoveFromScene;
 import es.eucm.ead.editor.control.actions.model.SetSelection;
 import es.eucm.ead.editor.model.Model;
 import es.eucm.ead.editor.model.Model.ModelListener;
+import es.eucm.ead.editor.model.Q;
 import es.eucm.ead.editor.model.events.LoadEvent;
 import es.eucm.ead.editor.model.events.MapEvent;
 import es.eucm.ead.editor.view.builders.mockup.camera.Picture;
@@ -230,7 +231,7 @@ public class Gallery extends BaseGalleryWithNavigation<DescriptionCard> {
 			final ElementButton element = (ElementButton) entity;
 			ModelEntity toRemove = element.getSceneElement();
 			controller.action(RemoveFromScene.class,
-					Model.getComponent(toRemove, Parent.class).getParent(),
+					Q.getComponent(toRemove, Parent.class).getParent(),
 					toRemove);
 			onEntityDeleted(entity);
 		}

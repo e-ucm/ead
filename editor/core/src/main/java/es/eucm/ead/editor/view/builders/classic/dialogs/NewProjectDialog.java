@@ -42,7 +42,7 @@ import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.utils.Drawable;
 import es.eucm.ead.editor.control.Controller;
 import es.eucm.ead.editor.control.actions.editor.NewGame;
-import es.eucm.ead.editor.model.Model;
+import es.eucm.ead.editor.model.Q;
 import es.eucm.ead.editor.view.builders.ViewBuilder;
 import es.eucm.ead.editor.view.controllers.DialogController;
 import es.eucm.ead.editor.view.controllers.DialogController.DialogButtonListener;
@@ -179,8 +179,8 @@ public class NewProjectDialog implements ViewBuilder {
 						ModelEntity game = controller.getTemplates()
 								.createGame(title, description);
 
-						Versions versions = Model.getComponent(game,
-								Versions.class);
+						Versions versions = Q
+								.getComponent(game, Versions.class);
 						// Set the appVersion for this game
 						versions.setAppVersion(controller.getAppVersion());
 
@@ -208,8 +208,8 @@ public class NewProjectDialog implements ViewBuilder {
 
 						baseResolution.scl(multiplier);
 
-						GameData gameData = Model.getComponent(game,
-								GameData.class);
+						GameData gameData = Q
+								.getComponent(game, GameData.class);
 						gameData.setWidth(Math.round(baseResolution.x));
 						gameData.setHeight(Math.round(baseResolution.y));
 

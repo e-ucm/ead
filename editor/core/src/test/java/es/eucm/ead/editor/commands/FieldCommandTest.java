@@ -36,12 +36,12 @@
  */
 package es.eucm.ead.editor.commands;
 
-import es.eucm.ead.schemax.FieldName;
 import es.eucm.ead.editor.control.commands.FieldCommand;
-import es.eucm.ead.editor.model.Model;
+import es.eucm.ead.editor.model.Q;
 import es.eucm.ead.editor.model.events.FieldEvent;
 import es.eucm.ead.schema.editor.components.GameData;
 import es.eucm.ead.schema.entities.ModelEntity;
+import es.eucm.ead.schemax.FieldName;
 import org.junit.Test;
 
 import static org.junit.Assert.assertEquals;
@@ -53,7 +53,7 @@ public class FieldCommandTest extends CommandTest {
 	@Test
 	public void testNormal() {
 		ModelEntity game = new ModelEntity();
-		GameData gameData = Model.getComponent(game, GameData.class);
+		GameData gameData = Q.getComponent(game, GameData.class);
 		gameData.setInitialScene("old");
 
 		FieldCommand command = new FieldCommand(gameData,
@@ -91,7 +91,7 @@ public class FieldCommandTest extends CommandTest {
 	@Test
 	public void testCombine() {
 		ModelEntity game = new ModelEntity();
-		GameData gameData = Model.getComponent(game, GameData.class);
+		GameData gameData = Q.getComponent(game, GameData.class);
 		gameData.setInitialScene("old");
 
 		FieldCommand command = new FieldCommand(gameData,
@@ -111,7 +111,7 @@ public class FieldCommandTest extends CommandTest {
 	@Test
 	public void testInvalidArguments() {
 		ModelEntity game = new ModelEntity();
-		GameData gameData = Model.getComponent(game, GameData.class);
+		GameData gameData = Q.getComponent(game, GameData.class);
 		gameData.setInitialScene("old");
 
 		FieldCommand command = new FieldCommand(gameData,

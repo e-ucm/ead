@@ -39,7 +39,7 @@ package es.eucm.ead.editor.control.actions.model;
 import es.eucm.ead.editor.control.Controller;
 import es.eucm.ead.editor.control.actions.ModelAction;
 import es.eucm.ead.editor.control.commands.Command;
-import es.eucm.ead.editor.model.Model;
+import es.eucm.ead.editor.model.Q;
 import es.eucm.ead.schema.editor.components.EditState;
 
 /**
@@ -73,8 +73,8 @@ public class ReorderScenes extends ModelAction {
 
 	@Override
 	public Command perform(Object... args) {
-		EditState editState = Model.getComponent(controller.getModel()
-				.getGame(), EditState.class);
+		EditState editState = Q.getComponent(controller.getModel().getGame(),
+				EditState.class);
 		String sceneId = args[0] instanceof String ? (String) args[0]
 				: editState.getSceneorder().get((Integer) args[0]);
 		Integer index = (Integer) args[1];

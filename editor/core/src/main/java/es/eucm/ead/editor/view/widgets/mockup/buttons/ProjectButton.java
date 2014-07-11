@@ -40,7 +40,7 @@ import com.badlogic.gdx.Files.FileType;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 
-import es.eucm.ead.editor.model.Model;
+import es.eucm.ead.editor.model.Q;
 import es.eucm.ead.editor.view.widgets.mockup.panels.GalleryEntity;
 import es.eucm.ead.engine.I18N;
 import es.eucm.ead.schema.editor.components.Note;
@@ -62,9 +62,9 @@ public class ProjectButton extends GalleryEntity {
 
 	public ProjectButton(Vector2 viewport, I18N i18n, ModelEntity game,
 			Skin skin, long lastModified, String pathToJson) {
-		super(Model.getComponent(game, Note.class), viewport, i18n, i18n
-				.m("project"), Model.getComponent(game, RepoElement.class),
-				skin, null);
+		super(Q.getComponent(game, Note.class), viewport, i18n, i18n
+				.m("project"), Q.getComponent(game, RepoElement.class), skin,
+				null);
 		this.lastModified = lastModified;
 		this.pathToJson = pathToJson;
 	}

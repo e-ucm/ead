@@ -44,10 +44,10 @@ import es.eucm.ead.editor.control.actions.ModelAction;
 import es.eucm.ead.editor.control.actions.editor.Save;
 import es.eucm.ead.editor.control.commands.Command;
 import es.eucm.ead.editor.control.commands.FieldCommand;
-import es.eucm.ead.schemax.FieldName;
-import es.eucm.ead.editor.model.Model;
+import es.eucm.ead.editor.model.Q;
 import es.eucm.ead.schema.editor.components.Note;
 import es.eucm.ead.schema.entities.ModelEntity;
+import es.eucm.ead.schemax.FieldName;
 
 import java.io.File;
 
@@ -62,7 +62,7 @@ public class ChangeProjectTitle extends ModelAction {
 	@Override
 	public Command perform(Object... args) {
 		ModelEntity currProj = controller.getModel().getGame();
-		Note note = Model.getComponent(currProj, Note.class);
+		Note note = Q.getComponent(currProj, Note.class);
 		final String oldTitle = note.getTitle();
 		final String newTitle = args[0].toString();
 		if (newTitle.equals(oldTitle)) {

@@ -39,14 +39,14 @@ package es.eucm.ead.editor.view.widgets.scenes;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.Group;
 import com.badlogic.gdx.utils.Array;
-import es.eucm.ead.editor.control.Selection;
 import es.eucm.ead.editor.control.Controller;
+import es.eucm.ead.editor.control.Selection;
 import es.eucm.ead.editor.control.actions.model.SetSelection;
 import es.eucm.ead.editor.control.actions.model.scene.MultipleActorTransformToEntity;
 import es.eucm.ead.editor.control.actions.model.scene.NewGroupHierarchyToEntities;
 import es.eucm.ead.editor.control.actions.model.scene.RemoveChildrenFromEntity;
 import es.eucm.ead.editor.control.actions.model.scene.UngroupHierarchyToEntities;
-import es.eucm.ead.editor.model.Model;
+import es.eucm.ead.editor.model.Q;
 import es.eucm.ead.editor.view.widgets.groupeditor.GroupEditor.GroupEvent;
 import es.eucm.ead.editor.view.widgets.groupeditor.GroupEditor.GroupListener;
 import es.eucm.ead.schema.entities.ModelEntity;
@@ -72,7 +72,7 @@ public class SceneListener extends GroupListener {
 		arguments[1] = Selection.SCENE_ENTITY;
 		int i = 2;
 		for (Actor actor : selection) {
-			arguments[i++] = Model.getModelEntity(actor);
+			arguments[i++] = Q.getModelEntity(actor);
 		}
 		controller.action(SetSelection.class, arguments);
 	}
@@ -91,12 +91,12 @@ public class SceneListener extends GroupListener {
 			Array<Actor> deleted) {
 		tmpModelEntities.clear();
 		for (Actor actor : deleted) {
-			tmpModelEntities.add(Model.getModelEntity(actor));
+			tmpModelEntities.add(Q.getModelEntity(actor));
 			controller.getEngine().getGameLoop()
-					.removeEntity(Model.getActorEntity(actor));
+					.removeEntity(Q.getActorEntity(actor));
 		}
 		controller.action(RemoveChildrenFromEntity.class,
-				Model.getModelEntity(parent), tmpModelEntities);
+				Q.getModelEntity(parent), tmpModelEntities);
 	}
 
 	@Override
@@ -116,7 +116,7 @@ public class SceneListener extends GroupListener {
 	@Override
 	public void enteredGroupEdition(GroupEvent groupEvent, Group group) {
 		controller.getCommands().pushStack();
-		ModelEntity modelEntity = Model.getModelEntity(group);
+		ModelEntity modelEntity = Q.getModelEntity(group);
 		if (modelEntity != null) {
 			controller.action(SetSelection.class, Selection.SCENE,
 					Selection.EDITED_GROUP, modelEntity);
@@ -128,7 +128,7 @@ public class SceneListener extends GroupListener {
 	public void exitedGroupEdition(GroupEvent groupEvent, Group parent,
 			Group oldGroup, Actor simplifiedGroup) {
 		controller.getCommands().popStack(true);
-		ModelEntity modelEntity = Model.getModelEntity(parent);
+		ModelEntity modelEntity = Q.getModelEntity(parent);
 		if (modelEntity != null) {
 			controller.action(SetSelection.class, Selection.SCENE,
 					Selection.EDITED_GROUP, modelEntity);

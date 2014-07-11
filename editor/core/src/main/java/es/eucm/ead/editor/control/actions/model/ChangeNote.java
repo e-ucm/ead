@@ -42,10 +42,10 @@ import es.eucm.ead.editor.control.actions.EditorActionException;
 import es.eucm.ead.editor.control.actions.ModelAction;
 import es.eucm.ead.editor.control.commands.Command;
 import es.eucm.ead.editor.control.commands.FieldCommand;
-import es.eucm.ead.schemax.FieldName;
-import es.eucm.ead.editor.model.Model;
+import es.eucm.ead.editor.model.Q;
 import es.eucm.ead.schema.editor.components.Note;
 import es.eucm.ead.schema.entities.ModelEntity;
+import es.eucm.ead.schemax.FieldName;
 import es.eucm.ead.schemax.entities.ResourceCategory;
 
 /**
@@ -91,7 +91,7 @@ public class ChangeNote extends ModelAction {
 		// If they want to support this feature
 		if (args[0] != null) {
 			if (args[0] instanceof String) {
-				objectToRename = Model.getComponent(
+				objectToRename = Q.getComponent(
 						(ModelEntity) controller.getModel()
 								.getResources(ResourceCategory.SCENE)
 								.get(args[0].toString()), Note.class);
@@ -99,7 +99,7 @@ public class ChangeNote extends ModelAction {
 			// If the first argument is not to be found, it should have a name
 			// attribute declared. Otherwise, throw exception
 			else if (args[0] instanceof ModelEntity) {
-				objectToRename = Model.getComponent((ModelEntity) args[0],
+				objectToRename = Q.getComponent((ModelEntity) args[0],
 						Note.class);
 			} else if (args[0] instanceof Note) {
 				objectToRename = (Note) args[0];

@@ -40,11 +40,12 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.ui.TextField;
 import com.badlogic.gdx.scenes.scene2d.ui.TextField.TextFieldListener;
-import es.eucm.ead.editor.control.Selection;
+
 import es.eucm.ead.editor.control.Controller;
+import es.eucm.ead.editor.control.Selection;
 import es.eucm.ead.editor.control.actions.model.AddChildToEntity;
 import es.eucm.ead.editor.control.actions.model.ReplaceEntity;
-import es.eucm.ead.editor.model.Model;
+import es.eucm.ead.editor.model.Q;
 import es.eucm.ead.schema.components.controls.Label;
 import es.eucm.ead.schema.editor.components.Parent;
 import es.eucm.ead.schema.entities.ModelEntity;
@@ -68,12 +69,11 @@ public class SampleTextPanel extends SamplePanel {
 		 * @Override public void modelChanged(SelectionEvent event) {
 		 * Array<Object> sel = controller.getModel() .getSelection();
 		 * textSelected = false; if (sel.size == 1) { String text = null; if
-		 * (sel.first() instanceof ModelEntity && Model.hasComponent(
-		 * (ModelEntity) sel.first(),
-		 * es.eucm.ead.schema.components.controls.Label.class)) { textSelected =
-		 * true; text = Model .getComponent( (ModelEntity) sel.first(),
-		 * es.eucm.ead.schema.components.controls.Label.class) .getText(); } if
-		 * (text == null) { setTextFieldText(""); } else {
+		 * (sel.first() instanceof ModelEntity && Q.hasComponent( (ModelEntity)
+		 * sel.first(), es.eucm.ead.schema.components.controls.Label.class)) {
+		 * textSelected = true; text = Model .getComponent( (ModelEntity)
+		 * sel.first(), es.eucm.ead.schema.components.controls.Label.class)
+		 * .getText(); } if (text == null) { setTextFieldText(""); } else {
 		 * setTextFieldText(text); } } else { setTextFieldText(""); } }
 		 * 
 		 * });
@@ -114,10 +114,10 @@ public class SampleTextPanel extends SamplePanel {
 							ModelEntity copy = controller.getEditorGameAssets()
 									.copy(element);
 
-							Model.getComponent(copy, Parent.class).setParent(
-									Model.getComponent(element, Parent.class)
+							Q.getComponent(copy, Parent.class).setParent(
+									Q.getComponent(element, Parent.class)
 											.getParent());
-							Label labelComponent = Model.getComponent(copy,
+							Label labelComponent = Q.getComponent(copy,
 									Label.class);
 							labelComponent.setText(textField.getText());
 							controller.action(ReplaceEntity.class, element,

@@ -56,6 +56,7 @@ import es.eucm.ead.editor.control.background.BackgroundTask;
 import es.eucm.ead.editor.model.Model;
 import es.eucm.ead.editor.model.Model.FieldListener;
 import es.eucm.ead.editor.model.Model.ModelListener;
+import es.eucm.ead.editor.model.Q;
 import es.eucm.ead.editor.model.events.FieldEvent;
 import es.eucm.ead.editor.model.events.LoadEvent;
 import es.eucm.ead.editor.view.builders.ViewBuilder;
@@ -118,8 +119,8 @@ public class ProjectScreen implements ViewBuilder {
 			updateInitialSceneName = false;
 			Model model = controller.getModel();
 			ModelEntity game = model.getGame();
-			GameData gameData = Model.getComponent(game, GameData.class);
-			Note note = Model.getComponent(
+			GameData gameData = Q.getComponent(game, GameData.class);
+			Note note = Q.getComponent(
 					(ModelEntity) model.getResources(ResourceCategory.SCENE)
 							.get(gameData.getInitialScene()), Note.class);
 			changeInitialSceneText(note);
@@ -131,7 +132,7 @@ public class ProjectScreen implements ViewBuilder {
 			addInitialSceneListener(controller);
 		}
 
-		String title = Model.getComponent(controller.getModel().getGame(),
+		String title = Q.getComponent(controller.getModel().getGame(),
 				Note.class).getTitle();
 		this.projectTitleField.setText(title == null ? "" : title);
 		resizeTextField(controller.getApplicationAssets().getSkin());
@@ -150,13 +151,13 @@ public class ProjectScreen implements ViewBuilder {
 	private void addInitialSceneListener(final Controller controller) {
 		final Model model = controller.getModel();
 		final ModelEntity game = model.getGame();
-		final GameData gameData = Model.getComponent(game, GameData.class);
+		final GameData gameData = Q.getComponent(game, GameData.class);
 		if (initialSceneListener == null) {
 			initialSceneListener = new FieldListener() {
 
 				@Override
 				public void modelChanged(FieldEvent event) {
-					Note note = Model.getComponent(
+					Note note = Q.getComponent(
 							(ModelEntity) model.getResources(
 									ResourceCategory.SCENE).get(
 									gameData.getInitialScene()), Note.class);
@@ -178,9 +179,9 @@ public class ProjectScreen implements ViewBuilder {
 
 	private void addInitialSceneNoteListener(Controller controller) {
 		final Model model = controller.getModel();
-		final GameData gameData = Model.getComponent(model.getGame(),
+		final GameData gameData = Q.getComponent(model.getGame(),
 				GameData.class);
-		Note targetNote = Model.getComponent(
+		Note targetNote = Q.getComponent(
 				(ModelEntity) model.getResources(ResourceCategory.SCENE).get(
 						gameData.getInitialScene()), Note.class);
 
@@ -193,9 +194,10 @@ public class ProjectScreen implements ViewBuilder {
 
 			@Override
 			public void titleChanged(FieldEvent event) {
-				Note note = Model.getComponent(
-						(ModelEntity) model
-								.getResources(ResourceCategory.SCENE).get(
+				Note note = Q
+						.getComponent(
+								(ModelEntity) model.getResources(
+										ResourceCategory.SCENE).get(
 										gameData.getInitialScene()), Note.class);
 				changeInitialSceneText(note);
 			}

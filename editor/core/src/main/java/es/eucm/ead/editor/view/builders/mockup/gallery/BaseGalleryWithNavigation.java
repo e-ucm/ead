@@ -56,7 +56,7 @@ import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.ObjectMap;
 import es.eucm.ead.editor.control.Controller;
 import es.eucm.ead.editor.control.actions.model.ChangeInitialScene;
-import es.eucm.ead.editor.model.Model;
+import es.eucm.ead.editor.model.Q;
 import es.eucm.ead.editor.view.widgets.mockup.Navigation;
 import es.eucm.ead.editor.view.widgets.mockup.ToolBar;
 import es.eucm.ead.editor.view.widgets.mockup.buttons.DescriptionCard;
@@ -374,8 +374,8 @@ public abstract class BaseGalleryWithNavigation<T extends DescriptionCard>
 			Controller controller) {
 		if (entitiesCount == 1 && actor instanceof SceneButton) {
 			this.selectedSceneId = ((SceneButton) actor).getKey();
-			GameData gameData = Model.getComponent(controller.getModel()
-					.getGame(), GameData.class);
+			GameData gameData = Q.getComponent(controller.getModel().getGame(),
+					GameData.class);
 			if (!this.selectedSceneId.equals(gameData))
 				initialSceneButton.setVisible(true);
 		} else {

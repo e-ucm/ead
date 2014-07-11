@@ -38,7 +38,7 @@ package es.eucm.ead.editor.actions;
 
 import es.eucm.ead.editor.control.actions.model.AddScene;
 import es.eucm.ead.editor.control.actions.model.ReorderScenes;
-import es.eucm.ead.editor.model.Model;
+import es.eucm.ead.editor.model.Q;
 import es.eucm.ead.schema.editor.components.EditState;
 import es.eucm.ead.schema.entities.ModelEntity;
 import es.eucm.ead.schemax.entities.ResourceCategory;
@@ -72,14 +72,14 @@ public class ReorderTest extends ActionTest {
 
 		// Now, reorder scenes to scene2, scene0, scene1
 		controller
-				.action(ReorderScenes.class, "scene2", 0, false, Model
+				.action(ReorderScenes.class, "scene2", 0, false, Q
 						.getComponent(model.getGame(), EditState.class)
 						.getSceneorder());
 		assertEquals("scene2scene0scene1", getStreamlinedSceneOrder());
 
 		// Now, reorder scenes to scene2, scene1, scene0
 		controller
-				.action(ReorderScenes.class, "scene1", 1, false, Model
+				.action(ReorderScenes.class, "scene1", 1, false, Q
 						.getComponent(model.getGame(), EditState.class)
 						.getSceneorder());
 		assertEquals("scene2scene1scene0", getStreamlinedSceneOrder());
@@ -87,12 +87,12 @@ public class ReorderTest extends ActionTest {
 		// Now, try reordering out of bounds. No exception should be thrown, the
 		// action fixes the target index to fit into the list
 		controller
-				.action(ReorderScenes.class, "scene1", 5, false, Model
+				.action(ReorderScenes.class, "scene1", 5, false, Q
 						.getComponent(model.getGame(), EditState.class)
 						.getSceneorder());
 		assertEquals("scene2scene0scene1", getStreamlinedSceneOrder());
 		controller
-				.action(ReorderScenes.class, "scene1", -3, false, Model
+				.action(ReorderScenes.class, "scene1", -3, false, Q
 						.getComponent(model.getGame(), EditState.class)
 						.getSceneorder());
 		assertEquals("scene1scene2scene0", getStreamlinedSceneOrder());
@@ -139,8 +139,8 @@ public class ReorderTest extends ActionTest {
 	 */
 	private String getStreamlinedSceneOrder() {
 		String sceneOrder = "";
-		for (String sceneId : Model.getComponent(model.getGame(),
-				EditState.class).getSceneorder()) {
+		for (String sceneId : Q.getComponent(model.getGame(), EditState.class)
+				.getSceneorder()) {
 			sceneOrder += sceneId;
 		}
 		return sceneOrder;

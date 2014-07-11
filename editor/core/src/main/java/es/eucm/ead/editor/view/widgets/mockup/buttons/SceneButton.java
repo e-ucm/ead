@@ -39,8 +39,10 @@ package es.eucm.ead.editor.view.widgets.mockup.buttons;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.utils.Array;
+
 import es.eucm.ead.editor.control.Controller;
 import es.eucm.ead.editor.model.Model;
+import es.eucm.ead.editor.model.Q;
 import es.eucm.ead.editor.view.widgets.mockup.panels.GalleryEntity;
 import es.eucm.ead.engine.I18N;
 import es.eucm.ead.schema.components.ModelComponent;
@@ -69,9 +71,9 @@ public class SceneButton extends GalleryEntity {
 	public SceneButton(Vector2 viewport, I18N i18n, ModelEntity scene,
 			String key, Skin skin, Controller controller, Class<?> action,
 			Object... args) {
-		super(Model.getComponent(scene, Note.class), viewport, i18n, i18n
-				.m("scene"), Model.getComponent(scene, RepoElement.class),
-				skin, controller, action, args);
+		super(Q.getComponent(scene, Note.class), viewport, i18n, i18n
+				.m("scene"), Q.getComponent(scene, RepoElement.class), skin,
+				controller, action, args);
 		this.key = key;
 		this.scene = scene;
 	}

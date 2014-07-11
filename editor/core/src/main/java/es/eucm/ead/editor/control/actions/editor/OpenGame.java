@@ -45,6 +45,7 @@ import es.eucm.ead.editor.control.Preferences;
 import es.eucm.ead.editor.control.actions.EditorAction;
 import es.eucm.ead.editor.control.actions.EditorActionException;
 import es.eucm.ead.editor.model.Model;
+import es.eucm.ead.editor.model.Q;
 import es.eucm.ead.editor.model.events.LoadEvent;
 import es.eucm.ead.editor.platform.Platform.FileChooserListener;
 import es.eucm.ead.engine.assets.Assets.AssetLoadedCallback;
@@ -180,15 +181,14 @@ public class OpenGame extends EditorAction implements FileChooserListener,
 	}
 
 	private void addParent(ModelEntity entity, ModelEntity parent) {
-		Model.getComponent(entity, Parent.class).setParent(parent);
+		Q.getComponent(entity, Parent.class).setParent(parent);
 		for (ModelEntity child : entity.getChildren()) {
 			addParent(child, entity);
 		}
 	}
 
 	private void setEditionState(Model model) {
-		EditState editState = Model.getComponent(model.getGame(),
-				EditState.class);
+		EditState editState = Q.getComponent(model.getGame(), EditState.class);
 		if (editState.getView() != null) {
 			try {
 				Class viewClass = ClassReflection.forName(editState.getView());

@@ -38,9 +38,10 @@ package es.eucm.ead.editor.control.actions.editor;
 
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.utils.Array;
+
 import es.eucm.ead.editor.assets.EditorGameAssets;
 import es.eucm.ead.editor.control.actions.EditorAction;
-import es.eucm.ead.editor.model.Model;
+import es.eucm.ead.editor.model.Q;
 import es.eucm.ead.schema.entities.ModelEntity;
 import es.eucm.ead.schema.renderers.Frame;
 import es.eucm.ead.schema.renderers.Frames;
@@ -72,8 +73,8 @@ public class ImportEntityResources extends EditorAction {
 		String resourceElementPath = args[1].toString() + "/";
 		EditorGameAssets gameAssets = controller.getEditorGameAssets();
 
-		if (Model.hasComponent(elem, Image.class)) {
-			Image renderer = Model.getComponent(elem, Image.class);
+		if (Q.hasComponent(elem, Image.class)) {
+			Image renderer = Q.getComponent(elem, Image.class);
 			String elemURI = renderer.getUri();
 			String resElementPath = resourceElementPath + elemURI;
 
@@ -84,8 +85,8 @@ public class ImportEntityResources extends EditorAction {
 			// to the project directory.
 			copyToProject(renderer, resElementPath, gameAssets);
 		}
-		if (Model.hasComponent(elem, Frames.class)) {
-			Array<Frame> frames = Model.getComponent(elem, Frames.class)
+		if (Q.hasComponent(elem, Frames.class)) {
+			Array<Frame> frames = Q.getComponent(elem, Frames.class)
 					.getFrames();
 			for (int i = 0; i < frames.size; ++i) {
 				Renderer renderer = frames.get(i).getRenderer();

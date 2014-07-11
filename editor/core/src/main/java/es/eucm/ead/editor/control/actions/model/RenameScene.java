@@ -36,7 +36,7 @@
  */
 package es.eucm.ead.editor.control.actions.model;
 
-import es.eucm.ead.editor.model.Model;
+import es.eucm.ead.editor.model.Q;
 import es.eucm.ead.schema.editor.components.Documentation;
 import es.eucm.ead.schema.entities.ModelEntity;
 import es.eucm.ead.schemax.entities.ResourceCategory;
@@ -53,7 +53,7 @@ public class RenameScene extends Rename {
 			ModelEntity scene = (ModelEntity) controller.getModel()
 					.getResources(ResourceCategory.SCENE).get(id);
 			if (scene != null) {
-				return Model.getComponent(scene, Documentation.class);
+				return Q.getComponent(scene, Documentation.class);
 			}
 			return null;
 		} else {
