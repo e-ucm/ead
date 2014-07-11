@@ -34,7 +34,7 @@
  *      You should have received a copy of the GNU Lesser General Public License
  *      along with eAdventure.  If not, see <http://www.gnu.org/licenses/>.
  */
-package es.eucm.ead.editor.search;
+package es.eucm.ead.editor.indexes;
 
 import com.badlogic.gdx.utils.Array;
 
@@ -46,6 +46,13 @@ public class FuzzyIndex {
 	private Array<Term> terms = new Array<Term>();
 
 	/**
+	 * @return terms contained by the index
+	 */
+	public Array<Term> getTerms() {
+		return terms;
+	}
+
+	/**
 	 * Adds a term to the index
 	 * 
 	 * @param termString
@@ -55,6 +62,34 @@ public class FuzzyIndex {
 	 */
 	public void addTerm(String termString, Object data) {
 		terms.add(new Term(termString, data));
+	}
+
+	/**
+	 * Remove the term with the given id and data
+	 * 
+	 * @return the term, if indeed was in the index
+	 */
+	public Term removeTerm(String termString, Object data) {
+		for (Term term : terms) {
+			if (term.getTermString().equals(termString)
+					&& term.data.equals(data)) {
+				terms.removeValue(term, true);
+				return term;
+			}
+		}
+		return null;
+	}
+
+	/**
+	 * @return returns the first associated term with the given data
+	 */
+	public Term getTerm(Object data) {
+		for (Term term : terms) {
+			if (term.data == data) {
+				return term;
+			}
+		}
+		return null;
 	}
 
 	/**

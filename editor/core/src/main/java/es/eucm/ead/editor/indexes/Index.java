@@ -34,7 +34,7 @@
  *      You should have received a copy of the GNU Lesser General Public License
  *      along with eAdventure.  If not, see <http://www.gnu.org/licenses/>.
  */
-package es.eucm.ead.editor.search;
+package es.eucm.ead.editor.indexes;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.utils.Array;
