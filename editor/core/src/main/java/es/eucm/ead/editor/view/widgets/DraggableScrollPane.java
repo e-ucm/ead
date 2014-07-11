@@ -89,8 +89,12 @@ public class DraggableScrollPane extends ScrollPane {
 			float zone, float speed) {
 		super(widget);
 		actionZone = zone;
-		scrollSpeed = speed;
 		drag = dragAndDrop;
+		scrollSpeed = speed;
+		setFlingTime(0.0f);
+		setFadeScrollBars(false);
+		setSmoothScrolling(false);
+		setOverscroll(false, false);
 	}
 
 	@Override
