@@ -45,7 +45,8 @@ import com.badlogic.gdx.scenes.scene2d.utils.Drawable;
 import com.badlogic.gdx.utils.Scaling;
 
 /**
- * Button with an image and a text. The text button can be below, above or to the sides of the image.
+ * Button with an image and a text. The text button can be below, above or to
+ * the sides of the image.
  * 
  */
 public class IconTextButton extends Button {
@@ -65,8 +66,9 @@ public class IconTextButton extends Button {
 	private Label label;
 
 	/**
-	 * Create a Button with a text <b>name</b>, an image <b>icon</b>.
-	 * The <b>pos</b> indicates if the text is below, above or to the sides of the image. 
+	 * Create a Button with a text <b>name</b>, an image <b>icon</b>. The
+	 * <b>pos</b> indicates if the text is below, above or to the sides of the
+	 * image.
 	 * 
 	 * @param name
 	 * @param skin
@@ -78,10 +80,10 @@ public class IconTextButton extends Button {
 	}
 
 	/**
-	 * Create a Button with a text <b>name</b>, an image <b>icon</b>.
-	 * The <b>pos</b> indicates if the text is below, above or to the sides of the image. 
-	 * The image have the padding <b>pad</b>
-	 *  
+	 * Create a Button with a text <b>name</b>, an image <b>icon</b>. The
+	 * <b>pos</b> indicates if the text is below, above or to the sides of the
+	 * image. The image have the padding <b>pad</b>
+	 * 
 	 * @param name
 	 * @param skin
 	 * @param icon
@@ -94,12 +96,12 @@ public class IconTextButton extends Button {
 		this(name, skin, icon, pos, pad, pad, size);
 	}
 
-
 	/**
-	 * Create a Button with a text <b>name</b>, an image <b>icon</b>.
-	 * The <b>pos</b> indicates if the text is below, above or to the sides of the image. 
-	 * The image have the padding <b>lateralPad</b> in sides and <b>basePad</b> in top and bottom.
-	 *  
+	 * Create a Button with a text <b>name</b>, an image <b>icon</b>. The
+	 * <b>pos</b> indicates if the text is below, above or to the sides of the
+	 * image. The image have the padding <b>lateralPad</b> in sides and
+	 * <b>basePad</b> in top and bottom.
+	 * 
 	 * @param name
 	 * @param skin
 	 * @param icon

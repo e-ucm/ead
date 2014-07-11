@@ -97,7 +97,7 @@ public class EditTweensBarTest extends EditorUITest {
 		Table tracks = new Table(skin);
 
 		DragAndDrop tracksDragNDrop = new DragAndDrop();
-		
+
 		ScrollPane sp = new DraggableScrollPane(tracks, tracksDragNDrop, 20, 50);
 
 		EditTweensBar bar = new EditTweensBar(skin.getDrawable("blank"),
