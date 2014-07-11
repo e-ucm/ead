@@ -42,9 +42,9 @@ import es.eucm.ead.editor.EditorTest;
 import es.eucm.ead.editor.control.actions.ArgumentsValidationException;
 import es.eucm.ead.editor.control.actions.EditorAction;
 import es.eucm.ead.editor.control.actions.editor.NewGame;
-import es.eucm.ead.editor.control.actions.model.AddScene;
 import es.eucm.ead.editor.control.actions.model.DeleteScene;
 import es.eucm.ead.editor.control.actions.model.EditScene;
+import es.eucm.ead.editor.control.actions.model.scene.NewScene;
 import es.eucm.ead.schema.entities.ModelEntity;
 import org.junit.Before;
 import org.junit.Test;
@@ -175,9 +175,9 @@ public class ActionsTest extends EditorTest {
 		File file = platform.createTempFile(true);
 		controller.action(NewGame.class, file.getAbsolutePath(),
 				new ModelEntity());
-		controller.action(AddScene.class);
-		controller.action(AddScene.class);
-		controller.action(AddScene.class);
+		controller.action(NewScene.class);
+		controller.action(NewScene.class);
+		controller.action(NewScene.class);
 		controller.action(DeleteScene.class, "scene2");
 		controller.action(EditScene.class, "scene3");
 		try {

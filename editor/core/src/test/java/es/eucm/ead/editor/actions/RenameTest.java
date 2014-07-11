@@ -39,9 +39,9 @@ package es.eucm.ead.editor.actions;
 import com.badlogic.gdx.files.FileHandle;
 import es.eucm.ead.editor.control.actions.EditorActionException;
 import es.eucm.ead.editor.control.actions.editor.NewGame;
-import es.eucm.ead.editor.control.actions.model.AddScene;
 import es.eucm.ead.editor.control.actions.model.Rename;
 import es.eucm.ead.editor.control.actions.model.RenameScene;
+import es.eucm.ead.editor.control.actions.model.scene.NewScene;
 import es.eucm.ead.editor.model.Model;
 import es.eucm.ead.editor.model.Q;
 import es.eucm.ead.editor.model.events.FieldEvent;
@@ -163,7 +163,7 @@ public class RenameTest extends ActionTest {
 			newNameToUse = null;
 
 		// Add a scene to be renamed
-		controller.action(AddScene.class);
+		controller.action(NewScene.class);
 
 		// Get the just created scene:
 		scene = new ModelEntity();
