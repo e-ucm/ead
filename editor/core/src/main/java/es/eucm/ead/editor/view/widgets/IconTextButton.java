@@ -44,6 +44,10 @@ import com.badlogic.gdx.scenes.scene2d.utils.Align;
 import com.badlogic.gdx.scenes.scene2d.utils.Drawable;
 import com.badlogic.gdx.utils.Scaling;
 
+/**
+ * Button with an image and a text. The text button can be below, above or to the sides of the image.
+ * 
+ */
 public class IconTextButton extends Button {
 
 	private static final float PAD_LARGE = 5f, PAD_SMALL = 2f;
@@ -60,15 +64,49 @@ public class IconTextButton extends Button {
 
 	private Label label;
 
+	/**
+	 * Create a Button with a text <b>name</b>, an image <b>icon</b>.
+	 * The <b>pos</b> indicates if the text is below, above or to the sides of the image. 
+	 * 
+	 * @param name
+	 * @param skin
+	 * @param icon
+	 * @param pos
+	 */
 	public IconTextButton(String name, Skin skin, Drawable icon, Position pos) {
 		this(name, skin, icon, pos, 0, 0, 0);
 	}
 
+	/**
+	 * Create a Button with a text <b>name</b>, an image <b>icon</b>.
+	 * The <b>pos</b> indicates if the text is below, above or to the sides of the image. 
+	 * The image have the padding <b>pad</b>
+	 *  
+	 * @param name
+	 * @param skin
+	 * @param icon
+	 * @param pos
+	 * @param pad
+	 * @param size
+	 */
 	public IconTextButton(String name, Skin skin, Drawable icon, Position pos,
 			float pad, float size) {
 		this(name, skin, icon, pos, pad, pad, size);
 	}
 
+
+	/**
+	 * Create a Button with a text <b>name</b>, an image <b>icon</b>.
+	 * The <b>pos</b> indicates if the text is below, above or to the sides of the image. 
+	 * The image have the padding <b>lateralPad</b> in sides and <b>basePad</b> in top and bottom.
+	 *  
+	 * @param name
+	 * @param skin
+	 * @param icon
+	 * @param pos
+	 * @param pad
+	 * @param size
+	 */
 	public IconTextButton(String name, Skin skin, Drawable icon, Position pos,
 			float lateralPad, float basePad, float size) {
 		super(skin);
