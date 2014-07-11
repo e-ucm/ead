@@ -199,17 +199,6 @@ public class GameAssets extends Assets implements GameStructure {
 	}
 
 	/**
-	 * @param type
-	 *            May be null if the type is unknown.
-	 * @param path
-	 *            the path of the json file
-	 * @return May be null.
-	 */
-	public <T> T fromJsonPath(Class<T> type, String path) {
-		return fromJson(type, resolve(path));
-	}
-
-	/**
 	 * Set the customized serializers
 	 */
 	protected void setLoaders() {
