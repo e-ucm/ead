@@ -39,8 +39,10 @@ package es.eucm.ead.editor.view.widgets;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.scenes.scene2d.Actor;
+import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.ui.ScrollPane;
 import com.badlogic.gdx.scenes.scene2d.utils.DragAndDrop;
+import com.badlogic.gdx.scenes.scene2d.utils.DragAndDrop.Payload;
 import com.badlogic.gdx.scenes.scene2d.utils.DragAndDrop.Source;
 import com.badlogic.gdx.scenes.scene2d.utils.DragAndDrop.Target;
 
@@ -53,7 +55,7 @@ import com.badlogic.gdx.scenes.scene2d.utils.DragAndDrop.Target;
 public class DraggableScrollPane extends ScrollPane {
 
 	private static final Vector2 TMP = new Vector2();
-	
+
 	private static final float DEFAULT_ACTION_ZONE = 90F;
 	private static final float DEAFULT_SPEED = 10F;
 
@@ -74,22 +76,27 @@ public class DraggableScrollPane extends ScrollPane {
 	public DraggableScrollPane(Actor widget) {
 		this(widget, DEFAULT_ACTION_ZONE, DEAFULT_SPEED);
 	}
-	
+
 	public DraggableScrollPane(Actor widget, DragAndDrop dragAndDrop) {
 		this(widget, dragAndDrop, DEFAULT_ACTION_ZONE, DEAFULT_SPEED);
 	}
-	
+
 	public DraggableScrollPane(Actor widget, float zone, float speed) {
 		this(widget, new DragAndDrop(), DEFAULT_ACTION_ZONE, DEAFULT_SPEED);
 	}
-	
-	public DraggableScrollPane(Actor widget, DragAndDrop dragAndDrop, float zone, float speed) {
+
+	public DraggableScrollPane(Actor widget, DragAndDrop dragAndDrop,
+			float zone, float speed) {
 		super(widget);
 		actionZone = zone;
-		scrollSpeed = speed;
 		drag = dragAndDrop;
+		scrollSpeed = speed;
+		setFlingTime(0.0f);
+		setFadeScrollBars(false);
+		setSmoothScrolling(false);
+		setOverscroll(false, false);
 	}
-	
+
 	@Override
 	public void act(float delta) {
 		super.act(delta);
@@ -123,8 +130,23 @@ public class DraggableScrollPane extends ScrollPane {
 		}
 	}
 
-	public void addSource(Source source) {
-		drag.addSource(source);
+	public void addSource(final Source source) {
+		drag.addSource(new Source(source.getActor()) {
+
+			@Override
+			public Payload dragStart(InputEvent event, float x, float y,
+					int pointer) {
+				drag.setDragActorPosition(-x, getActor().getHeight() - y);
+				return source.dragStart(event, x, y, pointer);
+			}
+
+			@Override
+			public void dragStop(InputEvent event, float x, float y,
+					int pointer, Payload payload, Target target) {
+				source.dragStop(event, x, y, pointer, payload, target);
+			}
+
+		});
 	}
 
 	public void addTarget(Target target) {
