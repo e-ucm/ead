@@ -88,8 +88,7 @@ public class GenerateBindings {
 		String childrenBindings = "";
 		String folderPackage = folder.path().substring(schemaFolder.length());
 
-		String packageBindings = "[" + folderPackage.replace("/", ".")
-				+ "],\n  ";
+		String packageBindings = folderPackage.replace("/", ".") + ",\n  ";
 
 		FileHandle[] children = folder.list();
 		Arrays.sort(children, new Comparator<FileHandle>() {
@@ -103,8 +102,7 @@ public class GenerateBindings {
 			if (child.isDirectory()) {
 				childrenBindings += addBindings(child, schemaFolder);
 			} else {
-				packageBindings += "[" + child.nameWithoutExtension()
-						+ "],\n  ";
+				packageBindings += "" + child.nameWithoutExtension() + ",\n  ";
 			}
 		}
 		return packageBindings + childrenBindings;

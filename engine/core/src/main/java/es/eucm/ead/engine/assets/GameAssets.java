@@ -162,8 +162,7 @@ public class GameAssets extends Assets implements GameStructure {
 	public void loadBindings() {
 		for (FileHandle bindingsFile : resolveBindings()) {
 			if (bindingsFile.exists()) {
-				Array<Array<String>> bindings = fromJson(Array.class,
-						bindingsFile);
+				Array<String> bindings = fromJson(Array.class, bindingsFile);
 				read(bindings);
 			}
 		}
@@ -180,15 +179,15 @@ public class GameAssets extends Assets implements GameStructure {
 	 *            a list with bindings
 	 * @return if the bindings were correctly read
 	 */
-	private void read(Array<Array<String>> bindings) {
+	private void read(Array<String> bindings) {
 		String schemaPackage = "";
-		for (Array<String> entry : bindings) {
-			if (entry.get(0).contains(".")) {
-				schemaPackage = entry.get(0);
+		for (String line : bindings) {
+			if (line.contains(".")) {
+				schemaPackage = line;
 			} else {
 				try {
 					Class schemaClass = ClassReflection.forName(schemaPackage
-							+ "." + entry.get(0));
+							+ "." + line);
 					addClassTag(ClassReflection.getSimpleName(schemaClass)
 							.toLowerCase(), schemaClass);
 				} catch (ReflectionException e) {
