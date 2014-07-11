@@ -39,7 +39,7 @@ package es.eucm.ead.editor.control.actions.model.scene;
 import es.eucm.ead.editor.control.actions.ModelAction;
 import es.eucm.ead.editor.control.commands.CompositeCommand;
 import es.eucm.ead.editor.control.commands.ListCommand.AddToListCommand;
-import es.eucm.ead.editor.control.commands.RootEntityCommand.AddRootEntityCommand;
+import es.eucm.ead.editor.control.commands.ResourceCommand.AddResourceCommand;
 import es.eucm.ead.editor.model.Model;
 import es.eucm.ead.editor.model.Q;
 import es.eucm.ead.schema.editor.components.EditState;
@@ -62,7 +62,7 @@ public class NewScene extends ModelAction {
 		EditState editState = Q.getComponent(model.getGame(), EditState.class);
 
 		CompositeCommand compositeCommand = new CompositeCommand();
-		compositeCommand.addCommand(new AddRootEntityCommand(model, id, scene,
+		compositeCommand.addCommand(new AddResourceCommand(model, id, scene,
 				ResourceCategory.SCENE));
 		compositeCommand.addCommand(new AddToListCommand(editState, editState
 				.getSceneorder(), id));

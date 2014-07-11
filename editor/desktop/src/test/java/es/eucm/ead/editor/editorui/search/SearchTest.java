@@ -47,8 +47,8 @@ import com.badlogic.gdx.utils.Array;
 
 import es.eucm.ead.editor.control.actions.editor.ShowContextMenu;
 import es.eucm.ead.editor.editorui.EditorUITest;
-import es.eucm.ead.editor.search.FuzzyIndex;
-import es.eucm.ead.editor.search.FuzzyIndex.Term;
+import es.eucm.ead.editor.indexes.FuzzyIndex;
+import es.eucm.ead.editor.indexes.FuzzyIndex.Term;
 import es.eucm.ead.editor.view.widgets.layouts.LinearLayout;
 import es.eucm.ead.editor.view.widgets.menu.ContextMenu;
 

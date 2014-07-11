@@ -36,8 +36,8 @@
  */
 package es.eucm.ead.editor.commands;
 
-import es.eucm.ead.editor.control.commands.RootEntityCommand.AddRootEntityCommand;
-import es.eucm.ead.editor.control.commands.RootEntityCommand.RemoveRootEntityCommand;
+import es.eucm.ead.editor.control.commands.ResourceCommand.AddResourceCommand;
+import es.eucm.ead.editor.control.commands.ResourceCommand.RemoveResourceCommand;
 import es.eucm.ead.schema.entities.ModelEntity;
 import es.eucm.ead.schemax.entities.ResourceCategory;
 import org.junit.Test;
@@ -48,12 +48,12 @@ import static org.junit.Assert.assertSame;
 /**
  * Created by angel on 22/05/14.
  */
-public class RootEntityCommandTest extends CommandTest {
+public class ResourceCommandTest extends CommandTest {
 
 	@Test
 	public void testAddEntity() {
 		ModelEntity modelEntity = new ModelEntity();
-		AddRootEntityCommand addEntityCommand = new AddRootEntityCommand(model,
+		AddResourceCommand addEntityCommand = new AddResourceCommand(model,
 				"scene", modelEntity, ResourceCategory.SCENE);
 		addEntityCommand.doCommand();
 		assertSame(model.getResource("scene", ResourceCategory.SCENE),
@@ -68,7 +68,7 @@ public class RootEntityCommandTest extends CommandTest {
 
 		model.putResource("scene", ResourceCategory.SCENE, modelEntity);
 
-		RemoveRootEntityCommand removeEntityCommand = new RemoveRootEntityCommand(
+		RemoveResourceCommand removeEntityCommand = new RemoveResourceCommand(
 				model, "scene", modelEntity, ResourceCategory.SCENE);
 		removeEntityCommand.doCommand();
 		assertNull(model.getResource("scene", ResourceCategory.SCENE));

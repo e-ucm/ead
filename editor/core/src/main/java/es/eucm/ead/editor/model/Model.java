@@ -37,11 +37,10 @@
 package es.eucm.ead.editor.model;
 
 import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.utils.Array;
-import com.badlogic.gdx.utils.reflect.ClassReflection;
-import com.badlogic.gdx.utils.reflect.ReflectionException;
 import es.eucm.ead.editor.control.Selection;
+import es.eucm.ead.editor.indexes.Index;
+import es.eucm.ead.editor.indexes.Index.Match;
 import es.eucm.ead.editor.model.events.FieldEvent;
 import es.eucm.ead.editor.model.events.ListEvent;
 import es.eucm.ead.editor.model.events.LoadEvent;
@@ -50,10 +49,6 @@ import es.eucm.ead.editor.model.events.ModelEvent;
 import es.eucm.ead.editor.model.events.MultipleEvent;
 import es.eucm.ead.editor.model.events.ResourceEvent;
 import es.eucm.ead.editor.model.events.SelectionEvent;
-import es.eucm.ead.editor.search.Index;
-import es.eucm.ead.editor.search.Index.Match;
-import es.eucm.ead.engine.entities.EngineEntity;
-import es.eucm.ead.schema.components.ModelComponent;
 import es.eucm.ead.schema.editor.components.Parent;
 import es.eucm.ead.schema.entities.ModelEntity;
 import es.eucm.ead.schemax.GameStructure;

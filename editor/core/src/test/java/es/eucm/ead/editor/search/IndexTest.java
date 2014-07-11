@@ -45,7 +45,7 @@ import es.eucm.ead.editor.model.Model;
 import es.eucm.ead.editor.model.events.LoadEvent;
 import es.eucm.ead.editor.model.events.LoadEvent.Type;
 import es.eucm.ead.editor.platform.MockPlatform;
-import es.eucm.ead.editor.search.Index.Match;
+import es.eucm.ead.editor.indexes.Index.Match;
 import es.eucm.ead.engine.mock.MockApplication;
 import es.eucm.ead.engine.mock.MockFiles;
 import es.eucm.ead.schema.components.ModelComponent;

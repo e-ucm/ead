@@ -43,7 +43,7 @@ import es.eucm.ead.editor.control.commands.Command;
 import es.eucm.ead.editor.control.commands.CompositeCommand;
 import es.eucm.ead.editor.control.commands.FieldCommand;
 import es.eucm.ead.editor.control.commands.ListCommand;
-import es.eucm.ead.editor.control.commands.RootEntityCommand;
+import es.eucm.ead.editor.control.commands.ResourceCommand.RemoveResourceCommand;
 import es.eucm.ead.editor.model.Q;
 import es.eucm.ead.editor.view.builders.classic.dialogs.InfoDialogBuilder;
 import es.eucm.ead.schema.editor.components.EditState;
@@ -123,7 +123,7 @@ public class DeleteScene extends ModelAction {
 
 			// 3) Delete the scene properly speaking
 			commandList
-					.add(new RootEntityCommand.RemoveRootEntityCommand(
+					.add(new RemoveResourceCommand(
 							controller.getModel(),
 							id,
 							args.length == 2 && args[1] instanceof ModelEntity ? (ModelEntity) args[1]
