@@ -38,12 +38,15 @@ package es.eucm.ead.editor.view.widgets.layouts;
 
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
+import com.badlogic.gdx.scenes.scene2d.ui.ScrollPane;
+import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.scenes.scene2d.utils.DragAndDrop;
 import com.badlogic.gdx.scenes.scene2d.utils.DragAndDrop.Payload;
 import com.badlogic.gdx.scenes.scene2d.utils.DragAndDrop.Source;
 import com.badlogic.gdx.scenes.scene2d.utils.DragAndDrop.Target;
 import com.badlogic.gdx.scenes.scene2d.utils.Drawable;
 
+import es.eucm.ead.editor.view.widgets.AbstractWidget;
 import es.eucm.ead.editor.view.widgets.FixedButton;
 import es.eucm.ead.editor.view.widgets.StretchableButton;
 
@@ -62,6 +65,8 @@ import es.eucm.ead.editor.view.widgets.StretchableButton;
 public class TrackLayout extends LinearLayout {
 
 	private DragAndDrop dragNDrop;
+
+	private ScrollPane scroll;
 
 	/**
 	 * Creates a new {@link TrackLayout} with a new {@link DragAndDrop} and
@@ -102,6 +107,8 @@ public class TrackLayout extends LinearLayout {
 	public TrackLayout(Drawable background, DragAndDrop dragNDrop) {
 		super(true, background);
 
+		this.scroll = null;
+
 		this.dragNDrop = dragNDrop;
 
 		dragNDrop.addTarget(new Target(this) {
@@ -114,15 +121,18 @@ public class TrackLayout extends LinearLayout {
 			@Override
 			public void drop(Source source, Payload payload, float x, float y,
 					int pointer) {
-				int index = 0;
-				for (Actor actor : TrackLayout.this.getChildren()) {
-					if (!(actor instanceof FixedButton)
-							&& x > getLeftMargin(actor) + actor.getWidth() / 2) {
-						index++;
+				if (payload.getDragActor() != null) {
+					int index = 0;
+					for (Actor actor : TrackLayout.this.getChildren()) {
+						if (!(actor instanceof FixedButton)
+								&& x > getLeftMargin(actor) + actor.getWidth()
+										/ 2) {
+							index++;
+						}
 					}
+					TrackLayout.this.add(index, payload.getDragActor(), x);
+					layout();
 				}
-				TrackLayout.this.add(index, source.getActor(), x);
-				layout();
 			}
 		});
 	}
@@ -181,30 +191,48 @@ public class TrackLayout extends LinearLayout {
 			@Override
 			public Payload dragStart(InputEvent event, float x, float y,
 					int pointer) {
+
+				// For avoid move the ScrollPane when you drag a button
+				if (scroll != null) {
+					scroll.setCancelTouchFocus(false);
+					scroll.cancel();
+				}
+
 				Payload payload = new Payload();
 
 				firstX = getLeftMargin(actor);
 				index = TrackLayout.this.getChildren().indexOf(actor, true);
 
+				Actor dragActor = actor;
+
 				if (actor instanceof StretchableButton) {
 					StretchableButton aux = (StretchableButton) actor;
+					// For avoid move a button if you are change the size of a
+					// StretchableButton
 					if (aux.isDragLeft() || aux.isDragRight()) {
-						return null;
+						dragActor = null;
 					}
 				}
 
-				payload.setDragActor(actor);
+				payload.setDragActor(dragActor);
 				return payload;
 			}
 
 			@Override
 			public void dragStop(InputEvent event, float x, float y,
 					int pointer, Payload payload, Target target) {
-				if (target == null) {
-					TrackLayout.this.add(index, actor, firstX);
-					layout();
+
+				if (payload.getDragActor() != null) {
+					dragNDrop.removeSource(this);
+					if (target == null) {
+						TrackLayout.this.add(index, actor, firstX);
+						layout();
+					}
+
+					if (scroll != null) {
+						scroll.setCancelTouchFocus(true);
+					}
 				}
-				dragNDrop.removeSource(this);
 			}
 		});
 
@@ -226,6 +254,20 @@ public class TrackLayout extends LinearLayout {
 			if (c.actor == actor) {
 				((TrackConstraints) c).marginLeft(leftMargin);
 			}
+		}
+	}
+
+	/**
+	 * Have to use this method to use {@link TrackLayout} in {@link ScrollPane}
+	 * Is necessary that the {@link ScrollPane} contains a {@link Table}
+	 * 
+	 * @param scroll
+	 */
+	public void setInScroll(ScrollPane scroll) {
+		if (scroll.getWidget() instanceof Table) {
+			this.scroll = scroll;
+			((Table) scroll.getWidget()).add(this).fill().expand();
+			((Table) scroll.getWidget()).row();
 		}
 	}
 

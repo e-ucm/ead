@@ -68,10 +68,15 @@ public class FixedButton extends Table {
 	 * @param icon2
 	 * @param skin
 	 */
-	public FixedButton(Drawable icon1, Drawable icon2, Skin skin) {
+	public FixedButton(Drawable icon1, final Drawable icon2, Skin skin) {
 		super();
 
-		pole = new TextButton(" ", skin);
+		pole = new TextButton(" ", skin) {
+			@Override
+			public float getPrefHeight() {
+				return icon2.getMinHeight();
+			}
+		};
 
 		add(pole);
 		align(Align.left);
