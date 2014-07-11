@@ -56,7 +56,7 @@ import es.eucm.ead.editor.control.RepositoryManager.OnEntityImportedListener;
 import es.eucm.ead.editor.control.RepositoryManager.ProgressListener;
 import es.eucm.ead.editor.control.actions.editor.ChangeView;
 import es.eucm.ead.editor.control.actions.editor.UpdateLibraryElements;
-import es.eucm.ead.editor.model.Model;
+import es.eucm.ead.editor.model.Q;
 import es.eucm.ead.editor.view.builders.mockup.edition.SceneEdition;
 import es.eucm.ead.editor.view.builders.mockup.menu.LibraryScreen;
 import es.eucm.ead.editor.view.listeners.ActionOnClickListener;
@@ -154,8 +154,8 @@ public class RepositoryGallery extends BaseGallery<ElementButton> implements
 		Array<ModelEntity> libElems = repoManager.getElements();
 		for (int i = 0; i < libElems.size; ++i) {
 			ModelEntity elem = libElems.get(i);
-			Note note = Model.getComponent(elem, Note.class);
-			RepoElement repoElem = Model.getComponent(elem, RepoElement.class);
+			Note note = Q.getComponent(elem, Note.class);
+			RepoElement repoElem = Q.getComponent(elem, RepoElement.class);
 
 			if (note.getTitle() == null)
 				note.setTitle(repoElem.getName());

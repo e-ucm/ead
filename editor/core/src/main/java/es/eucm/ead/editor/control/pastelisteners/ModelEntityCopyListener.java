@@ -40,7 +40,7 @@ import es.eucm.ead.editor.control.Clipboard.CopyListener;
 import es.eucm.ead.editor.control.Controller;
 import es.eucm.ead.editor.control.actions.model.AddSceneElement;
 import es.eucm.ead.editor.control.actions.model.scene.RemoveChildFromEntity;
-import es.eucm.ead.editor.model.Model;
+import es.eucm.ead.editor.model.Q;
 import es.eucm.ead.schema.editor.components.Parent;
 import es.eucm.ead.schema.entities.ModelEntity;
 
@@ -54,7 +54,7 @@ public class ModelEntityCopyListener implements CopyListener<ModelEntity> {
 
 	@Override
 	public void cut(ModelEntity object) {
-		Parent parent = Model.getComponent(object, Parent.class);
+		Parent parent = Q.getComponent(object, Parent.class);
 		if (parent.getParent() != null) {
 			controller.action(RemoveChildFromEntity.class, parent.getParent(),
 					object);

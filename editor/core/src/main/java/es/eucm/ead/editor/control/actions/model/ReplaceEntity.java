@@ -37,11 +37,12 @@
 package es.eucm.ead.editor.control.actions.model;
 
 import com.badlogic.gdx.utils.Array;
+
 import es.eucm.ead.editor.control.actions.ModelAction;
 import es.eucm.ead.editor.control.commands.CompositeCommand;
 import es.eucm.ead.editor.control.commands.ListCommand.AddToListCommand;
 import es.eucm.ead.editor.control.commands.ListCommand.RemoveFromListCommand;
-import es.eucm.ead.editor.model.Model;
+import es.eucm.ead.editor.model.Q;
 import es.eucm.ead.schema.editor.components.Parent;
 import es.eucm.ead.schema.entities.ModelEntity;
 
@@ -67,8 +68,7 @@ public class ReplaceEntity extends ModelAction {
 		ModelEntity current = (ModelEntity) args[0];
 		ModelEntity newEntity = (ModelEntity) args[1];
 
-		ModelEntity parent = Model.getComponent(current, Parent.class)
-				.getParent();
+		ModelEntity parent = Q.getComponent(current, Parent.class).getParent();
 		Array<ModelEntity> children = parent.getChildren();
 		compositeCommand.addCommand(new RemoveFromListCommand(parent, children,
 				current));

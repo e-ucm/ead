@@ -42,6 +42,7 @@ import es.eucm.ead.editor.control.actions.editor.Save;
 import es.eucm.ead.editor.control.actions.model.DeleteScene;
 import es.eucm.ead.editor.control.actions.model.RenameScene;
 import es.eucm.ead.editor.model.Model;
+import es.eucm.ead.editor.model.Q;
 import es.eucm.ead.schema.editor.components.GameData;
 import es.eucm.ead.schema.editor.components.Documentation;
 import es.eucm.ead.schema.editor.components.EditState;
@@ -90,7 +91,7 @@ public class SaveGameTest extends ActionTest {
 		// Make dummy additions to game model
 		for (int j = 0; j < 5; j++) {
 			ModelEntity scene = new ModelEntity();
-			Model.getComponent(scene, Documentation.class).setName("XXX");
+			Q.getComponent(scene, Documentation.class).setName("XXX");
 			for (int i = 0; i < 3; i++) {
 				ModelEntity sceneElement = new ModelEntity();
 				scene.getChildren().add(sceneElement);
@@ -98,13 +99,12 @@ public class SaveGameTest extends ActionTest {
 			model.putResource(EditorGameAssets.SCENES_PATH + "scene" + j
 					+ ".json", scene);
 			if (j == 0) {
-				Model.getComponent(model.getGame(), GameData.class)
+				Q.getComponent(model.getGame(), GameData.class)
 						.setInitialScene(
 								EditorGameAssets.SCENES_PATH + "scene" + j
 										+ ".json");
 			}
-			Model.getComponent(model.getGame(), EditState.class)
-					.getSceneorder()
+			Q.getComponent(model.getGame(), EditState.class).getSceneorder()
 					.add(EditorGameAssets.SCENES_PATH + "scene" + j + ".json");
 		}
 
@@ -124,11 +124,11 @@ public class SaveGameTest extends ActionTest {
 		}
 
 		// Test the appVersion was updated
-		assertNotNull("the appVersion of the game must be not null", Model
+		assertNotNull("the appVersion of the game must be not null", Q
 				.getComponent(model.getGame(), Versions.class).getAppVersion());
 
 		// Test the modelVersion was updated
-		assertNotNull("the modelVersion of the game must be not null", Model
+		assertNotNull("the modelVersion of the game must be not null", Q
 				.getComponent(model.getGame(), Versions.class)
 				.getModelVersion());
 
@@ -142,7 +142,7 @@ public class SaveGameTest extends ActionTest {
 		}
 
 		ModelEntity scene2 = new ModelEntity();
-		Model.getComponent(scene2, Documentation.class).setName("XXX");
+		Q.getComponent(scene2, Documentation.class).setName("XXX");
 		ModelEntity sceneElement = new ModelEntity();
 		scene2.getChildren().add(sceneElement);
 		model.putResource(EditorGameAssets.SCENES_PATH + "scene2.json", scene2);
@@ -228,7 +228,7 @@ public class SaveGameTest extends ActionTest {
 		model.putResource("game.json", new ModelEntity());
 
 		ModelEntity modelEntity = new ModelEntity();
-		Model.getComponent(modelEntity, Parent.class).setParent(null);
+		Q.getComponent(modelEntity, Parent.class).setParent(null);
 
 		model.putResource("scenes/myentity.json", modelEntity);
 

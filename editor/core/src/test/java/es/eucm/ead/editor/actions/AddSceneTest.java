@@ -37,8 +37,8 @@
 package es.eucm.ead.editor.actions;
 
 import es.eucm.ead.editor.control.actions.model.AddScene;
-import es.eucm.ead.editor.model.Model;
 import es.eucm.ead.editor.model.Model.ModelListener;
+import es.eucm.ead.editor.model.Q;
 import es.eucm.ead.editor.model.events.ListEvent;
 import es.eucm.ead.editor.model.events.MapEvent;
 import es.eucm.ead.schema.editor.components.EditState;
@@ -81,21 +81,17 @@ public class AddSceneTest extends ActionTest {
 					}
 				});
 
-		model.addListListener(
-				Model.getComponent(model.getGame(), EditState.class)
-						.getSceneorder(), new ModelListener<ListEvent>() {
-					@Override
-					public void modelChanged(ListEvent event) {
-						assertEquals(
-								Model.getComponent(model.getGame(),
-										EditState.class).getSceneorder().size,
-								1);
-						assertTrue(Model
-								.getComponent(model.getGame(), EditState.class)
-								.getSceneorder().contains("scene0", false));
-						notifications++;
-					}
-				});
+		model.addListListener(Q.getComponent(model.getGame(), EditState.class)
+				.getSceneorder(), new ModelListener<ListEvent>() {
+			@Override
+			public void modelChanged(ListEvent event) {
+				assertEquals(Q.getComponent(model.getGame(), EditState.class)
+						.getSceneorder().size, 1);
+				assertTrue(Q.getComponent(model.getGame(), EditState.class)
+						.getSceneorder().contains("scene0", false));
+				notifications++;
+			}
+		});
 
 		controller.action(AddScene.class);
 		assertEquals(numberOfCommandsForAddingScene, notifications);

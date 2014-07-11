@@ -49,10 +49,12 @@ import com.badlogic.gdx.scenes.scene2d.ui.WidgetGroup;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.scenes.scene2d.utils.DragAndDrop;
 import com.badlogic.gdx.utils.Array;
-import es.eucm.ead.editor.control.Selection;
+
 import es.eucm.ead.editor.control.Controller;
+import es.eucm.ead.editor.control.Selection;
 import es.eucm.ead.editor.control.actions.model.RenameScene;
 import es.eucm.ead.editor.model.Model;
+import es.eucm.ead.editor.model.Q;
 import es.eucm.ead.editor.view.builders.mockup.edition.EditionWindow;
 import es.eucm.ead.editor.view.widgets.layouts.LinearLayout;
 import es.eucm.ead.editor.view.widgets.mockup.buttons.BehaviorButton;
@@ -211,7 +213,7 @@ public class MoreElementComponent extends MoreComponent {
 	public Note getNote(Model model) {
 		Object o = model.getSelection().getSingle(Selection.SCENE_ENTITY);
 		if (o instanceof ModelEntity) {
-			return Model.getComponent((ModelEntity) o, Note.class);
+			return Q.getComponent((ModelEntity) o, Note.class);
 		} else {
 			return null;
 		}

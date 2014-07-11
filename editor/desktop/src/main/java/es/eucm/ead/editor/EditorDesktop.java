@@ -61,8 +61,8 @@ import es.eucm.ead.editor.control.actions.editor.Redo;
 import es.eucm.ead.editor.control.actions.editor.Save;
 import es.eucm.ead.editor.control.actions.editor.Undo;
 import es.eucm.ead.editor.control.views.NoProjectView;
-import es.eucm.ead.editor.model.Model;
 import es.eucm.ead.editor.model.Model.ModelListener;
+import es.eucm.ead.editor.model.Q;
 import es.eucm.ead.editor.model.events.LoadEvent;
 import es.eucm.ead.editor.platform.Platform;
 import es.eucm.ead.editor.ui.DesktopViewsRoot;
@@ -135,8 +135,8 @@ public class EditorDesktop extends EditorApplicationListener {
 			public void modelChanged(LoadEvent event) {
 				switch (event.getType()) {
 				case LOADED:
-					String title = Model.getComponent(
-							event.getModel().getGame(), Note.class).getTitle();
+					String title = Q.getComponent(event.getModel().getGame(),
+							Note.class).getTitle();
 					platform.setTitle(controller.getApplicationAssets()
 							.getI18N()
 							.m("application.title", title == null ? "" : title));

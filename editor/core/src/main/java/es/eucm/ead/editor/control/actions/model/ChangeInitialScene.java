@@ -40,7 +40,7 @@ import es.eucm.ead.editor.control.actions.EditorActionException;
 import es.eucm.ead.editor.control.actions.ModelAction;
 import es.eucm.ead.editor.control.commands.Command;
 import es.eucm.ead.editor.control.commands.FieldCommand;
-import es.eucm.ead.editor.model.Model;
+import es.eucm.ead.editor.model.Q;
 import es.eucm.ead.schema.editor.components.GameData;
 import es.eucm.ead.schemax.FieldName;
 import es.eucm.ead.schemax.entities.ResourceCategory;
@@ -90,7 +90,7 @@ public class ChangeInitialScene extends ModelAction {
 							+ ": The sceneId provided as the first argument (args[0]) does not match any of the scenes of this game.");
 		}
 
-		GameData gameData = Model.getComponent(controller.getModel().getGame(),
+		GameData gameData = Q.getComponent(controller.getModel().getGame(),
 				GameData.class);
 		String currentInitialSceneId = gameData.getInitialScene();
 		if ((currentInitialSceneId == null && args[0] != null)

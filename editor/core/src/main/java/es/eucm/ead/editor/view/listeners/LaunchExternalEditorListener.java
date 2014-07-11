@@ -48,7 +48,7 @@ import com.badlogic.gdx.utils.Array;
 import es.eucm.ead.editor.assets.EditorGameAssets;
 import es.eucm.ead.editor.control.Controller;
 import es.eucm.ead.editor.control.actions.model.ReplaceEntity;
-import es.eucm.ead.editor.model.Model;
+import es.eucm.ead.editor.model.Q;
 import es.eucm.ead.editor.platform.Platform.FileChooserListener;
 import es.eucm.ead.editor.view.widgets.mockup.Notification;
 import es.eucm.ead.engine.I18N;
@@ -93,8 +93,8 @@ public class LaunchExternalEditorListener extends ClickListener {
 			return;
 		}
 		final ModelEntity selectedElement = (ModelEntity) selectedObject;
-		if (Model.hasComponent(selectedElement, Image.class)) {
-			final Image oldRenderer = Model.getComponent(selectedElement,
+		if (Q.hasComponent(selectedElement, Image.class)) {
+			final Image oldRenderer = Q.getComponent(selectedElement,
 					Image.class);
 			final String uri = oldRenderer.getUri();
 			final FileHandle imageFile = controller.getEditorGameAssets()
@@ -134,7 +134,7 @@ public class LaunchExternalEditorListener extends ClickListener {
 								imageFile.moveTo(renamedImg);
 								// Clearing the collider will re-create it with
 								// the new image
-								Image renderer = Model.getComponent(newElem,
+								Image renderer = Q.getComponent(newElem,
 										Image.class);
 								changeUriAndClear(renderer, renamedImg.file()
 										.getAbsolutePath());
@@ -199,7 +199,7 @@ public class LaunchExternalEditorListener extends ClickListener {
 		}
 
 		ModelEntity newElem = gameAssets.copy(selectedElement);
-		Image renderer = Model.getComponent(newElem, Image.class);
+		Image renderer = Q.getComponent(newElem, Image.class);
 		changeUriAndClear(renderer, newPath);
 
 		controller.action(ReplaceEntity.class, selectedElement, newElem);

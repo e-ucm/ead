@@ -39,7 +39,7 @@ package es.eucm.ead.editor.control.actions.model.scene;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import es.eucm.ead.editor.control.commands.CompositeCommand;
 import es.eucm.ead.editor.control.commands.FieldCommand;
-import es.eucm.ead.editor.model.Model;
+import es.eucm.ead.editor.model.Q;
 import es.eucm.ead.schema.entities.ModelEntity;
 import es.eucm.ead.schemax.FieldName;
 
@@ -48,8 +48,7 @@ import es.eucm.ead.schemax.FieldName;
  * <dl>
  * <dt><strong>Arguments</strong></dt>
  * <dd><strong>args[0]</strong> <em>{@link Actor}</em> An actor associated to an
- * entity. The entity will be accessed through
- * {@link Model#getModelEntity(Actor)}</dd>
+ * entity. The entity will be accessed through {@link Q#getModelEntity(Actor)}</dd>
  * </dl>
  * {@link #perform(Object...)} will return {@code null} if no entity is
  * associated with the actor
@@ -63,7 +62,7 @@ public class ActorTransformToEntity extends ActorTranslationToEntity {
 	@Override
 	public CompositeCommand perform(Object... args) {
 		Actor actor = (Actor) args[0];
-		ModelEntity modelEntity = Model.getModelEntity(actor);
+		ModelEntity modelEntity = Q.getModelEntity(actor);
 
 		if (modelEntity == null) {
 			return null;

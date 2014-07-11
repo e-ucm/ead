@@ -39,9 +39,10 @@ package es.eucm.ead.editor.view.widgets.mockup.buttons;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.utils.Array;
+
 import es.eucm.ead.editor.control.Controller;
 import es.eucm.ead.editor.control.actions.model.RemoveFromScene;
-import es.eucm.ead.editor.model.Model;
+import es.eucm.ead.editor.model.Q;
 import es.eucm.ead.editor.view.widgets.mockup.panels.GalleryEntity;
 import es.eucm.ead.engine.I18N;
 import es.eucm.ead.schema.components.ModelComponent;
@@ -74,9 +75,9 @@ public class ElementButton extends GalleryEntity {
 
 	public ElementButton(Vector2 viewport, I18N i18n, ModelEntity sceneElement,
 			String parentKey, Skin skin, Controller controller) {
-		super(Model.getComponent(sceneElement, Note.class), viewport, i18n,
-				i18n.m("element"), Model.getComponent(sceneElement,
-						RepoElement.class), skin, controller);
+		super(Q.getComponent(sceneElement, Note.class), viewport, i18n, i18n
+				.m("element"), Q.getComponent(sceneElement, RepoElement.class),
+				skin, controller);
 		this.tags = new Array<String>();
 		for (ModelComponent c : sceneElement.getComponents()) {
 			if (c instanceof Tags) {
@@ -90,9 +91,9 @@ public class ElementButton extends GalleryEntity {
 	public ElementButton(Vector2 viewport, I18N i18n, ModelEntity sceneElement,
 			String parentKey, Skin skin, Controller controller,
 			Class<?> action, Object... args) {
-		super(Model.getComponent(sceneElement, Note.class), viewport, i18n,
-				i18n.m("element"), Model.getComponent(sceneElement,
-						RepoElement.class), skin, controller, action, args);
+		super(Q.getComponent(sceneElement, Note.class), viewport, i18n, i18n
+				.m("element"), Q.getComponent(sceneElement, RepoElement.class),
+				skin, controller, action, args);
 		this.tags = new Array<String>();
 		for (ModelComponent c : sceneElement.getComponents()) {
 			if (c instanceof Tags) {

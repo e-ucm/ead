@@ -41,7 +41,7 @@ import es.eucm.ead.editor.control.actions.ModelAction;
 import es.eucm.ead.editor.control.commands.CompositeCommand;
 import es.eucm.ead.editor.control.commands.FieldCommand;
 import es.eucm.ead.editor.control.commands.ListCommand.AddToListCommand;
-import es.eucm.ead.editor.model.Model;
+import es.eucm.ead.editor.model.Q;
 import es.eucm.ead.schema.editor.components.Parent;
 import es.eucm.ead.schema.entities.ModelEntity;
 import es.eucm.ead.schemax.FieldName;
@@ -76,7 +76,7 @@ public class AddSceneElement extends ModelAction {
 			compositeCommand.addCommand(new AddToListCommand(root, root
 					.getChildren(), sceneElement));
 
-			Parent parent = Model.getComponent(sceneElement, Parent.class);
+			Parent parent = Q.getComponent(sceneElement, Parent.class);
 			compositeCommand.addCommand(new FieldCommand(parent,
 					FieldName.PARENT, root));
 

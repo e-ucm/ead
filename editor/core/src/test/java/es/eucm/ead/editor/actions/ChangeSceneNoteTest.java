@@ -37,7 +37,7 @@
 package es.eucm.ead.editor.actions;
 
 import es.eucm.ead.editor.control.actions.model.ChangeNote;
-import es.eucm.ead.editor.model.Model;
+import es.eucm.ead.editor.model.Q;
 import es.eucm.ead.editor.model.events.FieldEvent;
 import es.eucm.ead.editor.view.listeners.ChangeNoteFieldListener;
 import es.eucm.ead.schema.editor.components.Note;
@@ -62,7 +62,7 @@ public class ChangeSceneNoteTest extends ActionTest {
 
 		// Get the sceneMetadata & the notes
 		ModelEntity editScene = new ModelEntity();
-		final Note changingNotes = Model.getComponent(editScene, Note.class);
+		final Note changingNotes = Q.getComponent(editScene, Note.class);
 
 		// Add a listener that reacts to changes in scene data. This is
 		// given as a parameter

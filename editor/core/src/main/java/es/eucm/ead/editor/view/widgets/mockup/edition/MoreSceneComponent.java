@@ -39,10 +39,11 @@ package es.eucm.ead.editor.view.widgets.mockup.edition;
 import com.badlogic.gdx.scenes.scene2d.ui.Button;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 
-import es.eucm.ead.editor.control.Selection;
 import es.eucm.ead.editor.control.Controller;
+import es.eucm.ead.editor.control.Selection;
 import es.eucm.ead.editor.control.actions.model.RenameScene;
 import es.eucm.ead.editor.model.Model;
+import es.eucm.ead.editor.model.Q;
 import es.eucm.ead.editor.view.builders.mockup.edition.EditionWindow;
 import es.eucm.ead.editor.view.widgets.mockup.buttons.BottomProjectMenuButton;
 import es.eucm.ead.editor.view.widgets.mockup.buttons.MenuButton.Position;
@@ -81,7 +82,7 @@ public class MoreSceneComponent extends MoreComponent {
 
 	@Override
 	public Note getNote(Model model) {
-		return Model.getComponent(
+		return Q.getComponent(
 				(ModelEntity) model.getSelection().getSingle(
 						Selection.SCENE_ENTITY), Note.class);
 	}

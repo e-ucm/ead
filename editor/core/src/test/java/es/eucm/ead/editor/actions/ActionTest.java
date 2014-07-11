@@ -36,19 +36,21 @@
  */
 package es.eucm.ead.editor.actions;
 
+import org.junit.After;
+import org.junit.Before;
+
 import com.badlogic.gdx.files.FileHandle;
+
 import es.eucm.ead.editor.EditorTest;
 import es.eucm.ead.editor.control.actions.editor.OpenGame;
 import es.eucm.ead.editor.control.actions.editor.Save;
-import es.eucm.ead.editor.model.Model;
-import es.eucm.ead.schema.editor.components.GameData;
+import es.eucm.ead.editor.model.Q;
 import es.eucm.ead.schema.editor.components.Documentation;
 import es.eucm.ead.schema.editor.components.EditState;
+import es.eucm.ead.schema.editor.components.GameData;
 import es.eucm.ead.schema.editor.components.Note;
 import es.eucm.ead.schema.entities.ModelEntity;
 import es.eucm.ead.schemax.entities.ResourceCategory;
-import org.junit.After;
-import org.junit.Before;
 
 /**
  * Parent class for all tests related to {@link es.eucm.ead.editor.actions}. It
@@ -83,16 +85,16 @@ public abstract class ActionTest extends EditorTest {
 
 		// Create empty game
 		ModelEntity game = new ModelEntity();
-		GameData gameData = Model.getComponent(game, GameData.class);
+		GameData gameData = Q.getComponent(game, GameData.class);
 		gameData.setInitialScene(SCENE0);
-		EditState editState = Model.getComponent(game, EditState.class);
+		EditState editState = Q.getComponent(game, EditState.class);
 		editState.getSceneorder().add(SCENE0);
-		Model.getComponent(game, Note.class);
+		Q.getComponent(game, Note.class);
 
 		// Create empty scene 0
 		ModelEntity scene = new ModelEntity();
-		Model.getComponent(scene, Note.class);
-		Model.getComponent(scene, Documentation.class).setName(SCENE0);
+		Q.getComponent(scene, Note.class);
+		Q.getComponent(scene, Documentation.class).setName(SCENE0);
 		model.putResource(ResourceCategory.GAME.getCategoryPrefix(), game);
 		model.putResource(SCENE0, scene);
 

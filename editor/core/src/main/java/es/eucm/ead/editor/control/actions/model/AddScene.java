@@ -42,7 +42,7 @@ import es.eucm.ead.editor.control.commands.Command;
 import es.eucm.ead.editor.control.commands.CompositeCommand;
 import es.eucm.ead.editor.control.commands.ListCommand;
 import es.eucm.ead.editor.control.commands.MapCommand.PutToMapCommand;
-import es.eucm.ead.editor.model.Model;
+import es.eucm.ead.editor.model.Q;
 import es.eucm.ead.schema.editor.components.EditState;
 import es.eucm.ead.schema.entities.ModelEntity;
 import es.eucm.ead.schemax.entities.ResourceCategory;
@@ -128,8 +128,8 @@ public class AddScene extends ModelAction {
 		// updated
 		Map<String, Object> scenes = controller.getModel().getResources(
 				ResourceCategory.SCENE);
-		EditState editState = Model.getComponent(controller.getModel()
-				.getGame(), EditState.class);
+		EditState editState = Q.getComponent(controller.getModel().getGame(),
+				EditState.class);
 		return new CompositeCommand(
 				new PutToMapCommand(scenes, sceneId, scene),
 				new ListCommand.AddToListCommand(editState,

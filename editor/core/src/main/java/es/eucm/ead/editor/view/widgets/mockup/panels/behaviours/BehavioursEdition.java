@@ -51,8 +51,9 @@ import com.badlogic.gdx.scenes.scene2d.ui.TextField;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.SnapshotArray;
+
 import es.eucm.ead.editor.control.Controller;
-import es.eucm.ead.editor.model.Model;
+import es.eucm.ead.editor.model.Q;
 import es.eucm.ead.editor.view.widgets.layouts.LinearLayout;
 import es.eucm.ead.editor.view.widgets.mockup.buttons.BehaviorButton;
 import es.eucm.ead.editor.view.widgets.mockup.buttons.FlagButton;
@@ -145,9 +146,8 @@ public class BehavioursEdition extends HiddenPanel {
 		this.REMOVE_ENTITY = i18n.m("general.effects.remove-entity");
 		this.SELECT = i18n.m("general.effect.select");
 
-		this.variableDefList = Model.getComponent(
-				controller.getModel().getGame(), Variables.class)
-				.getVariablesDefinitions();
+		this.variableDefList = Q.getComponent(controller.getModel().getGame(),
+				Variables.class).getVariablesDefinitions();
 
 		this.setVisible(false);
 

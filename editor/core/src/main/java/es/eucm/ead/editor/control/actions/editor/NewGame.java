@@ -41,8 +41,9 @@ import es.eucm.ead.editor.assets.EditorGameAssets;
 import es.eucm.ead.editor.control.actions.EditorAction;
 import es.eucm.ead.editor.control.actions.EditorActionException;
 import es.eucm.ead.editor.model.Model;
-import es.eucm.ead.schema.editor.components.GameData;
+import es.eucm.ead.editor.model.Q;
 import es.eucm.ead.schema.editor.components.EditState;
+import es.eucm.ead.schema.editor.components.GameData;
 import es.eucm.ead.schema.entities.ModelEntity;
 import es.eucm.ead.schemax.entities.ResourceCategory;
 
@@ -108,9 +109,9 @@ public class NewGame extends EditorAction {
 			// Get the first valid id for scene entities
 			String blankSceneId = model.createId(ResourceCategory.SCENE);
 
-			GameData gameData = Model.getComponent(game, GameData.class);
+			GameData gameData = Q.getComponent(game, GameData.class);
 			gameData.setInitialScene(blankSceneId);
-			EditState editState = Model.getComponent(game, EditState.class);
+			EditState editState = Q.getComponent(game, EditState.class);
 			editState.getSceneorder().add(blankSceneId);
 
 			model.reset();

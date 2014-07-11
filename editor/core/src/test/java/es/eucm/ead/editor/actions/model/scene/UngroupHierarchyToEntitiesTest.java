@@ -37,11 +37,10 @@
 package es.eucm.ead.editor.actions.model.scene;
 
 import com.badlogic.gdx.scenes.scene2d.Actor;
-import com.badlogic.gdx.scenes.scene2d.Group;
 import com.badlogic.gdx.utils.Array;
 import es.eucm.ead.editor.actions.ActionTest;
 import es.eucm.ead.editor.control.actions.model.scene.UngroupHierarchyToEntities;
-import es.eucm.ead.editor.model.Model;
+import es.eucm.ead.editor.model.Q;
 import es.eucm.ead.engine.entities.EngineEntity;
 import es.eucm.ead.engine.entities.actors.EntityGroup;
 import es.eucm.ead.schema.editor.components.Parent;
@@ -88,9 +87,9 @@ public class UngroupHierarchyToEntitiesTest extends ActionTest {
 		assertTrue(parentEntity.getModelEntity().getChildren()
 				.contains(child2.getModelEntity(), false));
 
-		assertSame(Model.getComponent(child1.getModelEntity(), Parent.class)
+		assertSame(Q.getComponent(child1.getModelEntity(), Parent.class)
 				.getParent(), parentEntity.getModelEntity());
-		assertSame(Model.getComponent(child2.getModelEntity(), Parent.class)
+		assertSame(Q.getComponent(child2.getModelEntity(), Parent.class)
 				.getParent(), parentEntity.getModelEntity());
 	}
 

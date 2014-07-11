@@ -36,24 +36,6 @@
  */
 package es.eucm.ead.editor.control;
 
-import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.Net;
-import com.badlogic.gdx.Net.HttpRequest;
-import com.badlogic.gdx.Net.HttpResponse;
-import com.badlogic.gdx.Net.HttpResponseListener;
-import com.badlogic.gdx.files.FileHandle;
-import com.badlogic.gdx.net.HttpStatus;
-import com.badlogic.gdx.utils.Array;
-import es.eucm.ead.editor.assets.EditorGameAssets;
-import es.eucm.ead.editor.control.actions.editor.ImportEntityResources;
-import es.eucm.ead.editor.control.actions.model.AddSceneElement;
-import es.eucm.ead.editor.model.Model;
-import es.eucm.ead.editor.view.builders.mockup.menu.InitialScreen;
-import es.eucm.ead.editor.view.widgets.mockup.buttons.ElementButton;
-import es.eucm.ead.schema.editor.components.RepoElement;
-import es.eucm.ead.schema.entities.ModelEntity;
-import es.eucm.ead.schemax.GameStructure;
-
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
@@ -62,6 +44,25 @@ import java.io.OutputStream;
 import java.util.List;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipInputStream;
+
+import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.Net;
+import com.badlogic.gdx.Net.HttpRequest;
+import com.badlogic.gdx.Net.HttpResponse;
+import com.badlogic.gdx.Net.HttpResponseListener;
+import com.badlogic.gdx.files.FileHandle;
+import com.badlogic.gdx.net.HttpStatus;
+import com.badlogic.gdx.utils.Array;
+
+import es.eucm.ead.editor.assets.EditorGameAssets;
+import es.eucm.ead.editor.control.actions.editor.ImportEntityResources;
+import es.eucm.ead.editor.control.actions.model.AddSceneElement;
+import es.eucm.ead.editor.model.Q;
+import es.eucm.ead.editor.view.builders.mockup.menu.InitialScreen;
+import es.eucm.ead.editor.view.widgets.mockup.buttons.ElementButton;
+import es.eucm.ead.schema.editor.components.RepoElement;
+import es.eucm.ead.schema.entities.ModelEntity;
+import es.eucm.ead.schemax.GameStructure;
 
 /**
  * <p>
@@ -268,7 +269,7 @@ public class RepositoryManager {
 			elem = null;
 		}
 		if (elem != null) {
-			RepoElement repoElem = Model.getComponent(elem, RepoElement.class);
+			RepoElement repoElem = Q.getComponent(elem, RepoElement.class);
 			String thumbnailName = repoElem.getThumbnail();
 			if (thumbnailName != null && !thumbnailName.isEmpty()) {
 				// We also must copy the thumbnail from the online

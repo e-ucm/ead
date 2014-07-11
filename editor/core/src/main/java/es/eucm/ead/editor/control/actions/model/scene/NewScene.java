@@ -41,6 +41,7 @@ import es.eucm.ead.editor.control.commands.CompositeCommand;
 import es.eucm.ead.editor.control.commands.ListCommand.AddToListCommand;
 import es.eucm.ead.editor.control.commands.RootEntityCommand.AddRootEntityCommand;
 import es.eucm.ead.editor.model.Model;
+import es.eucm.ead.editor.model.Q;
 import es.eucm.ead.schema.editor.components.EditState;
 import es.eucm.ead.schema.entities.ModelEntity;
 import es.eucm.ead.schemax.entities.ResourceCategory;
@@ -58,8 +59,7 @@ public class NewScene extends ModelAction {
 		String id = model.createId(ResourceCategory.SCENE);
 		ModelEntity scene = controller.getTemplates().createScene(id);
 
-		EditState editState = Model.getComponent(model.getGame(),
-				EditState.class);
+		EditState editState = Q.getComponent(model.getGame(), EditState.class);
 
 		CompositeCommand compositeCommand = new CompositeCommand();
 		compositeCommand.addCommand(new AddRootEntityCommand(model, id, scene,

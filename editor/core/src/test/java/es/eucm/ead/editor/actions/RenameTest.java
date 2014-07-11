@@ -43,6 +43,7 @@ import es.eucm.ead.editor.control.actions.model.AddScene;
 import es.eucm.ead.editor.control.actions.model.Rename;
 import es.eucm.ead.editor.control.actions.model.RenameScene;
 import es.eucm.ead.editor.model.Model;
+import es.eucm.ead.editor.model.Q;
 import es.eucm.ead.editor.model.events.FieldEvent;
 import es.eucm.ead.schema.editor.components.Documentation;
 import es.eucm.ead.schema.entities.ModelEntity;
@@ -169,35 +170,30 @@ public class RenameTest extends ActionTest {
 		// Add a listener that reacts to changes in scene data. This is
 		// given as a parameter
 		controller.getModel().addFieldListener(
-				Model.getComponent(scene, Documentation.class),
+				Q.getComponent(scene, Documentation.class),
 				new RenameFieldListener() {
 					@Override
 					public void makeAssertions(FieldEvent event) {
 						assertTrue(changeExpected);
-						assertTrue((Model.getComponent(scene,
-								Documentation.class).getName() == null && newName == null)
-								|| !Model
-										.getComponent(scene,
-												Documentation.class).getName()
-										.equals(oldName));
-						assertEquals(
-								Model.getComponent(scene, Documentation.class)
-										.getName(), newName);
+						assertTrue((Q.getComponent(scene, Documentation.class)
+								.getName() == null && newName == null)
+								|| !Q.getComponent(scene, Documentation.class)
+										.getName().equals(oldName));
+						assertEquals(Q.getComponent(scene, Documentation.class)
+								.getName(), newName);
 					}
 				});
 
 		// Execute the action. Needs to retrieve the old name first
-		oldName = Model.getComponent(scene, Documentation.class).getName();
+		oldName = Q.getComponent(scene, Documentation.class).getName();
 
 		if (useNewName) {
 			newName = newNameToUse;
 			// Rename the sceneMetadata, accessed by the object and providing
 			// the newName (may be null)
 			if (passFullObject == 2) {
-				controller
-						.action(RenameTestAction.class,
-								Model.getComponent(scene, Documentation.class),
-								newName);
+				controller.action(RenameTestAction.class,
+						Q.getComponent(scene, Documentation.class), newName);
 			}
 			// If passFullObject is 0, then pass not the scene
 			else {
@@ -210,7 +206,7 @@ public class RenameTest extends ActionTest {
 			// newName.
 			if (passFullObject == 2) {
 				controller.action(RenameTestAction.class,
-						Model.getComponent(scene, Documentation.class));
+						Q.getComponent(scene, Documentation.class));
 			}
 			// If passFullObject is 0, then pass not the scene nor the newName
 			else {

@@ -53,6 +53,7 @@ import es.eucm.ead.editor.model.Model;
 import es.eucm.ead.editor.model.Model.FieldListener;
 import es.eucm.ead.editor.model.Model.ModelListener;
 import es.eucm.ead.editor.model.Model.SelectionListener;
+import es.eucm.ead.editor.model.Q;
 import es.eucm.ead.editor.model.events.FieldEvent;
 import es.eucm.ead.editor.model.events.LoadEvent;
 import es.eucm.ead.editor.model.events.ResourceEvent;
@@ -156,7 +157,7 @@ public class PerspectiveButtons extends LinearLayout {
 				ResourceCategory.SCENE).entrySet()) {
 
 			ModelEntity scene = (ModelEntity) sceneEntry.getValue();
-			Documentation doc = Model.getComponent(scene, Documentation.class);
+			Documentation doc = Q.getComponent(scene, Documentation.class);
 
 			ContextMenuItem item = scenesContextMenu
 					.item(doc.getName() == null ? sceneEntry.getKey() : doc

@@ -45,7 +45,7 @@ import es.eucm.ead.editor.control.actions.ModelAction;
 import es.eucm.ead.editor.control.commands.CompositeCommand;
 import es.eucm.ead.editor.control.commands.FieldCommand;
 import es.eucm.ead.editor.control.commands.ListCommand.AddToListCommand;
-import es.eucm.ead.editor.model.Model;
+import es.eucm.ead.editor.model.Q;
 import es.eucm.ead.engine.GameLoop;
 import es.eucm.ead.engine.entities.EngineEntity;
 import es.eucm.ead.schema.editor.components.Parent;
@@ -96,13 +96,13 @@ public class NewGroupHierarchyToEntities extends ModelAction {
 		Group newGroup = (Group) args[1];
 		Array<Actor> grouped = (Array<Actor>) args[2];
 
-		ModelEntity parentEntity = Model.getModelEntity(parent);
+		ModelEntity parentEntity = Q.getModelEntity(parent);
 
 		tmpEntities.clear();
 
 		// Remove grouped children from their old parent
 		for (Actor actor : grouped) {
-			ModelEntity entity = Model.getModelEntity(actor);
+			ModelEntity entity = Q.getModelEntity(actor);
 			if (entity != null) {
 				tmpEntities.add(entity);
 			}
@@ -119,8 +119,7 @@ public class NewGroupHierarchyToEntities extends ModelAction {
 		newGroupEntity.setScaleY(newGroup.getScaleY());
 		newGroupEntity.setScaleX(newGroup.getScaleX());
 		newGroupEntity.setRotation(newGroup.getRotation());
-		Model.getComponent(newGroupEntity, Parent.class)
-				.setParent(parentEntity);
+		Q.getComponent(newGroupEntity, Parent.class).setParent(parentEntity);
 
 		EngineEntity engineEntity = gameLoop.createEntity();
 		engineEntity.setGroup(newGroup);
@@ -132,9 +131,9 @@ public class NewGroupHierarchyToEntities extends ModelAction {
 				.getChildren(), newGroupEntity));
 
 		for (Actor actor : grouped) {
-			ModelEntity entity = Model.getModelEntity(actor);
+			ModelEntity entity = Q.getModelEntity(actor);
 			if (entity != null) {
-				command.addCommand(new FieldCommand(Model.getComponent(entity,
+				command.addCommand(new FieldCommand(Q.getComponent(entity,
 						Parent.class), FieldName.PARENT, newGroupEntity));
 				command.addCommand(new AddToListCommand(newGroupEntity,
 						newGroupEntity.getChildren(), entity));

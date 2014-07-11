@@ -43,12 +43,14 @@ import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.Pools;
 import com.badlogic.gdx.utils.Predicate;
 import com.badlogic.gdx.utils.SnapshotArray;
+
 import es.eucm.ead.editor.control.Controller;
 import es.eucm.ead.editor.control.Selection;
 import es.eucm.ead.editor.model.Model;
 import es.eucm.ead.editor.model.Model.FieldListener;
 import es.eucm.ead.editor.model.Model.ModelListener;
 import es.eucm.ead.editor.model.Model.SelectionListener;
+import es.eucm.ead.editor.model.Q;
 import es.eucm.ead.editor.model.events.FieldEvent;
 import es.eucm.ead.editor.model.events.ListEvent;
 import es.eucm.ead.editor.model.events.SelectionEvent;
@@ -143,7 +145,7 @@ public abstract class SceneEditor extends AbstractWidget {
 		model.removeListenerFromAllTargets(transformationListener);
 		model.removeListenerFromAllTargets(childrenListListener);
 		if (scene != null) {
-			removeListeners(Model.getModelEntity(scene.getGroup()));
+			removeListeners(Q.getModelEntity(scene.getGroup()));
 		}
 	}
 
@@ -158,16 +160,15 @@ public abstract class SceneEditor extends AbstractWidget {
 			 * width and height
 			 */
 			controller.getEditorGameAssets().finishLoading();
-			GameData gameData = Model.getComponent(model.getGame(),
-					GameData.class);
+			GameData gameData = Q.getComponent(model.getGame(), GameData.class);
 
 			scene.getGroup().setSize(gameData.getWidth(), gameData.getHeight());
 			groupEditor.setRootGroup(scene.getGroup());
 
 			addListeners(scene.getGroup());
 
-			if (Model.hasComponent(sceneEntity, SceneEditState.class)) {
-				SceneEditState state = Model.getComponent(sceneEntity,
+			if (Q.hasComponent(sceneEntity, SceneEditState.class)) {
+				SceneEditState state = Q.getComponent(sceneEntity,
 						SceneEditState.class);
 				groupEditor.setZoom(state.getZoom());
 				groupEditor.setPanningOffset(state.getX(), state.getY());
@@ -221,8 +222,8 @@ public abstract class SceneEditor extends AbstractWidget {
 	}
 
 	private void updateEditState() {
-		SceneEditState state = Model.getComponent(sceneEntity,
-				SceneEditState.class);
+		SceneEditState state = Q
+				.getComponent(sceneEntity, SceneEditState.class);
 		state.setZoom(groupEditor.getZoom());
 		state.setX(groupEditor.getPanningX());
 		state.setY(groupEditor.getPanningY());
@@ -233,7 +234,7 @@ public abstract class SceneEditor extends AbstractWidget {
 	 * recursively
 	 */
 	private void addListeners(Actor actor) {
-		ModelEntity entity = Model.getModelEntity(actor);
+		ModelEntity entity = Q.getModelEntity(actor);
 		if (entity != null) {
 			model.addFieldListener(entity, transformationListener);
 			model.addListListener(entity.getChildren(), childrenListListener);
@@ -391,7 +392,7 @@ public abstract class SceneEditor extends AbstractWidget {
 
 		@Override
 		public boolean evaluate(Actor actor) {
-			return Model.getModelEntity(actor) == modelEntity;
+			return Q.getModelEntity(actor) == modelEntity;
 		}
 	}
 }

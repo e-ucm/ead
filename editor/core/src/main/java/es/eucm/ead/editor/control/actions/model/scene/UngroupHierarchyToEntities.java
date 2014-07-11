@@ -47,7 +47,7 @@ import es.eucm.ead.editor.control.commands.CompositeCommand;
 import es.eucm.ead.editor.control.commands.FieldCommand;
 import es.eucm.ead.editor.control.commands.ListCommand.AddToListCommand;
 import es.eucm.ead.editor.control.commands.ListCommand.RemoveFromListCommand;
-import es.eucm.ead.editor.model.Model;
+import es.eucm.ead.editor.model.Q;
 import es.eucm.ead.schema.editor.components.Parent;
 import es.eucm.ead.schema.entities.ModelEntity;
 import es.eucm.ead.schemax.FieldName;
@@ -88,8 +88,8 @@ public class UngroupHierarchyToEntities extends ModelAction {
 		Group oldGroup = (Group) args[1];
 		Array<Actor> ungrouped = (Array<Actor>) args[2];
 
-		ModelEntity parentEntity = Model.getModelEntity(parent);
-		ModelEntity oldGroupEntity = Model.getModelEntity(oldGroup);
+		ModelEntity parentEntity = Q.getModelEntity(parent);
+		ModelEntity oldGroupEntity = Q.getModelEntity(oldGroup);
 
 		// Copy actors transformations
 		CompositeCommand command = multipleActorTransformToEntity
@@ -97,14 +97,14 @@ public class UngroupHierarchyToEntities extends ModelAction {
 
 		// Remove from old group and add it to new group
 		for (Actor actor : ungrouped) {
-			ModelEntity actorEntity = Model.getModelEntity(actor);
+			ModelEntity actorEntity = Q.getModelEntity(actor);
 
 			command.addCommand(new RemoveFromListCommand(oldGroupEntity,
 					oldGroupEntity.getChildren(), actorEntity));
 
 			command.addCommand(new AddToListCommand(parentEntity, parentEntity
 					.getChildren(), actorEntity));
-			command.addCommand(new FieldCommand(Model.getComponent(actorEntity,
+			command.addCommand(new FieldCommand(Q.getComponent(actorEntity,
 					Parent.class), FieldName.PARENT, parentEntity));
 
 		}

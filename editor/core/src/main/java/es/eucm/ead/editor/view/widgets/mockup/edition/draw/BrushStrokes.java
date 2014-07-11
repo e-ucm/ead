@@ -51,7 +51,7 @@ import com.badlogic.gdx.utils.Disposable;
 import es.eucm.ead.editor.assets.EditorGameAssets;
 import es.eucm.ead.editor.control.Controller;
 import es.eucm.ead.editor.control.actions.model.AddSceneElement;
-import es.eucm.ead.editor.model.Model;
+import es.eucm.ead.editor.model.Q;
 import es.eucm.ead.editor.view.widgets.groupeditor.GroupEditor;
 import es.eucm.ead.engine.I18N;
 import es.eucm.ead.schema.editor.components.RepoElement;
@@ -185,7 +185,7 @@ public class BrushStrokes extends Widget implements Disposable {
 		savedElement.setX(pos.x - scaledAct.getX());
 		savedElement.setY(pos.y - scaledAct.getY());
 
-		Model.getComponent(savedElement, RepoElement.class).setThumbnail(
+		Q.getComponent(savedElement, RepoElement.class).setThumbnail(
 				thumbSavePath.name());
 
 		this.controller.action(AddSceneElement.class, savedElement);

@@ -40,7 +40,7 @@ import com.badlogic.gdx.files.FileHandle;
 import es.eucm.ead.editor.control.Controller;
 import es.eucm.ead.editor.control.actions.EnabledOnloadAction;
 import es.eucm.ead.editor.exporter.Exporter;
-import es.eucm.ead.editor.model.Model;
+import es.eucm.ead.editor.model.Q;
 import es.eucm.ead.schema.editor.components.EditState;
 import es.eucm.ead.schema.editor.components.Versions;
 import es.eucm.ead.schema.entities.ModelEntity;
@@ -114,14 +114,13 @@ public class Save extends EnabledOnloadAction {
 	private void updateGameVersions() {
 		String appVersion = controller.getAppVersion();
 		ModelEntity game = controller.getModel().getGame();
-		Model.getComponent(game, Versions.class).setAppVersion(appVersion);
-		Model.getComponent(game, Versions.class).setModelVersion(
-				MODEL_API_VERSION);
+		Q.getComponent(game, Versions.class).setAppVersion(appVersion);
+		Q.getComponent(game, Versions.class).setModelVersion(MODEL_API_VERSION);
 	}
 
 	private void updateEditState() {
 		if (controller.getViews().getCurrentView() != null) {
-			EditState editState = Model.getComponent(controller.getModel()
+			EditState editState = Q.getComponent(controller.getModel()
 					.getGame(), EditState.class);
 			editState.setView(controller.getViews().getCurrentView().getClass()
 					.getName());
