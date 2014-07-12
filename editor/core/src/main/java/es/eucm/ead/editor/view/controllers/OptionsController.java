@@ -36,22 +36,23 @@
  */
 package es.eucm.ead.editor.view.controllers;
 
+import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.ui.CheckBox;
 import com.badlogic.gdx.scenes.scene2d.ui.SelectBox;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.ui.TextArea;
 import com.badlogic.gdx.scenes.scene2d.ui.TextField;
 import com.badlogic.gdx.utils.Array;
+import com.badlogic.gdx.utils.reflect.ClassReflection;
+import com.badlogic.gdx.utils.reflect.Constructor;
+import com.badlogic.gdx.utils.reflect.ReflectionException;
 import es.eucm.ead.editor.control.Controller;
-import es.eucm.ead.editor.view.controllers.options.BooleanOptionController;
-import es.eucm.ead.editor.view.controllers.options.FileOptionController;
-import es.eucm.ead.editor.view.controllers.options.FloatOptionController;
-import es.eucm.ead.editor.view.controllers.options.IntegerOptionController;
-import es.eucm.ead.editor.view.controllers.options.OptionController;
-import es.eucm.ead.editor.view.controllers.options.SelectOptionController;
-import es.eucm.ead.editor.view.controllers.options.StringOptionController;
-import es.eucm.ead.editor.view.controllers.options.ToggleImagesController;
+import es.eucm.ead.editor.indexes.FuzzyIndex;
+import es.eucm.ead.editor.view.controllers.values.*;
+import es.eucm.ead.editor.view.controllers.values.SearchController;
 import es.eucm.ead.editor.view.widgets.FileWidget;
+import es.eucm.ead.editor.view.widgets.SearchWidget;
 import es.eucm.ead.editor.view.widgets.ToggleImagesList;
 import es.eucm.ead.editor.view.widgets.options.Option;
 import es.eucm.ead.editor.view.widgets.options.OptionsPanel;
@@ -67,7 +68,7 @@ import java.util.Map;
  */
 public class OptionsController {
 
-	private Controller controller;
+	protected Controller controller;
 
 	private I18N i18n;
 
@@ -81,7 +82,7 @@ public class OptionsController {
 
 	protected Map<String, OptionController> optionControllers;
 
-	private Array<ChangeListener> updaters;
+	private Array<ChangeListener> changeListeners;
 
 	public OptionsController(Controller controller, Skin skin) {
 		this.controller = controller;
@@ -89,8 +90,16 @@ public class OptionsController {
 		this.skin = skin;
 		this.optionValues = new HashMap<String, Object>();
 		this.optionControllers = new HashMap<String, OptionController>();
-		panel = new OptionsPanel(skin);
-		this.updaters = new Array<ChangeListener>();
+		this.changeListeners = new Array<ChangeListener>();
+		panel = newOptionsPanel(skin);
+	}
+
+	/**
+	 * Create the basis options panel. Intended to be overridden for those
+	 * classes interested in other types of panels.
+	 */
+	protected OptionsPanel newOptionsPanel(Skin skin) {
+		return new OptionsPanel(skin);
 	}
 
 	/**
@@ -104,17 +113,14 @@ public class OptionsController {
 	}
 
 	/**
-	 * Sets the value for a key
-	 * 
-	 * @param key
-	 *            the key
-	 * @param value
-	 *            the value
+	 * Sets the value for a key. It updates the widget related
 	 */
 	public void setValue(String key, Object value) {
 		optionValues.put(key, value);
 		OptionController optionController = optionControllers.get(key);
-		optionController.setWidgetValue(value);
+		if (optionController != null) {
+			optionController.getValueController().setWidgetValue(value);
+		}
 	}
 
 	/**
@@ -122,137 +128,6 @@ public class OptionsController {
 	 */
 	public Map<String, Object> getValues() {
 		return optionValues;
-	}
-
-	/**
-	 * @param field
-	 *            the field
-	 * @return Returns the label text for the given field
-	 */
-	private String label(String field) {
-		return i18n.m(i18nPrefix + "." + field) + ":";
-	}
-
-	/**
-	 * @param field
-	 *            the field
-	 * @return Returns the tooltip text for the given field
-	 */
-	private String tooltip(String field) {
-		String key = i18nPrefix + "." + field + ".tooltip";
-		String value = i18n.m(key);
-		return (key.equals(value) ? null : value);
-	}
-
-	/**
-	 * Adds a change listener
-	 * 
-	 * @param changeListener
-	 *            will be notified whenever an option changes its value
-	 */
-	public void addChangeListener(ChangeListener changeListener) {
-		updaters.add(changeListener);
-	}
-
-	private <T extends OptionController> T add(String field, T optionController) {
-		optionControllers.put(field, optionController);
-		return optionController;
-	}
-
-	/**
-	 * Creates an string option
-	 * 
-	 * @param field
-	 *            the field
-	 * @return the option created
-	 */
-	public StringOptionController string(String field) {
-		Option option = panel.string(label(field), tooltip(field));
-		TextField textField = (TextField) option.getOptionWidget();
-		return add(field, new StringOptionController(controller
-				.getApplicationAssets().getI18N(), this, field, option,
-				textField));
-	}
-
-	public IntegerOptionController intNumber(String field) {
-		Option option = panel.number(label(field), tooltip(field));
-		Spinner spinner = (Spinner) option.getOptionWidget();
-		return add(field,
-				new IntegerOptionController(controller.getApplicationAssets()
-						.getI18N(), this, field, option, spinner));
-	}
-
-	public FloatOptionController floatNumber(String field) {
-		Option option = panel.number(label(field), tooltip(field));
-		Spinner spinner = (Spinner) option.getOptionWidget();
-		return add(field,
-				new FloatOptionController(controller.getApplicationAssets()
-						.getI18N(), this, field, option, spinner));
-	}
-
-	public BooleanOptionController bool(String field) {
-		Option option = panel.bool(label(field), tooltip(field));
-		CheckBox checkBox = (CheckBox) option.getOptionWidget();
-		return add(field, new BooleanOptionController(controller
-				.getApplicationAssets().getI18N(), this, field, option,
-				checkBox));
-	}
-
-	public SelectOptionController select(String field,
-			Map<String, Object> values) {
-		Option option = panel.select(label(field), tooltip(field), values);
-		SelectBox spinner = (SelectBox) option.getOptionWidget();
-		return add(field, new SelectOptionController(controller
-				.getApplicationAssets().getI18N(), this, field, option,
-				spinner, values));
-	}
-
-	/**
-	 * Creates a text option
-	 * 
-	 * @param field
-	 *            the field
-	 * @param widgetLines
-	 *            lines to be shown by the widget
-	 * @return the option controller created
-	 */
-	public StringOptionController text(String field, int widgetLines) {
-		Option option = panel.text(label(field), tooltip(field), widgetLines);
-		TextArea textArea = (TextArea) option.getOptionWidget();
-		return add(field, new StringOptionController(controller
-				.getApplicationAssets().getI18N(), this, field, option,
-				textArea));
-	}
-
-	/**
-	 * Creates a file option
-	 * 
-	 * @param field
-	 *            the field
-	 * @param widgetLength
-	 *            the widget width, in characters
-	 * @return the option controller created
-	 */
-	public FileOptionController file(String field, int widgetLength) {
-		Option option = panel.file(label(field), tooltip(field), widgetLength);
-		FileWidget fileWidget = (FileWidget) option.getOptionWidget();
-		return add(field, new FileOptionController(controller, controller
-				.getApplicationAssets().getI18N(), this, field, option,
-				fileWidget));
-	}
-
-	/**
-	 * Creates an option selector, based on images
-	 * 
-	 * @param field
-	 *            the field
-	 * @return the option controller created
-	 */
-	public ToggleImagesController toggleImages(String field) {
-		ToggleImagesList widget = new ToggleImagesList(skin, true);
-		Option option = panel.custom(label(field), tooltip(field), widget);
-		return add(field, new ToggleImagesController(controller
-				.getApplicationAssets().getI18N(), this, field, option, widget));
 	}
 
 	/**
@@ -276,6 +151,233 @@ public class OptionsController {
 	}
 
 	/**
+	 * 
+	 * @return the label text for the given field
+	 */
+	private String label(String field) {
+		return i18n.m(i18nPrefix + "." + field) + ":";
+	}
+
+	/**
+	 * @return the tooltip text for the given field
+	 */
+	private String tooltip(String field) {
+		String key = i18nPrefix + "." + field + ".tooltip";
+		String value = i18n.m(key);
+		return (key.equals(value) ? null : value);
+	}
+
+	/**
+	 * Adds a change listener
+	 * 
+	 * @param changeListener
+	 *            will be notified whenever an option changes its value
+	 */
+	public void addChangeListener(ChangeListener changeListener) {
+		changeListeners.add(changeListener);
+	}
+
+	/**
+	 * Creates an string option
+	 * 
+	 * @param field
+	 *            the name for the option
+	 */
+	public StringController string(String field) {
+		Option option = panel.string(label(field), tooltip(field));
+		TextField widget = (TextField) option.getOptionWidget();
+		StringController value = newValueController(StringController.class,
+				widget);
+		add(field, option, value);
+		return value;
+	}
+
+	/**
+	 * Creates an int option
+	 * 
+	 * @param field
+	 *            the name for the option
+	 */
+	public IntController intNumber(String field) {
+		Option option = panel.number(label(field), tooltip(field));
+		Spinner spinner = (Spinner) option.getOptionWidget();
+		IntController value = newValueController(IntController.class, spinner);
+		add(field, option, value);
+		return value;
+	}
+
+	/**
+	 * Creates a float option
+	 * 
+	 * @param field
+	 *            the name for the option
+	 */
+	public FloatController floatNumber(String field) {
+		Option option = panel.number(label(field), tooltip(field));
+		Spinner spinner = (Spinner) option.getOptionWidget();
+		FloatController value = newValueController(FloatController.class,
+				spinner);
+		add(field, option, value);
+		return value;
+	}
+
+	/**
+	 * Creates a boolean option
+	 * 
+	 * @param field
+	 *            the name for the option
+	 */
+	public BooleanController bool(String field) {
+		Option option = panel.bool(label(field), tooltip(field));
+		CheckBox checkBox = (CheckBox) option.getOptionWidget();
+		BooleanController value = newValueController(BooleanController.class,
+				checkBox);
+		add(field, option, value);
+		return value;
+	}
+
+	/**
+	 * Creates a boolean option
+	 * 
+	 * @param field
+	 *            the name for the option
+	 * @param values
+	 *            possible values for the selection. The keys are the strings
+	 *            that will be shown to the users, and the values the actual
+	 *            values for the option
+	 */
+	public SelectController select(String field, Map<String, Object> values) {
+		Option option = panel.select(label(field), tooltip(field), values);
+		SelectBox widget = (SelectBox) option.getOptionWidget();
+		SelectController value = newValueController(SelectController.class,
+				widget, Map.class, values);
+		add(field, option, value);
+		return value;
+	}
+
+	/**
+	 * Creates a boolean option
+	 * 
+	 * @param field
+	 *            the name for the option
+	 * @param index
+	 *            the index with the possible values for the option
+	 */
+	public SearchController search(String field, FuzzyIndex index) {
+		SearchWidget widget = new SearchWidget(skin);
+		Option option = panel.custom(label(field), tooltip(field), widget);
+		SearchController value = newValueController(
+				es.eucm.ead.editor.view.controllers.values.SearchController.class,
+				widget, FuzzyIndex.class, index);
+		add(field, option, value);
+		return value;
+	}
+
+	/**
+	 * Creates a text option (text area)
+	 * 
+	 * @param field
+	 *            the field
+	 * @param widgetLines
+	 *            lines to be shown by the widget
+	 */
+	public StringController text(String field, int widgetLines) {
+		Option option = panel.text(label(field), tooltip(field), widgetLines);
+		TextArea textArea = (TextArea) option.getOptionWidget();
+		StringController value = newValueController(StringController.class,
+				textArea);
+		add(field, option, value);
+		return value;
+	}
+
+	/**
+	 * Creates a file option
+	 * 
+	 * @param field
+	 *            the field
+	 * @param widgetLength
+	 *            the widget width, in characters
+	 * @return the option controller created
+	 */
+	public FileController file(String field, int widgetLength) {
+		Option option = panel.file(label(field), tooltip(field), widgetLength);
+		FileWidget fileWidget = (FileWidget) option.getOptionWidget();
+		FileController value = newValueController(FileController.class,
+				fileWidget);
+		add(field, option, value);
+		return value;
+	}
+
+	/**
+	 * Creates an option selector, based on images
+	 * 
+	 * @param field
+	 *            the field
+	 * @return the option controller created
+	 */
+	public ToggleImagesController toggleImages(String field) {
+		ToggleImagesList widget = new ToggleImagesList(skin, true);
+		Option option = panel.custom(label(field), tooltip(field), widget);
+		ToggleImagesController value = newValueController(
+				ToggleImagesController.class, widget);
+		add(field, option, value);
+		return value;
+	}
+
+	private void add(String field, Option option,
+			ValueController valueController) {
+		OptionController optionController = newOptionController(field, option,
+				valueController);
+		optionControllers.put(field, optionController);
+	}
+
+	/**
+	 * 
+	 * @param clazz
+	 *            class of the value
+	 * @param widget
+	 *            the widget for the value
+	 * @param args
+	 *            arguments are interpreted as a list of objects paired in
+	 *            class, value ([class, value, class, value]), and they would be
+	 *            use to find the right constructor
+	 */
+	@SuppressWarnings("unchecked")
+	private <V extends ValueController<T, S>, T extends Actor, W extends T, S> V newValueController(
+			Class<V> clazz, W widget, Object... args) {
+		try {
+			V value;
+			if (args.length == 0) {
+				value = ClassReflection.newInstance(clazz);
+			} else {
+				Class[] argsClass = new Class[args.length / 2];
+				Object[] argsObject = new Object[args.length / 2];
+				for (int i = 0; i < args.length; i += 2) {
+					argsClass[i] = (Class) args[i];
+					argsObject[i] = args[i + 1];
+				}
+				Constructor constructor = ClassReflection
+						.getDeclaredConstructor(clazz, argsClass);
+				value = (V) constructor.newInstance(argsObject);
+			}
+			value.build(controller, widget);
+			return value;
+		} catch (ReflectionException e) {
+			Gdx.app.error("OptionsController", "No value", e);
+		}
+		return null;
+	}
+
+	/**
+	 * Creates an option controller wrapping the given parameters. Can be
+	 * overridden for those interested in creating other types of controllers.
+	 */
+	protected OptionController newOptionController(String field, Option option,
+			ValueController valueController) {
+		return new OptionController(this, field, option, valueController);
+	}
+
+	/**
 	 * Notifies a change in the field name with fieldName in the target
 	 * 
 	 * @param source
@@ -288,7 +390,7 @@ public class OptionsController {
 	public void notifyChange(OptionController source, String fieldName,
 			Object newValue) {
 		optionValues.put(fieldName, newValue);
-		for (ChangeListener changeListener : updaters) {
+		for (ChangeListener changeListener : changeListeners) {
 			changeListener.valueUpdated(source, fieldName, newValue);
 		}
 	}

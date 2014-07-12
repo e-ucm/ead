@@ -34,25 +34,15 @@
  *      You should have received a copy of the GNU Lesser General Public License
  *      along with eAdventure.  If not, see <http://www.gnu.org/licenses/>.
  */
-package es.eucm.ead.editor.view.controllers.options;
+package es.eucm.ead.editor.view.controllers.values;
 
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.InputListener;
 import com.badlogic.gdx.scenes.scene2d.ui.TextField;
-
-import es.eucm.ead.editor.view.controllers.OptionsController;
 import es.eucm.ead.editor.view.controllers.constraints.MaxLengthConstraint;
 import es.eucm.ead.editor.view.controllers.constraints.MinLengthConstraint;
-import es.eucm.ead.editor.view.widgets.options.Option;
-import es.eucm.ead.engine.I18N;
 
-public class StringOptionController extends OptionController<TextField, String> {
-
-	public StringOptionController(I18N i18N,
-			OptionsController optionsController, String field, Option option,
-			TextField widget) {
-		super(i18N, optionsController, field, option, widget);
-	}
+public class StringController extends ValueController<TextField, String> {
 
 	/**
 	 * Adds a maximum length constraint to this option
@@ -61,7 +51,7 @@ public class StringOptionController extends OptionController<TextField, String> 
 	 *            the maximum length for the constraint
 	 * @return the option
 	 */
-	public StringOptionController maxLength(int maxLength) {
+	public StringController maxLength(int maxLength) {
 		addConstraint(new MaxLengthConstraint(i18N, maxLength));
 		return this;
 	}
@@ -73,7 +63,7 @@ public class StringOptionController extends OptionController<TextField, String> 
 	 *            the minimum length for the constraint
 	 * @return the option
 	 */
-	public StringOptionController minLength(int minLength) {
+	public StringController minLength(int minLength) {
 		addConstraint(new MinLengthConstraint(i18N, minLength));
 		return this;
 	}

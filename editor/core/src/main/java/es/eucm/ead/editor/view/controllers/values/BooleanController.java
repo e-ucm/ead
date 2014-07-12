@@ -34,47 +34,30 @@
  *      You should have received a copy of the GNU Lesser General Public License
  *      along with eAdventure.  If not, see <http://www.gnu.org/licenses/>.
  */
-package es.eucm.ead.editor.view.controllers.options;
+package es.eucm.ead.editor.view.controllers.values;
 
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
-import com.badlogic.gdx.scenes.scene2d.InputListener;
-
-import es.eucm.ead.editor.view.controllers.OptionsController;
-import es.eucm.ead.editor.view.widgets.options.Option;
+import com.badlogic.gdx.scenes.scene2d.ui.CheckBox;
+import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import es.eucm.ead.engine.I18N;
-import es.eucm.ead.engine.gdx.Spinner;
 
 /**
  * Created by angel on 20/03/14.
  */
-public class FloatOptionController extends OptionController<Spinner, Float> {
-
-	public FloatOptionController(I18N i18N,
-			OptionsController optionsController, String field, Option option,
-			Spinner widget) {
-		super(i18N, optionsController, field, option, widget);
-	}
+public class BooleanController extends ValueController<CheckBox, Boolean> {
 
 	@Override
 	protected void initialize() {
-		widget.getTextField().addListener(new InputListener() {
+		widget.addListener(new ClickListener() {
 			@Override
-			public boolean keyTyped(InputEvent event, char character) {
-				float value = 0;
-				try {
-					value = Float.parseFloat(widget.getText());
-				} catch (NumberFormatException e) {
-					widget.setText("0.0");
-				}
-				change(value);
-				return true;
+			public void clicked(InputEvent event, float x, float y) {
+				change(widget.isChecked());
 			}
 		});
-
 	}
 
 	@Override
-	public void setWidgetValue(Float value) {
-		widget.setText(value + "");
+	public void setWidgetValue(Boolean value) {
+		widget.setChecked(value);
 	}
 }

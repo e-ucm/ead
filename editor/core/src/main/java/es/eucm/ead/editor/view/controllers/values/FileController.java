@@ -34,21 +34,18 @@
  *      You should have received a copy of the GNU Lesser General Public License
  *      along with eAdventure.  If not, see <http://www.gnu.org/licenses/>.
  */
-package es.eucm.ead.editor.view.controllers.options;
+package es.eucm.ead.editor.view.controllers.values;
 
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.InputListener;
 import es.eucm.ead.editor.control.Controller;
 import es.eucm.ead.editor.platform.Platform;
 import es.eucm.ead.editor.platform.Platform.FileChooserListener;
-import es.eucm.ead.editor.view.controllers.OptionsController;
 import es.eucm.ead.editor.view.controllers.constraints.FileExistConstraint;
 import es.eucm.ead.editor.view.widgets.FileWidget;
-import es.eucm.ead.editor.view.widgets.options.Option;
 import es.eucm.ead.engine.assets.GameAssets;
-import es.eucm.ead.engine.I18N;
 
-public class FileOptionController extends OptionController<FileWidget, String>
+public class FileController extends ValueController<FileWidget, String>
 		implements FileChooserListener {
 
 	private GameAssets gameAssets;
@@ -57,10 +54,9 @@ public class FileOptionController extends OptionController<FileWidget, String>
 
 	private boolean folder;
 
-	public FileOptionController(Controller controller, I18N i18N,
-			OptionsController optionsController, String field, Option option,
-			FileWidget widget) {
-		super(i18N, optionsController, field, option, widget);
+	@Override
+	public void build(Controller controller, FileWidget widget) {
+		super.build(controller, widget);
 		this.platform = controller.getPlatform();
 		this.gameAssets = controller.getEditorGameAssets();
 	}
@@ -73,9 +69,9 @@ public class FileOptionController extends OptionController<FileWidget, String>
 			public boolean touchDown(InputEvent event, float x, float y,
 					int pointer, int button) {
 				if (folder) {
-					platform.askForFolder(FileOptionController.this);
+					platform.askForFolder(FileController.this);
 				} else {
-					platform.askForFile(FileOptionController.this);
+					platform.askForFile(FileController.this);
 				}
 				return true;
 			}
@@ -89,12 +85,12 @@ public class FileOptionController extends OptionController<FileWidget, String>
 		});
 	}
 
-	public FileOptionController folder() {
+	public FileController folder() {
 		this.folder = true;
 		return this;
 	}
 
-	public FileOptionController mustExist(boolean mustExist) {
+	public FileController mustExist(boolean mustExist) {
 		this.addConstraint(new FileExistConstraint(gameAssets, mustExist));
 		return this;
 	}

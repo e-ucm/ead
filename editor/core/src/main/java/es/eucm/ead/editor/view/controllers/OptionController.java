@@ -34,43 +34,56 @@
  *      You should have received a copy of the GNU Lesser General Public License
  *      along with eAdventure.  If not, see <http://www.gnu.org/licenses/>.
  */
-package es.eucm.ead.editor.view.controllers.options;
+package es.eucm.ead.editor.view.controllers;
 
-import com.badlogic.gdx.scenes.scene2d.Actor;
-import com.badlogic.gdx.scenes.scene2d.ui.SelectBox;
-import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
-import es.eucm.ead.editor.view.controllers.OptionsController;
+import es.eucm.ead.editor.view.controllers.values.ValueController;
 import es.eucm.ead.editor.view.widgets.options.Option;
-import es.eucm.ead.engine.I18N;
 
-import java.util.Map;
+public class OptionController {
 
-/**
- * Created by angel on 20/03/14.
- */
-public class SelectOptionController extends OptionController<SelectBox, Object> {
+	private OptionsController optionsController;
 
-	private Map<String, Object> values;
+	protected String field;
 
-	public SelectOptionController(I18N i18N,
-			OptionsController optionsController, String field, Option option,
-			SelectBox widget, Map<String, Object> values) {
-		super(i18N, optionsController, field, option, widget);
-		this.values = values;
+	private Option option;
+
+	private ValueController valueController;
+
+	public OptionController(OptionsController optionsController, String field,
+			Option option, ValueController valueController) {
+		this.optionsController = optionsController;
+		this.field = field;
+		this.option = option;
+		this.valueController = valueController;
+		valueController.setOptionController(this);
 	}
 
-	@Override
-	protected void initialize() {
-		widget.addListener(new ChangeListener() {
-			@Override
-			public void changed(ChangeEvent event, Actor actor) {
-				change(values.get(widget.getSelected().toString()));
-			}
-		});
+	/**
+	 * @return the option controlled by this object
+	 */
+	public Option getOption() {
+		return option;
 	}
 
-	@Override
-	public void setWidgetValue(Object value) {
-		widget.setSelected(value.toString());
+	/**
+	 * @return the value controller of this object
+	 */
+	public ValueController getValueController() {
+		return valueController;
+	}
+
+	/**
+	 * This option controller changed the value for the option. The value will
+	 * be checked with the constraints, and then, the parent controller will be
+	 * notified
+	 * 
+	 * @param value
+	 *            the new value
+	 */
+	public OptionController change(Object value) {
+		valueController.setWidgetValue(value);
+		valueController.checkConstraints(value);
+		optionsController.notifyChange(this, field, value);
+		return this;
 	}
 }

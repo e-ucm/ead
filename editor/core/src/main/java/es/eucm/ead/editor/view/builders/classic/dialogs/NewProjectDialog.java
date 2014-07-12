@@ -48,9 +48,9 @@ import es.eucm.ead.editor.view.controllers.DialogController;
 import es.eucm.ead.editor.view.controllers.DialogController.DialogButtonListener;
 import es.eucm.ead.editor.view.controllers.OptionsController;
 import es.eucm.ead.editor.view.controllers.OptionsController.ChangeListener;
-import es.eucm.ead.editor.view.controllers.options.FileOptionController;
-import es.eucm.ead.editor.view.controllers.options.OptionController;
-import es.eucm.ead.editor.view.controllers.options.StringOptionController;
+import es.eucm.ead.editor.view.controllers.values.FileController;
+import es.eucm.ead.editor.view.controllers.OptionController;
+import es.eucm.ead.editor.view.controllers.values.StringController;
 import es.eucm.ead.editor.view.widgets.Dialog;
 import es.eucm.ead.editor.view.widgets.ToggleImageButton;
 import es.eucm.ead.editor.view.widgets.layouts.LinearLayout;
@@ -84,12 +84,12 @@ public class NewProjectDialog implements ViewBuilder {
 		optionsController = new OptionsController(controller, skin);
 
 		optionsController.i18nPrefix("project");
-		final StringOptionController titleOption = optionsController
-				.string("title").maxLength(50).minLength(1);
+		final StringController titleOption = optionsController.string("title")
+				.maxLength(50).minLength(1);
 
 		optionsController.text("description", 3).maxLength(255).change("");
 
-		final FileOptionController folderOption = optionsController
+		final FileController folderOption = optionsController
 				.file("folder", 200).folder().mustExist(false);
 
 		ChangeListener changeListener = new ChangeListener() {
@@ -101,11 +101,11 @@ public class NewProjectDialog implements ViewBuilder {
 			@Override
 			public void valueUpdated(final OptionController source,
 					String field, Object value) {
-				if (source == folderOption) {
+				if (source.getValueController() == folderOption) {
 					String path = value.toString();
 					rootFolder = (path.endsWith("/") ? path : path + "/")
 							+ title;
-				} else if (source == titleOption) {
+				} else if (source.getValueController() == titleOption) {
 					title = value.toString();
 					folderOption.setWidgetValue(rootFolder + value);
 					folderOption.checkConstraints(rootFolder + value);

@@ -34,46 +34,32 @@
  *      You should have received a copy of the GNU Lesser General Public License
  *      along with eAdventure.  If not, see <http://www.gnu.org/licenses/>.
  */
-package es.eucm.ead.editor.view.controllers.options;
+package es.eucm.ead.editor.view.controllers.values;
 
-import com.badlogic.gdx.scenes.scene2d.InputEvent;
-import com.badlogic.gdx.scenes.scene2d.InputListener;
-import es.eucm.ead.editor.view.controllers.OptionsController;
-import es.eucm.ead.editor.view.widgets.options.Option;
-import es.eucm.ead.engine.I18N;
-import es.eucm.ead.engine.gdx.Spinner;
+import com.badlogic.gdx.scenes.scene2d.utils.Drawable;
+import es.eucm.ead.editor.view.widgets.ToggleImagesList;
+import es.eucm.ead.editor.view.widgets.ToggleImagesList.ChangeListener;
 
-/**
- * Created by angel on 20/03/14.
- */
-public class IntegerOptionController extends OptionController<Spinner, Integer> {
-
-	public IntegerOptionController(I18N i18N,
-			OptionsController optionsController, String field, Option option,
-			Spinner widget) {
-		super(i18N, optionsController, field, option, widget);
-	}
+public class ToggleImagesController extends
+		ValueController<ToggleImagesList, String> {
 
 	@Override
 	protected void initialize() {
-		widget.getTextField().addListener(new InputListener() {
+		widget.addChangeListener(new ChangeListener() {
 			@Override
-			public boolean keyTyped(InputEvent event, char character) {
-				int value = 0;
-				try {
-					value = Integer.parseInt(widget.getText());
-				} catch (NumberFormatException e) {
-					widget.setText("0");
-				}
-				change(value);
-				return true;
+			public void changed(String newValue) {
+				change(widget.getSelectedValue());
 			}
 		});
-
 	}
 
 	@Override
-	public void setWidgetValue(Integer value) {
-		widget.setText(value + "");
+	public void setWidgetValue(String value) {
+		widget.setValue(value);
+	}
+
+	public ToggleImagesController button(Drawable drawable, String value) {
+		widget.button(drawable, value);
+		return this;
 	}
 }

@@ -34,38 +34,37 @@
  *      You should have received a copy of the GNU Lesser General Public License
  *      along with eAdventure.  If not, see <http://www.gnu.org/licenses/>.
  */
-package es.eucm.ead.editor.view.controllers.options;
+package es.eucm.ead.editor.view.controllers.values;
 
-import com.badlogic.gdx.scenes.scene2d.InputEvent;
-import com.badlogic.gdx.scenes.scene2d.ui.CheckBox;
-import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
-import es.eucm.ead.editor.view.controllers.OptionsController;
-import es.eucm.ead.editor.view.widgets.options.Option;
-import es.eucm.ead.engine.I18N;
+import com.badlogic.gdx.scenes.scene2d.Actor;
+import com.badlogic.gdx.scenes.scene2d.ui.SelectBox;
+import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
+
+import java.util.Map;
 
 /**
  * Created by angel on 20/03/14.
  */
-public class BooleanOptionController extends
-		OptionController<CheckBox, Boolean> {
-	public BooleanOptionController(I18N i18N,
-			OptionsController optionsController, String field, Option option,
-			CheckBox widget) {
-		super(i18N, optionsController, field, option, widget);
+public class SelectController extends ValueController<SelectBox, Object> {
+
+	private Map<String, Object> values;
+
+	public SelectController(Map<String, Object> values) {
+		this.values = values;
 	}
 
 	@Override
 	protected void initialize() {
-		widget.addListener(new ClickListener() {
+		widget.addListener(new ChangeListener() {
 			@Override
-			public void clicked(InputEvent event, float x, float y) {
-				change(widget.isChecked());
+			public void changed(ChangeEvent event, Actor actor) {
+				change(values.get(widget.getSelected().toString()));
 			}
 		});
 	}
 
 	@Override
-	public void setWidgetValue(Boolean value) {
-		widget.setChecked(value);
+	public void setWidgetValue(Object value) {
+		widget.setSelected(value.toString());
 	}
 }

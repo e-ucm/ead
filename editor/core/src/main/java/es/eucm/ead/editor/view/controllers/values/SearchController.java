@@ -34,47 +34,45 @@
  *      You should have received a copy of the GNU Lesser General Public License
  *      along with eAdventure.  If not, see <http://www.gnu.org/licenses/>.
  */
-package es.eucm.ead.editor.editorui.search;
+package es.eucm.ead.editor.view.controllers.values;
 
-import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.backends.lwjgl.LwjglApplication;
-import com.badlogic.gdx.scenes.scene2d.Group;
-import com.badlogic.gdx.scenes.scene2d.ui.Skin;
-import es.eucm.ead.editor.editorui.EditorUITest;
+import es.eucm.ead.editor.control.actions.editor.ShowContextMenu;
 import es.eucm.ead.editor.indexes.FuzzyIndex;
 import es.eucm.ead.editor.indexes.FuzzyIndex.Term;
-import es.eucm.ead.editor.view.controllers.SearchResultsWidget;
 import es.eucm.ead.editor.view.controllers.SearchResultsWidget.SearchListener;
-import es.eucm.ead.editor.view.widgets.layouts.LinearLayout;
+import es.eucm.ead.editor.view.controllers.SearchResultsWidget;
+import es.eucm.ead.editor.view.listeners.ActionOnClickListener;
+import es.eucm.ead.editor.view.widgets.SearchWidget;
 
-public class SearchTest extends EditorUITest {
+public class SearchController extends ValueController<SearchWidget, Object> {
+
+	private FuzzyIndex index;
+
+	public SearchController(FuzzyIndex index) {
+		this.index = index;
+	}
+
 	@Override
-	protected void builUI(Group root) {
-		final FuzzyIndex fuzzyIndex = new FuzzyIndex();
-		for (int i = 0; i < 1000; i += 7) {
-			fuzzyIndex.addTerm("item" + i, null);
-		}
-
-		Skin skin = controller.getApplicationAssets().getSkin();
-
+	protected void initialize() {
 		SearchResultsWidget searchResultsWidget = new SearchResultsWidget(
-				fuzzyIndex, skin);
-
-		searchResultsWidget.addListener(new SearchListener() {
-			@Override
-			public void termSelected(Term term) {
-				Gdx.app.log("SearchTest", "Selected: " + term.getTermString());
-			}
-		});
-
-		LinearLayout linearLayout = new LinearLayout(true);
-		linearLayout.add(searchResultsWidget).centerX();
-		linearLayout.setFillParent(true);
-		root.addActor(linearLayout);
+				index, controller.getApplicationAssets().getSkin());
+		searchResultsWidget.addListener(new ResultsListener());
+		widget.getSearchButton().addListener(
+				new ActionOnClickListener(controller, ShowContextMenu.class,
+						widget, searchResultsWidget));
 	}
 
-	public static void main(String[] args) {
-		new LwjglApplication(new SearchTest(), "Scene Editor test", 1000, 600);
+	@Override
+	public void setWidgetValue(Object value) {
+		Term term = index.getTerm(value);
+		widget.setText(term == null ? "" : term.getTermString());
 	}
 
+	public class ResultsListener extends SearchListener {
+
+		@Override
+		public void termSelected(Term term) {
+			change(term.getData());
+		}
+	}
 }

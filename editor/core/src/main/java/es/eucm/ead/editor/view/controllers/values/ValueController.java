@@ -34,41 +34,60 @@
  *      You should have received a copy of the GNU Lesser General Public License
  *      along with eAdventure.  If not, see <http://www.gnu.org/licenses/>.
  */
-package es.eucm.ead.editor.view.controllers.options;
+package es.eucm.ead.editor.view.controllers.values;
 
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.utils.Array;
-import es.eucm.ead.editor.view.controllers.OptionsController;
+
+import es.eucm.ead.editor.control.Controller;
+import es.eucm.ead.editor.view.controllers.OptionController;
 import es.eucm.ead.editor.view.controllers.constraints.Constraint;
 import es.eucm.ead.editor.view.widgets.options.Option;
 import es.eucm.ead.engine.I18N;
 
-public abstract class OptionController<T extends Actor, S> {
+/**
+ * Controls an option's value
+ */
+public abstract class ValueController<T extends Actor, S> {
+
+	protected Controller controller;
 
 	protected I18N i18N;
 
-	protected OptionsController optionsController;
+	protected T widget;
 
 	private Array<Constraint<S>> constraints;
 
-	private String field;
+	private OptionController optionController;
 
-	private Option option;
-
-	protected T widget;
-
-	protected OptionController(I18N i18N, OptionsController optionsController,
-			String field, Option option, T widget) {
-		this.i18N = i18N;
-		this.optionsController = optionsController;
-		this.field = field;
-		this.option = option;
-		this.widget = widget;
+	public void build(Controller controller, T widget) {
 		this.constraints = new Array<Constraint<S>>();
+		this.controller = controller;
+		this.i18N = controller.getApplicationAssets().getI18N();
+		this.widget = widget;
 		initialize();
 	}
 
 	protected abstract void initialize();
+
+	/**
+	 * Sets the parent controller of this value
+	 */
+	public void setOptionController(OptionController optionController) {
+		this.optionController = optionController;
+	}
+
+	/**
+	 * Sets the value on the widget
+	 */
+	public abstract void setWidgetValue(S value);
+
+	/**
+	 * The value change due to some interaction with the value widget
+	 */
+	public void change(S value) {
+		optionController.change(value);
+	}
 
 	protected void addConstraint(Constraint<S> constraint) {
 		this.constraints.add(constraint);
@@ -83,6 +102,7 @@ public abstract class OptionController<T extends Actor, S> {
 			}
 		}
 
+		Option option = optionController.getOption();
 		if (errorMessage == null) {
 			option.setValid(true);
 			return true;
@@ -92,29 +112,4 @@ public abstract class OptionController<T extends Actor, S> {
 			return false;
 		}
 	}
-
-	/**
-	 * This option controller changed the value for the option. The value will
-	 * be checked with the constraints, and then, the parent controller will be
-	 * notified
-	 * 
-	 * @param value
-	 *            the new value
-	 */
-	public OptionController change(S value) {
-		setWidgetValue(value);
-		checkConstraints(value);
-		optionsController.notifyChange(this, field, value);
-		return this;
-	}
-
-	/**
-	 * Sets the value in the widget. It does not trigger any notification to the
-	 * parent controller
-	 * 
-	 * @param value
-	 *            the value
-	 */
-	public abstract void setWidgetValue(S value);
-
 }

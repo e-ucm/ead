@@ -34,47 +34,37 @@
  *      You should have received a copy of the GNU Lesser General Public License
  *      along with eAdventure.  If not, see <http://www.gnu.org/licenses/>.
  */
-package es.eucm.ead.editor.editorui.search;
+package es.eucm.ead.editor.view.controllers.values;
 
-import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.backends.lwjgl.LwjglApplication;
-import com.badlogic.gdx.scenes.scene2d.Group;
-import com.badlogic.gdx.scenes.scene2d.ui.Skin;
-import es.eucm.ead.editor.editorui.EditorUITest;
-import es.eucm.ead.editor.indexes.FuzzyIndex;
-import es.eucm.ead.editor.indexes.FuzzyIndex.Term;
-import es.eucm.ead.editor.view.controllers.SearchResultsWidget;
-import es.eucm.ead.editor.view.controllers.SearchResultsWidget.SearchListener;
-import es.eucm.ead.editor.view.widgets.layouts.LinearLayout;
+import com.badlogic.gdx.scenes.scene2d.InputEvent;
+import com.badlogic.gdx.scenes.scene2d.InputListener;
+import es.eucm.ead.engine.gdx.Spinner;
 
-public class SearchTest extends EditorUITest {
+/**
+ * Created by angel on 20/03/14.
+ */
+public class FloatController extends ValueController<Spinner, Float> {
+
 	@Override
-	protected void builUI(Group root) {
-		final FuzzyIndex fuzzyIndex = new FuzzyIndex();
-		for (int i = 0; i < 1000; i += 7) {
-			fuzzyIndex.addTerm("item" + i, null);
-		}
-
-		Skin skin = controller.getApplicationAssets().getSkin();
-
-		SearchResultsWidget searchResultsWidget = new SearchResultsWidget(
-				fuzzyIndex, skin);
-
-		searchResultsWidget.addListener(new SearchListener() {
+	protected void initialize() {
+		widget.getTextField().addListener(new InputListener() {
 			@Override
-			public void termSelected(Term term) {
-				Gdx.app.log("SearchTest", "Selected: " + term.getTermString());
+			public boolean keyTyped(InputEvent event, char character) {
+				float value = 0;
+				try {
+					value = Float.parseFloat(widget.getText());
+				} catch (NumberFormatException e) {
+					widget.setText("0.0");
+				}
+				change(value);
+				return true;
 			}
 		});
 
-		LinearLayout linearLayout = new LinearLayout(true);
-		linearLayout.add(searchResultsWidget).centerX();
-		linearLayout.setFillParent(true);
-		root.addActor(linearLayout);
 	}
 
-	public static void main(String[] args) {
-		new LwjglApplication(new SearchTest(), "Scene Editor test", 1000, 600);
+	@Override
+	public void setWidgetValue(Float value) {
+		widget.setText(value + "");
 	}
-
 }
