@@ -64,7 +64,7 @@ public class InsertTab extends LinearLayout {
 		Skin skin = controller.getApplicationAssets().getSkin();
 		I18N i18N = controller.getApplicationAssets().getI18N();
 		add(createButton("newscene48x48", i18N.m("general.scene"), skin,
-				NewScene.class));
+				NewScene.class, i18N.m("scene.untitled")));
 		add(new Separator(false, skin));
 		add(createButton("image48x48", i18N.m("general.image"), skin,
 				AddSceneElementFromResource.class));
@@ -82,12 +82,13 @@ public class InsertTab extends LinearLayout {
 	}
 
 	private <T extends Action> Actor createButton(String drawable, String text,
-			Skin skin, Class<T> editorAction) {
+			Skin skin, Class<T> editorAction, Object... args) {
 		IconButton button = new IconButton(skin.getDrawable(drawable), 5, skin);
 		button.row();
 		button.add(new Label(text, skin));
 
-		button.addListener(new ActionOnClickListener(controller, editorAction));
+		button.addListener(new ActionOnClickListener(controller, editorAction,
+				args));
 		return button;
 	}
 

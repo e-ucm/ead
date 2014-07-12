@@ -40,8 +40,6 @@ import es.eucm.ead.editor.actions.ActionTest;
 import es.eucm.ead.editor.control.actions.editor.Undo;
 import es.eucm.ead.editor.control.actions.model.scene.NewScene;
 import es.eucm.ead.editor.model.Model;
-import es.eucm.ead.editor.model.Q;
-import es.eucm.ead.schema.editor.components.EditState;
 import es.eucm.ead.schemax.entities.ResourceCategory;
 import org.junit.Test;
 
@@ -56,13 +54,10 @@ public class NewSceneTest extends ActionTest {
 		Model model = controller.getModel();
 
 		int scenes = model.getResources(ResourceCategory.SCENE).size();
-		controller.action(NewScene.class);
+		controller.action(NewScene.class, "A name");
 
 		assertEquals(model.getResources(ResourceCategory.SCENE).size(),
 				scenes + 1);
-		assertEquals(Q.getComponent(model.getGame(), EditState.class)
-				.getSceneorder().size, scenes + 1);
-
 		controller.action(Undo.class);
 
 		assertEquals(model.getResources(ResourceCategory.SCENE).size(), scenes);

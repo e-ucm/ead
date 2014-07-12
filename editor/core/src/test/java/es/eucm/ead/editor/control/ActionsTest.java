@@ -175,9 +175,9 @@ public class ActionsTest extends EditorTest {
 		File file = platform.createTempFile(true);
 		controller.action(NewGame.class, file.getAbsolutePath(),
 				new ModelEntity());
-		controller.action(NewScene.class);
-		controller.action(NewScene.class);
-		controller.action(NewScene.class);
+		controller.action(NewScene.class, "");
+		controller.action(NewScene.class, "");
+		controller.action(NewScene.class, "");
 		controller.action(DeleteScene.class, "scene2");
 		controller.action(EditScene.class, "scene3");
 		try {

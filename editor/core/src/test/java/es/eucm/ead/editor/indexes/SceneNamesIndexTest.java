@@ -92,7 +92,7 @@ public class SceneNamesIndexTest extends EditorTest {
 
 	@Test
 	public void testAddRemoveScene() {
-		controller.action(NewScene.class);
+		controller.action(NewScene.class, "A name");
 		FuzzyIndex fuzzyIndex = controller.getIndex(SceneNamesIndex.class);
 		assertEquals(SCENES + 1, fuzzyIndex.getTerms().size);
 		controller.action(Undo.class);

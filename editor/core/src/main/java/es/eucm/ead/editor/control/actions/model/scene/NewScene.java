@@ -36,7 +36,10 @@
  */
 package es.eucm.ead.editor.control.actions.model.scene;
 
+import es.eucm.ead.editor.control.Controller;
+import es.eucm.ead.editor.control.Selection;
 import es.eucm.ead.editor.control.actions.ModelAction;
+import es.eucm.ead.editor.control.actions.model.SetSelection;
 import es.eucm.ead.editor.control.commands.CompositeCommand;
 import es.eucm.ead.editor.control.commands.ListCommand.AddToListCommand;
 import es.eucm.ead.editor.control.commands.ResourceCommand.AddResourceCommand;
@@ -47,17 +50,33 @@ import es.eucm.ead.schema.entities.ModelEntity;
 import es.eucm.ead.schemax.entities.ResourceCategory;
 
 /**
- * Creates a new empty scene and sets it as the current edited scene. This
- * actions receives no arguments
+ * Creates a new empty scene and sets it as the current edited scene.
+ * <dl>
+ * <dt><strong>Arguments</strong></dt>
+ * <dd><strong>args[0]</strong> <em>String</em> the scene name</dd>
+ * </dl>
  */
 public class NewScene extends ModelAction {
+
+	private SetSelection setSelection;
+
+	public NewScene() {
+		super(true, false, String.class);
+	}
+
+	@Override
+	public void initialize(Controller controller) {
+		super.initialize(controller);
+		setSelection = controller.getActions().getAction(SetSelection.class);
+	}
 
 	@Override
 	public CompositeCommand perform(Object... args) {
 		Model model = controller.getModel();
 
 		String id = model.createId(ResourceCategory.SCENE);
-		ModelEntity scene = controller.getTemplates().createScene(id);
+		ModelEntity scene = controller.getTemplates().createScene(
+				(String) args[0]);
 
 		EditState editState = Q.getComponent(model.getGame(), EditState.class);
 
@@ -66,6 +85,10 @@ public class NewScene extends ModelAction {
 				ResourceCategory.SCENE));
 		compositeCommand.addCommand(new AddToListCommand(editState, editState
 				.getSceneorder(), id));
+		compositeCommand.addCommand(setSelection.perform(null, Selection.SCENE,
+				scene));
+		compositeCommand.addCommand(setSelection.perform(Selection.SCENE,
+				Selection.EDITED_GROUP, scene));
 
 		return compositeCommand;
 	}
