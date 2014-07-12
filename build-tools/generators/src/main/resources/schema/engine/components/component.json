@@ -3,13 +3,7 @@
     "javaType": "es.eucm.ead.schema.components.ModelComponent",
     "type": "object",
     "description": "Basis class for all eAdventure components",
-    "properties": {
-        "parameters": {
-            "type": "array",
-            "items": {
-                "$ref": "../data/parameter.json"
-            },
-            "description": "Runtime parameters. Each parameter sets a field (parameter name) with the value given by an expression (parameter value)"
-        }
+    "extends": {
+        "$ref": "../data/parameters.json"
     }
 }

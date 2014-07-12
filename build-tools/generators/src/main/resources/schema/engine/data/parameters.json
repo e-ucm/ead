@@ -1,0 +1,15 @@
+{
+    "additionalProperties": false,
+    "javaType": "es.eucm.ead.schema.data.Parameters",
+    "type": "object",
+    "description": "An object with parameters",
+    "properties": {
+        "parameters": {
+            "type": "array",
+            "items": {
+                "$ref": "parameter.json"
+            },
+            "description": "Runtime parameters. Each parameter sets a field (parameter name) with the value given by an expression (parameter value)"
+        }
+    }
+}

@@ -3,18 +3,14 @@
     "javaType": "es.eucm.ead.schema.effects.Effect",
     "type": "object",
     "description": "Effects define events that affects/changes the game state.",
+    "extends": {
+        "$ref": "../data/parameters.json"
+    },
     "properties": {
         "target": {
             "type": "string",
             "default": "$_this",
             "description": "Expression that defines which entities this effect has to be applied to. The result of the expression must be an entity or a collection of entities."
-        },
-        "parameters": {
-            "type": "array",
-            "items": {
-                "$ref": "../data/parameter.json"
-            },
-            "description": "Runtime parameters. Each parameter sets a field (parameter name) with the value given by an expression (parameter value)"
         }
     }
 }
