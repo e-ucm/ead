@@ -36,40 +36,47 @@
  */
 package es.eucm.ead.editor.indexes;
 
+import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.reflect.ClassReflection;
 import com.badlogic.gdx.utils.reflect.ReflectionException;
-import es.eucm.ead.editor.EditorTest;
+import es.eucm.ead.editor.control.Controller;
+import es.eucm.ead.engine.I18N;
 import es.eucm.ead.engine.assets.GameAssets;
-import es.eucm.ead.schema.effects.Effect;
-import org.junit.Test;
 
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertTrue;
+public abstract class ModelIndex extends ControllerIndex {
 
-public class EffectsIndexTest extends EditorTest {
+	private Class rootClass;
+
+	protected ModelIndex(Class rootClass) {
+		this.rootClass = rootClass;
+	}
 
 	@SuppressWarnings("unchecked")
-	@Test
-	public void test() throws ReflectionException {
-		FuzzyIndex index = controller.getIndex(EffectsIndex.class);
-
+	@Override
+	public void initialize(Controller controller) {
+		I18N i18N = controller.getApplicationAssets().getI18N();
 		Array<String> bindings = controller.getApplicationAssets()
 				.fromJsonPath(Array.class, GameAssets.ENGINE_BINDINGS);
 
-		assertTrue(index.getTerms().size > 0);
 		String classPackage = null;
 		for (String line : bindings) {
 			if (line.contains(".")) {
 				classPackage = line;
 			} else {
-				Class effectClass = ClassReflection.forName(classPackage + "."
-						+ line);
+				try {
+					Class clazz = ClassReflection.forName(classPackage + "."
+							+ line);
 
-				if (Effect.class != effectClass
-						&& ClassReflection.isAssignableFrom(Effect.class,
-								effectClass)) {
-					assertNotNull(index.getTerm(effectClass));
+					if (clazz != rootClass
+							&& ClassReflection.isAssignableFrom(rootClass,
+									clazz)) {
+						addTerm(i18N.m(clazz.getSimpleName().toLowerCase()),
+								clazz);
+					}
+				} catch (ReflectionException e) {
+					Gdx.app.error("ModelIndex", "No class for " + classPackage
+							+ "." + line, e);
 				}
 			}
 		}

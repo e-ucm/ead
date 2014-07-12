@@ -85,7 +85,7 @@ public class FuzzyIndex {
 	 */
 	public Term getTerm(Object data) {
 		for (Term term : terms) {
-			if (term.data == data) {
+			if (term.data.equals(data)) {
 				return term;
 			}
 		}

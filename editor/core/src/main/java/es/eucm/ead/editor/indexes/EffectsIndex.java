@@ -36,48 +36,15 @@
  */
 package es.eucm.ead.editor.indexes;
 
-import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.utils.Array;
-import com.badlogic.gdx.utils.reflect.ClassReflection;
-import com.badlogic.gdx.utils.reflect.ReflectionException;
-
-import es.eucm.ead.editor.control.Controller;
-import es.eucm.ead.engine.I18N;
-import es.eucm.ead.engine.assets.GameAssets;
 import es.eucm.ead.schema.effects.Effect;
 
 /**
  * An index relating the short string representation of an effect (translated to
  * the current language) and its class
  */
-public class EffectsIndex extends ControllerIndex {
+public class EffectsIndex extends ModelIndex {
 
-	@SuppressWarnings("unchecked")
-	@Override
-	public void initialize(Controller controller) {
-		I18N i18N = controller.getApplicationAssets().getI18N();
-		Array<String> bindings = controller.getApplicationAssets()
-				.fromJsonPath(Array.class, GameAssets.ENGINE_BINDINGS);
-
-		String classPackage = null;
-		for (String line : bindings) {
-			if (line.contains(".")) {
-				classPackage = line;
-			} else {
-				try {
-					Class effectClass = ClassReflection.forName(classPackage
-							+ "." + line);
-
-					if (ClassReflection.isAssignableFrom(Effect.class,
-							effectClass)) {
-						addTerm(i18N.m(effectClass.getSimpleName()),
-								effectClass);
-					}
-				} catch (ReflectionException e) {
-					Gdx.app.error("EffectsIndex", "No class for "
-							+ classPackage + "." + line, e);
-				}
-			}
-		}
+	public EffectsIndex() {
+		super(Effect.class);
 	}
 }

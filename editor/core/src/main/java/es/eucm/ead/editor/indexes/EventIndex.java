@@ -36,42 +36,15 @@
  */
 package es.eucm.ead.editor.indexes;
 
-import com.badlogic.gdx.utils.Array;
-import com.badlogic.gdx.utils.reflect.ClassReflection;
-import com.badlogic.gdx.utils.reflect.ReflectionException;
-import es.eucm.ead.editor.EditorTest;
-import es.eucm.ead.engine.assets.GameAssets;
-import es.eucm.ead.schema.effects.Effect;
-import org.junit.Test;
+import es.eucm.ead.schema.components.behaviors.Event;
 
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertTrue;
+/**
+ * An index relating the short string representation of an {@link Event}
+ * (translated to the current language) and its class
+ */
+public class EventIndex extends ModelIndex {
 
-public class EffectsIndexTest extends EditorTest {
-
-	@SuppressWarnings("unchecked")
-	@Test
-	public void test() throws ReflectionException {
-		FuzzyIndex index = controller.getIndex(EffectsIndex.class);
-
-		Array<String> bindings = controller.getApplicationAssets()
-				.fromJsonPath(Array.class, GameAssets.ENGINE_BINDINGS);
-
-		assertTrue(index.getTerms().size > 0);
-		String classPackage = null;
-		for (String line : bindings) {
-			if (line.contains(".")) {
-				classPackage = line;
-			} else {
-				Class effectClass = ClassReflection.forName(classPackage + "."
-						+ line);
-
-				if (Effect.class != effectClass
-						&& ClassReflection.isAssignableFrom(Effect.class,
-								effectClass)) {
-					assertNotNull(index.getTerm(effectClass));
-				}
-			}
-		}
+	public EventIndex() {
+		super(Event.class);
 	}
 }
