@@ -47,6 +47,6 @@ public class KeyWidget extends EventWidget {
 
 	@Override
 	public String getEventIcon() {
-		return "keyboard48x48";
+		return "key48x48";
 	}
 }

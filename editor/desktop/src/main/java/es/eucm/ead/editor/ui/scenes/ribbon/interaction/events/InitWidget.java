@@ -47,6 +47,6 @@ public class InitWidget extends EventWidget {
 
 	@Override
 	public String getEventIcon() {
-		return "gear48x48";
+		return "init48x48";
 	}
 }
