@@ -52,7 +52,7 @@ public class CutCopyTest extends EditorTest {
 	public void testCopy() {
 		ModelEntity copy = new ModelEntity();
 		copy.setX(15.f);
-		model.getSelection().set(null, Selection.SCENE_ENTITY, copy);
+		model.getSelection().set(null, Selection.SCENE_ELEMENT, copy);
 		controller.action(Copy.class);
 
 		Array clipboard = controller.getEditorGameAssets().fromJson(
@@ -67,7 +67,7 @@ public class CutCopyTest extends EditorTest {
 	public void testCut() {
 		ModelEntity cut = new ModelEntity();
 		cut.setX(15.f);
-		model.getSelection().set(null, Selection.SCENE_ENTITY, cut);
+		model.getSelection().set(null, Selection.SCENE_ELEMENT, cut);
 		controller.action(Cut.class);
 
 		Array clipboard = controller.getEditorGameAssets().fromJson(

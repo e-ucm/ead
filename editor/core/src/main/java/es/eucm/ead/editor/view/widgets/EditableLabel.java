@@ -51,20 +51,31 @@ import com.badlogic.gdx.scenes.scene2d.utils.FocusListener;
  */
 public class EditableLabel extends TextField {
 
-	private float prefWidth;
+	private int tapCount;
 
-	public EditableLabel(String text, Skin skin) {
-		super(text, skin);
-		init();
+	/**
+	 * @param tapCount
+	 *            number of taps that makes this label editable
+	 */
+	public EditableLabel(String text, Skin skin, int tapCount) {
+		this(text, skin.get(TextFieldStyle.class), tapCount);
 	}
 
-	public EditableLabel(String text, Skin skin, String styleName) {
-		super(text, skin, styleName);
-		init();
+	/**
+	 * @param tapCount
+	 *            number of taps that makes this label editable
+	 */
+	public EditableLabel(String text, Skin skin, String styleName, int tapCount) {
+		this(text, skin.get(styleName, TextFieldStyle.class), tapCount);
 	}
 
-	public EditableLabel(String text, TextFieldStyle style) {
+	/**
+	 * @param tapCount
+	 *            number of taps that makes this label editable
+	 */
+	public EditableLabel(String text, TextFieldStyle style, int tapCount) {
 		super(text, style);
+		this.tapCount = tapCount;
 		init();
 	}
 
@@ -73,7 +84,7 @@ public class EditableLabel extends TextField {
 		addListener(new ClickListener() {
 			@Override
 			public void clicked(InputEvent event, float x, float y) {
-				if (getTapCount() == 2) {
+				if (getTapCount() == tapCount) {
 					setDisabled(false);
 					getStage().setKeyboardFocus(EditableLabel.this);
 					selectAll();

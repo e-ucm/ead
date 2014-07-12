@@ -43,8 +43,8 @@ import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.ui.TextArea;
 import com.badlogic.gdx.scenes.scene2d.ui.TextField;
 import com.badlogic.gdx.utils.Array;
-import es.eucm.ead.editor.view.widgets.AbstractWidget;
 import es.eucm.ead.editor.view.widgets.FileWidget;
+import es.eucm.ead.editor.view.widgets.layouts.LinearLayout;
 import es.eucm.ead.editor.view.widgets.options.Option.OptionStyle;
 import es.eucm.ead.engine.gdx.Spinner;
 
@@ -57,18 +57,20 @@ import java.util.Map;
  * the option widget. Depending on the option, this can be a text field, a text
  * area, a spinner, or any other widget.
  */
-public class OptionsPanel extends AbstractWidget {
+public class OptionsPanel extends LinearLayout {
 
-	private Skin skin;
+	protected Skin skin;
 
 	private OptionsPanelStyle style;
 
 	private Array<Option> options;
 
 	public OptionsPanel(Skin skin) {
+		super(false);
 		this.skin = skin;
 		style = skin.get(OptionsPanelStyle.class);
 		options = new Array<Option>();
+		defaultWidgetsMargin(0, style.marginTop, 0, style.marginBottom);
 	}
 
 	/**
@@ -81,8 +83,7 @@ public class OptionsPanel extends AbstractWidget {
 	 * @return the option created
 	 */
 	public Option number(String label, String tooltip) {
-		Option option = new Option(label, tooltip, new Spinner(skin),
-				style.optionStyle);
+		Option option = newOption(label, tooltip, new Spinner(skin));
 		addOption(option);
 		return option;
 	}
@@ -102,7 +103,7 @@ public class OptionsPanel extends AbstractWidget {
 			Map<String, Object> values) {
 		SelectBox<String> selectBox = new SelectBox<String>(skin);
 		selectBox.setItems(values.keySet().toArray(new String[] {}));
-		Option option = new Option(label, tooltip, selectBox, style.optionStyle);
+		Option option = newOption(label, tooltip, selectBox);
 		addOption(option);
 		return option;
 	}
@@ -118,7 +119,7 @@ public class OptionsPanel extends AbstractWidget {
 	 */
 	public Option string(String label, String tooltip) {
 		TextField textField = new TextField("", skin);
-		Option option = new Option(label, tooltip, textField, style.optionStyle);
+		Option option = newOption(label, tooltip, textField);
 		addOption(option);
 		return option;
 	}
@@ -137,7 +138,7 @@ public class OptionsPanel extends AbstractWidget {
 	public Option text(String label, String tooltip, int maxLines) {
 		TextArea textArea = new TextArea("", skin);
 		textArea.setPrefRows(maxLines);
-		Option option = new Option(label, tooltip, textArea, style.optionStyle);
+		Option option = newOption(label, tooltip, textArea);
 		addOption(option);
 		return option;
 	}
@@ -152,8 +153,7 @@ public class OptionsPanel extends AbstractWidget {
 	 * @return the option created
 	 */
 	public Option bool(String label, String tooltip) {
-		Option option = new Option(label, tooltip, new CheckBox("", skin),
-				style.optionStyle);
+		Option option = newOption(label, tooltip, new CheckBox("", skin));
 		addOption(option);
 		return option;
 	}
@@ -175,8 +175,7 @@ public class OptionsPanel extends AbstractWidget {
 		if (maxLength > 0) {
 			fileWidget.getTextField().setMaxLength(maxLength);
 		}
-		Option option = new Option(label, tooltip, fileWidget,
-				style.optionStyle);
+		Option option = newOption(label, tooltip, fileWidget);
 		addOption(option);
 		return option;
 	}
@@ -193,10 +192,17 @@ public class OptionsPanel extends AbstractWidget {
 	 * @return the option created
 	 */
 	public Option custom(String label, String tooltip, Actor optionWidget) {
-		Option option = new Option(label, tooltip, optionWidget,
-				style.optionStyle);
+		Option option = newOption(label, tooltip, optionWidget);
 		addOption(option);
 		return option;
+	}
+
+	/**
+	 * Creates the option. Intended to be override for those classes interestead
+	 * in create other types of options.
+	 */
+	protected Option newOption(String label, String tooltip, Actor optionWidget) {
+		return new Option(label, tooltip, optionWidget, style.optionStyle);
 	}
 
 	/**
@@ -207,42 +213,7 @@ public class OptionsPanel extends AbstractWidget {
 	 */
 	protected void addOption(Option option) {
 		options.add(option);
-		addActor(option);
-	}
-
-	@Override
-	public float getPrefWidth() {
-		float maxLeftWidth = 0;
-		float maxRightWidth = 0;
-		for (Option option : options) {
-			maxLeftWidth = Math.max(option.getLeftPrefWidth(), maxLeftWidth);
-			maxRightWidth = Math.max(option.getRightPrefWidth(), maxRightWidth);
-		}
-		return maxLeftWidth + maxRightWidth;
-	}
-
-	@Override
-	public float getPrefHeight() {
-		return super.getChildrenTotalHeight()
-				+ (style.marginTop + style.marginBottom) * getChildren().size;
-	}
-
-	@Override
-	public void layout() {
-		float maxLabelWidth = 0;
-		for (Option option : options) {
-			maxLabelWidth = Math.max(maxLabelWidth, option.getLeftPrefWidth());
-		}
-
-		float y = getHeight() - style.marginTop;
-		for (Option option : options) {
-			option.setLeftWidth(maxLabelWidth);
-			float height = option.getPrefHeight();
-			float width = getWidth();
-			y -= height;
-			setBounds(option, 0, y, width, height);
-			y -= style.marginBottom + style.marginTop;
-		}
+		add(option).expandX();
 	}
 
 	public static class OptionsPanelStyle {

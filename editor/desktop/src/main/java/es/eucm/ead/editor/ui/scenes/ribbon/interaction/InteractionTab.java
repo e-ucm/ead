@@ -37,22 +37,22 @@
 package es.eucm.ead.editor.ui.scenes.ribbon.interaction;
 
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
-
 import es.eucm.ead.editor.control.Controller;
 import es.eucm.ead.editor.control.actions.model.scene.behaviors.AddBehavior;
+import es.eucm.ead.editor.indexes.EventIndex;
+import es.eucm.ead.editor.indexes.FuzzyIndex.Term;
 import es.eucm.ead.editor.ui.WidgetsUtils;
+import es.eucm.ead.editor.view.widgets.IconButton;
 import es.eucm.ead.editor.view.widgets.Separator;
 import es.eucm.ead.editor.view.widgets.layouts.LinearLayout;
 import es.eucm.ead.engine.I18N;
-import es.eucm.ead.schema.components.behaviors.events.Init;
-import es.eucm.ead.schema.components.behaviors.events.Key;
-import es.eucm.ead.schema.components.behaviors.events.Timer;
-import es.eucm.ead.schema.components.behaviors.events.Touch;
 
 /**
  * Holds interactions buttons
  */
 public class InteractionTab extends LinearLayout {
+
+	public static final String ICON_SIZE = "48x48";
 
 	public static final float DEFAULT_MARGIN = 5;
 
@@ -60,22 +60,18 @@ public class InteractionTab extends LinearLayout {
 		super(true);
 		Skin skin = controller.getApplicationAssets().getSkin();
 		I18N i18N = controller.getApplicationAssets().getI18N();
-		add(WidgetsUtils.createIconWithLabel(controller, "gear48x48", skin,
-				i18N.m("interaction.init"), i18N.m("interaction.init.tooltip"),
-				AddBehavior.class, Init.class));
-		add(WidgetsUtils.createIconWithLabel(controller, "touch48x48", skin,
-				i18N.m("interaction.touch"),
-				i18N.m("interaction.touch.tooltip"), AddBehavior.class,
-				Touch.class));
-		add(WidgetsUtils.createIconWithLabel(controller, "keyboard48x48", skin,
-				i18N.m("interaction.keyboard"),
-				i18N.m("interaction.keyboard.tooltip"), AddBehavior.class,
-				Key.class));
-		add(WidgetsUtils.createIconWithLabel(controller, "timer48x48", skin,
-				i18N.m("interaction.timer"),
-				i18N.m("interaction.timer.tooltip"), AddBehavior.class,
-				Timer.class));
 
+		EventIndex events = controller.getIndex(EventIndex.class);
+		for (Term term : events.getTerms()) {
+			Class eventClass = (Class) term.getData();
+			String eventPrefix = eventClass.getSimpleName().toLowerCase();
+			IconButton iconButton = WidgetsUtils.createIconWithLabel(
+					controller, eventPrefix + ICON_SIZE, skin,
+					term.getTermString(), i18N.m(eventPrefix + ".tooltip"),
+					AddBehavior.class, eventClass);
+			iconButton.setName(eventPrefix);
+			add(iconButton);
+		}
 		add(new Separator(false, skin)).margin(DEFAULT_MARGIN);
 		add(new BehaviorsSelector(controller));
 	}

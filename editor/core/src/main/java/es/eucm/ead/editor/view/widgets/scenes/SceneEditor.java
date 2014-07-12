@@ -199,7 +199,7 @@ public abstract class SceneEditor extends AbstractWidget {
 		Array actors = Pools.obtain(Array.class);
 		actors.clear();
 		SnapshotArray<Object> selection = model.getSelection().get(
-				Selection.SCENE_ENTITY);
+				Selection.SCENE_ELEMENT);
 		Object[] objects = selection.begin();
 		for (int i = 0; i < selection.size; i++) {
 			if (objects[i] instanceof ModelEntity) {
@@ -335,9 +335,9 @@ public abstract class SceneEditor extends AbstractWidget {
 
 	private class SceneSelectionListener implements SelectionListener {
 
-		private final Array<String> CONTEXTS = new Array<String>(
-				new String[] { Selection.SCENE, Selection.EDITED_GROUP,
-						Selection.SCENE_ENTITY });
+		private final Array<String> CONTEXTS = new Array<String>(new String[] {
+				Selection.SCENE, Selection.EDITED_GROUP,
+				Selection.SCENE_ELEMENT });
 
 		@Override
 		public boolean listenToContext(String contextId) {
@@ -351,35 +351,10 @@ public abstract class SceneEditor extends AbstractWidget {
 				readSceneContext();
 			} else if (Selection.EDITED_GROUP.equals(context)) {
 				readEditedGroup();
-			} else if (Selection.SCENE_ENTITY.equals(context)) {
+			} else if (Selection.SCENE_ELEMENT.equals(context)) {
 				readSelection();
 			}
 		}
-	}
-
-	/**
-	 * Finds an actor that fulfills the given predicate, starting the search in
-	 * the given root
-	 * 
-	 * @return the actor found. Could be {@code null} if no actor matched the
-	 *         predicate
-	 */
-	public Actor findActor(Group root, Predicate<Actor> predicate) {
-		if (predicate.evaluate(root)) {
-			return root;
-		}
-
-		for (Actor child : root.getChildren()) {
-			if (predicate.evaluate(child)) {
-				return child;
-			} else if (child instanceof Group) {
-				Actor actor = findActor((Group) child, predicate);
-				if (actor != null) {
-					return actor;
-				}
-			}
-		}
-		return null;
 	}
 
 	public class ModelEntityPredicate implements Predicate<Actor> {

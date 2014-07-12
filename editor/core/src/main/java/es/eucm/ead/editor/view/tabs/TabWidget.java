@@ -125,13 +125,14 @@ public class TabWidget extends AbstractWidget {
 	/**
 	 * Sets the widget with the contents for the tab
 	 */
-	public void setContent(WidgetGroup content) {
+	public TabWidget setContent(WidgetGroup content) {
 		if (this.content != null) {
 			this.content.remove();
 		}
 		this.content = content;
 		this.contentPrefHeight = getPrefHeight(content);
 		addActor(content);
+		return this;
 	}
 
 	public float getTitlePrefWidth() {

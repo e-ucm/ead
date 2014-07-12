@@ -37,28 +37,51 @@
 package es.eucm.ead.editor.ui.scenes.ribbon;
 
 import es.eucm.ead.editor.control.Controller;
+import es.eucm.ead.editor.control.Selection;
+import es.eucm.ead.editor.model.Model.SelectionListener;
+import es.eucm.ead.editor.model.events.SelectionEvent;
+import es.eucm.ead.editor.model.events.SelectionEvent.Type;
 import es.eucm.ead.editor.ui.scenes.ribbon.interaction.InteractionTab;
+import es.eucm.ead.editor.view.tabs.TabWidget;
 import es.eucm.ead.editor.view.tabs.TabsPanel;
 import es.eucm.ead.engine.I18N;
 
 /**
  * Created by angel on 22/05/14.
  */
-public class SceneRibbon extends TabsPanel {
+public class SceneRibbon extends TabsPanel implements SelectionListener {
+
+	private TabWidget insertTab;
+
+	private TabWidget formatTab;
 
 	public SceneRibbon(Controller controller) {
 		super(controller.getApplicationAssets().getSkin());
+		controller.getModel().addSelectionListener(this);
 
 		setBackground(skin.getDrawable("blank"));
 
 		I18N i18N = controller.getApplicationAssets().getI18N();
 
-		addTab(i18N.m("scene.insert").toUpperCase()).setContent(
+		insertTab = addTab(i18N.m("scene.insert").toUpperCase()).setContent(
 				new InsertTab(controller));
-		addTab(i18N.m("scene.format").toUpperCase()).setContent(
+		formatTab = addTab(i18N.m("scene.format").toUpperCase()).setContent(
 				new FormatTab(controller));
 		addTab(i18N.m("scene.interaction").toUpperCase()).setContent(
 				new InteractionTab(controller));
 	}
 
+	@Override
+	public boolean listenToContext(String contextId) {
+		return Selection.SCENE_ELEMENT.equals(contextId);
+	}
+
+	@Override
+	public void modelChanged(SelectionEvent event) {
+		if (event.getType() == Type.FOCUSED && event.getSelection().size > 0) {
+			if (getSelectedTab() == insertTab) {
+				setSelectedTab(formatTab);
+			}
+		}
+	}
 }

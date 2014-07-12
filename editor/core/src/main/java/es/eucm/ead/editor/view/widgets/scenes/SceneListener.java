@@ -69,7 +69,7 @@ public class SceneListener extends GroupListener {
 	public void selectionUpdated(GroupEvent groupEvent, Array<Actor> selection) {
 		Object[] arguments = new Object[selection.size + 2];
 		arguments[0] = Selection.EDITED_GROUP;
-		arguments[1] = Selection.SCENE_ENTITY;
+		arguments[1] = Selection.SCENE_ELEMENT;
 		int i = 2;
 		for (Actor actor : selection) {
 			arguments[i++] = Q.getModelEntity(actor);

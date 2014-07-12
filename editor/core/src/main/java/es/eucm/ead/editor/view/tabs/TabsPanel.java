@@ -53,6 +53,8 @@ public class TabsPanel extends AbstractWidget {
 
 	private Drawable background;
 
+	private TabWidget selectedTab;
+
 	public TabsPanel(Skin skin) {
 		this.tabs = new Array<TabWidget>();
 		this.skin = skin;
@@ -89,9 +91,19 @@ public class TabsPanel extends AbstractWidget {
 	 * Sets the given tab as selected and unselects the current selected
 	 */
 	public void setSelectedTab(TabWidget selectedTab) {
-		for (TabWidget tab : tabs) {
-			tab.setSelected(tab == selectedTab);
+		if (tabs.contains(selectedTab, true)) {
+			this.selectedTab = selectedTab;
+			for (TabWidget tab : tabs) {
+				tab.setSelected(tab == selectedTab);
+			}
 		}
+	}
+
+	/**
+	 * @return the current selected tab
+	 */
+	public TabWidget getSelectedTab() {
+		return selectedTab;
 	}
 
 	@Override

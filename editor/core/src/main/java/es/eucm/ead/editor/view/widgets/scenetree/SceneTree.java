@@ -212,7 +212,8 @@ public class SceneTree extends LinearLayout {
 			});
 
 			// Editable label with the name of the node
-			nameField = new EditableLabel(name, sceneTreeStyle.textFieldStyle);
+			nameField = new EditableLabel(name, sceneTreeStyle.textFieldStyle,
+					2);
 			nameField.addListener(new InputListener() {
 				@Override
 				public boolean keyTyped(InputEvent event, char character) {

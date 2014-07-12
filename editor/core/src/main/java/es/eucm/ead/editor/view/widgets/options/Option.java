@@ -45,26 +45,28 @@ import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.scenes.scene2d.ui.Label.LabelStyle;
 import com.badlogic.gdx.scenes.scene2d.utils.Drawable;
 import es.eucm.ead.editor.view.tooltips.Tooltip;
-import es.eucm.ead.editor.view.widgets.AbstractWidget;
+import es.eucm.ead.editor.view.widgets.PlaceHolder;
+import es.eucm.ead.editor.view.widgets.layouts.LinearLayout;
 
 /**
  * Represents a row in an {@link OptionsPanel}. Contains a label, an optional
  * tooltip (in the left column) and the option widget itself (in the right
  * column).
  */
-public class Option extends AbstractWidget {
+public class Option extends LinearLayout {
 
-	private OptionStyle style;
+	protected OptionStyle style;
 
 	private Label title;
 
 	private ImageTooltip tooltipButton;
 
+	protected PlaceHolder optionContainer;
+
+	protected Actor optionWidget;
+
 	private Label errorMessage;
 
-	private Actor optionWidget;
-
-	private float leftWidth;
 	private boolean valid;
 
 	/**
@@ -91,19 +93,18 @@ public class Option extends AbstractWidget {
 	 */
 	public Option(String label, String tooltip, Actor optionWidget,
 			OptionStyle style) {
+		super(true);
 		this.style = style;
+		defaultWidgetsMargin(style.marginLeft, style.marginTop,
+				style.marginRight, style.marginBottom);
+		init(label, tooltip, optionWidget);
+	}
 
-		if (label != null) {
-			label(label);
-		}
-
-		if (tooltip != null) {
-			tooltip(tooltip);
-		}
-
-		if (optionWidget != null) {
-			option(optionWidget);
-		}
+	protected void init(String label, String tooltip, Actor optionWidget) {
+		tooltip(tooltip);
+		label(label);
+		addSpace();
+		option(optionWidget);
 	}
 
 	/**
@@ -149,9 +150,9 @@ public class Option extends AbstractWidget {
 		if (title == null) {
 			title = new Label(label,
 					new LabelStyle(style.font, style.fontColor));
-			addActor(title);
+			add(title);
 		}
-		title.setText(label);
+		title.setText(label == null ? "" : label);
 		return this;
 	}
 
@@ -165,9 +166,27 @@ public class Option extends AbstractWidget {
 	public Option tooltip(String text) {
 		if (tooltipButton == null) {
 			tooltipButton = new ImageTooltip(style.tooltipIcon);
-			addActor(tooltipButton);
+			add(tooltipButton);
 		}
+		tooltipButton.setVisible(text != null);
 		tooltipButton.setTooltip(text);
+		return this;
+	}
+
+	/**
+	 * Sets the option widget for the option
+	 * 
+	 * @param option
+	 *            the widget
+	 * @return this option
+	 */
+	public Option option(Actor option) {
+		if (optionContainer == null) {
+			optionContainer = new PlaceHolder();
+			add(optionContainer);
+		}
+		this.optionWidget = option;
+		optionContainer.setContent(option);
 		return this;
 	}
 
@@ -184,56 +203,6 @@ public class Option extends AbstractWidget {
 		return this;
 	}
 
-	/**
-	 * Sets the option widget for the option
-	 * 
-	 * @param option
-	 *            the widget
-	 * @return this option
-	 */
-	public Option option(Actor option) {
-		if (this.optionWidget != null) {
-			optionWidget.remove();
-		}
-		this.optionWidget = option;
-		addActor(option);
-		return this;
-	}
-
-	/**
-	 * Sets the width for the left column of the option
-	 * 
-	 * @param leftWidth
-	 *            the width
-	 */
-	void setLeftWidth(float leftWidth) {
-		this.leftWidth = leftWidth;
-	}
-
-	/**
-	 * @return Returns the preferred width for the left column of this option
-	 */
-	float getLeftPrefWidth() {
-		return title.getPrefWidth()
-				+ (tooltipButton == null ? 0 : tooltipButton.getPrefWidth())
-				+ style.pad + style.margin / 2.0f;
-	}
-
-	public float getRightPrefWidth() {
-		return getPrefWidth(optionWidget) + style.pad + style.margin / 2.0f;
-	}
-
-	@Override
-	public float getPrefWidth() {
-		return getLeftPrefWidth() + getRightPrefWidth();
-	}
-
-	@Override
-	public float getPrefHeight() {
-		return Math.max(title.getPrefHeight(), getPrefHeight(optionWidget))
-				+ style.pad * 2;
-	}
-
 	@Override
 	public void draw(Batch batch, float parentAlpha) {
 		if (!isValid()) {
@@ -241,37 +210,6 @@ public class Option extends AbstractWidget {
 					getHeight());
 		}
 		super.draw(batch, parentAlpha);
-	}
-
-	@Override
-	public void layout() {
-		// Left side
-		// Title
-		float width = title.getPrefWidth();
-		float x = leftWidth - width;
-		float height = title.getPrefHeight();
-		float y = (getHeight() - height) / 2.0f;
-		setBounds(title, x, y, width, height);
-
-		// Tooltip
-		if (tooltipButton != null) {
-			width = tooltipButton.getPrefWidth();
-			x = leftWidth - width - title.getWidth();
-			height = tooltipButton.getPrefHeight();
-			y = (getHeight() - height) / 2.0f;
-			setBounds(tooltipButton, x, y, width, height);
-		}
-		// Option
-		width = Math.max(getWidth() - leftWidth - style.pad - style.margin
-				/ 2.0f, getPrefWidth(optionWidget));
-		x = leftWidth + style.margin / 2.0f;
-		height = getPrefHeight(optionWidget);
-		y = (getHeight() - height) / 2.0f;
-		optionWidget.setBounds(x, y, width, height);
-		// Error
-		if (errorMessage != null) {
-			errorMessage.setPosition(leftWidth + style.margin / 2.0f, 0);
-		}
 	}
 
 	public static class OptionStyle {
@@ -288,18 +226,13 @@ public class Option extends AbstractWidget {
 		public BitmapFont font, errorFont;
 		public Color fontColor, errorFontColor;
 
-		/**
-		 * f* Padding of the option as a row
-		 */
-		public float pad = 10.0f;
-
-		/**
-		 * Margin between the label and the option widget
-		 */
-		public float margin = 10.0f;
+		public float marginLeft = 2.5f;
+		public float marginRight = 2.5f;
+		public float marginTop = 2.5f;
+		public float marginBottom = 2.5f;
 	}
 
-	public class ImageTooltip extends Image implements Tooltip {
+	public static class ImageTooltip extends Image implements Tooltip {
 
 		private String tooltip;
 

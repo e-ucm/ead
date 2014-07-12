@@ -81,6 +81,8 @@ import java.util.Map.Entry;
  */
 public class PerspectiveButtons extends LinearLayout {
 
+	public static final String SCENE_SELECTOR = "perspectivebuttons.sceneselector";
+
 	public static final int BUTTONS_IMAGE_PADDING = 5;
 
 	public static final int BUTTONS_PADDING = 5;
@@ -144,7 +146,9 @@ public class PerspectiveButtons extends LinearLayout {
 	}
 
 	private Actor createScenesButton(Skin skin) {
-		return scenesButton = new IconButton("arrow-down-dark", skin);
+		scenesButton = new IconButton("arrow-down-dark", skin);
+		scenesButton.setName(SCENE_SELECTOR);
+		return scenesButton;
 	}
 
 	private void refreshScenes() {
@@ -153,6 +157,7 @@ public class PerspectiveButtons extends LinearLayout {
 		scenesContextMenu.clearChildren();
 		model.removeListenerFromAllTargets(nameListener);
 
+		int i = 0;
 		for (Entry<String, Object> sceneEntry : model.getResources(
 				ResourceCategory.SCENE).entrySet()) {
 
@@ -166,6 +171,7 @@ public class PerspectiveButtons extends LinearLayout {
 			item.addListener(new ActionOnDownListener(controller,
 					ChangeView.class, SceneView.class, sceneEntry.getKey()));
 			item.setUserObject(scene);
+			item.setName(SCENE_SELECTOR + i++);
 
 			items.put(scene, item);
 

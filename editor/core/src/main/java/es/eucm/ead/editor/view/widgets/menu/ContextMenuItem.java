@@ -79,7 +79,7 @@ public class ContextMenuItem extends AbstractWidget implements Disableable {
 	/**
 	 * Creates a context menu item
 	 * 
-	 * @param parentContextMenu
+	 * @param parent
 	 *            context menu item parent
 	 * @param text
 	 *            text for the item
@@ -238,10 +238,10 @@ public class ContextMenuItem extends AbstractWidget implements Disableable {
 					width, height);
 		}
 		float yOffset = style.padBottom + style.font.getDescent() / 4.0f;
-		label.setPosition(style.padLeft + style.labelMarginLeft, yOffset);
+		setPosition(label, style.padLeft + style.labelMarginLeft, yOffset);
 
 		if (shortcutLabel != null) {
-			shortcutLabel.setPosition(getWidth() - shortcutLabel.getWidth()
+			setPosition(shortcutLabel, getWidth() - shortcutLabel.getWidth()
 					- style.margin - style.shortcutMargin, yOffset);
 		}
 

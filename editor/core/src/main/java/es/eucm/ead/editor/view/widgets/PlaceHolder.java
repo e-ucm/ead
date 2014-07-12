@@ -58,6 +58,10 @@ public class PlaceHolder extends AbstractWidget {
 		addActor(content);
 	}
 
+	public Actor getContent() {
+		return content;
+	}
+
 	@Override
 	protected void drawChildren(Batch batch, float parentAlpha) {
 		if (background != null) {

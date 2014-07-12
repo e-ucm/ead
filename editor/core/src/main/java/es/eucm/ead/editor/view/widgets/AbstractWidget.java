@@ -37,12 +37,16 @@
 package es.eucm.ead.editor.view.widgets;
 
 import com.badlogic.gdx.scenes.scene2d.Actor;
+import com.badlogic.gdx.scenes.scene2d.Group;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.InputListener;
 import com.badlogic.gdx.scenes.scene2d.ui.Widget;
 import com.badlogic.gdx.scenes.scene2d.ui.WidgetGroup;
+import com.badlogic.gdx.utils.Predicate;
 
 public class AbstractWidget extends WidgetGroup {
+
+	private static final UserObjectPredicate USER_OBJECT_PREDICATE = new UserObjectPredicate();
 
 	private static final InputListener requestFocus = new InputListener() {
 
@@ -217,5 +221,53 @@ public class AbstractWidget extends WidgetGroup {
 	public void setBounds(Actor a, float x, float y, float width, float height) {
 		a.setBounds(Math.round(x), Math.round(y), Math.round(width),
 				Math.round(height));
+	}
+
+	/**
+	 * Finds an actor that fulfills the given predicate, starting the search in
+	 * the given root
+	 * 
+	 * @return the actor found. Could be {@code null} if no actor matched the
+	 *         predicate
+	 */
+	public Actor findActor(Group root, Predicate<Actor> predicate) {
+		if (predicate.evaluate(root)) {
+			return root;
+		}
+
+		for (Actor child : root.getChildren()) {
+			if (predicate.evaluate(child)) {
+				return child;
+			} else if (child instanceof Group) {
+				Actor actor = findActor((Group) child, predicate);
+				if (actor != null) {
+					return actor;
+				}
+			}
+		}
+		return null;
+	}
+
+	/**
+	 * Returns a child widget whose user object is the given one
+	 */
+	public Actor findUserObject(Object userObject) {
+		USER_OBJECT_PREDICATE.setUserObject(userObject);
+		return findActor(this, USER_OBJECT_PREDICATE);
+	}
+
+	public static class UserObjectPredicate implements Predicate<Actor> {
+
+		private Object userObject;
+
+		public void setUserObject(Object userObject) {
+			this.userObject = userObject;
+		}
+
+		@Override
+		public boolean evaluate(Actor actor) {
+			return actor.getUserObject() == userObject;
+		}
+
 	}
 }

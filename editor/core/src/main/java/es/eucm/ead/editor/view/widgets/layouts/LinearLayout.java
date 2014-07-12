@@ -116,6 +116,8 @@ public class LinearLayout extends AbstractWidget {
 
 	private Drawable background;
 
+	private Color backgroundColor = Color.WHITE;
+
 	protected Array<Constraints> constraints;
 
 	protected Insets padding;
@@ -146,6 +148,14 @@ public class LinearLayout extends AbstractWidget {
 	 */
 	public LinearLayout background(Drawable background) {
 		this.background = background;
+		return this;
+	}
+
+	/**
+	 * Sets the color for the background
+	 */
+	public LinearLayout backgroundColor(Color color) {
+		this.backgroundColor = color;
 		return this;
 	}
 
@@ -194,13 +204,21 @@ public class LinearLayout extends AbstractWidget {
 	public Constraints add(int index, Actor actor) {
 		Constraints c = new Constraints(actor);
 		c.margin.set(defaultMargin);
-		if (index == -1) {
-			constraints.add(c);
-			addActor(actor);
+
+		if (horizontal) {
+			if (index == -1) {
+				index = getChildren().size;
+			}
 		} else {
-			constraints.insert(index, c);
-			addActorAt(index, actor);
+			if (index == -1) {
+				index = 0;
+			} else {
+				index = getChildren().size - index;
+			}
 		}
+
+		constraints.insert(index, c);
+		addActorAt(index, actor);
 		return c;
 	}
 
@@ -212,7 +230,7 @@ public class LinearLayout extends AbstractWidget {
 	 * @return the constraints for the widget
 	 */
 	public Constraints add(Actor actor) {
-		return add(horizontal ? -1 : 0, actor);
+		return add(-1, actor);
 	}
 
 	/**
@@ -225,9 +243,10 @@ public class LinearLayout extends AbstractWidget {
 
 	@Override
 	protected void drawChildren(Batch batch, float parentAlpha) {
-		batch.setColor(Color.WHITE);
 		if (background != null) {
+			batch.setColor(backgroundColor);
 			background.draw(batch, 0, 0, getWidth(), getHeight());
+			batch.setColor(Color.WHITE);
 		}
 		super.drawChildren(batch, parentAlpha);
 	}
