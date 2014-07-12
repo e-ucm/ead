@@ -77,8 +77,8 @@ public class SceneNamesIndex extends ControllerIndex implements
 				addScene(event.getId(), (ModelEntity) event.getResource());
 				break;
 			case REMOVED:
-				removeTerm(event.getId(),
-						Q.getName((ModelEntity) event.getResource(), ""));
+				removeTerm(Q.getName((ModelEntity) event.getResource(), ""),
+						event.getId());
 				break;
 			}
 		}

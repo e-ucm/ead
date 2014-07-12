@@ -36,7 +36,7 @@
  */
 package es.eucm.ead.editor.actions.model.scene;
 
-import es.eucm.ead.editor.control.ActionsTest;
+import es.eucm.ead.editor.actions.ActionTest;
 import es.eucm.ead.editor.control.Selection;
 import es.eucm.ead.editor.control.actions.model.SetSelection;
 import es.eucm.ead.editor.control.actions.model.scene.ReorderSelection;
@@ -48,7 +48,7 @@ import org.junit.Test;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
-public class ReorderSelectionTest extends ActionsTest {
+public class ReorderSelectionTest extends ActionTest {
 
 	private ModelEntity scene;
 
