@@ -73,7 +73,7 @@ public class GoSceneExecutor extends EffectExecutor<GoScene> {
 			}
 		}
 
-		entitiesLoader.loadEntity(effect.getName(),
+		entitiesLoader.loadEntity(effect.getSceneId(),
 				new EntitiesLoader.EntityLoadedCallback() {
 					@Override
 					public void loaded(String path, EngineEntity engineEntity) {

@@ -34,7 +34,7 @@
                 },
                 "effects": [{
                     "class": "goscene",
-                    "name": "scenes/scene2.json"
+                    "sceneId": "scenes/scene2.json"
                 }]
             }, {
                 "class": "behavior",
@@ -44,7 +44,7 @@
                 },
                 "effects": [{
                     "class": "goscene",
-                    "name": "scenes/scene2.json"
+                    "sceneId": "scenes/scene2.json"
                 }]
             }]
         }

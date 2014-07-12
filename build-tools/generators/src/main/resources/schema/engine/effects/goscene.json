@@ -5,8 +5,12 @@
     },
     "javaType": "es.eucm.ead.schema.effects.GoScene",
     "properties": {
-        "name": {
-            "description": "Name of the scene",
+        "sceneId": {
+            "javaAnnotation": {
+                "class": "es.eucm.ead.schemax.Search",
+                "index": "es.eucm.ead.editor.indexes.SceneNamesIndex"
+            },
+            "description": "Id of the scene",
             "type": "string"
         }
     },
