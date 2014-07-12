@@ -34,70 +34,52 @@
  *      You should have received a copy of the GNU Lesser General Public License
  *      along with eAdventure.  If not, see <http://www.gnu.org/licenses/>.
  */
-package es.eucm.ead.editor.control.actions.model;
+package es.eucm.ead.editor.control.actions.model.parameters;
 
-import es.eucm.ead.editor.control.Controller;
-import es.eucm.ead.editor.control.Selection;
+import com.badlogic.gdx.utils.Array;
+
 import es.eucm.ead.editor.control.actions.ModelAction;
-import es.eucm.ead.editor.control.commands.CompositeCommand;
+import es.eucm.ead.editor.control.commands.Command;
 import es.eucm.ead.editor.control.commands.FieldCommand;
 import es.eucm.ead.editor.control.commands.ListCommand.AddToListCommand;
-import es.eucm.ead.editor.model.Q;
-import es.eucm.ead.schema.editor.components.Parent;
-import es.eucm.ead.schema.entities.ModelEntity;
+import es.eucm.ead.schema.data.Parameter;
+import es.eucm.ead.schema.data.Parameters;
 import es.eucm.ead.schemax.FieldName;
 
 /**
- * <p>
- * Adds a scene element to the current edited scene, and sets it as the
- * {@link Selection#SCENE_ELEMENT} context
- * </p>
+ * Sets the value of a parameter in an {@link Parameters}. If the parameter does
+ * not exist, it is automatically created.
  * <dl>
  * <dt><strong>Arguments</strong></dt>
- * <dd><strong>args[0]</strong> <em>SceneElement</em> the scene element to add
- * list</dd>
+ * <dd><strong>args[0]</strong> <em>{@link Parameters}</em> Object with the
+ * parameters</dd>
+ * <dd><strong>args[1]</strong> <em>{@link String}</em> Parameter name</dd>
+ * <dd><strong>args[2]</strong> <em>{@link String}</em> Parameter value</dd>
  * </dl>
  */
-public class AddSceneElement extends ModelAction {
+public class SetParameter extends ModelAction {
 
-	private SetSelection setSelection;
-
-	public AddSceneElement() {
-		super(true, false, ModelEntity.class);
+	public SetParameter() {
+		super(true, false, Parameters.class, String.class, String.class);
 	}
 
 	@Override
-	public void initialize(Controller controller) {
-		super.initialize(controller);
-		setSelection = controller.getActions().getAction(SetSelection.class);
-	}
+	public Command perform(Object... args) {
+		Parameters parent = (Parameters) args[0];
+		Array<Parameter> parameters = parent.getParameters();
+		String field = (String) args[1];
+		String value = (String) args[2];
 
-	@Override
-	public CompositeCommand perform(Object... args) {
-		ModelEntity sceneElement = (ModelEntity) args[0];
-		Object context = controller.getModel().getSelection()
-				.getSingle(Selection.EDITED_GROUP);
-
-		if (context instanceof ModelEntity) {
-
-			ModelEntity root = (ModelEntity) context;
-
-			CompositeCommand compositeCommand = new CompositeCommand();
-			compositeCommand.addCommand(new AddToListCommand(root, root
-					.getChildren(), sceneElement));
-
-			compositeCommand.addCommand(setSelection.perform(
-					Selection.EDITED_GROUP, Selection.SCENE_ELEMENT,
-					sceneElement));
-
-			Parent parent = Q.getComponent(sceneElement, Parent.class);
-			compositeCommand.addCommand(new FieldCommand(parent,
-					FieldName.PARENT, root));
-
-			return compositeCommand;
-		} else {
-			return null;
+		for (Parameter parameter : parameters) {
+			if (parameter.getName().equals(field)) {
+				return new FieldCommand(parameter, FieldName.VALUE, value);
+			}
 		}
-	}
 
+		Parameter parameter = new Parameter();
+		parameter.setName(field);
+		parameter.setValue(value);
+
+		return new AddToListCommand(parent, parameters, parameter);
+	}
 }

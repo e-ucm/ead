@@ -43,7 +43,9 @@ import com.badlogic.gdx.utils.reflect.ReflectionException;
 import es.eucm.ead.editor.control.Controller;
 import es.eucm.ead.editor.control.Selection;
 import es.eucm.ead.editor.control.actions.ModelAction;
+import es.eucm.ead.editor.control.actions.model.SetSelection;
 import es.eucm.ead.editor.control.commands.Command;
+import es.eucm.ead.editor.control.commands.CompositeCommand;
 import es.eucm.ead.editor.control.commands.ListCommand.AddToListCommand;
 import es.eucm.ead.editor.model.Model.SelectionListener;
 import es.eucm.ead.editor.model.events.SelectionEvent;
@@ -53,7 +55,8 @@ import es.eucm.ead.schema.entities.ModelEntity;
 
 /**
  * Adds an empty behavior to the selected model entity, with the specified event
- * as trigger
+ * as trigger, and sets the new behavior as the current selection in
+ * {@link Selection#BEHAVIOR}
  * <dl>
  * <dt><strong>Arguments</strong></dt>
  * <dd><strong>args[0]</strong> <em>{@link Class} or {@link Behavior}</em> the
@@ -63,6 +66,8 @@ import es.eucm.ead.schema.entities.ModelEntity;
  */
 public class AddBehavior extends ModelAction implements SelectionListener {
 
+	private SetSelection setSelection;
+
 	public AddBehavior() {
 		super(false, false, new Class[] { Class.class },
 				new Class[] { Behavior.class });
@@ -71,6 +76,7 @@ public class AddBehavior extends ModelAction implements SelectionListener {
 	@Override
 	public void initialize(Controller controller) {
 		super.initialize(controller);
+		setSelection = controller.getActions().getAction(SetSelection.class);
 		controller.getModel().addSelectionListener(this);
 		updateEnabled();
 	}
@@ -92,7 +98,7 @@ public class AddBehavior extends ModelAction implements SelectionListener {
 	@Override
 	public Command perform(Object... args) {
 		ModelEntity modelEntity = (ModelEntity) controller.getModel()
-				.getSelection().getSingle(Selection.SCENE_ENTITY);
+				.getSelection().getSingle(Selection.SCENE_ELEMENT);
 
 		Behavior behavior;
 		if (args[0] instanceof Class) {
@@ -109,8 +115,12 @@ public class AddBehavior extends ModelAction implements SelectionListener {
 		} else {
 			behavior = (Behavior) args[0];
 		}
-		return new AddToListCommand(modelEntity, modelEntity.getComponents(),
-				behavior);
+		CompositeCommand compositeCommand = new CompositeCommand();
+		compositeCommand.addCommand(new AddToListCommand(modelEntity,
+				modelEntity.getComponents(), behavior));
+		compositeCommand.addCommand(setSelection.perform(
+				Selection.SCENE_ELEMENT, Selection.BEHAVIOR, behavior));
+		return compositeCommand;
 	}
 
 	public boolean listenToContext(String contextId) {
@@ -124,6 +134,6 @@ public class AddBehavior extends ModelAction implements SelectionListener {
 
 	private void updateEnabled() {
 		setEnabled(controller.getModel().getSelection()
-				.getSingle(Selection.SCENE_ENTITY) != null);
+				.getSingle(Selection.SCENE_ELEMENT) != null);
 	}
 }
