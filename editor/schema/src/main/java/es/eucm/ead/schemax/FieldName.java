@@ -136,6 +136,15 @@ public class FieldName {
 	/**
 	 * Refers to {@link Frames#sequence}
 	 */
-	SEQUENCE = "sequence";
+	SEQUENCE = "sequence",
 
+	/**
+	 * Refers to {@link es.eucm.ead.schema.effects.Effect#target}
+	 */
+	TARGET = "target",
+
+	/**
+	 * Refers to {@link es.eucm.ead.schema.data.Parameter#value}
+	 */
+	VALUE = "value";
 }

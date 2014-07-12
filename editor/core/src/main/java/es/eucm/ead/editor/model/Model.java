@@ -406,11 +406,16 @@ public class Model {
 	 * Removes from the target listener the given listener
 	 * 
 	 * @param target
-	 *            the target object that the given listener is listening to
+	 *            the target object that the given listener is listening to. Can
+	 *            be null
 	 * @param listener
 	 *            the listener to remove
 	 */
 	public void removeListener(Object target, ModelListener listener) {
+		if (target == null) {
+			return;
+		}
+
 		Array<ModelListener> listeners = this.listeners.get(target);
 		if (listeners != null) {
 			listeners.removeValue(listener, true);
