@@ -32,6 +32,12 @@
             "g": 1,
             "b": 1
         },
+        "white-almosttransparent": {
+            "a": 0.2,
+            "r": 1,
+            "g": 1,
+            "b": 1
+        },
         "black": {
             "a": 1,
             "r": 0,
@@ -175,6 +181,10 @@
         "spinner-down-pressed": {
             "name": "spinnerdown",
             "color": "color-spinner-pressed"
+        },
+        "edit-transparent": {
+            "name": "edit24x24",
+            "color": "white-almosttransparent"
         }
     },
     "com.badlogic.gdx.scenes.scene2d.ui.Label$LabelStyle": {
@@ -369,6 +379,40 @@
                 "fontColor": "black",
                 "errorFontColor": "white"
             }
+        }
+    },
+    "es.eucm.ead.editor.view.widgets.options.ParameterOption$ParameterOptionStyle": {
+        "default": {
+            "tooltipIcon": "help",
+            "invalidBackground": "bg-red",
+            "font": "regular",
+            "errorFont": "regular",
+            "fontColor": "black",
+            "errorFontColor": "white",
+            "parameterButton": {
+                "imageUp": "expression",
+                "up": "bg-transparent",
+                "over": "bg-light",
+                "down": "bg-dark",
+                "checked": "bg-dark"
+            }
+        }
+    },
+    "es.eucm.ead.editor.view.ui.effects.EffectWidget$EffectWidgetStyle": {
+        "default": {
+            "editButton": {
+                "up": "edit-transparent",
+                "over": "edit24x24",
+            },
+            "background": "blank-blackoutline1"
+        }
+    },
+    "es.eucm.ead.editor.view.widgets.SearchWidget$SearchWidgetStyle": {
+        "default": {
+            "searchIcon": "help",
+            "background": "blank-blackoutline1",
+            "font": "regular",
+            "fontColor": "black"
         }
     }
 }
