@@ -161,6 +161,10 @@ public class Views {
 		viewsContainer.getStage().setKeyboardFocus(actor);
 	}
 
+	public void setScrollFocus(Actor actor) {
+		viewsContainer.getStage().setScrollFocus(actor);
+	}
+
 	private <T extends Builder> T getBuilder(Class<T> viewClass,
 			Map viewsBuilders) {
 		Builder builder = (Builder) viewsBuilders.get(viewClass);
@@ -274,6 +278,8 @@ public class Views {
 		}
 
 		modalsContainer.addActor(contextMenu);
+		setKeyboardFocus(contextMenu);
+		setScrollFocus(contextMenu);
 		currentContextMenu = contextMenu;
 		modalsContainer.addListener(closeContextMenu);
 	}
