@@ -39,12 +39,7 @@ package es.eucm.ead.editor.ui.scenes.ribbon.interaction.events;
 import com.badlogic.gdx.scenes.scene2d.ui.Image;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import es.eucm.ead.editor.control.Controller;
-import es.eucm.ead.editor.control.actions.model.SetField;
-import es.eucm.ead.editor.model.Model.FieldListener;
-import es.eucm.ead.editor.model.events.FieldEvent;
-import es.eucm.ead.editor.view.controllers.OptionsController.ChangeListener;
-import es.eucm.ead.editor.view.controllers.ReflectionOptionsController;
-import es.eucm.ead.editor.view.controllers.options.OptionController;
+import es.eucm.ead.editor.view.controllers.ClassOptionsController;
 import es.eucm.ead.editor.view.widgets.layouts.LinearLayout;
 import es.eucm.ead.engine.I18N;
 import es.eucm.ead.schema.components.behaviors.Event;
@@ -61,11 +56,7 @@ public abstract class EventWidget<T extends Event> extends LinearLayout {
 
 	protected I18N i18N;
 
-	private ReflectionOptionsController<T> optionsController;
-
-	private EventFieldListener eventFieldListener = new EventFieldListener();
-
-	private T editedEvent;
+	private ClassOptionsController<T> optionsController;
 
 	public EventWidget(Controller controller, Class<T> eventClass) {
 		super(false);
@@ -78,40 +69,15 @@ public abstract class EventWidget<T extends Event> extends LinearLayout {
 		Image image = new Image(skin.getDrawable(getEventIcon()));
 		row.add(image);
 		add(row);
-		optionsController = new ReflectionOptionsController<T>(controller,
-				skin, eventClass);
-		optionsController.addChangeListener(new EventChangeListener());
+		optionsController = new ClassOptionsController<T>(controller, skin,
+				eventClass, null);
 		add(optionsController.getPanel());
 	}
 
 	public void readEvent(T event) {
-		this.editedEvent = event;
-		controller.getModel().removeListenerFromAllTargets(eventFieldListener);
 		optionsController.read(event);
-		controller.getModel().addFieldListener(event, eventFieldListener);
 	}
 
 	public abstract String getEventIcon();
 
-	private class EventFieldListener implements FieldListener {
-
-		@Override
-		public boolean listenToField(String fieldName) {
-			return true;
-		}
-
-		@Override
-		public void modelChanged(FieldEvent event) {
-			optionsController.setValue(event.getField(), event.getValue());
-		}
-	}
-
-	private class EventChangeListener implements ChangeListener {
-
-		@Override
-		public void valueUpdated(OptionController source, String field,
-				Object value) {
-			controller.action(SetField.class, editedEvent, field, value);
-		}
-	}
 }

@@ -83,7 +83,7 @@ public class BehaviorsSelector extends LinearLayout {
 	private void readBehaviors() {
 		reset();
 		ModelEntity modelEntity = (ModelEntity) controller.getModel()
-				.getSelection().getSingle(Selection.SCENE_ENTITY);
+				.getSelection().getSingle(Selection.SCENE_ELEMENT);
 		if (modelEntity != null) {
 			model.addListListener(modelEntity.getComponents(),
 					behaviorsListener);
@@ -108,16 +108,15 @@ public class BehaviorsSelector extends LinearLayout {
 		} else if (event instanceof Timer) {
 			actor = add(WidgetsUtils.createIcon("timer48x48", skin)).getActor();
 		} else if (event instanceof Init) {
-			actor = add(WidgetsUtils.createIcon("gear48x48", skin)).getActor();
+			actor = add(WidgetsUtils.createIcon("init48x48", skin)).getActor();
 		} else if (event instanceof Key) {
-			actor = add(WidgetsUtils.createIcon("keyboard48x48", skin))
-					.getActor();
+			actor = add(WidgetsUtils.createIcon("key48x48", skin)).getActor();
 		}
 
 		if (actor != null) {
 			actor.setUserObject(behavior);
 			actor.addListener(new ActionOnClickListener(controller,
-					SetSelection.class, Selection.SCENE_ENTITY,
+					SetSelection.class, Selection.SCENE_ELEMENT,
 					Selection.BEHAVIOR, behavior));
 		}
 	}
@@ -135,7 +134,7 @@ public class BehaviorsSelector extends LinearLayout {
 
 		@Override
 		public boolean listenToContext(String contextId) {
-			return Selection.SCENE_ENTITY.equals(contextId);
+			return Selection.SCENE_ELEMENT.equals(contextId);
 		}
 
 		@Override
