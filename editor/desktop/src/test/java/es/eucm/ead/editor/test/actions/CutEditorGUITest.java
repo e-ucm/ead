@@ -68,21 +68,21 @@ public class CutEditorGUITest extends EditorGUITest {
 
 				controller.action(OpenMockGame.class, game);
 				controller.action(ChangeView.class, SceneView.class, "scene1");
-				setSelection(Selection.EDITED_GROUP, Selection.SCENE_ENTITY,
+				setSelection(Selection.EDITED_GROUP, Selection.SCENE_ELEMENT,
 						sceneElement);
 				click("cut");
 
 				assertEquals(
 						0,
 						controller.getModel().getSelection()
-								.get(Selection.SCENE_ENTITY).size);
+								.get(Selection.SCENE_ELEMENT).size);
 				assertEquals(0, scene.getChildren().size);
 				click("undo");
 				assertEquals(1, scene.getChildren().size);
 				assertEquals(
 						1,
 						controller.getModel().getSelection()
-								.get(Selection.SCENE_ENTITY).size);
+								.get(Selection.SCENE_ELEMENT).size);
 
 				for (int i = 0; i < 10; i++) {
 					assertEquals(i + 1, scene.getChildren().size);

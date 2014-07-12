@@ -36,20 +36,28 @@
  */
 package es.eucm.ead.editor.nogui;
 
+import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input.Buttons;
-import org.junit.Before;
-import org.junit.Test;
-
 import com.badlogic.gdx.scenes.scene2d.Actor;
+import com.badlogic.gdx.scenes.scene2d.Group;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.InputEvent.Type;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.Pools;
-
 import es.eucm.ead.editor.control.Controller;
+import es.eucm.ead.editor.control.Selection;
+import es.eucm.ead.editor.control.Templates;
 import es.eucm.ead.editor.control.actions.model.SetSelection;
+import es.eucm.ead.editor.model.Model;
+import es.eucm.ead.editor.nogui.actions.OpenMockGame;
+import es.eucm.ead.editor.nogui.actions.OpenMockGame.Game;
 import es.eucm.ead.engine.mock.MockApplication;
+import es.eucm.ead.schema.entities.ModelEntity;
+import org.junit.Before;
+import org.junit.Test;
+
+import java.util.Arrays;
 
 public abstract class EditorGUITest {
 
@@ -59,7 +67,13 @@ public abstract class EditorGUITest {
 
 	protected Controller controller;
 
+	protected Model model;
+
+	protected Selection selection;
+
 	protected Stage stage;
+
+	protected Templates templates;
 
 	@Before
 	public void setUp() {
@@ -67,6 +81,9 @@ public abstract class EditorGUITest {
 		app = new MockApplication(editorDesktop);
 		controller = editorDesktop.getController();
 		stage = editorDesktop.getStage();
+		model = controller.getModel();
+		selection = model.getSelection();
+		templates = controller.getTemplates();
 		controller.getCommands().pushStack();
 	}
 
@@ -80,31 +97,81 @@ public abstract class EditorGUITest {
 		app.act();
 	}
 
-	protected void press(String actorName) {
-		inputEvent(actorName, Type.touchDown);
-	}
-
-	protected void release(String actorName) {
-		inputEvent(actorName, Type.touchUp);
-	}
-
-	protected void click(String actorName) {
+	protected void click(String... actorName) {
 		press(actorName);
 		release(actorName);
+	}
+
+	protected void press(String... actorName) {
+		inputEvent(Type.touchDown, actorName);
+	}
+
+	protected void release(String... actorName) {
+		inputEvent(Type.touchUp, actorName);
+	}
+
+	protected void click(String parent, String actorName) {
+		press(parent, actorName);
+		release(parent, actorName);
 	}
 
 	public void setSelection(Object... selection) {
 		controller.action(SetSelection.class, selection);
 	}
 
-	private void inputEvent(String actorName, Type type) {
-		Actor actor = stage.getRoot().findActor(actorName);
+	public Actor getActor(String... names) {
+		Group parent = stage.getRoot();
+		Actor actor = null;
+		for (String name : names) {
+			if (parent == null) {
+				actor = null;
+				break;
+			}
+
+			actor = parent.findActor(name);
+			if (actor instanceof Group) {
+				parent = (Group) actor;
+			}
+		}
+		return actor;
+	}
+
+	private void inputEvent(Type type, String... names) {
+		Actor actor = getActor(names);
+		if (actor == null) {
+			Gdx.app.error("EditorGUITest",
+					"No actor with name " + Arrays.toString(names) + " for "
+							+ type);
+			return;
+		}
 		InputEvent inputEvent = Pools.obtain(InputEvent.class);
 		inputEvent.setType(type);
 		inputEvent.setButton(Buttons.LEFT);
 		actor.fire(inputEvent);
 		Pools.free(inputEvent);
+
+		Gdx.app.debug("EditorGUITest",
+				type + " fired in " + Arrays.toString(names));
 	}
 
-	protected abstract void collectRunnables(Array<Runnable> runnables);
+	protected void collectRunnables(Array<Runnable> runnables) {
+		runnables.add(new Runnable() {
+			@Override
+			public void run() {
+				runTest();
+			}
+		});
+	}
+
+	protected void openEmptyGame() {
+		Game game = new Game();
+		game.setGame(new ModelEntity());
+		ModelEntity scene = new ModelEntity();
+		game.addScene("scene1", scene);
+		controller.action(OpenMockGame.class, game);
+	}
+
+	protected void runTest() {
+
+	}
 }
