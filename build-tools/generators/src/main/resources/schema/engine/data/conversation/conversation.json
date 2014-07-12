@@ -3,7 +3,6 @@
     "additionalProperties": false,
     "properties": {
         "id": {
-            "javaAnnotation": "es.eucm.ead.schemax.Indexed",
             "type": "string",
             "description": "Descriptive name of conversation, used when launching it."
         },
