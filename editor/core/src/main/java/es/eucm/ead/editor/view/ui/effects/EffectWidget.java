@@ -76,8 +76,6 @@ public abstract class EffectWidget<T extends Effect> extends LinearLayout
 
 	protected Skin skin;
 
-	protected T effect;
-
 	private EffectWidgetStyle style;
 
 	private LinearLayout editor;
@@ -109,6 +107,10 @@ public abstract class EffectWidget<T extends Effect> extends LinearLayout
 		return stringRepresentation;
 	}
 
+	protected T getEffect() {
+		return optionsController.getObjectRepresented();
+	}
+
 	protected abstract boolean hasTarget();
 
 	protected abstract Color getBackgroundColor();
@@ -116,19 +118,9 @@ public abstract class EffectWidget<T extends Effect> extends LinearLayout
 	protected abstract Class<T> getEffectClass();
 
 	public void setEffect(T effect) {
-		if (this.effect != null) {
-			model.removeListener(this.effect, this);
-		}
-		this.effect = effect;
-		model.addFieldListener(this.effect, this);
-		read(effect);
-	}
-
-	protected void read(T effect) {
-		if (stringRepresentation != null) {
-			stringRepresentation.setText(effectToString());
-		}
 		optionsController.read(effect);
+		model.removeListenerFromAllTargets(this);
+		model.addFieldListener(effect, this);
 	}
 
 	private void init() {
@@ -177,7 +169,9 @@ public abstract class EffectWidget<T extends Effect> extends LinearLayout
 
 	@Override
 	public void modelChanged(FieldEvent event) {
-		read(effect);
+		if (stringRepresentation != null) {
+			stringRepresentation.setText(effectToString());
+		}
 	}
 
 	public static class EffectWidgetStyle {

@@ -52,6 +52,7 @@ public class GoSceneWidget extends EffectWidget<GoScene> {
 
 	@Override
 	protected String effectToString() {
+		GoScene effect = getEffect();
 		String sceneName = "";
 		ModelEntity scene = (ModelEntity) model.getResource(
 				effect.getSceneId(), ResourceCategory.SCENE);

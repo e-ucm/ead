@@ -18,6 +18,7 @@ general.undo = Deshacer
 general.redo = Rehacer
 general.accept = Aceptar
 general.cancel = Cancelar
+general.create = Crear
 general.search = Buscar...
 general.ok = OK
 general.yes = Sí

@@ -414,5 +414,10 @@
             "font": "regular",
             "fontColor": "black"
         }
+    },
+    "es.eucm.ead.editor.view.widgets.FileWidget$FileWidgetStyle": {
+        "default": {
+            "selectIcon": "help"
+        }
     }
 }

@@ -46,15 +46,16 @@ import es.eucm.ead.editor.control.actions.editor.Back;
 import es.eucm.ead.editor.control.actions.editor.Copy;
 import es.eucm.ead.editor.control.actions.editor.Cut;
 import es.eucm.ead.editor.control.actions.editor.Exit;
-import es.eucm.ead.editor.control.actions.editor.NewGame;
 import es.eucm.ead.editor.control.actions.editor.Next;
 import es.eucm.ead.editor.control.actions.editor.OpenGame;
 import es.eucm.ead.editor.control.actions.editor.Paste;
 import es.eucm.ead.editor.control.actions.editor.Redo;
 import es.eucm.ead.editor.control.actions.editor.Save;
 import es.eucm.ead.editor.control.actions.editor.ShowContextMenu;
+import es.eucm.ead.editor.control.actions.editor.ShowDialog;
 import es.eucm.ead.editor.control.actions.editor.Undo;
 import es.eucm.ead.editor.ui.WidgetsUtils;
+import es.eucm.ead.editor.view.builders.classic.dialogs.NewGameDialog;
 import es.eucm.ead.editor.view.listeners.ActionOnClickListener;
 import es.eucm.ead.editor.view.widgets.IconButton;
 import es.eucm.ead.editor.view.widgets.Separator;
@@ -135,7 +136,8 @@ public class MainToolbar extends LinearLayout {
 
 	private ContextMenu buildFileMenu(Skin skin, I18N i18N) {
 		ContextMenu contextMenu = new ContextMenu(skin);
-		item(contextMenu, i18N.m("general.new"), false, NewGame.class);
+		item(contextMenu, i18N.m("general.new"), false, ShowDialog.class,
+				NewGameDialog.class);
 		item(contextMenu, i18N.m("general.open"), false, OpenGame.class);
 		contextMenu.separator();
 		item(contextMenu, i18N.m("general.save"), true, Save.class);

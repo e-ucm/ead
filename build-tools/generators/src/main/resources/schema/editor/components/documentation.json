@@ -8,6 +8,14 @@
         "name": {
             "type": "string",
             "description": "A name. Is meant to be the string that represents the entity for the user"
+        },
+        "description": {
+            "javaAnnotation": {
+                "class": "es.eucm.ead.schemax.Text",
+                "lines": 5
+            },
+            "type": "string",
+            "description": "A description for the entity."
         }
     },
     "type": "object",

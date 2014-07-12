@@ -146,5 +146,7 @@ public class FieldName {
 	/**
 	 * Refers to {@link es.eucm.ead.schema.data.Parameter#value}
 	 */
-	VALUE = "value";
+	VALUE = "value",
+
+	FOLDER = "folder";
 }

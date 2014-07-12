@@ -18,6 +18,7 @@ general.accept = Accept
 general.cut = Cut
 general.copy = Copy
 general.paste = Paste
+general.create = Create
 general.cancel = Cancel
 general.search = Search...
 general.ok = OK

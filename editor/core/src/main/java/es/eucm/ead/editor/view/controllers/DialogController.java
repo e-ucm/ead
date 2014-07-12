@@ -120,7 +120,7 @@ public class DialogController {
 		button(text, new DialogButtonListener() {
 			@Override
 			public void selected() {
-				dialog.hide();
+				hide();
 			}
 		});
 	}
@@ -144,6 +144,13 @@ public class DialogController {
 		return dialog;
 	}
 
+	/**
+	 * Hides the dialog
+	 */
+	public void hide() {
+		dialog.hide();
+	}
+
 	private class ButtonInputListener extends ClickListener {
 
 		private DialogButtonListener dialogButtonListener;
@@ -158,7 +165,7 @@ public class DialogController {
 			if (dialogButtonListener != null) {
 				dialogButtonListener.selected();
 			}
-			dialog.hide();
+			hide();
 		}
 	}
 
