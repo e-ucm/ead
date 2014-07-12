@@ -378,7 +378,7 @@ public class BehavioursEdition extends HiddenPanel {
 		} else if (item.equalsIgnoreCase(GO_SCENE)) {
 			if (effect != null) {
 				((GoScenePanel) this.goScene).actPanel(((GoScene) effect)
-						.getName());
+						.getSceneId());
 			}
 			this.scroll.setWidget(this.goScene);
 		} else if (item.equalsIgnoreCase(GO_TO)) {

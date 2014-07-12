@@ -59,7 +59,7 @@ public class GoScenePanel extends EffectBehaviourPanel {
 		SceneButton selected = scenes.getSelected();
 		if (selected != null) {
 			GoScene effect = new GoScene();
-			effect.setName(selected.getKey());
+			effect.setSceneId(selected.getKey());
 			behavior.getEffects().clear();
 			behavior.getEffects().add(effect);
 		}

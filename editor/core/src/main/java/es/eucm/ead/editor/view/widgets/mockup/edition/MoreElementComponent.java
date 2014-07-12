@@ -211,7 +211,7 @@ public class MoreElementComponent extends MoreComponent {
 
 	@Override
 	public Note getNote(Model model) {
-		Object o = model.getSelection().getSingle(Selection.SCENE_ENTITY);
+		Object o = model.getSelection().getSingle(Selection.SCENE_ELEMENT);
 		if (o instanceof ModelEntity) {
 			return Q.getComponent((ModelEntity) o, Note.class);
 		} else {
@@ -339,7 +339,7 @@ public class MoreElementComponent extends MoreComponent {
 	// Add the Behaviors to the element selected
 	private void addBehaviorsToElement(Controller controller) {
 		Object actor = controller.getModel().getSelection()
-				.getSingle(Selection.SCENE_ENTITY);
+				.getSingle(Selection.SCENE_ELEMENT);
 		if (actor instanceof ModelEntity) {
 			for (Actor button : this.behavioursAdded.getChildren()) {
 				((ModelEntity) actor).getComponents().add(
@@ -466,7 +466,7 @@ public class MoreElementComponent extends MoreComponent {
 
 	private Object getEditionContext(Controller controller) {
 		Model model = controller.getModel();
-		return model.getSelection().getSingle(Selection.SCENE_ENTITY);
+		return model.getSelection().getSingle(Selection.SCENE_ELEMENT);
 	}
 
 	@Override

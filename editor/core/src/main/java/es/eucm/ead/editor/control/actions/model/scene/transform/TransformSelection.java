@@ -92,7 +92,7 @@ public abstract class TransformSelection extends ModelAction implements
 	public Command perform(Object... args) {
 		CompositeCommand compositeCommand = new CompositeCommand();
 		SnapshotArray<Object> selection = controller.getModel().getSelection()
-				.get(Selection.SCENE_ENTITY);
+				.get(Selection.SCENE_ELEMENT);
 		Object[] objects = selection.begin();
 		for (int i = 0; i < selection.size; i++) {
 			if (objects[i] instanceof ModelEntity) {
@@ -114,6 +114,6 @@ public abstract class TransformSelection extends ModelAction implements
 
 	private void updateEnable() {
 		setEnabled(controller.getModel().getSelection()
-				.get(Selection.SCENE_ENTITY).size > 0);
+				.get(Selection.SCENE_ELEMENT).size > 0);
 	}
 }

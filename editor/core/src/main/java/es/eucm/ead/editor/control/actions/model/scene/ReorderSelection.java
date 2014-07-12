@@ -90,7 +90,7 @@ public class ReorderSelection extends TransformSelection {
 
 		orderedSelection.clear();
 		SnapshotArray<Object> selection = controller.getModel().getSelection()
-				.get(Selection.SCENE_ENTITY);
+				.get(Selection.SCENE_ELEMENT);
 		Object[] objects = selection.begin();
 		for (int i = 0; i < selection.size; i++) {
 			orderedSelection.add((ModelEntity) objects[i]);

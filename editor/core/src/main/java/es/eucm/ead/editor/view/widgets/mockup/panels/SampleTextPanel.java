@@ -95,7 +95,7 @@ public class SampleTextPanel extends SamplePanel {
 
 					if (!textSelected) {
 						Object context = controller.getModel().getSelection()
-								.getSingle(Selection.SCENE_ENTITY);
+								.getSingle(Selection.SCENE_ELEMENT);
 						if (context instanceof ModelEntity) {
 							ModelEntity text = new ModelEntity();
 							Label label = new Label();

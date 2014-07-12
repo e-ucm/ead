@@ -221,7 +221,7 @@ public class ReorderSelectionTest extends ActionsTest {
 	private void setSelection(Object... args) {
 		Object[] arguments = new Object[args.length + 2];
 		arguments[0] = Selection.EDITED_GROUP;
-		arguments[1] = Selection.SCENE_ENTITY;
+		arguments[1] = Selection.SCENE_ELEMENT;
 		System.arraycopy(args, 0, arguments, 2, args.length);
 		controller.action(SetSelection.class, arguments);
 	}

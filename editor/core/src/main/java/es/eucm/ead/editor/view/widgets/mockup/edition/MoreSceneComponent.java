@@ -84,6 +84,6 @@ public class MoreSceneComponent extends MoreComponent {
 	public Note getNote(Model model) {
 		return Q.getComponent(
 				(ModelEntity) model.getSelection().getSingle(
-						Selection.SCENE_ENTITY), Note.class);
+						Selection.SCENE_ELEMENT), Note.class);
 	}
 }

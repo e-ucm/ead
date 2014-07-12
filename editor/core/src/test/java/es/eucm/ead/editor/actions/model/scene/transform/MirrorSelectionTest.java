@@ -52,7 +52,7 @@ public class MirrorSelectionTest extends ActionTest {
 	public void testMirror() {
 		ModelEntity modelEntity = new ModelEntity();
 
-		controller.action(SetSelection.class, null, Selection.SCENE_ENTITY,
+		controller.action(SetSelection.class, null, Selection.SCENE_ELEMENT,
 				modelEntity);
 		controller.action(MirrorSelection.class, Type.HORIZONTAL);
 

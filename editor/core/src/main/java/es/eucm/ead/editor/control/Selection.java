@@ -54,7 +54,7 @@ public class Selection {
 
 	public static String EDITED_GROUP = "editedGroup";
 
-	public static String SCENE_ENTITY = "sceneElement";
+	public static String SCENE_ELEMENT = "sceneElement";
 
 	public static String BEHAVIOR = "behavior";
 

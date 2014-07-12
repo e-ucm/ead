@@ -51,7 +51,7 @@ public class RotateSelectionTest extends ActionTest {
 	public void testRotate() {
 		ModelEntity modelEntity = new ModelEntity();
 
-		controller.action(SetSelection.class, null, Selection.SCENE_ENTITY,
+		controller.action(SetSelection.class, null, Selection.SCENE_ELEMENT,
 				modelEntity);
 		controller
 				.action(RotateSelection.class, RotateSelection.Type.CLOCKWISE);

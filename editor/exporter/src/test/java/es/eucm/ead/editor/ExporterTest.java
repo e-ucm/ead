@@ -209,7 +209,7 @@ public class ExporterTest {
 				sceneElement.getComponents().add(renderer);
 
 				GoScene effect = new GoScene();
-				effect.setName("name");
+				effect.setSceneId("name");
 
 				Behavior behavior = new Behavior();
 				Touch touch = new Touch();

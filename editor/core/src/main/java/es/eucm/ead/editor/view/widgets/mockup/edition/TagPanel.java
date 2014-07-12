@@ -136,7 +136,7 @@ public class TagPanel extends Table {
 						// For now it's just for testing purposes
 						ModelEntity element = (ModelEntity) controller
 								.getModel().getSelection()
-								.getSingle(Selection.SCENE_ENTITY);
+								.getSingle(Selection.SCENE_ELEMENT);
 
 						Tags tags = null;
 						for (ModelComponent c : element.getComponents()) {
