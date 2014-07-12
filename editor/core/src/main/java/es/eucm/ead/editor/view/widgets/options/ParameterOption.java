@@ -67,11 +67,11 @@ public class ParameterOption extends Option {
 			Actor optionWidget, ParameterOptionStyle style) {
 		super(label, tooltip, optionWidget, style);
 		this.skin = skin;
+		expressionEditor = new TextField("", skin);
 	}
 
 	@Override
 	protected void init(String label, String tooltip, Actor optionWidget) {
-		expressionEditor = new TextField("", skin);
 		tooltip(tooltip);
 		addParameterButton();
 		label(label);
