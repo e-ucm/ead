@@ -85,9 +85,13 @@ public class FileController extends ValueController<FileWidget, String>
 		});
 	}
 
-	public FileController folder() {
-		this.folder = true;
+	public FileController folder(boolean folder) {
+		this.folder = folder;
 		return this;
+	}
+
+	public FileController folder() {
+		return folder(true);
 	}
 
 	public FileController mustExist(boolean mustExist) {

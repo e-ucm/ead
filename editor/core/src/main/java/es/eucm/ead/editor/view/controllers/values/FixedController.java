@@ -36,40 +36,16 @@
  */
 package es.eucm.ead.editor.view.controllers.values;
 
-import com.badlogic.gdx.scenes.scene2d.Actor;
-import com.badlogic.gdx.scenes.scene2d.ui.SelectBox;
-import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
+import com.badlogic.gdx.scenes.scene2d.ui.Label;
 
-import java.util.Map;
-import java.util.Map.Entry;
-
-/**
- * Created by angel on 20/03/14.
- */
-public class SelectController extends ValueController<SelectBox, Object> {
-
-	private Map<String, Object> values;
-
-	public SelectController(Map<String, Object> values) {
-		this.values = values;
-	}
+public class FixedController extends ValueController<Label, Object> {
 
 	@Override
 	protected void initialize() {
-		widget.addListener(new ChangeListener() {
-			@Override
-			public void changed(ChangeEvent event, Actor actor) {
-				change(values.get(widget.getSelected().toString()));
-			}
-		});
 	}
 
 	@Override
 	public void setWidgetValue(Object value) {
-		for (Entry<String, Object> entry : values.entrySet()) {
-			if (entry.getValue().equals(value)) {
-				widget.setSelected(entry.getKey());
-			}
-		}
+		widget.setText(value == null ? "" : value.toString());
 	}
 }

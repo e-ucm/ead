@@ -165,16 +165,10 @@ public class OptionsPanel extends LinearLayout {
 	 *            the label for the option
 	 * @param tooltip
 	 *            the tooltip for the option (can be null)
-	 * @param maxLength
-	 *            maximum characters for the text. maxLength <= 0 is considered
-	 *            as infinite length
 	 * @return the option created
 	 */
-	public Option file(String label, String tooltip, int maxLength) {
+	public Option file(String label, String tooltip) {
 		FileWidget fileWidget = new FileWidget(skin);
-		if (maxLength > 0) {
-			fileWidget.getTextField().setMaxLength(maxLength);
-		}
 		Option option = newOption(label, tooltip, fileWidget);
 		addOption(option);
 		return option;

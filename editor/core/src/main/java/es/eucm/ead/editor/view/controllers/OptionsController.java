@@ -39,18 +39,27 @@ package es.eucm.ead.editor.view.controllers;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.ui.CheckBox;
+import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.scenes.scene2d.ui.SelectBox;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.ui.TextArea;
 import com.badlogic.gdx.scenes.scene2d.ui.TextField;
-import com.badlogic.gdx.utils.Array;
+import com.badlogic.gdx.utils.SnapshotArray;
 import com.badlogic.gdx.utils.reflect.ClassReflection;
 import com.badlogic.gdx.utils.reflect.Constructor;
 import com.badlogic.gdx.utils.reflect.ReflectionException;
 import es.eucm.ead.editor.control.Controller;
 import es.eucm.ead.editor.indexes.FuzzyIndex;
-import es.eucm.ead.editor.view.controllers.values.*;
+import es.eucm.ead.editor.view.controllers.values.BooleanController;
+import es.eucm.ead.editor.view.controllers.values.FileController;
+import es.eucm.ead.editor.view.controllers.values.FixedController;
+import es.eucm.ead.editor.view.controllers.values.FloatController;
+import es.eucm.ead.editor.view.controllers.values.IntController;
 import es.eucm.ead.editor.view.controllers.values.SearchController;
+import es.eucm.ead.editor.view.controllers.values.SelectController;
+import es.eucm.ead.editor.view.controllers.values.StringController;
+import es.eucm.ead.editor.view.controllers.values.ToggleImagesController;
+import es.eucm.ead.editor.view.controllers.values.ValueController;
 import es.eucm.ead.editor.view.widgets.FileWidget;
 import es.eucm.ead.editor.view.widgets.SearchWidget;
 import es.eucm.ead.editor.view.widgets.ToggleImagesList;
@@ -82,7 +91,7 @@ public class OptionsController {
 
 	protected Map<String, OptionController> optionControllers;
 
-	private Array<ChangeListener> changeListeners;
+	private SnapshotArray<ChangeListener> changeListeners;
 
 	public OptionsController(Controller controller, Skin skin) {
 		this.controller = controller;
@@ -90,7 +99,8 @@ public class OptionsController {
 		this.skin = skin;
 		this.optionValues = new HashMap<String, Object>();
 		this.optionControllers = new HashMap<String, OptionController>();
-		this.changeListeners = new Array<ChangeListener>();
+		this.changeListeners = new SnapshotArray<ChangeListener>(
+				ChangeListener.class);
 		panel = newOptionsPanel(skin);
 	}
 
@@ -100,6 +110,13 @@ public class OptionsController {
 	 */
 	protected OptionsPanel newOptionsPanel(Skin skin) {
 		return new OptionsPanel(skin);
+	}
+
+	/**
+	 * @return the controller associated to the field name
+	 */
+	public OptionController getController(String fieldName) {
+		return optionControllers.get(fieldName);
 	}
 
 	/**
@@ -113,13 +130,23 @@ public class OptionsController {
 	}
 
 	/**
-	 * Sets the value for a key. It updates the widget related
+	 * Sets the value for a key. It updates the widget related and notifies the
+	 * change to listeners
 	 */
 	public void setValue(String key, Object value) {
-		optionValues.put(key, value);
-		OptionController optionController = optionControllers.get(key);
-		if (optionController != null) {
-			optionController.getValueController().setWidgetValue(value);
+		Object currentValue = optionValues.get(key);
+		if ((currentValue == null && value != null)
+				|| (currentValue != null && !currentValue.equals(value))) {
+			optionValues.put(key, value);
+			OptionController optionController = optionControllers.get(key);
+			if (optionController != null) {
+				optionController.getValueController().setWidgetValue(value);
+			}
+			ChangeListener[] listeners = changeListeners.begin();
+			for (int i = 0; i < changeListeners.size; i++) {
+				listeners[i].valueUpdated(key, value);
+			}
+			changeListeners.end();
 		}
 	}
 
@@ -295,12 +322,10 @@ public class OptionsController {
 	 * 
 	 * @param field
 	 *            the field
-	 * @param widgetLength
-	 *            the widget width, in characters
 	 * @return the option controller created
 	 */
-	public FileController file(String field, int widgetLength) {
-		Option option = panel.file(label(field), tooltip(field), widgetLength);
+	public FileController file(String field) {
+		Option option = panel.file(label(field), tooltip(field));
 		FileWidget fileWidget = (FileWidget) option.getOptionWidget();
 		FileController value = newValueController(FileController.class,
 				fileWidget);
@@ -321,6 +346,23 @@ public class OptionsController {
 		ToggleImagesController value = newValueController(
 				ToggleImagesController.class, widget);
 		add(field, option, value);
+		return value;
+	}
+
+	/**
+	 * Creates an option with a fixed value. It can not be edited directly, but
+	 * it can be modifed externally through {@link #setValue(String, Object)}
+	 * 
+	 * @param fieldName
+	 *            the field name
+	 */
+	public FixedController fixed(String fieldName) {
+		Label widget = new Label("", skin);
+		Option option = panel.custom(label(fieldName), tooltip(fieldName),
+				widget);
+		FixedController value = newValueController(FixedController.class,
+				widget);
+		add(fieldName, option, value);
 		return value;
 	}
 
@@ -377,36 +419,15 @@ public class OptionsController {
 		return new OptionController(this, field, option, valueController);
 	}
 
-	/**
-	 * Notifies a change in the field name with fieldName in the target
-	 * 
-	 * @param source
-	 *            option controller
-	 * @param fieldName
-	 *            the field that changed
-	 * @param newValue
-	 *            the new value of the field
-	 */
-	public void notifyChange(OptionController source, String fieldName,
-			Object newValue) {
-		optionValues.put(fieldName, newValue);
-		for (ChangeListener changeListener : changeListeners) {
-			changeListener.valueUpdated(source, fieldName, newValue);
-		}
-	}
-
 	public interface ChangeListener {
 
 		/**
 		 * The value was updated
 		 * 
-		 * @param source
-		 *            the update source
 		 * @param field
 		 *            the field updated
 		 * @param value
-		 *            the new value
 		 */
-		void valueUpdated(OptionController source, String field, Object value);
+		void valueUpdated(String field, Object value);
 	}
 }

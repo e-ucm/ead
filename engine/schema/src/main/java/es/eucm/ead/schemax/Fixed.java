@@ -34,42 +34,14 @@
  *      You should have received a copy of the GNU Lesser General Public License
  *      along with eAdventure.  If not, see <http://www.gnu.org/licenses/>.
  */
-package es.eucm.ead.editor.view.controllers.values;
+package es.eucm.ead.schemax;
 
-import com.badlogic.gdx.scenes.scene2d.Actor;
-import com.badlogic.gdx.scenes.scene2d.ui.SelectBox;
-import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
-
-import java.util.Map;
-import java.util.Map.Entry;
+import java.lang.annotation.Retention;
+import java.lang.annotation.RetentionPolicy;
 
 /**
- * Created by angel on 20/03/14.
+ * Value of the attributes it's fixed and cannot be edited
  */
-public class SelectController extends ValueController<SelectBox, Object> {
-
-	private Map<String, Object> values;
-
-	public SelectController(Map<String, Object> values) {
-		this.values = values;
-	}
-
-	@Override
-	protected void initialize() {
-		widget.addListener(new ChangeListener() {
-			@Override
-			public void changed(ChangeEvent event, Actor actor) {
-				change(values.get(widget.getSelected().toString()));
-			}
-		});
-	}
-
-	@Override
-	public void setWidgetValue(Object value) {
-		for (Entry<String, Object> entry : values.entrySet()) {
-			if (entry.getValue().equals(value)) {
-				widget.setSelected(entry.getKey());
-			}
-		}
-	}
+@Retention(RetentionPolicy.RUNTIME)
+public @interface Fixed {
 }

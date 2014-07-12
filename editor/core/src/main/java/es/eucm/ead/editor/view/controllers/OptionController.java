@@ -83,7 +83,7 @@ public class OptionController {
 	public OptionController change(Object value) {
 		valueController.setWidgetValue(value);
 		valueController.checkConstraints(value);
-		optionsController.notifyChange(this, field, value);
+		optionsController.setValue(field, value);
 		return this;
 	}
 }

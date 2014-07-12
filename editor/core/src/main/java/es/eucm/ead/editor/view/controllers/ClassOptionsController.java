@@ -47,7 +47,10 @@ import es.eucm.ead.editor.control.actions.model.generic.SetField;
 import es.eucm.ead.editor.indexes.FuzzyIndex;
 import es.eucm.ead.editor.model.Model.FieldListener;
 import es.eucm.ead.editor.model.events.FieldEvent;
+import es.eucm.ead.schemax.File;
+import es.eucm.ead.schemax.Fixed;
 import es.eucm.ead.schemax.Search;
+import es.eucm.ead.schemax.Text;
 
 import java.util.LinkedHashMap;
 import java.util.Map;
@@ -64,6 +67,15 @@ public class ClassOptionsController<T> extends OptionsController {
 	protected T object;
 
 	private OptionFieldListener fieldListener = new OptionFieldListener();
+
+	public ClassOptionsController(Controller controller, Skin skin,
+			Class<T> clazz) {
+		this(controller, skin, clazz, null);
+	}
+
+	public T getObjectRepresented() {
+		return object;
+	}
 
 	public ClassOptionsController(Controller controller, Skin skin,
 			Class<T> reflectedClass, Array<String> ignoreFields) {
@@ -89,6 +101,15 @@ public class ClassOptionsController<T> extends OptionsController {
 						Gdx.app.error("ClassOptionsController", "No class for "
 								+ search.index());
 					}
+				} else if (field.isAnnotationPresent(Text.class)) {
+					Text text = field.getAnnotation(Text.class);
+					text(fieldName, text.lines());
+				} else if (field.isAnnotationPresent(Fixed.class)) {
+					fixed(fieldName);
+				} else if (field.isAnnotationPresent(File.class)) {
+					File file = field.getAnnotation(File.class);
+					file(fieldName).folder(file.folder()).mustExist(
+							file.mustExist());
 				} else if (field.getType() == Integer.class
 						|| field.getType() == int.class) {
 					this.intNumber(fieldName).change(0);
@@ -114,10 +135,9 @@ public class ClassOptionsController<T> extends OptionsController {
 	}
 
 	@Override
-	public void notifyChange(OptionController source, String fieldName,
-			Object newValue) {
-		super.notifyChange(source, fieldName, newValue);
-		controller.action(SetField.class, object, fieldName, newValue);
+	public void setValue(String key, Object value) {
+		controller.action(SetField.class, object, key, value);
+		super.setValue(key, value);
 	}
 
 	/**
@@ -156,7 +176,8 @@ public class ClassOptionsController<T> extends OptionsController {
 
 		@Override
 		public void modelChanged(FieldEvent event) {
-			setValue(event.getField(), event.getValue());
+			ClassOptionsController.super.setValue(event.getField(),
+					event.getValue());
 		}
 	}
 }
