@@ -36,7 +36,10 @@
  */
 package es.eucm.ead.editor.control;
 
+import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Texture;
+import com.badlogic.gdx.utils.reflect.ClassReflection;
+import com.badlogic.gdx.utils.reflect.ReflectionException;
 
 import es.eucm.ead.editor.assets.EditorGameAssets;
 import es.eucm.ead.editor.model.Q;
@@ -44,8 +47,10 @@ import es.eucm.ead.engine.assets.Assets.AssetLoadedCallback;
 import es.eucm.ead.schema.editor.components.Documentation;
 import es.eucm.ead.schema.editor.components.GameData;
 import es.eucm.ead.schema.editor.components.Note;
+import es.eucm.ead.schema.effects.GoScene;
 import es.eucm.ead.schema.entities.ModelEntity;
 import es.eucm.ead.schema.renderers.Image;
+import es.eucm.ead.schemax.entities.ResourceCategory;
 
 /**
  * This class gives several methods to create and initialized common schema
@@ -141,5 +146,29 @@ public class Templates {
 
 		sceneElement.getComponents().add(renderer);
 		return sceneElement;
+	}
+
+	/**
+	 * Creates and effect of the given class with valid default values
+	 */
+	public <T> T createEffect(Class<T> effectClass) {
+		try {
+			T effect = ClassReflection.newInstance(effectClass);
+
+			if (effect instanceof GoScene) {
+				defaultValues((GoScene) effect);
+			}
+
+			return effect;
+		} catch (ReflectionException e) {
+			Gdx.app.error("Templates", "Impossible to create effect", e);
+		}
+		return null;
+	}
+
+	private void defaultValues(GoScene goScene) {
+		goScene.setSceneId(controller.getModel()
+				.getResources(ResourceCategory.SCENE).keySet().iterator()
+				.next());
 	}
 }

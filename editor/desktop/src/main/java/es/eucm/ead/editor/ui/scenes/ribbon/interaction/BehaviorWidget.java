@@ -39,6 +39,7 @@ package es.eucm.ead.editor.ui.scenes.ribbon.interaction;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import es.eucm.ead.editor.control.Controller;
 import es.eucm.ead.editor.control.Selection;
+import es.eucm.ead.editor.indexes.FuzzyIndex;
 import es.eucm.ead.editor.model.Model.SelectionListener;
 import es.eucm.ead.editor.model.events.SelectionEvent;
 import es.eucm.ead.editor.ui.scenes.ribbon.interaction.events.EventWidget;
@@ -46,12 +47,15 @@ import es.eucm.ead.editor.ui.scenes.ribbon.interaction.events.InitWidget;
 import es.eucm.ead.editor.ui.scenes.ribbon.interaction.events.KeyWidget;
 import es.eucm.ead.editor.ui.scenes.ribbon.interaction.events.TimerWidget;
 import es.eucm.ead.editor.ui.scenes.ribbon.interaction.events.TouchWidget;
+import es.eucm.ead.editor.view.ui.effects.EffectsWidget;
 import es.eucm.ead.editor.view.widgets.layouts.LinearLayout;
 import es.eucm.ead.schema.components.behaviors.Behavior;
 import es.eucm.ead.schema.components.behaviors.events.Init;
 import es.eucm.ead.schema.components.behaviors.events.Key;
 import es.eucm.ead.schema.components.behaviors.events.Timer;
 import es.eucm.ead.schema.components.behaviors.events.Touch;
+import es.eucm.ead.schema.effects.EndGame;
+import es.eucm.ead.schema.effects.GoScene;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -69,6 +73,8 @@ public class BehaviorWidget extends LinearLayout implements SelectionListener {
 
 	private static final float MARGIN = 5.0f;
 
+	private EffectsWidget effectsWidget;
+
 	public BehaviorWidget(Controller controller) {
 		super(false);
 		background(controller.getApplicationAssets().getSkin()
@@ -79,6 +85,16 @@ public class BehaviorWidget extends LinearLayout implements SelectionListener {
 		eventWidgets.put(Touch.class, new TouchWidget(controller));
 		eventWidgets.put(Timer.class, new TimerWidget(controller));
 		eventWidgets.put(Key.class, new KeyWidget(controller));
+
+		FuzzyIndex effectsIndex = new FuzzyIndex();
+		Class[] effects = new Class[] { GoScene.class, EndGame.class };
+
+		for (Class c : effects) {
+			effectsIndex.addTerm(
+					controller.getApplicationAssets().getI18N()
+							.m(c.getSimpleName()), c);
+		}
+		effectsWidget = new EffectsWidget(controller);
 
 		controller.getModel().addSelectionListener(this);
 		updateWidget();
@@ -92,7 +108,9 @@ public class BehaviorWidget extends LinearLayout implements SelectionListener {
 			EventWidget eventWidget = (EventWidget) eventWidgets.get(behavior
 					.getEvent().getClass());
 			eventWidget.readEvent(behavior.getEvent());
+			effectsWidget.read(behavior, behavior.getEffects());
 			add(eventWidget).margin(MARGIN);
+			add(effectsWidget).expandX();
 			addSpace();
 		}
 	}
