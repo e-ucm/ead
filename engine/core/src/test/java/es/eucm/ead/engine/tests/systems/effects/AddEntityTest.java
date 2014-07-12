@@ -46,10 +46,11 @@ import es.eucm.ead.engine.EngineTest;
 import es.eucm.ead.engine.components.TweensComponent;
 import es.eucm.ead.engine.components.behaviors.TimersComponent;
 import es.eucm.ead.engine.entities.EngineEntity;
+import es.eucm.ead.engine.processors.tweens.TweensProcessor;
 import es.eucm.ead.engine.systems.EffectsSystem;
 import es.eucm.ead.engine.systems.RemoveEntitiesSystem;
 import es.eucm.ead.engine.systems.behaviors.TimersSystem;
-import es.eucm.ead.engine.systems.effects.AddAnimationExecutor;
+import es.eucm.ead.engine.systems.effects.AddComponentExecutor;
 import es.eucm.ead.engine.systems.effects.AddEntityExecutor;
 import es.eucm.ead.engine.systems.effects.RemoveEntityExecutor;
 import es.eucm.ead.engine.systems.tweens.FieldAccessor;
@@ -61,11 +62,14 @@ import es.eucm.ead.engine.systems.tweens.tweencreators.MoveTweenCreator;
 import es.eucm.ead.engine.systems.tweens.tweencreators.ScaleTweenCreator;
 import es.eucm.ead.engine.systems.tweens.tweencreators.TimelineCreator;
 import es.eucm.ead.engine.variables.VarsContext;
+import es.eucm.ead.schema.components.tweens.AlphaTween;
 import es.eucm.ead.schema.components.tweens.BaseTween;
+import es.eucm.ead.schema.components.tweens.FieldTween;
 import es.eucm.ead.schema.components.tweens.MoveTween;
+import es.eucm.ead.schema.components.tweens.RotateTween;
 import es.eucm.ead.schema.components.tweens.ScaleTween;
 import es.eucm.ead.schema.components.tweens.Timeline;
-import es.eucm.ead.schema.effects.AddAnimation;
+import es.eucm.ead.schema.effects.AddComponent;
 import es.eucm.ead.schema.effects.AddEntity;
 import es.eucm.ead.schema.effects.RemoveEntity;
 import es.eucm.ead.schema.entities.ModelEntity;
@@ -122,6 +126,20 @@ public class AddEntityTest extends EngineTest implements EntityListener {
 		}
 		gameLoop.addSystem(tweenSystem);
 
+		TweensProcessor tweensProcessor = new TweensProcessor(gameLoop);
+		componentLoader.registerComponentProcessor(AlphaTween.class,
+				tweensProcessor);
+		componentLoader.registerComponentProcessor(FieldTween.class,
+				tweensProcessor);
+		componentLoader.registerComponentProcessor(MoveTween.class,
+				tweensProcessor);
+		componentLoader.registerComponentProcessor(RotateTween.class,
+				tweensProcessor);
+		componentLoader.registerComponentProcessor(ScaleTween.class,
+				tweensProcessor);
+		componentLoader.registerComponentProcessor(Timeline.class,
+				tweensProcessor);
+
 		TimersSystem timersSystem = new TimersSystem(gameLoop, variablesManager);
 		gameLoop.addSystem(timersSystem);
 		EffectsSystem effectsSystem = new EffectsSystem(gameLoop,
@@ -130,8 +148,8 @@ public class AddEntityTest extends EngineTest implements EntityListener {
 				variablesManager);
 		effectsSystem
 				.registerEffectExecutor(AddEntity.class, addEntityExecutor);
-		effectsSystem.registerEffectExecutor(AddAnimation.class,
-				new AddAnimationExecutor());
+		effectsSystem.registerEffectExecutor(AddComponent.class,
+				new AddComponentExecutor(componentLoader));
 		effectsSystem.registerEffectExecutor(RemoveEntity.class,
 				new RemoveEntityExecutor());
 		gameLoop.addSystem(effectsSystem);

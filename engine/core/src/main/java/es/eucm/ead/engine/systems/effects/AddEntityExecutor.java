@@ -45,7 +45,7 @@ import es.eucm.ead.engine.entities.EngineEntity;
 import es.eucm.ead.engine.systems.EffectsSystem;
 import es.eucm.ead.engine.systems.tweens.TweenSystem;
 import es.eucm.ead.engine.variables.VariablesManager;
-import es.eucm.ead.schema.effects.AddAnimation;
+import es.eucm.ead.schema.effects.AddComponent;
 import es.eucm.ead.schema.effects.AddEntity;
 import es.eucm.ead.schema.effects.RemoveEntity;
 
@@ -54,7 +54,7 @@ import es.eucm.ead.schema.effects.RemoveEntity;
  * 
  * This executor also creates other components over the entities added as
  * needed: - Uses {@link TweensComponent} to launch in animation - Uses
- * {@link TimersComponent} with {@link AddAnimation} and {@link RemoveEntity}
+ * {@link TimersComponent} with {@link AddComponent} and {@link RemoveEntity}
  * effects to execute out animation and also to get the entity removed after
  * duration elapses.
  * 
@@ -117,8 +117,8 @@ public class AddEntityExecutor extends EffectExecutor<AddEntity> {
 				float effectDuration = effect.getDuration();
 				float outAnimationDelay = inAnimationDuration + effectDuration;
 				if (effect.getAnimationOut() != null) {
-					AddAnimation addAnimationEffect = new AddAnimation();
-					addAnimationEffect.setAnimation(effect.getAnimationOut());
+					AddComponent addAnimationEffect = new AddComponent();
+					addAnimationEffect.setComponent(effect.getAnimationOut());
 					EffectsSystem.launchDelayedEffect(gameLoop,
 							addAnimationEffect, outAnimationDelay, entityToAdd);
 				}

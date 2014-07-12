@@ -41,9 +41,7 @@ import ashley.core.Family;
 import es.eucm.ead.engine.assets.GameAssets;
 import es.eucm.ead.engine.components.I18nTextComponent;
 import es.eucm.ead.engine.processors.CamerasProcessor;
-import es.eucm.ead.engine.processors.physics.BoundingAreaProcessor;
 import es.eucm.ead.engine.processors.ConversationsProcessor;
-import es.eucm.ead.engine.processors.positiontracking.ChaseEntityProcessor;
 import es.eucm.ead.engine.processors.PathProcessor;
 import es.eucm.ead.engine.processors.RefProcessor;
 import es.eucm.ead.engine.processors.TagsProcessor;
@@ -54,7 +52,9 @@ import es.eucm.ead.engine.processors.controls.ButtonProcessor;
 import es.eucm.ead.engine.processors.controls.ImageButtonProcessor;
 import es.eucm.ead.engine.processors.controls.LabelProcessor;
 import es.eucm.ead.engine.processors.controls.TextButtonProcessor;
+import es.eucm.ead.engine.processors.physics.BoundingAreaProcessor;
 import es.eucm.ead.engine.processors.physics.VelocityProcessor;
+import es.eucm.ead.engine.processors.positiontracking.ChaseEntityProcessor;
 import es.eucm.ead.engine.processors.positiontracking.MoveByEntityProcessor;
 import es.eucm.ead.engine.processors.positiontracking.ParallaxProcessor;
 import es.eucm.ead.engine.processors.renderers.EmptyRendererProcessor;
@@ -72,13 +72,11 @@ import es.eucm.ead.engine.systems.SoundSystem;
 import es.eucm.ead.engine.systems.TouchedSystem;
 import es.eucm.ead.engine.systems.VelocitySystem;
 import es.eucm.ead.engine.systems.VisibilitySystem;
-import es.eucm.ead.engine.systems.positiontracking.ChaseEntitySystem;
 import es.eucm.ead.engine.systems.behaviors.KeyBehaviorSystem;
 import es.eucm.ead.engine.systems.behaviors.TimersSystem;
 import es.eucm.ead.engine.systems.behaviors.TouchBehaviorSystem;
 import es.eucm.ead.engine.systems.dialogues.LineDialogueSystem;
 import es.eucm.ead.engine.systems.dialogues.MenuDialogueSystem;
-import es.eucm.ead.engine.systems.effects.AddAnimationExecutor;
 import es.eucm.ead.engine.systems.effects.AddComponentExecutor;
 import es.eucm.ead.engine.systems.effects.AddEntityExecutor;
 import es.eucm.ead.engine.systems.effects.ChangeEntityPropertyExecutor;
@@ -97,6 +95,7 @@ import es.eucm.ead.engine.systems.effects.controlstructures.IfThenElseIfExecutor
 import es.eucm.ead.engine.systems.effects.controlstructures.RepeatExecutor;
 import es.eucm.ead.engine.systems.effects.controlstructures.ScriptCallExecutor;
 import es.eucm.ead.engine.systems.effects.controlstructures.WhileExecutor;
+import es.eucm.ead.engine.systems.positiontracking.ChaseEntitySystem;
 import es.eucm.ead.engine.systems.positiontracking.MoveByEntitySystem;
 import es.eucm.ead.engine.systems.tweens.TweenSystem;
 import es.eucm.ead.engine.systems.tweens.tweencreators.AlphaTweenCreator;
@@ -133,7 +132,6 @@ import es.eucm.ead.schema.components.tweens.MoveTween;
 import es.eucm.ead.schema.components.tweens.RotateTween;
 import es.eucm.ead.schema.components.tweens.ScaleTween;
 import es.eucm.ead.schema.components.tweens.Timeline;
-import es.eucm.ead.schema.effects.AddAnimation;
 import es.eucm.ead.schema.effects.AddComponent;
 import es.eucm.ead.schema.effects.AddEntity;
 import es.eucm.ead.schema.effects.ChangeEntityProperty;
@@ -225,8 +223,6 @@ public class DefaultEngineInitializer implements EngineInitializer {
 				new TriggerConversationExecutor(variablesManager));
 		effectsSystem.registerEffectExecutor(ScriptCall.class,
 				new ScriptCallExecutor(effectsSystem, variablesManager));
-		effectsSystem.registerEffectExecutor(AddAnimation.class,
-				new AddAnimationExecutor());
 		effectsSystem.registerEffectExecutor(AddEntity.class,
 				new AddEntityExecutor(entitiesLoader, variablesManager));
 		effectsSystem.registerEffectExecutor(SetCamera.class,
