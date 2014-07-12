@@ -38,37 +38,58 @@ package es.eucm.ead.editor.view.controllers;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
+import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.reflect.ClassReflection;
 import com.badlogic.gdx.utils.reflect.Field;
 import com.badlogic.gdx.utils.reflect.ReflectionException;
 import es.eucm.ead.editor.control.Controller;
+import es.eucm.ead.editor.control.actions.model.generic.SetField;
+import es.eucm.ead.editor.indexes.FuzzyIndex;
+import es.eucm.ead.editor.model.Model.FieldListener;
+import es.eucm.ead.editor.model.events.FieldEvent;
+import es.eucm.ead.schemax.Search;
 
 import java.util.LinkedHashMap;
 import java.util.Map;
-import java.util.Map.Entry;
 
 /**
  * An options panel to represent a class, field by field
  * 
- * 
  * Created by angel on 20/03/14.
  */
-public class ReflectionOptionsController<T> extends OptionsController {
+public class ClassOptionsController<T> extends OptionsController {
 
 	private Class<T> clazz;
 
-	public ReflectionOptionsController(Controller controller, Skin skin,
-			Class<T> reflectedClass) {
+	protected T object;
+
+	private OptionFieldListener fieldListener = new OptionFieldListener();
+
+	public ClassOptionsController(Controller controller, Skin skin,
+			Class<T> reflectedClass, Array<String> ignoreFields) {
 		super(controller, skin);
 		this.clazz = reflectedClass;
+		i18nPrefix(ClassReflection.getSimpleName(clazz).toLowerCase());
 
 		Class clazz = reflectedClass;
-		i18nPrefix(ClassReflection.getSimpleName(clazz).toLowerCase());
-		// Generate an option for each field
 		while (clazz != null) {
-			for (Field field : ClassReflection.getDeclaredFields(clazz)) {
+			for (java.lang.reflect.Field field : clazz.getDeclaredFields()) {
 				String fieldName = field.getName();
-				if (field.getType() == Integer.class
+				if (ignoreFields != null
+						&& ignoreFields.contains(fieldName, false)) {
+					continue;
+				}
+				if (field.isAnnotationPresent(Search.class)) {
+					Search search = field.getAnnotation(Search.class);
+					try {
+						FuzzyIndex index = controller.getIndex(ClassReflection
+								.forName(search.index()));
+						search(fieldName, index);
+					} catch (ReflectionException e) {
+						Gdx.app.error("ClassOptionsController", "No class for "
+								+ search.index());
+					}
+				} else if (field.getType() == Integer.class
 						|| field.getType() == int.class) {
 					this.intNumber(fieldName).change(0);
 				} else if (field.getType() == Float.class
@@ -92,7 +113,24 @@ public class ReflectionOptionsController<T> extends OptionsController {
 		}
 	}
 
+	@Override
+	public void notifyChange(OptionController source, String fieldName,
+			Object newValue) {
+		super.notifyChange(source, fieldName, newValue);
+		controller.action(SetField.class, object, fieldName, newValue);
+	}
+
+	/**
+	 * Reads the object values and updates all options accordingly
+	 */
 	public void read(T object) {
+		if (this.object != null) {
+			controller.getModel().removeListener(this.object, fieldListener);
+		}
+
+		this.object = object;
+		controller.getModel().addFieldListener(this.object, fieldListener);
+
 		try {
 			Class clazz = this.clazz;
 			while (clazz != null) {
@@ -105,31 +143,20 @@ public class ReflectionOptionsController<T> extends OptionsController {
 				clazz = clazz.getSuperclass();
 			}
 		} catch (ReflectionException e) {
-			Gdx.app.error("ReflectionOptionsController", "Error", e);
+			Gdx.app.error("ClassOptionsController", "Error", e);
 		}
 	}
 
-	/**
-	 * @return an instance of the object with all the options contained by this
-	 *         controller
-	 */
-	public T newInstance() {
-		try {
-			Object o = ClassReflection.newInstance(clazz);
-			for (Entry<String, Object> e : this.getValues().entrySet()) {
-				Field field = ClassReflection.getField(clazz, e.getKey());
-				if (field != null) {
-					field.set(o, e.getValue());
-				} else {
-					Gdx.app.error("ReflectionOptionsController", "No field "
-							+ e.getKey() + " in class " + clazz);
-				}
-			}
-			return (T) o;
-		} catch (ReflectionException e) {
-			Gdx.app.error("ReflectionOptionsController",
-					"Error creating instance", e);
+	private class OptionFieldListener implements FieldListener {
+
+		@Override
+		public boolean listenToField(String fieldName) {
+			return true;
 		}
-		return null;
+
+		@Override
+		public void modelChanged(FieldEvent event) {
+			setValue(event.getField(), event.getValue());
+		}
 	}
 }
