@@ -247,8 +247,9 @@ public class Commands {
 			redoHistory.clear();
 
 			if (command.canUndo()) {
-				if (undoHistory.isEmpty()
-						|| !undoHistory.peek().combine(command)) {
+				if ((undoHistory.isEmpty() && !command.isTransparent())
+						|| (!undoHistory.isEmpty() && !undoHistory.peek()
+								.combine(command))) {
 					undoHistory.add(command);
 				}
 			}
@@ -270,16 +271,20 @@ public class Commands {
 
 		public void redo() {
 			if (!redoHistory.isEmpty()) {
-				Command command;
-				do {
+				Command command = redoHistory.pop();
+				undoHistory.add(command);
+				doCommand(command);
+				fire(REDO, command);
+
+				while (!redoHistory.isEmpty()
+						&& redoHistory.peek().isTransparent()) {
 					command = redoHistory.pop();
 					undoHistory.add(command);
 					doCommand(command);
 					fire(REDO, command);
-				} while (command.isTransparent() && !redoHistory.isEmpty());
+				}
 			}
 		}
-
 	}
 
 	public interface CommandListener {

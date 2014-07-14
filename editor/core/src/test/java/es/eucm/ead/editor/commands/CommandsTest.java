@@ -92,13 +92,14 @@ public class CommandsTest extends CommandTest {
 
 	@Test
 	public void testTransparent() {
+		commands.command(new MockCommand());
 		for (int i = 0; i < 10; i++) {
 			commands.command(new TransparentCommand());
 		}
 		commands.undo();
 
 		assertTrue(commands.getUndoHistory().isEmpty());
-		assertEquals(commands.getRedoHistory().size(), 10);
+		assertEquals(commands.getRedoHistory().size(), 11);
 
 		commands.redo();
 		assertTrue(commands.getRedoHistory().isEmpty());
@@ -130,6 +131,25 @@ public class CommandsTest extends CommandTest {
 		} catch (Exception e) {
 
 		}
+	}
+
+	@Test
+	public void undoRedoTransparentCommand() {
+		// Transparent command are not stacked if no other command is in the
+		// stack
+		commands.command(new TransparentCommand());
+		assertEquals(0, commands.getUndoHistory().size());
+
+		commands.command(new MockCommand());
+		for (int i = 0; i < 10; i++) {
+			commands.command(new TransparentCommand());
+		}
+
+		assertEquals(11, commands.getUndoHistory().size());
+		commands.undo();
+		assertEquals(0, commands.getUndoHistory().size());
+		commands.redo();
+		assertEquals(11, commands.getUndoHistory().size());
 	}
 
 	private class MockCommand extends Command {

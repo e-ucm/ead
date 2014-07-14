@@ -124,6 +124,16 @@ public class CompositeCommand extends Command {
 	}
 
 	@Override
+	public boolean isTransparent() {
+		for (Command command : commandList) {
+			if (!command.isTransparent()) {
+				return false;
+			}
+		}
+		return true;
+	}
+
+	@Override
 	public boolean combine(Command other) {
 		return false;
 	}

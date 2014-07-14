@@ -40,8 +40,10 @@ import es.eucm.ead.editor.control.Selection;
 import es.eucm.ead.editor.control.actions.editor.Redo;
 import es.eucm.ead.editor.control.actions.editor.Undo;
 import es.eucm.ead.editor.control.actions.model.SetSelection;
+import es.eucm.ead.editor.control.actions.model.generic.SetField;
 import es.eucm.ead.engine.mock.schema.MockModelComponent;
 import es.eucm.ead.schema.entities.ModelEntity;
+import es.eucm.ead.schemax.FieldName;
 import org.junit.Test;
 
 import static org.junit.Assert.assertEquals;
@@ -62,6 +64,8 @@ public class SetSelectionTest extends ActionTest {
 
 		MockModelComponent component1 = new MockModelComponent();
 		child.getComponents().add(component1);
+
+		controller.action(SetField.class, scene, FieldName.X, 0);
 
 		controller.action(SetSelection.class, null, "scene", scene);
 		assertSame(selection.getCurrent().first(), scene);
