@@ -112,22 +112,21 @@ public class ClassOptionsController<T> extends OptionsController {
 							file.mustExist());
 				} else if (field.getType() == Integer.class
 						|| field.getType() == int.class) {
-					this.intNumber(fieldName).widgetUpdatedValue(0);
+					this.intNumber(fieldName);
 				} else if (field.getType() == Float.class
 						|| field.getType() == float.class) {
-					floatNumber(fieldName).widgetUpdatedValue(0f);
+					floatNumber(fieldName);
 				} else if (field.getType() == String.class) {
-					string(fieldName).widgetUpdatedValue("");
+					string(fieldName);
 				} else if (field.getType() == Boolean.class
 						|| field.getType() == boolean.class) {
-					bool(fieldName).widgetUpdatedValue(false);
+					bool(fieldName);
 				} else if (field.getType().isEnum()) {
 					Map<String, Object> values = new LinkedHashMap<String, Object>();
 					for (Object o : field.getType().getEnumConstants()) {
 						values.put(o.toString(), o);
 					}
-					select(fieldName, values).widgetUpdatedValue(
-							values.keySet().iterator().next());
+					select(fieldName, values);
 				}
 			}
 			clazz = clazz.getSuperclass();
