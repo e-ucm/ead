@@ -137,6 +137,9 @@ public class Commands {
 	public void pushStack() {
 		currentCommandsStack = new CommandsStack();
 		commandsStacks.push(currentCommandsStack);
+		for (CommandListener listener : commandListeners) {
+			listener.contextPushed(this);
+		}
 	}
 
 	/**
@@ -156,6 +159,10 @@ public class Commands {
 			}
 		} else {
 			currentCommandsStack = null;
+		}
+
+		for (CommandListener listener : commandListeners) {
+			listener.contextPopped(this, oldCommandsStack, merge);
 		}
 	}
 
@@ -178,19 +185,19 @@ public class Commands {
 	}
 
 	private void fire(int type, Command command) {
-		for (CommandListener l : commandListeners) {
+		for (CommandListener listener : commandListeners) {
 			switch (type) {
 			case COMMAND:
-				l.doCommand(this, command);
+				listener.doCommand(this, command);
 				break;
 			case UNDO:
-				l.undoCommand(this, command);
+				listener.undoCommand(this, command);
 				break;
 			case REDO:
-				l.redoCommand(this, command);
+				listener.redoCommand(this, command);
 				break;
 			case SAVE:
-				l.savePointUpdated(this, savedPoint);
+				listener.savePointUpdated(this, savedPoint);
 				break;
 			}
 		}
@@ -216,6 +223,13 @@ public class Commands {
 		return currentCommandsStack != null
 				&& !currentCommandsStack.getUndoHistory().isEmpty()
 				&& savedPoint != currentCommandsStack.getUndoHistory().peek();
+	}
+
+	public void clear() {
+		commandsStacks.clear();
+		for (CommandListener listener : commandListeners) {
+			listener.cleared(this);
+		}
 	}
 
 	public class CommandsStack {
@@ -328,5 +342,25 @@ public class Commands {
 		 *            command at the save point
 		 */
 		void savePointUpdated(Commands commands, Command savePoint);
+
+		/**
+		 * The commands were cleared
+		 */
+		void cleared(Commands commands);
+
+		/**
+		 * A context was pushed
+		 */
+		void contextPushed(Commands commands);
+
+		/**
+		 * A context was popped
+		 * 
+		 * @param merge
+		 *            if commands popped were merged
+		 */
+		void contextPopped(Commands commands, CommandsStack poppedContext,
+				boolean merge);
+
 	}
 }

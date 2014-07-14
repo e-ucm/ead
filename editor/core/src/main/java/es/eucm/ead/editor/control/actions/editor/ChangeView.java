@@ -52,7 +52,8 @@ public class ChangeView extends EditorAction {
 
 	@Override
 	public boolean validate(Object... args) {
-		return args.length > 0 && args[0] instanceof Class;
+		return controller.getModel().getGame() != null && args.length > 0
+				&& args[0] instanceof Class;
 	}
 
 	@Override

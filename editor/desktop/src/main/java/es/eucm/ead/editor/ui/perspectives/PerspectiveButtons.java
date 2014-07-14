@@ -61,6 +61,7 @@ import es.eucm.ead.editor.model.events.SelectionEvent;
 import es.eucm.ead.editor.view.builders.ViewBuilder;
 import es.eucm.ead.editor.view.listeners.ActionOnClickListener;
 import es.eucm.ead.editor.view.listeners.ActionOnDownListener;
+import es.eucm.ead.editor.view.listeners.EnableActionListener;
 import es.eucm.ead.editor.view.widgets.IconButton;
 import es.eucm.ead.editor.view.widgets.Separator;
 import es.eucm.ead.editor.view.widgets.layouts.LinearLayout;
@@ -141,6 +142,8 @@ public class PerspectiveButtons extends LinearLayout {
 				.padRight(BUTTONS_PADDING);
 		button.addListener(new ActionOnClickListener(controller,
 				ChangeView.class, viewClass));
+		controller.getActions().addActionListener(ChangeView.class,
+				new EnableActionListener(button));
 		button.setName(text);
 		return button;
 	}

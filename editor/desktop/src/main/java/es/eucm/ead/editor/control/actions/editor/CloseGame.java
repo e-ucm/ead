@@ -36,77 +36,38 @@
  */
 package es.eucm.ead.editor.control.actions.editor;
 
-import es.eucm.ead.editor.control.Commands;
-import es.eucm.ead.editor.control.Commands.CommandListener;
-import es.eucm.ead.editor.control.Commands.CommandsStack;
 import es.eucm.ead.editor.control.Controller;
+import es.eucm.ead.editor.control.Preferences;
 import es.eucm.ead.editor.control.actions.EditorAction;
-import es.eucm.ead.editor.control.commands.Command;
+import es.eucm.ead.editor.control.views.NoProjectView;
+import es.eucm.ead.editor.model.Model.ModelListener;
+import es.eucm.ead.editor.model.events.LoadEvent;
+import es.eucm.ead.editor.model.events.LoadEvent.Type;
 
 /**
- * <p>
- * Redo the last undone command
- * </p>
- * <dl>
- * <dt><strong>Arguments</strong></dt>
- * <dd>None</dd>
- * </dl>
+ * Close the current edited game. It receives no arguments.
  */
-public class Redo extends EditorAction implements CommandListener {
-
-	public Redo() {
-		super(false, false);
-	}
+public class CloseGame extends EditorAction implements ModelListener<LoadEvent> {
 
 	@Override
 	public void initialize(Controller controller) {
 		super.initialize(controller);
-		controller.getCommands().addCommandListener(this);
-		updateEnable();
+		controller.getModel().addLoadListener(this);
+		setEnabled(controller.getModel().getGame() != null);
 	}
 
 	@Override
 	public void perform(Object... args) {
-		controller.getCommands().redo();
+		controller.action(ChangeView.class, NoProjectView.class);
+		controller.getCommands().clear();
+		controller.getModel().reset();
+		controller.getModel().notify(
+				new LoadEvent(Type.UNLOADED, controller.getModel()));
+		controller.getPreferences().putString(Preferences.LAST_OPENED_GAME, "");
 	}
 
 	@Override
-	public void doCommand(Commands commands, Command command) {
-		updateEnable();
-	}
-
-	@Override
-	public void undoCommand(Commands commands, Command command) {
-		updateEnable();
-	}
-
-	@Override
-	public void redoCommand(Commands commands, Command command) {
-		updateEnable();
-	}
-
-	@Override
-	public void savePointUpdated(Commands commands, Command savePoint) {
-	}
-
-	@Override
-	public void cleared(Commands commands) {
-		updateEnable();
-	}
-
-	@Override
-	public void contextPushed(Commands commands) {
-		updateEnable();
-	}
-
-	@Override
-	public void contextPopped(Commands commands, CommandsStack poppedContext,
-			boolean merge) {
-		updateEnable();
-	}
-
-	private void updateEnable() {
-		setEnabled(controller.getCommands().getRedoHistory() != null
-				&& !controller.getCommands().getRedoHistory().isEmpty());
+	public void modelChanged(LoadEvent event) {
+		setEnabled(event.getType() == Type.LOADED);
 	}
 }

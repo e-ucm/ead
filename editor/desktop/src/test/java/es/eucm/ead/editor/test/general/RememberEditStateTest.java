@@ -65,7 +65,8 @@ public class RememberEditStateTest extends EditorGUITest {
 			public void run() {
 				Game game = defaultMockGame();
 				controller.action(OpenMockGame.class, game);
-				controller.action(ChangeView.class, SceneView.class, "scene1");
+				controller.action(ChangeView.class, SceneView.class,
+						"scenes/scene1.json");
 				controller.action(Save.class);
 
 				// assert edit state has changed in save
@@ -83,8 +84,8 @@ public class RememberEditStateTest extends EditorGUITest {
 				// assert the view has been reloaded
 				assertEquals(SceneView.class, controller.getViews()
 						.getCurrentView().getClass());
-				assertEquals("scene1",
-						controller.getViews().getCurrentArgs()[0]);
+				assertEquals("scenes/scene1.json", controller.getViews()
+						.getCurrentArgs()[0]);
 
 			}
 		});
@@ -93,7 +94,7 @@ public class RememberEditStateTest extends EditorGUITest {
 	private Game defaultMockGame() {
 		Game game = new Game();
 		for (int i = 0; i < 3; i++) {
-			game.addScene("scene" + i, new ModelEntity());
+			game.addScene("scenes/scene" + i + ".json", new ModelEntity());
 		}
 		File file = editorDesktop.getPlatform().createTempFile(true);
 		game.setPath(file.getAbsolutePath(), false);

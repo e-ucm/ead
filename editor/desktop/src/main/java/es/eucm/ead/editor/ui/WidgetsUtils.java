@@ -113,8 +113,6 @@ public class WidgetsUtils {
 	 *            {@link ContextMenuItem} will be added.
 	 * @param label
 	 *            The text associated to the new created {@link ContextMenuItem}
-	 * @param disabled
-	 *            Set the enable/disable initial property of the menu item.
 	 * @param action
 	 *            The {@link Action} to be triggered when pressed
 	 * @param args
@@ -126,7 +124,7 @@ public class WidgetsUtils {
 	 */
 	public static <T extends Action> ContextMenu menuItem(
 			Controller controller, ContextMenu contextMenu, String label,
-			boolean disabled, Class<T> action, Object... args) {
+			Class<T> action, Object... args) {
 
 		ContextMenuItem item = contextMenu.item(label);
 
@@ -134,7 +132,7 @@ public class WidgetsUtils {
 		item.addListener(new ActionOnDownListener(controller, action, args));
 		// adding a listener to the action with the Context menu item
 		// to be notified about changes in the action state
-		item.setDisabled(disabled);
+		item.setDisabled(!controller.getActions().getAction(action).isEnabled());
 		controller.getActions().addActionListener(action,
 				new EnableActionListener(item));
 

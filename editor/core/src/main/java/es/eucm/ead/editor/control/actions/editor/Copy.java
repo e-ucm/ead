@@ -38,7 +38,10 @@ package es.eucm.ead.editor.control.actions.editor;
 
 import es.eucm.ead.editor.control.Controller;
 import es.eucm.ead.editor.control.actions.EditorAction;
+import es.eucm.ead.editor.model.Model.ModelListener;
 import es.eucm.ead.editor.model.Model.SelectionListener;
+import es.eucm.ead.editor.model.events.LoadEvent;
+import es.eucm.ead.editor.model.events.LoadEvent.Type;
 import es.eucm.ead.editor.model.events.SelectionEvent;
 
 /**
@@ -60,6 +63,14 @@ public class Copy extends EditorAction implements SelectionListener {
 	public void initialize(Controller controller) {
 		super.initialize(controller);
 		controller.getModel().addSelectionListener(this);
+		controller.getModel().addLoadListener(new ModelListener<LoadEvent>() {
+			@Override
+			public void modelChanged(LoadEvent event) {
+				if (event.getType() == Type.UNLOADED) {
+					setEnabled(false);
+				}
+			}
+		});
 		updateEnable();
 	}
 

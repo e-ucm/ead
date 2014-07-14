@@ -231,6 +231,11 @@ public class Selection {
 		return contexts.removeIndex(index);
 	}
 
+	public void clear() {
+		contexts.clear();
+		pointer = -1;
+	}
+
 	public static class Context {
 
 		private String parentId;

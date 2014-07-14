@@ -7,13 +7,14 @@
 # Each '{}' will be interpreted as a placeholder for the next argument
 
 application.title = eAdventure - {}
-general.new = Nuevo
+general.new = Nuevo juego
 general.edit = Editar
 general.file = Archivo
 general.help = Ayuda
 general.open = Abrir
 general.save = Guardar
 general.export = Exportar
+general.close = Cerrar juego
 general.undo = Deshacer
 general.redo = Rehacer
 general.accept = Aceptar

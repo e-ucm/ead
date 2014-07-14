@@ -5,7 +5,7 @@
 # Each '{}' will be interpreted as a placeholder for the next argument
 
 application.title = eAdventure - {}
-general.new = New
+general.new = New game
 general.edit = Edit
 general.file = File
 general.help = Help
@@ -14,6 +14,7 @@ general.save = Save
 general.export = Export
 general.undo = Undo
 general.redo = Redo
+general.close = Close game
 general.accept = Accept
 general.cut = Cut
 general.copy = Copy

@@ -158,6 +158,7 @@ public class Model {
 		}
 		clearListeners();
 		index.clear();
+		selection.clear();
 	}
 
 	/**

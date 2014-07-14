@@ -43,6 +43,7 @@ import com.badlogic.gdx.utils.reflect.ClassReflection;
 import es.eucm.ead.editor.control.Controller;
 import es.eucm.ead.editor.control.actions.Action;
 import es.eucm.ead.editor.control.actions.editor.Back;
+import es.eucm.ead.editor.control.actions.editor.CloseGame;
 import es.eucm.ead.editor.control.actions.editor.Copy;
 import es.eucm.ead.editor.control.actions.editor.Cut;
 import es.eucm.ead.editor.control.actions.editor.Exit;
@@ -136,16 +137,17 @@ public class MainToolbar extends LinearLayout {
 
 	private ContextMenu buildFileMenu(Skin skin, I18N i18N) {
 		ContextMenu contextMenu = new ContextMenu(skin);
-		item(contextMenu, i18N.m("general.new"), false, ShowDialog.class,
+		item(contextMenu, i18N.m("general.new"), ShowDialog.class,
 				NewGameDialog.class);
-		item(contextMenu, i18N.m("general.open"), false, OpenGame.class);
+		item(contextMenu, i18N.m("general.open"), OpenGame.class);
 		contextMenu.separator();
-		item(contextMenu, i18N.m("general.save"), true, Save.class);
+		item(contextMenu, i18N.m("general.close"), CloseGame.class);
+		item(contextMenu, i18N.m("general.save"), Save.class);
 		contextMenu.separator();
 		contextMenu.item(i18N.m("file.recents")).submenu(
 				new RecentsMenu(skin, controller, i18N));
 		contextMenu.separator();
-		item(contextMenu, i18N.m("file.exit"), false, Exit.class);
+		item(contextMenu, i18N.m("file.exit"), Exit.class);
 		return contextMenu;
 	}
 
@@ -160,9 +162,9 @@ public class MainToolbar extends LinearLayout {
 	 * 
 	 */
 	private <T extends Action> ContextMenu item(ContextMenu contextMenu,
-			String label, boolean disabled, Class<T> action, Object... args) {
-		return WidgetsUtils.menuItem(controller, contextMenu, label, disabled,
-				action, args);
+			String label, Class<T> action, Object... args) {
+		return WidgetsUtils.menuItem(controller, contextMenu, label, action,
+				args);
 	}
 
 }
