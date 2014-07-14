@@ -6,7 +6,8 @@
 #
 # Each '{}' will be interpreted as a placeholder for the next argument
 
-application.title = eAdventure - {}
+application.title.noproject = eAdventure
+application.title = eAdventure [{}] - [{}]
 general.new = Nuevo juego
 general.edit = Editar
 general.file = Archivo

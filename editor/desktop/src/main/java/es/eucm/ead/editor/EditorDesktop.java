@@ -61,15 +61,19 @@ import es.eucm.ead.editor.control.actions.editor.Redo;
 import es.eucm.ead.editor.control.actions.editor.Save;
 import es.eucm.ead.editor.control.actions.editor.Undo;
 import es.eucm.ead.editor.control.views.NoProjectView;
+import es.eucm.ead.editor.model.Model.FieldListener;
 import es.eucm.ead.editor.model.Model.ModelListener;
 import es.eucm.ead.editor.model.Q;
+import es.eucm.ead.editor.model.events.FieldEvent;
 import es.eucm.ead.editor.model.events.LoadEvent;
 import es.eucm.ead.editor.platform.Platform;
 import es.eucm.ead.editor.ui.DesktopViewsRoot;
 import es.eucm.ead.editor.ui.EditorWindow;
 import es.eucm.ead.editor.view.tooltips.TooltipManager;
+import es.eucm.ead.engine.I18N;
 import es.eucm.ead.engine.utils.SwingEDTUtils;
-import es.eucm.ead.schema.editor.components.Note;
+import es.eucm.ead.schema.editor.components.Documentation;
+import es.eucm.ead.schemax.FieldName;
 
 import javax.swing.*;
 import java.awt.*;
@@ -85,6 +89,8 @@ public class EditorDesktop extends EditorApplicationListener {
 	private LwjglFrame frame;
 
 	private Group viewsRoot;
+
+	private I18N i18N;
 
 	/**
 	 * EditorDesktop admits as optional parameter the absolute path of a
@@ -127,32 +133,75 @@ public class EditorDesktop extends EditorApplicationListener {
 			Gdx.app.setLogLevel(Application.LOG_DEBUG);
 		}
 		super.create();
-		Gdx.gl.glClearColor(1.0f, 1.0f, 1.0f, 1.0f);
-		initFrame();
+	}
 
+	@Override
+	protected void initialize() {
+		super.initialize();
+		Gdx.gl.glClearColor(1.0f, 1.0f, 1.0f, 1.0f);
+		i18N = controller.getApplicationAssets().getI18N();
+		EditorWindow editorWindow = new EditorWindow(viewsRoot, controller);
+		stage.addActor(editorWindow);
+		registerShortcuts();
+		initFrame();
+		addTitleListener();
+		openLastProject();
+		tooltipManager = new TooltipManager(stage.getRoot(), controller
+				.getApplicationAssets().getSkin()
+				.get("tooltip", LabelStyle.class));
+		controller.action(CheckUpdates.class, controller.getReleaseInfo(),
+				false);
+	}
+
+	private void addTitleListener() {
 		controller.getModel().addLoadListener(new ModelListener<LoadEvent>() {
+
+			private FieldListener titleListener = new FieldListener() {
+				@Override
+				public boolean listenToField(String fieldName) {
+					return FieldName.NAME.equals(fieldName);
+				}
+
+				@Override
+				public void modelChanged(FieldEvent event) {
+					platform.setTitle(i18N.m("application.title",
+							event.getValue() + "", controller
+									.getEditorGameAssets().getLoadingPath()));
+				}
+			};
+
 			@Override
 			public void modelChanged(LoadEvent event) {
 				switch (event.getType()) {
 				case LOADED:
-					String title = Q.getComponent(event.getModel().getGame(),
-							Note.class).getTitle();
-					platform.setTitle(controller.getApplicationAssets()
-							.getI18N()
-							.m("application.title", title == null ? "" : title));
+					Documentation documentation = Q.getComponent(event
+							.getModel().getGame(), Documentation.class);
+					String title = Q.getName(event.getModel().getGame(), "");
+					platform.setTitle(i18N.m("application.title", title,
+							controller.getEditorGameAssets().getLoadingPath()));
+					event.getModel().addFieldListener(documentation,
+							titleListener);
 					break;
 				case UNLOADED:
-					platform.setTitle(controller.getApplicationAssets()
-							.getI18N().m("application.title"));
+					platform.setTitle(i18N.m("application.title.noproject"));
 					break;
 				}
 			}
 		});
+		platform.setTitle(i18N.m("application.title.noproject"));
+	}
 
-		tooltipManager = new TooltipManager(stage.getRoot(), controller
-				.getApplicationAssets().getSkin()
-				.get("tooltip", LabelStyle.class));
+	private void openLastProject() {
+		if (projectToOpenPath == null) {
+			projectToOpenPath = controller.getPreferences().getString(
+					Preferences.LAST_OPENED_GAME);
+		}
 
+		if (projectToOpenPath != null && !"".equals(projectToOpenPath)) {
+			controller.action(OpenGame.class, projectToOpenPath);
+		} else {
+			controller.action(ChangeView.class, NoProjectView.class);
+		}
 	}
 
 	protected void initFrame() {
@@ -217,28 +266,6 @@ public class EditorDesktop extends EditorApplicationListener {
 		return new Controller(platform, Gdx.files, viewsRoot, stage.getRoot());
 	}
 
-	@Override
-	protected void initialize() {
-		super.initialize();
-		EditorWindow editorWindow = new EditorWindow(viewsRoot, controller);
-		stage.addActor(editorWindow);
-		registerShortcuts();
-
-		if (projectToOpenPath == null) {
-			projectToOpenPath = controller.getPreferences().getString(
-					Preferences.LAST_OPENED_GAME);
-		}
-
-		if (projectToOpenPath != null && !"".equals(projectToOpenPath)) {
-			controller.action(OpenGame.class, projectToOpenPath);
-		} else {
-			controller.action(ChangeView.class, NoProjectView.class);
-		}
-		// Check updates
-		controller.action(CheckUpdates.class, controller.getReleaseInfo(),
-				false);
-	}
-
 	private void registerShortcuts() {
 		final ShortcutsMap shortcutsMap = controller.getShortcutsMap();
 		stage.addListener(new InputListener() {
@@ -247,7 +274,6 @@ public class EditorDesktop extends EditorApplicationListener {
 				return !event.isHandled() && shortcutsMap.shortcut(keycode);
 			}
 		});
-
 		shortcutsMap.registerShortcutCtrl(Keys.O, OpenGame.class);
 		shortcutsMap.registerShortcutCtrl(Keys.S, Save.class);
 

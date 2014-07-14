@@ -4,7 +4,8 @@
 #
 # Each '{}' will be interpreted as a placeholder for the next argument
 
-application.title = eAdventure - {}
+application.title.noproject = eAdventure
+application.title = eAdventure [{}] - [{}]
 general.new = New game
 general.edit = Edit
 general.file = File
