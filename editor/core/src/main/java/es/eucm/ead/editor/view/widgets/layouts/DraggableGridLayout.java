@@ -43,7 +43,7 @@ import com.badlogic.gdx.scenes.scene2d.utils.DragAndDrop.Payload;
 import com.badlogic.gdx.scenes.scene2d.utils.DragAndDrop.Source;
 import com.badlogic.gdx.scenes.scene2d.utils.DragAndDrop.Target;
 
-import es.eucm.ead.editor.view.widgets.DraggableScrollPane;
+import es.eucm.ead.editor.view.widgets.dragndrop.DraggableScrollPane;
 import es.eucm.ead.editor.view.widgets.layouts.GridLayout.Cell;
 
 /**
