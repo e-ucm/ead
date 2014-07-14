@@ -43,6 +43,7 @@ import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer.ShapeType;
 import com.badlogic.gdx.math.Rectangle;
+import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.Event;
 import com.badlogic.gdx.scenes.scene2d.EventListener;
@@ -141,8 +142,8 @@ public class GroupEditor extends AbstractWidget {
 		return groupEditorDragListener.getContainerY();
 	}
 
-	public void fit() {
-		groupEditorDragListener.fit();
+	public void fit(boolean realSize) {
+		groupEditorDragListener.fit(realSize);
 	}
 
 	public void adjustGroup(Group group) {
@@ -238,6 +239,12 @@ public class GroupEditor extends AbstractWidget {
 
 	public void setSelection(Array<Actor> actors) {
 		groupEditorDragListener.setSelection(actors);
+	}
+
+	public void getViewPortCenter(Vector2 center) {
+		center.set(getWidth() / 2.0f, getHeight() / 2.0f);
+		localToDescendantCoordinates(groupEditorDragListener.getContainer(),
+				center);
 	}
 
 	/**

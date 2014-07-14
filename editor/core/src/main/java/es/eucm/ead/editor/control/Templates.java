@@ -117,16 +117,24 @@ public class Templates {
 		return scene;
 	}
 
+	public ModelEntity createSceneElement(String imagePath) {
+		return createSceneElement(imagePath, 0, 0);
+	}
+
 	/**
-	 * Creates a scene element with a image as renderer, and default
-	 * transformation (position 0,0, scale: 1, rotation 0)
+	 * Creates a scene element with a image as renderer. Calculates the origin
+	 * at the center, sets scale to 1 and rotation to 0
 	 * 
 	 * @param imagePath
 	 *            the path to the image. If the image is not contained by the
 	 *            game assets, is copied to them and then loaded
+	 * @param x
+	 *            the center x coordinate of the scene element
+	 * @param y
+	 *            the center y coordinate of the scene element
 	 * @return the scene element created
 	 */
-	public ModelEntity createSceneElement(String imagePath) {
+	public ModelEntity createSceneElement(String imagePath, float x, float y) {
 		EditorGameAssets assets = controller.getEditorGameAssets();
 
 		String newPath = assets.copyToProjectIfNeeded(imagePath, Texture.class);
@@ -141,6 +149,9 @@ public class Templates {
 			}
 		});
 		assets.finishLoading();
+
+		sceneElement.setX(x - sceneElement.getOriginX());
+		sceneElement.setY(y - sceneElement.getOriginY());
 		Image renderer = new Image();
 		renderer.setUri(newPath);
 

@@ -94,7 +94,7 @@ public class SceneEditorToolbar extends LinearLayout {
 
 			@Override
 			public void clicked(InputEvent event, float x, float y) {
-				groupEditor.fit();
+				groupEditor.fit(true);
 			}
 		});
 		buttons.add(fit);

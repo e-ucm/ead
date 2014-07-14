@@ -36,6 +36,7 @@
  */
 package es.eucm.ead.editor.view.widgets.scenes;
 
+import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.Group;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
@@ -69,6 +70,8 @@ import es.eucm.ead.schemax.FieldName;
  */
 public abstract class SceneEditor extends AbstractWidget {
 
+	public static final String NAME = "sceneEditor";
+
 	private Controller controller;
 
 	private Model model;
@@ -92,6 +95,7 @@ public abstract class SceneEditor extends AbstractWidget {
 	private boolean fit;
 
 	public SceneEditor(Controller controller) {
+		this.setName(NAME);
 		this.controller = controller;
 		model = controller.getModel();
 		entitiesLoader = controller.getEngine().getEntitiesLoader();
@@ -122,7 +126,7 @@ public abstract class SceneEditor extends AbstractWidget {
 		groupEditor.setBounds(0, 0, getWidth(), getHeight());
 		if (fit) {
 			fit = false;
-			groupEditor.fit();
+			groupEditor.fit(true);
 		}
 	}
 
@@ -248,6 +252,14 @@ public abstract class SceneEditor extends AbstractWidget {
 		for (ModelEntity child : entity.getChildren()) {
 			removeListeners(child);
 		}
+	}
+
+	/**
+	 * Sets in the given vector the scene center, according to the current
+	 * viewport and scene transformations
+	 */
+	public void getViewPortCenter(Vector2 center) {
+		groupEditor.getViewPortCenter(center);
 	}
 
 	/**

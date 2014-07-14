@@ -41,16 +41,39 @@ import es.eucm.ead.editor.control.actions.model.AddSceneElement;
 import es.eucm.ead.editor.platform.Platform.FileChooserListener;
 import es.eucm.ead.schema.entities.ModelEntity;
 
+/**
+ * <p>
+ * Adds a scene element to the current edited scene
+ * </p>
+ * <dl>
+ * <dt><strong>Arguments</strong></dt>
+ * <dd><strong>args[0]</strong> <em>Number (optional)</em> x coordinate for the
+ * resources</dd>
+ * <dd><strong>args[1]</strong> <em>Number (optional)</em> y coordinate for the
+ * resources</dd>
+ * </dl>
+ */
 public class AddSceneElementFromResource extends EditorAction implements
 		FileChooserListener {
 
+	private Number x;
+	private Number y;
+
 	public AddSceneElementFromResource() {
-		super(true, false);
+		super(true, false, new Class[] {}, new Class[] { Number.class,
+				Number.class });
 	}
 
 	@Override
 	public void perform(Object... args) {
 		controller.action(ChooseFile.class, false, this);
+		if (args.length == 2) {
+			x = (Number) args[0];
+			y = (Number) args[1];
+		} else {
+			x = 0;
+			y = 0;
+		}
 	}
 
 	@Override
@@ -62,7 +85,7 @@ public class AddSceneElementFromResource extends EditorAction implements
 
 	private void generateSceneElementFromImage(String result) {
 		ModelEntity sceneElement = controller.getTemplates()
-				.createSceneElement(result);
+				.createSceneElement(result, x.floatValue(), y.floatValue());
 		controller.action(AddSceneElement.class, sceneElement);
 	}
 

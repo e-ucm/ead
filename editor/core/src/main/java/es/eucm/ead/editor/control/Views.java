@@ -78,8 +78,6 @@ public class Views {
 
 	protected ViewBuilder currentView;
 
-	private Dialog dialog;
-
 	private Object[] currentArgs;
 
 	private Actor currentContextMenu;
@@ -146,7 +144,6 @@ public class Views {
 		dialogBuilders = new HashMap<Class, DialogBuilder>();
 		contextMenues = new IdentityHashMap<Actor, ContextMenu>();
 		viewsHistory = new ViewsHistory();
-		this.dialog = new Dialog(controller.getApplicationAssets().getSkin());
 	}
 
 	public Group getViewsContainer() {

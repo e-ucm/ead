@@ -132,7 +132,7 @@ public class MockupSceneEditor extends SceneEditor {
 		this.scissorBounds.set(getX(), getY(), getWidth(), getHeight());
 		super.getStage().calculateScissors(scissorBounds, scissorBounds);
 		fixScissorBounds();
-		groupEditor.fit();
+		groupEditor.fit(true);
 	}
 
 	private void fixScissorBounds() {

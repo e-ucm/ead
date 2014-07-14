@@ -115,6 +115,10 @@ public class GroupEditorDragListener extends DragListener {
 		};
 	}
 
+	public Group getContainer() {
+		return container;
+	}
+
 	@Override
 	public boolean handle(Event e) {
 		clickListener.handle(e);
@@ -339,11 +343,15 @@ public class GroupEditorDragListener extends DragListener {
 	/**
 	 * Fits the scene in the current container size.
 	 */
-	public void fit() {
-		float scaleX = container.getParent().getWidth() / container.getWidth();
-		float scaleY = container.getParent().getHeight()
-				/ container.getHeight();
-		float scale = Math.min(scaleX, scaleY);
+	public void fit(boolean realSize) {
+		float scale = 1;
+		if (!realSize) {
+			float scaleX = container.getParent().getWidth()
+					/ container.getWidth();
+			float scaleY = container.getParent().getHeight()
+					/ container.getHeight();
+			scale = Math.min(scaleX, scaleY);
+		}
 		container.setScale(scale);
 
 		float offsetX = (container.getParent().getWidth() - container
@@ -546,7 +554,7 @@ public class GroupEditorDragListener extends DragListener {
 			panningMode = true;
 			return true;
 		case Keys.NUM_1:
-			fit();
+			fit(true);
 			return true;
 		case Keys.MINUS:
 			scaleBy(SCALE_FACTOR, true);

@@ -36,9 +36,12 @@
  */
 package es.eucm.ead.editor.ui.scenes.ribbon;
 
+import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.scenes.scene2d.Actor;
+import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
+import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 
 import es.eucm.ead.editor.control.Controller;
 import es.eucm.ead.editor.control.actions.Action;
@@ -48,6 +51,7 @@ import es.eucm.ead.editor.view.listeners.ActionOnClickListener;
 import es.eucm.ead.editor.view.widgets.IconButton;
 import es.eucm.ead.editor.view.widgets.Separator;
 import es.eucm.ead.editor.view.widgets.layouts.LinearLayout;
+import es.eucm.ead.editor.view.widgets.scenes.SceneEditor;
 import es.eucm.ead.engine.I18N;
 
 /**
@@ -67,7 +71,7 @@ public class InsertTab extends LinearLayout {
 				NewScene.class, i18N.m("scene.untitled")));
 		add(new Separator(false, skin));
 		add(createButton("image48x48", i18N.m("general.image"), skin,
-				AddSceneElementFromResource.class));
+				new InsertOnClick()));
 		add(createButton("shapes48x48", i18N.m("general.shape"), skin, null));
 		add(createButton("text48x48", i18N.m("general.text"), skin, null));
 		add(new Separator(false, skin));
@@ -83,13 +87,33 @@ public class InsertTab extends LinearLayout {
 
 	private <T extends Action> Actor createButton(String drawable, String text,
 			Skin skin, Class<T> editorAction, Object... args) {
+		return createButton(drawable, text, skin, new ActionOnClickListener(
+				controller, editorAction, args));
+	}
+
+	private Actor createButton(String drawable, String text, Skin skin,
+			ClickListener clickListener) {
 		IconButton button = new IconButton(skin.getDrawable(drawable), 5, skin);
 		button.row();
 		button.add(new Label(text, skin));
-
-		button.addListener(new ActionOnClickListener(controller, editorAction,
-				args));
+		if (clickListener != null) {
+			button.addListener(clickListener);
+		}
 		return button;
+	}
+
+	public class InsertOnClick extends ClickListener {
+
+		private Vector2 center = new Vector2();
+
+		@Override
+		public void clicked(InputEvent event, float x, float y) {
+			SceneEditor sceneEditor = (SceneEditor) controller.getViews()
+					.getViewsContainer().findActor(SceneEditor.NAME);
+			sceneEditor.getViewPortCenter(center);
+			controller.action(AddSceneElementFromResource.class, center.x,
+					center.y);
+		}
 	}
 
 }
