@@ -140,6 +140,7 @@ public class BehaviorsSelector extends LinearLayout {
 		@Override
 		public void modelChanged(SelectionEvent event) {
 			switch (event.getType()) {
+			case ADDED:
 			case FOCUSED:
 				readBehaviors();
 				break;

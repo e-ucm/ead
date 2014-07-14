@@ -37,9 +37,8 @@
 package es.eucm.ead.editor.control.actions.model.scene;
 
 import com.badlogic.gdx.utils.Array;
-import com.badlogic.gdx.utils.SnapshotArray;
-import es.eucm.ead.editor.control.Selection;
 import es.eucm.ead.editor.control.Controller;
+import es.eucm.ead.editor.control.Selection;
 import es.eucm.ead.editor.control.actions.model.Reorder;
 import es.eucm.ead.editor.control.actions.model.scene.transform.TransformSelection;
 import es.eucm.ead.editor.control.commands.Command;
@@ -89,13 +88,10 @@ public class ReorderSelection extends TransformSelection {
 		CompositeCommand compositeCommand = new CompositeCommand();
 
 		orderedSelection.clear();
-		SnapshotArray<Object> selection = controller.getModel().getSelection()
-				.get(Selection.SCENE_ELEMENT);
-		Object[] objects = selection.begin();
-		for (int i = 0; i < selection.size; i++) {
-			orderedSelection.add((ModelEntity) objects[i]);
+		for (Object object : controller.getModel().getSelection()
+				.get(Selection.SCENE_ELEMENT)) {
+			orderedSelection.add((ModelEntity) object);
 		}
-		selection.end();
 		childrenComparator.setList(parent.getChildren());
 		orderedSelection.sort(childrenComparator);
 

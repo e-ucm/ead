@@ -145,14 +145,12 @@ public class AnimationEditor extends Table {
 		/**
 		 * Invoked when a frame has gained focus.
 		 * 
-		 * @param frame
 		 */
 		void frameSelected(int index);
 
 		/**
 		 * Invoked when a frame duration has changed.
 		 * 
-		 * @param frame
 		 */
 		void frameTimeChanged(int index, float newValue);
 	}
@@ -192,7 +190,7 @@ public class AnimationEditor extends Table {
 		public void modelChanged(SelectionEvent event) {
 			if (isFrames) {
 				if (event.getType() == SelectionEvent.Type.FOCUSED) {
-					frames = (Frames) event.getSelection().first();
+					frames = (Frames) event.getSelection()[0];
 					refreshPreview();
 					timeline.loadFrames(frames.getFrames(), previewView);
 				}
@@ -202,7 +200,7 @@ public class AnimationEditor extends Table {
 				case FOCUSED:
 				case REMOVED:
 					index = frames.getFrames().indexOf(
-							(Frame) event.getSelection().first(), true);
+							(Frame) event.getSelection()[0], true);
 					timeline.centerScrollAt(index);
 					previewView.frameSelected(index);
 					break;

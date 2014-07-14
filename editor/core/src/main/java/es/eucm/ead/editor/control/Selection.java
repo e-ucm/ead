@@ -37,9 +37,8 @@
 package es.eucm.ead.editor.control;
 
 import com.badlogic.gdx.utils.Array;
-import com.badlogic.gdx.utils.Pool.Poolable;
-import com.badlogic.gdx.utils.Pools;
-import com.badlogic.gdx.utils.SnapshotArray;
+
+import java.util.Arrays;
 
 /**
  * Keeps track of all the elements selected in the editor, in different
@@ -48,7 +47,7 @@ import com.badlogic.gdx.utils.SnapshotArray;
  */
 public class Selection {
 
-	private static final SnapshotArray<Object> NO_SELECTION = new SnapshotArray<Object>();
+	private static final Object[] NO_SELECTION = new Object[0];
 
 	public static String SCENE = "scene";
 
@@ -126,15 +125,14 @@ public class Selection {
 			return contextsRemoved;
 		}
 
+		boolean contextPresent = false;
 		Array<Context> contextsRemoved = new Array<Context>();
 
 		int index = getIndex(contextId);
 		Context context;
 		if (index == -1) {
 			int parentIndex = getIndex(parentContextId);
-			context = Pools.obtain(Context.class);
-			context.setId(contextId);
-			context.setParentId(parentContextId);
+			context = new Context(parentContextId, contextId);
 			if (parentIndex != -1 && parentIndex < contexts.size - 1) {
 				for (int i = parentIndex + 1; i < contexts.size; i++) {
 					contextsRemoved.add(contexts.get(i));
@@ -144,10 +142,16 @@ public class Selection {
 			contexts.add(context);
 			index = contexts.size - 1;
 		} else {
+			contextPresent = true;
 			context = contexts.get(index);
 		}
 
 		if (context.isDifferentSelection(selection)) {
+			if (contextPresent) {
+				Context oldContext = new Context(context.getParentId(),
+						context.getId(), context.getSelection());
+				contextsRemoved.add(oldContext);
+			}
 			context.setSelection(selection);
 			if (index + 1 < contexts.size) {
 				for (int i = index + 1; i < contexts.size; i++) {
@@ -182,7 +186,7 @@ public class Selection {
 	 * @return array of the objects selected in the focused context. Never
 	 *         returns {@code null}. This array should not be modified
 	 */
-	public SnapshotArray<Object> getCurrent() {
+	public Object[] getCurrent() {
 		if (pointer < 0 || pointer > contexts.size - 1) {
 			return NO_SELECTION;
 		} else {
@@ -195,7 +199,7 @@ public class Selection {
 	 *         never returns {@code null}, but an empty array. Returned array
 	 *         should not be modified.
 	 */
-	public SnapshotArray<Object> get(String contextId) {
+	public Object[] get(String contextId) {
 		int index = getIndex(contextId);
 		return index == -1 ? NO_SELECTION : contexts.get(getIndex(contextId))
 				.getSelection();
@@ -206,9 +210,8 @@ public class Selection {
 	 *         {@code null} if not selection is present in the given context
 	 */
 	public Object getSingle(String contextId) {
-		SnapshotArray<Object> selection = get(contextId);
-		return selection == null || selection.size == 0 ? null : selection
-				.first();
+		Object[] selection = get(contextId);
+		return selection == null || selection.length == 0 ? null : selection[0];
 	}
 
 	public Array<Context> getContexts() {
@@ -228,22 +231,18 @@ public class Selection {
 		return contexts.removeIndex(index);
 	}
 
-	public static class Context implements Poolable {
+	public static class Context {
 
 		private String parentId;
 
 		private String id;
 
-		private SnapshotArray<Object> selection = new SnapshotArray<Object>();
-
-		public Context() {
-			// Used by pools
-		}
+		private Object[] selection;
 
 		public Context(String parentId, String id, Object... selection) {
 			this.parentId = parentId;
 			this.id = id;
-			this.selection.addAll(selection);
+			this.selection = selection;
 		}
 
 		public String getParentId() {
@@ -254,7 +253,7 @@ public class Selection {
 			this.parentId = parentId;
 		}
 
-		public void setSelection(SnapshotArray<Object> selection) {
+		public void setSelection(Object[] selection) {
 			this.selection = selection;
 		}
 
@@ -266,19 +265,14 @@ public class Selection {
 			this.id = id;
 		}
 
-		public void setSelection(Object... selection) {
-			this.selection.clear();
-			this.selection.addAll(selection);
-		}
-
-		public SnapshotArray<Object> getSelection() {
+		public Object[] getSelection() {
 			return selection;
 		}
 
 		public boolean isDifferentSelection(Object... selection) {
-			if (this.selection.size == selection.length) {
-				for (Object selected : selection) {
-					if (!this.selection.contains(selected, true)) {
+			if (this.selection.length == selection.length) {
+				for (int i = 0; i < selection.length; i++) {
+					if (!this.selection[i].equals(selection[i])) {
 						return true;
 					}
 				}
@@ -301,18 +295,7 @@ public class Selection {
 			if (parentId != null ? !parentId.equals(that.parentId)
 					: that.parentId != null)
 				return false;
-			if (selection != null ? !selection.equals(that.selection)
-					: that.selection != null)
-				return false;
-
-			return true;
-		}
-
-		@Override
-		public void reset() {
-			id = null;
-			parentId = null;
-			selection.clear();
+			return Arrays.equals(selection, that.selection);
 		}
 	}
 }

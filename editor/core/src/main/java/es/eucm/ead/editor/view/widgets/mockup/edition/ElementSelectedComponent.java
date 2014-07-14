@@ -41,7 +41,6 @@ import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.ui.Button;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
-import com.badlogic.gdx.utils.Array;
 import es.eucm.ead.editor.control.Controller;
 import es.eucm.ead.editor.control.actions.editor.ChangeView;
 import es.eucm.ead.editor.control.actions.model.SetSelection;
@@ -117,10 +116,10 @@ public class ElementSelectedComponent extends EditionComponent {
 			@Override
 			public void clicked(InputEvent event, float x, float y) {
 
-				Array<Object> selection = controller.getModel().getSelection()
+				Object[] selection = controller.getModel().getSelection()
 						.getCurrent();
-				if (selection.size > 0) {
-					Object aux = selection.first();
+				if (selection.length > 0) {
+					Object aux = selection[0];
 					controller.action(SetSelection.class, aux);
 					controller.action(ChangeView.class, ElementEdition.class);
 				}
@@ -134,14 +133,13 @@ public class ElementSelectedComponent extends EditionComponent {
 		this.delete.addListener(new ClickListener() {
 			@Override
 			public void clicked(InputEvent event, float x, float y) {
-				Array<Object> selection = controller.getModel().getSelection()
+				Object[] selection = controller.getModel().getSelection()
 						.getCurrent();
-				if (selection.size > 0) {
+				if (selection.length > 0) {
 					/*
 					 * controller.action(RemoveChildrenFromEntity.class,
 					 * controller.getModel().getEditScene(), selection);
 					 */
-					selection.clear();
 				}
 			}
 		});
@@ -153,9 +151,9 @@ public class ElementSelectedComponent extends EditionComponent {
 		this.deselect.addListener(new ClickListener() {
 			@Override
 			public void clicked(InputEvent event, float x, float y) {
-				Array<Object> selection = controller.getModel().getSelection()
+				Object[] selection = controller.getModel().getSelection()
 						.getCurrent();
-				if (selection.size > 0) {
+				if (selection.length > 0) {
 					controller.action(SetSelection.class);
 				}
 			}

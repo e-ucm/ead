@@ -42,8 +42,6 @@ import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.Pools;
 import com.badlogic.gdx.utils.Predicate;
-import com.badlogic.gdx.utils.SnapshotArray;
-
 import es.eucm.ead.editor.control.Controller;
 import es.eucm.ead.editor.control.Selection;
 import es.eucm.ead.editor.model.Model;
@@ -198,20 +196,17 @@ public abstract class SceneEditor extends AbstractWidget {
 	private void readSelection() {
 		Array actors = Pools.obtain(Array.class);
 		actors.clear();
-		SnapshotArray<Object> selection = model.getSelection().get(
-				Selection.SCENE_ELEMENT);
-		Object[] objects = selection.begin();
-		for (int i = 0; i < selection.size; i++) {
-			if (objects[i] instanceof ModelEntity) {
+		Object[] selection = model.getSelection().get(Selection.SCENE_ELEMENT);
+		for (Object object : selection) {
+			if (object instanceof ModelEntity) {
 				// Check if this model entity is inside the current scene
-				entityPredicate.setEntity((ModelEntity) objects[i]);
+				entityPredicate.setEntity((ModelEntity) object);
 				Actor actor = findActor(scene.getGroup(), entityPredicate);
 				if (actor != null) {
 					actors.add(actor);
 				}
 			}
 		}
-		selection.end();
 		if (actors.size > 0) {
 			groupEditor.setSelection(actors);
 		} else {

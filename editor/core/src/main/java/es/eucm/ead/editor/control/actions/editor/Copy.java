@@ -79,6 +79,6 @@ public class Copy extends EditorAction implements SelectionListener {
 	}
 
 	public void updateEnable() {
-		setEnabled(controller.getModel().getSelection().getCurrent().size > 0);
+		setEnabled(controller.getModel().getSelection().getCurrent().length > 0);
 	}
 }

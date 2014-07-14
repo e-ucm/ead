@@ -36,9 +36,8 @@
  */
 package es.eucm.ead.editor.control.actions.model.scene.transform;
 
-import com.badlogic.gdx.utils.SnapshotArray;
-import es.eucm.ead.editor.control.Selection;
 import es.eucm.ead.editor.control.Controller;
+import es.eucm.ead.editor.control.Selection;
 import es.eucm.ead.editor.control.actions.ModelAction;
 import es.eucm.ead.editor.control.commands.Command;
 import es.eucm.ead.editor.control.commands.CompositeCommand;
@@ -56,15 +55,12 @@ public abstract class TransformSelection extends ModelAction implements
 
 	public boolean validate(Object... args) {
 		if (super.validate(args)) {
-			SnapshotArray<Object> selection = controller.getModel()
-					.getSelection().getCurrent();
-			Object[] objects = selection.begin();
-			for (int i = 0; i < selection.size; i++) {
-				if (!(objects[i] instanceof ModelEntity)) {
+			for (Object object : controller.getModel().getSelection()
+					.getCurrent()) {
+				if (!(object instanceof ModelEntity)) {
 					return false;
 				}
 			}
-			selection.end();
 			return true;
 		} else {
 			return false;
@@ -91,19 +87,16 @@ public abstract class TransformSelection extends ModelAction implements
 	@Override
 	public Command perform(Object... args) {
 		CompositeCommand compositeCommand = new CompositeCommand();
-		SnapshotArray<Object> selection = controller.getModel().getSelection()
-				.get(Selection.SCENE_ELEMENT);
-		Object[] objects = selection.begin();
-		for (int i = 0; i < selection.size; i++) {
-			if (objects[i] instanceof ModelEntity) {
-				Command command = performOverModelEntity(
-						(ModelEntity) objects[i], args);
+		for (Object object : controller.getModel().getSelection()
+				.get(Selection.SCENE_ELEMENT)) {
+			if (object instanceof ModelEntity) {
+				Command command = performOverModelEntity((ModelEntity) object,
+						args);
 				if (command != null) {
 					compositeCommand.addCommand(command);
 				}
 			}
 		}
-		selection.end();
 		return compositeCommand;
 	}
 
@@ -114,6 +107,6 @@ public abstract class TransformSelection extends ModelAction implements
 
 	private void updateEnable() {
 		setEnabled(controller.getModel().getSelection()
-				.get(Selection.SCENE_ELEMENT).size > 0);
+				.get(Selection.SCENE_ELEMENT).length > 0);
 	}
 }

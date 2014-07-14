@@ -39,6 +39,7 @@ package es.eucm.ead.editor.test.sequences;
 import com.badlogic.gdx.scenes.scene2d.ui.Button;
 import es.eucm.ead.editor.control.Selection;
 import es.eucm.ead.editor.control.actions.model.AddSceneElement;
+import es.eucm.ead.editor.control.actions.model.SetSelection;
 import es.eucm.ead.editor.control.actions.model.generic.AddToArray;
 import es.eucm.ead.editor.control.views.SceneView;
 import es.eucm.ead.editor.model.Q;
@@ -97,6 +98,18 @@ public class AddEffectWithExpressionEditorGUITest extends EditorGUITest {
 		assertEquals(1, goScene.getParameters().size);
 
 		click("undo");
+		assertEquals(0, goScene.getParameters().size);
+		assertFalse(button.isChecked());
+		click("redo");
+		assertTrue(button.isChecked());
+		assertEquals(1, goScene.getParameters().size);
+
+		controller.action(SetSelection.class, Selection.EDITED_GROUP,
+				Selection.SCENE_ELEMENT);
+		assertEquals(0, selection.getCurrent().length);
+		click("undo");
+		assertSame(selection.getSingle(Selection.SCENE_ELEMENT), sceneElement);
+		assertSame(selection.getSingle(Selection.BEHAVIOR), behavior);
 		assertEquals(0, goScene.getParameters().size);
 		assertFalse(button.isChecked());
 	}

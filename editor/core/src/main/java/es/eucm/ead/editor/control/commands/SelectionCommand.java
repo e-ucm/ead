@@ -37,8 +37,6 @@
 package es.eucm.ead.editor.control.commands;
 
 import com.badlogic.gdx.utils.Array;
-import com.badlogic.gdx.utils.SnapshotArray;
-
 import es.eucm.ead.editor.control.Selection;
 import es.eucm.ead.editor.control.Selection.Context;
 import es.eucm.ead.editor.model.Model;
@@ -65,8 +63,6 @@ public class SelectionCommand extends Command {
 
 	private boolean added;
 
-	private SnapshotArray<Object> arraySelection;
-
 	public SelectionCommand(Model model, String parentContextId,
 			String contextId, Object... selection) {
 		this.model = model;
@@ -82,8 +78,7 @@ public class SelectionCommand extends Command {
 
 		if (currentContext != null) {
 			oldContext = new Context(currentContext.getParentId(),
-					currentContext.getId());
-			oldContext.getSelection().addAll(currentContext.getSelection());
+					currentContext.getId(), currentContext.getSelection());
 		}
 
 		added = selection.getContext(contextId) == null;
@@ -104,13 +99,12 @@ public class SelectionCommand extends Command {
 							.getSelection()));
 		}
 
-		arraySelection = new SnapshotArray<Object>(this.selection);
 		if (added) {
 			multipleEvent.addEvent(new SelectionEvent(model, Type.ADDED,
-					parentContextId, contextId, arraySelection));
+					parentContextId, contextId, this.selection));
 		}
 		multipleEvent.addEvent(new SelectionEvent(model, Type.FOCUSED,
-				parentContextId, contextId, arraySelection));
+				parentContextId, contextId, this.selection));
 		return multipleEvent;
 	}
 
@@ -127,7 +121,7 @@ public class SelectionCommand extends Command {
 		if (added) {
 			selection.remove(contextId);
 			multipleEvent.addEvent(new SelectionEvent(model, Type.REMOVED,
-					parentContextId, contextId, arraySelection));
+					parentContextId, contextId, this.selection));
 		}
 
 		for (Context context : contextsRemoved) {
@@ -139,13 +133,8 @@ public class SelectionCommand extends Command {
 		}
 
 		if (oldContext != null) {
-			Object[] oldSelection = new Object[oldContext.getSelection().size];
-			int i = 0;
-			for (Object o : oldContext.getSelection()) {
-				oldSelection[i++] = o;
-			}
 			selection.set(oldContext.getParentId(), oldContext.getId(),
-					oldSelection);
+					oldContext.getSelection());
 			multipleEvent.addEvent(new SelectionEvent(model, Type.FOCUSED,
 					oldContext.getParentId(), oldContext.getId(), oldContext
 							.getSelection()));

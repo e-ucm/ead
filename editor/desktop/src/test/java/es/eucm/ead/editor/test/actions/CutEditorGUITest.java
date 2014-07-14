@@ -75,14 +75,14 @@ public class CutEditorGUITest extends EditorGUITest {
 				assertEquals(
 						0,
 						controller.getModel().getSelection()
-								.get(Selection.SCENE_ELEMENT).size);
+								.get(Selection.SCENE_ELEMENT).length);
 				assertEquals(0, scene.getChildren().size);
 				click("undo");
 				assertEquals(1, scene.getChildren().size);
 				assertEquals(
 						1,
 						controller.getModel().getSelection()
-								.get(Selection.SCENE_ELEMENT).size);
+								.get(Selection.SCENE_ELEMENT).length);
 
 				for (int i = 0; i < 10; i++) {
 					assertEquals(i + 1, scene.getChildren().size);

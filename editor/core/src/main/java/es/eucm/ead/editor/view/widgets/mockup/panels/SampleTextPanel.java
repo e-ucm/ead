@@ -108,7 +108,7 @@ public class SampleTextPanel extends SamplePanel {
 						}
 					} else {
 						Object sel = controller.getModel().getSelection()
-								.getCurrent().first();
+								.getCurrent()[0];
 						if (sel instanceof ModelEntity) {
 							ModelEntity element = (ModelEntity) sel;
 							ModelEntity copy = controller.getEditorGameAssets()

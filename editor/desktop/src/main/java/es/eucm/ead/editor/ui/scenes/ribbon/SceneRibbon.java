@@ -78,7 +78,7 @@ public class SceneRibbon extends TabsPanel implements SelectionListener {
 
 	@Override
 	public void modelChanged(SelectionEvent event) {
-		if (event.getType() == Type.FOCUSED && event.getSelection().size > 0) {
+		if (event.getType() == Type.FOCUSED && event.getSelection().length > 0) {
 			if (getSelectedTab() == insertTab) {
 				setSelectedTab(formatTab);
 			}

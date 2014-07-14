@@ -43,8 +43,6 @@ import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
-import com.badlogic.gdx.utils.Array;
-
 import es.eucm.ead.editor.assets.EditorGameAssets;
 import es.eucm.ead.editor.control.Controller;
 import es.eucm.ead.editor.control.actions.model.ReplaceEntity;
@@ -81,13 +79,12 @@ public class LaunchExternalEditorListener extends ClickListener {
 
 	@Override
 	public void clicked(InputEvent event, float x, float y) {
-		Array<Object> selection = controller.getModel().getSelection()
-				.getCurrent();
-		if (selection.size == 0) {
+		Object[] selection = controller.getModel().getSelection().getCurrent();
+		if (selection.length == 0) {
 			selectImageNotif.show(stageActor.getStage(), DEFAULT_NOTIF_TIMEOUT);
 			return;
 		}
-		Object selectedObject = selection.first();
+		Object selectedObject = selection[0];
 		if (!(selectedObject instanceof ModelEntity)) {
 			selectImageNotif.show(stageActor.getStage(), DEFAULT_NOTIF_TIMEOUT);
 			return;

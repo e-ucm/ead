@@ -86,16 +86,16 @@ public class SelectionTest {
 		selection.set("sceneElement", "component", component);
 		assertEquals(4, selection.getContexts().size);
 
-		assertSame(selection.get("scene").first(), scene);
-		assertSame(selection.get("component").first(), component);
+		assertSame(selection.get("scene")[0], scene);
+		assertSame(selection.get("component")[0], component);
 
 		selection.set("sceneElement", "component", component1);
 		assertEquals(4, selection.getContexts().size);
-		assertSame(selection.get("component").first(), component1);
+		assertSame(selection.get("component")[0], component1);
 
 		selection.set("scene", "editedGroup", scene);
 		assertEquals(4, selection.getContexts().size);
-		assertSame(selection.getCurrent().first(), scene);
+		assertSame(selection.getCurrent()[0], scene);
 		selection.set("scene", "editedGroup", new ModelEntity());
 		assertEquals(2, selection.getContexts().size);
 	}
@@ -113,7 +113,7 @@ public class SelectionTest {
 		Array<Context> contextRemoved = selection.set("scene", "editedGroup",
 				new ModelEntity());
 		assertEquals(2, selection.getContexts().size);
-		assertEquals(2, contextRemoved.size);
+		assertEquals(3, contextRemoved.size);
 
 		selection.set("scene", "editedGroup", scene);
 		selection.set("editedGroup", "sceneElement", child);

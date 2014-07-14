@@ -44,6 +44,7 @@ import es.eucm.ead.editor.control.actions.model.generic.SetField;
 import es.eucm.ead.engine.mock.schema.MockModelComponent;
 import es.eucm.ead.schema.entities.ModelEntity;
 import es.eucm.ead.schemax.FieldName;
+import org.junit.BeforeClass;
 import org.junit.Test;
 
 import static org.junit.Assert.assertEquals;
@@ -51,32 +52,72 @@ import static org.junit.Assert.assertSame;
 
 public class SetSelectionTest extends ActionTest {
 
+	private static ModelEntity scene;
+	private static ModelEntity child;
+	private static MockModelComponent component;
+	private static MockModelComponent component1;
+
+	@BeforeClass
+	public static void prepareModel() {
+		scene = new ModelEntity();
+		child = new ModelEntity();
+		scene.getChildren().add(child);
+
+		component = new MockModelComponent();
+		child.getComponents().add(component);
+
+		component1 = new MockModelComponent();
+		child.getComponents().add(component1);
+	}
+
 	@Test
 	public void testSetSelection() {
 		Selection selection = controller.getModel().getSelection();
 
-		ModelEntity scene = new ModelEntity();
-		ModelEntity child = new ModelEntity();
-		scene.getChildren().add(child);
-
-		MockModelComponent component = new MockModelComponent();
-		child.getComponents().add(component);
-
-		MockModelComponent component1 = new MockModelComponent();
-		child.getComponents().add(component1);
-
 		controller.action(SetField.class, scene, FieldName.X, 0);
 
 		controller.action(SetSelection.class, null, "scene", scene);
-		assertSame(selection.getCurrent().first(), scene);
+		assertSame(selection.getCurrent()[0], scene);
 		controller.action(SetSelection.class, "scene", "editedGroup", scene);
-		assertSame(selection.getCurrent().first(), scene);
+		assertSame(selection.getCurrent()[0], scene);
 		controller.action(SetSelection.class, "scene", "editedGroup", child);
-		assertSame(selection.getCurrent().first(), child);
+		assertSame(selection.getCurrent()[0], child);
 		controller.action(Undo.class);
 		assertEquals(0, selection.getContexts().size);
 		controller.action(Redo.class);
 		assertEquals(2, selection.getContexts().size);
-		assertSame(selection.getCurrent().first(), child);
+		assertSame(selection.getCurrent()[0], child);
+	}
+
+	@Test
+	public void testSelectionUndoRedo() {
+		Selection selection = controller.getModel().getSelection();
+		controller.action(SetSelection.class, null, "scene", scene);
+		controller.action(SetSelection.class, "scene", "editedGroup", scene);
+		controller.action(SetSelection.class, "editedGroup", "sceneElement",
+				child);
+		controller.action(SetSelection.class, "sceneElement", "component",
+				component);
+
+		controller.action(SetField.class, component, "intAttribute", 2);
+		controller.action(SetSelection.class, "sceneElement", "component",
+				component1);
+
+		assertEquals(2, component.getIntAttribute());
+		controller.action(Undo.class);
+
+		assertEquals(0, component.getIntAttribute());
+		assertSame(component, selection.getSingle("component"));
+
+		controller.action(Redo.class);
+		assertEquals(2, component.getIntAttribute());
+		assertSame(component1, selection.getSingle("component"));
+
+		controller.action(SetSelection.class, "editedGroup", "sceneElement");
+		controller.action(Undo.class);
+
+		assertEquals(0, component.getIntAttribute());
+		assertSame(component, selection.getSingle("component"));
+		assertSame(child, selection.getSingle("sceneElement"));
 	}
 }

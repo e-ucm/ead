@@ -36,7 +36,6 @@
  */
 package es.eucm.ead.editor.model.events;
 
-import com.badlogic.gdx.utils.SnapshotArray;
 import es.eucm.ead.editor.model.Model;
 
 /**
@@ -56,10 +55,10 @@ public class SelectionEvent implements ModelEvent {
 
 	private String contextId;
 
-	private SnapshotArray<Object> selection;
+	private Object[] selection;
 
 	public SelectionEvent(Model model, Type type, String parentContextId,
-			String contextId, SnapshotArray<Object> selection) {
+			String contextId, Object[] selection) {
 		this.model = model;
 		this.type = type;
 		this.parentContextId = parentContextId;
@@ -79,7 +78,7 @@ public class SelectionEvent implements ModelEvent {
 		return contextId;
 	}
 
-	public SnapshotArray<Object> getSelection() {
+	public Object[] getSelection() {
 		return selection;
 	}
 
