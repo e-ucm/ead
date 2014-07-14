@@ -122,7 +122,7 @@ public class Dialog extends LinearLayout {
 		background(style.background);
 
 		addTitle();
-		add(content = new PlaceHolder()).margin(style.pad);
+		add(content = new PlaceHolder()).margin(style.pad).expand(true, true);
 		addButtons();
 
 		addListener(new InputListener() {

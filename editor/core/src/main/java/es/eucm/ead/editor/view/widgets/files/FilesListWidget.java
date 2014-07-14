@@ -213,16 +213,6 @@ public class FilesListWidget extends LinearLayout {
 	}
 
 	@Override
-	public float getPrefWidth() {
-		return Gdx.graphics.getWidth();
-	}
-
-	@Override
-	public float getPrefHeight() {
-		return Gdx.graphics.getHeight();
-	}
-
-	@Override
 	public void layout() {
 		super.layout();
 

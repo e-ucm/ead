@@ -36,11 +36,6 @@
  */
 package es.eucm.ead.editor;
 
-import java.awt.Dimension;
-import java.io.IOException;
-import java.io.InputStream;
-import java.util.Iterator;
-
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.backends.lwjgl.LwjglFrame;
 import com.badlogic.gdx.files.FileHandle;
@@ -61,6 +56,10 @@ import es.eucm.network.requests.RequestHelper;
 import javax.imageio.ImageIO;
 import javax.imageio.ImageReader;
 import javax.imageio.stream.ImageInputStream;
+import java.awt.*;
+import java.io.IOException;
+import java.io.InputStream;
+import java.util.Iterator;
 
 public class DesktopPlatform extends AbstractPlatform implements
 		FileChooserListener {
@@ -117,8 +116,10 @@ public class DesktopPlatform extends AbstractPlatform implements
 	/** Shows the file chooser **/
 	private void showFileChooser(FileChooserListener fileChooserListener) {
 		this.fileChooserListener = fileChooserListener;
-		fileChooser.setSize(Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
+		fileChooser.setSize(Gdx.graphics.getWidth() * 0.8f,
+				Gdx.graphics.getHeight() * 0.8f);
 		fileChooser.show(stage);
+		fileChooser.center();
 	}
 
 	@Override
