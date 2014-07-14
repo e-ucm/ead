@@ -93,7 +93,6 @@ public class DraggableScrollPane extends ScrollPane {
 		scrollSpeed = speed;
 		setFlingTime(0.0f);
 		setFadeScrollBars(false);
-		setSmoothScrolling(false);
 		setOverscroll(false, false);
 	}
 
