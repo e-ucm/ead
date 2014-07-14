@@ -49,6 +49,7 @@ import es.eucm.ead.editor.model.events.ModelEvent;
 import es.eucm.ead.editor.model.events.MultipleEvent;
 import es.eucm.ead.editor.model.events.ResourceEvent;
 import es.eucm.ead.editor.model.events.SelectionEvent;
+import es.eucm.ead.editor.model.events.ViewEvent;
 import es.eucm.ead.schema.editor.components.Parent;
 import es.eucm.ead.schema.entities.ModelEntity;
 import es.eucm.ead.schemax.GameStructure;
@@ -75,6 +76,7 @@ public class Model {
 	private Array<ModelListener<LoadEvent>> loadListeners;
 	private Array<ModelListener<ResourceEvent>> resourcesListeners;
 	private Array<SelectionListener> selectionListeners;
+	private Array<ModelListener<ViewEvent>> viewListeners;
 
 	private Selection selection;
 
@@ -88,6 +90,7 @@ public class Model {
 		loadListeners = new Array<ModelListener<LoadEvent>>();
 		resourcesListeners = new Array<ModelListener<ResourceEvent>>();
 		selectionListeners = new Array<SelectionListener>();
+		viewListeners = new Array<ModelListener<ViewEvent>>();
 
 		index = new Index();
 		index.ignoreClass(Parent.class);
@@ -320,6 +323,13 @@ public class Model {
 		addListener(map, listener);
 	}
 
+	/**
+	 * Adds a listener that will be notified when the view changes
+	 */
+	public void addViewListener(ModelListener<ViewEvent> listener) {
+		viewListeners.add(listener);
+	}
+
 	private void addListener(Object target, ModelListener listener) {
 		Array<ModelListener> listeners = this.listeners.get(target);
 		if (listeners == null) {
@@ -357,6 +367,8 @@ public class Model {
 					notify((LoadEvent) event, loadListeners);
 				} else if (event instanceof ResourceEvent) {
 					notify((ResourceEvent) event, resourcesListeners);
+				} else if (event instanceof ViewEvent) {
+					notify((ViewEvent) event, viewListeners);
 				} else if (event instanceof SelectionEvent) {
 					SelectionEvent selectionEvent = (SelectionEvent) event;
 					for (SelectionListener selectionListener : selectionListeners) {

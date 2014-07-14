@@ -37,7 +37,7 @@
 package es.eucm.ead.editor.control.actions;
 
 import es.eucm.ead.editor.control.Controller;
-import es.eucm.ead.editor.model.Model;
+import es.eucm.ead.editor.model.Model.ModelListener;
 import es.eucm.ead.editor.model.events.LoadEvent;
 
 /**
@@ -46,28 +46,28 @@ import es.eucm.ead.editor.model.events.LoadEvent;
  * 
  * Created by Angel on 11/06/2014.
  */
-public abstract class EnabledOnloadAction extends EditorAction implements
-		Model.ModelListener<LoadEvent> {
+public abstract class EnabledOnLoadAction extends EditorAction implements
+		ModelListener<LoadEvent> {
 
 	/**
 	 * Constructors propagates the call to father class
 	 */
-	public EnabledOnloadAction(boolean initialEnable, boolean allowNullArguments) {
+	public EnabledOnLoadAction(boolean initialEnable, boolean allowNullArguments) {
 		super(initialEnable, allowNullArguments);
 	}
 
-	protected EnabledOnloadAction(boolean initialEnable,
-			boolean allowNullArguments, Class... validArguments) {
+	protected EnabledOnLoadAction(boolean initialEnable,
+                                  boolean allowNullArguments, Class... validArguments) {
 		super(initialEnable, allowNullArguments, validArguments);
 	}
 
-	protected EnabledOnloadAction(boolean initialEnable,
-			boolean allowNullArguments, Class[]... validArguments) {
+	protected EnabledOnLoadAction(boolean initialEnable,
+                                  boolean allowNullArguments, Class[]... validArguments) {
 		super(initialEnable, allowNullArguments, validArguments);
 	}
 
 	/**
-	 * When the action is initialized, the {@link EnabledOnloadAction} will add
+	 * When the action is initialized, the {@link EnabledOnLoadAction} will add
 	 * itself as {@link LoadEvent}listener in the controller and be
 	 * enabled/disabled taking into account if the game is loaded or not
 	 */
@@ -95,7 +95,7 @@ public abstract class EnabledOnloadAction extends EditorAction implements
 	 * The {@link Action} could be waiting for other events besides the
 	 * {@link LoadEvent} to be enabled.
 	 * 
-	 * This method is called at {@link EnabledOnloadAction#modelChanged} and
+	 * This method is called at {@link EnabledOnLoadAction#modelChanged} and
 	 * children classes could override it to
 	 * 
 	 */
