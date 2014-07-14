@@ -12,8 +12,6 @@ import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.scenes.scene2d.ui.TextField;
 import com.badlogic.gdx.scenes.scene2d.ui.TextField.TextFieldFilter;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
-import com.badlogic.gdx.scenes.scene2d.utils.DragAndDrop.Source;
-import com.badlogic.gdx.scenes.scene2d.utils.DragAndDrop.Target;
 import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable;
 import com.badlogic.gdx.utils.Scaling;
 import com.esotericsoftware.tablelayout.Cell;
@@ -48,8 +46,6 @@ public class FrameWidget extends FocusItem {
 	private Cell<Actor> topCell;
 	private float previousTime;
 	private TextField time;
-	private Target target;
-	private Source source;
 	private Frame frame;
 	private Table top;
 	private FieldListener textfieldListener = new FieldListener() {
@@ -124,7 +120,7 @@ public class FrameWidget extends FocusItem {
 		top.add(delete).expandX().right();
 
 		getImage().setScaling(Scaling.fit);
-		topCell = add(top).expandX().fillX().ignore();
+		topCell = add().expandX().fillX();
 		row();
 		add(widget).height(IMAGE_HEIGHT).width(IMAGE_WIDTH);
 		row();
@@ -195,25 +191,15 @@ public class FrameWidget extends FocusItem {
 	public void setFocus(boolean focus) {
 		super.setFocus(focus);
 		top.setVisible(focus);
-		topCell.ignore(!focus);
+		if (!focus) {
+			if (topCell.hasWidget()) {
+				topCell.setWidget(null);
+			}
+		} else {
+			topCell.setWidget(top);
+		}
 		top.invalidateHierarchy();
 		previousTime = Float.valueOf(time.getText());
-	}
-
-	public void setTarget(Target target) {
-		this.target = target;
-	}
-
-	public Target getTarget() {
-		return target;
-	}
-
-	public void setSource(Source source) {
-		this.source = source;
-	}
-
-	public Source getSource() {
-		return source;
 	}
 
 	public void setFrameEditionListener(FrameEditionListener listener) {
