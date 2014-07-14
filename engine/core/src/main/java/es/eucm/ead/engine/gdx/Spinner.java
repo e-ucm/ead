@@ -36,6 +36,7 @@
  */
 package es.eucm.ead.engine.gdx;
 
+import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.InputListener;
 import com.badlogic.gdx.scenes.scene2d.ui.Button;
@@ -44,7 +45,10 @@ import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.scenes.scene2d.ui.TextField;
 import com.badlogic.gdx.scenes.scene2d.ui.TextField.TextFieldStyle;
+import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener.ChangeEvent;
 import com.badlogic.gdx.scenes.scene2d.utils.Drawable;
+import com.badlogic.gdx.scenes.scene2d.utils.FocusListener;
+import com.badlogic.gdx.utils.Pools;
 
 public class Spinner extends Table {
 
@@ -54,18 +58,22 @@ public class Spinner extends Table {
 
 	private Button minusButton;
 
-	private int step = 1;
+	private float step = 1;
 
-	public Spinner(Skin skin) {
-		this(skin.get(SpinnerStyle.class));
+	private float currentValue;
+
+	public Spinner(Skin skin, float step) {
+		this(skin.get(SpinnerStyle.class), step);
 	}
 
-	public Spinner(Skin skin, String styleName) {
-		this(skin.get(styleName, SpinnerStyle.class));
+	public Spinner(Skin skin, String styleName, float step) {
+		this(skin.get(styleName, SpinnerStyle.class), step);
 	}
 
-	public Spinner(SpinnerStyle style) {
+	public Spinner(SpinnerStyle style, float spinnterStep) {
+		this.step = spinnterStep;
 		add(textField = new TextField("", style));
+		setValue(0);
 
 		ButtonStyle plusStyle = new ButtonStyle();
 		plusStyle.up = style.plusUp;
@@ -80,7 +88,8 @@ public class Spinner extends Table {
 			@Override
 			public boolean touchDown(InputEvent event, float x, float y,
 					int pointer, int button) {
-				add(step);
+				setValue(currentValue + step);
+				fireChange();
 				return false;
 			}
 		});
@@ -89,8 +98,24 @@ public class Spinner extends Table {
 			@Override
 			public boolean touchDown(InputEvent event, float x, float y,
 					int pointer, int button) {
-				add(-step);
+				setValue(currentValue - step);
+				fireChange();
 				return false;
+			}
+		});
+
+		textField.addListener(new FocusListener() {
+			@Override
+			public void keyboardFocusChanged(FocusEvent event, Actor actor,
+					boolean focused) {
+				if (!focused) {
+					try {
+						setValue(Float.parseFloat(textField.getText()));
+						fireChange();
+					} catch (NumberFormatException e) {
+						setValue(currentValue);
+					}
+				}
 			}
 		});
 
@@ -101,6 +126,17 @@ public class Spinner extends Table {
 		add(buttons);
 		setWidth(getPrefWidth());
 		setHeight(getPrefHeight());
+	}
+
+	private void fireChange() {
+		ChangeEvent changeEvent = Pools.obtain(ChangeEvent.class);
+		fire(changeEvent);
+		Pools.free(changeEvent);
+	}
+
+	public void setValue(Number number) {
+		currentValue = number.floatValue();
+		textField.setText(number.toString());
 	}
 
 	public void setStyle(SpinnerStyle style) {
@@ -115,26 +151,11 @@ public class Spinner extends Table {
 		textField.setStyle(style);
 	}
 
-	public void add(int step) {
-		try {
-			int value = Integer.parseInt(textField.getText());
-			value += step;
-			textField.setText(value + "");
-		} catch (NumberFormatException e) {
-			textField.setText("0");
-		}
-	}
-
-	public String getText() {
-		return textField.getText();
-	}
-
-	public void setText(String text) {
-		this.textField.setText(text);
-	}
-
-	public TextField getTextField() {
-		return textField;
+	/**
+	 * @return the current value in the spinner
+	 */
+	public float getValue() {
+		return currentValue;
 	}
 
 	static public class SpinnerStyle extends TextFieldStyle {

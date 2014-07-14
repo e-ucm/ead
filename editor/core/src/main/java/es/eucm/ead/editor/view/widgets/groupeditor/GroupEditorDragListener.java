@@ -364,6 +364,7 @@ public class GroupEditorDragListener extends DragListener {
 		float y = offsetY + container.getScaleY() * container.getOriginY()
 				- container.getOriginY();
 		container.setPosition(x, y);
+		modifier.updateHandlesScale();
 		fireContainerUpdated();
 	}
 
@@ -569,7 +570,6 @@ public class GroupEditorDragListener extends DragListener {
 		case Keys.SHIFT_RIGHT:
 			modifier.setKeepAspectRatio(true);
 			return true;
-		case Keys.DEL:
 		case Keys.FORWARD_DEL:
 			modifier.deleteSelection();
 			return true;

@@ -74,7 +74,7 @@ public class UITest extends AbstractWidgetTest {
 		}
 		selectBox.setItems(items);
 		layout.add(selectBox);
-		layout.add(new Spinner(skin));
+		layout.add(new Spinner(skin, 0.1f));
 
 		// Buttons
 		LinearLayout buttonsLayout = new LinearLayout(true);

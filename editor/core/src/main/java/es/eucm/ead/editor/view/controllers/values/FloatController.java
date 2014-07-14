@@ -36,8 +36,8 @@
  */
 package es.eucm.ead.editor.view.controllers.values;
 
-import com.badlogic.gdx.scenes.scene2d.InputEvent;
-import com.badlogic.gdx.scenes.scene2d.InputListener;
+import com.badlogic.gdx.scenes.scene2d.Actor;
+import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
 import es.eucm.ead.engine.gdx.Spinner;
 
 /**
@@ -47,17 +47,12 @@ public class FloatController extends ValueController<Spinner, Float> {
 
 	@Override
 	protected void initialize() {
-		widget.getTextField().addListener(new InputListener() {
+		widget.addListener(new ChangeListener() {
 			@Override
-			public boolean keyTyped(InputEvent event, char character) {
-				float value = 0;
-				try {
-					value = Float.parseFloat(widget.getText());
-				} catch (NumberFormatException e) {
-					widget.setText("0.0");
+			public void changed(ChangeEvent event, Actor actor) {
+				if (event.getTarget() == widget) {
+					widgetUpdatedValue(widget.getValue());
 				}
-				widgetUpdatedValue(value);
-				return true;
 			}
 		});
 
@@ -65,6 +60,6 @@ public class FloatController extends ValueController<Spinner, Float> {
 
 	@Override
 	public void setWidgetValue(Float value) {
-		widget.setText(value + "");
+		widget.setValue(value);
 	}
 }

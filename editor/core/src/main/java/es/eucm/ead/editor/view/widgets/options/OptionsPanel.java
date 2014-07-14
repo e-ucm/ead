@@ -83,7 +83,7 @@ public class OptionsPanel extends LinearLayout {
 	 * @return the option created
 	 */
 	public Option number(String label, String tooltip) {
-		Option option = newOption(label, tooltip, new Spinner(skin));
+		Option option = newOption(label, tooltip, new Spinner(skin, 0.1f));
 		addOption(option);
 		return option;
 	}
