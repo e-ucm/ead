@@ -39,7 +39,6 @@ package es.eucm.ead.editor.view.controllers.values;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.ui.CheckBox;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
-import es.eucm.ead.engine.I18N;
 
 /**
  * Created by angel on 20/03/14.
@@ -51,7 +50,7 @@ public class BooleanController extends ValueController<CheckBox, Boolean> {
 		widget.addListener(new ClickListener() {
 			@Override
 			public void clicked(InputEvent event, float x, float y) {
-				change(widget.isChecked());
+				widgetUpdatedValue(widget.isChecked());
 			}
 		});
 	}

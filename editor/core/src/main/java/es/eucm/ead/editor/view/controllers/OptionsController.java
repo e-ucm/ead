@@ -50,6 +50,7 @@ import com.badlogic.gdx.utils.reflect.Constructor;
 import com.badlogic.gdx.utils.reflect.ReflectionException;
 import es.eucm.ead.editor.control.Controller;
 import es.eucm.ead.editor.indexes.FuzzyIndex;
+import es.eucm.ead.editor.view.controllers.OptionsController.ChangeListener.Type;
 import es.eucm.ead.editor.view.controllers.values.BooleanController;
 import es.eucm.ead.editor.view.controllers.values.FileController;
 import es.eucm.ead.editor.view.controllers.values.FixedController;
@@ -130,21 +131,39 @@ public class OptionsController {
 	}
 
 	/**
-	 * Sets the value for a key. It updates the widget related and notifies the
-	 * change to listeners
+	 * The value is changed externally by anything but thee widget contained in
+	 * the option. It updates the widget related and notifies the change to
+	 * listeners
 	 */
 	public void setValue(String key, Object value) {
+		setValue(Type.EXTERNAL, key, value);
+	}
+
+	/**
+	 * The value is updated through widget interaction. Change listeners are
+	 * notified
+	 */
+	public void widgetUpdatedValue(String key, Object value) {
+		setValue(Type.WIDGET, key, value);
+	}
+
+	private void setValue(Type type, String key, Object value) {
 		Object currentValue = optionValues.get(key);
 		if ((currentValue == null && value != null)
 				|| (currentValue != null && !currentValue.equals(value))) {
+
 			optionValues.put(key, value);
-			OptionController optionController = optionControllers.get(key);
-			if (optionController != null) {
-				optionController.getValueController().setWidgetValue(value);
+
+			if (type == Type.EXTERNAL) {
+				OptionController optionController = optionControllers.get(key);
+				if (optionController != null) {
+					optionController.getValueController().setWidgetValue(value);
+				}
 			}
+
 			ChangeListener[] listeners = changeListeners.begin();
 			for (int i = 0; i < changeListeners.size; i++) {
-				listeners[i].valueUpdated(key, value);
+				listeners[i].valueUpdated(type, key, value);
 			}
 			changeListeners.end();
 		}
@@ -421,13 +440,22 @@ public class OptionsController {
 
 	public interface ChangeListener {
 
+		public enum Type {
+			WIDGET, EXTERNAL
+		}
+
 		/**
 		 * The value was updated
 		 * 
+		 * @param type
+		 *            the type of the event, determining who changed the value,
+		 *            if it was the due interaction with the widget or it was
+		 *            set directly through the controlloer
+		 *            {@link OptionsController#setValue(String, Object)}
 		 * @param field
 		 *            the field updated
 		 * @param value
 		 */
-		void valueUpdated(String field, Object value);
+		void valueUpdated(Type type, String field, Object value);
 	}
 }

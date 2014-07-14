@@ -56,7 +56,7 @@ public class FloatController extends ValueController<Spinner, Float> {
 				} catch (NumberFormatException e) {
 					widget.setText("0.0");
 				}
-				change(value);
+				widgetUpdatedValue(value);
 				return true;
 			}
 		});

@@ -85,8 +85,8 @@ public abstract class ValueController<T extends Actor, S> {
 	/**
 	 * The value change due to some interaction with the value widget
 	 */
-	public void change(S value) {
-		optionController.change(value);
+	public void widgetUpdatedValue(S value) {
+		optionController.widgetUpdatedValue(value);
 	}
 
 	protected void addConstraint(Constraint<S> constraint) {

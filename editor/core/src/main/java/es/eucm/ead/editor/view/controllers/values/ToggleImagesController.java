@@ -48,7 +48,7 @@ public class ToggleImagesController extends
 		widget.addChangeListener(new ChangeListener() {
 			@Override
 			public void changed(String newValue) {
-				change(widget.getSelectedValue());
+				widgetUpdatedValue(widget.getSelectedValue());
 			}
 		});
 	}

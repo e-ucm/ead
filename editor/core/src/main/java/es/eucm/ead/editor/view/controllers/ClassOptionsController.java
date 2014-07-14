@@ -112,21 +112,21 @@ public class ClassOptionsController<T> extends OptionsController {
 							file.mustExist());
 				} else if (field.getType() == Integer.class
 						|| field.getType() == int.class) {
-					this.intNumber(fieldName).change(0);
+					this.intNumber(fieldName).widgetUpdatedValue(0);
 				} else if (field.getType() == Float.class
 						|| field.getType() == float.class) {
-					floatNumber(fieldName).change(0f);
+					floatNumber(fieldName).widgetUpdatedValue(0f);
 				} else if (field.getType() == String.class) {
-					string(fieldName).change("");
+					string(fieldName).widgetUpdatedValue("");
 				} else if (field.getType() == Boolean.class
 						|| field.getType() == boolean.class) {
-					bool(fieldName).change(false);
+					bool(fieldName).widgetUpdatedValue(false);
 				} else if (field.getType().isEnum()) {
 					Map<String, Object> values = new LinkedHashMap<String, Object>();
 					for (Object o : field.getType().getEnumConstants()) {
 						values.put(o.toString(), o);
 					}
-					select(fieldName, values).change(
+					select(fieldName, values).widgetUpdatedValue(
 							values.keySet().iterator().next());
 				}
 			}
@@ -135,9 +135,9 @@ public class ClassOptionsController<T> extends OptionsController {
 	}
 
 	@Override
-	public void setValue(String key, Object value) {
+	public void widgetUpdatedValue(String key, Object value) {
 		controller.action(SetField.class, object, key, value);
-		super.setValue(key, value);
+		super.widgetUpdatedValue(key, value);
 	}
 
 	/**

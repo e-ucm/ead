@@ -73,7 +73,7 @@ public class StringController extends ValueController<TextField, String> {
 		widget.addListener(new InputListener() {
 			@Override
 			public boolean keyTyped(InputEvent event, char character) {
-				change(widget.getText());
+				widgetUpdatedValue(widget.getText());
 				return true;
 			}
 		});

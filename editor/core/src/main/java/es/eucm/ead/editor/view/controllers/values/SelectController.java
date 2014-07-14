@@ -59,7 +59,7 @@ public class SelectController extends ValueController<SelectBox, Object> {
 		widget.addListener(new ChangeListener() {
 			@Override
 			public void changed(ChangeEvent event, Actor actor) {
-				change(values.get(widget.getSelected().toString()));
+				widgetUpdatedValue(values.get(widget.getSelected().toString()));
 			}
 		});
 	}

@@ -80,10 +80,8 @@ public class OptionController {
 	 * @param value
 	 *            the new value
 	 */
-	public OptionController change(Object value) {
-		valueController.setWidgetValue(value);
-		valueController.checkConstraints(value);
-		optionsController.setValue(field, value);
+	public OptionController widgetUpdatedValue(Object value) {
+		optionsController.widgetUpdatedValue(field, value);
 		return this;
 	}
 }

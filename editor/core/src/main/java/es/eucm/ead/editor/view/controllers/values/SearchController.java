@@ -72,7 +72,7 @@ public class SearchController extends ValueController<SearchWidget, Object> {
 
 		@Override
 		public void termSelected(Term term) {
-			change(term.getData());
+			widgetUpdatedValue(term.getData());
 		}
 	}
 }

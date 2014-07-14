@@ -79,7 +79,7 @@ public class FileController extends ValueController<FileWidget, String>
 		widget.getTextField().addListener(new InputListener() {
 			@Override
 			public boolean keyTyped(InputEvent event, char character) {
-				change(widget.getTextField().getText());
+				widgetUpdatedValue(widget.getTextField().getText());
 				return true;
 			}
 		});
@@ -102,7 +102,7 @@ public class FileController extends ValueController<FileWidget, String>
 	@Override
 	public void fileChosen(String path) {
 		if (path != null) {
-			change(path);
+			widgetUpdatedValue(path);
 		}
 	}
 

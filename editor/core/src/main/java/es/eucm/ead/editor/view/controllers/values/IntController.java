@@ -56,7 +56,7 @@ public class IntController extends ValueController<Spinner, Integer> {
 				} catch (NumberFormatException e) {
 					widget.setText("0");
 				}
-				change(value);
+				widgetUpdatedValue(value);
 				return true;
 			}
 		});

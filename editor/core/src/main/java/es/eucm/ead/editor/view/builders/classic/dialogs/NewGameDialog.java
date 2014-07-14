@@ -115,7 +115,7 @@ public class NewGameDialog implements DialogBuilder {
 	private class SizeListener implements ChangeListener {
 
 		@Override
-		public void valueUpdated(String field, Object value) {
+		public void valueUpdated(Type type, String field, Object value) {
 			if ("quality".equals(field) || "aspectRatio".equals(field)) {
 				extraData.getObjectRepresented().updateSize();
 			}
