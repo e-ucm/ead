@@ -183,8 +183,8 @@ public class ComponentLoader {
 				.get(component.getClass());
 		if (componentProcessor != null) {
 
-			EngineUtils.setParameters(variablesManager, component,
-					component.getParameters());
+			component = EngineUtils.buildWithParameters(gameAssets,
+					variablesManager, component);
 
 			Component engineComponent = componentProcessor
 					.getComponent(component);

@@ -201,7 +201,7 @@ public class DefaultEngineInitializer implements EngineInitializer {
 
 		// Register effects
 		EffectsSystem effectsSystem = new EffectsSystem(gameLoop,
-				variablesManager);
+				variablesManager, gameAssets);
 		gameLoop.addSystem(effectsSystem);
 
 		effectsSystem.registerEffectExecutor(GoScene.class,

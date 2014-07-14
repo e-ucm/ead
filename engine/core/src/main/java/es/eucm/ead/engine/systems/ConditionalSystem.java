@@ -57,15 +57,15 @@ import es.eucm.ead.engine.variables.VariablesManager;
 public abstract class ConditionalSystem extends IteratingSystem {
 
 	// Engine for creating new components
-	protected GameLoop engine;
+	protected GameLoop gameLoop;
 
 	// For evaluating expressions
 	protected VariablesManager variablesManager;
 
-	public ConditionalSystem(GameLoop engine,
+	public ConditionalSystem(GameLoop gameLoop,
 			VariablesManager variablesManager, Family family) {
 		super(family);
-		this.engine = engine;
+		this.gameLoop = gameLoop;
 		this.variablesManager = variablesManager;
 	}
 

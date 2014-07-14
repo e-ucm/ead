@@ -143,7 +143,7 @@ public class AddEntityTest extends EngineTest implements EntityListener {
 		TimersSystem timersSystem = new TimersSystem(gameLoop, variablesManager);
 		gameLoop.addSystem(timersSystem);
 		EffectsSystem effectsSystem = new EffectsSystem(gameLoop,
-				variablesManager);
+				variablesManager, gameAssets);
 		addEntityExecutor = new AddEntityExecutor(entitiesLoader,
 				variablesManager);
 		effectsSystem

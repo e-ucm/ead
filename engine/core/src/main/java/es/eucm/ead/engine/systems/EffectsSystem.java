@@ -41,6 +41,7 @@ import ashley.core.Family;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.utils.Array;
 import es.eucm.ead.engine.GameLoop;
+import es.eucm.ead.engine.assets.GameAssets;
 import es.eucm.ead.engine.components.EffectsComponent;
 import es.eucm.ead.engine.components.behaviors.TimersComponent;
 import es.eucm.ead.engine.systems.effects.EffectExecutor;
@@ -56,16 +57,20 @@ public class EffectsSystem extends ConditionalSystem {
 
 	private Map<Class, EffectExecutor> effectExecutorMap;
 
-	public EffectsSystem(GameLoop engine, VariablesManager variablesManager) {
+	private GameAssets gameAssets;
+
+	public EffectsSystem(GameLoop engine, VariablesManager variablesManager,
+			GameAssets gameAssets) {
 		super(engine, variablesManager, Family
 				.getFamilyFor(EffectsComponent.class));
 		effectExecutorMap = new HashMap<Class, EffectExecutor>();
+		this.gameAssets = gameAssets;
 	}
 
 	public void registerEffectExecutor(Class<? extends Effect> effectClass,
 			EffectExecutor effectExecutor) {
 		effectExecutorMap.put(effectClass, effectExecutor);
-		effectExecutor.initialize(engine);
+		effectExecutor.initialize(gameLoop);
 	}
 
 	@Override
@@ -90,8 +95,8 @@ public class EffectsSystem extends ConditionalSystem {
 					.getClass());
 			if (effectExecutor != null) {
 
-				EngineUtils.setParameters(variablesManager, effect,
-						effect.getParameters());
+				effect = EngineUtils.buildWithParameters(gameAssets,
+						variablesManager, effect);
 
 				// Find target entities
 				Object expResult = variablesManager.evaluateExpression(effect

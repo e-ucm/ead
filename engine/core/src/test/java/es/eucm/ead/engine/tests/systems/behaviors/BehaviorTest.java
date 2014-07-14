@@ -58,7 +58,8 @@ public abstract class BehaviorTest extends EngineTest {
 	@Before
 	public void setUp() {
 		super.setUp();
-		effectsSystem = new EffectsSystem(gameLoop, variablesManager);
+		effectsSystem = new EffectsSystem(gameLoop, variablesManager,
+				gameAssets);
 		gameLoop.addSystem(effectsSystem);
 		effectsSystem.registerEffectExecutor(MockEffect.class,
 				new MockEffectExecutor());

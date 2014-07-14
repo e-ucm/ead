@@ -36,18 +36,28 @@
  */
 package es.eucm.ead.engine.utils;
 
+import es.eucm.ead.engine.assets.Assets;
 import es.eucm.ead.engine.variables.VariablesManager;
 import es.eucm.ead.schema.data.Parameter;
+import es.eucm.ead.schema.data.Parameters;
 
 public class EngineUtils {
 
-	public static void setParameters(VariablesManager variablesManager,
-			Object object, Iterable<Parameter> expressionFields) {
-		for (Parameter parameter : expressionFields) {
-			Object value = variablesManager.evaluateExpression(parameter
-					.getValue());
-			variablesManager.getAccessor().set(object, parameter.getName(),
-					value);
+	public static <T extends Parameters> T buildWithParameters(Assets assets,
+			VariablesManager variablesManager, T parameters) {
+		if (parameters.getParameters().size > 0) {
+			Class clazz = parameters.getClass();
+			Parameters clone = (Parameters) assets.fromJson(clazz,
+					assets.toJson(parameters, clazz));
+			for (Parameter parameter : clone.getParameters()) {
+				Object value = variablesManager.evaluateExpression(parameter
+						.getValue());
+				variablesManager.getAccessor().set(clone, parameter.getName(),
+						value);
+			}
+			return (T) clone;
+		} else {
+			return parameters;
 		}
 	}
 }

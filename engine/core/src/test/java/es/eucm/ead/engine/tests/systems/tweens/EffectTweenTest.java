@@ -36,18 +36,8 @@
  */
 package es.eucm.ead.engine.tests.systems.tweens;
 
-import static org.junit.Assert.assertTrue;
-
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Map.Entry;
-
-import org.junit.Before;
-import org.junit.Test;
-
 import com.badlogic.gdx.scenes.scene2d.Group;
 import com.badlogic.gdx.utils.Array;
-
 import es.eucm.ead.engine.GameLoop;
 import es.eucm.ead.engine.entities.EngineEntity;
 import es.eucm.ead.engine.mock.schema.MockEffect;
@@ -66,6 +56,14 @@ import es.eucm.ead.schema.components.behaviors.Behavior;
 import es.eucm.ead.schema.components.tweens.BaseTween;
 import es.eucm.ead.schema.components.tweens.EffectTween;
 import es.eucm.ead.schema.effects.Effect;
+import org.junit.Before;
+import org.junit.Test;
+
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Map.Entry;
+
+import static org.junit.Assert.assertTrue;
 
 public class EffectTweenTest extends TweenTest implements MockEffectListener {
 
@@ -145,7 +143,8 @@ public class EffectTweenTest extends TweenTest implements MockEffectListener {
 
 	@Override
 	public TweenCreator getTweenCreator() {
-		effectsSystem = new EffectsSystem(gameLoop, variablesManager);
+		effectsSystem = new EffectsSystem(gameLoop, variablesManager,
+				gameAssets);
 		effectsSystem.registerEffectExecutor(MockEffect.class,
 				new MockEffectExecutor());
 

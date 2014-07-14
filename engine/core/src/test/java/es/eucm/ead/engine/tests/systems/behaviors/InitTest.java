@@ -66,7 +66,8 @@ public class InitTest extends BehaviorTest implements MockEffectListener {
 
 	@Override
 	public void addSystems(GameLoop gameLoop) {
-		gameLoop.addSystem(new EffectsSystem(gameLoop, variablesManager));
+		gameLoop.addSystem(new EffectsSystem(gameLoop, variablesManager,
+				gameAssets));
 	}
 
 	@Test

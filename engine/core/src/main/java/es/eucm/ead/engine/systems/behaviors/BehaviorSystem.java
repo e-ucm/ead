@@ -52,7 +52,7 @@ public abstract class BehaviorSystem extends ConditionalSystem {
 	}
 
 	protected void addEffects(Entity entity, Iterable<Effect> effects) {
-		EffectsComponent effectsComponent = engine.addAndGetComponent(entity,
+		EffectsComponent effectsComponent = gameLoop.addAndGetComponent(entity,
 				EffectsComponent.class);
 
 		for (Effect effect : effects) {

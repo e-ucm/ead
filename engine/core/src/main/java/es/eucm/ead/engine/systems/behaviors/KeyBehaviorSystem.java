@@ -64,7 +64,7 @@ public class KeyBehaviorSystem extends BehaviorSystem {
 		for (RuntimeKey keyEvent : pressed.getKeyEvents()) {
 			// Searching for entities that have key interactions defined that
 			// respond to the event you have read
-			IntMap<Entity> entities = engine.getEntitiesFor(Family
+			IntMap<Entity> entities = gameLoop.getEntitiesFor(Family
 					.getFamilyFor(KeysComponent.class));
 
 			for (IntMap.Entry<Entity> currentEntity : entities.entries()) {
