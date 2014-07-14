@@ -36,14 +36,18 @@
  */
 package es.eucm.ead.editor.control.actions.editor;
 
-import es.eucm.ead.editor.control.actions.EditorAction;
-
 /**
  * Goes to next view. It receives no arguments
  */
-public class Next extends EditorAction {
+public class Next extends Back {
+
 	@Override
 	public void perform(Object... args) {
 		controller.getViews().next();
+	}
+
+	protected void updateEnable() {
+		setEnabled(!controller.getViews().getViewsHistory().getNextViews()
+				.empty());
 	}
 }

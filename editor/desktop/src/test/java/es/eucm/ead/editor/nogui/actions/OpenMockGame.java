@@ -37,13 +37,17 @@
 package es.eucm.ead.editor.nogui.actions;
 
 import es.eucm.ead.editor.control.actions.EditorAction;
+import es.eucm.ead.editor.control.actions.editor.OpenGame;
+import es.eucm.ead.editor.control.actions.editor.Save;
 import es.eucm.ead.editor.model.Model;
 import es.eucm.ead.editor.model.events.LoadEvent;
 import es.eucm.ead.editor.model.events.LoadEvent.Type;
+import es.eucm.ead.editor.platform.MockPlatform;
 import es.eucm.ead.schema.entities.ModelEntity;
 import es.eucm.ead.schemax.GameStructure;
 import es.eucm.ead.schemax.entities.ResourceCategory;
 
+import java.io.File;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Map.Entry;
@@ -61,8 +65,6 @@ public class OpenMockGame extends EditorAction {
 
 		Model model = controller.getModel();
 		model.reset();
-		model.notify(new LoadEvent(Type.UNLOADED, model));
-
 		model.putResource(GameStructure.GAME_FILE, ResourceCategory.GAME,
 				game.getGame());
 
@@ -71,10 +73,18 @@ public class OpenMockGame extends EditorAction {
 					scene.getValue());
 		}
 
+		if (game.getPath() == null) {
+			File file = ((MockPlatform) controller.getPlatform())
+					.createTempFile(true);
+			game.setPath(file.getAbsolutePath(), false);
+		}
 		controller.getEditorGameAssets().setLoadingPath(game.getPath(),
 				game.isInternal());
 
+		// To enable save
 		model.notify(new LoadEvent(Type.LOADED, model));
+		controller.action(Save.class);
+		controller.action(OpenGame.class, game.getPath());
 	}
 
 	public static class Game {

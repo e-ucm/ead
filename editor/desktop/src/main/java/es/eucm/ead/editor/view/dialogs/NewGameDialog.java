@@ -42,6 +42,7 @@ import es.eucm.ead.editor.control.Controller;
 import es.eucm.ead.editor.control.actions.editor.NewGame;
 import es.eucm.ead.editor.control.commands.CompositeCommand;
 import es.eucm.ead.editor.control.commands.FieldCommand;
+import es.eucm.ead.editor.control.views.HomeView;
 import es.eucm.ead.editor.model.Q;
 import es.eucm.ead.editor.view.builders.DialogBuilder;
 import es.eucm.ead.editor.view.controllers.ClassOptionsController;
@@ -52,6 +53,7 @@ import es.eucm.ead.editor.view.widgets.Dialog;
 import es.eucm.ead.editor.view.widgets.layouts.LinearLayout;
 import es.eucm.ead.engine.I18N;
 import es.eucm.ead.schema.editor.components.Documentation;
+import es.eucm.ead.schema.editor.components.EditState;
 import es.eucm.ead.schema.editor.components.GameData;
 import es.eucm.ead.schema.entities.ModelEntity;
 import es.eucm.ead.schemax.File;
@@ -139,6 +141,10 @@ public class NewGameDialog implements DialogBuilder {
 			GameData gameData = Q.getComponent(game, GameData.class);
 			gameData.setWidth(extra.width);
 			gameData.setHeight(extra.height);
+
+			EditState editState = Q.getComponent(game, EditState.class);
+			editState.setView(HomeView.class.getName());
+
 			controller.action(NewGame.class, extra.folder, game);
 		}
 	}

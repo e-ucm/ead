@@ -38,6 +38,7 @@ package es.eucm.ead.editor.control.commands;
 
 import es.eucm.ead.editor.control.Views;
 import es.eucm.ead.editor.model.events.ModelEvent;
+import es.eucm.ead.editor.model.events.ViewEvent;
 import es.eucm.ead.editor.view.builders.ViewBuilder;
 
 /**
@@ -84,7 +85,7 @@ public class ViewCommand extends Command {
 	@Override
 	public ModelEvent doCommand() {
 		views.setView(viewClass, args);
-		return null;
+		return new ViewEvent(views, viewClass, args);
 	}
 
 	@Override
@@ -95,7 +96,7 @@ public class ViewCommand extends Command {
 	@Override
 	public ModelEvent undoCommand() {
 		views.setView(oldViewClass, oldArgs);
-		return null;
+		return new ViewEvent(views, viewClass, args);
 	}
 
 	@Override

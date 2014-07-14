@@ -167,7 +167,9 @@ public abstract class EditorGUITest {
 		Game game = new Game();
 		game.setGame(new ModelEntity());
 		ModelEntity scene = new ModelEntity();
-		game.addScene("scene1", scene);
+		for (int i = 0; i < 10; i++) {
+			game.addScene("scenes/scene" + i + ".json", scene);
+		}
 		controller.action(OpenMockGame.class, game);
 	}
 

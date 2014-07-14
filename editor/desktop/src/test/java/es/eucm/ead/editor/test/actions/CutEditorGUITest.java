@@ -36,7 +36,6 @@
  */
 package es.eucm.ead.editor.test.actions;
 
-import com.badlogic.gdx.utils.Array;
 import es.eucm.ead.editor.control.Selection;
 import es.eucm.ead.editor.control.actions.editor.ChangeView;
 import es.eucm.ead.editor.control.views.SceneView;
@@ -45,51 +44,53 @@ import es.eucm.ead.editor.nogui.actions.OpenMockGame;
 import es.eucm.ead.editor.nogui.actions.OpenMockGame.Game;
 import es.eucm.ead.schema.editor.components.Parent;
 import es.eucm.ead.schema.entities.ModelEntity;
+import es.eucm.ead.schemax.entities.ResourceCategory;
 
 import static org.junit.Assert.assertEquals;
 
 public class CutEditorGUITest extends EditorGUITest {
 
 	@Override
-	protected void collectRunnables(Array<Runnable> runnables) {
-		runnables.add(new Runnable() {
-			@Override
-			public void run() {
-				Game game = new Game();
-				game.setGame(new ModelEntity());
-				ModelEntity scene = new ModelEntity();
-				ModelEntity sceneElement = new ModelEntity();
-				scene.getChildren().add(sceneElement);
-				Parent parent = new Parent();
-				parent.setParent(scene);
-				sceneElement.getComponents().add(parent);
+	protected void runTest() {
+		Game game = new Game();
+		game.setGame(new ModelEntity());
+		ModelEntity scene = new ModelEntity();
+		ModelEntity sceneElement = new ModelEntity();
+		scene.getChildren().add(sceneElement);
+		Parent parent = new Parent();
+		parent.setParent(scene);
+		sceneElement.getComponents().add(parent);
 
-				game.addScene("scene1", scene);
+		game.addScene("scenes/scene1.json", scene);
 
-				controller.action(OpenMockGame.class, game);
-				controller.action(ChangeView.class, SceneView.class, "scene1");
-				setSelection(Selection.EDITED_GROUP, Selection.SCENE_ELEMENT,
-						sceneElement);
-				click("cut");
+		controller.action(OpenMockGame.class, game);
+		controller.action(ChangeView.class, SceneView.class,
+				"scenes/scene1.json");
 
-				assertEquals(
-						0,
-						controller.getModel().getSelection()
-								.get(Selection.SCENE_ELEMENT).length);
-				assertEquals(0, scene.getChildren().size);
-				click("undo");
-				assertEquals(1, scene.getChildren().size);
-				assertEquals(
-						1,
-						controller.getModel().getSelection()
-								.get(Selection.SCENE_ELEMENT).length);
+		scene = (ModelEntity) model.getResource("scenes/scene1.json",
+				ResourceCategory.SCENE);
+		sceneElement = scene.getChildren().first();
 
-				for (int i = 0; i < 10; i++) {
-					assertEquals(i + 1, scene.getChildren().size);
-					click("paste");
-				}
+		setSelection(Selection.EDITED_GROUP, Selection.SCENE_ELEMENT,
+				sceneElement);
+		click("cut");
 
-			}
-		});
+		assertEquals(
+				0,
+				controller.getModel().getSelection()
+						.get(Selection.SCENE_ELEMENT).length);
+		assertEquals(0, scene.getChildren().size);
+		click("undo");
+		assertEquals(1, scene.getChildren().size);
+		assertEquals(
+				1,
+				controller.getModel().getSelection()
+						.get(Selection.SCENE_ELEMENT).length);
+
+		for (int i = 0; i < 10; i++) {
+			assertEquals(i + 1, scene.getChildren().size);
+			click("paste");
+		}
+
 	}
 }

@@ -36,14 +36,39 @@
  */
 package es.eucm.ead.editor.control.actions.editor;
 
+import es.eucm.ead.editor.control.Controller;
 import es.eucm.ead.editor.control.actions.EditorAction;
+import es.eucm.ead.editor.model.Model.ModelListener;
+import es.eucm.ead.editor.model.events.ViewEvent;
 
 /**
  * Goes to previous view. It receives no arguments
  */
 public class Back extends EditorAction {
+
+	public Back() {
+		super(true, false);
+	}
+
+	@Override
+	public void initialize(Controller controller) {
+		super.initialize(controller);
+		controller.getModel().addViewListener(new ModelListener<ViewEvent>() {
+			@Override
+			public void modelChanged(ViewEvent event) {
+				updateEnable();
+			}
+		});
+		updateEnable();
+	}
+
 	@Override
 	public void perform(Object... args) {
 		controller.getViews().back();
+	}
+
+	protected void updateEnable() {
+		setEnabled(controller.getViews().getViewsHistory().getPreviousViews()
+				.size() > 1);
 	}
 }

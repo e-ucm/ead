@@ -95,13 +95,9 @@ public class GameAssets extends Assets implements GameStructure {
 	 *            local drive
 	 */
 	public void setLoadingPath(String loadingPath, boolean internal) {
-		String newLoadingPath = convertNameToPath(loadingPath, "", false, true);
-		if (!newLoadingPath.equals(this.loadingPath)
-				|| internal != gamePathInternal) {
-			this.loadingPath = newLoadingPath;
-			this.gamePathInternal = internal;
-			clear();
-		}
+		this.loadingPath = convertNameToPath(loadingPath, "", false, true);
+		this.gamePathInternal = internal;
+		clear();
 	}
 
 	/**

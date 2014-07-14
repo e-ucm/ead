@@ -57,12 +57,12 @@ public abstract class EnabledOnLoadAction extends EditorAction implements
 	}
 
 	protected EnabledOnLoadAction(boolean initialEnable,
-                                  boolean allowNullArguments, Class... validArguments) {
+			boolean allowNullArguments, Class... validArguments) {
 		super(initialEnable, allowNullArguments, validArguments);
 	}
 
 	protected EnabledOnLoadAction(boolean initialEnable,
-                                  boolean allowNullArguments, Class[]... validArguments) {
+			boolean allowNullArguments, Class[]... validArguments) {
 		super(initialEnable, allowNullArguments, validArguments);
 	}
 

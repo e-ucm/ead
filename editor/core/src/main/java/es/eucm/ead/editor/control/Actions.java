@@ -106,6 +106,9 @@ public class Actions {
 		Action action = getAction(actionClass);
 		if (action != null && action.isEnabled()) {
 			if (action.validate(args)) {
+				Gdx.app.debug("Controller",
+						ClassReflection.getSimpleName(actionClass)
+								+ prettyPrintArgs(args));
 				logAction(action.getClass(), args);
 				if (action instanceof ModelAction) {
 					modelActions.perform((ModelAction) action, args);
@@ -116,9 +119,29 @@ public class Actions {
 				throw new ArgumentsValidationException(actionClass, args);
 			}
 		} else {
-			Gdx.app.error("Actions", "Action with class " + actionClass
+			Gdx.app.debug("Actions", "Action with class " + actionClass
 					+ (action == null ? " does not exist." : " is disabled."));
 		}
+	}
+
+	/**
+	 * Just formats an array of objects for console printing. For debugging only
+	 */
+	private String prettyPrintArgs(Object... args) {
+		if (args == null) {
+			return "[]";
+		}
+		String str = "[";
+		for (Object arg : args) {
+			str += (arg instanceof String ? "\"" : "")
+					+ (arg == null ? "null" : arg.toString())
+					+ (arg instanceof String ? "\"" : "") + " , ";
+		}
+		if (args.length > 0) {
+			str = str.substring(0, str.length() - 3);
+		}
+		str += "]";
+		return str;
 	}
 
 	/**

@@ -53,6 +53,14 @@ public class ViewsHistory {
 		nextViews = new Stack<ViewUpdate>();
 	}
 
+	public Stack<ViewUpdate> getPreviousViews() {
+		return previousViews;
+	}
+
+	public Stack<ViewUpdate> getNextViews() {
+		return nextViews;
+	}
+
 	/**
 	 * The given view with the given arguments was hidden, and should be added
 	 * to the view history. The view is queued only if the class and arguments
@@ -89,6 +97,11 @@ public class ViewsHistory {
 			return viewUpdate;
 		}
 		return null;
+	}
+
+	public void clear() {
+		nextViews.clear();
+		previousViews.clear();
 	}
 
 	/**

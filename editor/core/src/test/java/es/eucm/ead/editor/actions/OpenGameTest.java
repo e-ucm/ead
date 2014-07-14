@@ -38,7 +38,6 @@ package es.eucm.ead.editor.actions;
 
 import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.utils.GdxRuntimeException;
-import es.eucm.ead.editor.control.actions.EditorActionException;
 import es.eucm.ead.editor.control.actions.editor.OpenGame;
 import es.eucm.ead.editor.model.Model;
 import es.eucm.ead.editor.model.Model.ModelListener;
@@ -48,7 +47,6 @@ import org.junit.Before;
 import org.junit.Test;
 
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.fail;
 
 public class OpenGameTest extends ActionTest implements
 		ModelListener<LoadEvent> {
@@ -86,12 +84,7 @@ public class OpenGameTest extends ActionTest implements
 	@Test
 	public void testWithInvalidPath() {
 		count = 0;
-		try {
-			controller.action(OpenGame.class, "ñor/ñor");
-			fail("An exception should be thrown");
-		} catch (EditorActionException e) {
-
-		}
+		controller.action(OpenGame.class, "ñor/ñor");
 	}
 
 	@Test

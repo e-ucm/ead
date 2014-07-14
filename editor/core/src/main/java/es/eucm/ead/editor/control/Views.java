@@ -47,6 +47,10 @@ import com.badlogic.gdx.scenes.scene2d.ui.WidgetGroup;
 import com.badlogic.gdx.utils.reflect.ClassReflection;
 import com.badlogic.gdx.utils.reflect.ReflectionException;
 import es.eucm.ead.editor.control.ViewsHistory.ViewUpdate;
+import es.eucm.ead.editor.model.Model.ModelListener;
+import es.eucm.ead.editor.model.events.LoadEvent;
+import es.eucm.ead.editor.model.events.LoadEvent.Type;
+import es.eucm.ead.editor.model.events.ViewEvent;
 import es.eucm.ead.editor.view.builders.Builder;
 import es.eucm.ead.editor.view.builders.DialogBuilder;
 import es.eucm.ead.editor.view.builders.ViewBuilder;
@@ -60,7 +64,7 @@ import java.util.Map;
 /**
  * Controls all the views
  */
-public class Views {
+public class Views implements ModelListener<LoadEvent> {
 
 	public static final int CONTEXT_MENU_OFFSET = 3;
 
@@ -138,6 +142,7 @@ public class Views {
 	public Views(Controller controller, Group viewsContainer,
 			Group modalsContainer) {
 		this.controller = controller;
+		controller.getModel().addLoadListener(this);
 		this.viewsContainer = viewsContainer;
 		this.modalsContainer = modalsContainer;
 		viewsBuilders = new HashMap<Class, ViewBuilder>();
@@ -160,6 +165,10 @@ public class Views {
 
 	public void setScrollFocus(Actor actor) {
 		viewsContainer.getStage().setScrollFocus(actor);
+	}
+
+	public ViewsHistory getViewsHistory() {
+		return viewsHistory;
 	}
 
 	private <T extends Builder> T getBuilder(Class<T> viewClass,
@@ -201,8 +210,8 @@ public class Views {
 					((WidgetGroup) view).invalidateHierarchy();
 				}
 			}
-			viewsHistory.viewUpdated(currentView.getClass(), currentArgs);
 			this.currentArgs = args;
+			viewsHistory.viewUpdated(currentView.getClass(), currentArgs);
 		}
 	}
 
@@ -300,6 +309,7 @@ public class Views {
 		ViewUpdate viewUpdate = viewsHistory.back();
 		if (viewUpdate != null) {
 			setView(viewUpdate.getViewClass(), viewUpdate.getArgs());
+			notify(viewUpdate);
 		}
 	}
 
@@ -310,6 +320,20 @@ public class Views {
 		ViewUpdate viewUpdate = viewsHistory.next();
 		if (viewUpdate != null) {
 			setView(viewUpdate.getViewClass(), viewUpdate.getArgs());
+			notify(viewUpdate);
+		}
+	}
+
+	private void notify(ViewUpdate viewUpdate) {
+		controller.getModel().notify(
+				new ViewEvent(this, viewUpdate.getViewClass(), viewUpdate
+						.getArgs()));
+	}
+
+	@Override
+	public void modelChanged(LoadEvent event) {
+		if (event.getType() == Type.UNLOADED) {
+			viewsHistory.clear();
 		}
 	}
 }

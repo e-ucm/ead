@@ -37,11 +37,9 @@
 package es.eucm.ead.editor.control.actions.editor;
 
 import com.badlogic.gdx.files.FileHandle;
-import es.eucm.ead.editor.control.Controller;
-import es.eucm.ead.editor.control.actions.EnabledOnloadAction;
+import es.eucm.ead.editor.control.actions.EnabledOnLoadAction;
 import es.eucm.ead.editor.exporter.Exporter;
 import es.eucm.ead.editor.model.Q;
-import es.eucm.ead.schema.editor.components.EditState;
 import es.eucm.ead.schema.editor.components.Versions;
 import es.eucm.ead.schema.entities.ModelEntity;
 import es.eucm.ead.schemax.JsonExtension;
@@ -57,7 +55,7 @@ import java.util.Map;
  * <dd>None</dd>
  * </dl>
  */
-public class Save extends EnabledOnloadAction {
+public class Save extends EnabledOnLoadAction {
 
 	/**
 	 * To be updated when the Model API Changes (rarely)
@@ -66,11 +64,6 @@ public class Save extends EnabledOnloadAction {
 
 	public Save() {
 		super(true, false);
-	}
-
-	@Override
-	public void initialize(Controller controller) {
-		super.initialize(controller);
 	}
 
 	@Override
@@ -96,7 +89,6 @@ public class Save extends EnabledOnloadAction {
 	 */
 	private void save() {
 		updateGameVersions();
-		updateEditState();
 		removeAllJsonFilesPersistently();
 		for (Map.Entry<String, Object> nextEntry : controller.getModel()
 				.listNamedResources()) {
@@ -116,18 +108,6 @@ public class Save extends EnabledOnloadAction {
 		ModelEntity game = controller.getModel().getGame();
 		Q.getComponent(game, Versions.class).setAppVersion(appVersion);
 		Q.getComponent(game, Versions.class).setModelVersion(MODEL_API_VERSION);
-	}
-
-	private void updateEditState() {
-		if (controller.getViews().getCurrentView() != null) {
-			EditState editState = Q.getComponent(controller.getModel()
-					.getGame(), EditState.class);
-			editState.setView(controller.getViews().getCurrentView().getClass()
-					.getName());
-			editState.getArguments().clear();
-			editState.getArguments().addAll(
-					controller.getViews().getCurrentArgs());
-		}
 	}
 
 	private void removeAllJsonFilesPersistently() {

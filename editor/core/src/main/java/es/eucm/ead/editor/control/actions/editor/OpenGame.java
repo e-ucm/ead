@@ -45,8 +45,10 @@ import es.eucm.ead.editor.control.Preferences;
 import es.eucm.ead.editor.control.actions.EditorAction;
 import es.eucm.ead.editor.control.actions.EditorActionException;
 import es.eucm.ead.editor.model.Model;
+import es.eucm.ead.editor.model.Model.ModelListener;
 import es.eucm.ead.editor.model.Q;
 import es.eucm.ead.editor.model.events.LoadEvent;
+import es.eucm.ead.editor.model.events.ViewEvent;
 import es.eucm.ead.editor.platform.Platform.FileChooserListener;
 import es.eucm.ead.engine.assets.Assets.AssetLoadedCallback;
 import es.eucm.ead.schema.editor.components.EditState;
@@ -104,8 +106,7 @@ public class OpenGame extends EditorAction implements FileChooserListener,
 			if (fileHandle.exists()) {
 				doLoad(gamePath, fileHandle);
 			} else {
-				throw new EditorActionException("Invalid project folder: '"
-						+ gamePath + "'");
+				Gdx.app.error("OpenGame", "Invalid project folder: " + gamePath);
 			}
 		}
 	}
@@ -123,9 +124,9 @@ public class OpenGame extends EditorAction implements FileChooserListener,
 	 */
 	private void doLoad(String path, FileHandle fileHandle) {
 		// Notify listeners that the current model is going to be unloaded
+		controller.getModel().reset();
 		controller.getModel().notify(
 				new LoadEvent(LoadEvent.Type.UNLOADED, controller.getModel()));
-		controller.getModel().reset();
 		EditorGameAssets assets = controller.getEditorGameAssets();
 		assets.setLoadingPath(path);
 		controller.getPreferences().putString(Preferences.LAST_OPENED_GAME,
@@ -188,7 +189,8 @@ public class OpenGame extends EditorAction implements FileChooserListener,
 	}
 
 	private void setEditionState(Model model) {
-		EditState editState = Q.getComponent(model.getGame(), EditState.class);
+		final EditState editState = Q.getComponent(model.getGame(),
+				EditState.class);
 		if (editState.getView() != null) {
 			try {
 				Class viewClass = ClassReflection.forName(editState.getView());
@@ -206,5 +208,13 @@ public class OpenGame extends EditorAction implements FileChooserListener,
 						"Impossible to set view " + editState.getView());
 			}
 		}
+		controller.getModel().addViewListener(new ModelListener<ViewEvent>() {
+			@Override
+			public void modelChanged(ViewEvent event) {
+				editState.setView(event.getViewClass().getName());
+				editState.getArguments().clear();
+				editState.getArguments().addAll(event.getArgs());
+			}
+		});
 	}
 }

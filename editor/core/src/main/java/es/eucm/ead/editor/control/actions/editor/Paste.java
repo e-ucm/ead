@@ -38,7 +38,7 @@ package es.eucm.ead.editor.control.actions.editor;
 
 import es.eucm.ead.editor.control.Clipboard.ClipboardListener;
 import es.eucm.ead.editor.control.Controller;
-import es.eucm.ead.editor.control.actions.EnabledOnloadAction;
+import es.eucm.ead.editor.control.actions.EnabledOnLoadAction;
 import es.eucm.ead.editor.model.events.LoadEvent;
 
 /**
@@ -50,7 +50,7 @@ import es.eucm.ead.editor.model.events.LoadEvent;
  * <dd>None</dd>
  * </dl>
  */
-public class Paste extends EnabledOnloadAction implements ClipboardListener {
+public class Paste extends EnabledOnLoadAction implements ClipboardListener {
 
 	public Paste() {
 		super(false, false);

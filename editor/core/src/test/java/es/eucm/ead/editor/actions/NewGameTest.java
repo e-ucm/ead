@@ -42,6 +42,7 @@ import es.eucm.ead.editor.model.Model;
 import es.eucm.ead.editor.model.Model.ModelListener;
 import es.eucm.ead.editor.model.Q;
 import es.eucm.ead.editor.model.events.LoadEvent;
+import es.eucm.ead.editor.model.events.LoadEvent.Type;
 import es.eucm.ead.schema.editor.components.GameData;
 import es.eucm.ead.schema.editor.components.Versions;
 import es.eucm.ead.schema.entities.ModelEntity;
@@ -94,9 +95,11 @@ public class NewGameTest extends ActionTest implements ModelListener<LoadEvent> 
 
 	@Override
 	public void modelChanged(LoadEvent event) {
-		Model model = event.getModel();
-		assertEquals(Q.getComponent(model.getGame(), GameData.class)
-				.getInitialScene(), "scenes/scene0.json");
+		if (event.getType() == Type.LOADED) {
+			Model model = event.getModel();
+			assertEquals(Q.getComponent(model.getGame(), GameData.class)
+					.getInitialScene(), "scenes/scene0.json");
+		}
 		count++;
 	}
 }
