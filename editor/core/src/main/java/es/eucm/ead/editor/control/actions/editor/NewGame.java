@@ -88,7 +88,7 @@ public class NewGame extends EditorAction {
 			GameData gameData = Q.getComponent(game, GameData.class);
 			gameData.setInitialScene(initialScene);
 
-			controller.action(Save.class);
+			controller.action(ForceSave.class);
 			controller
 					.action(OpenGame.class, editorGameAssets.getLoadingPath());
 		} else {

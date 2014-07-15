@@ -37,7 +37,12 @@
 package es.eucm.ead.editor.control.actions.editor;
 
 import com.badlogic.gdx.files.FileHandle;
-import es.eucm.ead.editor.control.actions.EnabledOnLoadAction;
+import es.eucm.ead.editor.control.Commands;
+import es.eucm.ead.editor.control.Commands.CommandListener;
+import es.eucm.ead.editor.control.Commands.CommandsStack;
+import es.eucm.ead.editor.control.Controller;
+import es.eucm.ead.editor.control.actions.EditorAction;
+import es.eucm.ead.editor.control.commands.Command;
 import es.eucm.ead.editor.exporter.Exporter;
 import es.eucm.ead.editor.model.Q;
 import es.eucm.ead.schema.editor.components.Versions;
@@ -55,7 +60,7 @@ import java.util.Map;
  * <dd>None</dd>
  * </dl>
  */
-public class Save extends EnabledOnLoadAction {
+public class Save extends EditorAction implements CommandListener {
 
 	/**
 	 * To be updated when the Model API Changes (rarely)
@@ -63,7 +68,14 @@ public class Save extends EnabledOnLoadAction {
 	public static final String MODEL_API_VERSION = "1.0";
 
 	public Save() {
-		super(true, false);
+		super(false, false);
+	}
+
+	@Override
+	public void initialize(Controller controller) {
+		super.initialize(controller);
+		updateEnable(controller.getCommands());
+		controller.getCommands().addCommandListener(this);
 	}
 
 	@Override
@@ -143,5 +155,51 @@ public class Save extends EnabledOnLoadAction {
 		if (directory.list().length == 0) {
 			directory.deleteDirectory();
 		}
+	}
+
+	@Override
+	public void doCommand(Commands commands, Command command) {
+
+		updateEnable(commands);
+	}
+
+	@Override
+	public void undoCommand(Commands commands, Command command) {
+
+		updateEnable(commands);
+	}
+
+	@Override
+	public void redoCommand(Commands commands, Command command) {
+
+		updateEnable(commands);
+	}
+
+	@Override
+	public void savePointUpdated(Commands commands, Command savePoint) {
+
+		updateEnable(commands);
+	}
+
+	@Override
+	public void cleared(Commands commands) {
+
+		updateEnable(commands);
+	}
+
+	@Override
+	public void contextPushed(Commands commands) {
+
+		updateEnable(commands);
+	}
+
+	@Override
+	public void contextPopped(Commands commands, CommandsStack poppedContext,
+			boolean merge) {
+		updateEnable(commands);
+	}
+
+	private void updateEnable(Commands commands) {
+		setEnabled(commands.commandsPendingToSave());
 	}
 }

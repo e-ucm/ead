@@ -42,8 +42,8 @@ import org.junit.Before;
 import com.badlogic.gdx.files.FileHandle;
 
 import es.eucm.ead.editor.EditorTest;
+import es.eucm.ead.editor.control.actions.editor.ForceSave;
 import es.eucm.ead.editor.control.actions.editor.OpenGame;
-import es.eucm.ead.editor.control.actions.editor.Save;
 import es.eucm.ead.editor.model.Q;
 import es.eucm.ead.schema.editor.components.Documentation;
 import es.eucm.ead.schema.editor.components.EditState;
@@ -99,7 +99,7 @@ public abstract class ActionTest extends EditorTest {
 		model.putResource(SCENE0, scene);
 
 		// Save game
-		controller.action(Save.class);
+		controller.action(ForceSave.class);
 
 		// Load game in the model
 		controller.action(OpenGame.class, emptyGamePath.file()

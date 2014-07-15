@@ -37,11 +37,9 @@
 package es.eucm.ead.editor.nogui.actions;
 
 import es.eucm.ead.editor.control.actions.EditorAction;
+import es.eucm.ead.editor.control.actions.editor.ForceSave;
 import es.eucm.ead.editor.control.actions.editor.OpenGame;
-import es.eucm.ead.editor.control.actions.editor.Save;
 import es.eucm.ead.editor.model.Model;
-import es.eucm.ead.editor.model.events.LoadEvent;
-import es.eucm.ead.editor.model.events.LoadEvent.Type;
 import es.eucm.ead.editor.platform.MockPlatform;
 import es.eucm.ead.schema.entities.ModelEntity;
 import es.eucm.ead.schemax.GameStructure;
@@ -81,9 +79,7 @@ public class OpenMockGame extends EditorAction {
 		controller.getEditorGameAssets().setLoadingPath(game.getPath(),
 				game.isInternal());
 
-		// To enable save
-		model.notify(new LoadEvent(Type.LOADED, model));
-		controller.action(Save.class);
+		controller.action(ForceSave.class);
 		controller.action(OpenGame.class, game.getPath());
 	}
 

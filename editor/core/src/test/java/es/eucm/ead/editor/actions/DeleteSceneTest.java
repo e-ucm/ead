@@ -60,20 +60,23 @@ public class DeleteSceneTest extends ActionTest {
 	@Test
 	public void testDeleteScene() {
 		Map<String, Object> scenes = model.getResources(ResourceCategory.SCENE);
+		for (String id : scenes.keySet()) {
+			model.removeResource(id, ResourceCategory.SCENE);
+		}
 
-		scenes.clear();
-		scenes.put("initial", new ModelEntity());
+		model.putResource("initial", ResourceCategory.SCENE, new ModelEntity());
 
 		// Not delete: only one scene in the game
 		controller.action(DeleteScene.class, "initial", false);
 		assertEquals(scenes.size(), 1);
 
-		scenes.put("second", new ModelEntity());
+		model.putResource("second", ResourceCategory.SCENE, new ModelEntity());
 		controller.action(DeleteScene.class, "second", false);
 		assertEquals(scenes.size(), 1);
 
 		// Assure the initial scene changes to another scene when it is removed
-		scenes.put("newInitial", new ModelEntity());
+		model.putResource("newInitial", ResourceCategory.SCENE,
+				new ModelEntity());
 		Q.getComponent(model.getGame(), GameData.class).setInitialScene(
 				"initial");
 		controller.action(DeleteScene.class, "initial", false);

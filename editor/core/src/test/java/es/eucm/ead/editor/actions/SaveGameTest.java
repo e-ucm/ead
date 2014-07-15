@@ -37,15 +37,16 @@
 package es.eucm.ead.editor.actions;
 
 import es.eucm.ead.editor.assets.EditorGameAssets;
+import es.eucm.ead.editor.control.actions.editor.ForceSave;
 import es.eucm.ead.editor.control.actions.editor.OpenGame;
 import es.eucm.ead.editor.control.actions.editor.Save;
 import es.eucm.ead.editor.control.actions.model.DeleteScene;
 import es.eucm.ead.editor.control.actions.model.RenameScene;
 import es.eucm.ead.editor.model.Model;
 import es.eucm.ead.editor.model.Q;
-import es.eucm.ead.schema.editor.components.GameData;
 import es.eucm.ead.schema.editor.components.Documentation;
 import es.eucm.ead.schema.editor.components.EditState;
+import es.eucm.ead.schema.editor.components.GameData;
 import es.eucm.ead.schema.editor.components.Parent;
 import es.eucm.ead.schema.editor.components.Versions;
 import es.eucm.ead.schema.entities.ModelEntity;
@@ -114,7 +115,7 @@ public class SaveGameTest extends ActionTest {
 				+ "scene0.json", "scenes/XXX0");
 
 		// Save the model
-		controller.action(Save.class);
+		controller.action(ForceSave.class);
 
 		// Test all files were actually stored
 		testFileExists(gameFolderPath, EditorGameAssets.GAME_FILE);
@@ -232,7 +233,7 @@ public class SaveGameTest extends ActionTest {
 
 		model.putResource("scenes/myentity.json", modelEntity);
 
-		controller.action(Save.class);
+		controller.action(ForceSave.class);
 
 		ModelEntity read = controller.getEditorGameAssets().fromJsonPath(
 				ModelEntity.class, "scenes/myentity.json");

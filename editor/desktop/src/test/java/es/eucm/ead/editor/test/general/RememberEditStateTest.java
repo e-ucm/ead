@@ -38,8 +38,8 @@ package es.eucm.ead.editor.test.general;
 
 import com.badlogic.gdx.utils.Array;
 import es.eucm.ead.editor.control.actions.editor.ChangeView;
+import es.eucm.ead.editor.control.actions.editor.ForceSave;
 import es.eucm.ead.editor.control.actions.editor.OpenGame;
-import es.eucm.ead.editor.control.actions.editor.Save;
 import es.eucm.ead.editor.control.views.HomeView;
 import es.eucm.ead.editor.control.views.SceneView;
 import es.eucm.ead.editor.model.Q;
@@ -67,7 +67,7 @@ public class RememberEditStateTest extends EditorGUITest {
 				controller.action(OpenMockGame.class, game);
 				controller.action(ChangeView.class, SceneView.class,
 						"scenes/scene1.json");
-				controller.action(Save.class);
+				controller.action(ForceSave.class);
 
 				// assert edit state has changed in save
 				EditState editState = Q.getComponent(controller.getModel()
