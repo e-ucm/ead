@@ -39,7 +39,10 @@ package es.eucm.ead.editor.view.widgets.layouts;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.ui.Container;
 import com.badlogic.gdx.scenes.scene2d.ui.WidgetGroup;
+import com.badlogic.gdx.scenes.scene2d.utils.Layout;
 import com.badlogic.gdx.utils.Array;
+
+import es.eucm.ead.editor.view.widgets.dragndrop.DraggableGridLayout;
 
 /**
  * A layout that displays it's children in a grid. Has an {@link Array} of
@@ -135,17 +138,30 @@ public class GridLayout extends WidgetGroup {
 		if (increaseRow) {
 			addRowAtTheEnd();
 		} else {
-			addColumnsAtTheEnd();
+			addColumnAtTheEnd();
 		}
 		return add(actor, increaseRow);
 	}
 
-	@Override
-	public float getPrefWidth() {
-		return getTilePrefWidth() * columns;
+	public Container addAt(int row, int column, Actor actor) {
+		if (row >= rows) {
+			addRowAtTheEnd();
+		}
+		if (column > columns) {
+			addColumnAtTheEnd();
+		}
+		int index = row * columns + column;
+		Cell cell = cells.get(index);
+		cell.setWidget(actor);
+		return cell;
 	}
 
-	private float getTilePrefWidth() {
+	@Override
+	public float getPrefWidth() {
+		return getCellPrefWidth() * columns;
+	}
+
+	private float getCellPrefWidth() {
 		float tilePrefWidth = 0f;
 		for (Cell cell : cells) {
 			tilePrefWidth = Math.max(tilePrefWidth, cell.getPrefWidth());
@@ -155,10 +171,10 @@ public class GridLayout extends WidgetGroup {
 
 	@Override
 	public float getPrefHeight() {
-		return getTilePrefHeight() * rows;
+		return getCellPrefHeight() * rows;
 	}
 
-	private float getTilePrefHeight() {
+	private float getCellPrefHeight() {
 		float tilePrefHeight = 0f;
 		for (Cell cell : cells) {
 			tilePrefHeight = Math.max(tilePrefHeight, cell.getPrefHeight());
@@ -169,8 +185,8 @@ public class GridLayout extends WidgetGroup {
 	@Override
 	public void layout() {
 
-		float prefTileWidth = getTilePrefWidth();
-		float prefTileHeight = getTilePrefHeight();
+		float prefTileWidth = getCellPrefWidth();
+		float prefTileHeight = getCellPrefHeight();
 
 		for (Cell cell : cells) {
 			float x = cell.column * prefTileWidth;
@@ -219,7 +235,7 @@ public class GridLayout extends WidgetGroup {
 		addColumnAt(0);
 	}
 
-	public void addColumnsAtTheEnd() {
+	public void addColumnAtTheEnd() {
 		addColumnAt(columns);
 	}
 
@@ -248,8 +264,8 @@ public class GridLayout extends WidgetGroup {
 
 	@Override
 	public void clearChildren() {
-		clearCells();
 		super.clearChildren();
+		clearCells();
 	}
 
 	private void clearCells() {
@@ -312,19 +328,31 @@ public class GridLayout extends WidgetGroup {
 		}
 
 		@Override
-		public float getPrefWidth() {
-			if (getWidget() == null) {
-				return 0;
-			}
-			return super.getPrefWidth();
+		public void setWidget(Actor widget) {
+			setPrefSize(widget);
+			super.setWidget(widget);
 		}
 
-		@Override
-		public float getPrefHeight() {
-			if (getWidget() == null) {
-				return 0;
+		private void setPrefSize(Actor actor) {
+			if (actor instanceof Layout) {
+				Layout layout = ((Layout) actor);
+				prefWidth(layout.getPrefWidth()).prefHeight(
+						layout.getPrefHeight());
+			} else if (actor != null) {
+				prefWidth(actor.getWidth()).prefHeight(actor.getHeight());
+			} else if (getWidget() == null) {
+				prefWidth(0f).prefHeight(0f);
+			} else {
+				setPrefSize(getWidget());
 			}
-			return super.getPrefHeight();
+		}
+
+		public int getRow() {
+			return row;
+		}
+
+		public int getColumn() {
+			return column;
 		}
 	}
 
