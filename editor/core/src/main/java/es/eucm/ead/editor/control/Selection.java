@@ -61,6 +61,8 @@ public class Selection {
 
 	public static final String FRAME = "frame";
 
+	public static final String DEBUG = "debug";
+
 	private int pointer = -1;
 
 	private Array<Context> contexts;

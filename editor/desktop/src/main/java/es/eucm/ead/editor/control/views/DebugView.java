@@ -38,6 +38,8 @@ package es.eucm.ead.editor.control.views;
 
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import es.eucm.ead.editor.control.Controller;
+import es.eucm.ead.editor.control.Selection;
+import es.eucm.ead.editor.control.actions.model.SetSelection;
 import es.eucm.ead.editor.view.builders.ViewBuilder;
 import es.eucm.ead.editor.view.widgets.EnginePlayer;
 import es.eucm.ead.schemax.GameStructure;
@@ -59,6 +61,9 @@ public class DebugView implements ViewBuilder {
 
 	@Override
 	public Actor getView(Object... args) {
+		// Disable undo/redo
+		controller.action(SetSelection.class, null, Selection.DEBUG);
+		controller.getCommands().pushStack();
 		controller
 				.getEngine()
 				.getGameLoader()
@@ -71,6 +76,7 @@ public class DebugView implements ViewBuilder {
 
 	@Override
 	public void release(Controller controller) {
+		controller.getCommands().popStack(false);
 		controller.getEngine().stop();
 		controller.getEngine().setGameView(null);
 	}
