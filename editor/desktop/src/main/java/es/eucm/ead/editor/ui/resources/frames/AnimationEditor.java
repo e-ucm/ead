@@ -195,13 +195,13 @@ public class AnimationEditor extends Table {
 		public void modelChanged(SelectionEvent event) {
 
 			if (isFrames) {
-				if (event.getType().equals(SelectionEvent.Type.FOCUSED)) {
+				if (event.getType() == SelectionEvent.Type.FOCUSED) {
 					frames = (Frames) event.getSelection()[0];
 					refreshPreview();
 					timeline.loadFrames(frames.getFrames(), previewView);
 				}
 			} else {
-				if (event.getType().equals(SelectionEvent.Type.FOCUSED)) {
+				if (event.getType() == SelectionEvent.Type.FOCUSED) {
 					int index;
 					index = frames.getFrames().indexOf(
 							(Frame) event.getSelection()[0], true);

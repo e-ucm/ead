@@ -126,7 +126,7 @@ public class FramesTimeline extends FocusItemList implements
 		FrameWidget focusItem = new FrameWidget(frame, controller,
 				FramesTimeline.this);
 		focusItem.setFrameEditionListener(listener);
-		addFocusItemAt(index, focusItem);
+		addActorAt(index, focusItem);
 	}
 
 	void delete(FrameWidget frame) {

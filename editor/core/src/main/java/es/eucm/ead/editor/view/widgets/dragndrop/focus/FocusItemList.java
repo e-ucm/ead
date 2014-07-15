@@ -95,13 +95,13 @@ public class FocusItemList extends DraggableLinearLayout {
 		currentFocus = curr;
 	}
 
-	public void addFocusItem(FocusItem image) {
-		addFocusItemAt(-1, image);
+	public void addActor(FocusItem item) {
+		addActorAt(-1, item);
 	}
 
-	public void addFocusItemAt(int index, FocusItem item) {
+	public void addActorAt(int index, FocusItem item) {
 		item.pad(PAD);
-		addActorAt(index, item);
+		super.addActorAt(index, item);
 	}
 
 	@Override

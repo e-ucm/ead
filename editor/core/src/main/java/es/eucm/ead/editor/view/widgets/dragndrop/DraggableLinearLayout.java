@@ -36,6 +36,7 @@
  */
 package es.eucm.ead.editor.view.widgets.dragndrop;
 
+import com.badlogic.gdx.Application;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.Event;
@@ -51,7 +52,7 @@ import es.eucm.ead.editor.view.widgets.layouts.LinearLayout;
 
 /**
  * A {@link LinearLayout} that extends {@link DraggableScrollPane} and supports
- * drag'n drop actions with it's items.
+ * drag'n drop actions with its items.
  * 
  */
 public class DraggableLinearLayout extends DraggableScrollPane {
@@ -85,17 +86,32 @@ public class DraggableLinearLayout extends DraggableScrollPane {
 		addTarget(newTarget(actor));
 	}
 
+	/**
+	 * Centers the scroll at the actor available in the given index, in the next
+	 * frame. This method can be if an actor has just been added and its layout
+	 * wasn't invoked yet because this method will be executed at the end of the
+	 * frame via {@link Application#postRunnable(Runnable)}.
+	 * 
+	 * @param index
+	 */
 	public void centerScrollAt(final int index) {
 		Gdx.app.postRunnable(new Runnable() {
 
 			@Override
 			public void run() {
-				final Actor actor = itemsList.getChildren().get(index);
+				Actor actor = itemsList.getChildren().get(index);
 				centerScrollAt(actor);
 			}
 		});
 	}
 
+	/**
+	 * Invoked when the {@link Runnable#run()}, from
+	 * {@link #centerScrollAt(int)} method, gets executed. Convenience method
+	 * that could be overridden by subclasses.
+	 * 
+	 * @param actor
+	 */
 	protected void centerScrollAt(Actor actor) {
 		setScrollX(actor.getX() - getWidth() * .5f + actor.getWidth() * .5f);
 	}
@@ -113,7 +129,6 @@ public class DraggableLinearLayout extends DraggableScrollPane {
 				cancel();
 
 				// Set the actor displayed while dragging
-				// It must have the same size as the source image
 				Actor actor = getActor();
 				Payload payload = new Payload();
 				payload.setDragActor(actor);
@@ -126,7 +141,7 @@ public class DraggableLinearLayout extends DraggableScrollPane {
 			@Override
 			public void dragStop(InputEvent event, float x, float y,
 					int pointer, Payload payload, Target target) {
-				// Return the ScrollPane to it's original state
+				// Return the ScrollPane to its original state
 				setCancelTouchFocus(true);
 
 				if (target == null) {
@@ -153,12 +168,10 @@ public class DraggableLinearLayout extends DraggableScrollPane {
 					int pointer) {
 				SnapshotArray<Actor> children = itemsList.getChildren();
 
-				// Compute it's new position
+				// Compute its new position
 				Actor targetActor = getActor();
 				int targetIdx = children.indexOf(targetActor, true);
 
-				// If the position is higher than half of the width of the
-				// target frame the add the source after the target
 				if (x > targetActor.getWidth() * .5f) {
 					++targetIdx;
 				}
