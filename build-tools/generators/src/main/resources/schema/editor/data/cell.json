@@ -1,0 +1,19 @@
+{
+    "javaType": "es.eucm.ead.schema.editor.data.Cell",
+    "additionalProperties": false,
+    "properties": {
+        "column": {
+            "default": 0,
+            "type": "integer"
+        },
+        "row": {
+            "default": 0,
+            "type": "integer"
+        },
+        "sceneId": {
+            "type": "string",
+            "description": "The model id of the scene in this cell."
+        }
+    },
+    "type": "object"
+}
