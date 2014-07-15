@@ -65,13 +65,13 @@ public class AnimationEditorTest extends EditorUITest {
 			image.setUri("images/p1_walk" + (i < 10 ? "0" + i : i) + ".png");
 
 			frame.setRenderer(image);
-			frame.setTime(.05f);
+			frame.setTime(.01f * i);
 			frames.getFrames().add(frame);
 		}
 
 		// Create the widget
 		AnimationEditor animEditor = new AnimationEditor(controller);
-		animEditor.setFrames(frames);
+		animEditor.initialize(frames);
 
 		Container container = new Container(animEditor);
 		container.fill();

@@ -229,7 +229,7 @@
             "fontColor": "black"
         }
     },
-    "es.eucm.ead.editor.view.widgets.focus.FocusItem$FocusItemStyle": {
+    "es.eucm.ead.editor.view.widgets.dragndrop.focus.FocusItem$FocusItemStyle": {
         "default": {
             "focus": "focus",
             "over": "focus"

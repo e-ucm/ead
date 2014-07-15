@@ -34,7 +34,7 @@
  *      You should have received a copy of the GNU Lesser General Public License
  *      along with eAdventure.  If not, see <http://www.gnu.org/licenses/>.
  */
-package es.eucm.ead.editor.view.widgets;
+package es.eucm.ead.editor.view.widgets.dragndrop;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.math.Vector2;
@@ -93,7 +93,6 @@ public class DraggableScrollPane extends ScrollPane {
 		scrollSpeed = speed;
 		setFlingTime(0.0f);
 		setFadeScrollBars(false);
-		setSmoothScrolling(false);
 		setOverscroll(false, false);
 	}
 

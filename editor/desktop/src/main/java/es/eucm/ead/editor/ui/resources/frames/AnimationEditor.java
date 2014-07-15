@@ -108,15 +108,20 @@ public class AnimationEditor extends Table {
 	 * the {@link PreviewView}.
 	 * 
 	 */
-	public void setFrames(Frames frames) {
+	public void initialize(Frames frames) {
 
 		Model model = controller.getModel();
-		model.removeListenerFromAllTargets(framesListener);
-		model.addListListener(frames.getFrames(), framesListener);
-		model.removeListenerFromAllTargets(sequenceListener);
 		model.addFieldListener(frames, sequenceListener);
+		model.addListListener(frames.getFrames(), framesListener);
 
 		controller.action(SetSelection.class, null, Selection.FRAMES, frames);
+	}
+
+	public void release() {
+		Model model = controller.getModel();
+		model.removeListenerFromAllTargets(framesListener);
+		model.removeListenerFromAllTargets(sequenceListener);
+
 	}
 
 	private void refreshPreview() {
@@ -188,6 +193,7 @@ public class AnimationEditor extends Table {
 
 		@Override
 		public void modelChanged(SelectionEvent event) {
+
 			if (isFrames) {
 				if (event.getType() == SelectionEvent.Type.FOCUSED) {
 					frames = (Frames) event.getSelection()[0];
@@ -195,17 +201,14 @@ public class AnimationEditor extends Table {
 					timeline.loadFrames(frames.getFrames(), previewView);
 				}
 			} else {
-				int index;
-				switch (event.getType()) {
-				case FOCUSED:
-				case REMOVED:
+				if (event.getType() == SelectionEvent.Type.FOCUSED) {
+					int index;
 					index = frames.getFrames().indexOf(
 							(Frame) event.getSelection()[0], true);
-					timeline.centerScrollAt(index);
-					previewView.frameSelected(index);
-					break;
-				case ADDED:
-					break;
+					if (index != -1) {
+						timeline.centerScrollAt(index);
+						previewView.frameSelected(index);
+					}
 				}
 			}
 		}
