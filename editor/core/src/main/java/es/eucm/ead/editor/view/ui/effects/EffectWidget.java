@@ -121,6 +121,7 @@ public abstract class EffectWidget<T extends Effect> extends LinearLayout
 		optionsController.read(effect);
 		model.removeListenerFromAllTargets(this);
 		model.addFieldListener(effect, this);
+		updateShortRepresentation();
 	}
 
 	private void init() {
@@ -169,6 +170,10 @@ public abstract class EffectWidget<T extends Effect> extends LinearLayout
 
 	@Override
 	public void modelChanged(FieldEvent event) {
+		updateShortRepresentation();
+	}
+
+	protected void updateShortRepresentation() {
 		if (stringRepresentation != null) {
 			stringRepresentation.setText(effectToString());
 		}

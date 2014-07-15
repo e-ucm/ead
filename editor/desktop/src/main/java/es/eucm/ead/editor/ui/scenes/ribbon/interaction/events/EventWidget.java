@@ -70,7 +70,7 @@ public abstract class EventWidget<T extends Event> extends LinearLayout {
 		row.add(image);
 		add(row);
 		optionsController = new ClassOptionsController<T>(controller, skin,
-				eventClass, null);
+				eventClass);
 		add(optionsController.getPanel());
 	}
 

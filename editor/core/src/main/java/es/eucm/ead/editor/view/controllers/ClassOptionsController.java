@@ -69,19 +69,22 @@ public class ClassOptionsController<T> extends OptionsController {
 	private OptionFieldListener fieldListener = new OptionFieldListener();
 
 	public ClassOptionsController(Controller controller, Skin skin,
-			Class<T> clazz) {
-		this(controller, skin, clazz, null);
-	}
-
-	public T getObjectRepresented() {
-		return object;
+			Class<T> clazz, String i18nPrefix) {
+		this(controller, skin, clazz, i18nPrefix, null);
 	}
 
 	public ClassOptionsController(Controller controller, Skin skin,
-			Class<T> reflectedClass, Array<String> ignoreFields) {
+			Class<T> clazz) {
+		this(controller, skin, clazz, "", null);
+	}
+
+	public ClassOptionsController(Controller controller, Skin skin,
+			Class<T> reflectedClass, String i18nPrefix,
+			Array<String> ignoreFields) {
 		super(controller, skin);
 		this.clazz = reflectedClass;
-		i18nPrefix(ClassReflection.getSimpleName(clazz).toLowerCase());
+		i18nPrefix(i18nPrefix
+				+ ClassReflection.getSimpleName(clazz).toLowerCase());
 
 		Class clazz = reflectedClass;
 		while (clazz != null) {
@@ -131,6 +134,10 @@ public class ClassOptionsController<T> extends OptionsController {
 			}
 			clazz = clazz.getSuperclass();
 		}
+	}
+
+	public T getObjectRepresented() {
+		return object;
 	}
 
 	@Override

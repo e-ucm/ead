@@ -72,8 +72,8 @@ public class SceneView implements ViewBuilder {
 		LinearLayout bottomContainer = new LinearLayout(true);
 		sceneView.add(bottomContainer).expand(true, true).getActor().toBack();
 
-		bottomContainer.add(sceneEditor).expand(true, true);
 		bottomContainer.add(new BehaviorWidget(controller)).expandY().top();
+		bottomContainer.add(sceneEditor).expand(true, true).getActor().toBack();
 
 		sceneView.setFillParent(true);
 	}

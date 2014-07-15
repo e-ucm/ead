@@ -102,7 +102,6 @@ public class Option extends LinearLayout {
 	protected void init(String label, String tooltip, Actor optionWidget) {
 		tooltip(tooltip);
 		label(label);
-		addSpace();
 		option(optionWidget);
 	}
 
@@ -149,7 +148,7 @@ public class Option extends LinearLayout {
 		if (title == null) {
 			title = new Label(label,
 					new LabelStyle(style.font, style.fontColor));
-			add(title);
+			add(title).expandX();
 		}
 		title.setText(label == null ? "" : label);
 		return this;
@@ -182,7 +181,7 @@ public class Option extends LinearLayout {
 	public Option option(Actor option) {
 		if (optionContainer == null) {
 			optionContainer = new PlaceHolder();
-			add(optionContainer);
+			add(optionContainer).expandX();
 		}
 		this.optionWidget = option;
 		optionContainer.setContent(option);

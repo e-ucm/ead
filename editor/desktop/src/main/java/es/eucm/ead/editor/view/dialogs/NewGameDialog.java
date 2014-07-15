@@ -84,10 +84,9 @@ public class NewGameDialog implements DialogBuilder {
 				+ "/eadgames/" + doc.getName();
 
 		ClassOptionsController<Documentation> documentation = new ClassOptionsController<Documentation>(
-				controller, skin, Documentation.class);
+				controller, skin, Documentation.class, "game.");
 		extraData = new ClassOptionsController<ExtraData>(controller, skin,
-				ExtraData.class);
-
+				ExtraData.class, "game.");
 		extraData.addChangeListener(new SizeListener());
 		dialog = new DialogController(skin);
 
@@ -97,7 +96,9 @@ public class NewGameDialog implements DialogBuilder {
 		LinearLayout panel = new LinearLayout(false);
 		panel.add(documentation.getPanel()).expandX();
 		panel.add(extraData.getPanel()).expandX();
+		panel.addSpace();
 
+		dialog.title(i18N.m("game.create"));
 		dialog.content(panel);
 		dialog.button(i18N.m("general.create"), new CreateListener());
 		dialog.button(i18N.m("general.cancel"), new CancelListener());

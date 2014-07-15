@@ -67,7 +67,7 @@ public class ParameterOptionsController<T extends Parameters> extends
 
 	public ParameterOptionsController(Controller controller, Skin skin,
 			Class<T> reflectedClass, Array<String> ignoredFields) {
-		super(controller, skin, reflectedClass, ignoredFields);
+		super(controller, skin, reflectedClass, "", ignoredFields);
 	}
 
 	@Override
