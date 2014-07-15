@@ -37,28 +37,25 @@
 package es.eucm.ead.editor.control.views;
 
 import com.badlogic.gdx.scenes.scene2d.Actor;
-import com.badlogic.gdx.scenes.scene2d.ui.Label;
-import com.badlogic.gdx.scenes.scene2d.ui.Skin;
+import com.badlogic.gdx.scenes.scene2d.ui.Container;
 
 import es.eucm.ead.editor.control.Controller;
+import es.eucm.ead.editor.ui.scenes.map.SceneMapWidget;
 import es.eucm.ead.editor.view.builders.ViewBuilder;
-import es.eucm.ead.editor.view.widgets.PlaceHolder;
 
 public class HomeView implements ViewBuilder {
 
 	private Controller controller;
 
+	private SceneMapWidget sceneMap;
 	private Actor view;
 
 	@Override
 	public void initialize(Controller controller) {
 		this.controller = controller;
 
-		Skin skin = controller.getApplicationAssets().getSkin();
-
-		PlaceHolder placeHolder = new PlaceHolder();
-		Label label = new Label("Home view", skin);
-		placeHolder.setContent(label);
+		Container placeHolder = new Container();
+		placeHolder.setWidget(sceneMap = new SceneMapWidget(controller));
 		placeHolder.setFillParent(true);
 
 		view = placeHolder;
@@ -66,11 +63,12 @@ public class HomeView implements ViewBuilder {
 
 	@Override
 	public Actor getView(Object... args) {
+		sceneMap.initialize();
 		return view;
 	}
 
 	@Override
 	public void release(Controller controller) {
-
+		sceneMap.release();
 	}
 }
