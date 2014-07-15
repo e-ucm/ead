@@ -36,14 +36,7 @@
  */
 package es.eucm.ead.schemax;
 
-import es.eucm.ead.schema.components.Tags;
-import es.eucm.ead.schema.editor.components.Documentation;
-import es.eucm.ead.schema.editor.components.GameData;
-import es.eucm.ead.schema.editor.components.Note;
-import es.eucm.ead.schema.editor.components.Parent;
 import es.eucm.ead.schema.entities.ModelEntity;
-import es.eucm.ead.schema.renderers.Frame;
-import es.eucm.ead.schema.renderers.Frames;
 
 /**
  * The only purpose of this class is to hold String constants with the names of
@@ -129,12 +122,12 @@ public class FieldName {
 	PARENT = "parent",
 
 	/**
-	 * Refers to {@link Frame#time}
+	 * Refers to {@link es.eucm.ead.schema.renderers.Frame#time}
 	 */
 	TIME = "time",
 
 	/**
-	 * Refers to {@link Frames#sequence}
+	 * Refers to {@link es.eucm.ead.schema.renderers.Frames#sequence}
 	 */
 	SEQUENCE = "sequence",
 
@@ -148,5 +141,25 @@ public class FieldName {
 	 */
 	VALUE = "value",
 
-	FOLDER = "folder";
+	FOLDER = "folder",
+
+	/**
+	 * Refers to {@link es.eucm.ead.schema.editor.data.Cell#row}
+	 */
+	ROW = "row",
+
+	/**
+	 * Refers to {@link es.eucm.ead.schema.editor.data.Cell#column}
+	 */
+	COLUMN = "column",
+
+	/**
+	 * Refers to {@link es.eucm.ead.schema.editor.components.SceneMap#rows}
+	 */
+	ROWS = "rows",
+
+	/**
+	 * Refers to {@link es.eucm.ead.schema.editor.components.SceneMap#columns}
+	 */
+	COLUMNS = "columns";
 }
