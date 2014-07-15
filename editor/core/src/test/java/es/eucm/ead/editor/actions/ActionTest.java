@@ -49,6 +49,8 @@ import es.eucm.ead.schema.editor.components.Documentation;
 import es.eucm.ead.schema.editor.components.EditState;
 import es.eucm.ead.schema.editor.components.GameData;
 import es.eucm.ead.schema.editor.components.Note;
+import es.eucm.ead.schema.editor.components.SceneMap;
+import es.eucm.ead.schema.editor.data.Cell;
 import es.eucm.ead.schema.entities.ModelEntity;
 import es.eucm.ead.schemax.entities.ResourceCategory;
 
@@ -97,6 +99,14 @@ public abstract class ActionTest extends EditorTest {
 		Q.getComponent(scene, Documentation.class).setName(SCENE0);
 		model.putResource(ResourceCategory.GAME.getCategoryPrefix(), game);
 		model.putResource(SCENE0, scene);
+
+		// Create the cell in the map for the scene 0
+		SceneMap sceneMap = Q.getComponent(game, SceneMap.class);
+		Cell cell = new Cell();
+		cell.setRow(0);
+		cell.setColumn(0);
+		cell.setSceneId(SCENE0);
+		sceneMap.getCells().add(cell);
 
 		// Save game
 		controller.action(ForceSave.class);

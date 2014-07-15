@@ -36,14 +36,17 @@
  */
 package es.eucm.ead.editor.actions.model.scene;
 
+import static org.junit.Assert.assertEquals;
+
+import org.junit.Test;
+
 import es.eucm.ead.editor.actions.ActionTest;
 import es.eucm.ead.editor.control.actions.editor.Undo;
 import es.eucm.ead.editor.control.actions.model.scene.NewScene;
 import es.eucm.ead.editor.model.Model;
+import es.eucm.ead.editor.model.Q;
+import es.eucm.ead.schema.editor.components.SceneMap;
 import es.eucm.ead.schemax.entities.ResourceCategory;
-import org.junit.Test;
-
-import static org.junit.Assert.assertEquals;
 
 public class NewSceneTest extends ActionTest {
 
@@ -52,14 +55,20 @@ public class NewSceneTest extends ActionTest {
 		openEmpty();
 
 		Model model = controller.getModel();
+		SceneMap sceneMap = Q.getComponent(model.getGame(), SceneMap.class);
 
 		int scenes = model.getResources(ResourceCategory.SCENE).size();
-		controller.action(NewScene.class, "A name");
+		int mapSize = sceneMap.getCells().size;
 
+		controller.action(NewScene.class, "A name");
 		assertEquals(model.getResources(ResourceCategory.SCENE).size(),
 				scenes + 1);
-		controller.action(Undo.class);
+		assertEquals(sceneMap.getCells().size, mapSize + 1);
 
+		controller.action(Undo.class);
 		assertEquals(model.getResources(ResourceCategory.SCENE).size(), scenes);
+		assertEquals(sceneMap.getCells().size, mapSize);
+
+		clearEmpty();
 	}
 }

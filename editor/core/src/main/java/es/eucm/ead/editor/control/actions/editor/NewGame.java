@@ -36,18 +36,21 @@
  */
 package es.eucm.ead.editor.control.actions.editor;
 
+import java.io.FileNotFoundException;
+
 import com.badlogic.gdx.files.FileHandle;
+
 import es.eucm.ead.editor.assets.EditorGameAssets;
 import es.eucm.ead.editor.control.actions.EditorAction;
 import es.eucm.ead.editor.control.actions.EditorActionException;
 import es.eucm.ead.editor.model.Model;
 import es.eucm.ead.editor.model.Q;
 import es.eucm.ead.schema.editor.components.GameData;
+import es.eucm.ead.schema.editor.components.SceneMap;
+import es.eucm.ead.schema.editor.data.Cell;
 import es.eucm.ead.schema.entities.ModelEntity;
 import es.eucm.ead.schemax.GameStructure;
 import es.eucm.ead.schemax.entities.ResourceCategory;
-
-import java.io.FileNotFoundException;
 
 /**
  * New game creates an empty game. Expects exactly three parameters: arg[0]: a
@@ -82,11 +85,18 @@ public class NewGame extends EditorAction {
 			model.putResource(GameStructure.GAME_FILE, ResourceCategory.GAME,
 					game);
 			String initialScene = model.createId(ResourceCategory.SCENE);
+			String initial = "initial";
 			ModelEntity scene = controller.getTemplates().createScene(
-					controller.getApplicationAssets().getI18N().m("initial"));
+					controller.getApplicationAssets().getI18N().m(initial));
 			model.putResource(initialScene, ResourceCategory.SCENE, scene);
 			GameData gameData = Q.getComponent(game, GameData.class);
 			gameData.setInitialScene(initialScene);
+			SceneMap sceneMap = Q.getComponent(game, SceneMap.class);
+			Cell cell = new Cell();
+			cell.setRow(0);
+			cell.setColumn(0);
+			cell.setSceneId(initial);
+			sceneMap.getCells().add(cell);
 
 			controller.action(ForceSave.class);
 			controller
