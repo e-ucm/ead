@@ -325,3 +325,5 @@ key.alt = Alt
 key.ctrl.alt = Whether Alt key must be pressed
 key.shift = Shift
 key.shift.tooltip = Whether Shift key must be pressed
+maintoolbar.help = Open online help
+url.mainhelp = http://www.e-ucm.es/ead2blog/

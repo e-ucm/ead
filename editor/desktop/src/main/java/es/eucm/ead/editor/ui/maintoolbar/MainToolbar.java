@@ -40,6 +40,7 @@ import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.ui.TextField;
 import com.badlogic.gdx.utils.reflect.ClassReflection;
+
 import es.eucm.ead.editor.control.Controller;
 import es.eucm.ead.editor.control.actions.Action;
 import es.eucm.ead.editor.control.actions.editor.Back;
@@ -48,6 +49,7 @@ import es.eucm.ead.editor.control.actions.editor.Copy;
 import es.eucm.ead.editor.control.actions.editor.Cut;
 import es.eucm.ead.editor.control.actions.editor.Exit;
 import es.eucm.ead.editor.control.actions.editor.Next;
+import es.eucm.ead.editor.control.actions.editor.OpenBrowser;
 import es.eucm.ead.editor.control.actions.editor.OpenGame;
 import es.eucm.ead.editor.control.actions.editor.Paste;
 import es.eucm.ead.editor.control.actions.editor.Redo;
@@ -90,31 +92,33 @@ public class MainToolbar extends LinearLayout {
 		add(eAdventureButton).expand(true, true);
 
 		LinearLayout controlsTop = new LinearLayout(true);
-		controlsTop.add(createIcon("back24x24", skin, Back.class,
-				i18N.m("maintoolbar.back.tooltip")));
-		controlsTop.add(createIcon("forward24x24", skin, Next.class,
-				i18N.m("maintoolbar.next.tooltip")));
-
+		controlsTop.add(createIcon("back24x24", skin,
+				i18N.m("maintoolbar.back.tooltip"), Back.class));
+		controlsTop.add(createIcon("forward24x24", skin,
+				i18N.m("maintoolbar.next.tooltip"), Next.class));
+		controlsTop.add(createIcon("help", skin,
+				i18N.m("maintoolbar.next.tooltip"), OpenBrowser.class,
+				i18N.m("url.mainhelp")));
 		TextField searchTextField = new TextField("", skin);
 		searchTextField.setMessageText(i18N.m("general.search"));
 
 		controlsTop.add(searchTextField).margin(5, 0, 0, 0).expandX();
 
 		LinearLayout controlsBottom = new LinearLayout(true);
-		controlsBottom.add(createIcon("save24x24", skin, Save.class,
-				i18N.m("maintoolbar.save.tooltip")));
+		controlsBottom.add(createIcon("save24x24", skin,
+				i18N.m("maintoolbar.save.tooltip"), Save.class));
 		controlsBottom.add(new Separator(false, skin));
-		controlsBottom.add(createIcon("cut24x24", skin, Cut.class,
-				i18N.m("maintoolbar.cut.tooltip")));
-		controlsBottom.add(createIcon("copy24x24", skin, Copy.class,
-				i18N.m("maintoolbar.copy.tooltip")));
-		controlsBottom.add(createIcon("paste24x24", skin, Paste.class,
-				i18N.m("maintoolbar.paste.tooltip")));
+		controlsBottom.add(createIcon("cut24x24", skin,
+				i18N.m("maintoolbar.cut.tooltip"), Cut.class));
+		controlsBottom.add(createIcon("copy24x24", skin,
+				i18N.m("maintoolbar.copy.tooltip"), Copy.class));
+		controlsBottom.add(createIcon("paste24x24", skin,
+				i18N.m("maintoolbar.paste.tooltip"), Paste.class));
 		controlsBottom.add(new Separator(false, skin));
-		controlsBottom.add(createIcon("undo24x24", skin, Undo.class,
-				i18N.m("maintoolbar.undo.tooltip")));
-		controlsBottom.add(createIcon("redo24x24", skin, Redo.class,
-				i18N.m("maintoolbar.redo.tooltip")));
+		controlsBottom.add(createIcon("undo24x24", skin,
+				i18N.m("maintoolbar.undo.tooltip"), Undo.class));
+		controlsBottom.add(createIcon("redo24x24", skin,
+				i18N.m("maintoolbar.redo.tooltip"), Redo.class));
 
 		LinearLayout container = new LinearLayout(false).pad(5)
 				.defaultWidgetsMargin(0);
@@ -128,9 +132,9 @@ public class MainToolbar extends LinearLayout {
 	 * Create {@link IconButton} initially disabled
 	 */
 	private <T extends Action> Actor createIcon(String drawable, Skin skin,
-			Class<T> actionClass, String tooltip) {
+			String tooltip, Class<T> actionClass, Object... args) {
 		Actor actor = WidgetsUtils.createIcon(controller, drawable,
-				IMAGE_PADDING, skin, tooltip, actionClass);
+				IMAGE_PADDING, skin, tooltip, actionClass, args);
 		actor.setName(ClassReflection.getSimpleName(actionClass).toLowerCase());
 		return actor;
 	}
