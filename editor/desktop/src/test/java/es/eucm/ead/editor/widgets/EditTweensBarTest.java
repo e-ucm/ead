@@ -44,11 +44,11 @@ import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.scenes.scene2d.utils.DragAndDrop;
 
 import es.eucm.ead.editor.editorui.EditorUITest;
-import es.eucm.ead.editor.view.widgets.DraggableScrollPane;
 import es.eucm.ead.editor.view.widgets.EditTweensBar;
 import es.eucm.ead.editor.view.widgets.IconTextButton;
 import es.eucm.ead.editor.view.widgets.IconTextButton.Position;
 import es.eucm.ead.editor.view.widgets.Separator;
+import es.eucm.ead.editor.view.widgets.dragndrop.DraggableScrollPane;
 import es.eucm.ead.editor.view.widgets.layouts.TrackLayout;
 
 public class EditTweensBarTest extends EditorUITest {

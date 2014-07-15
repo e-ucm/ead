@@ -51,7 +51,7 @@ import com.badlogic.gdx.scenes.scene2d.utils.DragAndDrop.Source;
 import com.badlogic.gdx.scenes.scene2d.utils.DragAndDrop.Target;
 import com.esotericsoftware.tablelayout.Cell;
 
-import es.eucm.ead.editor.view.widgets.DraggableScrollPane;
+import es.eucm.ead.editor.view.widgets.dragndrop.DraggableScrollPane;
 
 public class DraggableScrollPaneTest extends EditorUITest {
 

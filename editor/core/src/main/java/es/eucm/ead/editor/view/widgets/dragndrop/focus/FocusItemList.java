@@ -34,36 +34,35 @@
  *      You should have received a copy of the GNU Lesser General Public License
  *      along with eAdventure.  If not, see <http://www.gnu.org/licenses/>.
  */
-package es.eucm.ead.editor.view.widgets.focus;
+package es.eucm.ead.editor.view.widgets.dragndrop.focus;
 
 import com.badlogic.gdx.scenes.scene2d.Actor;
+import com.badlogic.gdx.scenes.scene2d.Event;
+import com.badlogic.gdx.scenes.scene2d.EventListener;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.ui.ScrollPane;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
+import com.badlogic.gdx.utils.Pools;
 
-import es.eucm.ead.editor.view.widgets.DraggableScrollPane;
-import es.eucm.ead.editor.view.widgets.layouts.LinearLayout;
+import es.eucm.ead.editor.view.widgets.dragndrop.DraggableLinearLayout;
 
 /**
  * A {@link ScrollPane} that holds a list of {@link FocusItem items} that can
  * gain focus by clicking on them.
  */
-public class FocusItemList extends DraggableScrollPane {
+public class FocusItemList extends DraggableLinearLayout {
 
-	protected static final float PAD = 5F;
+	protected FocusItem currentFocus;
 
-	protected LinearLayout itemsList;
-
-	protected FocusItem previousFocus;
-
+	/**
+	 * Creates a horizontal focus item list with draggable elements.
+	 */
 	public FocusItemList() {
-		super(null);
+		this(true);
+	}
 
-		itemsList = new LinearLayout(true);
-		setWidget(itemsList);
-		itemsList.pad(PAD);
-
-		setScrollingDisabled(false, true);
+	public FocusItemList(boolean horizontal) {
+		super(horizontal);
 
 		addListener(new ClickListener() {
 
@@ -77,33 +76,88 @@ public class FocusItemList extends DraggableScrollPane {
 
 				if (target != null) {
 					FocusItem curr = ((FocusItem) target);
-					setFocus(curr);
+					if (currentFocus != curr) {
+						setFocus(curr, true);
+					}
 				}
 			}
 		});
 	}
 
-	public void addFocusItem(FocusItem image) {
-		addFocusItemAt(-1, image);
+	private void setFocus(FocusItem curr, boolean fire) {
+		if (currentFocus != null) {
+			currentFocus.setFocus(false);
+		}
+		curr.setFocus(true);
+		if (fire) {
+			fireFocus(curr);
+		}
+		currentFocus = curr;
 	}
 
-	public void addFocusItemAt(int index, FocusItem image) {
-		image.pad(PAD);
-		itemsList.add(index, image).margin(PAD);
+	public void addActor(FocusItem item) {
+		addActorAt(-1, item);
 	}
 
-	protected boolean needsFocus(FocusItem newFocus) {
-		return previousFocus != newFocus;
+	public void addActorAt(int index, FocusItem item) {
+		item.pad(PAD);
+		super.addActorAt(index, item);
 	}
 
-	protected void setFocus(FocusItem newFocus) {
-		if (needsFocus(newFocus)) {
-			if (previousFocus != null) {
-				previousFocus.setFocus(false);
-			}
-			newFocus.setFocus(true);
-			previousFocus = newFocus;
+	@Override
+	protected void centerScrollAt(Actor actor) {
+		super.centerScrollAt(actor);
+		if (actor instanceof FocusItem) {
+			setFocus((FocusItem) actor, false);
 		}
 	}
 
+	/**
+	 * Base class to listen to {@link FocusEvent}s produced by
+	 * {@link FocusItemList}.
+	 */
+	public static class FocusListener implements EventListener {
+
+		@Override
+		public boolean handle(Event event) {
+			if (event instanceof FocusEvent) {
+				focusChanged((FocusEvent) event);
+			}
+			return true;
+		}
+
+		/**
+		 * A new actor has gained focus
+		 * 
+		 * @param event
+		 */
+		public void focusChanged(FocusEvent event) {
+
+		}
+	}
+
+	public static class FocusEvent extends Event {
+
+		private Actor actor;
+
+		public Actor getActor() {
+			return actor;
+		}
+
+		@Override
+		public void reset() {
+			super.reset();
+			this.actor = null;
+		}
+	}
+
+	/**
+	 * Fires that some actor has gained focus
+	 */
+	private void fireFocus(Actor actor) {
+		FocusEvent dropEvent = Pools.obtain(FocusEvent.class);
+		dropEvent.actor = actor;
+		fire(dropEvent);
+		Pools.free(dropEvent);
+	}
 }
