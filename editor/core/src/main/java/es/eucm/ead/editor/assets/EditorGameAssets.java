@@ -37,9 +37,11 @@
 package es.eucm.ead.editor.assets;
 
 import com.badlogic.gdx.Files;
+import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.graphics.Pixmap;
 import com.badlogic.gdx.graphics.Texture;
+import com.badlogic.gdx.utils.GdxRuntimeException;
 import com.badlogic.gdx.utils.Json;
 import com.badlogic.gdx.utils.JsonValue;
 import com.badlogic.gdx.utils.JsonWriter.OutputType;
@@ -201,12 +203,29 @@ public class EditorGameAssets extends GameAssets {
 	// ////////////////////////////////////////////
 
 	/**
-	 * Currently, this method is only invoked from
-	 * {@link es.eucm.ead.editor.control.actions.model.AddScene}. We may want to
-	 * rethink if this should be kept.
+	 * Adds an asset
+	 * 
+	 * @param fileName
+	 *            file name of the asset
+	 * @param type
+	 *            type of the asset
+	 * @param asset
+	 *            the asset
 	 */
 	public <T> void addAsset(String fileName, Class<T> type, T asset) {
 		assetManager.addAsset(fileName, type, asset);
+	}
+
+	/**
+	 * Unloads the asset
+	 */
+	public void unload(String fileName) {
+		try {
+			assetManager.unload(fileName);
+		} catch (GdxRuntimeException e) {
+			Gdx.app.error("EditorGameAssets", "Impossible to unload "
+					+ fileName);
+		}
 	}
 
 	/**

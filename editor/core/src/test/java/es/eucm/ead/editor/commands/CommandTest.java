@@ -36,6 +36,8 @@
  */
 package es.eucm.ead.editor.commands;
 
+import es.eucm.ead.editor.assets.EditorGameAssets;
+import es.eucm.ead.engine.mock.MockFiles;
 import org.junit.Before;
 
 import es.eucm.ead.editor.model.Model;
@@ -48,6 +50,6 @@ public class CommandTest {
 	@Before
 	public void setUp() {
 		MockApplication.initStatics();
-		model = new Model();
+		model = new Model(new EditorGameAssets(new MockFiles()));
 	}
 }

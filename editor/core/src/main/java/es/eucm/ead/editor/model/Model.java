@@ -38,6 +38,7 @@ package es.eucm.ead.editor.model;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.utils.Array;
+import es.eucm.ead.editor.assets.EditorGameAssets;
 import es.eucm.ead.editor.control.Selection;
 import es.eucm.ead.editor.indexes.Index;
 import es.eucm.ead.editor.indexes.Index.Match;
@@ -67,6 +68,8 @@ import java.util.Map.Entry;
  */
 public class Model {
 
+	private EditorGameAssets gameAssets;
+
 	private Index index;
 
 	private Map<ResourceCategory, Map<String, Object>> resourcesMap;
@@ -80,7 +83,8 @@ public class Model {
 
 	private Selection selection;
 
-	public Model() {
+	public Model(EditorGameAssets gameAssets) {
+		this.gameAssets = gameAssets;
 		resourcesMap = new HashMap<ResourceCategory, Map<String, Object>>();
 		for (ResourceCategory resourceCategory : ResourceCategory.values()) {
 			resourcesMap.put(resourceCategory, new HashMap<String, Object>());
@@ -176,15 +180,17 @@ public class Model {
 	public void putResource(String id, Object resource) {
 		ResourceCategory category;
 		if ((category = ResourceCategory.getCategoryOf(id)) != null) {
-			resourcesMap.get(category).put(id, resource);
+			putResource(id, category, resource);
 		}
 	}
 
 	/**
 	 * Puts the given resource in the given category with the given id
 	 */
-	public void putResource(String id, ResourceCategory category, Object entity) {
-		resourcesMap.get(category).put(id, entity);
+	public void putResource(String id, ResourceCategory category,
+			Object resource) {
+		resourcesMap.get(category).put(id, resource);
+		gameAssets.addAsset(id, Object.class, resource);
 	}
 
 	/**
@@ -193,6 +199,7 @@ public class Model {
 	 * @return the resource removed. {@code null} if no entity was found
 	 */
 	public Object removeResource(String id, ResourceCategory category) {
+		gameAssets.unload(id);
 		return resourcesMap.get(category).remove(id);
 	}
 
