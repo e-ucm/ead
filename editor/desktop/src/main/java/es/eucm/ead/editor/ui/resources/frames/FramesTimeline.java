@@ -58,10 +58,10 @@ public class FramesTimeline extends FocusItemList implements
 		container.add(itemsList).expand(true, true);
 		container.add(importButton);
 		setWidget(container);
-		addListener(new DropListener() {
+		addListener(new DropListener<DropListEvent>() {
 
 			@Override
-			public void actorDropped(DropEvent event) {
+			public void actorDropped(DropListEvent event) {
 				int targetIndex = event.getNewIndex();
 				Frame dropFrame = frames.get(event.getOldIndex());
 
