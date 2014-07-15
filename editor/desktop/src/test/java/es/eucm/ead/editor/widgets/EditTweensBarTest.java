@@ -74,7 +74,7 @@ public class EditTweensBarTest extends EditorUITest {
 		IconTextButton button5 = new IconTextButton("5", skin,
 				skin.getDrawable("image48x48"), Position.BOTTOM);
 		IconTextButton button6 = new IconTextButton("6", skin,
-				skin.getDrawable("keyboard48x48"), Position.BOTTOM);
+				skin.getDrawable("key48x48"), Position.BOTTOM);
 		IconTextButton button7 = new IconTextButton("7", skin,
 				skin.getDrawable("newscene48x48"), Position.BOTTOM);
 		IconTextButton button8 = new IconTextButton("8", skin,
@@ -88,7 +88,7 @@ public class EditTweensBarTest extends EditorUITest {
 		IconTextButton button12 = new IconTextButton("12", skin,
 				skin.getDrawable("image48x48"), Position.BOTTOM);
 		IconTextButton button13 = new IconTextButton("13", skin,
-				skin.getDrawable("keyboard48x48"), Position.BOTTOM);
+				skin.getDrawable("key48x48"), Position.BOTTOM);
 		IconTextButton button14 = new IconTextButton("14", skin,
 				skin.getDrawable("newscene48x48"), Position.BOTTOM);
 

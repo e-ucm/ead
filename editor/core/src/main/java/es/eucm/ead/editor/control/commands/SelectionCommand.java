@@ -119,9 +119,13 @@ public class SelectionCommand extends Command {
 		MultipleEvent multipleEvent = new MultipleEvent();
 
 		if (added) {
-			selection.remove(contextId);
-			multipleEvent.addEvent(new SelectionEvent(model, Type.REMOVED,
-					parentContextId, contextId, this.selection));
+			// Selection commands can be discontinuous, so it could happen the
+			// context added is not present in the selection.E
+			Context context = selection.remove(contextId);
+			if (context != null) {
+				multipleEvent.addEvent(new SelectionEvent(model, Type.REMOVED,
+						parentContextId, contextId, this.selection));
+			}
 		}
 
 		for (Context context : contextsRemoved) {

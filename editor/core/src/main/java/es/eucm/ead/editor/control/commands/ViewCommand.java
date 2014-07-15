@@ -98,9 +98,4 @@ public class ViewCommand extends Command {
 		views.setView(oldViewClass, oldArgs);
 		return new ViewEvent(views, viewClass, args);
 	}
-
-	@Override
-	public boolean isTransparent() {
-		return true;
-	}
 }

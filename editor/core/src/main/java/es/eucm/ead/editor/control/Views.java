@@ -47,10 +47,10 @@ import com.badlogic.gdx.scenes.scene2d.ui.WidgetGroup;
 import com.badlogic.gdx.utils.reflect.ClassReflection;
 import com.badlogic.gdx.utils.reflect.ReflectionException;
 import es.eucm.ead.editor.control.ViewsHistory.ViewUpdate;
+import es.eucm.ead.editor.control.actions.editor.ChangeView;
 import es.eucm.ead.editor.model.Model.ModelListener;
 import es.eucm.ead.editor.model.events.LoadEvent;
 import es.eucm.ead.editor.model.events.LoadEvent.Type;
-import es.eucm.ead.editor.model.events.ViewEvent;
 import es.eucm.ead.editor.view.builders.Builder;
 import es.eucm.ead.editor.view.builders.DialogBuilder;
 import es.eucm.ead.editor.view.builders.ViewBuilder;
@@ -308,8 +308,7 @@ public class Views implements ModelListener<LoadEvent> {
 	public void back() {
 		ViewUpdate viewUpdate = viewsHistory.back();
 		if (viewUpdate != null) {
-			setView(viewUpdate.getViewClass(), viewUpdate.getArgs());
-			notify(viewUpdate);
+			changeView(viewUpdate);
 		}
 	}
 
@@ -319,15 +318,16 @@ public class Views implements ModelListener<LoadEvent> {
 	public void next() {
 		ViewUpdate viewUpdate = viewsHistory.next();
 		if (viewUpdate != null) {
-			setView(viewUpdate.getViewClass(), viewUpdate.getArgs());
-			notify(viewUpdate);
+			changeView(viewUpdate);
 		}
 	}
 
-	private void notify(ViewUpdate viewUpdate) {
-		controller.getModel().notify(
-				new ViewEvent(this, viewUpdate.getViewClass(), viewUpdate
-						.getArgs()));
+	private void changeView(ViewUpdate viewUpdate) {
+		Object[] args = new Object[1 + viewUpdate.getArgs().length];
+		args[0] = viewUpdate.getViewClass();
+		System.arraycopy(viewUpdate.getArgs(), 0, args, 1,
+				viewUpdate.getArgs().length);
+		controller.action(ChangeView.class, args);
 	}
 
 	@Override

@@ -34,33 +34,44 @@
  *      You should have received a copy of the GNU Lesser General Public License
  *      along with eAdventure.  If not, see <http://www.gnu.org/licenses/>.
  */
-package es.eucm.ead.editor.control.actions.editor;
+package es.eucm.ead.editor.test.sequences;
 
-import es.eucm.ead.editor.control.actions.ModelAction;
-import es.eucm.ead.editor.control.commands.Command;
-import es.eucm.ead.editor.control.commands.ViewCommand;
+import es.eucm.ead.editor.control.Selection;
+import es.eucm.ead.editor.control.actions.editor.Redo;
+import es.eucm.ead.editor.control.actions.model.AddSceneElement;
+import es.eucm.ead.editor.control.actions.model.SetSelection;
+import es.eucm.ead.editor.control.actions.model.generic.SetField;
+import es.eucm.ead.editor.nogui.EditorGUITest;
+import es.eucm.ead.editor.ui.perspectives.PerspectiveButtons;
+import es.eucm.ead.schema.entities.ModelEntity;
+import es.eucm.ead.schemax.FieldName;
+
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertSame;
+import static org.junit.Assert.assertTrue;
 
 /**
- * <p>
- * Changes the editor main view
- * </p>
- * <dl>
- * <dt><strong>Arguments</strong></dt>
- * <dd><strong>args[0]</strong> <em>Class</em> The view class</dd>
- * </dl>
+ * Test the process of opening a game, adding an scene element, add a behavior
+ * and add an effect to the behavior
  */
-public class ChangeView extends ModelAction {
+public class RedoWithSelectionEditorGUITest extends EditorGUITest {
 
 	@Override
-	public boolean validate(Object... args) {
-		return args.length > 0 && args[0] instanceof Class;
-	}
+	protected void runTest() {
+		openEmptyGame();
+		click(PerspectiveButtons.SCENE_SELECTOR);
+		click(PerspectiveButtons.SCENE_SELECTOR + "0");
+		ModelEntity sceneElement = new ModelEntity();
+		controller.action(AddSceneElement.class, sceneElement);
+		assertSame(selection.getSingle(Selection.SCENE_ELEMENT), sceneElement);
 
-	@Override
-	public Command perform(Object... args) {
-		Object[] viewArguments = new Object[args.length - 1];
-		System.arraycopy(args, 1, viewArguments, 0, viewArguments.length);
-		return new ViewCommand(controller.getViews(), (Class) args[0],
-				viewArguments);
+		controller.action(SetField.class, sceneElement, FieldName.X, 50f);
+		click("undo");
+		controller.action(SetSelection.class, Selection.EDITED_GROUP,
+				Selection.SCENE_ELEMENT);
+
+		assertTrue(controller.getActions().getAction(Redo.class).isEnabled());
+		click("redo");
+		assertEquals(50.0f, sceneElement.getX(), 0.0001f);
 	}
 }

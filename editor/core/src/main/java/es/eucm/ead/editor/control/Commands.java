@@ -258,13 +258,14 @@ public class Commands {
 		 *            the command
 		 */
 		public void command(Command command) {
-			redoHistory.clear();
-
-			if (command.canUndo()) {
-				if ((undoHistory.isEmpty() && !command.isTransparent())
-						|| (!undoHistory.isEmpty() && !undoHistory.peek()
-								.combine(command))) {
-					undoHistory.add(command);
+			if (redoHistory.isEmpty() || !command.isTransparent()) {
+				redoHistory.clear();
+				if (command.canUndo()) {
+					if ((undoHistory.isEmpty() && !command.isTransparent())
+							|| (!undoHistory.isEmpty() && !undoHistory.peek()
+									.combine(command))) {
+						undoHistory.add(command);
+					}
 				}
 			}
 			doCommand(command);

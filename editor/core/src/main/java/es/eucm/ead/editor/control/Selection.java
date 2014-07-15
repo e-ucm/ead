@@ -227,6 +227,11 @@ public class Selection {
 
 	public Context remove(String contextId) {
 		int index = getIndex(contextId);
+
+		if (index == -1) {
+			return null;
+		}
+
 		if (index == pointer) {
 			pointer--;
 		}
