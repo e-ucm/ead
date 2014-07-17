@@ -38,6 +38,7 @@ package es.eucm.ead.editor.control.engine;
 
 import es.eucm.ead.editor.assets.EditorGameAssets;
 import es.eucm.ead.editor.control.Controller;
+import es.eucm.ead.editor.processors.EditableLabelProccesor;
 import es.eucm.ead.editor.processors.EditorImageProcessor;
 import es.eucm.ead.engine.Accessor;
 import es.eucm.ead.engine.ComponentLoader;
@@ -48,6 +49,7 @@ import es.eucm.ead.engine.GameLoop;
 import es.eucm.ead.engine.GameView;
 import es.eucm.ead.engine.expressions.operators.OperationsFactory;
 import es.eucm.ead.engine.variables.VariablesManager;
+import es.eucm.ead.schema.components.controls.Label;
 import es.eucm.ead.schema.renderers.Image;
 import es.eucm.ead.schemax.Layer;
 
@@ -92,6 +94,10 @@ public class Engine {
 				Image.class,
 				new EditorImageProcessor(gameLoop, editorGameAssets, controller
 						.getShapeRenderer()));
+
+		componentLoader.registerComponentProcessor(Label.class,
+				new EditableLabelProccesor(gameLoop, editorGameAssets,
+						variablesManager, controller));
 	}
 
 	public EntitiesLoader getEntitiesLoader() {

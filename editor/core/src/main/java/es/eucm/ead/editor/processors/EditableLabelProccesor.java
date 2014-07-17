@@ -34,43 +34,44 @@
  *      You should have received a copy of the GNU Lesser General Public License
  *      along with eAdventure.  If not, see <http://www.gnu.org/licenses/>.
  */
-package es.eucm.ead.engine.processors.controls;
+package es.eucm.ead.editor.processors;
 
 import ashley.core.Component;
 
-import com.badlogic.gdx.scenes.scene2d.ui.Label.LabelStyle;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
+import com.badlogic.gdx.scenes.scene2d.ui.TextField.TextFieldStyle;
 
+import es.eucm.ead.editor.components.EditableLabelComponent;
+import es.eucm.ead.editor.control.Controller;
 import es.eucm.ead.engine.GameLoop;
 import es.eucm.ead.engine.assets.GameAssets;
 import es.eucm.ead.engine.components.I18nTextComponent;
 import es.eucm.ead.engine.components.MultiComponent;
-import es.eucm.ead.engine.components.controls.LabelComponent;
-import es.eucm.ead.engine.processors.ComponentProcessor;
+import es.eucm.ead.engine.processors.controls.LabelProcessor;
 import es.eucm.ead.engine.variables.VariablesManager;
 import es.eucm.ead.schema.components.controls.Label;
 
-public class LabelProcessor extends ComponentProcessor<Label> {
+public class EditableLabelProccesor extends LabelProcessor {
 
-	protected GameAssets gameAssets;
+	private Controller controller;
 
-	protected VariablesManager variablesManager;
-
-	public LabelProcessor(GameLoop engine, GameAssets gameAssets,
-			VariablesManager variablesManager) {
-		super(engine);
-		this.gameAssets = gameAssets;
-		this.variablesManager = variablesManager;
+	public EditableLabelProccesor(GameLoop engine, GameAssets gameAssets,
+			VariablesManager variablesManager, Controller controller) {
+		super(engine, gameAssets, variablesManager);
+		this.controller = controller;
 	}
 
 	@Override
 	public Component getComponent(Label component) {
 		Skin skin = gameAssets.getSkin();
-		LabelComponent button = gameLoop.createComponent(LabelComponent.class);
+		EditableLabelComponent button = gameLoop
+				.createComponent(EditableLabelComponent.class);
+		button.initialize(controller, component);
 		button.setVariablesManager(variablesManager);
 
-		LabelStyle style = skin.get(component.getStyle(), LabelStyle.class);
-		LabelStyle styleCopy = new LabelStyle(style);
+		TextFieldStyle style = skin.get(component.getStyle(),
+				TextFieldStyle.class);
+		TextFieldStyle styleCopy = new TextFieldStyle(style);
 		button.setStyle(styleCopy);
 		button.setText(gameAssets.getI18N().m(component.getText()));
 
