@@ -98,7 +98,7 @@ public class FrameWidget extends FocusItem {
 			}
 		};
 
-		IconButton dup = new IconButton("close", skin);
+		IconButton dup = new IconButton("copy24x24", skin);
 		dup.setTooltip(i18n.m("frames.duplicate"));
 		dup.addListener(new ClickListener() {
 			@Override
@@ -107,7 +107,7 @@ public class FrameWidget extends FocusItem {
 			}
 		});
 
-		IconButton delete = new IconButton("close", skin);
+		IconButton delete = new IconButton("recycle24x24", skin);
 		delete.setTooltip(i18n.m("frames.delete"));
 		delete.addListener(new ClickListener() {
 			@Override

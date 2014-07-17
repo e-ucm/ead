@@ -65,8 +65,17 @@ public class FocusItem extends Button {
 	protected void drawChildren(Batch batch, float parentAlpha) {
 		super.drawChildren(batch, parentAlpha);
 		if (focused) {
-			focus.draw(batch, getX(), getY(), getWidth(), getHeight());
+			drawFocus(batch);
 		}
+	}
+
+	/**
+	 * Draws the {@link #focus} if is {@link #focused}.
+	 * 
+	 * @param batch
+	 */
+	protected void drawFocus(Batch batch) {
+		focus.draw(batch, getX(), getY(), getWidth(), getHeight());
 	}
 
 	/**

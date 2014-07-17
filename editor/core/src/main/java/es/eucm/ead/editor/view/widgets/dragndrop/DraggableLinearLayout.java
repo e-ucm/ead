@@ -100,8 +100,11 @@ public class DraggableLinearLayout extends DraggableScrollPane {
 
 			@Override
 			public void run() {
-				Actor actor = itemsList.getChildren().get(index);
-				centerScrollAt(actor);
+				SnapshotArray<Actor> children = itemsList.getChildren();
+				if (index < children.size) {
+					Actor actor = children.get(index);
+					centerScrollAt(actor);
+				}
 			}
 		});
 	}
