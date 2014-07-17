@@ -71,7 +71,7 @@ public class AnimationEditorTest extends EditorUITest {
 
 		// Create the widget
 		AnimationEditor animEditor = new AnimationEditor(controller);
-		animEditor.initialize(frames);
+		animEditor.prepare(frames);
 
 		Container container = new Container(animEditor);
 		container.fill();

@@ -69,12 +69,17 @@ public class PreviewView extends WidgetGroup implements FrameEditionListener {
 	}
 
 	public void togglePlaying() {
-		playing = !playing;
+		setPlaying(!playing);
+	}
+
+	public void setPlaying(boolean playing) {
+		this.playing = playing;
 	}
 
 	@Override
 	public void frameSelected(int index) {
-		if (!playing && previewFrames != null) {
+		if (!playing && previewFrames != null
+				&& previewFrames.getCurrentFrameIndex() != index) {
 			previewFrames.setCurrentFrameIndex(index);
 		}
 	}

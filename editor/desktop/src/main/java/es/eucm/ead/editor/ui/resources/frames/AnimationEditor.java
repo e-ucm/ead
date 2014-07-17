@@ -6,7 +6,6 @@ import com.badlogic.gdx.scenes.scene2d.ui.Container;
 import com.badlogic.gdx.scenes.scene2d.ui.SelectBox;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
-import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
 import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.utils.Pools;
@@ -15,6 +14,7 @@ import com.esotericsoftware.tablelayout.Value;
 import es.eucm.ead.editor.assets.ApplicationAssets;
 import es.eucm.ead.editor.control.Controller;
 import es.eucm.ead.editor.control.Selection;
+import es.eucm.ead.editor.control.actions.editor.ChooseFile;
 import es.eucm.ead.editor.control.actions.model.SetFramesSequence;
 import es.eucm.ead.editor.control.actions.model.SetSelection;
 import es.eucm.ead.editor.model.Model;
@@ -24,6 +24,8 @@ import es.eucm.ead.editor.model.Model.SelectionListener;
 import es.eucm.ead.editor.model.events.FieldEvent;
 import es.eucm.ead.editor.model.events.ListEvent;
 import es.eucm.ead.editor.model.events.SelectionEvent;
+import es.eucm.ead.editor.view.widgets.IconButton;
+import es.eucm.ead.editor.view.widgets.ToggleIconButton;
 import es.eucm.ead.engine.ComponentLoader;
 import es.eucm.ead.engine.I18N;
 import es.eucm.ead.engine.components.renderers.frames.FramesComponent;
@@ -64,13 +66,35 @@ public class AnimationEditor extends Table {
 		Skin skin = assets.getSkin();
 		I18N i18n = assets.getI18N();
 
-		TextButton play = new TextButton("play", skin);
-		play.addListener(new ClickListener() {
+		IconButton importButton = new IconButton("import24x24", skin);
+		importButton.setTooltip(i18n.m("frames.delete"));
+		importButton.addListener(new ClickListener() {
 			@Override
 			public void clicked(InputEvent event, float x, float y) {
-				previewView.togglePlaying();
+				controller.action(ChooseFile.class, false, timeline);
 			}
 		});
+
+		Table timelineContainer = new Table();
+		timelineContainer.add(timeline);
+		timelineContainer.add(importButton);
+
+		ToggleIconButton play = new ToggleIconButton("play24x24", "pause24x24",
+				skin) {
+
+			@Override
+			public void buttonClicked() {
+				super.buttonClicked();
+				previewView.togglePlaying();
+				controller.action(
+						SetSelection.class,
+						Selection.FRAMES,
+						Selection.FRAME,
+						frames.getFrames().get(
+								previewView.getPreviewFrames()
+										.getCurrentFrameIndex()));
+			}
+		};
 
 		final Sequence[] values = Sequence.values();
 		String[] sequence = new String[values.length];
@@ -99,7 +123,7 @@ public class AnimationEditor extends Table {
 		add(play).expandX();
 		add(sequenceBox).right();
 		row();
-		add(timeline).padBottom(BOTTOM_PAD).colspan(2)
+		add(timelineContainer).padBottom(BOTTOM_PAD).colspan(2)
 				.minHeight(Value.percentHeight(1f, timeline));
 	}
 
@@ -108,7 +132,7 @@ public class AnimationEditor extends Table {
 	 * the {@link PreviewView}.
 	 * 
 	 */
-	public void initialize(Frames frames) {
+	public void prepare(Frames frames) {
 
 		Model model = controller.getModel();
 		model.addFieldListener(frames, sequenceListener);
@@ -121,7 +145,6 @@ public class AnimationEditor extends Table {
 		Model model = controller.getModel();
 		model.removeListenerFromAllTargets(framesListener);
 		model.removeListenerFromAllTargets(sequenceListener);
-
 	}
 
 	private void refreshPreview() {
@@ -199,6 +222,7 @@ public class AnimationEditor extends Table {
 					frames = (Frames) event.getSelection()[0];
 					refreshPreview();
 					timeline.loadFrames(frames.getFrames(), previewView);
+					previewView.setPlaying(false);
 				}
 			} else {
 				if (event.getType() == SelectionEvent.Type.FOCUSED) {
