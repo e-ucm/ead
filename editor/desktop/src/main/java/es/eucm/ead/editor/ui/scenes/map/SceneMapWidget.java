@@ -40,15 +40,15 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.ui.Button;
+import com.badlogic.gdx.scenes.scene2d.ui.ButtonGroup;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
-import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 
 import es.eucm.ead.editor.control.Controller;
 import es.eucm.ead.editor.control.Selection;
-import es.eucm.ead.editor.control.actions.model.IncreaseMapSize;
 import es.eucm.ead.editor.control.actions.model.ChangeCellPosition;
+import es.eucm.ead.editor.control.actions.model.IncreaseMapSize;
 import es.eucm.ead.editor.control.actions.model.SetSelection;
 import es.eucm.ead.editor.model.Model;
 import es.eucm.ead.editor.model.Model.FieldListener;
@@ -58,11 +58,16 @@ import es.eucm.ead.editor.model.Q;
 import es.eucm.ead.editor.model.events.FieldEvent;
 import es.eucm.ead.editor.model.events.ListEvent;
 import es.eucm.ead.editor.model.events.SelectionEvent;
+import es.eucm.ead.editor.view.listeners.SceneNameListener;
+import es.eucm.ead.editor.view.widgets.IconButton;
 import es.eucm.ead.editor.view.widgets.dragndrop.DraggableGridLayout;
 import es.eucm.ead.editor.view.widgets.dragndrop.DraggableLinearLayout.DropListener;
+import es.eucm.ead.schema.editor.components.GameData;
 import es.eucm.ead.schema.editor.components.SceneMap;
 import es.eucm.ead.schema.editor.data.Cell;
+import es.eucm.ead.schema.entities.ModelEntity;
 import es.eucm.ead.schemax.FieldName;
+import es.eucm.ead.schemax.entities.ResourceCategory;
 
 /**
  * This widget displays the information stored in the {@link SceneMap}. A map
@@ -73,14 +78,17 @@ public class SceneMapWidget extends DraggableGridLayout {
 
 	private SceneMap sceneMap;
 	private Controller controller;
+	private ButtonGroup buttonGroup;
+	private NameListener sceneNameListener;
 	private FieldListener sceneMapListener = new SceneMapListener();
-	private ModelListener<ListEvent> tilesListener = new CellsListener();
+	private ModelListener<ListEvent> cellsListener = new CellsListener();
 	private SelectionListener selectionListener = new MapSelectionListener();
 
 	public SceneMapWidget(Controller control) {
 
 		controller = control;
-
+		buttonGroup = new ButtonGroup();
+		sceneNameListener = new NameListener(controller);
 		addListener(new DropListener<DropGridEvent>() {
 
 			@Override
@@ -93,10 +101,11 @@ public class SceneMapWidget extends DraggableGridLayout {
 		});
 
 		Skin skin = controller.getApplicationAssets().getSkin();
-		final Button moreStartRow = new TextButton("+", skin);
-		final Button moreFinalRow = new TextButton("+", skin);
-		final Button moreStartCol = new TextButton("+", skin);
-		final Button moreFinalCol = new TextButton("+", skin);
+		String plusIcon = "plus24x24";
+		final Button moreStartRow = new IconButton(plusIcon, skin);
+		final Button moreFinalRow = new IconButton(plusIcon, skin);
+		final Button moreStartCol = new IconButton(plusIcon, skin);
+		final Button moreFinalCol = new IconButton(plusIcon, skin);
 
 		controller.getModel().addSelectionListener(selectionListener);
 		ClickListener moreButton = new ClickListener() {
@@ -157,20 +166,26 @@ public class SceneMapWidget extends DraggableGridLayout {
 		setWidget(table);
 	}
 
-	public void initialize() {
+	public void prepare() {
 		Model model = controller.getModel();
 
 		sceneMap = Q.getComponent(model.getGame(), SceneMap.class);
-		model.addListListener(sceneMap.getCells(), tilesListener);
+		model.addListListener(sceneMap.getCells(), cellsListener);
 		model.addFieldListener(sceneMap, sceneMapListener);
 
 		controller.action(SetSelection.class, null, Selection.SCENE_MAP,
 				sceneMap);
+		controller.action(SetSelection.class, Selection.SCENE_MAP,
+				Selection.SCENE, model.getResource(
+						Q.getComponent(model.getGame(), GameData.class)
+								.getInitialScene(), ResourceCategory.SCENE));
 	}
 
 	public void release() {
+
+		sceneNameListener.remove();
 		Model model = controller.getModel();
-		model.removeListenerFromAllTargets(tilesListener);
+		model.removeListenerFromAllTargets(cellsListener);
 		model.removeListenerFromAllTargets(sceneMapListener);
 	}
 
@@ -180,11 +195,13 @@ public class SceneMapWidget extends DraggableGridLayout {
 	private void refreshSceneMap() {
 		reset(sceneMap.getRows(), sceneMap.getColumns());
 
+		buttonGroup.getButtons().clear();
+		buttonGroup.getAllChecked().clear();
 		for (Cell cell : sceneMap.getCells()) {
-			addAt(cell.getRow(), cell.getColumn(),
-					createSceneWidgetFromId(cell.getSceneId()));
+			SceneWidget sceneWidget = createSceneWidgetFromId(cell.getSceneId());
+			addAt(cell.getRow(), cell.getColumn(), sceneWidget);
+			buttonGroup.add(sceneWidget);
 		}
-		invalidateHierarchy();
 	}
 
 	private SceneWidget createSceneWidgetFromId(String id) {
@@ -206,8 +223,21 @@ public class SceneMapWidget extends DraggableGridLayout {
 				addAt(cell.getRow(), cell.getColumn(), null);
 				break;
 			case ADDED:
-				addAt(cell.getRow(), cell.getColumn(),
-						createSceneWidgetFromId(cell.getSceneId()));
+				int row = cell.getRow();
+				int column = cell.getColumn();
+				String sceneId = cell.getSceneId();
+
+				SceneWidget sceneWidget = (SceneWidget) getCellAt(row, column)
+						.getWidget();
+				// Don't create the SameWidget twice
+				if (sceneWidget == null
+						|| !sceneWidget.getSceneId().equals(sceneId)) {
+					SceneWidget newSceneWidget = createSceneWidgetFromId(sceneId);
+					addAt(row, column, newSceneWidget);
+					newSceneWidget.setChecked(true);
+				} else {
+					sceneWidget.setChecked(true);
+				}
 				break;
 			}
 		}
@@ -219,16 +249,24 @@ public class SceneMapWidget extends DraggableGridLayout {
 	 */
 	private class MapSelectionListener implements SelectionListener {
 
+		private boolean isMap;
+
 		@Override
 		public void modelChanged(SelectionEvent event) {
 			if (event.getType() == SelectionEvent.Type.FOCUSED) {
-				refreshSceneMap();
+				if (isMap) {
+					refreshSceneMap();
+				} else {
+					sceneNameListener
+							.setUp((ModelEntity) event.getSelection()[0]);
+				}
 			}
 		}
 
 		@Override
 		public boolean listenToContext(String contextId) {
-			return Selection.SCENE_MAP.equals(contextId);
+			isMap = Selection.SCENE_MAP.equals(contextId);
+			return isMap || Selection.SCENE.equals(contextId);
 		}
 	}
 
@@ -247,6 +285,24 @@ public class SceneMapWidget extends DraggableGridLayout {
 		public boolean listenToField(String fieldName) {
 			return FieldName.ROWS.equals(fieldName)
 					|| FieldName.COLUMNS.equals(fieldName);
+		}
+	}
+
+	/**
+	 * Updates the name of the selected scene.
+	 */
+	private class NameListener extends SceneNameListener {
+
+		public NameListener(Controller controller) {
+			super(controller);
+		}
+
+		@Override
+		public void nameChanged(String name) {
+			Cell cellFromId = Q.getCellFromId(sceneId, sceneMap.getCells());
+			SceneWidget widget = (SceneWidget) getCellAt(cellFromId.getRow(),
+					cellFromId.getColumn()).getWidget();
+			widget.setName(name);
 		}
 	}
 }
