@@ -34,41 +34,25 @@
  *      You should have received a copy of the GNU Lesser General Public License
  *      along with eAdventure.  If not, see <http://www.gnu.org/licenses/>.
  */
-package es.eucm.ead.editor.actions.model.scene;
+package es.eucm.ead.editor.ui.scenes.map;
 
-import static org.junit.Assert.assertEquals;
+import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
 
-import org.junit.Test;
-
-import es.eucm.ead.editor.actions.ActionTest;
-import es.eucm.ead.editor.control.actions.editor.Undo;
-import es.eucm.ead.editor.control.actions.model.scene.NewScene;
-import es.eucm.ead.editor.model.Model;
-import es.eucm.ead.editor.model.Q;
-import es.eucm.ead.schema.editor.components.SceneMap;
+import es.eucm.ead.editor.control.Controller;
+import es.eucm.ead.schema.entities.ModelEntity;
 import es.eucm.ead.schemax.entities.ResourceCategory;
 
-public class NewSceneTest extends ActionTest {
+/**
+ * A widget used in the {@link SceneMapWidget} that represents a scene.
+ */
+public class SceneWidget extends TextButton {
 
-	@Test
-	public void testNewScene() {
-		openEmpty();
+	private ModelEntity scene;
 
-		Model model = controller.getModel();
-		SceneMap sceneMap = Q.getComponent(model.getGame(), SceneMap.class);
+	public SceneWidget(Controller controller, String scenId) {
+		super(scenId, controller.getApplicationAssets().getSkin());
+		this.scene = (ModelEntity) controller.getModel().getResource(scenId,
+				ResourceCategory.SCENE);
 
-		int scenes = model.getResources(ResourceCategory.SCENE).size();
-		int mapSize = sceneMap.getCells().size;
-
-		controller.action(NewScene.class, "A name");
-		assertEquals(model.getResources(ResourceCategory.SCENE).size(),
-				scenes + 1);
-		assertEquals(sceneMap.getCells().size, mapSize + 1);
-
-		controller.action(Undo.class);
-		assertEquals(model.getResources(ResourceCategory.SCENE).size(), scenes);
-		assertEquals(sceneMap.getCells().size, mapSize);
-
-		clearEmpty();
 	}
 }

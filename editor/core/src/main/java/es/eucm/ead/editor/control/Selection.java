@@ -63,6 +63,8 @@ public class Selection {
 
 	public static final String DEBUG = "debug";
 
+	public static final String SCENE_MAP = "sceneMap";
+
 	private int pointer = -1;
 
 	private Array<Context> contexts;

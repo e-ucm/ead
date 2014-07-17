@@ -41,12 +41,16 @@ import es.eucm.ead.editor.control.Selection;
 import es.eucm.ead.editor.control.actions.ModelAction;
 import es.eucm.ead.editor.control.actions.model.SetSelection;
 import es.eucm.ead.editor.control.commands.CompositeCommand;
+import es.eucm.ead.editor.control.commands.FieldCommand;
 import es.eucm.ead.editor.control.commands.ListCommand.AddToListCommand;
 import es.eucm.ead.editor.control.commands.ResourceCommand.AddResourceCommand;
 import es.eucm.ead.editor.model.Model;
 import es.eucm.ead.editor.model.Q;
 import es.eucm.ead.schema.editor.components.EditState;
+import es.eucm.ead.schema.editor.components.SceneMap;
+import es.eucm.ead.schema.editor.data.Cell;
 import es.eucm.ead.schema.entities.ModelEntity;
+import es.eucm.ead.schemax.FieldName;
 import es.eucm.ead.schemax.entities.ResourceCategory;
 
 /**
@@ -78,7 +82,9 @@ public class NewScene extends ModelAction {
 		ModelEntity scene = controller.getTemplates().createScene(
 				(String) args[0]);
 
-		EditState editState = Q.getComponent(model.getGame(), EditState.class);
+		ModelEntity game = model.getGame();
+		EditState editState = Q.getComponent(game, EditState.class);
+		SceneMap sceneMap = Q.getComponent(game, SceneMap.class);
 
 		CompositeCommand compositeCommand = new CompositeCommand();
 		compositeCommand.addCommand(new AddResourceCommand(model, id, scene,
@@ -89,7 +95,41 @@ public class NewScene extends ModelAction {
 				scene));
 		compositeCommand.addCommand(setSelection.perform(Selection.SCENE,
 				Selection.EDITED_GROUP, scene));
+		createCell(id, sceneMap, compositeCommand);
 
 		return compositeCommand;
+	}
+
+	/**
+	 * Creates a cell with the given id in the first empty space found in the
+	 * map. If there is no empty space a new row will be added.
+	 * 
+	 * @param id
+	 * @param sceneMap
+	 * @param compositeCommand
+	 * @param compositeCommand
+	 * @return
+	 */
+	private void createCell(String id, SceneMap sceneMap,
+			CompositeCommand compositeCommand) {
+		Cell cell = Q.createCell(id, sceneMap);
+		if (cell != null) {
+			compositeCommand.addCommand(new AddToListCommand(sceneMap, sceneMap
+					.getCells(), cell));
+		} else {
+
+			cell = new Cell();
+			// There are no empty spaces in our map, let's automatically create
+			// a new row of cells
+			int rows = sceneMap.getRows();
+			cell.setSceneId(id);
+			cell.setRow(rows);
+			cell.setColumn(0);
+
+			compositeCommand.addCommand(new AddToListCommand(sceneMap, sceneMap
+					.getCells(), cell));
+			compositeCommand.addCommand(new FieldCommand(sceneMap,
+					FieldName.ROWS, rows + 1));
+		}
 	}
 }

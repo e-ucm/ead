@@ -34,16 +34,18 @@
  *      You should have received a copy of the GNU Lesser General Public License
  *      along with eAdventure.  If not, see <http://www.gnu.org/licenses/>.
  */
-package es.eucm.ead.editor.view.widgets.layouts;
+package es.eucm.ead.editor.view.widgets.dragndrop;
 
 import com.badlogic.gdx.scenes.scene2d.Actor;
+import com.badlogic.gdx.scenes.scene2d.Event;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.ui.Container;
 import com.badlogic.gdx.scenes.scene2d.utils.DragAndDrop.Payload;
 import com.badlogic.gdx.scenes.scene2d.utils.DragAndDrop.Source;
 import com.badlogic.gdx.scenes.scene2d.utils.DragAndDrop.Target;
+import com.badlogic.gdx.utils.Pools;
 
-import es.eucm.ead.editor.view.widgets.dragndrop.DraggableScrollPane;
+import es.eucm.ead.editor.view.widgets.layouts.GridLayout;
 import es.eucm.ead.editor.view.widgets.layouts.GridLayout.Cell;
 
 /**
@@ -68,10 +70,6 @@ public class DraggableGridLayout extends DraggableScrollPane {
 		addTarget(createTarget());
 	}
 
-	public GridLayout getGridLayout() {
-		return gridLayout;
-	}
-
 	/**
 	 * Adds an actor to the grid. The actor will be draggable between the other
 	 * empty cells of the layout. May be null in order to add an empty cell.
@@ -88,10 +86,31 @@ public class DraggableGridLayout extends DraggableScrollPane {
 		return gridLayout.add(actor);
 	}
 
+	public Container addAt(int row, int col, Actor actor) {
+		if (actor != null) {
+			addSource(newSource(actor));
+		}
+		return gridLayout.addAt(row, col, actor);
+	}
+
 	@Override
 	public void clearChildren() {
 		clearDrag();
 		super.clearChildren();
+	}
+
+	/**
+	 * Fills the layout with empty cells.
+	 * 
+	 * @param rows
+	 * @param columns
+	 */
+	protected void reset(int rows, int columns) {
+		gridLayout.setRows(rows);
+		gridLayout.setColumns(columns);
+		gridLayout.clear();
+		clearDrag();
+		addTarget(createTarget());
 	}
 
 	private Source newSource(Actor widget) {
@@ -104,10 +123,9 @@ public class DraggableGridLayout extends DraggableScrollPane {
 				cancel();
 
 				Actor actor = getActor();
-				Cell sourceTile = gridLayout.getCellFromActor(actor);
-				sourceTile.setWidget(null);
+				Cell sourceCell = gridLayout.getCellFromActor(actor);
 				Payload payload = new Payload();
-				payload.setObject(sourceTile);
+				payload.setObject(sourceCell);
 				payload.setDragActor(actor);
 
 				return payload;
@@ -118,8 +136,8 @@ public class DraggableGridLayout extends DraggableScrollPane {
 					int pointer, Payload payload, Target target) {
 				setCancelTouchFocus(true);
 				if (target == null) {
-					Cell sourceTile = (Cell) payload.getObject();
-					sourceTile.setWidget(getActor());
+					Cell sourceCell = (Cell) payload.getObject();
+					sourceCell.setWidget(getActor());
 				}
 			}
 		};
@@ -137,16 +155,92 @@ public class DraggableGridLayout extends DraggableScrollPane {
 			@Override
 			public void drop(Source source, Payload payload, float x, float y,
 					int pointer) {
-				for (Cell tile : gridLayout.getCells()) {
-					Actor actor = tile.getWidget();
-					if (actor == null && tile.contains(x, y)) {
-						tile.setWidget(source.getActor());
+				Cell sourceCell = (Cell) payload.getObject();
+				for (Cell newCell : gridLayout.getCells()) {
+					Actor actor = newCell.getWidget();
+					if (actor == null && newCell != sourceCell
+							&& newCell.contains(x, y)) {
+						Actor sourceActor = source.getActor();
+						newCell.setWidget(sourceActor);
+						fireDrop(sourceActor, sourceCell.getRow(),
+								sourceCell.getColumn(), newCell.getRow(),
+								newCell.getColumn());
 						return;
 					}
 				}
-				Cell sourceTile = (Cell) payload.getObject();
-				sourceTile.setWidget(source.getActor());
+				sourceCell.setWidget(source.getActor());
+			}
+
+			/**
+			 * Fires that some actor has been dropped
+			 */
+			private void fireDrop(Actor actor, int oldRow, int oldColumn,
+					int newRow, int newColumn) {
+				DropGridEvent dropEvent = Pools.obtain(DropGridEvent.class);
+				dropEvent.setActor(actor);
+				dropEvent.setOldRow(oldRow);
+				dropEvent.setNewRow(newRow);
+				dropEvent.setOldColumn(oldColumn);
+				dropEvent.setNewColumn(newColumn);
+				fire(dropEvent);
+				Pools.free(dropEvent);
 			}
 		};
+	}
+
+	/**
+	 * Stores information of the old and new positions of a given actor in the
+	 * grid.
+	 */
+	public static class DropGridEvent extends Event {
+
+		private Actor actor;
+		private int oldRow, oldColumn, newRow, newColumn;
+
+		public Actor getActor() {
+			return actor;
+		}
+
+		@Override
+		public void reset() {
+			super.reset();
+			this.setActor(null);
+		}
+
+		public void setActor(Actor actor) {
+			this.actor = actor;
+		}
+
+		public int getOldRow() {
+			return oldRow;
+		}
+
+		public void setOldRow(int oldRow) {
+			this.oldRow = oldRow;
+		}
+
+		public int getOldColumn() {
+			return oldColumn;
+		}
+
+		public void setOldColumn(int oldColumn) {
+			this.oldColumn = oldColumn;
+		}
+
+		public int getNewRow() {
+			return newRow;
+		}
+
+		public void setNewRow(int newRow) {
+			this.newRow = newRow;
+		}
+
+		public int getNewColumn() {
+			return newColumn;
+		}
+
+		public void setNewColumn(int newColumn) {
+			this.newColumn = newColumn;
+		}
 	}
 }

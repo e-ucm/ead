@@ -48,6 +48,7 @@ import com.badlogic.gdx.scenes.scene2d.utils.DragAndDrop.Target;
 import com.badlogic.gdx.utils.Pools;
 import com.badlogic.gdx.utils.SnapshotArray;
 
+import es.eucm.ead.editor.view.widgets.dragndrop.DraggableGridLayout.DropGridEvent;
 import es.eucm.ead.editor.view.widgets.layouts.LinearLayout;
 
 /**
@@ -186,7 +187,7 @@ public class DraggableLinearLayout extends DraggableScrollPane {
 			 * Fires that some actor has been dropped
 			 */
 			private void fireDrop(Actor actor, int oldIndex, int newIndex) {
-				DropEvent dropEvent = Pools.obtain(DropEvent.class);
+				DropListEvent dropEvent = Pools.obtain(DropListEvent.class);
 				dropEvent.actor = actor;
 				dropEvent.oldIndex = oldIndex;
 				dropEvent.newIndex = newIndex;
@@ -197,15 +198,17 @@ public class DraggableLinearLayout extends DraggableScrollPane {
 	}
 
 	/**
-	 * Base class to listen to {@link DropEvent}s produced by
-	 * {@link DraggableLinearLayout}.
+	 * Base class to listen to {@link DropListEvent}s produced by
+	 * {@link DraggableLinearLayout}. Also listens to {@link DropGridEvent}s
+	 * produced by {@link DraggableGridLayout}.
 	 */
-	public static class DropListener implements EventListener {
+	public static class DropListener<T extends Event> implements EventListener {
 
 		@Override
 		public boolean handle(Event event) {
-			if (event instanceof DropEvent) {
-				actorDropped((DropEvent) event);
+			if ((event instanceof DropListEvent)
+					|| (event instanceof DropGridEvent)) {
+				actorDropped((T) event);
 			}
 			return true;
 		}
@@ -217,12 +220,12 @@ public class DraggableLinearLayout extends DraggableScrollPane {
 		 * @param event
 		 *            the event
 		 */
-		public void actorDropped(DropEvent event) {
+		public void actorDropped(T event) {
 
 		}
 	}
 
-	public static class DropEvent extends Event {
+	public static class DropListEvent extends Event {
 
 		private Actor actor;
 		private int oldIndex, newIndex;

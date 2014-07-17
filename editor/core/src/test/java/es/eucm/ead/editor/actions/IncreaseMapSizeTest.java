@@ -34,41 +34,44 @@
  *      You should have received a copy of the GNU Lesser General Public License
  *      along with eAdventure.  If not, see <http://www.gnu.org/licenses/>.
  */
-package es.eucm.ead.editor.actions.model.scene;
+package es.eucm.ead.editor.actions;
 
-import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
 
 import org.junit.Test;
 
-import es.eucm.ead.editor.actions.ActionTest;
-import es.eucm.ead.editor.control.actions.editor.Undo;
-import es.eucm.ead.editor.control.actions.model.scene.NewScene;
+import es.eucm.ead.editor.control.actions.model.IncreaseMapSize;
 import es.eucm.ead.editor.model.Model;
 import es.eucm.ead.editor.model.Q;
 import es.eucm.ead.schema.editor.components.SceneMap;
-import es.eucm.ead.schemax.entities.ResourceCategory;
 
-public class NewSceneTest extends ActionTest {
+public class IncreaseMapSizeTest extends ActionTest {
 
 	@Test
-	public void testNewScene() {
+	public void testAddToMap() {
 		openEmpty();
 
 		Model model = controller.getModel();
 		SceneMap sceneMap = Q.getComponent(model.getGame(), SceneMap.class);
 
-		int scenes = model.getResources(ResourceCategory.SCENE).size();
-		int mapSize = sceneMap.getCells().size;
+		int rows = sceneMap.getRows();
 
-		controller.action(NewScene.class, "A name");
-		assertEquals(model.getResources(ResourceCategory.SCENE).size(),
-				scenes + 1);
-		assertEquals(sceneMap.getCells().size, mapSize + 1);
+		controller
+				.action(IncreaseMapSize.class, true, IncreaseMapSize.BEGINING);
+		controller.action(IncreaseMapSize.class, true, IncreaseMapSize.END);
 
-		controller.action(Undo.class);
-		assertEquals(model.getResources(ResourceCategory.SCENE).size(), scenes);
-		assertEquals(sceneMap.getCells().size, mapSize);
+		assertTrue("The row weren added correctly",
+				rows + 2 == sceneMap.getRows());
+
+		int columns = sceneMap.getColumns();
+		controller.action(IncreaseMapSize.class, false,
+				IncreaseMapSize.BEGINING);
+		controller.action(IncreaseMapSize.class, false, IncreaseMapSize.END);
+
+		assertTrue("The columns weren added correctly",
+				columns + 2 == sceneMap.getColumns());
 
 		clearEmpty();
 	}
+
 }

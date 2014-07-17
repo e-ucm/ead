@@ -34,41 +34,63 @@
  *      You should have received a copy of the GNU Lesser General Public License
  *      along with eAdventure.  If not, see <http://www.gnu.org/licenses/>.
  */
-package es.eucm.ead.editor.actions.model.scene;
+package es.eucm.ead.editor.actions;
 
-import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
 
 import org.junit.Test;
 
-import es.eucm.ead.editor.actions.ActionTest;
-import es.eucm.ead.editor.control.actions.editor.Undo;
-import es.eucm.ead.editor.control.actions.model.scene.NewScene;
+import es.eucm.ead.editor.control.actions.model.ChangeCellPosition;
 import es.eucm.ead.editor.model.Model;
+import es.eucm.ead.editor.model.Model.ModelListener;
 import es.eucm.ead.editor.model.Q;
+import es.eucm.ead.editor.model.events.ListEvent;
 import es.eucm.ead.schema.editor.components.SceneMap;
-import es.eucm.ead.schemax.entities.ResourceCategory;
+import es.eucm.ead.schema.editor.data.Cell;
 
-public class NewSceneTest extends ActionTest {
+public class ChangeCellPositionTest extends ActionTest {
 
 	@Test
-	public void testNewScene() {
+	public void testChangeCellPosition() {
 		openEmpty();
 
 		Model model = controller.getModel();
+
 		SceneMap sceneMap = Q.getComponent(model.getGame(), SceneMap.class);
+		Cell cell = sceneMap.getCells().first();
+		final int oldRow = cell.getRow();
+		final int oldColumn = cell.getColumn();
 
-		int scenes = model.getResources(ResourceCategory.SCENE).size();
-		int mapSize = sceneMap.getCells().size;
+		final int newRow = oldRow + 1;
+		final int newColumn = oldColumn + 1;
 
-		controller.action(NewScene.class, "A name");
-		assertEquals(model.getResources(ResourceCategory.SCENE).size(),
-				scenes + 1);
-		assertEquals(sceneMap.getCells().size, mapSize + 1);
+		model.addListListener(sceneMap.getCells(),
+				new ModelListener<ListEvent>() {
 
-		controller.action(Undo.class);
-		assertEquals(model.getResources(ResourceCategory.SCENE).size(), scenes);
-		assertEquals(sceneMap.getCells().size, mapSize);
+					@Override
+					public void modelChanged(ListEvent event) {
+						Cell cell = (Cell) event.getElement();
+						switch (event.getType()) {
+						case REMOVED:
+							assertTrue(
+									"Failed to remove the cell from the map.",
+									cell.getRow() == oldRow
+											&& cell.getColumn() == oldColumn);
+							break;
+						case ADDED:
+							assertTrue("The added cell position is wrong.",
+									cell.getRow() == newRow
+											&& cell.getColumn() == newColumn);
+							break;
+						}
+
+					}
+				});
+
+		controller.action(ChangeCellPosition.class, oldRow, oldColumn, newRow,
+				newColumn);
 
 		clearEmpty();
 	}
+
 }

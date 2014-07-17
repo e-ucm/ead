@@ -1,0 +1,26 @@
+{
+    "additionalProperties": false,
+    "javaType": "es.eucm.ead.schema.editor.components.SceneMap",
+    "extends": {
+        "$ref": "../../engine/components/component.json"
+    },
+    "properties": {
+        "rows": {
+            "default": 1,
+            "type": "integer"
+        },
+        "columns": {
+            "default": 1,
+            "type": "integer"
+        },
+        "cells": {
+            "items": {
+            	"$ref": "../data/cell.json"
+            },
+            "type": "array",
+            "description": "Holds the list of cells with the necessary information in order to be shown in the editor. This element could effect the actual order in which scenes are displayed in the game."
+        }
+    },
+    "type": "object",
+    "description": "Holds information about the scenes and how they should be displayed in a map."
+}
