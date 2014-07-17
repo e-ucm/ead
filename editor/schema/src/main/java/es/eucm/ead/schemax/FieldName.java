@@ -161,5 +161,10 @@ public class FieldName {
 	/**
 	 * Refers to {@link es.eucm.ead.schema.editor.components.SceneMap#columns}
 	 */
-	COLUMNS = "columns";
+	COLUMNS = "columns",
+
+	/**
+	 * Refers to {@link es.eucm.ead.schema.components.controls.Label#text}
+	 */
+	TEXT = "text";
 }
