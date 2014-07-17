@@ -42,9 +42,6 @@ import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.reflect.ClassReflection;
 import com.badlogic.gdx.utils.reflect.ReflectionException;
 
-import es.eucm.ead.editor.control.commands.CompositeCommand;
-import es.eucm.ead.editor.control.commands.FieldCommand;
-import es.eucm.ead.editor.control.commands.ListCommand.AddToListCommand;
 import es.eucm.ead.engine.entities.EngineEntity;
 import es.eucm.ead.schema.components.ModelComponent;
 import es.eucm.ead.schema.editor.components.Documentation;
@@ -52,7 +49,6 @@ import es.eucm.ead.schema.editor.components.Parent;
 import es.eucm.ead.schema.editor.components.SceneMap;
 import es.eucm.ead.schema.editor.data.Cell;
 import es.eucm.ead.schema.entities.ModelEntity;
-import es.eucm.ead.schemax.FieldName;
 
 /**
  * A class with statics methods to query parts of the model
@@ -218,6 +214,21 @@ public class Q {
 	public static Cell cellInCoords(int row, int column, Array<Cell> cells) {
 		for (Cell cell : cells) {
 			if (cell.getRow() == row && cell.getColumn() == column) {
+				return cell;
+			}
+		}
+		return null;
+	}
+
+	/**
+	 * 
+	 * @param sceneId
+	 * @param cells
+	 * @return the {@link Cell} with the given sceneId or null if there is none.
+	 */
+	public static Cell getCellFromId(String sceneId, Array<Cell> cells) {
+		for (Cell cell : cells) {
+			if (sceneId.equals(cell.getSceneId())) {
 				return cell;
 			}
 		}
