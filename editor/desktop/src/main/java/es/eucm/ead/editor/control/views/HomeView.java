@@ -37,25 +37,55 @@
 package es.eucm.ead.editor.control.views;
 
 import com.badlogic.gdx.scenes.scene2d.Actor;
-import com.badlogic.gdx.scenes.scene2d.ui.Container;
+import com.badlogic.gdx.scenes.scene2d.ui.Table;
 
 import es.eucm.ead.editor.control.Controller;
+import es.eucm.ead.editor.ui.scenes.map.InitialSceneWidget;
+import es.eucm.ead.editor.ui.scenes.map.SceneEditionWidget;
 import es.eucm.ead.editor.ui.scenes.map.SceneMapWidget;
+import es.eucm.ead.editor.ui.scenes.map.SceneList;
 import es.eucm.ead.editor.view.builders.ViewBuilder;
+import es.eucm.ead.editor.view.widgets.Separator;
+import es.eucm.ead.editor.view.widgets.layouts.LinearLayout;
 
 public class HomeView implements ViewBuilder {
 
-	private Controller controller;
+	private static final float DEFAULT_MARGIN = 10F;
+
+	private InitialSceneWidget initialSceneWidget;
+
+	private SceneEditionWidget sceneEdition;
+
+	private SceneList scenesFiltering;
 
 	private SceneMapWidget sceneMap;
+
 	private Actor view;
 
 	@Override
 	public void initialize(Controller controller) {
-		this.controller = controller;
 
-		Container placeHolder = new Container();
-		placeHolder.setWidget(sceneMap = new SceneMapWidget(controller));
+		LinearLayout leftBar = new LinearLayout(false);
+		leftBar.add(initialSceneWidget = new InitialSceneWidget(controller))
+				.margin(DEFAULT_MARGIN);
+		leftBar.add(
+				new Separator(true, controller.getApplicationAssets().getSkin()))
+				.expandX();
+		leftBar.add(this.sceneEdition = new SceneEditionWidget(controller))
+				.margin(DEFAULT_MARGIN);
+		leftBar.add(
+				new Separator(true, controller.getApplicationAssets().getSkin()))
+				.expandX();
+		leftBar.add(this.scenesFiltering = new SceneList(controller)).left()
+				.margin(DEFAULT_MARGIN);
+
+		Table placeHolder = new Table();
+		placeHolder.add(leftBar).top();
+		placeHolder.add(
+				new Separator(false, controller.getApplicationAssets()
+						.getSkin())).expandY();
+		placeHolder.add(sceneMap = new SceneMapWidget(controller))
+				.expand(true, true).pad(DEFAULT_MARGIN);
 		placeHolder.setFillParent(true);
 
 		view = placeHolder;
@@ -63,12 +93,18 @@ public class HomeView implements ViewBuilder {
 
 	@Override
 	public Actor getView(Object... args) {
-		sceneMap.initialize();
+		initialSceneWidget.prepare();
+		scenesFiltering.prepare();
+		sceneEdition.prepare();
+		sceneMap.prepare();
 		return view;
 	}
 
 	@Override
 	public void release(Controller controller) {
+		initialSceneWidget.release();
+		scenesFiltering.release();
+		sceneEdition.release();
 		sceneMap.release();
 	}
 }
