@@ -38,13 +38,21 @@ package es.eucm.ead.editor.model;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.scenes.scene2d.Actor;
+import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.reflect.ClassReflection;
 import com.badlogic.gdx.utils.reflect.ReflectionException;
+
+import es.eucm.ead.editor.control.commands.CompositeCommand;
+import es.eucm.ead.editor.control.commands.FieldCommand;
+import es.eucm.ead.editor.control.commands.ListCommand.AddToListCommand;
 import es.eucm.ead.engine.entities.EngineEntity;
 import es.eucm.ead.schema.components.ModelComponent;
 import es.eucm.ead.schema.editor.components.Documentation;
 import es.eucm.ead.schema.editor.components.Parent;
+import es.eucm.ead.schema.editor.components.SceneMap;
+import es.eucm.ead.schema.editor.data.Cell;
 import es.eucm.ead.schema.entities.ModelEntity;
+import es.eucm.ead.schemax.FieldName;
 
 /**
  * A class with statics methods to query parts of the model
@@ -163,6 +171,54 @@ public class Q {
 		for (Object o : iterable) {
 			if (o.getClass() == clazz) {
 				return (T) o;
+			}
+		}
+		return null;
+	}
+
+	/**
+	 * Creates a cell with the given id in the first empty space found in the
+	 * map and returns the cell. If there is no empty space a null will be
+	 * returned. Note that the cell is not added to the map. It's responsibility
+	 * of the developer to add the returned cell to the map if it isn't null.
+	 * 
+	 * @param id
+	 * @param sceneMap
+	 * @return the new {@link Cell} or null if no empty space was available.
+	 */
+	public static Cell createCell(String id, SceneMap sceneMap) {
+
+		Array<Cell> cells = sceneMap.getCells();
+		int columns = sceneMap.getColumns();
+		int rows = sceneMap.getRows();
+
+		for (int i = 0; i < rows; ++i) {
+			for (int j = 0; j < columns; ++j) {
+				if (Q.cellInCoords(i, j, cells) == null) {
+					Cell cell = new Cell();
+					cell.setSceneId(id);
+					cell.setColumn(j);
+					cell.setRow(i);
+					return cell;
+				}
+			}
+		}
+
+		return null;
+	}
+
+	/**
+	 * 
+	 * @param row
+	 * @param column
+	 * @param cells
+	 * @return the {@link Cell} with the given coordinates or null if there is
+	 *         none.
+	 */
+	public static Cell cellInCoords(int row, int column, Array<Cell> cells) {
+		for (Cell cell : cells) {
+			if (cell.getRow() == row && cell.getColumn() == column) {
+				return cell;
 			}
 		}
 		return null;
