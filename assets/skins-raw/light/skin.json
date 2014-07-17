@@ -214,6 +214,8 @@
         "default": {
             "up": "bg-transparent",
             "over": "bg-light",
+            "checked": "focus",
+            "over": "focus",
             "down": "bg-dark"
         },
         "white": {
@@ -261,6 +263,8 @@
         "default": {
             "up": "blank-blackoutline1",
             "down": "blank-blackoutline1",
+            "disabled": "bg-light",
+            "disabledFontColor": "gray",
             "font": "regular",
             "fontColor": "black"
         }
