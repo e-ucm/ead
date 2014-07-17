@@ -112,51 +112,24 @@ public class NewScene extends ModelAction {
 	 */
 	private void createCell(String id, SceneMap sceneMap,
 			CompositeCommand compositeCommand) {
-		Cell cell = new Cell();
-		cell.setSceneId(id);
+		Cell cell = Q.createCell(id, sceneMap);
+		if (cell != null) {
+			compositeCommand.addCommand(new AddToListCommand(sceneMap, sceneMap
+					.getCells(), cell));
+		} else {
 
-		for (int i = 0; i < sceneMap.getRows(); ++i) {
-			for (int j = 0; j < sceneMap.getColumns(); ++j) {
-				if (cellInCoords(i, j, sceneMap) == null) {
-					// There is no need to use commands to set these fields
-					// because if we undo the whole cell will be removed from
-					// the scene map since we're using an AddToListCommand to
-					// add this cell.
-					cell.setRow(i);
-					cell.setColumn(j);
-					compositeCommand.addCommand(new AddToListCommand(sceneMap,
-							sceneMap.getCells(), cell));
-					return;
-				}
-			}
+			cell = new Cell();
+			// There are no empty spaces in our map, let's automatically create
+			// a new row of cells
+			int rows = sceneMap.getRows();
+			cell.setSceneId(id);
+			cell.setRow(rows);
+			cell.setColumn(0);
+
+			compositeCommand.addCommand(new AddToListCommand(sceneMap, sceneMap
+					.getCells(), cell));
+			compositeCommand.addCommand(new FieldCommand(sceneMap,
+					FieldName.ROWS, rows + 1));
 		}
-
-		// There are no empty spaces in our map, let's automatically create a
-		// new row of cells
-		int rows = sceneMap.getRows();
-		cell.setRow(rows);
-		cell.setColumn(0);
-
-		compositeCommand.addCommand(new AddToListCommand(sceneMap, sceneMap
-				.getCells(), cell));
-		compositeCommand.addCommand(new FieldCommand(sceneMap, FieldName.ROWS,
-				rows + 1));
-	}
-
-	/**
-	 * 
-	 * @param row
-	 * @param column
-	 * @param sceneMap
-	 * @return the {@link Cell} with the given coordinates or null if there is
-	 *         none.
-	 */
-	private Cell cellInCoords(int row, int column, SceneMap sceneMap) {
-		for (Cell cell : sceneMap.getCells()) {
-			if (cell.getRow() == row && cell.getColumn() == column) {
-				return cell;
-			}
-		}
-		return null;
 	}
 }

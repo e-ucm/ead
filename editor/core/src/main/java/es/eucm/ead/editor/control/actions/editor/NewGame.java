@@ -85,9 +85,8 @@ public class NewGame extends EditorAction {
 			model.putResource(GameStructure.GAME_FILE, ResourceCategory.GAME,
 					game);
 			String initialScene = model.createId(ResourceCategory.SCENE);
-			String initial = "initial";
 			ModelEntity scene = controller.getTemplates().createScene(
-					controller.getApplicationAssets().getI18N().m(initial));
+					controller.getApplicationAssets().getI18N().m("initial"));
 			model.putResource(initialScene, ResourceCategory.SCENE, scene);
 			GameData gameData = Q.getComponent(game, GameData.class);
 			gameData.setInitialScene(initialScene);
@@ -95,7 +94,7 @@ public class NewGame extends EditorAction {
 			Cell cell = new Cell();
 			cell.setRow(0);
 			cell.setColumn(0);
-			cell.setSceneId(initial);
+			cell.setSceneId(initialScene);
 			sceneMap.getCells().add(cell);
 
 			controller.action(ForceSave.class);

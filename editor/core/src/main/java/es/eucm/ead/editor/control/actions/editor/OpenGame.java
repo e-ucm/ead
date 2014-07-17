@@ -36,10 +36,15 @@
  */
 package es.eucm.ead.editor.control.actions.editor;
 
+import java.util.Map.Entry;
+import java.util.Set;
+
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.files.FileHandle;
+import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.reflect.ClassReflection;
 import com.badlogic.gdx.utils.reflect.ReflectionException;
+
 import es.eucm.ead.editor.assets.EditorGameAssets;
 import es.eucm.ead.editor.control.Preferences;
 import es.eucm.ead.editor.control.actions.EditorAction;
@@ -53,10 +58,11 @@ import es.eucm.ead.editor.platform.Platform.FileChooserListener;
 import es.eucm.ead.engine.assets.Assets.AssetLoadedCallback;
 import es.eucm.ead.schema.editor.components.EditState;
 import es.eucm.ead.schema.editor.components.Parent;
+import es.eucm.ead.schema.editor.components.SceneMap;
+import es.eucm.ead.schema.editor.data.Cell;
 import es.eucm.ead.schema.entities.ModelEntity;
 import es.eucm.ead.schemax.JsonExtension;
-
-import java.util.Map.Entry;
+import es.eucm.ead.schemax.entities.ResourceCategory;
 
 /**
  * Opens a game. Accepts one path (the path where the game is) as argument. If
@@ -168,9 +174,16 @@ public class OpenGame extends EditorAction implements FileChooserListener,
 		controller.getModel().putResource(fileName, asset);
 	}
 
+	/**
+	 * If we added a new piece of data, and old projects does not have it. This
+	 * method tries to solve this problem.
+	 * 
+	 * @param model
+	 */
 	private void checks(Model model) {
 		addParents(model);
 		setEditionState(model);
+		checkSceneMap(model);
 	}
 
 	private void addParents(Model model) {
@@ -216,5 +229,50 @@ public class OpenGame extends EditorAction implements FileChooserListener,
 				editState.getArguments().addAll(event.getArgs());
 			}
 		});
+	}
+
+	/**
+	 * Iterates through the scenes in the model and checks if there is a
+	 * {@link Cell} in the {@link SceneMap} for that scene. If there isn't tries
+	 * to add a new one.
+	 * 
+	 * @param model
+	 */
+	private void checkSceneMap(Model model) {
+		SceneMap sceneMap = Q.getComponent(model.getGame(), SceneMap.class);
+		Array<Cell> cells = sceneMap.getCells();
+
+		Set<Entry<String, Object>> entrySet = model.getResources(
+				ResourceCategory.SCENE).entrySet();
+		for (Entry<String, Object> entry : entrySet) {
+			String sceneId = entry.getKey();
+			if (!hasCell(sceneId, cells)) {
+
+				Cell cell = Q.createCell(sceneId, sceneMap);
+				if (cell != null) {
+					cells.add(cell);
+				} else {
+
+					cell = new Cell();
+					// There are no empty spaces in our map, let's automatically
+					// create a new row of cells
+					int rows = sceneMap.getRows();
+					sceneMap.setRows(rows + 1);
+					cell.setSceneId(sceneId);
+					cell.setRow(rows);
+					cell.setColumn(0);
+					cells.add(cell);
+				}
+			}
+		}
+	}
+
+	private boolean hasCell(String sceneId, Array<Cell> cells) {
+		for (Cell cell : cells) {
+			if (sceneId.equals(cell.getSceneId())) {
+				return true;
+			}
+		}
+		return false;
 	}
 }
