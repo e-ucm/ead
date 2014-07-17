@@ -143,17 +143,15 @@ public class GridLayout extends WidgetGroup {
 		return add(actor, increaseRow);
 	}
 
-	public Container addAt(int row, int column, Actor actor) {
-		if (row >= rows) {
-			addRowAtTheEnd();
-		}
-		if (column > columns) {
-			addColumnAtTheEnd();
-		}
+	public Cell addAt(int row, int column, Actor actor) {
 		int index = row * columns + column;
 		Cell cell = cells.get(index);
 		cell.setWidget(actor);
 		return cell;
+	}
+
+	public Cell getCellAt(int row, int column) {
+		return cells.get(row * columns + column);
 	}
 
 	@Override
