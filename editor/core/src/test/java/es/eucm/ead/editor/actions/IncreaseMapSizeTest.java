@@ -40,12 +40,12 @@ import static org.junit.Assert.assertTrue;
 
 import org.junit.Test;
 
-import es.eucm.ead.editor.control.actions.model.AddToMap;
+import es.eucm.ead.editor.control.actions.model.IncreaseMapSize;
 import es.eucm.ead.editor.model.Model;
 import es.eucm.ead.editor.model.Q;
 import es.eucm.ead.schema.editor.components.SceneMap;
 
-public class AddToMapTest extends ActionTest {
+public class IncreaseMapSizeTest extends ActionTest {
 
 	@Test
 	public void testAddToMap() {
@@ -56,15 +56,17 @@ public class AddToMapTest extends ActionTest {
 
 		int rows = sceneMap.getRows();
 
-		controller.action(AddToMap.class, true, AddToMap.BEGINING);
-		controller.action(AddToMap.class, true, AddToMap.END);
+		controller
+				.action(IncreaseMapSize.class, true, IncreaseMapSize.BEGINING);
+		controller.action(IncreaseMapSize.class, true, IncreaseMapSize.END);
 
 		assertTrue("The row weren added correctly",
 				rows + 2 == sceneMap.getRows());
 
 		int columns = sceneMap.getColumns();
-		controller.action(AddToMap.class, false, AddToMap.BEGINING);
-		controller.action(AddToMap.class, false, AddToMap.END);
+		controller.action(IncreaseMapSize.class, false,
+				IncreaseMapSize.BEGINING);
+		controller.action(IncreaseMapSize.class, false, IncreaseMapSize.END);
 
 		assertTrue("The columns weren added correctly",
 				columns + 2 == sceneMap.getColumns());

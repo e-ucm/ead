@@ -47,7 +47,7 @@ import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 
 import es.eucm.ead.editor.control.Controller;
 import es.eucm.ead.editor.control.Selection;
-import es.eucm.ead.editor.control.actions.model.AddToMap;
+import es.eucm.ead.editor.control.actions.model.IncreaseMapSize;
 import es.eucm.ead.editor.control.actions.model.ChangeCellPosition;
 import es.eucm.ead.editor.control.actions.model.SetSelection;
 import es.eucm.ead.editor.model.Model;
@@ -106,9 +106,11 @@ public class SceneMapWidget extends DraggableGridLayout {
 
 				Actor actor = event.getListenerActor();
 				if (actor == moreStartRow) {
-					controller.action(AddToMap.class, true, AddToMap.BEGINING);
+					controller.action(IncreaseMapSize.class, true,
+							IncreaseMapSize.BEGINING);
 				} else if (actor == moreFinalRow) {
-					controller.action(AddToMap.class, true, AddToMap.END);
+					controller.action(IncreaseMapSize.class, true,
+							IncreaseMapSize.END);
 
 					// Scroll at the maxY once the layout method was invoked
 					Gdx.app.postRunnable(new Runnable() {
@@ -120,9 +122,11 @@ public class SceneMapWidget extends DraggableGridLayout {
 
 					});
 				} else if (actor == moreStartCol) {
-					controller.action(AddToMap.class, false, AddToMap.BEGINING);
+					controller.action(IncreaseMapSize.class, false,
+							IncreaseMapSize.BEGINING);
 				} else if (actor == moreFinalCol) {
-					controller.action(AddToMap.class, false, AddToMap.END);
+					controller.action(IncreaseMapSize.class, false,
+							IncreaseMapSize.END);
 
 					// Scroll at the maxX once the layout method was invoked
 					Gdx.app.postRunnable(new Runnable() {

@@ -59,12 +59,12 @@ import es.eucm.ead.schemax.FieldName;
  * the end.</dd>
  * </dl>
  */
-public class AddToMap extends ModelAction {
+public class IncreaseMapSize extends ModelAction {
 
 	public static final int BEGINING = 0;
 	public static final int END = Integer.MAX_VALUE;
 
-	public AddToMap() {
+	public IncreaseMapSize() {
 		super(true, false, Boolean.class, Integer.class);
 	}
 
