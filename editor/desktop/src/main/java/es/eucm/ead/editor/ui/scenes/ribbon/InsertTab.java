@@ -46,6 +46,7 @@ import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import es.eucm.ead.editor.control.Controller;
 import es.eucm.ead.editor.control.actions.Action;
 import es.eucm.ead.editor.control.actions.editor.AddSceneElementFromResource;
+import es.eucm.ead.editor.control.actions.model.AddLabel;
 import es.eucm.ead.editor.control.actions.model.scene.NewScene;
 import es.eucm.ead.editor.view.listeners.ActionOnClickListener;
 import es.eucm.ead.editor.view.widgets.IconButton;
@@ -73,7 +74,8 @@ public class InsertTab extends LinearLayout {
 		add(createButton("image48x48", i18N.m("general.image"), skin,
 				new InsertOnClick()));
 		add(createButton("shapes48x48", i18N.m("general.shape"), skin, null));
-		add(createButton("text48x48", i18N.m("general.text"), skin, null));
+		add(createButton("text48x48", i18N.m("general.text"), skin,
+				AddLabel.class));
 		add(new Separator(false, skin));
 		add(createButton("controls48x48", i18N.m("general.control"), skin, null));
 		add(new Separator(false, skin));
@@ -96,6 +98,7 @@ public class InsertTab extends LinearLayout {
 		IconButton button = new IconButton(skin.getDrawable(drawable), 5, skin);
 		button.row();
 		button.add(new Label(text, skin));
+
 		if (clickListener != null) {
 			button.addListener(clickListener);
 		}
