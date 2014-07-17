@@ -64,23 +64,12 @@ import es.eucm.ead.schemax.entities.ResourceCategory;
  */
 public class ChangeInitialScene extends ModelAction {
 
+	public ChangeInitialScene() {
+		super(true, false, String.class);
+	}
+
 	@Override
 	public Command perform(Object... args) {
-		// Check that the first argument exists and that it is a string
-		// FIXME boilerplate code
-		if (args.length < 1) {
-			throw new EditorActionException(
-					"Error in action "
-							+ this.getClass().getCanonicalName()
-							+ ": This action requires at least one arguments of type String ");
-		}
-
-		if (args[0] == null || !(args[0] instanceof String)) {
-			throw new EditorActionException(
-					"Error in action "
-							+ this.getClass().getCanonicalName()
-							+ ": This action requires the first argument (args[0]) to be a valid, not null String representing the id of a scene in the game");
-		}
 
 		if (!controller.getModel().getResources(ResourceCategory.SCENE)
 				.containsKey(args[0])) {
