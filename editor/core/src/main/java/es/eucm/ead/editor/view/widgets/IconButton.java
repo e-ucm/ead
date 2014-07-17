@@ -53,7 +53,7 @@ public class IconButton extends Button implements Tooltip {
 
 	private String tooltip;
 
-	private Image iconImage;
+	protected Image iconImage;
 
 	private IconButtonStyle style;
 

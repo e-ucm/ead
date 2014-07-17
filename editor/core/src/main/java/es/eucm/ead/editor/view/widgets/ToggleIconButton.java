@@ -34,53 +34,49 @@
  *      You should have received a copy of the GNU Lesser General Public License
  *      along with eAdventure.  If not, see <http://www.gnu.org/licenses/>.
  */
-package es.eucm.ead.editor.editorui.resources;
+package es.eucm.ead.editor.view.widgets;
 
-import com.badlogic.gdx.backends.lwjgl.LwjglApplication;
-import com.badlogic.gdx.scenes.scene2d.Group;
-import com.badlogic.gdx.scenes.scene2d.ui.Container;
+import com.badlogic.gdx.scenes.scene2d.InputEvent;
+import com.badlogic.gdx.scenes.scene2d.ui.Skin;
+import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
+import com.badlogic.gdx.scenes.scene2d.utils.Drawable;
 
-import es.eucm.ead.editor.assets.EditorGameAssets;
-import es.eucm.ead.editor.editorui.EditorUITest;
-import es.eucm.ead.editor.ui.resources.frames.AnimationEditor;
-import es.eucm.ead.schema.renderers.Frame;
-import es.eucm.ead.schema.renderers.Frames;
-import es.eucm.ead.schema.renderers.Image;
+/**
+ * A button with two icons that automatically change between one or another when
+ * clicked.
+ */
+public class ToggleIconButton extends IconButton {
 
-public class AnimationEditorTest extends EditorUITest {
+	private Drawable icon1, icon2;
 
-	@Override
-	protected void builUI(Group root) {
+	/**
+	 * @param icon
+	 *            the identifier of the icon drawable inside the given skin
+	 * @param skin
+	 *            the skin
+	 */
+	public ToggleIconButton(String icon1, String icon2, Skin skin) {
+		super(icon1, 0, skin);
+		this.icon1 = iconImage.getDrawable();
+		this.icon2 = skin.getDrawable(icon2);
+		addListener(new ClickListener() {
+			@Override
+			public void clicked(InputEvent event, float x, float y) {
+				buttonClicked();
+			}
+		});
+	}
 
-		EditorGameAssets gameAssets = controller.getEditorGameAssets();
-
-		// Prepare some images and frames...
-		gameAssets.setLoadingPath("cooldemo", true);
-		controller.getCommands().pushStack();
-
-		Frames frames = new Frames();
-		for (int i = 1; i < 11; ++i) {
-			Frame frame = new Frame();
-			Image image = new Image();
-			image.setUri("images/p1_walk" + (i < 10 ? "0" + i : i) + ".png");
-
-			frame.setRenderer(image);
-			frame.setTime(.01f * i);
-			frames.getFrames().add(frame);
+	/**
+	 * Changes the drawable of the button. Convenience method that should be
+	 * overridden if needed.
+	 */
+	protected void buttonClicked() {
+		if (iconImage.getDrawable() == icon1) {
+			iconImage.setDrawable(icon2);
+		} else {
+			iconImage.setDrawable(icon1);
 		}
-
-		// Create the widget
-		AnimationEditor animEditor = new AnimationEditor(controller);
-		animEditor.prepare(frames);
-
-		Container container = new Container(animEditor);
-		container.fill();
-		container.setFillParent(true);
-		root.addActor(container);
 	}
 
-	public static void main(String[] args) {
-		new LwjglApplication(new AnimationEditorTest(),
-				"Animation Editor test", 450, 700);
-	}
 }

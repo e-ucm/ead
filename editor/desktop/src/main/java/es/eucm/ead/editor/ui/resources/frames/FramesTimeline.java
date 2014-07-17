@@ -1,16 +1,11 @@
 package es.eucm.ead.editor.ui.resources.frames;
 
 import com.badlogic.gdx.scenes.scene2d.Actor;
-import com.badlogic.gdx.scenes.scene2d.InputEvent;
-import com.badlogic.gdx.scenes.scene2d.ui.Skin;
-import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.SnapshotArray;
 
-import es.eucm.ead.editor.assets.ApplicationAssets;
 import es.eucm.ead.editor.control.Controller;
 import es.eucm.ead.editor.control.Selection;
-import es.eucm.ead.editor.control.actions.editor.ChooseFile;
 import es.eucm.ead.editor.control.actions.model.AddFrameToFrames;
 import es.eucm.ead.editor.control.actions.model.AddFrames;
 import es.eucm.ead.editor.control.actions.model.DropIntoArray;
@@ -19,10 +14,7 @@ import es.eucm.ead.editor.control.actions.model.SetSelection;
 import es.eucm.ead.editor.model.Model;
 import es.eucm.ead.editor.platform.Platform.FileChooserListener;
 import es.eucm.ead.editor.ui.resources.frames.AnimationEditor.FrameEditionListener;
-import es.eucm.ead.editor.view.widgets.IconButton;
 import es.eucm.ead.editor.view.widgets.dragndrop.focus.FocusItemList;
-import es.eucm.ead.editor.view.widgets.layouts.LinearLayout;
-import es.eucm.ead.engine.I18N;
 import es.eucm.ead.schema.renderers.Frame;
 
 /**
@@ -40,24 +32,6 @@ public class FramesTimeline extends FocusItemList implements
 		this.controller = control;
 		setFadeScrollBars(false);
 
-		ApplicationAssets assets = controller.getApplicationAssets();
-		Skin skin = assets.getSkin();
-		I18N i18n = assets.getI18N();
-
-		IconButton importButton = new IconButton("close", skin);
-		importButton.setTooltip(i18n.m("frames.delete"));
-		importButton.addListener(new ClickListener() {
-			@Override
-			public void clicked(InputEvent event, float x, float y) {
-				controller.action(ChooseFile.class, false, FramesTimeline.this);
-			}
-		});
-
-		LinearLayout container = new LinearLayout(true);
-		container.pad(PAD);
-		container.add(itemsList).expand(true, true);
-		container.add(importButton);
-		setWidget(container);
 		addListener(new DropListener<DropListEvent>() {
 
 			@Override
