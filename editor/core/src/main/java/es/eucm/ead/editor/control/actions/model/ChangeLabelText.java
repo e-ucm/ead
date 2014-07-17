@@ -34,50 +34,37 @@
  *      You should have received a copy of the GNU Lesser General Public License
  *      along with eAdventure.  If not, see <http://www.gnu.org/licenses/>.
  */
-package es.eucm.ead.engine.processors.controls;
+package es.eucm.ead.editor.control.actions.model;
 
-import ashley.core.Component;
-
-import com.badlogic.gdx.scenes.scene2d.ui.Label.LabelStyle;
-import com.badlogic.gdx.scenes.scene2d.ui.Skin;
-
-import es.eucm.ead.engine.GameLoop;
-import es.eucm.ead.engine.assets.GameAssets;
-import es.eucm.ead.engine.components.I18nTextComponent;
-import es.eucm.ead.engine.components.MultiComponent;
-import es.eucm.ead.engine.components.controls.LabelComponent;
-import es.eucm.ead.engine.processors.ComponentProcessor;
-import es.eucm.ead.engine.variables.VariablesManager;
+import es.eucm.ead.editor.control.actions.ModelAction;
+import es.eucm.ead.editor.control.commands.Command;
+import es.eucm.ead.editor.control.commands.FieldCommand;
 import es.eucm.ead.schema.components.controls.Label;
+import es.eucm.ead.schemax.FieldName;
 
-public class LabelProcessor extends ComponentProcessor<Label> {
+/**
+ * Change a text of an object.
+ * <dl>
+ * <dt><strong>Arguments</strong></dt>
+ * <dd><strong>args[0]</strong> {@link Label} to will be changed the text</dd>
+ * <dd><strong>args[1]</strong> the new text</dd>
+ * </dl>
+ * 
+ */
+public class ChangeLabelText extends ModelAction {
 
-	protected GameAssets gameAssets;
-
-	protected VariablesManager variablesManager;
-
-	public LabelProcessor(GameLoop engine, GameAssets gameAssets,
-			VariablesManager variablesManager) {
-		super(engine);
-		this.gameAssets = gameAssets;
-		this.variablesManager = variablesManager;
+	public ChangeLabelText() {
+		super(true, false, Label.class, String.class);
 	}
 
 	@Override
-	public Component getComponent(Label component) {
-		Skin skin = gameAssets.getSkin();
-		LabelComponent button = gameLoop.createComponent(LabelComponent.class);
-		button.setVariablesManager(variablesManager);
+	public Command perform(Object... args) {
 
-		LabelStyle style = skin.get(component.getStyle(), LabelStyle.class);
-		LabelStyle styleCopy = new LabelStyle(style);
-		button.setStyle(styleCopy);
-		button.setText(gameAssets.getI18N().m(component.getText()));
+		Label objectToRename = (Label) args[0];
 
-		I18nTextComponent textComponent = gameLoop
-				.createComponent(I18nTextComponent.class);
-		textComponent.setI18nKey(component.getText());
-		textComponent.setTextSetter(button);
-		return new MultiComponent(button, textComponent);
+		String newValue = (String) args[1];
+
+		return new FieldCommand(objectToRename, FieldName.TEXT, newValue, false);
 	}
+
 }

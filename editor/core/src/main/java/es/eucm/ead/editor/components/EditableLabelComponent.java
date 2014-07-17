@@ -34,50 +34,47 @@
  *      You should have received a copy of the GNU Lesser General Public License
  *      along with eAdventure.  If not, see <http://www.gnu.org/licenses/>.
  */
-package es.eucm.ead.engine.processors.controls;
+package es.eucm.ead.editor.components;
 
-import ashley.core.Component;
+import com.badlogic.gdx.scenes.scene2d.ui.TextField.TextFieldStyle;
 
-import com.badlogic.gdx.scenes.scene2d.ui.Label.LabelStyle;
-import com.badlogic.gdx.scenes.scene2d.ui.Skin;
-
-import es.eucm.ead.engine.GameLoop;
-import es.eucm.ead.engine.assets.GameAssets;
-import es.eucm.ead.engine.components.I18nTextComponent;
-import es.eucm.ead.engine.components.MultiComponent;
-import es.eucm.ead.engine.components.controls.LabelComponent;
-import es.eucm.ead.engine.processors.ComponentProcessor;
-import es.eucm.ead.engine.variables.VariablesManager;
+import es.eucm.ead.editor.control.Controller;
+import es.eucm.ead.editor.view.widgets.EditableLabel;
+import es.eucm.ead.engine.components.controls.TextComponent;
 import es.eucm.ead.schema.components.controls.Label;
 
-public class LabelProcessor extends ComponentProcessor<Label> {
+public class EditableLabelComponent extends TextComponent<EditableLabel> {
 
-	protected GameAssets gameAssets;
+	private static final int DEFAULT_TAP_COUNT = 1;
+	
+	private EditableLabel label;
 
-	protected VariablesManager variablesManager;
+	private Label text;
 
-	public LabelProcessor(GameLoop engine, GameAssets gameAssets,
-			VariablesManager variablesManager) {
-		super(engine);
-		this.gameAssets = gameAssets;
-		this.variablesManager = variablesManager;
+	private Controller controller;
+
+	public void initialize(Controller controller, Label text) {
+		this.controller = controller;
+		this.text = text;
+	}
+
+	public void setStyle(TextFieldStyle style) {
+		if (label == null) {
+			label = new EditableLabel(text.getText(), style, DEFAULT_TAP_COUNT);
+			label.initLabelListener(controller, text);
+		} else {
+			label.setStyle(style);
+		}
 	}
 
 	@Override
-	public Component getComponent(Label component) {
-		Skin skin = gameAssets.getSkin();
-		LabelComponent button = gameLoop.createComponent(LabelComponent.class);
-		button.setVariablesManager(variablesManager);
+	protected void updateText(String newText) {
+		label.setText(newText);
+		label.setSize(label.getPrefWidth(), label.getPrefHeight());
+	}
 
-		LabelStyle style = skin.get(component.getStyle(), LabelStyle.class);
-		LabelStyle styleCopy = new LabelStyle(style);
-		button.setStyle(styleCopy);
-		button.setText(gameAssets.getI18N().m(component.getText()));
-
-		I18nTextComponent textComponent = gameLoop
-				.createComponent(I18nTextComponent.class);
-		textComponent.setI18nKey(component.getText());
-		textComponent.setTextSetter(button);
-		return new MultiComponent(button, textComponent);
+	@Override
+	public EditableLabel getControl() {
+		return label;
 	}
 }

@@ -20,5 +20,8 @@
     },
     com.badlogic.gdx.scenes.scene2d.ui.Label$LabelStyle: {
         welcome: { font: regular, fontColor: {a:0.5,r:0.0,g:0.4,b:0.9} }
+    },
+    com.badlogic.gdx.scenes.scene2d.ui.TextField$TextFieldStyle: {
+        welcome: { font: regular, fontColor: {a:0.5,r:0.0,g:0.4,b:0.9} }
     }
 }

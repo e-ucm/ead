@@ -39,19 +39,29 @@ package es.eucm.ead.editor.view.widgets;
 import com.badlogic.gdx.Input.Keys;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
+import com.badlogic.gdx.scenes.scene2d.InputListener;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.ui.TextField;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.scenes.scene2d.utils.FocusListener;
+
+import es.eucm.ead.editor.control.Controller;
+import es.eucm.ead.editor.control.actions.model.ChangeLabelText;
+import es.eucm.ead.editor.model.Model.FieldListener;
+import es.eucm.ead.editor.model.events.FieldEvent;
+import es.eucm.ead.schema.components.controls.Label;
+import es.eucm.ead.schemax.FieldName;
 
 /**
  * A label that can be edited. When it is double clicked, it converts in a text
  * field, and it can be edited. Pressing ENTER or ESC finish the edition the
  * text field is converted back to a label.
  */
-public class EditableLabel extends TextField {
+public class EditableLabel extends TextField implements FieldListener {
 
 	private int tapCount;
+
+	private Label componentLabel;
 
 	/**
 	 * @param tapCount
@@ -111,4 +121,34 @@ public class EditableLabel extends TextField {
 			}
 		});
 	}
+
+	public void initLabelListener(final Controller controller, Label component) {
+		this.componentLabel = component;
+		controller.getModel().addFieldListener(componentLabel, this);
+		addListener(new InputListener() {
+			public boolean keyTyped(InputEvent event, char keycode) {
+				if (!componentLabel.getText().equals(getText())) {
+					controller.action(ChangeLabelText.class, componentLabel,
+							getText());
+					return true;
+				}
+				return false;
+			}
+		});
+	}
+
+	@Override
+	public void modelChanged(FieldEvent event) {
+		if (!componentLabel.getText().equals(getText())) {
+			setText(componentLabel.getText());
+			setCursorPosition(getText().length());
+		}
+
+	}
+
+	@Override
+	public boolean listenToField(String fieldName) {
+		return (fieldName.equals(FieldName.TEXT));
+	}
+
 }
