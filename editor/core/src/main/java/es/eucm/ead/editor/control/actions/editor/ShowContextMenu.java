@@ -56,7 +56,9 @@ public class ShowContextMenu extends EditorAction {
 	private Vector2 origin = new Vector2();
 
 	public ShowContextMenu() {
-		super(true, false, Actor.class, Actor.class);
+		super(true, false, new Class[] { Actor.class, Actor.class },
+				new Class[] { Actor.class, Actor.class, Float.class,
+						Float.class });
 	}
 
 	@Override
@@ -64,7 +66,16 @@ public class ShowContextMenu extends EditorAction {
 		Actor actor = (Actor) args[0];
 		Actor contextMenu = (Actor) args[1];
 
-		origin.set(0, 0);
+		float offsetX, offsetY;
+		if (args.length == 2) {
+			offsetX = 0F;
+			offsetY = 0F;
+		} else {
+			offsetX = (Float) args[2];
+			offsetY = (Float) args[3];
+		}
+
+		origin.set(offsetX, offsetY);
 		actor.localToStageCoordinates(origin);
 		controller.getViews().showContextMenu(contextMenu, origin.x, origin.y);
 
