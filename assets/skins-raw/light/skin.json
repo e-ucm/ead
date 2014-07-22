@@ -321,6 +321,18 @@
             "minusDown": "spinner-down-pressed"
         }
     },
+    "es.eucm.ead.editor.view.widgets.layouts.GridLayout$Cell$CellStyle": {
+    	"default": {
+            "background": "blank",
+            "color": {
+	            "a": 1,
+	            "r": 1,
+	            "g": 0.8019,
+	            "b": 0.6019
+	        },
+	        "border": "outline"
+        }
+    },
     "es.eucm.ead.editor.view.tabs.TabWidget$TabWidgetStyle": {
         "default": {
             "titleBackground": "blank",
