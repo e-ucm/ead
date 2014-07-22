@@ -40,10 +40,9 @@ import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
 
 import es.eucm.ead.editor.control.Controller;
-import es.eucm.ead.editor.ui.scenes.map.InitialSceneWidget;
 import es.eucm.ead.editor.ui.scenes.map.SceneEditionWidget;
-import es.eucm.ead.editor.ui.scenes.map.SceneMapWidget;
 import es.eucm.ead.editor.ui.scenes.map.SceneList;
+import es.eucm.ead.editor.ui.scenes.map.SceneMapWidget;
 import es.eucm.ead.editor.view.builders.ViewBuilder;
 import es.eucm.ead.editor.view.widgets.Separator;
 import es.eucm.ead.editor.view.widgets.layouts.LinearLayout;
@@ -51,8 +50,6 @@ import es.eucm.ead.editor.view.widgets.layouts.LinearLayout;
 public class HomeView implements ViewBuilder {
 
 	private static final float DEFAULT_MARGIN = 10F;
-
-	private InitialSceneWidget initialSceneWidget;
 
 	private SceneEditionWidget sceneEdition;
 
@@ -66,11 +63,6 @@ public class HomeView implements ViewBuilder {
 	public void initialize(Controller controller) {
 
 		LinearLayout leftBar = new LinearLayout(false);
-		leftBar.add(initialSceneWidget = new InitialSceneWidget(controller))
-				.margin(DEFAULT_MARGIN);
-		leftBar.add(
-				new Separator(true, controller.getApplicationAssets().getSkin()))
-				.expandX();
 		leftBar.add(this.sceneEdition = new SceneEditionWidget(controller))
 				.margin(DEFAULT_MARGIN);
 		leftBar.add(
@@ -93,7 +85,6 @@ public class HomeView implements ViewBuilder {
 
 	@Override
 	public Actor getView(Object... args) {
-		initialSceneWidget.prepare();
 		scenesFiltering.prepare();
 		sceneEdition.prepare();
 		sceneMap.prepare();
@@ -102,7 +93,6 @@ public class HomeView implements ViewBuilder {
 
 	@Override
 	public void release(Controller controller) {
-		initialSceneWidget.release();
 		scenesFiltering.release();
 		sceneEdition.release();
 		sceneMap.release();
