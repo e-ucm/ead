@@ -37,7 +37,6 @@
 package es.eucm.ead.editor.control;
 
 import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.Input.Buttons;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.Group;
@@ -55,10 +54,8 @@ import es.eucm.ead.editor.view.builders.Builder;
 import es.eucm.ead.editor.view.builders.DialogBuilder;
 import es.eucm.ead.editor.view.builders.ViewBuilder;
 import es.eucm.ead.editor.view.widgets.Dialog;
-import es.eucm.ead.editor.view.widgets.menu.ContextMenu;
 
 import java.util.HashMap;
-import java.util.IdentityHashMap;
 import java.util.Map;
 
 /**
@@ -78,8 +75,6 @@ public class Views implements ModelListener<LoadEvent> {
 
 	private Map<Class, DialogBuilder> dialogBuilders;
 
-	private Map<Actor, ContextMenu> contextMenues;
-
 	protected ViewBuilder currentView;
 
 	private Object[] currentArgs;
@@ -87,19 +82,6 @@ public class Views implements ModelListener<LoadEvent> {
 	private Actor currentContextMenu;
 
 	private ViewsHistory viewsHistory;
-
-	private InputListener captureRightClick = new InputListener() {
-		@Override
-		public boolean touchDown(InputEvent event, float x, float y,
-				int pointer, int button) {
-			if (button == Buttons.RIGHT) {
-				contextMenu(event.getListenerActor(), event.getStageX(),
-						event.getStageY());
-				event.cancel();
-			}
-			return true;
-		}
-	};
 
 	private InputListener closeContextMenu = new InputListener() {
 
@@ -147,7 +129,6 @@ public class Views implements ModelListener<LoadEvent> {
 		this.modalsContainer = modalsContainer;
 		viewsBuilders = new HashMap<Class, ViewBuilder>();
 		dialogBuilders = new HashMap<Class, DialogBuilder>();
-		contextMenues = new IdentityHashMap<Actor, ContextMenu>();
 		viewsHistory = new ViewsHistory();
 	}
 
@@ -231,40 +212,6 @@ public class Views implements ModelListener<LoadEvent> {
 			dialog.show(getViewsContainer().getStage());
 			dialog.pack();
 			dialog.center();
-		}
-	}
-
-	/**
-	 * Registers a context menu that will be shown when the user right clicks
-	 * owner
-	 * 
-	 * @param owner
-	 *            the owner of the context menu
-	 * @param contextMenu
-	 *            the context menu to show
-	 */
-	public void registerContextMenu(Actor owner, ContextMenu contextMenu) {
-		contextMenu.setOpaque(true);
-		contextMenu.addListener(closeContextMenu);
-		owner.addListener(captureRightClick);
-		contextMenues.put(owner, contextMenu);
-	}
-
-	/**
-	 * Show the context menu associated to owner. If owner does not have an
-	 * associated context menu, nothing happens
-	 * 
-	 * @param owner
-	 *            the owner of the context menu
-	 * @param x
-	 *            x position for the context menu
-	 * @param y
-	 *            y position for the context menu
-	 */
-	public void contextMenu(Actor owner, float x, float y) {
-		ContextMenu contextMenu = contextMenues.get(owner);
-		if (contextMenu != null) {
-			showContextMenu(contextMenu, x, y);
 		}
 	}
 
