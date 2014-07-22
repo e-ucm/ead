@@ -40,7 +40,6 @@ import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
 
-import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.ui.Button;
 import com.badlogic.gdx.scenes.scene2d.ui.ButtonGroup;
 import com.badlogic.gdx.scenes.scene2d.ui.CheckBox;
@@ -132,6 +131,7 @@ public class SceneList extends Table {
 		Map<String, Object> resources = model
 				.getResources(ResourceCategory.SCENE);
 		Set<Entry<String, Object>> entrySet = resources.entrySet();
+		buttonGroup.setMinCheckCount(0);
 		for (java.util.Map.Entry<String, Object> entry : entrySet) {
 			CheckBox sceneBox = new SceneButton((ModelEntity) entry.getValue(),
 					entry.getKey(), skin);
@@ -139,6 +139,7 @@ public class SceneList extends Table {
 			buttonGroup.add(sceneBox);
 			row();
 		}
+		buttonGroup.setMinCheckCount(1);
 	}
 
 	public void release() {
@@ -159,18 +160,19 @@ public class SceneList extends Table {
 
 		@Override
 		public void setChecked(boolean isChecked) {
+			boolean wasChecked = isChecked();
 			super.setChecked(isChecked);
-			if (isChecked) {
-				fireFocus(this);
+			if (!wasChecked && isChecked) {
+				fireFocus();
 			}
 		}
 
 		/**
-		 * Fires that some actor has gained focus
+		 * Fires that this has gained focus
 		 */
-		private void fireFocus(Actor actor) {
+		private void fireFocus() {
 			FocusEvent dropEvent = Pools.obtain(FocusEvent.class);
-			dropEvent.setActor(actor);
+			dropEvent.setActor(this);
 			fire(dropEvent);
 			Pools.free(dropEvent);
 		}

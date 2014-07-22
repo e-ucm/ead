@@ -82,10 +82,11 @@ public class SceneMapWidget extends DraggableGridLayout {
 	private NameListener sceneNameListener;
 	private FieldListener sceneMapListener = new SceneMapListener();
 	private ModelListener<ListEvent> cellsListener = new CellsListener();
+	private SelectionListener sceneListener = new SceneSelectionListener();
 	private SelectionListener selectionListener = new MapSelectionListener();
 
 	public SceneMapWidget(Controller control) {
-
+		super(control.getApplicationAssets().getSkin());
 		controller = control;
 		buttonGroup = new ButtonGroup();
 		sceneNameListener = new NameListener(controller);
@@ -108,6 +109,7 @@ public class SceneMapWidget extends DraggableGridLayout {
 		final Button moreFinalCol = new IconButton(plusIcon, skin);
 
 		controller.getModel().addSelectionListener(selectionListener);
+		controller.getModel().addSelectionListener(sceneListener);
 		ClickListener moreButton = new ClickListener() {
 
 			@Override
@@ -169,16 +171,21 @@ public class SceneMapWidget extends DraggableGridLayout {
 	public void prepare() {
 		Model model = controller.getModel();
 
-		sceneMap = Q.getComponent(model.getGame(), SceneMap.class);
+		ModelEntity game = model.getGame();
+		sceneMap = Q.getComponent(game, SceneMap.class);
 		model.addListListener(sceneMap.getCells(), cellsListener);
 		model.addFieldListener(sceneMap, sceneMapListener);
 
 		controller.action(SetSelection.class, null, Selection.SCENE_MAP,
 				sceneMap);
-		controller.action(SetSelection.class, Selection.SCENE_MAP,
-				Selection.SCENE, model.getResource(
-						Q.getComponent(model.getGame(), GameData.class)
-								.getInitialScene(), ResourceCategory.SCENE));
+		if (controller.getModel().getSelection().getSingle(Selection.SCENE) == null) {
+			controller
+					.action(SetSelection.class, Selection.SCENE_MAP,
+							Selection.SCENE, model.getResource(
+									Q.getComponent(model.getGame(),
+											GameData.class).getInitialScene(),
+									ResourceCategory.SCENE));
+		}
 	}
 
 	public void release() {
@@ -197,11 +204,13 @@ public class SceneMapWidget extends DraggableGridLayout {
 
 		buttonGroup.getButtons().clear();
 		buttonGroup.getAllChecked().clear();
+		buttonGroup.setMinCheckCount(0);
 		for (Cell cell : sceneMap.getCells()) {
 			SceneWidget sceneWidget = createSceneWidgetFromId(cell.getSceneId());
 			addAt(cell.getRow(), cell.getColumn(), sceneWidget);
 			buttonGroup.add(sceneWidget);
 		}
+		buttonGroup.setMinCheckCount(1);
 	}
 
 	private SceneWidget createSceneWidgetFromId(String id) {
@@ -219,54 +228,80 @@ public class SceneMapWidget extends DraggableGridLayout {
 
 			Cell cell = (Cell) event.getElement();
 			switch (event.getType()) {
-			case REMOVED:
-				addAt(cell.getRow(), cell.getColumn(), null);
-				break;
 			case ADDED:
 				int row = cell.getRow();
 				int column = cell.getColumn();
+				removeSceneWidgetAt(row, column);
 				String sceneId = cell.getSceneId();
-
-				SceneWidget sceneWidget = (SceneWidget) getCellAt(row, column)
-						.getWidget();
-				// Don't create the SameWidget twice
-				if (sceneWidget == null
-						|| !sceneWidget.getSceneId().equals(sceneId)) {
-					SceneWidget newSceneWidget = createSceneWidgetFromId(sceneId);
-					addAt(row, column, newSceneWidget);
-					newSceneWidget.setChecked(true);
-				} else {
-					sceneWidget.setChecked(true);
-				}
+				SceneWidget newSceneWidget = createSceneWidgetFromId(sceneId);
+				addAt(row, column, newSceneWidget);
+				buttonGroup.add(newSceneWidget);
+				newSceneWidget.setChecked(true);
 				break;
+			case REMOVED:
+				removeSceneWidgetAt(cell.getRow(), cell.getColumn());
+				break;
+			}
+		}
+
+		private void removeSceneWidgetAt(int row, int column) {
+			SceneWidget oldWidget = (SceneWidget) getCellAt(row, column)
+					.getWidget();
+			if (oldWidget != null) {
+				buttonGroup.remove(oldWidget);
+				oldWidget.remove();
+				oldWidget.clear();
 			}
 		}
 	}
 
 	/**
-	 * Used to know when to load new {@link SceneWidget} or when to notify the
-	 * widgets that a new {@link SceneWidget} has received focus.
+	 * Used to know when to load new {@link SceneWidget}.
 	 */
 	private class MapSelectionListener implements SelectionListener {
-
-		private boolean isMap;
 
 		@Override
 		public void modelChanged(SelectionEvent event) {
 			if (event.getType() == SelectionEvent.Type.FOCUSED) {
-				if (isMap) {
-					refreshSceneMap();
-				} else {
-					sceneNameListener
-							.setUp((ModelEntity) event.getSelection()[0]);
+				refreshSceneMap();
+			}
+		}
+
+		@Override
+		public boolean listenToContext(String contextId) {
+			return Selection.SCENE_MAP.equals(contextId);
+		}
+	}
+
+	/**
+	 * Used to notify the widgets that a new {@link SceneWidget} has received
+	 * focus.
+	 */
+	private class SceneSelectionListener implements SelectionListener {
+
+		@Override
+		public void modelChanged(SelectionEvent event) {
+			if (event.getType() == SelectionEvent.Type.FOCUSED
+					&& sceneMap != null) {
+				ModelEntity scene = (ModelEntity) event.getSelection()[0];
+				sceneNameListener.setUp(scene);
+				String sceneId = controller.getModel().getIdFor(scene);
+				if (sceneId != null) {
+					Cell cell = Q.getCellFromId(sceneId, sceneMap.getCells());
+					if (cell != null) {
+						SceneWidget sceneWidget = (SceneWidget) getCellAt(
+								cell.getRow(), cell.getColumn()).getWidget();
+						if (sceneWidget != null) {
+							sceneWidget.setChecked(true);
+						}
+					}
 				}
 			}
 		}
 
 		@Override
 		public boolean listenToContext(String contextId) {
-			isMap = Selection.SCENE_MAP.equals(contextId);
-			return isMap || Selection.SCENE.equals(contextId);
+			return Selection.SCENE.equals(contextId);
 		}
 	}
 

@@ -227,7 +227,8 @@ public class Q {
 	 * @return the {@link Cell} with the given sceneId or null if there is none.
 	 */
 	public static Cell getCellFromId(String sceneId, Array<Cell> cells) {
-		for (Cell cell : cells) {
+		for (int i = 0; i < cells.size; ++i) {
+			Cell cell = cells.get(i);
 			if (sceneId.equals(cell.getSceneId())) {
 				return cell;
 			}

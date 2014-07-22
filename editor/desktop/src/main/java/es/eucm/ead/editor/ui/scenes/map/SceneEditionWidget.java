@@ -36,12 +36,15 @@
  */
 package es.eucm.ead.editor.ui.scenes.map;
 
+import com.badlogic.gdx.graphics.Texture;
+import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.ui.Button;
 import com.badlogic.gdx.scenes.scene2d.ui.Image;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
 import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
+import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable;
 import com.badlogic.gdx.utils.Scaling;
 
 import es.eucm.ead.editor.control.Controller;
@@ -57,11 +60,16 @@ import es.eucm.ead.editor.view.controllers.ClassOptionsController;
 import es.eucm.ead.editor.view.widgets.layouts.LinearLayout;
 import es.eucm.ead.engine.I18N;
 import es.eucm.ead.engine.assets.Assets;
+import es.eucm.ead.engine.assets.Assets.AssetLoadedCallback;
 import es.eucm.ead.schema.editor.components.Documentation;
 import es.eucm.ead.schema.editor.components.GameData;
+import es.eucm.ead.schema.editor.components.Thumbnail;
 import es.eucm.ead.schema.entities.ModelEntity;
 import es.eucm.ead.schemax.FieldName;
 
+/**
+ * A widget that displays some edition options for a specific scene.
+ */
 public class SceneEditionWidget extends LinearLayout implements FieldListener {
 
 	protected Controller controller;
@@ -76,6 +84,15 @@ public class SceneEditionWidget extends LinearLayout implements FieldListener {
 
 	private Image thumbnail;
 
+	private AssetLoadedCallback<Texture> thumbnailCallback = new AssetLoadedCallback<Texture>() {
+
+		@Override
+		public void loaded(String fileName, Texture asset) {
+			thumbnail.setDrawable(new TextureRegionDrawable(new TextureRegion(
+					asset)));
+		}
+	};
+
 	public SceneEditionWidget(Controller control) {
 		super(false);
 		this.controller = control;
@@ -84,7 +101,7 @@ public class SceneEditionWidget extends LinearLayout implements FieldListener {
 		skin = assets.getSkin();
 		i18N = assets.getI18N();
 
-		thumbnail = new Image(skin.getDrawable("newscene48x48"));
+		thumbnail = new Image();
 		thumbnail.setScaling(Scaling.fit);
 		optionsController = new ClassOptionsController<Documentation>(
 				controller, skin, Documentation.class);
@@ -124,10 +141,14 @@ public class SceneEditionWidget extends LinearLayout implements FieldListener {
 		optionsController.read(doc);
 		makeInitial.setDisabled(isInitial(scene));
 
+		controller.getEditorGameAssets().get(
+				Q.getComponent(scene, Thumbnail.class).getThumbnail(),
+				Texture.class, thumbnailCallback, true);
+
 		clearChildren();
 		add(thumbnail);
 		add(optionsController.getPanel());
-		add(makeInitial);
+		add(makeInitial).right();
 	}
 
 	public void prepare() {

@@ -36,11 +36,16 @@
  */
 package es.eucm.ead.editor.test.general;
 
+import static org.junit.Assert.assertEquals;
+
+import java.io.File;
+
 import com.badlogic.gdx.utils.Array;
+
 import es.eucm.ead.editor.control.actions.editor.ChangeView;
 import es.eucm.ead.editor.control.actions.editor.ForceSave;
 import es.eucm.ead.editor.control.actions.editor.OpenGame;
-import es.eucm.ead.editor.control.views.HomeView;
+import es.eucm.ead.editor.control.views.InterfaceView;
 import es.eucm.ead.editor.control.views.SceneView;
 import es.eucm.ead.editor.model.Q;
 import es.eucm.ead.editor.nogui.EditorGUITest;
@@ -48,10 +53,6 @@ import es.eucm.ead.editor.nogui.actions.OpenMockGame;
 import es.eucm.ead.editor.nogui.actions.OpenMockGame.Game;
 import es.eucm.ead.schema.editor.components.EditState;
 import es.eucm.ead.schema.entities.ModelEntity;
-
-import java.io.File;
-
-import static org.junit.Assert.assertEquals;
 
 /**
  * Tests that the editor remembers the last state of edition
@@ -78,7 +79,7 @@ public class RememberEditStateTest extends EditorGUITest {
 				assertEquals(editState.getArguments().first(), controller
 						.getViews().getCurrentArgs()[0]);
 
-				controller.action(ChangeView.class, HomeView.class);
+				controller.action(ChangeView.class, InterfaceView.class);
 				controller.action(OpenGame.class, game.getPath());
 
 				// assert the view has been reloaded
