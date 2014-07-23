@@ -1,0 +1,18 @@
+{
+    "additionalProperties": false,
+    "javaType": "es.eucm.ead.schema.components.Animation",
+    "type": "object",
+    "description": "Represents a timeline with multiple tracks of effects.",
+    "extends": {
+        "$ref": "component.json"
+    },
+    "properties": {
+        "effects": {
+            "type": "array",
+            "items": {
+                "$ref": "../effects/trackeffect.json"
+            },
+            "description": "list of {@link TrackEffect}"
+        }
+    }
+}
