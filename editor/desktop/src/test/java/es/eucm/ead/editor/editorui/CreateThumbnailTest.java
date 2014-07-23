@@ -36,21 +36,28 @@
  */
 package es.eucm.ead.editor.editorui;
 
+import java.io.File;
+import java.io.IOException;
+
+import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.backends.lwjgl.LwjglApplication;
 import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.scenes.scene2d.Group;
-import es.eucm.ead.editor.control.actions.editor.CreateThumbnail;
+import com.badlogic.gdx.scenes.scene2d.ui.ScrollPane;
+import com.badlogic.gdx.scenes.scene2d.ui.Table;
+import com.badlogic.gdx.utils.Scaling;
+
+import es.eucm.ead.editor.model.Q;
 import es.eucm.ead.engine.assets.Assets.AssetLoadedCallback;
 import es.eucm.ead.schema.entities.ModelEntity;
 import es.eucm.ead.schema.renderers.Image;
-
-import java.io.File;
-import java.io.IOException;
+import es.eucm.ead.schemax.entities.ResourceCategory;
 
 public class CreateThumbnailTest extends EditorUITest {
 
 	public void setUp() throws IOException {
+		Gdx.gl.glClearColor(1f, 1f, 1f, 1f);
 		File file = File.createTempFile("createthumbnailtest", "folder");
 		file.delete();
 		file.mkdir();
@@ -65,7 +72,8 @@ public class CreateThumbnailTest extends EditorUITest {
 				.getSystemResourceAsStream("cooldemo/images/bee.png"), false);
 	}
 
-	public FileHandle createThumbnail() {
+	public String createThumbnail(String id, Scaling scaling) {
+
 		ModelEntity scene = new ModelEntity();
 		Image image = new Image();
 		image.setUri("map.png");
@@ -79,29 +87,43 @@ public class CreateThumbnailTest extends EditorUITest {
 		image.setUri("bee.png");
 		child.getComponents().add(image);
 		scene.getChildren().add(child);
-
-		controller.getEditorGameAssets().finishLoading();
-		controller.action(CreateThumbnail.class, "thumbnail.png", scene, 800,
-				600);
-		return controller.getEditorGameAssets().resolve("thumbnail.png");
+		controller.getModel().putResource(id, ResourceCategory.SCENE, scene);
+		return Q.getThumbnail(controller, scene, 250, 250, scaling)
+				.getThumbnail();
 	}
 
 	@Override
-	protected void builUI(final Group root) {
+	protected void builUI(Group root) {
 		try {
 			setUp();
-			FileHandle fh = createThumbnail();
+			final Table table = new Table(controller.getApplicationAssets()
+					.getSkin()).debug();
+			table.columnDefaults(1).expand();
+			table.add("Scaling");
+			table.add("Result");
+			table.row();
+			ScrollPane scroll = new ScrollPane(table);
+			scroll.setFillParent(true);
 
-			controller.getEditorGameAssets().get(fh.path(), Texture.class,
-					new AssetLoadedCallback<Texture>() {
-						@Override
-						public void loaded(String fileName, Texture asset) {
-							com.badlogic.gdx.scenes.scene2d.ui.Image image = new com.badlogic.gdx.scenes.scene2d.ui.Image(
-									asset);
-							root.addActor(image);
-						}
-					});
-			controller.getEditorGameAssets().finishLoading();
+			for (Scaling scaling : Scaling.values()) {
+
+				final String scalingName = scaling.toString();
+				String path = createThumbnail("scene_" + scalingName, scaling);
+				controller.getEditorGameAssets().get(path, Texture.class,
+						new AssetLoadedCallback<Texture>() {
+							@Override
+							public void loaded(String fileName, Texture asset) {
+								com.badlogic.gdx.scenes.scene2d.ui.Image image = new com.badlogic.gdx.scenes.scene2d.ui.Image(
+										asset);
+								image.setScaling(Scaling.fit);
+								table.add(scalingName);
+								table.add(image);
+								table.row();
+							}
+						}, true);
+			}
+
+			root.addActor(scroll);
 
 		} catch (IOException e) {
 			e.printStackTrace();
@@ -109,7 +131,13 @@ public class CreateThumbnailTest extends EditorUITest {
 	}
 
 	public static void main(String[] args) {
-		new LwjglApplication(new CreateThumbnailTest(), "Scene Editor test",
-				800, 600);
+		new LwjglApplication(new CreateThumbnailTest(),
+				"Create Thumbnail test", 1480, 800);
+	}
+
+	@Override
+	public void render() {
+		super.render();
+		Table.drawDebug(stage);
 	}
 }
