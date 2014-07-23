@@ -1,0 +1,19 @@
+{
+    "additionalProperties": false,
+    "javaType": "es.eucm.ead.schema.effects.TimedEffect",
+    "type": "object",
+    "description": "Represents an effect with delay",
+    "properties": {
+        "effects": {
+            "type": "array",
+            "items": {
+                "$ref": "effect.json"
+            },
+            "description": "effects to throw"
+        },
+        "time": {
+        	"type": "number",
+        	"description": "Time of delay of the effects"
+        }
+    }
+}

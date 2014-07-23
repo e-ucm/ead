@@ -1,0 +1,18 @@
+{
+    "additionalProperties": false,
+    "extends": {
+        "$ref": "animationeffect.json"
+    },
+    "javaType": "es.eucm.ead.schema.effects.MoveEffect",
+    "type": "object",
+    "properties": {
+        "x": {
+            "type": "number",
+            "description": "x target for the effect"
+        },
+        "y": {
+            "type": "number",
+            "description": "y target for the effect"
+        }
+    }
+}

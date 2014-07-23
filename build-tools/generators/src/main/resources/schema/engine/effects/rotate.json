@@ -1,0 +1,14 @@
+{
+    "additionalProperties": false,
+    "extends": {
+        "$ref": "animationeffect.json"
+    },
+    "javaType": "es.eucm.ead.schema.effects.RotateEffect",
+    "type": "object",
+    "properties": {
+        "rotation": {
+            "type": "number",
+            "description": "rotation target for the effect"
+        }
+    }
+}

@@ -1,0 +1,14 @@
+{
+    "additionalProperties": false,
+    "extends": {
+        "$ref": "animationeffect.json"
+    },
+    "javaType": "es.eucm.ead.schema.effects.AlphaEffect",
+    "type": "object",
+    "properties": {
+        "alpha": {
+            "type": "number",
+            "description": "alpha value, between 0 (not visible) to 1 (fully visible)"
+        }
+    }
+}
