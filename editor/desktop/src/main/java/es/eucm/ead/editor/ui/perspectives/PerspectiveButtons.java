@@ -94,7 +94,7 @@ public class PerspectiveButtons extends LinearLayout {
 
 	private IconButton scenesButton;
 
-	private Map<ModelEntity, ContextMenuItem> items;
+	private Map<Documentation, ContextMenuItem> items;
 
 	private NameListener nameListener = new NameListener();
 
@@ -103,7 +103,7 @@ public class PerspectiveButtons extends LinearLayout {
 	public PerspectiveButtons(Controller controller) {
 		super(true);
 		this.controller = controller;
-		items = new IdentityHashMap<ModelEntity, ContextMenuItem>();
+		items = new IdentityHashMap<Documentation, ContextMenuItem>();
 
 		Skin skin = controller.getApplicationAssets().getSkin();
 		I18N i18N = controller.getApplicationAssets().getI18N();
@@ -176,9 +176,9 @@ public class PerspectiveButtons extends LinearLayout {
 			item.setUserObject(scene);
 			item.setName(SCENE_SELECTOR + i++);
 
-			items.put(scene, item);
+			items.put(doc, item);
 
-			model.addFieldListener(scene, nameListener);
+			model.addFieldListener(doc, nameListener);
 		}
 		refreshSelected();
 	}
