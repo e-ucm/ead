@@ -36,11 +36,16 @@
  */
 package es.eucm.ead.editor.ui.perspectives;
 
+import java.util.IdentityHashMap;
+import java.util.Map;
+import java.util.Map.Entry;
+
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.scenes.scene2d.utils.Drawable;
+
 import es.eucm.ead.editor.control.Controller;
 import es.eucm.ead.editor.control.Selection;
 import es.eucm.ead.editor.control.actions.editor.ChangeView;
@@ -52,6 +57,7 @@ import es.eucm.ead.editor.control.views.SceneView;
 import es.eucm.ead.editor.model.Model;
 import es.eucm.ead.editor.model.Model.FieldListener;
 import es.eucm.ead.editor.model.Model.ModelListener;
+import es.eucm.ead.editor.model.Model.Resource;
 import es.eucm.ead.editor.model.Model.SelectionListener;
 import es.eucm.ead.editor.model.Q;
 import es.eucm.ead.editor.model.events.FieldEvent;
@@ -72,10 +78,6 @@ import es.eucm.ead.schema.editor.components.Documentation;
 import es.eucm.ead.schema.entities.ModelEntity;
 import es.eucm.ead.schemax.FieldName;
 import es.eucm.ead.schemax.entities.ResourceCategory;
-
-import java.util.IdentityHashMap;
-import java.util.Map;
-import java.util.Map.Entry;
 
 /**
  * Contains all the perspective buttons
@@ -161,10 +163,10 @@ public class PerspectiveButtons extends LinearLayout {
 		model.removeListenerFromAllTargets(nameListener);
 
 		int i = 0;
-		for (Entry<String, Object> sceneEntry : model.getResources(
+		for (Entry<String, Resource> sceneEntry : model.getResources(
 				ResourceCategory.SCENE).entrySet()) {
 
-			ModelEntity scene = (ModelEntity) sceneEntry.getValue();
+			ModelEntity scene = (ModelEntity) sceneEntry.getValue().getObject();
 			Documentation doc = Q.getComponent(scene, Documentation.class);
 
 			ContextMenuItem item = scenesContextMenu

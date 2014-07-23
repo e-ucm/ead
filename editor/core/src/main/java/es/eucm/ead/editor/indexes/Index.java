@@ -36,17 +36,12 @@
  */
 package es.eucm.ead.editor.indexes;
 
-import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.utils.Array;
-import com.badlogic.gdx.utils.reflect.ClassReflection;
-import com.badlogic.gdx.utils.reflect.Field;
-import com.badlogic.gdx.utils.reflect.ReflectionException;
-import es.eucm.ead.editor.model.Model;
-import es.eucm.ead.editor.model.events.FieldEvent;
-import es.eucm.ead.editor.model.events.ListEvent;
-import es.eucm.ead.editor.model.events.LoadEvent;
-import es.eucm.ead.editor.model.events.ModelEvent;
-import es.eucm.ead.editor.model.events.ResourceEvent;
+import java.io.IOException;
+import java.io.Reader;
+import java.util.HashMap;
+import java.util.IdentityHashMap;
+import java.util.Map;
+
 import org.apache.lucene.analysis.Analyzer;
 import org.apache.lucene.analysis.KeywordTokenizer;
 import org.apache.lucene.analysis.LowerCaseFilter;
@@ -71,11 +66,19 @@ import org.apache.lucene.store.RAMDirectory;
 import org.apache.lucene.util.ReaderUtil;
 import org.apache.lucene.util.Version;
 
-import java.io.IOException;
-import java.io.Reader;
-import java.util.HashMap;
-import java.util.IdentityHashMap;
-import java.util.Map;
+import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.utils.Array;
+import com.badlogic.gdx.utils.reflect.ClassReflection;
+import com.badlogic.gdx.utils.reflect.Field;
+import com.badlogic.gdx.utils.reflect.ReflectionException;
+
+import es.eucm.ead.editor.model.Model;
+import es.eucm.ead.editor.model.Model.Resource;
+import es.eucm.ead.editor.model.events.FieldEvent;
+import es.eucm.ead.editor.model.events.ListEvent;
+import es.eucm.ead.editor.model.events.LoadEvent;
+import es.eucm.ead.editor.model.events.ModelEvent;
+import es.eucm.ead.editor.model.events.ResourceEvent;
 
 /**
  * Allows easy search operations on the model. Uses Lucene for indexing and
@@ -238,8 +241,8 @@ public class Index {
 		} else if (event instanceof LoadEvent) {
 			clear();
 			Model model = ((LoadEvent) event).getModel();
-			for (Map.Entry<String, Object> e : model.listNamedResources()) {
-				add(null, e.getValue());
+			for (Map.Entry<String, Resource> e : model.listNamedResources()) {
+				add(null, e.getValue().getObject());
 			}
 		} else if (event instanceof FieldEvent) {
 			refresh(event.getTarget());

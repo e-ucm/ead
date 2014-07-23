@@ -67,7 +67,7 @@ public class CutEditorGUITest extends EditorGUITest {
 		controller.action(ChangeView.class, SceneView.class,
 				"scenes/scene1.json");
 
-		scene = (ModelEntity) model.getResource("scenes/scene1.json",
+		scene = (ModelEntity) model.getResourceObject("scenes/scene1.json",
 				ResourceCategory.SCENE);
 		sceneElement = scene.getChildren().first();
 

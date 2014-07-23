@@ -37,6 +37,7 @@
 package es.eucm.ead.editor.control.actions.editor;
 
 import com.badlogic.gdx.Gdx;
+
 import es.eucm.ead.editor.control.actions.EnabledOnLoadAction;
 import es.eucm.ead.editor.control.background.BackgroundExecutor;
 import es.eucm.ead.editor.exporter.ExportCallback;
@@ -155,7 +156,7 @@ public class ExportGame extends EnabledOnLoadAction {
 						exporter.exportAsJar(jarPath, controller
 								.getEditorGameAssets().getLoadingPath(),
 								engineLibraryPath, controller.getModel()
-										.listNamedResources(), callback);
+										.listNamedObjects(), callback);
 						return null;
 					}
 				},

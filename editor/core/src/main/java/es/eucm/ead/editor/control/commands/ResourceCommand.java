@@ -72,7 +72,8 @@ public class ResourceCommand extends Command {
 		if (add) {
 			model.putResource(id, category, modelEntity);
 		} else {
-			modelEntity = (ModelEntity) model.removeResource(id, category);
+			modelEntity = (ModelEntity) model.removeResource(id, category)
+					.getObject();
 		}
 		return new ResourceEvent(add ? Type.ADDED : Type.REMOVED, model, id,
 				modelEntity, category);

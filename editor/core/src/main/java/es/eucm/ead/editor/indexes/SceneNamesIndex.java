@@ -36,16 +36,19 @@
  */
 package es.eucm.ead.editor.indexes;
 
+import java.util.Map.Entry;
+
+import javax.annotation.Resources;
+
 import es.eucm.ead.editor.control.Controller;
 import es.eucm.ead.editor.model.Model;
 import es.eucm.ead.editor.model.Model.ModelListener;
+import es.eucm.ead.editor.model.Model.Resource;
 import es.eucm.ead.editor.model.Q;
 import es.eucm.ead.editor.model.events.ResourceEvent;
 import es.eucm.ead.schema.editor.components.Documentation;
 import es.eucm.ead.schema.entities.ModelEntity;
 import es.eucm.ead.schemax.entities.ResourceCategory;
-
-import java.util.Map.Entry;
 
 /**
  * Relates scene names (stored in {@link Documentation} component) with scene
@@ -58,9 +61,9 @@ public class SceneNamesIndex extends ControllerIndex implements
 	public void initialize(Controller controller) {
 		Model model = controller.getModel();
 		model.addResourceListener(this);
-		for (Entry<String, Object> resource : model.getResources(
+		for (Entry<String, Resource> resource : model.getResources(
 				ResourceCategory.SCENE).entrySet()) {
-			ModelEntity scene = (ModelEntity) resource.getValue();
+			ModelEntity scene = (ModelEntity) resource.getValue().getObject();
 			addScene(resource.getKey(), scene);
 		}
 	}

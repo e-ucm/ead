@@ -51,7 +51,7 @@ public class RenameScene extends Rename {
 	protected Object findObjectById(String id) {
 		if (id != null) {
 			ModelEntity scene = (ModelEntity) controller.getModel()
-					.getResources(ResourceCategory.SCENE).get(id);
+					.getResourceObject(id, ResourceCategory.SCENE);
 			if (scene != null) {
 				return Q.getComponent(scene, Documentation.class);
 			}

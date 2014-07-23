@@ -51,6 +51,7 @@ import es.eucm.ead.editor.control.actions.EditorAction;
 import es.eucm.ead.editor.control.actions.EditorActionException;
 import es.eucm.ead.editor.model.Model;
 import es.eucm.ead.editor.model.Model.ModelListener;
+import es.eucm.ead.editor.model.Model.Resource;
 import es.eucm.ead.editor.model.Q;
 import es.eucm.ead.editor.model.events.LoadEvent;
 import es.eucm.ead.editor.model.events.ViewEvent;
@@ -187,9 +188,9 @@ public class OpenGame extends EditorAction implements FileChooserListener,
 	}
 
 	private void addParents(Model model) {
-		for (Entry<String, Object> entry : model.listNamedResources()) {
-			if (entry.getValue() instanceof ModelEntity) {
-				addParent((ModelEntity) entry.getValue(), null);
+		for (Entry<String, Resource> entry : model.listNamedResources()) {
+			if (entry.getValue().getObject() instanceof ModelEntity) {
+				addParent((ModelEntity) entry.getValue().getObject(), null);
 			}
 		}
 	}
@@ -242,9 +243,9 @@ public class OpenGame extends EditorAction implements FileChooserListener,
 		SceneMap sceneMap = Q.getComponent(model.getGame(), SceneMap.class);
 		Array<Cell> cells = sceneMap.getCells();
 
-		Set<Entry<String, Object>> entrySet = model.getResources(
+		Set<Entry<String, Resource>> entrySet = model.getResources(
 				ResourceCategory.SCENE).entrySet();
-		for (Entry<String, Object> entry : entrySet) {
+		for (Entry<String, Resource> entry : entrySet) {
 			String sceneId = entry.getKey();
 			if (Q.getCellFromId(sceneId, cells) == null) {
 

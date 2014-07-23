@@ -36,6 +36,11 @@
  */
 package es.eucm.ead.editor.view.builders.mockup.gallery;
 
+import java.util.Arrays;
+import java.util.Comparator;
+import java.util.Map;
+import java.util.Map.Entry;
+
 import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.scenes.scene2d.Actor;
@@ -54,8 +59,10 @@ import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.ObjectMap;
+
 import es.eucm.ead.editor.control.Controller;
 import es.eucm.ead.editor.control.actions.model.ChangeInitialScene;
+import es.eucm.ead.editor.model.Model.Resource;
 import es.eucm.ead.editor.model.Q;
 import es.eucm.ead.editor.view.widgets.mockup.Navigation;
 import es.eucm.ead.editor.view.widgets.mockup.ToolBar;
@@ -70,11 +77,6 @@ import es.eucm.ead.schema.editor.components.GameData;
 import es.eucm.ead.schema.entities.ModelEntity;
 import es.eucm.ead.schemax.GameStructure;
 import es.eucm.ead.schemax.entities.ResourceCategory;
-
-import java.util.Arrays;
-import java.util.Comparator;
-import java.util.Map;
-import java.util.Map.Entry;
 
 /**
  * Abstract class. This implementation of {@link BaseGallery} also has a
@@ -424,11 +426,11 @@ public abstract class BaseGalleryWithNavigation<T extends DescriptionCard>
 	 */
 	protected boolean updateFilterTags(Array<String> tags, Controller controller) {
 		boolean needsUIupdate = false;
-		Map<String, Object> map = controller.getModel().getResources(
+		Map<String, Resource> map = controller.getModel().getResources(
 				ResourceCategory.SCENE);
-		for (Entry<String, Object> entry : map.entrySet()) {
-			Array<ModelEntity> sceneChildren = ((ModelEntity) entry.getValue())
-					.getChildren();
+		for (Entry<String, Resource> entry : map.entrySet()) {
+			Array<ModelEntity> sceneChildren = ((ModelEntity) entry.getValue()
+					.getObject()).getChildren();
 			int totalChildren = sceneChildren.size;
 			for (int i = 0; i < totalChildren; ++i) {
 				ModelEntity currentChildren = sceneChildren.get(i);

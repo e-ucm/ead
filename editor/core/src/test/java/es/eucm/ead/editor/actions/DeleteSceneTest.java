@@ -36,17 +36,19 @@
  */
 package es.eucm.ead.editor.actions;
 
+import static org.junit.Assert.assertEquals;
+
+import java.util.Map;
+
+import org.junit.Before;
+import org.junit.Test;
+
 import es.eucm.ead.editor.control.actions.model.DeleteScene;
+import es.eucm.ead.editor.model.Model.Resource;
 import es.eucm.ead.editor.model.Q;
 import es.eucm.ead.schema.editor.components.GameData;
 import es.eucm.ead.schema.entities.ModelEntity;
 import es.eucm.ead.schemax.entities.ResourceCategory;
-import org.junit.Before;
-import org.junit.Test;
-
-import java.util.Map;
-
-import static org.junit.Assert.assertEquals;
 
 public class DeleteSceneTest extends ActionTest {
 
@@ -59,7 +61,8 @@ public class DeleteSceneTest extends ActionTest {
 
 	@Test
 	public void testDeleteScene() {
-		Map<String, Object> scenes = model.getResources(ResourceCategory.SCENE);
+		Map<String, Resource> scenes = model
+				.getResources(ResourceCategory.SCENE);
 		for (String id : scenes.keySet()) {
 			model.removeResource(id, ResourceCategory.SCENE);
 		}
