@@ -36,7 +36,11 @@
  */
 package es.eucm.ead.editor.control.actions.editor;
 
+import java.util.Map;
+
 import com.badlogic.gdx.files.FileHandle;
+
+import es.eucm.ead.editor.assets.EditorGameAssets;
 import es.eucm.ead.editor.control.Commands;
 import es.eucm.ead.editor.control.Commands.CommandListener;
 import es.eucm.ead.editor.control.Commands.CommandsStack;
@@ -44,12 +48,11 @@ import es.eucm.ead.editor.control.Controller;
 import es.eucm.ead.editor.control.actions.EditorAction;
 import es.eucm.ead.editor.control.commands.Command;
 import es.eucm.ead.editor.exporter.Exporter;
+import es.eucm.ead.editor.model.Model.Resource;
 import es.eucm.ead.editor.model.Q;
 import es.eucm.ead.schema.editor.components.Versions;
 import es.eucm.ead.schema.entities.ModelEntity;
 import es.eucm.ead.schemax.JsonExtension;
-
-import java.util.Map;
 
 /**
  * <p>
@@ -61,6 +64,14 @@ import java.util.Map;
  * </dl>
  */
 public class Save extends EditorAction implements CommandListener {
+
+	/**
+	 * The suffix appended to the files that are being replaced by the newer
+	 * version. These temporal files are kept until the updated versions are
+	 * correctly written to disk in case some unexpected error happens while
+	 * saving and we have to go back to the temporal backup file.
+	 */
+	private static final String TEMP_FILE_SUFFIX = ".backup";
 
 	/**
 	 * To be updated when the Model API Changes (rarely)
@@ -92,69 +103,66 @@ public class Save extends EditorAction implements CommandListener {
 	 * target="_blank">https://github.com/e-ucm/ead/wiki/Model-API-versions</a>
 	 * and <a href="https://github.com/e-ucm/ead/wiki/Releasing"
 	 * target="_blank">https://github.com/e-ucm/ead/wiki/Releasing</a>)</li>
-	 * <li>Removes all json files from the project. That is to ensure that if an
-	 * entity was deleted from the model, it is actually removed from presistent
-	 * state.</li>
-	 * <li>Iterates through the model's entities, and saves them to disk. For
-	 * each entity, it determines its relative path inside the project.</li>
+	 * <li>Removes all the modified files from the project. That is to ensure
+	 * that if an entity was deleted from the model, it is actually removed from
+	 * persistent state.</li>
+	 * <li>Iterates through the model's entities, and saves the modified
+	 * resources to disk.</li>
 	 * </ol>
 	 */
 	private void save() {
 		updateGameVersions();
-		removeAllJsonFilesPersistently();
-		for (Map.Entry<String, Object> nextEntry : controller.getModel()
+		deleteRemovedResources();
+		EditorGameAssets gameAssets = controller.getEditorGameAssets();
+
+		for (Map.Entry<String, Resource> nextEntry : controller.getModel()
 				.listNamedResources()) {
-			Object resource = nextEntry.getValue();
-			if (resource instanceof ModelEntity) {
-				ModelEntity currentEntity = (ModelEntity) resource;
-				Exporter.createInitComponent(currentEntity);
+
+			Resource resource = nextEntry.getValue();
+			if (resource.isModified()) {
+
+				FileHandle oldFile = gameAssets.resolve(nextEntry.getKey());
+				FileHandle tmpFile = null;
+				boolean exists = oldFile.exists();
+				if (exists) {
+					tmpFile = oldFile
+							.sibling(oldFile.name() + TEMP_FILE_SUFFIX);
+					oldFile.moveTo(tmpFile);
+				}
+				if (resource.getObject() instanceof ModelEntity) {
+					ModelEntity currentEntity = (ModelEntity) resource
+							.getObject();
+					Exporter.createInitComponent(currentEntity);
+				}
+				gameAssets.toJsonPath(resource.getObject(), nextEntry.getKey());
+				if (exists) {
+					tmpFile.delete();
+				}
 			}
-			controller.getEditorGameAssets().toJsonPath(resource,
-					nextEntry.getKey());
 		}
 		controller.getCommands().updateSavePoint();
+	}
+
+	/**
+	 * Deletes the removed resources available in the model if their id ends
+	 * with {@link JsonExtension#DOT_JSON}, see
+	 * {@link JsonExtension#hasJsonEnd(String)}.
+	 */
+	private void deleteRemovedResources() {
+		EditorGameAssets gameAssets = controller.getEditorGameAssets();
+		for (String name : controller.getModel().getRemovedResources()) {
+			if (JsonExtension.hasJsonEnd(name)) {
+				gameAssets.resolve(name).delete();
+			}
+		}
 	}
 
 	private void updateGameVersions() {
 		String appVersion = controller.getAppVersion();
 		ModelEntity game = controller.getModel().getGame();
-		Q.getComponent(game, Versions.class).setAppVersion(appVersion);
-		Q.getComponent(game, Versions.class).setModelVersion(MODEL_API_VERSION);
-	}
-
-	private void removeAllJsonFilesPersistently() {
-		String loadingPath = controller.getEditorGameAssets().getLoadingPath();
-		deleteJsonFilesRecursively(controller.getEditorGameAssets().absolute(
-				loadingPath));
-	}
-
-	/**
-	 * Deletes the json files from a directory recursively
-	 * 
-	 * @param directory
-	 *            The file object pointing to the root directory from where json
-	 *            files must be deleted
-	 */
-	private void deleteJsonFilesRecursively(FileHandle directory) {
-		// Delete dir contents
-		if (!directory.exists() || !directory.isDirectory())
-			return;
-
-		for (FileHandle child : directory.list()) {
-			if (child.isDirectory()) {
-				deleteJsonFilesRecursively(child);
-			} else {
-				if (JsonExtension.hasJsonExtension(child.extension())) {
-					child.delete();
-				}
-			}
-
-		}
-
-		// Remove the directory if it's empty.
-		if (directory.list().length == 0) {
-			directory.deleteDirectory();
-		}
+		Versions versions = Q.getComponent(game, Versions.class);
+		versions.setAppVersion(appVersion);
+		versions.setModelVersion(MODEL_API_VERSION);
 	}
 
 	@Override
