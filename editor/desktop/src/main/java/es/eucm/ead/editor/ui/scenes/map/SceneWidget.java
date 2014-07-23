@@ -56,7 +56,6 @@ import com.badlogic.gdx.utils.Scaling;
 
 import es.eucm.ead.editor.control.Controller;
 import es.eucm.ead.editor.control.Selection;
-import es.eucm.ead.editor.control.actions.editor.CreateThumbnail;
 import es.eucm.ead.editor.control.actions.editor.ShowContextMenu;
 import es.eucm.ead.editor.control.actions.model.ChangeInitialScene;
 import es.eucm.ead.editor.control.actions.model.DeleteScene;
@@ -73,7 +72,6 @@ import es.eucm.ead.engine.I18N;
 import es.eucm.ead.engine.assets.Assets.AssetLoadedCallback;
 import es.eucm.ead.schema.editor.components.Documentation;
 import es.eucm.ead.schema.editor.components.GameData;
-import es.eucm.ead.schema.editor.components.Thumbnail;
 import es.eucm.ead.schema.entities.ModelEntity;
 import es.eucm.ead.schemax.FieldName;
 import es.eucm.ead.schemax.entities.ResourceCategory;
@@ -83,8 +81,6 @@ import es.eucm.ead.schemax.entities.ResourceCategory;
  */
 public class SceneWidget extends Button {
 
-	private static final int THUMBNAIL_HEIGHT = 64;
-	private static final int THUMBNAIL_WIDTH = 128;
 	private static final float PAD = 10F;
 
 	private static final ClickListener contextListener = new ClickListener(
@@ -119,15 +115,12 @@ public class SceneWidget extends Button {
 		this.scene = (ModelEntity) model.getResource(sceneId,
 				ResourceCategory.SCENE);
 
-		controller.action(CreateThumbnail.class, scene, THUMBNAIL_WIDTH,
-				THUMBNAIL_HEIGHT);
-
 		Skin skin = controller.getApplicationAssets().getSkin();
 
 		final Image image = new Image();
 		image.setScaling(Scaling.fit);
 		controller.getEditorGameAssets().get(
-				Q.getComponent(scene, Thumbnail.class).getThumbnail(),
+				Q.getThumbnail(controller, scene).getThumbnail(),
 				Texture.class, new AssetLoadedCallback<Texture>() {
 
 					@Override
@@ -149,6 +142,9 @@ public class SceneWidget extends Button {
 		String initialScene = component.getInitialScene();
 		setInitial(initialScene != null && initialScene.equals(sceneId));
 		model.addFieldListener(component, initialSceneListener);
+
+		Object modelEntity = model.getSelection().getSingle(Selection.SCENE);
+		setChecked(modelEntity == scene);
 
 		Table topRow = new Table();
 		topRow.add(initial).top().left().expand();

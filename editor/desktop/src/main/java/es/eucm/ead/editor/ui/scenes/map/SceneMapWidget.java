@@ -289,10 +289,14 @@ public class SceneMapWidget extends DraggableGridLayout {
 				if (sceneId != null) {
 					Cell cell = Q.getCellFromId(sceneId, sceneMap.getCells());
 					if (cell != null) {
-						SceneWidget sceneWidget = (SceneWidget) getCellAt(
-								cell.getRow(), cell.getColumn()).getWidget();
-						if (sceneWidget != null) {
-							sceneWidget.setChecked(true);
+						es.eucm.ead.editor.view.widgets.layouts.GridLayout.Cell gridCell = getCellAt(
+								cell.getRow(), cell.getColumn());
+						if (gridCell != null) {
+							SceneWidget sceneWidget = (SceneWidget) gridCell
+									.getWidget();
+							if (sceneWidget != null) {
+								sceneWidget.setChecked(true);
+							}
 						}
 					}
 				}

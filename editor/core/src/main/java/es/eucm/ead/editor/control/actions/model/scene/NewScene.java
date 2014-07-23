@@ -89,13 +89,13 @@ public class NewScene extends ModelAction {
 		CompositeCommand compositeCommand = new CompositeCommand();
 		compositeCommand.addCommand(new AddResourceCommand(model, id, scene,
 				ResourceCategory.SCENE));
+		createCell(id, sceneMap, compositeCommand);
 		compositeCommand.addCommand(new AddToListCommand(editState, editState
 				.getSceneorder(), id));
 		compositeCommand.addCommand(setSelection.perform(null, Selection.SCENE,
 				scene));
 		compositeCommand.addCommand(setSelection.perform(Selection.SCENE,
 				Selection.EDITED_GROUP, scene));
-		createCell(id, sceneMap, compositeCommand);
 
 		return compositeCommand;
 	}

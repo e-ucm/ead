@@ -157,6 +157,9 @@ public class GridLayout extends AbstractWidget {
 	}
 
 	public Cell getCellAt(int row, int column) {
+		if (row >= rows || column >= columns) {
+			return null;
+		}
 		return cells.get(row * columns + column);
 	}
 

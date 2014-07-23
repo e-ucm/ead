@@ -63,7 +63,6 @@ import es.eucm.ead.engine.assets.Assets;
 import es.eucm.ead.engine.assets.Assets.AssetLoadedCallback;
 import es.eucm.ead.schema.editor.components.Documentation;
 import es.eucm.ead.schema.editor.components.GameData;
-import es.eucm.ead.schema.editor.components.Thumbnail;
 import es.eucm.ead.schema.entities.ModelEntity;
 import es.eucm.ead.schemax.FieldName;
 
@@ -142,7 +141,7 @@ public class SceneEditionWidget extends LinearLayout implements FieldListener {
 		makeInitial.setDisabled(isInitial(scene));
 
 		controller.getEditorGameAssets().get(
-				Q.getComponent(scene, Thumbnail.class).getThumbnail(),
+				Q.getThumbnail(controller, scene).getThumbnail(),
 				Texture.class, thumbnailCallback, true);
 
 		clearChildren();
