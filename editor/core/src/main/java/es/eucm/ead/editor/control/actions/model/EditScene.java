@@ -78,10 +78,13 @@ public class EditScene extends ModelAction {
 	@Override
 	public Command perform(Object... args) {
 		String sceneId = (String) args[0];
-		ModelEntity scene = (ModelEntity) controller.getModel().getResource(
-				sceneId, ResourceCategory.SCENE);
+		ModelEntity scene = (ModelEntity) controller.getModel()
+				.getResourceObject(sceneId, ResourceCategory.SCENE);
 		CompositeCommand commands = new CompositeCommand();
-		commands.addCommand(setSelection.perform(null, Selection.SCENE, scene));
+		commands.addCommand(setSelection.perform(null, Selection.RESOURCE,
+				sceneId));
+		commands.addCommand(setSelection.perform(Selection.RESOURCE,
+				Selection.SCENE, scene));
 		commands.addCommand(setSelection.perform(Selection.SCENE,
 				Selection.EDITED_GROUP, scene));
 		return commands;
