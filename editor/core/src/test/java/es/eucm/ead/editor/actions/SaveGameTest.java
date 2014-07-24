@@ -36,13 +36,29 @@
  */
 package es.eucm.ead.editor.actions;
 
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.fail;
+
+import java.io.File;
+import java.io.IOException;
+import java.util.Map.Entry;
+
+import org.junit.Test;
+
+import com.badlogic.gdx.utils.ObjectMap;
+
 import es.eucm.ead.editor.assets.EditorGameAssets;
 import es.eucm.ead.editor.control.actions.editor.ForceSave;
 import es.eucm.ead.editor.control.actions.editor.OpenGame;
 import es.eucm.ead.editor.control.actions.editor.Save;
+import es.eucm.ead.editor.control.actions.editor.Undo;
 import es.eucm.ead.editor.control.actions.model.DeleteScene;
 import es.eucm.ead.editor.control.actions.model.RenameScene;
-import es.eucm.ead.editor.model.Model;
+import es.eucm.ead.editor.control.actions.model.scene.NewScene;
+import es.eucm.ead.editor.model.Model.Resource;
 import es.eucm.ead.editor.model.Q;
 import es.eucm.ead.schema.editor.components.Documentation;
 import es.eucm.ead.schema.editor.components.EditState;
@@ -51,16 +67,6 @@ import es.eucm.ead.schema.editor.components.Parent;
 import es.eucm.ead.schema.editor.components.Versions;
 import es.eucm.ead.schema.entities.ModelEntity;
 import es.eucm.ead.schemax.entities.ResourceCategory;
-import org.junit.Test;
-
-import java.io.File;
-import java.io.IOException;
-
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertTrue;
-import static org.junit.Assert.fail;
 
 /**
  * This class is meant to test {@link Save} action . This is the action invoked
@@ -83,7 +89,8 @@ public class SaveGameTest extends ActionTest {
 		File tempDirPath = platform.createTempFile(true);
 		gameFolderPath = tempDirPath.getAbsolutePath();
 		new File(gameFolderPath).mkdirs();
-		controller.getEditorGameAssets().setLoadingPath(gameFolderPath);
+		EditorGameAssets editorGameAssets = controller.getEditorGameAssets();
+		editorGameAssets.setLoadingPath(gameFolderPath);
 
 		// Make initialization of the model
 		model.putResource(ResourceCategory.GAME.getCategoryPrefix(),
@@ -162,8 +169,47 @@ public class SaveGameTest extends ActionTest {
 			fail("Exception in SaveGameTest: " + e.toString());
 		}
 
+		// Let's test that the modified resources are correctly overridden.
+		model.putResource(EditorGameAssets.SCENES_PATH + "scene6.json", scene2);
+		model.getResource(EditorGameAssets.SCENES_PATH + "scene6.json")
+				.setModified(false);
+
+		ObjectMap<String, Long> modifiedLenghts = new ObjectMap<String, Long>();
+		ObjectMap<String, Long> notModifiedLenghts = new ObjectMap<String, Long>();
+		Iterable<Entry<String, Resource>> listNamedResources = model
+				.listNamedResources();
+		for (Entry<String, Resource> entry : listNamedResources) {
+			Long currentLenght = new File(gameFolderPath, entry.getKey())
+					.length();
+			if (entry.getValue().isModified()) {
+				modifiedLenghts.put(entry.getKey(), currentLenght);
+				ModelEntity entity = (ModelEntity) entry.getValue().getObject();
+				// The modified and saved entity will have a bigger length.
+				entity.getComponents().add(new Documentation());
+			} else {
+				notModifiedLenghts.put(entry.getKey(), currentLenght);
+			}
+		}
+
 		// Save the model again
 		controller.action(Save.class);
+
+		for (com.badlogic.gdx.utils.ObjectMap.Entry<String, Long> entry : modifiedLenghts
+				.entries()) {
+			Long currentModifiedLength = new File(gameFolderPath, entry.key)
+					.length();
+			assertTrue("A modified resource wasn't overridden.",
+					entry.value < currentModifiedLength);
+
+		}
+
+		for (com.badlogic.gdx.utils.ObjectMap.Entry<String, Long> entry : notModifiedLenghts
+				.entries()) {
+			Long currentNotModifiedLnegth = new File(gameFolderPath, entry.key)
+					.lastModified();
+			assertEquals("A modified resource wasn't overridden.", entry.value,
+					currentNotModifiedLnegth);
+		}
 
 		// Test new persistent state. game.json,
 		// scenes/scene2.json and scenes/scene3.json (and the associated scene
@@ -186,10 +232,14 @@ public class SaveGameTest extends ActionTest {
 		// Now, test scene 2 has only 1 scene element
 		controller.action(OpenGame.class,
 				new File(gameFolderPath).getAbsolutePath());
-		assertTrue(((ModelEntity) controller.getModel()
-				.getResources(ResourceCategory.SCENE)
-				.get(EditorGameAssets.SCENES_PATH + "scene2.json"))
-				.getChildren().size == 1);
+		assertTrue(((ModelEntity) controller.getModel().getResourceObject(
+				EditorGameAssets.SCENES_PATH + "scene2.json")).getChildren().size == 1);
+
+		// Test that the removed resources are correctly updated
+		controller.action(NewScene.class, "");
+		int removedSize = model.getRemovedResources().size;
+		controller.action(Undo.class);
+		assertTrue(removedSize + 1 == model.getRemovedResources().size);
 
 		// Finally, delete temp dir
 		deleteDirectoryRecursively(new File(gameFolderPath));

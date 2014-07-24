@@ -36,23 +36,23 @@
  */
 package es.eucm.ead.editor.actions;
 
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
+
+import org.junit.Test;
+
 import com.badlogic.gdx.utils.Array;
+
 import es.eucm.ead.editor.control.Selection;
 import es.eucm.ead.editor.control.actions.model.AddSceneElement;
 import es.eucm.ead.editor.control.actions.model.ReplaceEntity;
 import es.eucm.ead.editor.control.actions.model.SetSelection;
 import es.eucm.ead.schema.entities.ModelEntity;
-import org.junit.Test;
-
-import java.net.URISyntaxException;
-
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
 
 public class ReplaceEntityTest extends ActionTest {
 
 	@Test
-	public void testAddSceneElement() throws URISyntaxException {
+	public void testReplaceEntity() {
 		controller.action(SetSelection.class, null, Selection.EDITED_GROUP,
 				new ModelEntity());
 
