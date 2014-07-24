@@ -40,6 +40,7 @@ import ashley.core.Entity;
 import ashley.core.Family;
 import es.eucm.ead.engine.assets.GameAssets;
 import es.eucm.ead.engine.components.I18nTextComponent;
+import es.eucm.ead.engine.processors.AnimationProcessor;
 import es.eucm.ead.engine.processors.CamerasProcessor;
 import es.eucm.ead.engine.processors.ConversationsProcessor;
 import es.eucm.ead.engine.processors.PathProcessor;
@@ -88,6 +89,7 @@ import es.eucm.ead.engine.systems.effects.RemoveComponentExecutor;
 import es.eucm.ead.engine.systems.effects.RemoveEntityExecutor;
 import es.eucm.ead.engine.systems.effects.SetCameraExecutor;
 import es.eucm.ead.engine.systems.effects.SetViewportExecutor;
+import es.eucm.ead.engine.systems.effects.TrackEffectExecutor;
 import es.eucm.ead.engine.systems.effects.TriggerConversationExecutor;
 import es.eucm.ead.engine.systems.effects.controlstructures.ForEachExecutor;
 import es.eucm.ead.engine.systems.effects.controlstructures.IfExecutor;
@@ -95,6 +97,10 @@ import es.eucm.ead.engine.systems.effects.controlstructures.IfThenElseIfExecutor
 import es.eucm.ead.engine.systems.effects.controlstructures.RepeatExecutor;
 import es.eucm.ead.engine.systems.effects.controlstructures.ScriptCallExecutor;
 import es.eucm.ead.engine.systems.effects.controlstructures.WhileExecutor;
+import es.eucm.ead.engine.systems.effects.effecttotween.AlphaEffectToTween;
+import es.eucm.ead.engine.systems.effects.effecttotween.MoveEffectToTween;
+import es.eucm.ead.engine.systems.effects.effecttotween.RotateEffectToTween;
+import es.eucm.ead.engine.systems.effects.effecttotween.ScaleEffectToTween;
 import es.eucm.ead.engine.systems.positiontracking.ChaseEntitySystem;
 import es.eucm.ead.engine.systems.positiontracking.MoveByEntitySystem;
 import es.eucm.ead.engine.systems.tweens.TweenSystem;
@@ -108,6 +114,7 @@ import es.eucm.ead.engine.systems.tweens.tweencreators.TimelineCreator;
 import es.eucm.ead.engine.variables.VariablesManager;
 import es.eucm.ead.engine.variables.VarsContext;
 import es.eucm.ead.schema.assets.Sound;
+import es.eucm.ead.schema.components.Animation;
 import es.eucm.ead.schema.components.Conversations;
 import es.eucm.ead.schema.components.PathBoundary;
 import es.eucm.ead.schema.components.RefComponent;
@@ -134,15 +141,20 @@ import es.eucm.ead.schema.components.tweens.ScaleTween;
 import es.eucm.ead.schema.components.tweens.Timeline;
 import es.eucm.ead.schema.effects.AddComponent;
 import es.eucm.ead.schema.effects.AddEntity;
+import es.eucm.ead.schema.effects.AlphaEffect;
 import es.eucm.ead.schema.effects.ChangeEntityProperty;
 import es.eucm.ead.schema.effects.ChangeVar;
 import es.eucm.ead.schema.effects.EndGame;
 import es.eucm.ead.schema.effects.GoScene;
 import es.eucm.ead.schema.effects.GoTo;
+import es.eucm.ead.schema.effects.MoveEffect;
 import es.eucm.ead.schema.effects.RemoveComponent;
 import es.eucm.ead.schema.effects.RemoveEntity;
+import es.eucm.ead.schema.effects.RotateEffect;
+import es.eucm.ead.schema.effects.ScaleEffect;
 import es.eucm.ead.schema.effects.SetCamera;
 import es.eucm.ead.schema.effects.SetViewport;
+import es.eucm.ead.schema.effects.TrackEffect;
 import es.eucm.ead.schema.effects.TriggerConversation;
 import es.eucm.ead.schema.effects.controlstructures.ForEach;
 import es.eucm.ead.schema.effects.controlstructures.If;
@@ -227,6 +239,20 @@ public class DefaultEngineInitializer implements EngineInitializer {
 				new AddEntityExecutor(entitiesLoader, variablesManager));
 		effectsSystem.registerEffectExecutor(SetCamera.class,
 				new SetCameraExecutor(gameView, variablesManager));
+
+		TrackEffectExecutor timelineExecutor = new TrackEffectExecutor(
+				effectsSystem);
+		timelineExecutor.registerTween(MoveEffect.class,
+				new MoveEffectToTween());
+		timelineExecutor.registerTween(ScaleEffect.class,
+				new ScaleEffectToTween());
+		timelineExecutor.registerTween(AlphaEffect.class,
+				new AlphaEffectToTween());
+		timelineExecutor.registerTween(RotateEffect.class,
+				new RotateEffectToTween());
+		effectsSystem.registerEffectExecutor(TrackEffect.class,
+				timelineExecutor);
+
 		// Control structures
 		effectsSystem.registerEffectExecutor(ScriptCall.class,
 				new ScriptCallExecutor(effectsSystem, variablesManager));
@@ -315,6 +341,9 @@ public class DefaultEngineInitializer implements EngineInitializer {
 				tweensProcessor);
 		componentLoader.registerComponentProcessor(Timeline.class,
 				tweensProcessor);
+
+		componentLoader.registerComponentProcessor(Animation.class,
+				new AnimationProcessor(gameLoop));
 
 		componentLoader.registerComponentProcessor(Visibility.class,
 				new VisibilityProcessor(gameLoop));

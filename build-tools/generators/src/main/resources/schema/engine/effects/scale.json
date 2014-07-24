@@ -1,0 +1,18 @@
+{
+    "additionalProperties": false,
+    "extends": {
+        "$ref": "animationeffect.json"
+    },
+    "javaType": "es.eucm.ead.schema.effects.ScaleEffect",
+    "type": "object",
+    "properties": {
+        "scaleX": {
+            "type": "number",
+            "description": "target x scale for the effect"
+        },
+        "scaleY": {
+            "type": "number",
+            "description": "target y scale for the effect"
+        }
+    }
+}

@@ -1,0 +1,18 @@
+{
+    "additionalProperties": false,
+    "extends": {
+        "$ref": "effect.json"
+    },
+    "javaType": "es.eucm.ead.schema.effects.AnimationEffect",
+    "type": "object",
+    "properties": {
+        "duration": {
+            "type": "number",
+            "description": "duration of effect animation"
+        },
+        "relative":{
+        	"type": "boolean",
+        	"description": "if the effect is relative to the actual value of the target"
+        }
+    }
+}
