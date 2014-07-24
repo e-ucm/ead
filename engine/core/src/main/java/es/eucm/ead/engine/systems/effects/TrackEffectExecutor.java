@@ -72,15 +72,15 @@ public class TrackEffectExecutor extends EffectExecutor<TrackEffect> {
 	}
 
 	@Override
-	public void execute(Entity target, TrackEffect effect) {
+	public void execute(Entity target, TrackEffect track) {
 		Array array = new Array();
 
-		for (TimedEffect track : effect.getEffects()) {
+		for (TimedEffect timedEffect : track.getEffects()) {
 
 			Behavior behavior = new Behavior();
 
 			Timer event = new Timer();
-			event.setTime(track.getTime());
+			event.setTime(timedEffect.getTime());
 			event.setRepeat(1);
 			event.setCondition("btrue");
 
@@ -88,21 +88,19 @@ public class TrackEffectExecutor extends EffectExecutor<TrackEffect> {
 
 			Array effectsArray = behavior.getEffects();
 
-			for (Effect e : track.getEffects()) {
-				if (e instanceof AnimationEffect) {
-					AddComponent addComponent = new AddComponent();
+			Effect effect = timedEffect.getEffect();
 
-					AnimationEffect aux = (AnimationEffect) e;
+			if (effect instanceof AnimationEffect) {
+				AddComponent addComponent = new AddComponent();
 
-					Tween tween = tweensMap.get(e.getClass())
-							.effectToTween(aux);
-					addComponent.setComponent(tween);
-					addComponent.setTarget(e.getTarget());
+				Tween tween = tweensMap.get(effect.getClass()).effectToTween(
+						(AnimationEffect) effect);
+				addComponent.setComponent(tween);
+				addComponent.setTarget(effect.getTarget());
 
-					effectsArray.add(addComponent);
-				} else {
-					effectsArray.add(e);
-				}
+				effectsArray.add(addComponent);
+			} else {
+				effectsArray.add(effect);
 			}
 
 			AddComponent addBehavior = new AddComponent();

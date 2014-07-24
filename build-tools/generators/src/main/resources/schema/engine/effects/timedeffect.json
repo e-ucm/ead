@@ -4,11 +4,8 @@
     "type": "object",
     "description": "Represents an effect with delay",
     "properties": {
-        "effects": {
-            "type": "array",
-            "items": {
-                "$ref": "effect.json"
-            },
+        "effect": {
+            "$ref": "effect.json",
             "description": "effects to throw"
         },
         "time": {

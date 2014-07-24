@@ -56,7 +56,7 @@ public class AnimationProcessor extends ComponentProcessor<Animation> {
 
 		Array effects = component.getEffects();
 
-		TimersComponent timer = new TimersComponent();
+		TimersComponent timer = gameLoop.createComponent(TimersComponent.class);
 		Timer t = new Timer();
 		t.setTime(0);
 		t.setCondition("btrue");

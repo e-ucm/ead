@@ -222,22 +222,25 @@ public class AnimationTest extends EngineTest implements MockEffectListener {
 		scaleEffect.setRelative(true);
 
 		// Creates the effects with delay used in tracks
-		TimedEffect effect1 = createTimerEffect(0.5f, moveEffect, scaleEffect);
-		TimedEffect effect2 = createTimerEffect(0.1f, new MockEffect(this),
-				rotateEffect);
-		TimedEffect effect3 = createTimerEffect(1.2f, alphaEffect);
+		TimedEffect effect1 = createTimedEffect(0.5f, moveEffect);
+		TimedEffect effect2 = createTimedEffect(0.1f, new MockEffect(this));
+		TimedEffect effect3 = createTimedEffect(0.5f, scaleEffect);
+		TimedEffect effect4 = createTimedEffect(0.1f, rotateEffect);
+		TimedEffect effect5 = createTimedEffect(1.2f, alphaEffect);
 
-		// Creates a first track with effect1 and effect2
+		// Creates a first track with effect1, effect2 and effect5
 		TrackEffect line1 = new TrackEffect();
 		Array<TimedEffect> effects1 = new Array<TimedEffect>();
 		effects1.add(effect1);
 		effects1.add(effect2);
+		effects1.add(effect5);
 		line1.setEffects(effects1);
 
-		// Creates a second track with effect3
+		// Creates a second track with effect3 and effect4
 		TrackEffect line2 = new TrackEffect();
 		Array<TimedEffect> effects2 = new Array<TimedEffect>();
-		effects1.add(effect3);
+		effects2.add(effect3);
+		effects2.add(effect4);
 		line2.setEffects(effects2);
 
 		// Creates a complete Animation with two tracks
@@ -317,13 +320,9 @@ public class AnimationTest extends EngineTest implements MockEffectListener {
 		return owner;
 	}
 
-	public TimedEffect createTimerEffect(float time, Effect... effect) {
+	public TimedEffect createTimedEffect(float time, Effect effect) {
 		TimedEffect timerEffect = new TimedEffect();
-		Array array = new Array();
-		for (Effect e : effect) {
-			array.add(e);
-		}
-		timerEffect.setEffects(array);
+		timerEffect.setEffect(effect);
 		timerEffect.setTime(time);
 
 		return timerEffect;
