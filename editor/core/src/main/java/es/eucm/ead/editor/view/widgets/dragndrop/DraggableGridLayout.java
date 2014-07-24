@@ -39,7 +39,7 @@ package es.eucm.ead.editor.view.widgets.dragndrop;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.Event;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
-import com.badlogic.gdx.scenes.scene2d.ui.Container;
+import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.utils.DragAndDrop.Payload;
 import com.badlogic.gdx.scenes.scene2d.utils.DragAndDrop.Source;
 import com.badlogic.gdx.scenes.scene2d.utils.DragAndDrop.Target;
@@ -60,13 +60,13 @@ public class DraggableGridLayout extends DraggableScrollPane {
 
 	private GridLayout gridLayout;
 
-	public DraggableGridLayout() {
-		this(INITIAL_ROWS, INITIAL_COLUMNS);
+	public DraggableGridLayout(Skin skin) {
+		this(INITIAL_ROWS, INITIAL_COLUMNS, skin);
 	}
 
-	public DraggableGridLayout(int initialRows, int initialColumns) {
+	public DraggableGridLayout(int initialRows, int initialColumns, Skin skin) {
 		super(null);
-		setWidget(gridLayout = new GridLayout(initialRows, initialColumns));
+		setWidget(gridLayout = new GridLayout(initialRows, initialColumns, skin));
 		addTarget(createTarget());
 	}
 
@@ -76,27 +76,24 @@ public class DraggableGridLayout extends DraggableScrollPane {
 	 * 
 	 * @param actor
 	 *            may be null.
-	 * @return the Container cell in order to adjust constraints such as fill,
-	 *         align, etc.
+	 * @return the cell in order to adjust constraints such as fill, align, etc.
 	 */
-	public Container add(Actor actor) {
+	public Cell add(Actor actor) {
 		if (actor != null) {
 			addSource(newSource(actor));
 		}
 		return gridLayout.add(actor);
 	}
 
-	public Container addAt(int row, int col, Actor actor) {
+	public Cell addAt(int row, int col, Actor actor) {
 		if (actor != null) {
 			addSource(newSource(actor));
 		}
 		return gridLayout.addAt(row, col, actor);
 	}
 
-	@Override
-	public void clearChildren() {
-		clearDrag();
-		super.clearChildren();
+	public Cell getCellAt(int row, int column) {
+		return gridLayout.getCellAt(row, column);
 	}
 
 	/**

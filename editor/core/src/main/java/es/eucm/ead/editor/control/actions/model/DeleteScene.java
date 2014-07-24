@@ -46,8 +46,11 @@ import es.eucm.ead.editor.control.commands.ListCommand;
 import es.eucm.ead.editor.control.commands.ResourceCommand.RemoveResourceCommand;
 import es.eucm.ead.editor.model.Q;
 import es.eucm.ead.editor.view.builders.classic.dialogs.InfoDialogBuilder;
+import es.eucm.ead.engine.I18N;
 import es.eucm.ead.schema.editor.components.EditState;
 import es.eucm.ead.schema.editor.components.GameData;
+import es.eucm.ead.schema.editor.components.SceneMap;
+import es.eucm.ead.schema.editor.data.Cell;
 import es.eucm.ead.schema.entities.ModelEntity;
 import es.eucm.ead.schemax.FieldName;
 import es.eucm.ead.schemax.entities.ResourceCategory;
@@ -95,11 +98,10 @@ public class DeleteScene extends ModelAction {
 			if (verbose) {
 				// Select InfoDialogBuilder as dialog for showing a message
 				// explaining why this scene won't be deleted
-
-				controller.getViews().showDialog(
-						InfoDialogBuilder.class,
-						controller.getApplicationAssets().getI18N()
-								.m("scene.delete.error-message"));
+				I18N i18n = controller.getApplicationAssets().getI18N();
+				controller.getViews().showDialog(InfoDialogBuilder.class,
+						i18n.m("scene.delete"),
+						i18n.m("scene.delete.error-message"));
 			}
 		}
 		// There are more than only one scene
@@ -111,8 +113,7 @@ public class DeleteScene extends ModelAction {
 			EditState editState = Q.getComponent(game, EditState.class);
 
 			// 2) If the scene is the "initialscene", change the initial one
-			GameData gameData = Q.getComponent(controller.getModel().getGame(),
-					GameData.class);
+			GameData gameData = Q.getComponent(game, GameData.class);
 			if (gameData.getInitialScene().equals(id)) {
 				if (alternateScene == null) {
 					alternateScene = findAlternateScene(id);
@@ -132,6 +133,12 @@ public class DeleteScene extends ModelAction {
 			// 4) Delete the sceneId from gameMetadata.getSceneorder()
 			commandList.add(new ListCommand.RemoveFromListCommand(editState,
 					editState.getSceneorder(), id));
+
+			// 5) Delete the cell from the scene map
+			SceneMap sceneMap = Q.getComponent(game, SceneMap.class);
+			Array<Cell> cells = sceneMap.getCells();
+			commandList.add(new ListCommand.RemoveFromListCommand(sceneMap,
+					cells, Q.getCellFromId(id, cells)));
 
 			// Execute the composite command
 			CompositeCommand deleteSceneCommand = new CompositeCommand(

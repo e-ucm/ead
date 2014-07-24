@@ -86,6 +86,9 @@ public class StringController extends ValueController<TextField, String> {
 		}
 		if (!value.equals(widget.getText())) {
 			widget.setText(value);
+			// TextField#setText resets cursor position so we must avoid this
+			// behavior, specially while performing an undo/redo action
+			widget.setCursorPosition(value.length());
 		}
 	}
 }

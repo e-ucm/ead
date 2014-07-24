@@ -39,25 +39,28 @@ package es.eucm.ead.editor.model;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.utils.Array;
+import com.badlogic.gdx.utils.Scaling;
 import com.badlogic.gdx.utils.reflect.ClassReflection;
 import com.badlogic.gdx.utils.reflect.ReflectionException;
 
-import es.eucm.ead.editor.control.commands.CompositeCommand;
-import es.eucm.ead.editor.control.commands.FieldCommand;
-import es.eucm.ead.editor.control.commands.ListCommand.AddToListCommand;
+import es.eucm.ead.editor.control.Controller;
+import es.eucm.ead.editor.control.actions.editor.CreateThumbnail;
 import es.eucm.ead.engine.entities.EngineEntity;
 import es.eucm.ead.schema.components.ModelComponent;
 import es.eucm.ead.schema.editor.components.Documentation;
 import es.eucm.ead.schema.editor.components.Parent;
 import es.eucm.ead.schema.editor.components.SceneMap;
+import es.eucm.ead.schema.editor.components.Thumbnail;
 import es.eucm.ead.schema.editor.data.Cell;
 import es.eucm.ead.schema.entities.ModelEntity;
-import es.eucm.ead.schemax.FieldName;
 
 /**
  * A class with statics methods to query parts of the model
  */
 public class Q {
+
+	private static final int THUMBNAIL_HEIGHT = 64;
+	private static final int THUMBNAIL_WIDTH = 64;
 
 	/**
 	 * Returns the component for the class. If the element has no component of
@@ -222,5 +225,56 @@ public class Q {
 			}
 		}
 		return null;
+	}
+
+	/**
+	 * 
+	 * @param sceneId
+	 * @param cells
+	 * @return the {@link Cell} with the given sceneId or null if there is none.
+	 */
+	public static Cell getCellFromId(String sceneId, Array<Cell> cells) {
+		for (int i = 0; i < cells.size; ++i) {
+			Cell cell = cells.get(i);
+			if (sceneId.equals(cell.getSceneId())) {
+				return cell;
+			}
+		}
+		return null;
+	}
+
+	/**
+	 * Invokes {@link #getThumbnail(Controller, Object...)} with
+	 * {@value #THUMBNAIL_WIDTH} width, {@value #THUMBNAIL_HEIGHT} height and
+	 * {@link Scaling#fill}.
+	 * 
+	 * @param controller
+	 * @param entity
+	 * @return
+	 */
+	public static Thumbnail getThumbnail(Controller controller,
+			ModelEntity entity) {
+		return getThumbnail(controller, entity, THUMBNAIL_WIDTH,
+				THUMBNAIL_HEIGHT, Scaling.fill);
+	}
+
+	/**
+	 * Assures that the returned thumbnail has a valid path pointing to an
+	 * image.
+	 * 
+	 * @param controller
+	 * @param args
+	 *            the arguments used to create the thumbnail in case it wasn't
+	 *            already created. See {@link CreateThumbnail} for more info.
+	 * @return
+	 */
+	public static Thumbnail getThumbnail(Controller controller, Object... args) {
+		Thumbnail thumbnail = getComponent((ModelEntity) args[0],
+				Thumbnail.class);
+		if (thumbnail.getThumbnail() == null) {
+			controller.action(CreateThumbnail.class, args);
+		}
+
+		return thumbnail;
 	}
 }

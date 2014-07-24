@@ -329,3 +329,5 @@ key.shift = Mayúscula
 key.shift.tooltip = Si la tecla Mayúsucula tiene que estar presionada para activar el evento
 maintoolbar.help = Abrir ayuda online
 url.mainhelp = http://www.e-ucm.es/ead2blog/
+documentation.name = Nombre
+documentation.description = Descripción

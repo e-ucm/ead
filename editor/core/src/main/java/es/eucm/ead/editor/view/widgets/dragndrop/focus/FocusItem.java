@@ -37,8 +37,8 @@
 package es.eucm.ead.editor.view.widgets.dragndrop.focus;
 
 import com.badlogic.gdx.graphics.g2d.Batch;
+import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.ui.Button;
-import com.badlogic.gdx.scenes.scene2d.ui.Widget;
 import com.badlogic.gdx.scenes.scene2d.utils.Drawable;
 
 import es.eucm.ead.editor.control.Controller;
@@ -50,10 +50,10 @@ import es.eucm.ead.editor.control.Controller;
 public class FocusItem extends Button {
 
 	private Drawable focus;
-	protected Widget widget;
+	protected Actor widget;
 	private boolean focused;
 
-	public FocusItem(Widget widget, Controller controller) {
+	public FocusItem(Actor widget, Controller controller) {
 		super(controller.getApplicationAssets().getSkin()
 				.get("default", FocusItemStyle.class));
 		this.focus = ((FocusItemStyle) getStyle()).focus;

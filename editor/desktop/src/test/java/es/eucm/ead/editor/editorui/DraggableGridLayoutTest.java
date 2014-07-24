@@ -60,7 +60,7 @@ public class DraggableGridLayoutTest extends EditorUITest {
 		Skin skin = controller.getApplicationAssets().getSkin();
 		gameAssets.setLoadingPath("cooldemo", true);
 
-		DraggableGridLayout gridPane = new DraggableGridLayout(4, 4);
+		DraggableGridLayout gridPane = new DraggableGridLayout(4, 4, null);
 		for (int i = 1; i < 25; ++i) {
 			final Image image = new Image();
 			image.setScaling(Scaling.fit);

@@ -144,6 +144,10 @@ public class FocusItemList extends DraggableLinearLayout {
 			return actor;
 		}
 
+		public void setActor(Actor actor) {
+			this.actor = actor;
+		}
+
 		@Override
 		public void reset() {
 			super.reset();

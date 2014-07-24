@@ -36,12 +36,16 @@
  */
 package es.eucm.ead.editor.view.widgets.layouts;
 
+import com.badlogic.gdx.graphics.Color;
+import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.ui.Container;
-import com.badlogic.gdx.scenes.scene2d.ui.WidgetGroup;
+import com.badlogic.gdx.scenes.scene2d.ui.Skin;
+import com.badlogic.gdx.scenes.scene2d.utils.Drawable;
 import com.badlogic.gdx.scenes.scene2d.utils.Layout;
 import com.badlogic.gdx.utils.Array;
 
+import es.eucm.ead.editor.view.widgets.AbstractWidget;
 import es.eucm.ead.editor.view.widgets.dragndrop.DraggableGridLayout;
 
 /**
@@ -67,12 +71,13 @@ import es.eucm.ead.editor.view.widgets.dragndrop.DraggableGridLayout;
  * 
  * </pre>
  */
-public class GridLayout extends WidgetGroup {
+public class GridLayout extends AbstractWidget {
 
 	private static final int INITIAL_ROWS = 1;
 	private static final int INITIAL_COLUMNS = 1;
 
 	private int rows;
+	private Skin skin;
 	private int columns;
 	private Array<Cell> cells;
 
@@ -81,13 +86,14 @@ public class GridLayout extends WidgetGroup {
 	 * {@value #INITIAL_COLUMNS} columns.
 	 */
 	public GridLayout() {
-		this(INITIAL_ROWS, INITIAL_COLUMNS);
+		this(INITIAL_ROWS, INITIAL_COLUMNS, null);
 	}
 
-	public GridLayout(int initialRows, int initialColumns) {
+	public GridLayout(int initialRows, int initialColumns, Skin skin) {
 		rows = initialRows;
 		columns = initialColumns;
 		cells = new Array<Cell>(rows * columns);
+		this.skin = skin;
 		clearCells();
 	}
 
@@ -143,17 +149,18 @@ public class GridLayout extends WidgetGroup {
 		return add(actor, increaseRow);
 	}
 
-	public Container addAt(int row, int column, Actor actor) {
-		if (row >= rows) {
-			addRowAtTheEnd();
-		}
-		if (column > columns) {
-			addColumnAtTheEnd();
-		}
+	public Cell addAt(int row, int column, Actor actor) {
 		int index = row * columns + column;
 		Cell cell = cells.get(index);
 		cell.setWidget(actor);
 		return cell;
+	}
+
+	public Cell getCellAt(int row, int column) {
+		if (row >= rows || column >= columns) {
+			return null;
+		}
+		return cells.get(row * columns + column);
 	}
 
 	@Override
@@ -193,8 +200,7 @@ public class GridLayout extends WidgetGroup {
 			float y = getHeight() - (cell.row + 1) * prefTileHeight;
 			float width = prefTileWidth;
 			float height = prefTileHeight;
-			cell.setBounds(Math.round(x), Math.round(y), Math.round(width),
-					Math.round(height));
+			setBounds(cell, x, y, width, height);
 			cell.validate();
 		}
 	}
@@ -217,7 +223,7 @@ public class GridLayout extends WidgetGroup {
 		int beginIndex = row * columns;
 		for (int j = 0; j < columns; ++j) {
 			int index = beginIndex + j;
-			Cell newCell = new Cell(null, row, j);
+			Cell newCell = new Cell(null, row, j, skin);
 			cells.insert(index, newCell);
 			addActorAt(index, newCell);
 		}
@@ -248,7 +254,7 @@ public class GridLayout extends WidgetGroup {
 		++columns;
 		for (int i = 0; i < rows; ++i) {
 			int index = i * columns + column;
-			Cell newCell = new Cell(null, i, column);
+			Cell newCell = new Cell(null, i, column, skin);
 			cells.insert(i * columns + column, newCell);
 			addActorAt(index, newCell);
 		}
@@ -272,7 +278,7 @@ public class GridLayout extends WidgetGroup {
 		cells.clear();
 		for (int i = 0; i < rows; ++i) {
 			for (int j = 0; j < columns; ++j) {
-				Cell cell = new Cell(null, i, j);
+				Cell cell = new Cell(null, i, j, skin);
 				cells.add(cell);
 				super.addActor(cell);
 			}
@@ -298,16 +304,22 @@ public class GridLayout extends WidgetGroup {
 	 * the layout.
 	 */
 	public static class Cell extends Container {
+
+		private CellStyle style;
 		private int column, row;
 
 		public Cell() {
-			this(null, 0, 0);
+			this(null, 0, 0, null);
 		}
 
-		public Cell(Actor a, int row, int col) {
+		public Cell(Actor a, int row, int col, Skin skin) {
 			setWidget(a);
 			this.column = col;
 			this.row = row;
+			if (skin != null) {
+				style = skin.get(CellStyle.class);
+				setColor(style.color);
+			}
 		}
 
 		/**
@@ -320,6 +332,29 @@ public class GridLayout extends WidgetGroup {
 		public boolean contains(float x, float y) {
 			return this.getX() <= x && this.getX() + this.getWidth() >= x
 					&& this.getY() <= y && this.getY() + this.getHeight() >= y;
+		}
+
+		@Override
+		public void draw(Batch batch, float parentAlpha) {
+			validate();
+			drawBackground(batch, parentAlpha, 0, 0);
+			if (getWidget() != null) {
+				drawChildren(batch, parentAlpha);
+			}
+		}
+
+		@Override
+		protected void drawBackground(Batch batch, float parentAlpha, float x,
+				float y) {
+			if (style != null) {
+				x = getX();
+				y = getY();
+				float width = getWidth();
+				float height = getHeight();
+				batch.setColor(getColor());
+				style.background.draw(batch, x, y, width, height);
+				style.border.draw(batch, x, y, width, height);
+			}
 		}
 
 		@Override
@@ -354,6 +389,22 @@ public class GridLayout extends WidgetGroup {
 		public int getColumn() {
 			return column;
 		}
-	}
 
+		public static class CellStyle {
+
+			private Drawable background;
+			private Drawable border;
+			private Color color;
+
+			public CellStyle() {
+
+			}
+
+			public CellStyle(Drawable background, Drawable border, Color color) {
+				this.background = background;
+				this.border = border;
+				this.color = color;
+			}
+		}
+	}
 }

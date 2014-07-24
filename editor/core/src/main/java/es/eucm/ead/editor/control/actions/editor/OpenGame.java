@@ -246,7 +246,7 @@ public class OpenGame extends EditorAction implements FileChooserListener,
 				ResourceCategory.SCENE).entrySet();
 		for (Entry<String, Object> entry : entrySet) {
 			String sceneId = entry.getKey();
-			if (!hasCell(sceneId, cells)) {
+			if (Q.getCellFromId(sceneId, cells) == null) {
 
 				Cell cell = Q.createCell(sceneId, sceneMap);
 				if (cell != null) {
@@ -267,12 +267,4 @@ public class OpenGame extends EditorAction implements FileChooserListener,
 		}
 	}
 
-	private boolean hasCell(String sceneId, Array<Cell> cells) {
-		for (Cell cell : cells) {
-			if (sceneId.equals(cell.getSceneId())) {
-				return true;
-			}
-		}
-		return false;
-	}
 }

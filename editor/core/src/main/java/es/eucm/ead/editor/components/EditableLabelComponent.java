@@ -46,7 +46,7 @@ import es.eucm.ead.schema.components.controls.Label;
 public class EditableLabelComponent extends TextComponent<EditableLabel> {
 
 	private static final int DEFAULT_TAP_COUNT = 1;
-	
+
 	private EditableLabel label;
 
 	private Label text;

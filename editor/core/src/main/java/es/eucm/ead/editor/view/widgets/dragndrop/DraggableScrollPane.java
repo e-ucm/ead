@@ -56,8 +56,8 @@ public class DraggableScrollPane extends ScrollPane {
 
 	private static final Vector2 TMP = new Vector2();
 
-	private static final float DEFAULT_ACTION_ZONE = 90F;
-	private static final float DEAFULT_SPEED = 10F;
+	private static final float DEFAULT_ACTION_ZONE = 75F;
+	private static final float DEAFULT_SPEED = 15F;
 
 	/**
 	 * The width/height of the left/up and right/down zone on which the scroll
@@ -105,25 +105,28 @@ public class DraggableScrollPane extends ScrollPane {
 		if (drag.isDragging()) {
 
 			getStage().getRoot().stageToLocalCoordinates(
-					TMP.set(Gdx.input.getX(), Gdx.input.getY()));
+					TMP.set(Gdx.input.getX(), Gdx.graphics.getHeight()
+							- Gdx.input.getY()));
 
-			if (TMP.x < actionZone) {
-				float deltaX = (1f - TMP.x / actionZone);
+			float x = getX();
+			if (TMP.x < x + actionZone) {
+				float deltaX = (1f - (TMP.x - x) / (actionZone));
 				setScrollX(getScrollX() - deltaX * scrollSpeed);
 
-			} else if (TMP.x > getWidth() - actionZone) {
-				float deltaX = (1f - (getWidth() - TMP.x) / actionZone);
+			} else if (TMP.x > x + getWidth() - actionZone) {
+				float deltaX = (1f - ((x + getWidth()) - TMP.x) / actionZone);
 				setScrollX(getScrollX() + deltaX * scrollSpeed);
 
 			}
 
-			if (TMP.y < actionZone) {
-				float deltaY = (1f - TMP.y / actionZone);
-				setScrollY(getScrollY() - deltaY * scrollSpeed);
-
-			} else if (TMP.y > getHeight() - actionZone) {
-				float deltaY = (1f - (getHeight() - TMP.y) / actionZone);
+			float y = getY();
+			if (TMP.y < y + actionZone) {
+				float deltaY = (1f - (TMP.y - y) / actionZone);
 				setScrollY(getScrollY() + deltaY * scrollSpeed);
+
+			} else if (TMP.y > y + getHeight() - actionZone) {
+				float deltaY = (1f - ((y + getHeight()) - TMP.y) / actionZone);
+				setScrollY(getScrollY() - deltaY * scrollSpeed);
 
 			}
 		}
@@ -162,6 +165,12 @@ public class DraggableScrollPane extends ScrollPane {
 
 	protected void clearDrag() {
 		drag.clear();
+	}
+
+	@Override
+	public void clearChildren() {
+		clearDrag();
+		super.clearChildren();
 	}
 
 	public float getActionZone() {

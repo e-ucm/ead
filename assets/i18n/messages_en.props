@@ -327,3 +327,5 @@ key.shift = Shift
 key.shift.tooltip = Whether Shift key must be pressed
 maintoolbar.help = Open online help
 url.mainhelp = http://www.e-ucm.es/ead2blog/
+documentation.name = Name
+documentation.description = Description

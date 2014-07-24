@@ -36,26 +36,59 @@
  */
 package es.eucm.ead.editor.control.views;
 
-import com.badlogic.gdx.scenes.scene2d.Actor;
-import com.badlogic.gdx.scenes.scene2d.ui.Container;
+import java.util.Collection;
 
+import com.badlogic.gdx.graphics.Texture;
+import com.badlogic.gdx.scenes.scene2d.Actor;
+import com.badlogic.gdx.scenes.scene2d.ui.Table;
+
+import es.eucm.ead.editor.assets.EditorGameAssets;
 import es.eucm.ead.editor.control.Controller;
+import es.eucm.ead.editor.model.Q;
+import es.eucm.ead.editor.ui.scenes.map.SceneEditionWidget;
+import es.eucm.ead.editor.ui.scenes.map.SceneList;
 import es.eucm.ead.editor.ui.scenes.map.SceneMapWidget;
 import es.eucm.ead.editor.view.builders.ViewBuilder;
+import es.eucm.ead.editor.view.widgets.Separator;
+import es.eucm.ead.editor.view.widgets.layouts.LinearLayout;
+import es.eucm.ead.schema.editor.components.Thumbnail;
+import es.eucm.ead.schema.entities.ModelEntity;
+import es.eucm.ead.schemax.entities.ResourceCategory;
 
 public class HomeView implements ViewBuilder {
 
-	private Controller controller;
+	private static final float DEFAULT_MARGIN = 10F;
+
+	private SceneEditionWidget sceneEdition;
+
+	private SceneList scenesFiltering;
 
 	private SceneMapWidget sceneMap;
+
+	private Controller controller;
+
 	private Actor view;
 
 	@Override
 	public void initialize(Controller controller) {
 		this.controller = controller;
 
-		Container placeHolder = new Container();
-		placeHolder.setWidget(sceneMap = new SceneMapWidget(controller));
+		LinearLayout leftBar = new LinearLayout(false);
+		leftBar.add(this.sceneEdition = new SceneEditionWidget(controller))
+				.margin(DEFAULT_MARGIN);
+		leftBar.add(
+				new Separator(true, controller.getApplicationAssets().getSkin()))
+				.expandX();
+		leftBar.add(this.scenesFiltering = new SceneList(controller)).left()
+				.margin(DEFAULT_MARGIN);
+
+		Table placeHolder = new Table();
+		placeHolder.add(leftBar).top();
+		placeHolder.add(
+				new Separator(false, controller.getApplicationAssets()
+						.getSkin())).expandY();
+		placeHolder.add(sceneMap = new SceneMapWidget(controller))
+				.expand(true, true).pad(DEFAULT_MARGIN);
 		placeHolder.setFillParent(true);
 
 		view = placeHolder;
@@ -63,12 +96,35 @@ public class HomeView implements ViewBuilder {
 
 	@Override
 	public Actor getView(Object... args) {
-		sceneMap.initialize();
+		Collection<Object> values = controller.getModel()
+				.getResources(ResourceCategory.SCENE).values();
+		EditorGameAssets editorGameAssets = controller.getEditorGameAssets();
+		for (Object object : values) {
+			if (object instanceof ModelEntity) {
+				ModelEntity modelEntity = (ModelEntity) object;
+				Thumbnail thumbnailComp = Q.getComponent(modelEntity,
+						Thumbnail.class);
+				String thumbnail = thumbnailComp.getThumbnail();
+				if (thumbnail != null) {
+					if (editorGameAssets.isLoaded(thumbnail, Texture.class)) {
+						editorGameAssets.unload(thumbnail);
+					}
+					thumbnailComp.setThumbnail(null);
+				}
+				Q.getThumbnail(controller, modelEntity);
+			}
+		}
+		editorGameAssets.finishLoading();
+		scenesFiltering.prepare();
+		sceneEdition.prepare();
+		sceneMap.prepare();
 		return view;
 	}
 
 	@Override
 	public void release(Controller controller) {
+		scenesFiltering.release();
+		sceneEdition.release();
 		sceneMap.release();
 	}
 }
