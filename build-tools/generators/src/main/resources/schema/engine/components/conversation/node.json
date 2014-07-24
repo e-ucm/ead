@@ -1,0 +1,12 @@
+{
+    "additionalProperties": false,
+    "javaType": "es.eucm.ead.schema.components.conversation.Node",
+    "properties": {
+        "id": {
+            "type": "integer",
+            "description": "ID of the node. Used to create a conversation graph. Unique within the conversation. It must be greater or equal than 0."
+        }
+    },
+    "type": "object",
+    "description": "A node in the conversation."
+}
