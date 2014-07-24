@@ -44,6 +44,7 @@ import com.badlogic.gdx.scenes.scene2d.ui.Table;
 
 import es.eucm.ead.editor.assets.EditorGameAssets;
 import es.eucm.ead.editor.control.Controller;
+import es.eucm.ead.editor.model.Model.Resource;
 import es.eucm.ead.editor.model.Q;
 import es.eucm.ead.editor.ui.scenes.map.SceneEditionWidget;
 import es.eucm.ead.editor.ui.scenes.map.SceneList;
@@ -96,12 +97,12 @@ public class HomeView implements ViewBuilder {
 
 	@Override
 	public Actor getView(Object... args) {
-		Collection<Object> values = controller.getModel()
+		Collection<Resource> values = controller.getModel()
 				.getResources(ResourceCategory.SCENE).values();
 		EditorGameAssets editorGameAssets = controller.getEditorGameAssets();
-		for (Object object : values) {
-			if (object instanceof ModelEntity) {
-				ModelEntity modelEntity = (ModelEntity) object;
+		for (Resource resource : values) {
+			if (resource.getObject() instanceof ModelEntity) {
+				ModelEntity modelEntity = (ModelEntity) resource.getObject();
 				Thumbnail thumbnailComp = Q.getComponent(modelEntity,
 						Thumbnail.class);
 				String thumbnail = thumbnailComp.getThumbnail();

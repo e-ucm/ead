@@ -52,6 +52,7 @@ import es.eucm.ead.editor.control.Controller;
 import es.eucm.ead.editor.control.Selection;
 import es.eucm.ead.editor.control.actions.model.SetSelection;
 import es.eucm.ead.editor.model.Model;
+import es.eucm.ead.editor.model.Model.Resource;
 import es.eucm.ead.editor.model.Model.SelectionListener;
 import es.eucm.ead.editor.model.Q;
 import es.eucm.ead.editor.model.events.SelectionEvent;
@@ -128,13 +129,13 @@ public class SceneList extends Table {
 	public void prepare() {
 
 		Model model = controller.getModel();
-		Map<String, Object> resources = model
+		Map<String, Resource> resources = model
 				.getResources(ResourceCategory.SCENE);
-		Set<Entry<String, Object>> entrySet = resources.entrySet();
+		Set<Entry<String, Resource>> entrySet = resources.entrySet();
 		buttonGroup.setMinCheckCount(0);
-		for (java.util.Map.Entry<String, Object> entry : entrySet) {
-			CheckBox sceneBox = new SceneButton((ModelEntity) entry.getValue(),
-					entry.getKey(), skin);
+		for (java.util.Map.Entry<String, Resource> entry : entrySet) {
+			CheckBox sceneBox = new SceneButton((ModelEntity) entry.getValue()
+					.getObject(), entry.getKey(), skin);
 			add(sceneBox).left().expandX();
 			buttonGroup.add(sceneBox);
 			row();
