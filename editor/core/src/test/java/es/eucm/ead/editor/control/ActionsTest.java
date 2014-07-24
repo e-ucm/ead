@@ -38,7 +38,9 @@ package es.eucm.ead.editor.control;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.utils.SerializationException;
+
 import es.eucm.ead.editor.EditorTest;
+import es.eucm.ead.editor.assets.EditorGameAssets;
 import es.eucm.ead.editor.control.actions.ArgumentsValidationException;
 import es.eucm.ead.editor.control.actions.EditorAction;
 import es.eucm.ead.editor.control.actions.editor.NewGame;
@@ -46,6 +48,7 @@ import es.eucm.ead.editor.control.actions.model.DeleteScene;
 import es.eucm.ead.editor.control.actions.model.EditScene;
 import es.eucm.ead.editor.control.actions.model.scene.NewScene;
 import es.eucm.ead.schema.entities.ModelEntity;
+
 import org.junit.Before;
 import org.junit.Test;
 
@@ -178,7 +181,8 @@ public class ActionsTest extends EditorTest {
 		controller.action(NewScene.class, "");
 		controller.action(NewScene.class, "");
 		controller.action(NewScene.class, "");
-		controller.action(DeleteScene.class, "scene2");
+		controller.action(DeleteScene.class, EditorGameAssets.SCENES_PATH
+				+ "scene2.json");
 		controller.action(EditScene.class, "scene3");
 		try {
 			String json = controller.getApplicationAssets()

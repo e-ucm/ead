@@ -56,7 +56,7 @@ public class ResourceCommandTest extends CommandTest {
 		AddResourceCommand addEntityCommand = new AddResourceCommand(model,
 				"scene", modelEntity, ResourceCategory.SCENE);
 		addEntityCommand.doCommand();
-		assertSame(model.getResource("scene", ResourceCategory.SCENE),
+		assertSame(model.getResourceObject("scene", ResourceCategory.SCENE),
 				modelEntity);
 		addEntityCommand.undoCommand();
 		assertNull(model.getResource("scene", ResourceCategory.SCENE));
@@ -73,7 +73,7 @@ public class ResourceCommandTest extends CommandTest {
 		removeEntityCommand.doCommand();
 		assertNull(model.getResource("scene", ResourceCategory.SCENE));
 		removeEntityCommand.undoCommand();
-		assertSame(model.getResource("scene", ResourceCategory.SCENE),
+		assertSame(model.getResourceObject("scene", ResourceCategory.SCENE),
 				modelEntity);
 	}
 

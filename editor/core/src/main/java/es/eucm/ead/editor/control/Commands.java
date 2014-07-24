@@ -36,12 +36,13 @@
  */
 package es.eucm.ead.editor.control;
 
+import java.util.Stack;
+
 import com.badlogic.gdx.utils.Array;
+
 import es.eucm.ead.editor.control.commands.Command;
 import es.eucm.ead.editor.model.Model;
 import es.eucm.ead.editor.model.events.ModelEvent;
-
-import java.util.Stack;
 
 /**
  * Implements the commands stack
@@ -72,6 +73,7 @@ public class Commands {
 		this.model = model;
 		commandListeners = new Array<CommandListener>();
 		this.commandsStacks = new Stack<CommandsStack>();
+		addCommandListener(new ResourceModifiedListener(model));
 	}
 
 	/**
@@ -364,4 +366,5 @@ public class Commands {
 				boolean merge);
 
 	}
+
 }

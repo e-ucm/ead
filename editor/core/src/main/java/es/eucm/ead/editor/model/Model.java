@@ -36,8 +36,17 @@
  */
 package es.eucm.ead.editor.model;
 
+import java.util.AbstractMap;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.IdentityHashMap;
+import java.util.Iterator;
+import java.util.Map;
+import java.util.Map.Entry;
+
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.utils.Array;
+
 import es.eucm.ead.editor.assets.EditorGameAssets;
 import es.eucm.ead.editor.control.Selection;
 import es.eucm.ead.editor.indexes.Index;
@@ -56,13 +65,6 @@ import es.eucm.ead.schema.entities.ModelEntity;
 import es.eucm.ead.schemax.GameStructure;
 import es.eucm.ead.schemax.entities.ResourceCategory;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.IdentityHashMap;
-import java.util.Iterator;
-import java.util.Map;
-import java.util.Map.Entry;
-
 /**
  * Editor model. Contains all the resources of the current game project.
  */
@@ -72,10 +74,15 @@ public class Model {
 
 	private Index index;
 
-	private Map<ResourceCategory, Map<String, Object>> resourcesMap;
+	private Map<ResourceCategory, Map<String, Resource>> resourcesMap;
 
 	private IdentityHashMap<Object, Array<ModelListener>> listeners;
 
+	/**
+	 * The resources that have been removed from the model but have not yet been
+	 * deleted from the disk.
+	 */
+	private Array<String> removedResources;
 	private Array<ModelListener<LoadEvent>> loadListeners;
 	private Array<ModelListener<ResourceEvent>> resourcesListeners;
 	private Array<SelectionListener> selectionListeners;
@@ -85,11 +92,12 @@ public class Model {
 
 	public Model(EditorGameAssets gameAssets) {
 		this.gameAssets = gameAssets;
-		resourcesMap = new HashMap<ResourceCategory, Map<String, Object>>();
+		resourcesMap = new HashMap<ResourceCategory, Map<String, Resource>>();
 		for (ResourceCategory resourceCategory : ResourceCategory.values()) {
-			resourcesMap.put(resourceCategory, new HashMap<String, Object>());
+			resourcesMap.put(resourceCategory, new HashMap<String, Resource>());
 		}
 
+		removedResources = new Array<String>();
 		listeners = new IdentityHashMap<Object, Array<ModelListener>>();
 		loadListeners = new Array<ModelListener<LoadEvent>>();
 		resourcesListeners = new Array<ModelListener<ResourceEvent>>();
@@ -114,7 +122,7 @@ public class Model {
 	 */
 	public String createId(ResourceCategory category) {
 		String prefix = category.getCategoryPrefix();
-		Map<String, Object> resourcesMap = getResources(category);
+		Map<String, Resource> resourcesMap = getResources(category);
 		int count = 0;
 		String id;
 		do {
@@ -136,16 +144,17 @@ public class Model {
 	 * @return A map with pairs <id, entity> where each entity is of the given
 	 *         type
 	 */
-	public Map<String, Object> getResources(ResourceCategory category) {
+	public Map<String, Resource> getResources(ResourceCategory category) {
 		return resourcesMap.get(category);
 	}
 
 	/**
-	 * Returns the resources with the given id and in the given category
-	 * {@code null}.
+	 * Returns the resources with the given id and in the given category.
+	 * 
+	 * @return the Resource or {@code null} if it wasn't found.
 	 */
-	public Object getResource(String id, ResourceCategory category) {
-		Map<String, Object> resources = getResources(category);
+	public Resource getResource(String id, ResourceCategory category) {
+		Map<String, Resource> resources = getResources(category);
 		if (resources != null) {
 			return resources.get(id);
 		}
@@ -155,17 +164,69 @@ public class Model {
 	}
 
 	/**
+	 * Returns the resources with the given id.
+	 * 
+	 * @return the Resource or {@code null} if it wasn't found.
+	 */
+	public Resource getResource(String id) {
+		for (ResourceCategory resourceCategory : ResourceCategory.values()) {
+			Resource resource = getResource(id, resourceCategory);
+			if (resource != null) {
+				return resource;
+			}
+		}
+		Gdx.app.error("Model", "No resource with id " + id);
+		return null;
+	}
+
+	/**
+	 * Returns the resource object with the given id.
+	 * 
+	 * @return the Resource or {@code null} if it wasn't found.
+	 */
+	public Object getResourceObject(String id) {
+		for (ResourceCategory resourceCategory : ResourceCategory.values()) {
+			Resource resource = getResource(id, resourceCategory);
+			if (resource != null) {
+				return resource.object;
+			}
+		}
+		Gdx.app.error("Model", "No resource object with id " + id);
+		return null;
+	}
+
+	/**
+	 * Returns the {@link Resource#getObject()} with the given id and in the
+	 * given category.
+	 * 
+	 * @return the Resource or {@code null} if it wasn't found.
+	 */
+	public Object getResourceObject(String id, ResourceCategory category) {
+		Map<String, Resource> resources = getResources(category);
+		if (resources != null) {
+			Resource resource = resources.get(id);
+			if (resource != null) {
+				return resource.object;
+			}
+		}
+		Gdx.app.error("Model", "No resource object with id " + id
+				+ " in category " + category);
+		return null;
+	}
+
+	/**
 	 * Clears all resources stored and also all the listeners, but those that
 	 * listen to {@link LoadEvent}s. This method will typically be invoked when
 	 * a game is loaded.
 	 */
 	public void reset() {
-		for (Map<String, Object> resources : resourcesMap.values()) {
+		for (Map<String, Resource> resources : resourcesMap.values()) {
 			resources.clear();
 		}
 		clearListeners();
 		index.clear();
 		selection.clear();
+		removedResources.clear();
 	}
 
 	/**
@@ -189,7 +250,8 @@ public class Model {
 	 */
 	public void putResource(String id, ResourceCategory category,
 			Object resource) {
-		resourcesMap.get(category).put(id, resource);
+		removedResources.removeValue(id, false);
+		resourcesMap.get(category).put(id, new Resource(resource));
 		gameAssets.addAsset(id, Object.class, resource);
 	}
 
@@ -198,14 +260,25 @@ public class Model {
 	 * 
 	 * @return the resource removed. {@code null} if no entity was found
 	 */
-	public Object removeResource(String id, ResourceCategory category) {
+	public Resource removeResource(String id, ResourceCategory category) {
+		removedResources.add(id);
 		gameAssets.unload(id);
 		return resourcesMap.get(category).remove(id);
 	}
 
+	/**
+	 * 
+	 * @return The resources that have been removed from the model but have not
+	 *         yet been deleted from the disk.
+	 */
+	public Array<String> getRemovedResources() {
+		return removedResources;
+	}
+
 	public ModelEntity getGame() {
-		return (ModelEntity) getResource(GameStructure.GAME_FILE,
+		Resource gameRes = getResource(GameStructure.GAME_FILE,
 				ResourceCategory.GAME);
+		return gameRes == null ? null : (ModelEntity) gameRes.object;
 	}
 
 	/**
@@ -214,9 +287,9 @@ public class Model {
 	 * @return an ID for this entity, if any; or null if not found.
 	 */
 	public String getIdFor(Object resource) {
-		for (Map<String, Object> category : resourcesMap.values()) {
-			for (Entry<String, Object> resourceEntry : category.entrySet()) {
-				if (resourceEntry.getValue() == resource) {
+		for (Map<String, Resource> category : resourcesMap.values()) {
+			for (Entry<String, Resource> resourceEntry : category.entrySet()) {
+				if (resourceEntry.getValue().object == resource) {
 					return resourceEntry.getKey();
 				}
 			}
@@ -227,19 +300,42 @@ public class Model {
 	/**
 	 * Builds a read-only structure that allows iterating through all resources
 	 * entities, regardless of category. Useful for full traversals: save,
-	 * export, reindex...
+	 * reindex...
 	 */
-	public Iterable<Entry<String, Object>> listNamedResources() {
+	public Iterable<Entry<String, Resource>> listNamedResources() {
 		return new NamedResourcesIterable();
 	}
 
 	private class NamedResourcesIterable implements
+			Iterable<Entry<String, Resource>> {
+		@Override
+		public Iterator<Entry<String, Resource>> iterator() {
+			ArrayList<Entry<String, Resource>> list = new ArrayList<Entry<String, Resource>>();
+			for (Map<String, Resource> category : resourcesMap.values()) {
+				list.addAll(category.entrySet());
+			}
+			return list.iterator();
+		}
+	}
+
+	/**
+	 * Builds a read-only structure that allows iterating through all objects.
+	 * Useful for exporting
+	 */
+	public Iterable<Entry<String, Object>> listNamedObjects() {
+		return new NamedObjectsIterable();
+	}
+
+	private class NamedObjectsIterable implements
 			Iterable<Entry<String, Object>> {
 		@Override
 		public Iterator<Entry<String, Object>> iterator() {
 			ArrayList<Entry<String, Object>> list = new ArrayList<Entry<String, Object>>();
-			for (Map<String, Object> category : resourcesMap.values()) {
-				list.addAll(category.entrySet());
+			for (Map<String, Resource> category : resourcesMap.values()) {
+				for (Entry<String, Resource> entry : category.entrySet()) {
+					list.add(new AbstractMap.SimpleImmutableEntry<String, Object>(
+							entry.getKey(), entry.getValue().object));
+				}
 			}
 			return list.iterator();
 		}
@@ -508,4 +604,38 @@ public class Model {
 
 	}
 
+	/**
+	 * A wrapper around the resources in the model. Has a dirty flag that
+	 * specifies if the resource has been modified since the last save.
+	 */
+	public static class Resource {
+
+		private Object object;
+
+		boolean modified;
+
+		/**
+		 * Creates a modified resource.
+		 */
+		public Resource(Object object) {
+			this(object, true);
+		}
+
+		public Resource(Object object, boolean modified) {
+			this.object = object;
+			this.modified = modified;
+		}
+
+		public Object getObject() {
+			return object;
+		}
+
+		public boolean isModified() {
+			return modified;
+		}
+
+		public void setModified(boolean modified) {
+			this.modified = modified;
+		}
+	}
 }

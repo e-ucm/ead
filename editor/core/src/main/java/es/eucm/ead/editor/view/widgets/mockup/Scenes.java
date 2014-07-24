@@ -36,20 +36,22 @@
  */
 package es.eucm.ead.editor.view.widgets.mockup;
 
+import java.util.Map;
+import java.util.Map.Entry;
+
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
+
 import es.eucm.ead.editor.assets.ApplicationAssets;
 import es.eucm.ead.editor.control.Controller;
+import es.eucm.ead.editor.model.Model.Resource;
 import es.eucm.ead.editor.view.widgets.mockup.buttons.SceneButton;
 import es.eucm.ead.engine.I18N;
 import es.eucm.ead.schema.editor.components.Note;
 import es.eucm.ead.schema.entities.ModelEntity;
 import es.eucm.ead.schemax.entities.ResourceCategory;
-
-import java.util.Map;
-import java.util.Map.Entry;
 
 /**
  * Displays all the scenes in the model. Has the option to display an additional
@@ -176,15 +178,15 @@ public class Scenes extends SelectablesScroll<SceneButton> {
 		I18N i18n = appAssets.getI18N();
 		Skin skin = appAssets.getSkin();
 
-		Map<String, Object> entities = controller.getModel().getResources(
+		Map<String, Resource> entities = controller.getModel().getResources(
 				ResourceCategory.SCENE);
 
 		boolean selectedFirst = hasNewScene;
-		for (Entry<String, Object> scene : entities.entrySet()) {
+		for (Entry<String, Resource> scene : entities.entrySet()) {
 
 			SceneButton sceneButton = new SceneButton(viewport, i18n,
-					(ModelEntity) scene.getValue(), scene.getKey(), skin,
-					controller);
+					(ModelEntity) scene.getValue().getObject(), scene.getKey(),
+					skin, controller);
 
 			if (!selectedFirst && !hasNewScene) {
 				currScene = sceneButton;

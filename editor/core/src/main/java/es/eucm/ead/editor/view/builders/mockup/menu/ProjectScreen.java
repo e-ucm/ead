@@ -120,9 +120,11 @@ public class ProjectScreen implements ViewBuilder {
 			Model model = controller.getModel();
 			ModelEntity game = model.getGame();
 			GameData gameData = Q.getComponent(game, GameData.class);
-			Note note = Q.getComponent(
-					(ModelEntity) model.getResources(ResourceCategory.SCENE)
-							.get(gameData.getInitialScene()), Note.class);
+			Note note = Q
+					.getComponent(
+							(ModelEntity) model.getResourceObject(
+									gameData.getInitialScene(),
+									ResourceCategory.SCENE), Note.class);
 			changeInitialSceneText(note);
 		}
 		if (addListeners) {
@@ -157,10 +159,9 @@ public class ProjectScreen implements ViewBuilder {
 
 				@Override
 				public void modelChanged(FieldEvent event) {
-					Note note = Q.getComponent(
-							(ModelEntity) model.getResources(
-									ResourceCategory.SCENE).get(
-									gameData.getInitialScene()), Note.class);
+					Note note = Q.getComponent((ModelEntity) model
+							.getResourceObject(gameData.getInitialScene(),
+									ResourceCategory.SCENE), Note.class);
 					changeInitialSceneText(note);
 					addInitialSceneNoteListener(controller);
 				}
@@ -182,8 +183,9 @@ public class ProjectScreen implements ViewBuilder {
 		final GameData gameData = Q.getComponent(model.getGame(),
 				GameData.class);
 		Note targetNote = Q.getComponent(
-				(ModelEntity) model.getResources(ResourceCategory.SCENE).get(
-						gameData.getInitialScene()), Note.class);
+				(ModelEntity) model.getResourceObject(
+						gameData.getInitialScene(), ResourceCategory.SCENE),
+				Note.class);
 
 		model.addFieldListener(targetNote, new ChangeNoteFieldListener() {
 
@@ -194,11 +196,9 @@ public class ProjectScreen implements ViewBuilder {
 
 			@Override
 			public void titleChanged(FieldEvent event) {
-				Note note = Q
-						.getComponent(
-								(ModelEntity) model.getResources(
-										ResourceCategory.SCENE).get(
-										gameData.getInitialScene()), Note.class);
+				Note note = Q.getComponent((ModelEntity) model
+						.getResourceObject(gameData.getInitialScene(),
+								ResourceCategory.SCENE), Note.class);
 				changeInitialSceneText(note);
 			}
 		});

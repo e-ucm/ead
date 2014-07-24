@@ -112,7 +112,7 @@ public class SceneWidget extends Button {
 		this.controller = control;
 		this.sceneId = sceneId;
 		Model model = controller.getModel();
-		this.scene = (ModelEntity) model.getResource(sceneId,
+		this.scene = (ModelEntity) model.getResourceObject(sceneId,
 				ResourceCategory.SCENE);
 
 		Skin skin = controller.getApplicationAssets().getSkin();

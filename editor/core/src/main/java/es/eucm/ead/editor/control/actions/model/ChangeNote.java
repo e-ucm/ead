@@ -92,9 +92,9 @@ public class ChangeNote extends ModelAction {
 		if (args[0] != null) {
 			if (args[0] instanceof String) {
 				objectToRename = Q.getComponent(
-						(ModelEntity) controller.getModel()
-								.getResources(ResourceCategory.SCENE)
-								.get(args[0].toString()), Note.class);
+						(ModelEntity) controller.getModel().getResourceObject(
+								args[0].toString(), ResourceCategory.SCENE),
+						Note.class);
 			}
 			// If the first argument is not to be found, it should have a name
 			// attribute declared. Otherwise, throw exception

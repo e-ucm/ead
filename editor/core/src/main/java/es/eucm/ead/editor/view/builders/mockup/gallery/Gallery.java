@@ -36,11 +36,15 @@
  */
 package es.eucm.ead.editor.view.builders.mockup.gallery;
 
+import java.util.Map;
+import java.util.Map.Entry;
+
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.ui.Button;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.utils.Array;
+
 import es.eucm.ead.editor.control.Controller;
 import es.eucm.ead.editor.control.actions.editor.ChangeView;
 import es.eucm.ead.editor.control.actions.model.DeleteScene;
@@ -49,6 +53,7 @@ import es.eucm.ead.editor.control.actions.model.RemoveFromScene;
 import es.eucm.ead.editor.control.actions.model.SetSelection;
 import es.eucm.ead.editor.model.Model;
 import es.eucm.ead.editor.model.Model.ModelListener;
+import es.eucm.ead.editor.model.Model.Resource;
 import es.eucm.ead.editor.model.Q;
 import es.eucm.ead.editor.model.events.LoadEvent;
 import es.eucm.ead.editor.model.events.MapEvent;
@@ -67,9 +72,6 @@ import es.eucm.ead.engine.I18N;
 import es.eucm.ead.schema.editor.components.Parent;
 import es.eucm.ead.schema.entities.ModelEntity;
 import es.eucm.ead.schemax.entities.ResourceCategory;
-
-import java.util.Map;
-import java.util.Map.Entry;
 
 /**
  * This gallery displays both {@link es.eucm.ead.schema.entities.ModelEntity}s
@@ -143,21 +145,23 @@ public class Gallery extends BaseGalleryWithNavigation<DescriptionCard> {
 	protected boolean updateGalleryElements(Controller controller,
 			Array<DescriptionCard> elements, Vector2 viewport, I18N i18n,
 			Skin skin) {
-		Map<String, Object> map = controller.getModel().getResources(
+		Map<String, Resource> map = controller.getModel().getResources(
 				ResourceCategory.SCENE);
 		if (this.needsUpdate) {
 			this.needsUpdate = false;
 			elements.clear();
-			for (Entry<String, Object> entry : map.entrySet()) {
-				ModelEntity editorScene = (ModelEntity) entry.getValue();
+			for (Entry<String, Resource> entry : map.entrySet()) {
+				ModelEntity editorScene = (ModelEntity) entry.getValue()
+						.getObject();
 				SceneButton sceneWidget = new SceneButton(viewport, i18n,
 						editorScene, entry.getKey(), skin, controller);
 				elements.add(sceneWidget);
 			}
 		}
 
-		for (final Entry<String, Object> entry : map.entrySet()) {
-			ModelEntity editorScene = (ModelEntity) entry.getValue();
+		for (Entry<String, Resource> entry : map.entrySet()) {
+			ModelEntity editorScene = (ModelEntity) entry.getValue()
+					.getObject();
 			Array<ModelEntity> sceneChildren = editorScene.getChildren();
 			int totalChildren = sceneChildren.size;
 			for (int i = 0; i < totalChildren; ++i) {

@@ -36,6 +36,9 @@
  */
 package es.eucm.ead.editor.view.widgets.mockup.edition;
 
+import java.util.Arrays;
+import java.util.Map;
+
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input.TextInputListener;
 import com.badlogic.gdx.math.Vector2;
@@ -47,8 +50,10 @@ import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.utils.Array;
-import es.eucm.ead.editor.control.Selection;
+
 import es.eucm.ead.editor.control.Controller;
+import es.eucm.ead.editor.control.Selection;
+import es.eucm.ead.editor.model.Model.Resource;
 import es.eucm.ead.editor.view.widgets.mockup.buttons.ToolbarButton;
 import es.eucm.ead.editor.view.widgets.mockup.panels.GridPanel;
 import es.eucm.ead.editor.view.widgets.mockup.panels.HiddenPanel;
@@ -57,9 +62,6 @@ import es.eucm.ead.schema.components.ModelComponent;
 import es.eucm.ead.schema.components.Tags;
 import es.eucm.ead.schema.entities.ModelEntity;
 import es.eucm.ead.schemax.entities.ResourceCategory;
-
-import java.util.Arrays;
-import java.util.Map;
 
 /**
  * A panel with all the {@link String tags} and a button to create a new
@@ -181,10 +183,11 @@ public class TagPanel extends Table {
 	}
 
 	private void updateUItags() {
-		Map<String, Object> scenes = this.controller.getModel().getResources(
+		Map<String, Resource> scenes = this.controller.getModel().getResources(
 				ResourceCategory.SCENE);
-		for (Object scene : scenes.values()) {
-			Array<ModelEntity> children = ((ModelEntity) scene).getChildren();
+		for (Resource scene : scenes.values()) {
+			Array<ModelEntity> children = ((ModelEntity) scene.getObject())
+					.getChildren();
 			for (ModelEntity element : children) {
 				Array<String> tags = null;
 				for (ModelComponent c : element.getComponents()) {

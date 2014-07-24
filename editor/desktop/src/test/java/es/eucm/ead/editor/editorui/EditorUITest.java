@@ -36,6 +36,8 @@
  */
 package es.eucm.ead.editor.editorui;
 
+import java.util.Map;
+
 import com.badlogic.gdx.Application;
 import com.badlogic.gdx.ApplicationListener;
 import com.badlogic.gdx.Gdx;
@@ -47,9 +49,10 @@ import com.badlogic.gdx.scenes.scene2d.InputListener;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.utils.UIUtils;
 import com.badlogic.gdx.utils.viewport.ScreenViewport;
+
 import es.eucm.ead.editor.DesktopPlatform;
-import es.eucm.ead.editor.control.Selection;
 import es.eucm.ead.editor.control.Controller;
+import es.eucm.ead.editor.control.Selection;
 import es.eucm.ead.editor.control.actions.editor.ChooseFile;
 import es.eucm.ead.editor.control.actions.editor.Exit;
 import es.eucm.ead.editor.control.actions.editor.OpenGame;
@@ -59,11 +62,10 @@ import es.eucm.ead.editor.control.actions.editor.Undo;
 import es.eucm.ead.editor.control.actions.model.AddSceneElement;
 import es.eucm.ead.editor.control.actions.model.EditScene;
 import es.eucm.ead.editor.model.Model;
+import es.eucm.ead.editor.model.Model.Resource;
 import es.eucm.ead.editor.platform.Platform.FileChooserListener;
 import es.eucm.ead.schema.entities.ModelEntity;
 import es.eucm.ead.schemax.entities.ResourceCategory;
-
-import java.util.Map;
 
 /**
  * <p>
@@ -186,7 +188,8 @@ public abstract class EditorUITest implements ApplicationListener {
 		String scene = model.getIdFor(model.getSelection().getSingle(
 				Selection.SCENE));
 
-		Map<String, Object> scenes = model.getResources(ResourceCategory.SCENE);
+		Map<String, Resource> scenes = model
+				.getResources(ResourceCategory.SCENE);
 
 		String nextScene = null;
 		boolean next = scene == null;

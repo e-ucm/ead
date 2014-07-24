@@ -36,6 +36,9 @@
  */
 package es.eucm.ead.editor.view.builders.mockup.gallery;
 
+import java.util.Map;
+import java.util.Map.Entry;
+
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
@@ -43,12 +46,14 @@ import com.badlogic.gdx.scenes.scene2d.Touchable;
 import com.badlogic.gdx.scenes.scene2d.ui.Button;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.utils.Array;
+
 import es.eucm.ead.editor.control.Controller;
 import es.eucm.ead.editor.control.actions.editor.ChangeView;
 import es.eucm.ead.editor.control.actions.model.AddSceneElement;
 import es.eucm.ead.editor.control.actions.model.EditScene;
 import es.eucm.ead.editor.control.actions.model.RemoveFromScene;
 import es.eucm.ead.editor.control.actions.model.SetSelection;
+import es.eucm.ead.editor.model.Model.Resource;
 import es.eucm.ead.editor.model.Q;
 import es.eucm.ead.editor.view.builders.mockup.camera.Picture;
 import es.eucm.ead.editor.view.builders.mockup.edition.ElementEdition;
@@ -63,9 +68,6 @@ import es.eucm.ead.engine.I18N;
 import es.eucm.ead.schema.editor.components.Parent;
 import es.eucm.ead.schema.entities.ModelEntity;
 import es.eucm.ead.schemax.entities.ResourceCategory;
-
-import java.util.Map;
-import java.util.Map.Entry;
 
 /**
  * A gallery that only displays {@link es.eucm.ead.schema.entities.ModelEntity}
@@ -132,10 +134,11 @@ public class ElementGallery extends BaseGalleryWithNavigation<ElementButton> {
 			Array<ElementButton> elements, Vector2 viewport, I18N i18n,
 			Skin skin) {
 		elements.clear();
-		Map<String, Object> map = controller.getModel().getResources(
+		Map<String, Resource> map = controller.getModel().getResources(
 				ResourceCategory.SCENE);
-		for (Entry<String, Object> entry : map.entrySet()) {
-			ModelEntity currEditorScene = (ModelEntity) entry.getValue();
+		for (Entry<String, Resource> entry : map.entrySet()) {
+			ModelEntity currEditorScene = (ModelEntity) entry.getValue()
+					.getObject();
 			Array<ModelEntity> sceneChildren = currEditorScene.getChildren();
 			int totalChildren = sceneChildren.size;
 			for (int i = 0; i < totalChildren; ++i) {

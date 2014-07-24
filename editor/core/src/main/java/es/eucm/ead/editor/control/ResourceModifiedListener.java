@@ -34,59 +34,76 @@
  *      You should have received a copy of the GNU Lesser General Public License
  *      along with eAdventure.  If not, see <http://www.gnu.org/licenses/>.
  */
-package es.eucm.ead.editor.control.actions.model;
+package es.eucm.ead.editor.control;
 
-import es.eucm.ead.editor.control.Selection;
-import es.eucm.ead.editor.control.Controller;
-import es.eucm.ead.editor.control.actions.ModelAction;
+import java.util.Map;
+
+import es.eucm.ead.editor.control.Commands.CommandListener;
+import es.eucm.ead.editor.control.Commands.CommandsStack;
 import es.eucm.ead.editor.control.commands.Command;
-import es.eucm.ead.editor.control.commands.CompositeCommand;
-import es.eucm.ead.schema.entities.ModelEntity;
-import es.eucm.ead.schemax.entities.ResourceCategory;
+import es.eucm.ead.editor.model.Model;
+import es.eucm.ead.editor.model.Model.Resource;
 
 /**
- * Changes the edited scene.
- * <dl>
- * <dt><strong>Arguments</strong></dt>
- * <dd><strong>args[0]</strong> <em>String</em> the identifier of edited scene</dd>
- * </dl>
+ * Directly modifies the {@link Resource} resources from the model by setting
+ * the {@link Resource#isModified()} flag when changes are detected.
  */
-public class EditScene extends ModelAction {
+public class ResourceModifiedListener implements CommandListener {
 
-	private SetSelection setSelection;
+	private Model model;
 
-	public EditScene() {
-		super(true, false, String.class);
+	public ResourceModifiedListener(Model model) {
+		this.model = model;
 	}
 
 	@Override
-	public void initialize(Controller controller) {
-		super.initialize(controller);
-		setSelection = controller.getActions().getAction(SetSelection.class);
-	}
-
-	@Override
-	public boolean validate(Object... args) {
-		if (super.validate(args)) {
-			String sceneId = (String) args[0];
-			return controller.getModel().getResource(sceneId,
-					ResourceCategory.SCENE) != null;
+	public void doCommand(Commands commands, Command command) {
+		if (!command.isTransparent()) {
+			Object res = model.getSelection().getSingle(Selection.RESOURCE);
+			if (res != null) {
+				String id = res.toString();
+				Resource resource = model.getResource(id);
+				resource.setModified(true);
+			}
 		}
-		return false;
 	}
 
 	@Override
-	public Command perform(Object... args) {
-		String sceneId = (String) args[0];
-		ModelEntity scene = (ModelEntity) controller.getModel()
-				.getResourceObject(sceneId, ResourceCategory.SCENE);
-		CompositeCommand commands = new CompositeCommand();
-		commands.addCommand(setSelection.perform(null, Selection.RESOURCE,
-				sceneId));
-		commands.addCommand(setSelection.perform(Selection.RESOURCE,
-				Selection.SCENE, scene));
-		commands.addCommand(setSelection.perform(Selection.SCENE,
-				Selection.EDITED_GROUP, scene));
-		return commands;
+	public void undoCommand(Commands commands, Command command) {
+
 	}
+
+	@Override
+	public void redoCommand(Commands commands, Command command) {
+
+	}
+
+	@Override
+	public void savePointUpdated(Commands commands, Command savePoint) {
+		clearModified();
+	}
+
+	@Override
+	public void cleared(Commands commands) {
+		clearModified();
+	}
+
+	private void clearModified() {
+		for (Map.Entry<String, Resource> nextEntry : model.listNamedResources()) {
+			Resource resource = nextEntry.getValue();
+			resource.setModified(false);
+		}
+	}
+
+	@Override
+	public void contextPushed(Commands commands) {
+
+	}
+
+	@Override
+	public void contextPopped(Commands commands, CommandsStack poppedContext,
+			boolean merge) {
+
+	}
+
 }
