@@ -34,45 +34,24 @@
  *      You should have received a copy of the GNU Lesser General Public License
  *      along with eAdventure.  If not, see <http://www.gnu.org/licenses/>.
  */
-package es.eucm.ead.engine.components;
+package es.eucm.ead.engine.processors;
 
 import ashley.core.Component;
-import com.badlogic.gdx.utils.Pool.Poolable;
+import es.eucm.ead.engine.GameLoop;
+import es.eucm.ead.engine.components.ConversationsComponent;
 import es.eucm.ead.schema.components.conversation.Conversation;
 
-import java.util.HashMap;
-import java.util.Map;
+public class ConversationProcessor extends ComponentProcessor<Conversation> {
 
-public class ConversationsComponent extends Component implements Poolable {
-
-	private Map<String, Conversation> conversations;
-
-	public ConversationsComponent() {
-		conversations = new HashMap<String, Conversation>();
+	public ConversationProcessor(GameLoop gameLoop) {
+		super(gameLoop);
 	}
 
-	public Map<String, Conversation> getConversations() {
+	@Override
+	public Component getComponent(Conversation conversation) {
+		ConversationsComponent conversations = gameLoop
+				.createComponent(ConversationsComponent.class);
+		conversations.add(conversation);
 		return conversations;
-	}
-
-	public void add(Conversation conversation) {
-		conversations.put(conversation.getId(), conversation);
-	}
-
-	@Override
-	public boolean combine(Component component) {
-		if (component instanceof ConversationsComponent) {
-			for (Conversation conv : ((ConversationsComponent) component)
-					.getConversations().values()) {
-				add(conv);
-			}
-			return true;
-		}
-		return false;
-	}
-
-	@Override
-	public void reset() {
-		conversations.clear();
 	}
 }
