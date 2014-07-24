@@ -48,7 +48,7 @@ public abstract class BehaviorSystem extends ConditionalSystem {
 
 	public BehaviorSystem(GameLoop engine, VariablesManager variablesManager,
 			Family family) {
-		super(engine, variablesManager, family);
+		super(engine, variablesManager, family, 0);
 	}
 
 	protected void addEffects(Entity entity, Iterable<Effect> effects) {
