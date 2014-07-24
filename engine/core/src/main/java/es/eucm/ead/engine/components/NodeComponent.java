@@ -34,49 +34,62 @@
  *      You should have received a copy of the GNU Lesser General Public License
  *      along with eAdventure.  If not, see <http://www.gnu.org/licenses/>.
  */
-package es.eucm.ead.engine.systems.effects;
+package es.eucm.ead.engine.components;
 
-import ashley.core.Entity;
-import ashley.core.Family;
-import com.badlogic.gdx.utils.IntMap;
-import es.eucm.ead.engine.GameLoop;
-import es.eucm.ead.engine.components.ConversationsComponent;
-import es.eucm.ead.engine.components.NodeComponent;
+import ashley.core.Component;
+import com.badlogic.gdx.utils.Pool.Poolable;
+import es.eucm.ead.engine.systems.conversations.NodeSystem.RuntimeNode;
 import es.eucm.ead.schema.components.conversation.Conversation;
-import es.eucm.ead.schema.effects.TriggerConversation;
 
-public class TriggerConversationExecutor extends
-		EffectExecutor<TriggerConversation> {
+/**
+ * Represents an ongoing conversation
+ */
+public class NodeComponent extends Component implements Poolable {
 
-	private IntMap<Entity> conversationsEntities;
+	private Conversation conversation;
 
-	@Override
-	public void initialize(GameLoop gameLoop) {
-		super.initialize(gameLoop);
-		conversationsEntities = gameLoop.getEntitiesFor(Family
-				.getFamilyFor(ConversationsComponent.class));
+	private int startingNode;
+
+	private boolean started;
+
+	private RuntimeNode currentNode;
+
+	public void set(Conversation conversation, int startingNode) {
+		this.conversation = conversation;
+		this.startingNode = startingNode;
+		this.started = false;
+	}
+
+	public Conversation getConversation() {
+		return conversation;
+	}
+
+	public int getStartingNode() {
+		return startingNode;
+	}
+
+	public boolean isStarted() {
+		return started;
+	}
+
+	public RuntimeNode getRuntimeNode() {
+		return currentNode;
+	}
+
+	public void setCurrentNode(RuntimeNode currentNode) {
+		this.currentNode = currentNode;
+	}
+
+	public void start() {
+		started = true;
 	}
 
 	@Override
-	public void execute(Entity target, TriggerConversation effect) {
-
-		Conversation conversation = null;
-		for (Entity entity : conversationsEntities.values()) {
-			ConversationsComponent conversations = entity
-					.getComponent(ConversationsComponent.class);
-
-			conversation = conversations.getConversations().get(
-					effect.getConversationId());
-
-			if (conversation != null) {
-				break;
-			}
-		}
-
-		if (conversation != null) {
-			NodeComponent node = gameLoop.createComponent(NodeComponent.class);
-			node.set(conversation, effect.getNodeId());
-			target.add(node);
-		}
+	public void reset() {
+		conversation = null;
+		currentNode = null;
+		startingNode = -1;
+		started = false;
 	}
+
 }
