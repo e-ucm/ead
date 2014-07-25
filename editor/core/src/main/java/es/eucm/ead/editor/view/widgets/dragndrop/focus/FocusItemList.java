@@ -39,10 +39,9 @@ package es.eucm.ead.editor.view.widgets.dragndrop.focus;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.Event;
 import com.badlogic.gdx.scenes.scene2d.EventListener;
-import com.badlogic.gdx.scenes.scene2d.InputEvent;
+import com.badlogic.gdx.scenes.scene2d.ui.Button;
+import com.badlogic.gdx.scenes.scene2d.ui.ButtonGroup;
 import com.badlogic.gdx.scenes.scene2d.ui.ScrollPane;
-import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
-import com.badlogic.gdx.utils.Pools;
 
 import es.eucm.ead.editor.view.widgets.dragndrop.DraggableLinearLayout;
 
@@ -52,7 +51,7 @@ import es.eucm.ead.editor.view.widgets.dragndrop.DraggableLinearLayout;
  */
 public class FocusItemList extends DraggableLinearLayout {
 
-	protected FocusItem currentFocus;
+	protected ButtonGroup buttonGroup;
 
 	/**
 	 * Creates a horizontal focus item list with draggable elements.
@@ -63,53 +62,25 @@ public class FocusItemList extends DraggableLinearLayout {
 
 	public FocusItemList(boolean horizontal) {
 		super(horizontal);
-
-		addListener(new ClickListener() {
-
-			@Override
-			public void clicked(InputEvent event, float x, float y) {
-				Actor target = event.getTarget();
-
-				while (target != null && !(target instanceof FocusItem)) {
-					target = target.getParent();
-				}
-
-				if (target != null) {
-					FocusItem curr = ((FocusItem) target);
-					if (currentFocus != curr) {
-						setFocus(curr, true);
-					}
-				}
-			}
-		});
+		buttonGroup = new ButtonGroup();
 	}
 
-	private void setFocus(FocusItem curr, boolean fire) {
-		if (currentFocus != null) {
-			currentFocus.setFocus(false);
+	public void addActor(Actor actor) {
+		addActorAt(-1, actor);
+	}
+
+	public void addActorAt(int index, Actor actor) {
+		if (actor instanceof Button) {
+			buttonGroup.add((Button) actor);
 		}
-		curr.setFocus(true);
-		if (fire) {
-			fireFocus(curr);
-		}
-		currentFocus = curr;
-	}
-
-	public void addActor(FocusItem item) {
-		addActorAt(-1, item);
-	}
-
-	public void addActorAt(int index, FocusItem item) {
-		item.pad(PAD);
-		super.addActorAt(index, item);
+		super.addActorAt(index, actor);
 	}
 
 	@Override
-	protected void centerScrollAt(Actor actor) {
-		super.centerScrollAt(actor);
-		if (actor instanceof FocusItem) {
-			setFocus((FocusItem) actor, false);
-		}
+	protected void clearDrag() {
+		buttonGroup.getAllChecked().clear();
+		buttonGroup.getButtons().clear();
+		super.clearDrag();
 	}
 
 	/**
@@ -153,15 +124,5 @@ public class FocusItemList extends DraggableLinearLayout {
 			super.reset();
 			this.actor = null;
 		}
-	}
-
-	/**
-	 * Fires that some actor has gained focus
-	 */
-	private void fireFocus(Actor actor) {
-		FocusEvent dropEvent = Pools.obtain(FocusEvent.class);
-		dropEvent.actor = actor;
-		fire(dropEvent);
-		Pools.free(dropEvent);
 	}
 }

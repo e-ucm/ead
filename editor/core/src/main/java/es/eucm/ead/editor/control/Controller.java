@@ -273,30 +273,30 @@ public class Controller {
 			actions.perform(actionClass, args);
 			tracker.actionPerformed(actionClass.toString());
 		} catch (ClassCastException e) {
-			throw new EditorActionException(
-					"Something went wrong when executing action "
-							+ actionClass
-							+ " with arguments "
-							+ args
-							+ ". Perhaps the number of arguments is not correct or these are not valid",
+			throw new EditorActionException(getErrorMessage(actionClass, args),
 					e);
 		} catch (NullPointerException e) {
-			String message = "Something went wrong when executing action \n"
-					+ actionClass + " with arguments \n{";
-
-			for (int i = 0; i < args.length; i++) {
-				Object object = args[i];
-				message += " \n\t" + object.toString();
-				if (i < args.length - 1) {
-					message += ", ";
-				}
-			}
-			message += "\n}\nPerhaps the number of arguments is not correct or these are not valid";
-			throw new EditorActionException(message, e);
+			throw new EditorActionException(getErrorMessage(actionClass, args),
+					e);
 		} catch (ArgumentsValidationException e) {
 			Gdx.app.error("Controller", "Invalid arguments exception for "
 					+ actionClass);
 		}
+	}
+
+	private String getErrorMessage(Class actionClass, Object... args) {
+		String message = "Something went wrong when executing action \n"
+				+ actionClass + " with arguments \n{";
+
+		for (int i = 0; i < args.length; i++) {
+			Object object = args[i];
+			message += " \n\t" + object.toString();
+			if (i < args.length - 1) {
+				message += ", ";
+			}
+		}
+		message += "\n}\nPerhaps the number of arguments is not correct or these are not valid";
+		return message;
 	}
 
 	/**

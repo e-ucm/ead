@@ -230,7 +230,7 @@ public class AnimationEditor extends Table {
 					index = frames.getFrames().indexOf(
 							(Frame) event.getSelection()[0], true);
 					if (index != -1) {
-						timeline.centerScrollAt(index);
+						timeline.setChecked(index);
 						previewView.frameSelected(index);
 					}
 				}

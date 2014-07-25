@@ -109,12 +109,15 @@ public class SceneEditionWidget extends LinearLayout implements FieldListener {
 
 			@Override
 			public void changed(ChangeEvent event, Actor actor) {
-				ModelEntity scene = (ModelEntity) controller.getModel()
-						.getSelection().getSingle(Selection.SCENE);
-				Model model = controller.getModel();
-				String sceneId = model.getIdFor(scene);
-				controller.action(ChangeInitialScene.class, sceneId);
-				makeInitial.setDisabled(true);
+				Object object = controller.getModel().getSelection()
+						.getSingle(Selection.SCENE);
+				if (object instanceof ModelEntity) {
+					ModelEntity scene = (ModelEntity) object;
+					Model model = controller.getModel();
+					String sceneId = model.getIdFor(scene);
+					controller.action(ChangeInitialScene.class, sceneId);
+					makeInitial.setDisabled(true);
+				}
 			}
 
 		});
@@ -127,15 +130,16 @@ public class SceneEditionWidget extends LinearLayout implements FieldListener {
 			@Override
 			public void modelChanged(SelectionEvent event) {
 				if (event.getType() == SelectionEvent.Type.FOCUSED) {
-					read();
+					Object object = event.getSelection()[0];
+					if (object instanceof ModelEntity) {
+						read((ModelEntity) object);
+					}
 				}
 			}
 		});
 	}
 
-	public void read() {
-		ModelEntity scene = (ModelEntity) controller.getModel().getSelection()
-				.getSingle(Selection.SCENE);
+	public void read(ModelEntity scene) {
 		Documentation doc = Q.getComponent(scene, Documentation.class);
 		optionsController.read(doc);
 		makeInitial.setDisabled(isInitial(scene));
@@ -170,9 +174,12 @@ public class SceneEditionWidget extends LinearLayout implements FieldListener {
 
 	@Override
 	public void modelChanged(FieldEvent event) {
-		ModelEntity scene = (ModelEntity) controller.getModel().getSelection()
+		Object sel = controller.getModel().getSelection()
 				.getSingle(Selection.SCENE);
-		makeInitial.setDisabled(isInitial(scene));
+		if (sel instanceof ModelEntity) {
+			ModelEntity scene = (ModelEntity) sel;
+			makeInitial.setDisabled(isInitial(scene));
+		}
 
 	}
 

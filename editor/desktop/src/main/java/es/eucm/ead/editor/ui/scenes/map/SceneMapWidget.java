@@ -62,6 +62,8 @@ import es.eucm.ead.editor.view.listeners.SceneNameListener;
 import es.eucm.ead.editor.view.widgets.IconButton;
 import es.eucm.ead.editor.view.widgets.dragndrop.DraggableGridLayout;
 import es.eucm.ead.editor.view.widgets.dragndrop.DraggableLinearLayout.DropListener;
+import es.eucm.ead.editor.view.widgets.dragndrop.focus.FocusItemList.FocusEvent;
+import es.eucm.ead.editor.view.widgets.dragndrop.focus.FocusItemList.FocusListener;
 import es.eucm.ead.schema.editor.components.GameData;
 import es.eucm.ead.schema.editor.components.SceneMap;
 import es.eucm.ead.schema.editor.data.Cell;
@@ -108,8 +110,10 @@ public class SceneMapWidget extends DraggableGridLayout {
 		final Button moreStartCol = new IconButton(plusIcon, skin);
 		final Button moreFinalCol = new IconButton(plusIcon, skin);
 
-		controller.getModel().addSelectionListener(selectionListener);
-		controller.getModel().addSelectionListener(sceneListener);
+		Model model = controller.getModel();
+		model.addSelectionListener(sceneListener);
+		model.addSelectionListener(selectionListener);
+
 		ClickListener moreButton = new ClickListener() {
 
 			@Override
@@ -151,6 +155,16 @@ public class SceneMapWidget extends DraggableGridLayout {
 				}
 			}
 		};
+
+		addListener(new FocusListener() {
+
+			@Override
+			public void focusChanged(FocusEvent event) {
+				controller.action(SetSelection.class, Selection.SCENE_MAP,
+						Selection.SCENE,
+						((SceneWidget) event.getActor()).getScene());
+			}
+		});
 
 		moreStartRow.addListener(moreButton);
 		moreFinalRow.addListener(moreButton);

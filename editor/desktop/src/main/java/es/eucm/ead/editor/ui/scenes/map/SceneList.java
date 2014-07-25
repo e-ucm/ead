@@ -52,9 +52,11 @@ import es.eucm.ead.editor.control.Controller;
 import es.eucm.ead.editor.control.Selection;
 import es.eucm.ead.editor.control.actions.model.SetSelection;
 import es.eucm.ead.editor.model.Model;
+import es.eucm.ead.editor.model.Model.ModelListener;
 import es.eucm.ead.editor.model.Model.Resource;
 import es.eucm.ead.editor.model.Model.SelectionListener;
 import es.eucm.ead.editor.model.Q;
+import es.eucm.ead.editor.model.events.ResourceEvent;
 import es.eucm.ead.editor.model.events.SelectionEvent;
 import es.eucm.ead.editor.view.listeners.SceneNameListener;
 import es.eucm.ead.editor.view.widgets.dragndrop.focus.FocusItemList.FocusEvent;
@@ -77,6 +79,8 @@ public class SceneList extends Table {
 	private ButtonGroup buttonGroup;
 
 	private SceneNameListener nameListener;
+
+	private ModelListener<ResourceEvent> scenesChangedListener;
 
 	public SceneList(Controller control) {
 		this.controller = control;
@@ -108,14 +112,18 @@ public class SceneList extends Table {
 			@Override
 			public void modelChanged(SelectionEvent event) {
 				if (event.getType() == SelectionEvent.Type.FOCUSED) {
-					ModelEntity scene = (ModelEntity) event.getSelection()[0];
-					Array<Button> buttons = buttonGroup.getButtons();
-					for (Button button : buttons) {
-						if (((SceneButton) button).scene == scene) {
-							button.setChecked(true);
+					Object object = event.getSelection()[0];
+					if (object instanceof ModelEntity) {
+						ModelEntity scene = (ModelEntity) object;
+						Array<Button> buttons = buttonGroup.getButtons();
+						for (Button button : buttons) {
+							if (((SceneButton) button).scene == scene) {
+								button.setChecked(true);
+								break;
+							}
 						}
+						nameListener.setUp(scene);
 					}
-					nameListener.setUp(scene);
 				}
 			}
 
@@ -124,23 +132,33 @@ public class SceneList extends Table {
 				return Selection.SCENE.equals(contextId);
 			}
 		});
+
+		scenesChangedListener = new ScenesChangesListener();
 	}
 
 	public void prepare() {
 
 		Model model = controller.getModel();
+
 		Map<String, Resource> resources = model
 				.getResources(ResourceCategory.SCENE);
+		model.addResourceListener(scenesChangedListener);
+
 		Set<Entry<String, Resource>> entrySet = resources.entrySet();
 		buttonGroup.setMinCheckCount(0);
-		for (java.util.Map.Entry<String, Resource> entry : entrySet) {
-			CheckBox sceneBox = new SceneButton((ModelEntity) entry.getValue()
-					.getObject(), entry.getKey(), skin);
-			add(sceneBox).left().expandX();
-			buttonGroup.add(sceneBox);
-			row();
+
+		for (java.util.Map.Entry<String, Resource> entry : resources.entrySet()) {
+			addSceneBox((ModelEntity) entry.getValue().getObject(),
+					entry.getKey());
 		}
 		buttonGroup.setMinCheckCount(1);
+	}
+
+	private void addSceneBox(ModelEntity scene, String sceneId) {
+		CheckBox sceneBox = new SceneButton(controller, scene, sceneId, skin);
+		add(sceneBox).left().expandX();
+		buttonGroup.add(sceneBox);
+		row();
 	}
 
 	public void release() {
@@ -148,15 +166,21 @@ public class SceneList extends Table {
 		nameListener.remove();
 		buttonGroup.getButtons().clear();
 		buttonGroup.getAllChecked().clear();
+		controller.getModel().removeResourceListener(scenesChangedListener);
 	}
 
 	private static class SceneButton extends CheckBox {
 
 		private ModelEntity scene;
 
-		public SceneButton(ModelEntity scene, String id, Skin skin) {
+		public SceneButton(Controller controller, ModelEntity scene, String id,
+				Skin skin) {
 			super(Q.getName(scene, id), skin);
+
 			this.scene = scene;
+			Object modelEntity = controller.getModel().getSelection()
+					.getSingle(Selection.SCENE);
+			setChecked(modelEntity == scene);
 		}
 
 		@Override
@@ -176,6 +200,35 @@ public class SceneList extends Table {
 			dropEvent.setActor(this);
 			fire(dropEvent);
 			Pools.free(dropEvent);
+		}
+	}
+
+	private class ScenesChangesListener implements ModelListener<ResourceEvent> {
+
+		@Override
+		public void modelChanged(ResourceEvent event) {
+			ResourceCategory category = event.getCategory();
+			if (category == ResourceCategory.SCENE) {
+				Object resource = event.getResource();
+				if (resource instanceof ModelEntity) {
+					String id = event.getId();
+					switch (event.getType()) {
+					case ADDED:
+						addSceneBox((ModelEntity) resource, id);
+						break;
+					case REMOVED:
+						Array<Button> buttons = buttonGroup.getButtons();
+						for (Button button : buttons) {
+							if (((SceneButton) button).scene == resource) {
+								buttonGroup.remove(button);
+								removeActor(button);
+								break;
+							}
+						}
+						break;
+					}
+				}
+			}
 		}
 	}
 }

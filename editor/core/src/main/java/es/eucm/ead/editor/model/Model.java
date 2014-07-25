@@ -368,6 +368,13 @@ public class Model {
 	}
 
 	/**
+	 * Removes a listener from the {@link #resourcesListeners}.
+	 */
+	public void removeResourceListener(ModelListener<ResourceEvent> listener) {
+		resourcesListeners.removeValue(listener, true);
+	}
+
+	/**
 	 * Adds a listener to listen to loading events (essentially, listeners are
 	 * notified when a new game project is loaded). Load listeners are
 	 * perennial, i.e., they are not deleted when a new game is loaded

@@ -163,6 +163,15 @@ public class GridLayout extends AbstractWidget {
 		return cells.get(row * columns + column);
 	}
 
+	public Cell getCellAt(float x, float y) {
+		for (Cell cell : cells) {
+			if (cell.contains(x, y)) {
+				return cell;
+			}
+		}
+		return null;
+	}
+
 	@Override
 	public float getPrefWidth() {
 		return getCellPrefWidth() * columns;

@@ -25,7 +25,7 @@ import es.eucm.ead.editor.model.Model.FieldListener;
 import es.eucm.ead.editor.model.events.FieldEvent;
 import es.eucm.ead.editor.ui.resources.frames.AnimationEditor.FrameEditionListener;
 import es.eucm.ead.editor.view.widgets.IconButton;
-import es.eucm.ead.editor.view.widgets.dragndrop.focus.FocusItem;
+import es.eucm.ead.editor.view.widgets.dragndrop.focus.FocusButton;
 import es.eucm.ead.engine.I18N;
 import es.eucm.ead.engine.assets.Assets.AssetLoadedCallback;
 import es.eucm.ead.schema.renderers.Frame;
@@ -36,7 +36,7 @@ import es.eucm.ead.schemax.FieldName;
  * {@link TextField} at the bottom in order to edit the duration of the
  * {@link Frame}. Used by the {@link FramesTimeline}.
  */
-public class FrameWidget extends FocusItem {
+public class FrameWidget extends FocusButton {
 
 	private static final float IMAGE_WIDTH = 70F, IMAGE_HEIGHT = 100F;
 	private static final int MAX_DURATION_LENGTH = 4;
@@ -46,6 +46,7 @@ public class FrameWidget extends FocusItem {
 	private Cell<Actor> topCell;
 	private float previousTime;
 	private TextField time;
+	private Image widget;
 	private Frame frame;
 	private Table top;
 	private FieldListener textfieldListener = new FieldListener() {
@@ -76,14 +77,13 @@ public class FrameWidget extends FocusItem {
 
 	public FrameWidget(Frame fram, Controller controller,
 			FramesTimeline timeline) {
-		super(null, controller);
+		super(controller.getApplicationAssets().getSkin());
 		this.timeline = timeline;
 		this.frame = fram;
 		init(controller);
 	}
 
-	@Override
-	protected void build(Controller controller) {
+	private void init(final Controller controller) {
 
 		widget = new Image();
 
@@ -127,9 +127,6 @@ public class FrameWidget extends FocusItem {
 		add(widget).height(IMAGE_HEIGHT).width(IMAGE_WIDTH);
 		row();
 		add(time);
-	}
-
-	private void init(final Controller controller) {
 
 		time.setRightAligned(true);
 		time.setMaxLength(MAX_DURATION_LENGTH);
@@ -167,16 +164,17 @@ public class FrameWidget extends FocusItem {
 			}
 		});
 
-		EditorGameAssets assets = controller.getEditorGameAssets();
-		assets.get(((es.eucm.ead.schema.renderers.Image) frame.getRenderer())
-				.getUri(), Texture.class, new AssetLoadedCallback<Texture>() {
+		EditorGameAssets gameAssets = controller.getEditorGameAssets();
+		gameAssets.get(((es.eucm.ead.schema.renderers.Image) frame
+				.getRenderer()).getUri(), Texture.class,
+				new AssetLoadedCallback<Texture>() {
 
-			@Override
-			public void loaded(String fileName, Texture asset) {
-				((Image) widget).setDrawable(new TextureRegionDrawable(
-						new TextureRegion(asset)));
-			}
-		}, true);
+					@Override
+					public void loaded(String fileName, Texture asset) {
+						((Image) widget).setDrawable(new TextureRegionDrawable(
+								new TextureRegion(asset)));
+					}
+				}, true);
 
 		controller.getModel().addFieldListener(frame, textfieldListener);
 	}
@@ -190,15 +188,17 @@ public class FrameWidget extends FocusItem {
 	}
 
 	@Override
-	public void setFocus(boolean focus) {
-		super.setFocus(focus);
-		top.setVisible(focus);
-		if (!focus) {
+	public void setChecked(boolean isChecked) {
+		super.setChecked(isChecked);
+		isChecked = isChecked();
+		top.setVisible(isChecked);
+		if (!isChecked) {
 			if (topCell.hasWidget()) {
 				topCell.setWidget(null);
 			}
 		} else {
 			topCell.setWidget(top);
+			timeline.centerScrollAt(this);
 		}
 		top.invalidateHierarchy();
 		previousTime = Float.valueOf(time.getText());
