@@ -37,35 +37,42 @@
 package es.eucm.ead.engine.components;
 
 import ashley.core.Component;
-import com.badlogic.gdx.utils.Pool;
-import es.eucm.ead.schema.components.Conversations;
-import es.eucm.ead.schema.data.conversation.Conversation;
+import com.badlogic.gdx.utils.Pool.Poolable;
+import es.eucm.ead.schema.components.conversation.Conversation;
 
 import java.util.HashMap;
+import java.util.Map;
 
-/**
- * Simple container of conversations for engine entities. Engine equivalent to
- * {@link es.eucm.ead.schema.components.Conversations}.
- */
-public class ConversationsComponent extends Component implements Pool.Poolable {
+public class ConversationsComponent extends Component implements Poolable {
 
-	protected HashMap<String, Conversation> conversationMap = new HashMap<String, Conversation>();
+	private Map<String, Conversation> conversations;
 
 	public ConversationsComponent() {
+		conversations = new HashMap<String, Conversation>();
 	}
 
-	public Conversation getConversation(String id) {
-		return conversationMap.get(id);
+	public Map<String, Conversation> getConversations() {
+		return conversations;
 	}
 
-	public void initialize(Conversations schemaConversations) {
-		for (Conversation c : schemaConversations.getConversations()) {
-			conversationMap.put(c.getId(), c);
+	public void add(Conversation conversation) {
+		conversations.put(conversation.getId(), conversation);
+	}
+
+	@Override
+	public boolean combine(Component component) {
+		if (component instanceof ConversationsComponent) {
+			for (Conversation conv : ((ConversationsComponent) component)
+					.getConversations().values()) {
+				add(conv);
+			}
+			return true;
 		}
+		return false;
 	}
 
 	@Override
 	public void reset() {
-		conversationMap.clear();
+		conversations.clear();
 	}
 }

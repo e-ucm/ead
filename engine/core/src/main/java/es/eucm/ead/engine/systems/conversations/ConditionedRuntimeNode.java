@@ -34,29 +34,37 @@
  *      You should have received a copy of the GNU Lesser General Public License
  *      along with eAdventure.  If not, see <http://www.gnu.org/licenses/>.
  */
-package es.eucm.ead.engine.systems.behaviors;
+package es.eucm.ead.engine.systems.conversations;
 
-import ashley.core.Entity;
-import ashley.core.Family;
 import es.eucm.ead.engine.GameLoop;
-import es.eucm.ead.engine.components.EffectsComponent;
-import es.eucm.ead.engine.systems.ConditionalSystem;
-import es.eucm.ead.engine.variables.VariablesManager;
-import es.eucm.ead.schema.effects.Effect;
+import es.eucm.ead.engine.systems.EffectsSystem;
+import es.eucm.ead.engine.systems.conversations.NodeSystem.RuntimeNode;
+import es.eucm.ead.schema.components.conversation.ConditionedNode;
 
-public abstract class BehaviorSystem extends ConditionalSystem {
+public class ConditionedRuntimeNode extends RuntimeNode<ConditionedNode> {
 
-	public BehaviorSystem(GameLoop engine, VariablesManager variablesManager,
-			Family family) {
-		super(engine, variablesManager, family, 0);
+	protected EffectsSystem effectsSystem;
+
+	@Override
+	public void setGameLoop(GameLoop gameLoop) {
+		super.setGameLoop(gameLoop);
+		effectsSystem = gameLoop.getSystem(EffectsSystem.class);
 	}
 
-	protected void addEffects(Entity entity, Iterable<Effect> effects) {
-		EffectsComponent effectsComponent = gameLoop.addAndGetComponent(entity,
-				EffectsComponent.class);
+	@Override
+	public boolean update(float delta) {
+		return true;
+	}
 
-		for (Effect effect : effects) {
-			effectsComponent.getEffectList().add(effect);
+	@Override
+	public int nextNode() {
+		int i = 0;
+		for (String condition : node.getConditions()) {
+			if (effectsSystem.evaluateCondition(condition)) {
+				return node.getNextNodeIds().get(i);
+			}
+			i++;
 		}
+		return END_NODE;
 	}
 }

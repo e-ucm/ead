@@ -34,29 +34,52 @@
  *      You should have received a copy of the GNU Lesser General Public License
  *      along with eAdventure.  If not, see <http://www.gnu.org/licenses/>.
  */
-package es.eucm.ead.engine.systems.behaviors;
+package es.eucm.ead.engine.demos;
 
-import ashley.core.Entity;
-import ashley.core.Family;
-import es.eucm.ead.engine.GameLoop;
-import es.eucm.ead.engine.components.EffectsComponent;
-import es.eucm.ead.engine.systems.ConditionalSystem;
-import es.eucm.ead.engine.variables.VariablesManager;
-import es.eucm.ead.schema.effects.Effect;
+import es.eucm.ead.editor.demobuilder.EditorDemoBuilder;
+import es.eucm.ead.engine.demobuilder.ConversationBuilder;
+import es.eucm.ead.engine.demobuilder.ConversationBuilder.ForkBuilder;
 
-public abstract class BehaviorSystem extends ConditionalSystem {
+/**
+ * Created by angel on 24/07/14.
+ */
+public class MeetingAFriendDemo extends EditorDemoBuilder {
 
-	public BehaviorSystem(GameLoop engine, VariablesManager variablesManager,
-			Family family) {
-		super(engine, variablesManager, family, 0);
+	public MeetingAFriendDemo() {
+		super("planes-demo");
 	}
 
-	protected void addEffects(Entity entity, Iterable<Effect> effects) {
-		EffectsComponent effectsComponent = gameLoop.addAndGetComponent(entity,
-				EffectsComponent.class);
+	@Override
+	public String[] assetPaths() {
+		return new String[] { "images/background.png", "images/rocks_down.png",
+				"images/rocks_up.png", "images/starGold.png", "plane/red.json" };
+	}
 
-		for (Effect effect : effects) {
-			effectsComponent.getEffectList().add(effect);
-		}
+	@Override
+	public String getName() {
+		return "Meeting a friend";
+	}
+
+	@Override
+	protected void doBuild() {
+		String conversationId = "c";
+		singleSceneGame(assets[0]);
+
+		ConversationBuilder conversation = initBehavior(getLastScene(),
+				makeTriggerConversation(conversationId, 0)).conversation(
+				getLastEntity(), conversationId);
+
+		ForkBuilder option = conversation
+				.speakers("Angus", "Friederick", "green").start()
+				.line(0, "Hello!").line(1, "Hi there! How are you?").options();
+		option.start("Fine, thanks").line(1, "I'm glad you are fine")
+				.nextNode(0);
+		option.start("Really bad, actually").line(1, "I'm glad you are bad")
+				.nextNode(0);
+	}
+
+	public static void main(String[] args) {
+		MeetingAFriendDemo demo = new MeetingAFriendDemo();
+		demo.run();
 	}
 }

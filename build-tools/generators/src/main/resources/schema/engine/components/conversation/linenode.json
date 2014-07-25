@@ -1,0 +1,20 @@
+{
+    "additionalProperties": false,
+    "javaType": "es.eucm.ead.schema.components.conversation.LineNode",
+    "extends": {
+        "$ref": "simplenode.json"
+    },
+    "properties": {
+        "speaker": {
+            "type": "integer",
+            "default": "0",
+            "description": "Index of speaker, from the speaker array defined when the conversation started"
+        },
+        "line": {
+            "type": "string",
+            "description": "string representing what is said in this node"
+        }
+    },
+    "type": "object",
+    "description": "A line of conversation, spoken (or produced) by a participant."
+}

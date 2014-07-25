@@ -34,43 +34,43 @@
  *      You should have received a copy of the GNU Lesser General Public License
  *      along with eAdventure.  If not, see <http://www.gnu.org/licenses/>.
  */
-package es.eucm.ead.engine.components.dialogues;
+package es.eucm.ead.engine.components.renderers;
+
+import ashley.core.Component;
 
 import com.badlogic.gdx.utils.Array;
+import es.eucm.ead.schema.components.conversation.Conversation;
+import es.eucm.ead.schema.components.conversation.OptionNode;
 
-/**
- * An entity with this component is speaking a line of dialogue.
- * 
- * This specific type of dialogue presents a menu, and reports back on the
- * option chosen by the user.
- */
-public class MenuDialogueComponent extends DialogueComponent {
+public class OptionsComponent extends Component {
 
-	/**
-	 * The user's choice, if a menu and a choice is available. -1 otherwise.
-	 */
-	private int menuChoice;
+	private Conversation conversation;
 
-	public void init(Array<String> keys) {
-		super.init(keys);
-		menuChoice = -1;
+	private OptionNode node;
+
+	private Array<String> options;
+
+	public Array<String> getOptions() {
+		return options;
 	}
 
-	/**
-	 * Returns the current menu choice. If no menu choice has been made, returns
-	 * -1.
-	 */
-	public int getMenuChoice() {
-		return menuChoice;
+	public void setOptions(Array<String> options) {
+		this.options = options;
 	}
 
-	public void setMenuChoice(int menuChoice) {
-		this.menuChoice = menuChoice;
+	public Conversation getConversation() {
+		return conversation;
 	}
 
-	@Override
-	public void reset() {
-		super.reset();
-		this.menuChoice = -1;
+	public void setConversation(Conversation conversation) {
+		this.conversation = conversation;
+	}
+
+	public OptionNode getNode() {
+		return node;
+	}
+
+	public void setNode(OptionNode node) {
+		this.node = node;
 	}
 }

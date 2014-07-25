@@ -53,6 +53,10 @@ import es.eucm.ead.schema.effects.Effect;
 import java.util.HashMap;
 import java.util.Map;
 
+/**
+ * This system has the lowest priority possible, since we always want the
+ * effects to be executed last, once any possible effect has been added
+ */
 public class EffectsSystem extends ConditionalSystem {
 
 	private Map<Class, EffectExecutor> effectExecutorMap;
@@ -62,7 +66,7 @@ public class EffectsSystem extends ConditionalSystem {
 	public EffectsSystem(GameLoop engine, VariablesManager variablesManager,
 			GameAssets gameAssets) {
 		super(engine, variablesManager, Family
-				.getFamilyFor(EffectsComponent.class));
+				.getFamilyFor(EffectsComponent.class), Integer.MAX_VALUE);
 		effectExecutorMap = new HashMap<Class, EffectExecutor>();
 		this.gameAssets = gameAssets;
 	}

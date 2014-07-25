@@ -34,48 +34,35 @@
  *      You should have received a copy of the GNU Lesser General Public License
  *      along with eAdventure.  If not, see <http://www.gnu.org/licenses/>.
  */
-package es.eucm.ead.editor.demobuilder;
+package es.eucm.ead.engine.demobuilder;
 
-import com.badlogic.gdx.Application;
-import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.backends.lwjgl.LwjglNativesLoader;
-import com.badlogic.gdx.files.FileHandle;
-import com.badlogic.gdx.graphics.Pixmap;
-import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.reflect.ClassReflection;
 import com.badlogic.gdx.utils.reflect.Field;
 import com.badlogic.gdx.utils.reflect.ReflectionException;
-import com.vividsolutions.jts.geom.Geometry;
-import es.eucm.ead.editor.DesktopPlatform;
-import es.eucm.ead.editor.utils.GeometryUtils;
-import es.eucm.ead.editor.utils.ZipUtils;
-import es.eucm.ead.engine.EngineDesktop;
-import es.eucm.ead.engine.assets.GameAssets;
-import es.eucm.ead.engine.mock.MockApplication;
 import es.eucm.ead.schema.components.ModelComponent;
 import es.eucm.ead.schema.components.Tags;
-import es.eucm.ead.schema.components.behaviors.Event;
-import es.eucm.ead.schema.components.positiontracking.Parallax;
 import es.eucm.ead.schema.components.behaviors.Behavior;
+import es.eucm.ead.schema.components.behaviors.Event;
 import es.eucm.ead.schema.components.behaviors.events.Init;
 import es.eucm.ead.schema.components.behaviors.events.Timer;
 import es.eucm.ead.schema.components.behaviors.events.Touch;
+import es.eucm.ead.schema.components.conversation.Conversation;
+import es.eucm.ead.schema.components.conversation.EffectsNode;
+import es.eucm.ead.schema.components.positiontracking.Parallax;
 import es.eucm.ead.schema.components.tweens.AlphaTween;
 import es.eucm.ead.schema.components.tweens.FieldTween;
 import es.eucm.ead.schema.components.tweens.MoveTween;
 import es.eucm.ead.schema.components.tweens.RotateTween;
 import es.eucm.ead.schema.components.tweens.ScaleTween;
 import es.eucm.ead.schema.components.tweens.Tween;
-import es.eucm.ead.schema.data.Dimension;
 import es.eucm.ead.schema.data.Parameter;
 import es.eucm.ead.schema.data.Script;
-import es.eucm.ead.schema.data.conversation.Node;
-import es.eucm.ead.schema.data.shape.Polygon;
 import es.eucm.ead.schema.effects.AddComponent;
 import es.eucm.ead.schema.effects.AddEntity;
 import es.eucm.ead.schema.effects.ChangeVar;
 import es.eucm.ead.schema.effects.Effect;
 import es.eucm.ead.schema.effects.SetViewport;
+import es.eucm.ead.schema.effects.TriggerConversation;
 import es.eucm.ead.schema.effects.controlstructures.ControlStructure;
 import es.eucm.ead.schema.entities.ModelEntity;
 import es.eucm.ead.schema.renderers.Frame;
@@ -83,32 +70,10 @@ import es.eucm.ead.schema.renderers.Frames;
 import es.eucm.ead.schema.renderers.Image;
 import es.eucm.ead.schema.renderers.Renderer;
 import es.eucm.ead.schemax.GameStructure;
-import es.eucm.ead.schema.effects.controlstructures.IfThenElseIf;
-import es.eucm.ead.schema.effects.controlstructures.If;
-import es.eucm.ead.schema.effects.controlstructures.While;
 
-import java.io.InputStream;
 import java.util.HashMap;
-import java.util.Map;
 
 /**
- * DemoBuilder is a tool for helping make simple demo games quickly. Games
- * created with the tool can be saved automatically to a temp location on disk
- * and run by the engine. Use {@link #build()}, {@link #save()}, {@link #run()}
- * and {@link #clean()} for more info.
- * 
- * Usage: To create a new demo with the tool, create a class that extends
- * DemoBuilder. Then implement {@link #doBuild()} and, perhaps,
- * {@link #assetPaths()}, just in case you want to have all your asset paths
- * defined in one place. You may also consider overriding
- * {@link #getDescription()} and {@link #getSnapshotUri()} if you plan to add
- * the demo to DemoLauncher.
- * 
- * All the resources of the demo (images, sounds, etc.) must be zipped into a
- * file that should be available to DemoBuilder at runtime. DemoBuilder will
- * unzip these files to the temp location of the game. The information required
- * for resolving the location of the zipFile is placed at construction time (see
- * {@link #DemoBuilder(String)}).
  * 
  * The {@link #doBuild()} method is the key. This method must be implemented by
  * the subclass, and there's where the logic for creating all the game entities
@@ -146,34 +111,15 @@ import java.util.Map;
  */
 public abstract class DemoBuilder {
 
-	private static final String LOG_TAG = "DemoBuilder";
+	protected static final String LOG_TAG = "DemoBuilder";
 
 	public static final String DEFAULT_SCENE_PREF = "scenes/s";
 	public static final String JSON = ".json";
 
 	/*
-	 * Static stuff needed to use some stuff, like Gdx.app or Pixmap. Should be
-	 * used just once
-	 */
-	private static boolean init = false;
-
-	private static void init() {
-		if (!init) {
-			LwjglNativesLoader.load();
-			MockApplication.initStatics();
-		}
-	}
-
-	/*
 	 * Map with all the entities of the game. Should be "filled in" by doBuild()
 	 */
 	protected HashMap<String, ModelEntity> entities;
-
-	/* To avoid building entities more than once */
-	protected boolean built = false;
-
-	/* Convenient container of asset paths - no actual need to use it */
-	protected String[] assets;
 
 	/*
 	 * Builder remembers last entities and components added to entities so they
@@ -188,168 +134,9 @@ public abstract class DemoBuilder {
 	protected float gameWidth;
 	protected float gameHeight;
 
-	protected GameAssets gameAssets;
-
-	/* points to the temp folder where the game is saved */
-	protected FileHandle rootFolder;
-	/*
-	 * relative path of zip file with resources for this game (with no
-	 * extension)
-	 */
-	protected String root;
-
-	// To determine image dimensions
-	protected DesktopPlatform platform;
-
-	/**
-	 * Creates the object but does not actually build the game. Just creates the
-	 * temp folder and unzips the the contents of the file specified by the
-	 * relative path {@code root}
-	 * 
-	 * @param root
-	 */
-	public DemoBuilder(String root) {
-		init();
-		this.root = root;
-		platform = new DesktopPlatform();
+	public DemoBuilder() {
 		entities = new HashMap<String, ModelEntity>();
-		gameAssets = new GameAssets(Gdx.files);
 		sceneCount = 0;
-	}
-
-	// ///////////////////////////////////////////////////
-	// Private methods
-	// //////////////////////////////////////////////////
-	/**
-	 * Creates a model collider for the given image
-	 */
-	private Array<Polygon> createSchemaCollider(String imageUri) {
-		Array<Polygon> collider = new Array<Polygon>();
-		Pixmap pixmap = new Pixmap(gameAssets.resolve(imageUri));
-		Array<Geometry> geometryArray = GeometryUtils
-				.findBorders(pixmap, .1, 2);
-		for (Geometry geometry : geometryArray) {
-			collider.add(GeometryUtils.jtsToSchemaPolygon(geometry));
-		}
-		pixmap.dispose();
-		return collider;
-	}
-
-	private Dimension getImageDimension(String imageUri) {
-		return platform.getImageDimension(gameAssets.resolve(imageUri).read());
-	}
-
-	// ////////////////////////////////////////////////////
-	// Public methods for building, saving, and running the game
-	// ////////////////////////////////////////////////////
-
-	/**
-	 * Builds the game, saves it to disk, and runs it.
-	 */
-	public void run() {
-		if (!built) {
-			build();
-		}
-		save();
-		EngineDesktop engine = new EngineDesktop((int) gameWidth,
-				(int) gameHeight) {
-			@Override
-			protected void dispose() {
-				DemoBuilder.this.clean();
-				super.dispose();
-			}
-		};
-		engine.run(rootFolder.file().getAbsolutePath(), false, false);
-		Gdx.app.setLogLevel(Application.LOG_DEBUG);
-	}
-
-	/**
-	 * Builds all the entities of the game, and sets up assets, but does not
-	 * save the game to disk or run the game. Use {@link #save()} or
-	 * {@link #run()} instead.
-	 * 
-	 * @return The hashmap with all the entities of the game
-	 */
-	public HashMap<String, ModelEntity> build() {
-		createOutputFolder();
-		assets = assetPaths();
-		doBuild();
-		built = true;
-		return entities;
-	}
-
-	/**
-	 * Saves all entities to the temp folder ({@link #rootFolder}). Should be
-	 * invoked always after {@link #build()}.
-	 * 
-	 * After this method is invoked, {@link #getRootFolder()} can be used to
-	 * determine the location of the folder this game was saved to.
-	 */
-	public void save() {
-		for (Map.Entry<String, ModelEntity> entry : entities.entrySet()) {
-			FileHandle fh = rootFolder.child(entry.getKey());
-			if (fh.isDirectory()) {
-				fh.mkdirs();
-			} else if (!fh.parent().exists()) {
-				fh.parent().mkdirs();
-			}
-			Gdx.app.debug(LOG_TAG, "Saving to: " + fh.file().getAbsolutePath());
-			gameAssets.toJson(entry.getValue(), null, fh);
-		}
-	}
-
-	/*
-	 * Creates the output folder and extracts contents from the zip. Needed
-	 * before building
-	 */
-	private void createOutputFolder() {
-		rootFolder = FileHandle.tempDirectory(root);
-		rootFolder.mkdirs();
-
-		gameAssets.setLoadingPath("", true);
-		ZipUtils.unzip(gameAssets.resolve(root + ".zip"), rootFolder);
-
-		gameAssets.setLoadingPath(rootFolder.file().getAbsolutePath(), false);
-	}
-
-	/**
-	 * @return An input stream ready for reading a snapshot image of the game
-	 *         for preview, or null if no image is available. By default, it is
-	 *         assumed that an image with name {@code root} and png extension
-	 *         will be available. Demos can define their snapshot to be in
-	 *         another location or with another name by overriding
-	 *         {@link #getSnapshotUri()}.
-	 */
-	public InputStream getSnapshotInputStream() {
-		FileHandle imageFileHandle = gameAssets.resolve(getSnapshotUri());
-		if (imageFileHandle.exists() && imageFileHandle != null) {
-			return imageFileHandle.read();
-		}
-		return null;
-	}
-
-	/**
-	 * @return An external FileHandle pointing to the temp folder where the game
-	 *         was saved
-	 */
-	public FileHandle getRootFolder() {
-		return rootFolder;
-	}
-
-	/**
-	 * Deletes the whole temp folder the game was saved to. Should be called
-	 * once the game is not planned to be run anymore.
-	 */
-	public void clean() {
-		if (built && rootFolder != null) {
-			rootFolder.deleteDirectory();
-			built = false;
-			entities.clear();
-			rootFolder = null;
-			lastEntity = lastScene = null;
-			lastComponent = null;
-			sceneCount = 0;
-		}
 	}
 
 	// /////////////////////////////////////////////////////////////////////////////
@@ -358,42 +145,10 @@ public abstract class DemoBuilder {
 	// /////////////////////////////////////////////////////////////////////////////
 
 	/**
-	 * Sets up {@link #assets}. Useful to encapsulate asset paths all in one
-	 * place
-	 */
-	protected String[] assetPaths() {
-		return new String[] {};
-	}
-
-	/**
 	 * Does the actual build of the game, creating any entities needed by using
 	 * methods available below.
 	 */
 	protected abstract void doBuild();
-
-	/**
-	 * @return A textual description of the demo (for DemoLauncher). By default,
-	 *         "No description available is returned". Is strongly encouraged
-	 *         for subclasses to override this method.
-	 */
-	public String getDescription() {
-		return "No description available";
-	}
-
-	/**
-	 * @return The path of the snapshot image for the demo.
-	 */
-	protected String getSnapshotUri() {
-		return root + ".png";
-	}
-
-	/**
-	 * @return A name of the demo, for the DemoLauncher. By default returns the
-	 *         relative path ({@link #root}).
-	 */
-	public String getName() {
-		return root;
-	}
 
 	// //////////////////////////////////////////////////////////
 	// Methods for accessing last entities and component
@@ -476,10 +231,9 @@ public abstract class DemoBuilder {
 	 * @param backgroundUri
 	 *            Relative uri of the background image of the scene
 	 */
-	public DemoBuilder singleSceneGame(String backgroundUri) {
-		Dimension backgroundDim = getImageDimension(backgroundUri);
-		game(backgroundDim.getWidth(), backgroundDim.getHeight()).scene(
-				backgroundUri);
+	public DemoBuilder singleSceneGame(String backgroundUri, int width,
+			int height) {
+		game(width, height).scene(backgroundUri);
 		return this;
 	}
 
@@ -491,7 +245,7 @@ public abstract class DemoBuilder {
 	/**
 	 * Creates a new entity with the given location and image for rendering as a
 	 * child of the last entity added to {@link #entities}. See
-	 * {@link #entity(ModelEntity, String, float, float)}
+	 * {@link #entity(es.eucm.ead.schema.entities.ModelEntity, String, float, float)}
 	 */
 	public DemoBuilder entity(String imageUri, float x, float y) {
 		return entity(getLastEntity(), imageUri, x, y);
@@ -514,16 +268,31 @@ public abstract class DemoBuilder {
 	public DemoBuilder entity(ModelEntity parent, String imageUri, float x,
 			float y) {
 		ModelEntity modelEntity = entity().getLastEntity();
-		Image image = new Image();
-		image.setUri(imageUri);
-		image.setCollider(createSchemaCollider(imageUri));
-		modelEntity.getComponents().add(image);
+		addImage(modelEntity, imageUri);
 		modelEntity.setX(x);
 		modelEntity.setY(y);
 		if (parent != null) {
 			parent.getChildren().add(modelEntity);
 		}
 		return this;
+	}
+
+	public DemoBuilder addImage(ModelEntity entity, String uri) {
+		entity.getComponents().add(createImage(uri));
+		return this;
+	}
+
+	public ConversationBuilder conversation(ModelEntity entity, String id) {
+		Conversation conversation = new Conversation();
+		entity.getComponents().add(conversation);
+		conversation.setId(id);
+		return new ConversationBuilder(conversation);
+	}
+
+	protected Image createImage(String uri) {
+		Image image = new Image();
+		image.setUri(uri);
+		return image;
 	}
 
 	/**
@@ -544,16 +313,14 @@ public abstract class DemoBuilder {
 	 *            (places the entity horizontally on the screen).
 	 */
 	public DemoBuilder entity(ModelEntity parent, String imageUri,
-			VerticalAlign verticalAlign, HorizontalAlign horizontalAlign) {
-		Dimension imageDim = getImageDimension(imageUri);
+			VerticalAlign verticalAlign, HorizontalAlign horizontalAlign,
+			float imageWidth, float imageHeight) {
 		float x = horizontalAlign == HorizontalAlign.LEFT ? 0
 				: (horizontalAlign == HorizontalAlign.RIGHT ? gameWidth
-						- imageDim.getWidth() : (gameWidth - imageDim
-						.getWidth()) / 2.0F);
+						- imageWidth : (gameWidth - imageWidth) / 2.0F);
 		float y = verticalAlign == VerticalAlign.DOWN ? 0
-				: (verticalAlign == VerticalAlign.UP ? gameHeight
-						- imageDim.getHeight() : (gameHeight - imageDim
-						.getHeight()) / 2.0F);
+				: (verticalAlign == VerticalAlign.UP ? gameHeight - imageHeight
+						: (gameHeight - imageHeight) / 2.0F);
 		return entity(parent, imageUri, x, y);
 	}
 
@@ -620,10 +387,7 @@ public abstract class DemoBuilder {
 
 		Frame frame = new Frame();
 		frame.setTime(duration);
-		Image image = new Image();
-		image.setCollider(createSchemaCollider(frameUri));
-		image.setUri(frameUri);
-		frame.setRenderer(image);
+		frame.setRenderer(createImage(frameUri));
 
 		for (ModelComponent modelComponent : modelEntity.getComponents()) {
 			if (modelComponent instanceof Frames) {
@@ -839,28 +603,30 @@ public abstract class DemoBuilder {
 	}
 
 	/**
-	 * Adds the given {@link Parameter} to the last component added to
-	 * {@link #entities}.
+	 * Adds the given {@link es.eucm.ead.schema.data.Parameter} to the last
+	 * component added to {@link #entities}.
 	 * 
 	 * @param param
-	 *            {@link Parameter#name}
+	 *            {@link es.eucm.ead.schema.data.Parameter#name}
 	 * @param expression
-	 *            {@link Parameter#value}
+	 *            {@link es.eucm.ead.schema.data.Parameter#value}
 	 */
 	public DemoBuilder parameter(String param, String expression) {
 		return parameter(getLastComponent(), param, expression);
 	}
 
 	/**
-	 * Adds the given {@link Parameter} to the given {@code container} object.
+	 * Adds the given {@link es.eucm.ead.schema.data.Parameter} to the given
+	 * {@code container} object.
 	 * 
 	 * @param container
-	 *            The object to add the parameter to. Can be an {@link Effect}
-	 *            or a {@link ModelComponent}.
+	 *            The object to add the parameter to. Can be an
+	 *            {@link es.eucm.ead.schema.effects.Effect} or a
+	 *            {@link es.eucm.ead.schema.components.ModelComponent}.
 	 * @param param
-	 *            {@link Parameter#name}
+	 *            {@link es.eucm.ead.schema.data.Parameter#name}
 	 * @param expression
-	 *            {@link Parameter#value}
+	 *            {@link es.eucm.ead.schema.data.Parameter#value}
 	 */
 	public DemoBuilder parameter(Object container, String param,
 			String expression) {
@@ -877,8 +643,10 @@ public abstract class DemoBuilder {
 
 	/**
 	 * Adds the given {@code effect} to the given {@code container}, which can
-	 * be {@link Behavior}, {@link Script}, {@link Node} or
-	 * {@link ControlStructure}.
+	 * be {@link es.eucm.ead.schema.components.behaviors.Behavior},
+	 * {@link es.eucm.ead.schema.data.Script},
+	 * {@link es.eucm.ead.schema.components.conversation.Node} or
+	 * {@link es.eucm.ead.schema.effects.controlstructures.ControlStructure}.
 	 */
 	public DemoBuilder effect(Object container, Effect effect) {
 		if (container instanceof Behavior) {
@@ -887,9 +655,9 @@ public abstract class DemoBuilder {
 		} else if (container instanceof Script) {
 			Script script = (Script) container;
 			script.getEffects().add(effect);
-		} else if (container instanceof Node) {
-			Node node = (Node) container;
-			node.setEffect(effect);
+		} else if (container instanceof EffectsNode) {
+			EffectsNode node = (EffectsNode) container;
+			node.getEffects().add(effect);
 		} else if (container instanceof ControlStructure) {
 			ControlStructure controlStructure = (ControlStructure) container;
 			controlStructure.getEffects().add(effect);
@@ -902,9 +670,9 @@ public abstract class DemoBuilder {
 	 * with the given properties and local context.
 	 * 
 	 * @param variable
-	 *            {@link ChangeVar#variable}
+	 *            {@link es.eucm.ead.schema.effects.ChangeVar#variable}
 	 * @param expression
-	 *            {@link ChangeVar#expression}
+	 *            {@link es.eucm.ead.schema.effects.ChangeVar#expression}
 	 */
 	public DemoBuilder changeVar(String variable, String expression) {
 		return changeVar(getLastComponent(), variable, expression,
@@ -913,15 +681,16 @@ public abstract class DemoBuilder {
 
 	/**
 	 * Adds a ChangeVar effect to the given {@code container} object with the
-	 * given properties and local context. See {@link #effect(Object, Effect)}
-	 * to see the supported types of containers.
+	 * given properties and local context. See
+	 * {@link #effect(Object, es.eucm.ead.schema.effects.Effect)} to see the
+	 * supported types of containers.
 	 * 
 	 * @param container
 	 *            The object to add this effect to.
 	 * @param variable
-	 *            {@link ChangeVar#variable}
+	 *            {@link es.eucm.ead.schema.effects.ChangeVar#variable}
 	 * @param expression
-	 *            {@link ChangeVar#expression}
+	 *            {@link es.eucm.ead.schema.effects.ChangeVar#expression}
 	 */
 	public DemoBuilder changeVar(Object container, String variable,
 			String expression) {
@@ -935,11 +704,11 @@ public abstract class DemoBuilder {
 	 * with the given properties.
 	 * 
 	 * @param variable
-	 *            {@link ChangeVar#variable}
+	 *            {@link es.eucm.ead.schema.effects.ChangeVar#variable}
 	 * @param expression
-	 *            {@link ChangeVar#expression}
+	 *            {@link es.eucm.ead.schema.effects.ChangeVar#expression}
 	 * @param context
-	 *            {@link ChangeVar#context}
+	 *            {@link es.eucm.ead.schema.effects.ChangeVar#context}
 	 */
 	public DemoBuilder changeVar(String variable, String expression,
 			ChangeVar.Context context) {
@@ -948,17 +717,18 @@ public abstract class DemoBuilder {
 
 	/**
 	 * Adds a ChangeVar effect to the given {@code container} object with the
-	 * given properties. See {@link #effect(Object, Effect)} to see the
+	 * given properties. See
+	 * {@link #effect(Object, es.eucm.ead.schema.effects.Effect)} to see the
 	 * supported types of containers.
 	 * 
 	 * @param container
 	 *            The object to add this effect to.
 	 * @param variable
-	 *            {@link ChangeVar#variable}
+	 *            {@link es.eucm.ead.schema.effects.ChangeVar#variable}
 	 * @param expression
-	 *            {@link ChangeVar#expression}
+	 *            {@link es.eucm.ead.schema.effects.ChangeVar#expression}
 	 * @param context
-	 *            {@link ChangeVar#context}
+	 *            {@link es.eucm.ead.schema.effects.ChangeVar#context}
 	 */
 	public DemoBuilder changeVar(Object container, String variable,
 			String expression, ChangeVar.Context context) {
@@ -967,18 +737,18 @@ public abstract class DemoBuilder {
 	}
 
 	/**
-	 * Creates an {@link AddComponent} effect with the given {@code target} and
-	 * {@code componentToAdd} and adds it to the last component added to
-	 * {@link #entities}.
+	 * Creates an {@link es.eucm.ead.schema.effects.AddComponent} effect with
+	 * the given {@code target} and {@code componentToAdd} and adds it to the
+	 * last component added to {@link #entities}.
 	 */
 	public DemoBuilder addComponent(String target, ModelComponent componentToAdd) {
 		return addComponent(getLastComponent(), target, componentToAdd);
 	}
 
 	/**
-	 * Creates an {@link AddComponent} effect with the given {@code target} and
-	 * {@code componentToAdd} and adds it to the given {@code parent} container.
-	 * For container supported types, see
+	 * Creates an {@link es.eucm.ead.schema.effects.AddComponent} effect with
+	 * the given {@code target} and {@code componentToAdd} and adds it to the
+	 * given {@code parent} container. For container supported types, see
 	 * {@link #effect(Object, es.eucm.ead.schema.effects.Effect)}.
 	 */
 	public DemoBuilder addComponent(Object parent, String target,
@@ -991,12 +761,16 @@ public abstract class DemoBuilder {
 	// Methods for making model pieces (do not modify entities)
 	// /////////////////////////////////////////////////////////
 	/**
-	 * Creates a {@link ControlStructure} effect of the given type ({@code clazz}
-	 * ) with the given {@code condition}
+	 * Creates a
+	 * {@link es.eucm.ead.schema.effects.controlstructures.ControlStructure}
+	 * effect of the given type ({@code clazz} ) with the given
+	 * {@code condition}
 	 * 
 	 * @param clazz
-	 *            Type of control structure. Could be {@link If},
-	 *            {@link IfThenElseIf} or {@link While}.
+	 *            Type of control structure. Could be
+	 *            {@link es.eucm.ead.schema.effects.controlstructures.If},
+	 *            {@link es.eucm.ead.schema.effects.controlstructures.IfThenElseIf}
+	 *            or {@link es.eucm.ead.schema.effects.controlstructures.While}.
 	 * @param condition
 	 *            The string expression that serves as condition.
 	 */
@@ -1018,7 +792,8 @@ public abstract class DemoBuilder {
 	}
 
 	/**
-	 * Creates an {@link AddEntity} effect with the given entity uri
+	 * Creates an {@link es.eucm.ead.schema.effects.AddEntity} effect with the
+	 * given entity uri
 	 */
 	public AddEntity makeAddEntity(String entityUri) {
 		AddEntity addEntity = new AddEntity();
@@ -1027,27 +802,28 @@ public abstract class DemoBuilder {
 	}
 
 	/**
-	 * Creates a {@link ChangeVar} effect with the given properties and local
-	 * context
+	 * Creates a {@link es.eucm.ead.schema.effects.ChangeVar} effect with the
+	 * given properties and local context
 	 * 
 	 * @param variable
-	 *            {@link ChangeVar#variable}
+	 *            {@link es.eucm.ead.schema.effects.ChangeVar#variable}
 	 * @param expression
-	 *            {@link ChangeVar#expression}
+	 *            {@link es.eucm.ead.schema.effects.ChangeVar#expression}
 	 */
 	public ChangeVar makeChangeVar(String variable, String expression) {
 		return makeChangeVar(variable, expression, ChangeVar.Context.LOCAL);
 	}
 
 	/**
-	 * Creates a {@link ChangeVar} effect with the given properties
+	 * Creates a {@link es.eucm.ead.schema.effects.ChangeVar} effect with the
+	 * given properties
 	 * 
 	 * @param variable
-	 *            {@link ChangeVar#variable}
+	 *            {@link es.eucm.ead.schema.effects.ChangeVar#variable}
 	 * @param expression
-	 *            {@link ChangeVar#expression}
+	 *            {@link es.eucm.ead.schema.effects.ChangeVar#expression}
 	 * @param context
-	 *            {@link ChangeVar#context}
+	 *            {@link es.eucm.ead.schema.effects.ChangeVar#context}
 	 */
 	public ChangeVar makeChangeVar(String variable, String expression,
 			ChangeVar.Context context) {
@@ -1059,12 +835,12 @@ public abstract class DemoBuilder {
 	}
 
 	/**
-	 * Creates a {@link AddComponent} effect
+	 * Creates a {@link es.eucm.ead.schema.effects.AddComponent} effect
 	 * 
 	 * @param target
-	 *            {@link AddComponent#target}
+	 *            {@link es.eucm.ead.schema.effects.AddComponent#target}
 	 * @param component
-	 *            {@link AddComponent#component}
+	 *            {@link es.eucm.ead.schema.effects.AddComponent#component}
 	 */
 	public AddComponent makeAddComponent(String target, ModelComponent component) {
 		AddComponent addComponent = new AddComponent();
@@ -1074,8 +850,8 @@ public abstract class DemoBuilder {
 	}
 
 	/**
-	 * Creates a {@link ScaleTween} tho mirror an entity on the x axis. It
-	 * actually makes scaleX = -currentScale.
+	 * Creates a {@link es.eucm.ead.schema.components.tweens.ScaleTween} tho
+	 * mirror an entity on the x axis. It actually makes scaleX = -currentScale.
 	 * 
 	 * @param currentScale
 	 *            The current scale of the entity
@@ -1089,8 +865,12 @@ public abstract class DemoBuilder {
 	 * Makes an empty tween of the given type.
 	 * 
 	 * @param clazz
-	 *            Supported types: {@link ScaleTween}, {@link MoveTween},
-	 *            {@link RotateTween}, {@link AlphaTween}, {@link FieldTween}.
+	 *            Supported types:
+	 *            {@link es.eucm.ead.schema.components.tweens.ScaleTween},
+	 *            {@link es.eucm.ead.schema.components.tweens.MoveTween},
+	 *            {@link es.eucm.ead.schema.components.tweens.RotateTween},
+	 *            {@link es.eucm.ead.schema.components.tweens.AlphaTween},
+	 *            {@link es.eucm.ead.schema.components.tweens.FieldTween}.
 	 */
 	public <T extends Tween> T makeTween(Class<T> clazz) {
 		return makeTween(clazz, null, null, null, null, null, null, null, null,
@@ -1101,8 +881,12 @@ public abstract class DemoBuilder {
 	 * Makes an tween of the given type with the given properties.
 	 * 
 	 * @param clazz
-	 *            Supported types: {@link ScaleTween}, {@link MoveTween},
-	 *            {@link RotateTween}, {@link AlphaTween}, {@link FieldTween}.
+	 *            Supported types:
+	 *            {@link es.eucm.ead.schema.components.tweens.ScaleTween},
+	 *            {@link es.eucm.ead.schema.components.tweens.MoveTween},
+	 *            {@link es.eucm.ead.schema.components.tweens.RotateTween},
+	 *            {@link es.eucm.ead.schema.components.tweens.AlphaTween},
+	 *            {@link es.eucm.ead.schema.components.tweens.FieldTween}.
 	 * @param value1
 	 *            The first tween-specific parameter. E.g.; "x" value for
 	 *            MoveTween, "rotation" value for RotateTween.
@@ -1110,9 +894,9 @@ public abstract class DemoBuilder {
 	 *            The second tween-specific parameter. (Only for MoveTween and
 	 *            ScaleTween). E.g.; "y" value for MoveTween.
 	 * @param component
-	 *            {@link FieldTween#component}
+	 *            {@link es.eucm.ead.schema.components.tweens.FieldTween#component}
 	 * @param field
-	 *            {@link FieldTween#field}
+	 *            {@link es.eucm.ead.schema.components.tweens.FieldTween#field}
 	 */
 	public <T extends Tween> T makeTween(Class<T> clazz, Float delay,
 			Integer repeat, Float repeatDelay, Boolean yoyo, Float duration,
@@ -1176,6 +960,14 @@ public abstract class DemoBuilder {
 			e.printStackTrace();
 		}
 		return null;
+	}
+
+	public TriggerConversation makeTriggerConversation(String conversationId,
+			int startingNodeId) {
+		TriggerConversation triggerConversation = new TriggerConversation();
+		triggerConversation.setNodeId(startingNodeId);
+		triggerConversation.setConversationId(conversationId);
+		return triggerConversation;
 	}
 
 	/**

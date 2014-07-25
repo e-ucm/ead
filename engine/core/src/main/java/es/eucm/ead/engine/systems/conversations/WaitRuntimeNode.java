@@ -34,18 +34,23 @@
  *      You should have received a copy of the GNU Lesser General Public License
  *      along with eAdventure.  If not, see <http://www.gnu.org/licenses/>.
  */
-package es.eucm.ead.engine.systems.dialogues;
+package es.eucm.ead.engine.systems.conversations;
 
-import es.eucm.ead.engine.EntitiesLoader;
-import es.eucm.ead.engine.GameView;
-import es.eucm.ead.engine.components.dialogues.DialogueComponent;
+import es.eucm.ead.engine.systems.conversations.NodeSystem.SimpleRuntimeNode;
+import es.eucm.ead.schema.components.conversation.WaitNode;
 
-/**
- * A system for instantiating in-game dialog bubbles.
- */
-public class LineDialogueSystem extends DialogueSystem {
+public class WaitRuntimeNode extends SimpleRuntimeNode<WaitNode> {
 
-	public LineDialogueSystem(GameView gameView, EntitiesLoader entitiesLoader) {
-		super(DialogueComponent.class, gameView, entitiesLoader);
+	private float time;
+
+	public void setNode(WaitNode waitNode) {
+		super.setNode(waitNode);
+		this.time = waitNode.getTime();
+	}
+
+	@Override
+	public boolean update(float delta) {
+		time -= delta;
+		return time <= 0.0f;
 	}
 }

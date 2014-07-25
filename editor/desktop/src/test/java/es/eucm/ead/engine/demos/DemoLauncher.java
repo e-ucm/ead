@@ -36,7 +36,7 @@
  */
 package es.eucm.ead.engine.demos;
 
-import es.eucm.ead.editor.demobuilder.DemoBuilder;
+import es.eucm.ead.editor.demobuilder.EditorDemoBuilder;
 import es.eucm.ead.engine.utils.SwingEDTUtils;
 
 import javax.imageio.ImageIO;
@@ -58,7 +58,7 @@ public class DemoLauncher extends JFrame {
 	public static final int WIDTH = 500;
 	public static final int HEIGHT = 800;
 
-	private HashMap<String, DemoBuilder> availableDemos;
+	private HashMap<String, EditorDemoBuilder> availableDemos;
 
 	private JLabel snapshotImage;
 
@@ -71,7 +71,7 @@ public class DemoLauncher extends JFrame {
 	public DemoLauncher() {
 		super("Demo launcher");
 		this.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
-		availableDemos = new HashMap<String, DemoBuilder>();
+		availableDemos = new HashMap<String, EditorDemoBuilder>();
 		registerDemos();
 		demoSelector = new JComboBox();
 		demoSelector.setModel(new DefaultComboBoxModel(getDemoNames()));
@@ -92,7 +92,7 @@ public class DemoLauncher extends JFrame {
 		run.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				DemoBuilder demoBuilder = availableDemos.get(demoSelector
+				EditorDemoBuilder demoBuilder = availableDemos.get(demoSelector
 						.getSelectedItem());
 				if (demoBuilder != null) {
 					demoBuilder.run();
@@ -146,9 +146,10 @@ public class DemoLauncher extends JFrame {
 	 */
 	private void registerDemos() {
 		registerDemo(new PlanesDemo());
+		registerDemo(new MeetingAFriendDemo());
 	}
 
-	private void registerDemo(DemoBuilder demoBuilder) {
+	private void registerDemo(EditorDemoBuilder demoBuilder) {
 		availableDemos.put(demoBuilder.getName(), demoBuilder);
 	}
 
@@ -157,12 +158,12 @@ public class DemoLauncher extends JFrame {
 		names[0] = "- Not selected -";
 		int i = 1;
 		for (String name : availableDemos.keySet()) {
-			names[i] = name;
+			names[i++] = name;
 		}
 		return names;
 	}
 
-	private Image loadSnapshot(DemoBuilder demoBuilder) {
+	private Image loadSnapshot(EditorDemoBuilder demoBuilder) {
 		try {
 			return ImageIO.read(demoBuilder.getSnapshotInputStream());
 		} catch (IOException e) {
@@ -172,7 +173,7 @@ public class DemoLauncher extends JFrame {
 	}
 
 	private void updateDemoSelected() {
-		DemoBuilder demoBuilder = availableDemos.get(demoSelector
+		EditorDemoBuilder demoBuilder = availableDemos.get(demoSelector
 				.getSelectedItem());
 		if (demoBuilder == null) {
 			snapshotImage.setIcon(null);

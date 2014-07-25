@@ -5,11 +5,11 @@
     },
     "javaType": "es.eucm.ead.schema.effects.TriggerConversation",
     "properties": {
-        "name": {
-            "description": "Conversation to launch",
+        "conversationId": {
+            "description": "Conversation id to launch",
             "type": "string"
         },
-        "node": {
+        "nodeId": {
             "description": "Identifier of the initial node to launch",
             "type": "integer"
         }

@@ -229,6 +229,7 @@ public class AddEntityTest extends EngineTest implements EntityListener {
 		gameLoop.update(1);
 		assertEquals("There should be 2 entities yet", 2, count);
 		gameLoop.update(1);
+		gameLoop.update(1);
 		assertEquals("There should be only 1 entity", 1, count);
 		// Check "newest entity" points to null again
 		assertNull(variablesManager
@@ -358,6 +359,7 @@ public class AddEntityTest extends EngineTest implements EntityListener {
 				.getGroup().getX(), 0.001F);
 		assertEquals("The entity should almost be there", 49.5F, entityAdded
 				.getGroup().getY(), 0.001F);
+		gameLoop.update(0.01F);
 		gameLoop.update(0.01F);
 		assertEquals("There should be one entity only", 1, count);
 	}

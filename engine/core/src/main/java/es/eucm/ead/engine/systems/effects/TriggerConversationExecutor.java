@@ -36,71 +36,47 @@
  */
 package es.eucm.ead.engine.systems.effects;
 
-import ashley.core.Component;
 import ashley.core.Entity;
 import ashley.core.Family;
-import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.utils.Array;
+import com.badlogic.gdx.utils.IntMap;
+import es.eucm.ead.engine.GameLoop;
 import es.eucm.ead.engine.components.ConversationsComponent;
-import es.eucm.ead.engine.components.TalkComponent;
-import es.eucm.ead.engine.entities.EngineEntity;
-import es.eucm.ead.engine.variables.VariablesManager;
-import es.eucm.ead.schema.data.conversation.Conversation;
-import es.eucm.ead.schema.data.conversation.Speaker;
+import es.eucm.ead.engine.components.NodeComponent;
+import es.eucm.ead.schema.components.conversation.Conversation;
 import es.eucm.ead.schema.effects.TriggerConversation;
 
-/**
- * Launches an in-game conversation.
- */
 public class TriggerConversationExecutor extends
 		EffectExecutor<TriggerConversation> {
 
-	private VariablesManager variablesManager;
+	private IntMap<Entity> conversationsEntities;
 
-	public TriggerConversationExecutor(VariablesManager variablesManager) {
-		this.variablesManager = variablesManager;
-	}
-
-	private Conversation getConversation(String id) {
-		Class conversationsClass = ConversationsComponent.class;
-		Family f = Family.getFamilyFor(conversationsClass);
-		for (Entity e : gameLoop.getEntitiesFor(f).values()) {
-			Component c = e.getComponent(conversationsClass);
-			Conversation conv = ((ConversationsComponent) c)
-					.getConversation(id);
-			if (conv != null) {
-				return conv;
-			}
-		}
-		Gdx.app.error("[trigger-conv]", "No conversation found with ID " + id
-				+ "", new IllegalArgumentException("Invalid conversation '"
-				+ id + "'"));
-		return null;
+	@Override
+	public void initialize(GameLoop gameLoop) {
+		super.initialize(gameLoop);
+		conversationsEntities = gameLoop.getEntitiesFor(Family
+				.getFamilyFor(ConversationsComponent.class));
 	}
 
 	@Override
-	public void execute(Entity owner, TriggerConversation effect) {
-		Conversation conversation = getConversation(effect.getName());
+	public void execute(Entity target, TriggerConversation effect) {
 
-		// get the cast together
-		Array<Array<EngineEntity>> speakers = new Array<Array<EngineEntity>>();
-		for (Speaker speaker : conversation.getSpeakers()) {
-			Array<EngineEntity> matches = new Array<EngineEntity>();
-			try {
-				matches = (Array) variablesManager.evaluateExpression(speaker
-						.getSelector());
-			} catch (Exception e) {
-				Gdx.app.error(
-						"[trigger-conv]",
-						"Error evaluating " + speaker.getSelector() + ": "
-								+ e.getMessage());
+		Conversation conversation = null;
+		for (Entity entity : conversationsEntities.values()) {
+			ConversationsComponent conversations = entity
+					.getComponent(ConversationsComponent.class);
+
+			conversation = conversations.getConversations().get(
+					effect.getConversationId());
+
+			if (conversation != null) {
+				break;
 			}
-			speakers.add(matches);
 		}
 
-		// initialize the TalkComponent that will manage the rest
-		TalkComponent tc = gameLoop.addAndGetComponent(owner,
-				TalkComponent.class);
-		tc.initialize(conversation, speakers, effect.getNode());
+		if (conversation != null) {
+			NodeComponent node = gameLoop.createComponent(NodeComponent.class);
+			node.set(conversation, effect.getNodeId());
+			target.add(node);
+		}
 	}
 }

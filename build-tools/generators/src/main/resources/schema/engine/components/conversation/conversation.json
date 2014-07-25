@@ -1,0 +1,28 @@
+{
+    "javaType": "es.eucm.ead.schema.components.conversation.Conversation",
+    "additionalProperties": false,
+    "extends": {
+        "$ref": "../component.json"
+    },
+    "properties": {
+        "id": {
+            "type": "string",
+            "description": "Descriptive name of conversation, used when launching it."
+        },
+        "speakers": {
+            "type": "array",
+            "items": {
+                "type": "string"
+            },
+            "description": "Speeakers in the conversation, represented by a string. This string would be interpreted by each system to correctly represent the speakers"
+        },
+        "nodes": {
+            "type": "array",
+            "items": {
+                "$ref": "node.json"
+            },
+            "description": "Nodes of conversation, forming a network."
+        }
+    },
+    "type": "object"
+}

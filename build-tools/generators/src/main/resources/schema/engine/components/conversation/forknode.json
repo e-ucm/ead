@@ -1,0 +1,18 @@
+{
+    "additionalProperties": false,
+    "javaType": "es.eucm.ead.schema.components.conversation.ForkNode",
+    "extends": {
+        "$ref": "node.json"
+    },
+    "properties": {
+        "nextNodeIds": {
+            "type": "array",
+            "items": {
+                "type": "integer"
+            },
+            "description": "Possible next nodes"
+        }
+    },
+    "type": "object",
+    "description": "A node that has several next nodes"
+}
