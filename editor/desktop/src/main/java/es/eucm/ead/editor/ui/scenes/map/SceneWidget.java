@@ -36,39 +36,23 @@
  */
 package es.eucm.ead.editor.ui.scenes.map;
 
-import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.Input.Buttons;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
-import com.badlogic.gdx.scenes.scene2d.Actor;
-import com.badlogic.gdx.scenes.scene2d.InputEvent;
-import com.badlogic.gdx.scenes.scene2d.InputListener;
-import com.badlogic.gdx.scenes.scene2d.ui.Button;
 import com.badlogic.gdx.scenes.scene2d.ui.Image;
 import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.scenes.scene2d.utils.Align;
-import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable;
-import com.badlogic.gdx.utils.Pools;
 import com.badlogic.gdx.utils.Scaling;
 
 import es.eucm.ead.editor.control.Controller;
 import es.eucm.ead.editor.control.Selection;
-import es.eucm.ead.editor.control.actions.editor.ShowContextMenu;
-import es.eucm.ead.editor.control.actions.model.ChangeInitialScene;
-import es.eucm.ead.editor.control.actions.model.DeleteScene;
-import es.eucm.ead.editor.control.actions.model.SetSelection;
 import es.eucm.ead.editor.model.Model;
 import es.eucm.ead.editor.model.Model.FieldListener;
 import es.eucm.ead.editor.model.Q;
 import es.eucm.ead.editor.model.events.FieldEvent;
-import es.eucm.ead.editor.view.widgets.dragndrop.focus.FocusItemList.FocusEvent;
-import es.eucm.ead.editor.view.widgets.dragndrop.focus.FocusItemList.FocusListener;
-import es.eucm.ead.editor.view.widgets.menu.ContextMenu;
-import es.eucm.ead.editor.view.widgets.menu.ContextMenuItem;
-import es.eucm.ead.engine.I18N;
+import es.eucm.ead.editor.view.widgets.dragndrop.focus.FocusButton;
 import es.eucm.ead.engine.assets.Assets.AssetLoadedCallback;
 import es.eucm.ead.schema.editor.components.Documentation;
 import es.eucm.ead.schema.editor.components.GameData;
@@ -79,19 +63,9 @@ import es.eucm.ead.schemax.entities.ResourceCategory;
 /**
  * A widget used in the {@link SceneMapWidget} that represents a scene.
  */
-public class SceneWidget extends Button {
+public class SceneWidget extends FocusButton {
 
 	private static final float PAD = 10F;
-
-	private static final ClickListener contextListener = new ClickListener(
-			Buttons.RIGHT) {
-
-		public void clicked(InputEvent event, float x, float y) {
-			contextMenu.showContext((SceneWidget) event.getListenerActor(), x,
-					y);
-		};
-	};
-	private static SceneContextMenu contextMenu;
 
 	private InitialSceneListener initialSceneListener = new InitialSceneListener();
 	private Controller controller;
@@ -99,12 +73,6 @@ public class SceneWidget extends Button {
 	private String sceneId;
 	private Image initial;
 	private Label name;
-	private Runnable focusRunnable = new Runnable() {
-
-		public void run() {
-			fireFocus();
-		}
-	};
 
 	public SceneWidget(Controller control, String sceneId) {
 		super(control.getApplicationAssets().getSkin());
@@ -153,20 +121,6 @@ public class SceneWidget extends Button {
 		row();
 		add(this.name);
 		pad(PAD);
-
-		if (contextMenu == null) {
-			contextMenu = new SceneContextMenu(controller);
-		}
-		addListener(contextListener);
-
-		addListener(new FocusListener() {
-
-			@Override
-			public void focusChanged(FocusEvent event) {
-				controller.action(SetSelection.class, Selection.SCENE_MAP,
-						Selection.SCENE, scene);
-			}
-		});
 	}
 
 	private void setInitial(boolean initial) {
@@ -186,35 +140,12 @@ public class SceneWidget extends Button {
 		super.clearListeners();
 	}
 
-	@Override
-	public void setChecked(boolean isChecked) {
-		boolean wasChecked = isChecked();
-		super.setChecked(isChecked);
-		if (!wasChecked && isChecked) {
-			Gdx.app.postRunnable(focusRunnable);
-		}
-	}
-
-	/**
-	 * Fires that some actor has gained focus
-	 */
-	private void fireFocus() {
-		FocusEvent dropEvent = Pools.obtain(FocusEvent.class);
-		dropEvent.setActor(this);
-		fire(dropEvent);
-		Pools.free(dropEvent);
-	}
-
 	public String getSceneId() {
 		return sceneId;
 	}
 
 	public void setName(String name) {
 		this.name.setText(name);
-	}
-
-	public void updateInitial() {
-
 	}
 
 	/**
@@ -237,48 +168,7 @@ public class SceneWidget extends Button {
 		}
 	}
 
-	private static class SceneContextMenu extends ContextMenu {
-
-		private Controller controller;
-		private SceneWidget sceneWidget;
-		private ContextMenuItem makeInitial;
-		private ContextMenuItem deleteScene;
-
-		public SceneContextMenu(Controller control) {
-			super(control.getApplicationAssets().getSkin());
-			this.controller = control;
-			I18N i18n = controller.getApplicationAssets().getI18N();
-
-			makeInitial = item(i18n.m("general.make-initial"));
-			separator();
-			deleteScene = item(i18n.m("scene.delete"));
-
-			InputListener itemsListener = new InputListener() {
-
-				@Override
-				public boolean touchDown(InputEvent event, float x, float y,
-						int pointer, int button) {
-					Actor listenerActor = event.getListenerActor();
-					if (listenerActor == deleteScene) {
-						controller.action(DeleteScene.class,
-								sceneWidget.getSceneId());
-						sceneWidget.setChecked(true);
-					} else if (listenerActor == makeInitial) {
-						controller.action(ChangeInitialScene.class,
-								sceneWidget.getSceneId());
-						sceneWidget.setChecked(true);
-					}
-					return true;
-				}
-			};
-			makeInitial.addListener(itemsListener);
-			deleteScene.addListener(itemsListener);
-		}
-
-		private void showContext(SceneWidget widget, float x, float y) {
-			sceneWidget = widget;
-			makeInitial.setDisabled(widget.isInitial());
-			controller.action(ShowContextMenu.class, widget, this, x, y);
-		}
+	public ModelEntity getScene() {
+		return scene;
 	}
 }

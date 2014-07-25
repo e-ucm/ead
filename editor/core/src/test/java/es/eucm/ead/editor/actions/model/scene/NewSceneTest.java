@@ -69,6 +69,15 @@ public class NewSceneTest extends ActionTest {
 		assertEquals(model.getResources(ResourceCategory.SCENE).size(), scenes);
 		assertEquals(sceneMap.getCells().size, mapSize);
 
+		int row = 2, column = 3;
+		controller.action(NewScene.class, "RowColumn", row, column);
+		es.eucm.ead.schema.editor.data.Cell cell = sceneMap.getCells().get(
+				sceneMap.getCells().size - 1);
+		assertEquals("The new scene wasn't added to the correct row",
+				cell.getRow(), row);
+		assertEquals("The new scene wasn't added to the correct column",
+				cell.getColumn(), column);
+
 		clearEmpty();
 	}
 }

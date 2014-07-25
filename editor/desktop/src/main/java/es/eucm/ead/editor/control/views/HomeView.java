@@ -46,11 +46,16 @@ import es.eucm.ead.editor.assets.EditorGameAssets;
 import es.eucm.ead.editor.control.Controller;
 import es.eucm.ead.editor.model.Model.Resource;
 import es.eucm.ead.editor.model.Q;
+import es.eucm.ead.editor.ui.listeners.ContextListener;
 import es.eucm.ead.editor.ui.scenes.map.SceneEditionWidget;
 import es.eucm.ead.editor.ui.scenes.map.SceneList;
 import es.eucm.ead.editor.ui.scenes.map.SceneMapWidget;
+import es.eucm.ead.editor.ui.scenes.map.SceneWidget;
+import es.eucm.ead.editor.ui.scenes.map.contextmenus.GridContextMenu;
+import es.eucm.ead.editor.ui.scenes.map.contextmenus.SceneContextMenu;
 import es.eucm.ead.editor.view.builders.ViewBuilder;
 import es.eucm.ead.editor.view.widgets.Separator;
+import es.eucm.ead.editor.view.widgets.layouts.GridLayout;
 import es.eucm.ead.editor.view.widgets.layouts.LinearLayout;
 import es.eucm.ead.schema.editor.components.Thumbnail;
 import es.eucm.ead.schema.entities.ModelEntity;
@@ -93,6 +98,13 @@ public class HomeView implements ViewBuilder {
 		placeHolder.setFillParent(true);
 
 		view = placeHolder;
+
+		ContextListener listener = new ContextListener();
+		listener.registerContextMenu(SceneWidget.class, new SceneContextMenu(
+				controller));
+		listener.registerContextMenu(GridLayout.class, new GridContextMenu(
+				controller, sceneMap));
+		view.addListener(listener);
 	}
 
 	@Override
