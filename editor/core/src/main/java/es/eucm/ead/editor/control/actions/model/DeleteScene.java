@@ -38,12 +38,15 @@ package es.eucm.ead.editor.control.actions.model;
 
 import com.badlogic.gdx.utils.Array;
 
+import es.eucm.ead.editor.control.Selection;
 import es.eucm.ead.editor.control.actions.ModelAction;
 import es.eucm.ead.editor.control.commands.Command;
 import es.eucm.ead.editor.control.commands.CompositeCommand;
 import es.eucm.ead.editor.control.commands.FieldCommand;
 import es.eucm.ead.editor.control.commands.ListCommand;
 import es.eucm.ead.editor.control.commands.ResourceCommand.RemoveResourceCommand;
+import es.eucm.ead.editor.control.commands.SelectionCommand;
+import es.eucm.ead.editor.model.Model;
 import es.eucm.ead.editor.model.Q;
 import es.eucm.ead.editor.view.builders.classic.dialogs.InfoDialogBuilder;
 import es.eucm.ead.engine.I18N;
@@ -106,7 +109,8 @@ public class DeleteScene extends ModelAction {
 		}
 		// There are more than only one scene
 		else {
-			ModelEntity game = controller.getModel().getGame();
+			Model model = controller.getModel();
+			ModelEntity game = model.getGame();
 			Array<Command> commandList = new Array<Command>();
 			// The action of deleting an scene involves the next commands:
 			String alternateScene = null;
@@ -122,10 +126,25 @@ public class DeleteScene extends ModelAction {
 						FieldName.INITIAL_SCENE, alternateScene, false));
 			}
 
+			// 3) If the scene is also the selection, change the selection to
+			// another one
+			Object selection = model.getSelection().getSingle(Selection.SCENE);
+			if (selection == model
+					.getResourceObject(id, ResourceCategory.SCENE)) {
+				if (alternateScene == null) {
+					alternateScene = findAlternateScene(id);
+				}
+				commandList.add(new SelectionCommand(model, null,
+						Selection.RESOURCE, alternateScene));
+				commandList.add(new SelectionCommand(model, Selection.RESOURCE,
+						Selection.SCENE, model.getResourceObject(
+								alternateScene, ResourceCategory.SCENE)));
+			}
+
 			// 3) Delete the scene properly speaking
 			commandList
 					.add(new RemoveResourceCommand(
-							controller.getModel(),
+							model,
 							id,
 							args.length == 2 && args[1] instanceof ModelEntity ? (ModelEntity) args[1]
 									: null, ResourceCategory.SCENE));
