@@ -62,6 +62,8 @@ public class DraggableLinearLayout extends DraggableScrollPane {
 
 	protected LinearLayout itemsList;
 
+	private Target listTarget;
+
 	/**
 	 * Creates a horizontal draggable linear layout.
 	 */
@@ -73,6 +75,13 @@ public class DraggableLinearLayout extends DraggableScrollPane {
 		super(null);
 		setWidget(itemsList = new LinearLayout(horizontal).pad(PAD));
 		setScrollingDisabled(!horizontal, horizontal);
+		addTarget(listTarget = newTarget());
+	}
+
+	@Override
+	protected void clearDrag() {
+		super.clearDrag();
+		addTarget(listTarget);
 	}
 
 	@Override
@@ -84,7 +93,6 @@ public class DraggableLinearLayout extends DraggableScrollPane {
 	public void addActorAt(int index, Actor actor) {
 		itemsList.add(index, actor).margin(PAD);
 		addSource(newSource(actor));
-		addTarget(newTarget(actor));
 	}
 
 	/**
@@ -96,28 +104,26 @@ public class DraggableLinearLayout extends DraggableScrollPane {
 	 * @param index
 	 */
 	public void centerScrollAt(final int index) {
-		Gdx.app.postRunnable(new Runnable() {
-
-			@Override
-			public void run() {
-				SnapshotArray<Actor> children = itemsList.getChildren();
-				if (index < children.size) {
-					Actor actor = children.get(index);
-					centerScrollAt(actor);
-				}
-			}
-		});
+		SnapshotArray<Actor> children = itemsList.getChildren();
+		if (index < children.size) {
+			Actor actor = children.get(index);
+			centerScrollAt(actor);
+		}
 	}
 
 	/**
-	 * Invoked when the {@link Runnable#run()}, from
-	 * {@link #centerScrollAt(int)} method, gets executed. Convenience method
-	 * that could be overridden by subclasses.
+	 * Convenience method that could be overridden by subclasses.
 	 * 
 	 * @param actor
 	 */
-	protected void centerScrollAt(Actor actor) {
-		setScrollX(actor.getX() - getWidth() * .5f + actor.getWidth() * .5f);
+	public void centerScrollAt(final Actor actor) {
+		Gdx.app.postRunnable(new Runnable() {
+			@Override
+			public void run() {
+				setScrollX(actor.getX() - getWidth() * .5f + actor.getWidth()
+						* .5f);
+			}
+		});
 	}
 
 	private Source newSource(Actor widget) {
@@ -152,14 +158,14 @@ public class DraggableLinearLayout extends DraggableScrollPane {
 					// The pay load was not dropped over a target, thus put it
 					// back to where it came from.
 					itemsList.add((Integer) payload.getObject(),
-							payload.getDragActor());
+							payload.getDragActor()).margin(PAD);
 				}
 			}
 		};
 	}
 
-	private Target newTarget(Actor widget) {
-		return new Target(widget) {
+	private Target newTarget() {
+		return new Target(itemsList) {
 
 			@Override
 			public boolean drag(Source source, Payload payload, float x,
@@ -170,18 +176,49 @@ public class DraggableLinearLayout extends DraggableScrollPane {
 			@Override
 			public void drop(Source source, Payload payload, float x, float y,
 					int pointer) {
+
 				SnapshotArray<Actor> children = itemsList.getChildren();
+				int size = children.size;
 
 				// Compute its new position
-				Actor targetActor = getActor();
-				int targetIdx = children.indexOf(targetActor, true);
+				int targetIdx = 0;
+				for (; targetIdx < size; ++targetIdx) {
 
-				if (x > targetActor.getWidth() * .5f) {
-					++targetIdx;
+					Actor child = children.get(targetIdx);
+
+					float value;
+					float childValue;
+					if (itemsList.isHorizontal()) {
+						value = x;
+						childValue = child.getX();
+					} else {
+						value = y;
+						childValue = child.getY();
+					}
+					if (childValue > value) {
+
+						targetIdx = Math.max(targetIdx - 1, 0);
+						child = children.get(targetIdx);
+
+						if (itemsList.isHorizontal()) {
+							childValue = child.getX() + child.getWidth() * .5f;
+						} else {
+							childValue = child.getY() + child.getHeight() * .5f;
+						}
+
+						if (value > childValue) {
+							++targetIdx;
+						}
+						break;
+					}
+				}
+
+				if (!itemsList.isHorizontal()) {
+					targetIdx = size - targetIdx;
 				}
 
 				Actor dropActor = payload.getDragActor();
-				itemsList.add(targetIdx, dropActor);
+				itemsList.add(targetIdx, dropActor).margin(PAD);
 				centerScrollAt(targetIdx);
 				fireDrop(dropActor, (Integer) payload.getObject(), targetIdx);
 			}
