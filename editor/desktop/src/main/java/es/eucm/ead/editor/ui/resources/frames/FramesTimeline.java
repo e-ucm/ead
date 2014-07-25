@@ -1,6 +1,7 @@
 package es.eucm.ead.editor.ui.resources.frames;
 
 import com.badlogic.gdx.scenes.scene2d.Actor;
+import com.badlogic.gdx.scenes.scene2d.ui.Button;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.SnapshotArray;
 
@@ -138,13 +139,10 @@ public class FramesTimeline extends FocusItemList implements
 				// drop event.
 				loadFrameWidgetFromFrame(elem, listener, index);
 			}
-			controller.action(SetSelection.class, Selection.FRAMES,
-					Selection.FRAME, elem);
 		} else {
 			loadFrameWidgetFromFrame(elem, listener, index);
-			controller.action(SetSelection.class, Selection.FRAMES,
-					Selection.FRAME, elem);
 		}
+		setChecked(index);
 	}
 
 	void frameRemoved(int index, Frame elem) {
@@ -153,8 +151,13 @@ public class FramesTimeline extends FocusItemList implements
 			FrameWidget removedWidget = (FrameWidget) children.get(index);
 			if (removedWidget.getFrame() == elem) {
 				itemsList.removeActor(removedWidget);
+				buttonGroup.remove(removedWidget);
 				removedWidget.clear();
 			}
 		}
+	}
+
+	public void setChecked(int index) {
+		((Button) itemsList.getChildren().get(index)).setChecked(true);
 	}
 }
