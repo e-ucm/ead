@@ -46,7 +46,6 @@ import com.badlogic.gdx.scenes.scene2d.utils.DragAndDrop.Source;
 import com.badlogic.gdx.scenes.scene2d.utils.DragAndDrop.Target;
 import com.badlogic.gdx.scenes.scene2d.utils.Drawable;
 
-import es.eucm.ead.editor.view.widgets.AbstractWidget;
 import es.eucm.ead.editor.view.widgets.FixedButton;
 import es.eucm.ead.editor.view.widgets.StretchableButton;
 
@@ -176,11 +175,21 @@ public class TrackLayout extends LinearLayout {
 		c.margin.setLeft(leftMargin);
 		c.setWidth(actor.getWidth());
 		if (index == -1) {
-			constraints.add(c);
-			addActor(actor);
-		} else {
+			index = 0;
+			for (Constraints cons : constraints) {
+				if (leftMargin < cons.margin.left) {
+					break;
+				} else {
+					index++;
+				}
+			}
+		}
+		if (index != constraints.size) {
 			constraints.insert(index, c);
 			addActorAt(index, actor);
+		} else {
+			constraints.add(c);
+			addActor(actor);
 		}
 
 		dragNDrop.addSource(new Source(actor) {

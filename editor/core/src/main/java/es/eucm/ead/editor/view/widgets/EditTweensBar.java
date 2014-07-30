@@ -63,22 +63,22 @@ import es.eucm.ead.engine.I18N;
 public class EditTweensBar extends Table {
 
 	private static final float LATERAL_MARGIN = 10, BASE_MARGIN = 2,
-			WIDTH_TYPE_TWEEN = 200, PAD_TYPE_TWEEN = 10;
+			WIDTH_TYPE_TWEEN = 170, PAD_TYPE_TWEEN = 10;
 
-	private static final String INSTANT = "camera48x48",
-			GRADUAL = "camera48x48";
+	private static final String INSTANT = "education32x32",
+			GRADUAL = "education32x32"; // TODO icons
 
 	private Button instantButton;
 
 	private Button gradualButton;
 
-	private TypeTweensBar instantTweens;
+	protected TypeTweensBar instantTweens;
 
-	private TypeTweensBar gradualsTweens;
+	protected TypeTweensBar gradualsTweens;
 
 	private Cell<TypeTweensBar> right;
 
-	private DragAndDrop dragNDrop;
+	protected DragAndDrop dragNDrop;
 
 	private Skin skin;
 
@@ -147,9 +147,9 @@ public class EditTweensBar extends Table {
 		instantTweens = new TypeTweensBar(skin);
 		gradualsTweens = new TypeTweensBar(skin);
 
-		instantButton = new IconTextButton(i18n.m("general.tween.instant"),
-				skin, skin.getDrawable(INSTANT), Position.RIGHT,
-				PAD_TYPE_TWEEN, 0, WIDTH_TYPE_TWEEN);
+		instantButton = new IconTextButton(i18n.m("Instant"), skin,
+				skin.getDrawable(INSTANT), Position.RIGHT, PAD_TYPE_TWEEN, 0,
+				WIDTH_TYPE_TWEEN);
 		instantButton.addListener(new InputListener() {
 			@Override
 			public boolean touchDown(InputEvent event, float x, float y,
@@ -164,9 +164,9 @@ public class EditTweensBar extends Table {
 			}
 		});
 
-		gradualButton = new IconTextButton(i18n.m("general.tween.gradual"),
-				skin, skin.getDrawable(GRADUAL), Position.RIGHT,
-				PAD_TYPE_TWEEN, 0, WIDTH_TYPE_TWEEN);
+		gradualButton = new IconTextButton(i18n.m("Over time"), skin,
+				skin.getDrawable(GRADUAL), Position.RIGHT, PAD_TYPE_TWEEN, 0,
+				WIDTH_TYPE_TWEEN);
 		gradualButton.addListener(new InputListener() {
 			@Override
 			public boolean touchDown(InputEvent event, float x, float y,
@@ -199,67 +199,74 @@ public class EditTweensBar extends Table {
 	public void addInstant(final IconTextButton actor) {
 		instantTweens.addButton(actor);
 		if (dragNDrop != null) {
-			dragNDrop.addSource(new Source(actor) {
-
-				@Override
-				public Payload dragStart(InputEvent event, float x, float y,
-						int pointer) {
-
-					instantTweens.cancelScrollFocus(false);
-
-					Payload payload = new Payload();
-
-					FixedButton instant = new FixedButton(actor
-							.getDrawableImage(), actor.getDrawableImage(), skin);
-
-					payload.setDragActor(instant);
-					return payload;
-				}
-
-				@Override
-				public void dragStop(InputEvent event, float x, float y,
-						int pointer, Payload payload, Target target) {
-
-					instantTweens.cancelScrollFocus(true);
-				}
-
-			});
+			dragNDrop.addSource(createDefaultInstantSource(actor));
 		}
+	}
+
+	protected Source createDefaultInstantSource(final IconTextButton actor) {
+		return new Source(actor) {
+
+			@Override
+			public Payload dragStart(InputEvent event, float x, float y,
+					int pointer) {
+
+				instantTweens.cancelScrollFocus(false);
+
+				Payload payload = new Payload();
+
+				FixedButton instant = new FixedButton(actor.getDrawableImage(),
+						actor.getDrawableImage(), skin);
+
+				payload.setDragActor(instant);
+				return payload;
+			}
+
+			@Override
+			public void dragStop(InputEvent event, float x, float y,
+					int pointer, Payload payload, Target target) {
+
+				instantTweens.cancelScrollFocus(true);
+			}
+
+		};
 	}
 
 	public void addGradual(final IconTextButton actor) {
 		gradualsTweens.addButton(actor);
 		if (dragNDrop != null) {
-			dragNDrop.addSource(new Source(actor) {
-
-				@Override
-				public Payload dragStart(InputEvent event, float x, float y,
-						int pointer) {
-
-					gradualsTweens.cancelScrollFocus(false);
-
-					Payload payload = new Payload();
-
-					IconButton icon = new IconButton(actor.getDrawableImage(),
-							skin);
-
-					StretchableButton gradual = new StretchableButton(icon,
-							actor.getDrawableImage().getMinWidth(),
-							backgroundTweens, skin);
-
-					payload.setDragActor(gradual);
-					return payload;
-				}
-
-				@Override
-				public void dragStop(InputEvent event, float x, float y,
-						int pointer, Payload payload, Target target) {
-
-					instantTweens.cancelScrollFocus(true);
-				}
-
-			});
+			dragNDrop.addSource(createDefaultGradualSource(actor));
 		}
+	}
+
+	protected Source createDefaultGradualSource(final IconTextButton actor) {
+		return new Source(actor) {
+
+			@Override
+			public Payload dragStart(InputEvent event, float x, float y,
+					int pointer) {
+
+				gradualsTweens.cancelScrollFocus(false);
+
+				Payload payload = new Payload();
+
+				IconButton icon = new IconButton(actor.getDrawableImage(), skin);
+
+				StretchableButton gradual = new StretchableButton(icon, actor
+						.getDrawableImage().getMinWidth(), backgroundTweens,
+						skin);
+
+				payload.setDragActor(gradual);
+				return payload;
+			}
+
+			@Override
+			public void dragStop(InputEvent event, float x, float y,
+					int pointer, Payload payload, Target target) {
+
+				instantTweens.cancelScrollFocus(true);
+			}
+
+		};
 	}
 
 	private void changeTweensBar(TypeTweensBar newBar) {
@@ -271,7 +278,7 @@ public class EditTweensBar extends Table {
 	 * List of buttons with a scroll pane
 	 * 
 	 */
-	private class TypeTweensBar extends Table {
+	protected class TypeTweensBar extends Table {
 
 		private static final float SCROLL_MOVING = 115, DEFAULT_PAD = 5;
 		private static final String FORWARD = "forward24x24",

@@ -64,8 +64,8 @@ public class StretchableButton extends LinearLayout {
 	private boolean leftDragged;
 	private boolean rightDragged;
 
-	private DraggablePart left;
-	private DraggablePart right;
+	protected DraggablePart left;
+	protected DraggablePart right;
 
 	/**
 	 * If true, can not be enlarged to the left
@@ -155,7 +155,7 @@ public class StretchableButton extends LinearLayout {
 	 * The draggable lateral sides of {@link StretchableButton}
 	 * 
 	 */
-	private class DraggablePart extends TextButton {
+	protected class DraggablePart extends TextButton {
 
 		public DraggablePart(Skin skin, final StretchableButton parent,
 				final Container container, final boolean first) {
@@ -224,7 +224,7 @@ public class StretchableButton extends LinearLayout {
 	 * The center part of {@link StretchableButton}
 	 * 
 	 */
-	private class StretchablePart extends Container {
+	protected class StretchablePart extends Container {
 
 		public StretchablePart() {
 			super();
