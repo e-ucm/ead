@@ -353,6 +353,10 @@
                 <module>editor/android</module>
                 <module>editor/desktop</module>
                 <module>editor/exporter</module>
+                <!-- mokcup -->
+                <module>editor/mockup/core</module>
+                <module>editor/mockup/android</module>
+                <module>editor/mockup/desktop</module>
             </modules>
         </profile>
         <profile>
