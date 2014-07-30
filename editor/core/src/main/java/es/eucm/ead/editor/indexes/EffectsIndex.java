@@ -36,7 +36,13 @@
  */
 package es.eucm.ead.editor.indexes;
 
+import com.badlogic.gdx.utils.Array;
+import com.badlogic.gdx.utils.reflect.ClassReflection;
+
+import es.eucm.ead.schema.effects.AnimationEffect;
 import es.eucm.ead.schema.effects.Effect;
+import es.eucm.ead.schema.effects.TrackEffect;
+import es.eucm.ead.schema.effects.controlstructures.ControlStructure;
 
 /**
  * An index relating the short string representation of an effect (translated to
@@ -44,7 +50,49 @@ import es.eucm.ead.schema.effects.Effect;
  */
 public class EffectsIndex extends ModelIndex {
 
+	private Array<Term> animationEffects;
+
+	private Array<Term> standardEffects;
+
+	private boolean init;
+
 	public EffectsIndex() {
 		super(Effect.class);
+		animationEffects = new Array<Term>();
+		standardEffects = new Array<Term>();
+		init = false;
 	}
+
+	private void initialize() {
+		Array<Term> terms = getTerms();
+		for (Term t : terms) {
+			if (!ClassReflection.isAssignableFrom(ControlStructure.class,
+					(Class) t.getData())
+					&& !(((Class) t.getData()) == TrackEffect.class)
+					&& !(((Class) t.getData()) == AnimationEffect.class)) {
+				if (ClassReflection.isAssignableFrom(AnimationEffect.class,
+						(Class) t.getData())) {
+					animationEffects.add(t);
+				} else {
+					standardEffects.add(t);
+				}
+			}
+		}
+		init = true;
+	}
+
+	public Array<Term> getInstantTypeEffects() {
+		if (!init) {
+			initialize();
+		}
+		return standardEffects;
+	}
+
+	public Array<Term> getAnimationTypeEffects() {
+		if (!init) {
+			initialize();
+		}
+		return animationEffects;
+	}
+
 }

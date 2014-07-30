@@ -121,9 +121,6 @@ public class FieldName {
 	 */
 	PARENT = "parent",
 
-	/**
-	 * Refers to {@link es.eucm.ead.schema.renderers.Frame#time}
-	 */
 	TIME = "time",
 
 	/**
@@ -166,5 +163,9 @@ public class FieldName {
 	/**
 	 * Refers to {@link es.eucm.ead.schema.components.controls.Label#text}
 	 */
-	TEXT = "text";
+	TEXT = "text",
+
+	DURATION = "duration",
+
+	EFFECT = "effect";
 }
