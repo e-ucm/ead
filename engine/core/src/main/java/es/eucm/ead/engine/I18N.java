@@ -67,9 +67,9 @@ public class I18N {
 	 */
 	public static final String DEFAULT_LANGUAGE_KEY = "default";
 	/** name of index file: references available languages and sets default */
-	public static final String LANGUAGE_INDEX = "i18n/i18n.props";
+	public static final String LANGUAGE_INDEX = "/i18n.props";
 	/** prefix for internationalized message files */
-	public static final String MESSAGE_FILE_NAME = "i18n/messages";
+	public static final String MESSAGE_FILE_NAME = "/messages";
 	/** extension for internationalized message files */
 	public static final String MESSAGE_FILE_EXTENSION = ".props";
 	/** used within message files to indicate parameters */
@@ -79,12 +79,21 @@ public class I18N {
 	private String currentLanguage;
 	private String defaultLanguage;
 
+	private String i18nPath = "i18n";
+
 	private Map<String, String> messages;
 	private List<Lang> available = new ArrayList<Lang>();
 
 	public I18N(Assets assets) {
 		this.assets = assets;
 		messages = new HashMap<String, String>();
+	}
+
+	/**
+	 * Sets the root where all i18n files are
+	 */
+	public void setI18nPath(String i18nPath) {
+		this.i18nPath = i18nPath;
 	}
 
 	/**
@@ -99,7 +108,7 @@ public class I18N {
 	public List<Lang> getAvailable() {
 		if (available.isEmpty()) {
 			Map<String, String> all = new HashMap<String, String>();
-			load(assets.resolve(LANGUAGE_INDEX), all);
+			load(assets.resolve(i18nPath + LANGUAGE_INDEX), all);
 
 			boolean defaultFound = false;
 
@@ -109,7 +118,8 @@ public class I18N {
 					defaultLanguage = all.get(k);
 					continue;
 				}
-				fileName = MESSAGE_FILE_NAME + '_' + k + MESSAGE_FILE_EXTENSION;
+				fileName = i18nPath + MESSAGE_FILE_NAME + '_' + k
+						+ MESSAGE_FILE_EXTENSION;
 				if (assets.resolve(fileName).exists()) {
 					Lang lang = new Lang(k, all.get(k));
 					available.add(lang);
@@ -117,14 +127,15 @@ public class I18N {
 						defaultFound = true;
 					}
 				} else {
-					Gdx.app.log("I18N", "Referenced in " + LANGUAGE_INDEX
-							+ " but not found: " + fileName);
+					Gdx.app.log("I18N", "Referenced in " + i18nPath
+							+ LANGUAGE_INDEX + " but not found: " + fileName);
 				}
 			}
 
 			if (!defaultFound) {
 				Gdx.app.error("I18N", "Default language (" + defaultLanguage
-						+ ") according to " + LANGUAGE_INDEX + " not found.");
+						+ ") according to " + i18nPath + LANGUAGE_INDEX
+						+ " not found.");
 			}
 		}
 		return available;
@@ -198,8 +209,8 @@ public class I18N {
 	 * @throws IOException
 	 */
 	private void overlayMessages(String suffix) throws IOException {
-		FileHandle fileHandle = assets.resolve(MESSAGE_FILE_NAME + suffix
-				+ MESSAGE_FILE_EXTENSION);
+		FileHandle fileHandle = assets.resolve(i18nPath + MESSAGE_FILE_NAME
+				+ suffix + MESSAGE_FILE_EXTENSION);
 		if (fileHandle.exists()) {
 			load(fileHandle, messages);
 		} else {
