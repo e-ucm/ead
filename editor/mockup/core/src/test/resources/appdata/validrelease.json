@@ -1,0 +1,7 @@
+{
+    "appVersion": "0.9",
+    "releaseType": "nightly",
+    "dev": false,
+    "os": "multiplatform",
+    "updateURL": "http://sourceforge.net/projects/e-adventure/files/ead2-nightly/update.json/download"
+}

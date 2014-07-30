@@ -182,17 +182,7 @@ public class MockPlatform extends AbstractPlatform {
 	}
 
 	@Override
-	public DeviceVideoControl getVideo() {
-		return null;
-	}
-
-	@Override
 	public Dimension getImageDimension(InputStream imageInputStream) {
-		return null;
-	}
-
-	@Override
-	public DevicePictureControl getPicture() {
 		return null;
 	}
 }
