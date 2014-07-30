@@ -36,13 +36,12 @@
  */
 package es.eucm.ead.engine.demos;
 
-import es.eucm.ead.editor.demobuilder.DemoBuilder;
+import es.eucm.ead.editor.demobuilder.EditorDemoBuilder;
 import es.eucm.ead.engine.variables.VarsContext;
 import es.eucm.ead.schema.components.positiontracking.ChaseEntity;
 import es.eucm.ead.schema.components.positiontracking.MoveByEntity;
 import es.eucm.ead.schema.components.tweens.AlphaTween;
 import es.eucm.ead.schema.components.tweens.MoveTween;
-import es.eucm.ead.schema.components.tweens.ScaleTween;
 import es.eucm.ead.schema.data.Script;
 import es.eucm.ead.schema.effects.AddComponent;
 import es.eucm.ead.schema.effects.ChangeVar;
@@ -54,7 +53,7 @@ import es.eucm.ead.schema.entities.ModelEntity;
 /**
  * Created by Javier Torrente on 2/07/14.
  */
-public class PlanesDemo extends DemoBuilder {
+public class PlanesDemo extends EditorDemoBuilder {
 
 	private static final String chasedPlaneVar = "chasedEntity";
 	private static final String chasedPlaneVarRef = "$" + chasedPlaneVar;

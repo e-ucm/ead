@@ -1,0 +1,18 @@
+{
+    "additionalProperties": false,
+    "javaType": "es.eucm.ead.schema.components.conversation.OptionNode",
+    "extends": {
+        "$ref": "forknode.json"
+    },
+    "properties": {
+        "options": {
+            "type": "array",
+            "items": {
+                "type": "string"
+            },
+            "description": "strings representing the options"
+        }
+    },
+    "type": "object",
+    "description": "A node where its next node is chosen by the user, selecting an option (represented by a text)"
+}

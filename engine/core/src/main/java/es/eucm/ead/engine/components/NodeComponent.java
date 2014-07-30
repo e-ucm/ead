@@ -34,29 +34,62 @@
  *      You should have received a copy of the GNU Lesser General Public License
  *      along with eAdventure.  If not, see <http://www.gnu.org/licenses/>.
  */
-package es.eucm.ead.engine.systems.behaviors;
+package es.eucm.ead.engine.components;
 
-import ashley.core.Entity;
-import ashley.core.Family;
-import es.eucm.ead.engine.GameLoop;
-import es.eucm.ead.engine.components.EffectsComponent;
-import es.eucm.ead.engine.systems.ConditionalSystem;
-import es.eucm.ead.engine.variables.VariablesManager;
-import es.eucm.ead.schema.effects.Effect;
+import ashley.core.Component;
+import com.badlogic.gdx.utils.Pool.Poolable;
+import es.eucm.ead.engine.systems.conversations.NodeSystem.RuntimeNode;
+import es.eucm.ead.schema.components.conversation.Conversation;
 
-public abstract class BehaviorSystem extends ConditionalSystem {
+/**
+ * Represents an ongoing conversation
+ */
+public class NodeComponent extends Component implements Poolable {
 
-	public BehaviorSystem(GameLoop engine, VariablesManager variablesManager,
-			Family family) {
-		super(engine, variablesManager, family, 0);
+	private Conversation conversation;
+
+	private int startingNode;
+
+	private boolean started;
+
+	private RuntimeNode currentNode;
+
+	public void set(Conversation conversation, int startingNode) {
+		this.conversation = conversation;
+		this.startingNode = startingNode;
+		this.started = false;
 	}
 
-	protected void addEffects(Entity entity, Iterable<Effect> effects) {
-		EffectsComponent effectsComponent = gameLoop.addAndGetComponent(entity,
-				EffectsComponent.class);
-
-		for (Effect effect : effects) {
-			effectsComponent.getEffectList().add(effect);
-		}
+	public Conversation getConversation() {
+		return conversation;
 	}
+
+	public int getStartingNode() {
+		return startingNode;
+	}
+
+	public boolean isStarted() {
+		return started;
+	}
+
+	public RuntimeNode getRuntimeNode() {
+		return currentNode;
+	}
+
+	public void setCurrentNode(RuntimeNode currentNode) {
+		this.currentNode = currentNode;
+	}
+
+	public void start() {
+		started = true;
+	}
+
+	@Override
+	public void reset() {
+		conversation = null;
+		currentNode = null;
+		startingNode = -1;
+		started = false;
+	}
+
 }

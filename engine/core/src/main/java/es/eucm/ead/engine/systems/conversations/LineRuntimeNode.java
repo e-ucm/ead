@@ -34,26 +34,51 @@
  *      You should have received a copy of the GNU Lesser General Public License
  *      along with eAdventure.  If not, see <http://www.gnu.org/licenses/>.
  */
-package es.eucm.ead.engine.processors;
+package es.eucm.ead.engine.systems.conversations;
 
-import ashley.core.Component;
 import es.eucm.ead.engine.GameLoop;
-import es.eucm.ead.engine.components.ConversationsComponent;
-import es.eucm.ead.schema.components.Conversations;
+import es.eucm.ead.engine.components.LineComponent;
+import es.eucm.ead.engine.systems.EffectsSystem;
+import es.eucm.ead.engine.systems.conversations.NodeSystem.SimpleRuntimeNode;
+import es.eucm.ead.engine.variables.VariablesManager;
+import es.eucm.ead.engine.variables.VarsContext;
+import es.eucm.ead.schema.components.conversation.Conversation;
+import es.eucm.ead.schema.components.conversation.LineNode;
 
-/**
- * Converts Conversation model components to a Conversation engine component.
- */
-public class ConversationsProcessor extends ComponentProcessor<Conversations> {
-	public ConversationsProcessor(GameLoop gameLoop) {
-		super(gameLoop);
+public class LineRuntimeNode extends SimpleRuntimeNode<LineNode> {
+
+	public static final String LINE_ENDED_VAR_SUFFIX = "_line_ended";
+
+	private VariablesManager variablesManager;
+
+	@Override
+	public void setGameLoop(GameLoop gameLoop) {
+		super.setGameLoop(gameLoop);
+		this.variablesManager = gameLoop.getSystem(EffectsSystem.class)
+				.getVariablesManager();
 	}
 
 	@Override
-	public Component getComponent(Conversations component) {
-		ConversationsComponent conversations = gameLoop
-				.createComponent(ConversationsComponent.class);
-		conversations.initialize(component);
-		return conversations;
+	public void setNode(LineNode node) {
+		super.setNode(node);
+		variablesManager.setValue(getLineEndedVar(conversation), false, true);
+		LineComponent line = gameLoop.createComponent(LineComponent.class);
+		line.setSpeaker(conversation.getSpeakers().get(node.getSpeaker()));
+		line.setLine(node.getLine());
+		line.setConversation(conversation);
+		line.setNode(node);
+
+		entity.add(line);
+	}
+
+	public static String getLineEndedVar(Conversation conversation) {
+		return VarsContext.RESERVED_VAR_PREFIX + conversation.getId()
+				+ LINE_ENDED_VAR_SUFFIX;
+	}
+
+	@Override
+	public boolean update(float delta) {
+		return (Boolean) variablesManager
+				.getValue(getLineEndedVar(conversation));
 	}
 }

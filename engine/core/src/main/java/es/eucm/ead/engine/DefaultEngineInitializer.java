@@ -42,7 +42,7 @@ import es.eucm.ead.engine.assets.GameAssets;
 import es.eucm.ead.engine.components.I18nTextComponent;
 import es.eucm.ead.engine.processors.AnimationProcessor;
 import es.eucm.ead.engine.processors.CamerasProcessor;
-import es.eucm.ead.engine.processors.ConversationsProcessor;
+import es.eucm.ead.engine.processors.ConversationProcessor;
 import es.eucm.ead.engine.processors.PathProcessor;
 import es.eucm.ead.engine.processors.RefProcessor;
 import es.eucm.ead.engine.processors.TagsProcessor;
@@ -64,7 +64,6 @@ import es.eucm.ead.engine.processors.renderers.ImageProcessor;
 import es.eucm.ead.engine.processors.renderers.ShapeRendererProcessor;
 import es.eucm.ead.engine.processors.renderers.StatesProcessor;
 import es.eucm.ead.engine.processors.tweens.TweensProcessor;
-import es.eucm.ead.engine.systems.ConversationSystem;
 import es.eucm.ead.engine.systems.EffectsSystem;
 import es.eucm.ead.engine.systems.KeyPressedSystem;
 import es.eucm.ead.engine.systems.PathSystem;
@@ -76,8 +75,14 @@ import es.eucm.ead.engine.systems.VisibilitySystem;
 import es.eucm.ead.engine.systems.behaviors.KeyBehaviorSystem;
 import es.eucm.ead.engine.systems.behaviors.TimersSystem;
 import es.eucm.ead.engine.systems.behaviors.TouchBehaviorSystem;
-import es.eucm.ead.engine.systems.dialogues.LineDialogueSystem;
-import es.eucm.ead.engine.systems.dialogues.MenuDialogueSystem;
+import es.eucm.ead.engine.systems.conversations.ConditionedRuntimeNode;
+import es.eucm.ead.engine.systems.conversations.EffectsRuntimeNode;
+import es.eucm.ead.engine.systems.conversations.LineRuntimeNode;
+import es.eucm.ead.engine.systems.conversations.LineSystem;
+import es.eucm.ead.engine.systems.conversations.NodeSystem;
+import es.eucm.ead.engine.systems.conversations.OptionRuntimeNode;
+import es.eucm.ead.engine.systems.conversations.OptionsSystem;
+import es.eucm.ead.engine.systems.conversations.WaitRuntimeNode;
 import es.eucm.ead.engine.systems.effects.AddComponentExecutor;
 import es.eucm.ead.engine.systems.effects.AddEntityExecutor;
 import es.eucm.ead.engine.systems.effects.ChangeEntityPropertyExecutor;
@@ -115,7 +120,6 @@ import es.eucm.ead.engine.variables.VariablesManager;
 import es.eucm.ead.engine.variables.VarsContext;
 import es.eucm.ead.schema.assets.Sound;
 import es.eucm.ead.schema.components.Animation;
-import es.eucm.ead.schema.components.Conversations;
 import es.eucm.ead.schema.components.PathBoundary;
 import es.eucm.ead.schema.components.RefComponent;
 import es.eucm.ead.schema.components.Tags;
@@ -126,6 +130,12 @@ import es.eucm.ead.schema.components.controls.Button;
 import es.eucm.ead.schema.components.controls.ImageButton;
 import es.eucm.ead.schema.components.controls.Label;
 import es.eucm.ead.schema.components.controls.TextButton;
+import es.eucm.ead.schema.components.conversation.ConditionedNode;
+import es.eucm.ead.schema.components.conversation.Conversation;
+import es.eucm.ead.schema.components.conversation.EffectsNode;
+import es.eucm.ead.schema.components.conversation.LineNode;
+import es.eucm.ead.schema.components.conversation.OptionNode;
+import es.eucm.ead.schema.components.conversation.WaitNode;
 import es.eucm.ead.schema.components.physics.BoundingArea;
 import es.eucm.ead.schema.components.physics.Velocity;
 import es.eucm.ead.schema.components.positiontracking.ChaseEntity;
@@ -203,13 +213,24 @@ public class DefaultEngineInitializer implements EngineInitializer {
 		gameLoop.addSystem(new PathSystem());
 		gameLoop.addSystem(new RemoveEntitiesSystem(gameLoop, variablesManager));
 		gameLoop.addSystem(new TouchedSystem());
-		gameLoop.addSystem(new ConversationSystem(gameLoop, variablesManager));
-		gameLoop.addSystem(new LineDialogueSystem(gameView, entitiesLoader));
-		gameLoop.addSystem(new MenuDialogueSystem(gameView, entitiesLoader));
 		gameLoop.addSystem(new KeyPressedSystem());
 		gameLoop.addSystem(new SoundSystem(variablesManager));
 		gameLoop.addSystem(new ChaseEntitySystem(gameLoop, variablesManager));
 		gameLoop.addSystem(new MoveByEntitySystem(gameLoop, variablesManager));
+
+		// Register nodes
+		NodeSystem nodeSystem = new NodeSystem(gameLoop);
+		nodeSystem.registerNodeClass(WaitNode.class, WaitRuntimeNode.class);
+		nodeSystem.registerNodeClass(LineNode.class, LineRuntimeNode.class);
+		nodeSystem.registerNodeClass(EffectsNode.class,
+				EffectsRuntimeNode.class);
+		nodeSystem.registerNodeClass(ConditionedNode.class,
+				ConditionedRuntimeNode.class);
+		nodeSystem.registerNodeClass(OptionNode.class, OptionRuntimeNode.class);
+		gameLoop.addSystem(nodeSystem);
+		gameLoop.addSystem(new LineSystem(gameAssets, entitiesLoader, gameView));
+		gameLoop.addSystem(new OptionsSystem(gameAssets, entitiesLoader,
+				gameView));
 
 		// Register effects
 		EffectsSystem effectsSystem = new EffectsSystem(gameLoop,
@@ -231,8 +252,6 @@ public class DefaultEngineInitializer implements EngineInitializer {
 				new RemoveEntityExecutor());
 		effectsSystem.registerEffectExecutor(ChangeEntityProperty.class,
 				new ChangeEntityPropertyExecutor(variablesManager));
-		effectsSystem.registerEffectExecutor(TriggerConversation.class,
-				new TriggerConversationExecutor(variablesManager));
 		effectsSystem.registerEffectExecutor(ScriptCall.class,
 				new ScriptCallExecutor(effectsSystem, variablesManager));
 		effectsSystem.registerEffectExecutor(AddEntity.class,
@@ -268,6 +287,8 @@ public class DefaultEngineInitializer implements EngineInitializer {
 				new ForEachExecutor(effectsSystem, variablesManager));
 		effectsSystem.registerEffectExecutor(SetViewport.class,
 				new SetViewportExecutor(gameView, variablesManager));
+		effectsSystem.registerEffectExecutor(TriggerConversation.class,
+				new TriggerConversationExecutor());
 
 		// Register tweens
 		tweenSystem.registerBaseTweenCreator(MoveTween.class,
@@ -349,8 +370,6 @@ public class DefaultEngineInitializer implements EngineInitializer {
 				new VisibilityProcessor(gameLoop));
 		componentLoader.registerComponentProcessor(PathBoundary.class,
 				new PathProcessor(gameLoop));
-		componentLoader.registerComponentProcessor(Conversations.class,
-				new ConversationsProcessor(gameLoop));
 		componentLoader.registerComponentProcessor(Cameras.class,
 				new CamerasProcessor(gameLoop));
 		componentLoader.registerComponentProcessor(RefComponent.class,
@@ -369,6 +388,9 @@ public class DefaultEngineInitializer implements EngineInitializer {
 				new ChaseEntityProcessor(gameLoop));
 		componentLoader.registerComponentProcessor(Parallax.class,
 				new ParallaxProcessor(gameLoop));
+
+		componentLoader.registerComponentProcessor(Conversation.class,
+				new ConversationProcessor(gameLoop));
 	}
 
 	private static class LanguageVariableListener implements

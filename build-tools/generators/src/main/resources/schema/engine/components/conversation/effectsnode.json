@@ -1,0 +1,17 @@
+{
+    "additionalProperties": false,
+    "javaType": "es.eucm.ead.schema.components.conversation.EffectsNode",
+    "extends": {
+        "$ref": "simplenode.json"
+    },
+    "properties": {
+        "effects": {
+            "type": "array",
+            "items": {
+                "$ref": "../../effects/effect.json"
+            }
+        }
+    },
+    "type": "object",
+    "description": "A node that executes a list of effects"
+}

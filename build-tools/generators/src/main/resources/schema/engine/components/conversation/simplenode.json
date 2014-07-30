@@ -1,0 +1,16 @@
+{
+    "additionalProperties": false,
+    "javaType": "es.eucm.ead.schema.components.conversation.SimpleNode",
+    "extends": {
+        "$ref": "node.json"
+    },
+    "properties": {
+        "nextNodeId": {
+            "type": "integer",
+            "description": "Next node after this one is done",
+            "default": -1
+        }
+    },
+    "type": "object",
+    "description": "A simple node that, when done, goes next node."
+}

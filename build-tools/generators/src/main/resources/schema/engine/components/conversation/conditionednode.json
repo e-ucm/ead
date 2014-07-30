@@ -1,0 +1,18 @@
+{
+    "additionalProperties": false,
+    "javaType": "es.eucm.ead.schema.components.conversation.ConditionedNode",
+    "extends": {
+        "$ref": "forknode.json"
+    },
+    "properties": {
+        "conditions": {
+            "type": "array",
+            "items": {
+                "type": "string"
+            },
+            "description": "condition for each of the next nodes"
+        }
+    },
+    "type": "object",
+    "description": "A node whose next node is defined through a condition"
+}

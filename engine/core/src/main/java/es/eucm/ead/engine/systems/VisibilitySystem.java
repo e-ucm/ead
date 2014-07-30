@@ -53,7 +53,7 @@ public class VisibilitySystem extends ConditionalSystem {
 
 	public VisibilitySystem(GameLoop engine, VariablesManager variablesManager) {
 		super(engine, variablesManager, Family
-				.getFamilyFor(VisibilityComponent.class));
+				.getFamilyFor(VisibilityComponent.class), 0);
 	}
 
 	@Override

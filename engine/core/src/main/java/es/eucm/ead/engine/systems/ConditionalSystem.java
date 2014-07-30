@@ -64,9 +64,18 @@ public abstract class ConditionalSystem extends IteratingSystem {
 
 	public ConditionalSystem(GameLoop gameLoop,
 			VariablesManager variablesManager, Family family) {
-		super(family);
+		this(gameLoop, variablesManager, family, 0);
+	}
+
+	public ConditionalSystem(GameLoop gameLoop,
+			VariablesManager variablesManager, Family family, int priority) {
+		super(family, priority);
 		this.gameLoop = gameLoop;
 		this.variablesManager = variablesManager;
+	}
+
+	public VariablesManager getVariablesManager() {
+		return variablesManager;
 	}
 
 	/**
@@ -83,7 +92,7 @@ public abstract class ConditionalSystem extends IteratingSystem {
 	 *         if {@link es.eucm.ead.engine.variables.VariablesManager} throws
 	 *         an exception.
 	 */
-	protected boolean evaluateCondition(String expression) {
+	public boolean evaluateCondition(String expression) {
 		try {
 			boolean conditionResult = variablesManager.evaluateCondition(
 					expression, getDefaultValueForCondition());

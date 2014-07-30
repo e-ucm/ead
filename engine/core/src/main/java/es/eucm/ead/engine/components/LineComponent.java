@@ -34,38 +34,51 @@
  *      You should have received a copy of the GNU Lesser General Public License
  *      along with eAdventure.  If not, see <http://www.gnu.org/licenses/>.
  */
-package es.eucm.ead.engine.systems.dialogues;
+package es.eucm.ead.engine.components;
 
-import com.badlogic.gdx.scenes.scene2d.Group;
-import com.badlogic.gdx.scenes.scene2d.InputEvent;
-import com.badlogic.gdx.scenes.scene2d.Touchable;
-import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
-import es.eucm.ead.engine.EntitiesLoader;
-import es.eucm.ead.engine.GameView;
-import es.eucm.ead.engine.components.dialogues.DialogueComponent;
-import es.eucm.ead.engine.components.dialogues.MenuDialogueComponent;
-import es.eucm.ead.engine.entities.EngineEntity;
+import ashley.core.Component;
+import es.eucm.ead.schema.components.conversation.Conversation;
+import es.eucm.ead.schema.components.conversation.LineNode;
 
-/**
- * A system for instantiating in-game dialog bubbles.
- */
-public class MenuDialogueSystem extends DialogueSystem {
+public class LineComponent extends Component {
 
-	public MenuDialogueSystem(GameView gameView, EntitiesLoader entitiesLoader) {
-		super(MenuDialogueComponent.class, gameView, entitiesLoader);
+	private Conversation conversation;
+
+	private LineNode node;
+
+	private String speaker;
+
+	private String line;
+
+	public String getSpeaker() {
+		return speaker;
 	}
 
-	@Override
-	protected void addTouchCallback(final EngineEntity dialogueEntity,
-			final DialogueComponent dialogue, final int lineNumber) {
-		Group entityGroup = dialogueEntity.getGroup();
-		entityGroup.setTouchable(Touchable.enabled);
-		entityGroup.addListener(new ClickListener() {
-			@Override
-			public void clicked(InputEvent event, float x, float y) {
-				((MenuDialogueComponent) dialogue).setMenuChoice(lineNumber);
-				dialogue.setChanged(true);
-			}
-		});
+	public void setSpeaker(String speaker) {
+		this.speaker = speaker;
+	}
+
+	public String getLine() {
+		return line;
+	}
+
+	public void setLine(String line) {
+		this.line = line;
+	}
+
+	public Conversation getConversation() {
+		return conversation;
+	}
+
+	public void setConversation(Conversation conversation) {
+		this.conversation = conversation;
+	}
+
+	public LineNode getNode() {
+		return node;
+	}
+
+	public void setNode(LineNode node) {
+		this.node = node;
 	}
 }

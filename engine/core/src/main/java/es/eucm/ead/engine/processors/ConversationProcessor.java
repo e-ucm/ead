@@ -34,29 +34,24 @@
  *      You should have received a copy of the GNU Lesser General Public License
  *      along with eAdventure.  If not, see <http://www.gnu.org/licenses/>.
  */
-package es.eucm.ead.engine.systems.behaviors;
+package es.eucm.ead.engine.processors;
 
-import ashley.core.Entity;
-import ashley.core.Family;
+import ashley.core.Component;
 import es.eucm.ead.engine.GameLoop;
-import es.eucm.ead.engine.components.EffectsComponent;
-import es.eucm.ead.engine.systems.ConditionalSystem;
-import es.eucm.ead.engine.variables.VariablesManager;
-import es.eucm.ead.schema.effects.Effect;
+import es.eucm.ead.engine.components.ConversationsComponent;
+import es.eucm.ead.schema.components.conversation.Conversation;
 
-public abstract class BehaviorSystem extends ConditionalSystem {
+public class ConversationProcessor extends ComponentProcessor<Conversation> {
 
-	public BehaviorSystem(GameLoop engine, VariablesManager variablesManager,
-			Family family) {
-		super(engine, variablesManager, family, 0);
+	public ConversationProcessor(GameLoop gameLoop) {
+		super(gameLoop);
 	}
 
-	protected void addEffects(Entity entity, Iterable<Effect> effects) {
-		EffectsComponent effectsComponent = gameLoop.addAndGetComponent(entity,
-				EffectsComponent.class);
-
-		for (Effect effect : effects) {
-			effectsComponent.getEffectList().add(effect);
-		}
+	@Override
+	public Component getComponent(Conversation conversation) {
+		ConversationsComponent conversations = gameLoop
+				.createComponent(ConversationsComponent.class);
+		conversations.add(conversation);
+		return conversations;
 	}
 }
