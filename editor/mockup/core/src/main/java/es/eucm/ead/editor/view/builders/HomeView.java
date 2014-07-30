@@ -34,50 +34,32 @@
  *      You should have received a copy of the GNU Lesser General Public License
  *      along with eAdventure.  If not, see <http://www.gnu.org/licenses/>.
  */
-package es.eucm.ead.editor.platform;
+package es.eucm.ead.editor.view.builders;
 
-import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.graphics.g2d.Batch;
+import com.badlogic.gdx.scenes.scene2d.Actor;
+import com.badlogic.gdx.scenes.scene2d.ui.Label;
+
 import es.eucm.ead.editor.control.Controller;
-import es.eucm.ead.editor.control.Tracker;
 
-public abstract class AbstractPlatform implements Platform {
+public class HomeView implements ViewBuilder {
 
-	private Batch batch;
+	private Actor view;
 
-	protected AbstractPlatform() {
-		Thread.setDefaultUncaughtExceptionHandler(new Thread.UncaughtExceptionHandler() {
-			@Override
-			public void uncaughtException(Thread t, Throwable e) {
-				Gdx.app.error("EditorApplicationListener",
-						"Fatal error: " + t.getName() + "(" + t.getId() + ")",
-						e);
-			}
-		});
+	@Override
+	public void initialize(Controller controller) {
+
+		view = new Label(getClass().getSimpleName(), controller
+				.getApplicationAssets().getSkin());
 	}
 
 	@Override
-	public Tracker createTracker(Controller controller) {
-		return new Tracker(controller);
-	}
+	public void release(Controller controller) {
 
-	public boolean browseURL(String URL) {
-		try {
-			Gdx.net.openURI(URL);
-			return true;
-		} catch (Throwable t) {
-			Gdx.app.debug("AbstractPlatform", "Error opening URL " + URL, t);
-			return false;
-		}
 	}
 
 	@Override
-	public void setBatch(Batch batch) {
-		this.batch = batch;
+	public Actor getView(Object... args) {
+		return view;
 	}
 
-	@Override
-	public Batch getBatch() {
-		return batch;
-	}
 }

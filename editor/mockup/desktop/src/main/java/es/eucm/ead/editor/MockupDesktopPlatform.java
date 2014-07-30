@@ -34,26 +34,52 @@
  *      You should have received a copy of the GNU Lesser General Public License
  *      along with eAdventure.  If not, see <http://www.gnu.org/licenses/>.
  */
-package es.eucm.ead.editor.platform;
+package es.eucm.ead.editor;
 
-import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.graphics.g2d.Batch;
+import java.io.InputStream;
+
+import com.badlogic.gdx.backends.lwjgl.LwjglFrame;
+import com.badlogic.gdx.math.Vector2;
+
 import es.eucm.ead.editor.control.Controller;
 import es.eucm.ead.editor.control.Tracker;
+import es.eucm.ead.editor.platform.AbstractPlatform;
+import es.eucm.ead.editor.platform.Platform.FileChooserListener;
+import es.eucm.ead.engine.I18N;
+import es.eucm.network.requests.RequestHelper;
 
-public abstract class AbstractPlatform implements Platform {
+public class MockupDesktopPlatform extends AbstractPlatform implements
+		FileChooserListener {
 
-	private Batch batch;
+	private LwjglFrame frame;
 
-	protected AbstractPlatform() {
-		Thread.setDefaultUncaughtExceptionHandler(new Thread.UncaughtExceptionHandler() {
-			@Override
-			public void uncaughtException(Thread t, Throwable e) {
-				Gdx.app.error("EditorApplicationListener",
-						"Fatal error: " + t.getName() + "(" + t.getId() + ")",
-						e);
-			}
-		});
+	public void setFrame(LwjglFrame frame) {
+		this.frame = frame;
+	}
+
+	@Override
+	public void askForFile(FileChooserListener listener) {
+
+	}
+
+	@Override
+	public void askForFolder(FileChooserListener listener) {
+
+	}
+
+	@Override
+	public void setTitle(String title) {
+		frame.setTitle(title);
+	}
+
+	@Override
+	public void setSize(int width, int height) {
+		frame.setSize(width, height);
+	}
+
+	@Override
+	public Vector2 getSize() {
+		return null;
 	}
 
 	@Override
@@ -61,23 +87,31 @@ public abstract class AbstractPlatform implements Platform {
 		return new Tracker(controller);
 	}
 
-	public boolean browseURL(String URL) {
-		try {
-			Gdx.net.openURI(URL);
-			return true;
-		} catch (Throwable t) {
-			Gdx.app.debug("AbstractPlatform", "Error opening URL " + URL, t);
-			return false;
-		}
+	@Override
+	public RequestHelper getRequestHelper() {
+		return null;
+	}
+
+	public LwjglFrame getFrame() {
+		return frame;
 	}
 
 	@Override
-	public void setBatch(Batch batch) {
-		this.batch = batch;
+	public void fileChosen(String path) {
+
 	}
 
 	@Override
-	public Batch getBatch() {
-		return batch;
+	public void editImage(I18N i18n, String image, FileChooserListener listener) {
+		// Nothing to do
+	}
+
+	/**
+	 * Determines the width and height of an image without loading it from disk.
+	 */
+	@Override
+	public es.eucm.ead.schema.data.Dimension getImageDimension(
+			InputStream imageInputStream) {
+		return null;
 	}
 }

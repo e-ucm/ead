@@ -15,7 +15,7 @@
         </dependency>
         <dependency>
             <groupId>es.e-ucm.ead</groupId>
-            <artifactId>editor-core</artifactId>
+            <artifactId>mockup-core</artifactId>
             <version>${project.version}</version>
         </dependency>
         <dependency>

@@ -34,50 +34,26 @@
  *      You should have received a copy of the GNU Lesser General Public License
  *      along with eAdventure.  If not, see <http://www.gnu.org/licenses/>.
  */
-package es.eucm.ead.editor.platform;
+package es.eucm.ead.android;
 
-import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.graphics.g2d.Batch;
+import com.badlogic.gdx.scenes.scene2d.Group;
+
 import es.eucm.ead.editor.control.Controller;
-import es.eucm.ead.editor.control.Tracker;
+import es.eucm.ead.editor.control.Controller.BackListener;
+import es.eucm.ead.editor.control.Views;
 
-public abstract class AbstractPlatform implements Platform {
+public class AndroidViews extends Views implements BackListener {
 
-	private Batch batch;
-
-	protected AbstractPlatform() {
-		Thread.setDefaultUncaughtExceptionHandler(new Thread.UncaughtExceptionHandler() {
-			@Override
-			public void uncaughtException(Thread t, Throwable e) {
-				Gdx.app.error("EditorApplicationListener",
-						"Fatal error: " + t.getName() + "(" + t.getId() + ")",
-						e);
-			}
-		});
+	public AndroidViews(Controller controller, Group rootContainer) {
+		super(controller, rootContainer, rootContainer);
 	}
 
 	@Override
-	public Tracker createTracker(Controller controller) {
-		return new Tracker(controller);
-	}
-
-	public boolean browseURL(String URL) {
-		try {
-			Gdx.net.openURI(URL);
-			return true;
-		} catch (Throwable t) {
-			Gdx.app.debug("AbstractPlatform", "Error opening URL " + URL, t);
-			return false;
+	public void onBackPressed() {
+		if (currentView instanceof BackListener) {
+			((BackListener) super.currentView).onBackPressed();
+		} else {
+			back();
 		}
-	}
-
-	@Override
-	public void setBatch(Batch batch) {
-		this.batch = batch;
-	}
-
-	@Override
-	public Batch getBatch() {
-		return batch;
 	}
 }
