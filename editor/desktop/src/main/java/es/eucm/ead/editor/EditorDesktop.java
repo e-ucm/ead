@@ -48,6 +48,7 @@ import com.badlogic.gdx.scenes.scene2d.ui.Label.LabelStyle;
 import es.eucm.ead.editor.control.Controller;
 import es.eucm.ead.editor.control.Preferences;
 import es.eucm.ead.editor.control.ShortcutsMap;
+import es.eucm.ead.editor.control.actions.EditorActionException;
 import es.eucm.ead.editor.control.actions.editor.Back;
 import es.eucm.ead.editor.control.actions.editor.ChangeView;
 import es.eucm.ead.editor.control.actions.editor.CheckUpdates;
@@ -198,7 +199,14 @@ public class EditorDesktop extends EditorApplicationListener {
 		}
 
 		if (projectToOpenPath != null && !"".equals(projectToOpenPath)) {
-			controller.action(OpenGame.class, projectToOpenPath);
+			try {
+				controller.action(OpenGame.class, projectToOpenPath);
+			} catch (EditorActionException eae) {
+				// the project is probably corrupt; complain but continue
+				Gdx.app.log("OpenLastProject", "Error opening '"
+						+ projectToOpenPath + "'; ignoring request");
+				controller.action(ChangeView.class, NoProjectView.class);
+			}
 		} else {
 			controller.action(ChangeView.class, NoProjectView.class);
 		}
