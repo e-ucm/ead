@@ -34,65 +34,31 @@
  *      You should have received a copy of the GNU Lesser General Public License
  *      along with eAdventure.  If not, see <http://www.gnu.org/licenses/>.
  */
-package es.eucm.ead.editor.indexes;
+package es.eucm.ead.editor.widgets;
 
-import com.badlogic.gdx.utils.Array;
-import com.badlogic.gdx.utils.reflect.ClassReflection;
+import com.badlogic.gdx.backends.lwjgl.LwjglApplication;
+import com.badlogic.gdx.scenes.scene2d.Group;
 
-import es.eucm.ead.schema.effects.AnimationEffect;
-import es.eucm.ead.schema.effects.Effect;
-import es.eucm.ead.schema.effects.TrackEffect;
-import es.eucm.ead.schema.effects.controlstructures.ControlStructure;
+import es.eucm.ead.editor.editorui.EditorUITest;
+import es.eucm.ead.editor.ui.scenes.ribbon.animation.AnimationEdition;
 
-/**
- * An index relating the short string representation of an effect (translated to
- * the current language) and its class
- */
-public class EffectsIndex extends ModelIndex {
+public class AnimationEditionTest extends EditorUITest {
 
-	private Array<Term> animationEffects;
-
-	private Array<Term> standardEffects;
-
-	private boolean init;
-
-	public EffectsIndex() {
-		super(Effect.class);
-		animationEffects = new Array<Term>();
-		standardEffects = new Array<Term>();
-		init = false;
+	public static void main(String args[]) {
+		new LwjglApplication(new AnimationEditionTest(),
+				"Test for EditTweensBar", 800, 400);
 	}
 
-	private void initialize() {
-		Array<Term> terms = getTerms();
-		for (Term t : terms) {
-			if (!ClassReflection.isAssignableFrom(ControlStructure.class,
-					(Class) t.getData())
-					&& !(((Class) t.getData()) == TrackEffect.class)
-					&& !(((Class) t.getData()) == AnimationEffect.class)) {
-				if (ClassReflection.isAssignableFrom(AnimationEffect.class,
-						(Class) t.getData())) {
-					animationEffects.add(t);
-				} else {
-					standardEffects.add(t);
-				}
-			}
-		}
-		init = true;
-	}
+	@Override
+	protected void builUI(Group root) {
+		controller.getApplicationAssets().loadSkin("skins/light/skin");
 
-	public Array<Term> getInstantTypeEffects() {
-		if (!init) {
-			initialize();
-		}
-		return standardEffects;
-	}
+		controller.getCommands().pushStack();
 
-	public Array<Term> getAnimationTypeEffects() {
-		if (!init) {
-			initialize();
-		}
-		return animationEffects;
+		AnimationEdition anim = new AnimationEdition(controller);
+		anim.setFillParent(true);
+
+		root.addActor(anim);
 	}
 
 }

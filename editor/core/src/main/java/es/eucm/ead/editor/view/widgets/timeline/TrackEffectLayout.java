@@ -34,65 +34,34 @@
  *      You should have received a copy of the GNU Lesser General Public License
  *      along with eAdventure.  If not, see <http://www.gnu.org/licenses/>.
  */
-package es.eucm.ead.editor.indexes;
+package es.eucm.ead.editor.view.widgets.timeline;
 
-import com.badlogic.gdx.utils.Array;
-import com.badlogic.gdx.utils.reflect.ClassReflection;
+import com.badlogic.gdx.scenes.scene2d.utils.DragAndDrop;
+import com.badlogic.gdx.scenes.scene2d.utils.Drawable;
 
-import es.eucm.ead.schema.effects.AnimationEffect;
-import es.eucm.ead.schema.effects.Effect;
+import es.eucm.ead.editor.view.widgets.layouts.TrackLayout;
 import es.eucm.ead.schema.effects.TrackEffect;
-import es.eucm.ead.schema.effects.controlstructures.ControlStructure;
 
 /**
- * An index relating the short string representation of an effect (translated to
- * the current language) and its class
+ * {@link TrackLayout} with a {@link TrackEffect}
  */
-public class EffectsIndex extends ModelIndex {
+public class TrackEffectLayout extends TrackLayout {
 
-	private Array<Term> animationEffects;
+	private TrackEffect trackEffect;
 
-	private Array<Term> standardEffects;
-
-	private boolean init;
-
-	public EffectsIndex() {
-		super(Effect.class);
-		animationEffects = new Array<Term>();
-		standardEffects = new Array<Term>();
-		init = false;
+	public TrackEffectLayout() {
+		super();
 	}
 
-	private void initialize() {
-		Array<Term> terms = getTerms();
-		for (Term t : terms) {
-			if (!ClassReflection.isAssignableFrom(ControlStructure.class,
-					(Class) t.getData())
-					&& !(((Class) t.getData()) == TrackEffect.class)
-					&& !(((Class) t.getData()) == AnimationEffect.class)) {
-				if (ClassReflection.isAssignableFrom(AnimationEffect.class,
-						(Class) t.getData())) {
-					animationEffects.add(t);
-				} else {
-					standardEffects.add(t);
-				}
-			}
-		}
-		init = true;
+	public TrackEffectLayout(Drawable drawable, DragAndDrop dragNDrop) {
+		super(drawable, dragNDrop);
 	}
 
-	public Array<Term> getInstantTypeEffects() {
-		if (!init) {
-			initialize();
-		}
-		return standardEffects;
+	public TrackEffect getTrackEffect() {
+		return trackEffect;
 	}
 
-	public Array<Term> getAnimationTypeEffects() {
-		if (!init) {
-			initialize();
-		}
-		return animationEffects;
+	public void setTrackEffect(TrackEffect trackEffect) {
+		this.trackEffect = trackEffect;
 	}
-
 }

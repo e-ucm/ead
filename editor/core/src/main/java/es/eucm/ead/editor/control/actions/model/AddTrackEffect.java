@@ -34,65 +34,37 @@
  *      You should have received a copy of the GNU Lesser General Public License
  *      along with eAdventure.  If not, see <http://www.gnu.org/licenses/>.
  */
-package es.eucm.ead.editor.indexes;
+package es.eucm.ead.editor.control.actions.model;
 
-import com.badlogic.gdx.utils.Array;
-import com.badlogic.gdx.utils.reflect.ClassReflection;
-
-import es.eucm.ead.schema.effects.AnimationEffect;
-import es.eucm.ead.schema.effects.Effect;
+import es.eucm.ead.editor.control.actions.ModelAction;
+import es.eucm.ead.editor.control.commands.Command;
+import es.eucm.ead.editor.control.commands.ListCommand.AddToListCommand;
+import es.eucm.ead.schema.components.Animation;
 import es.eucm.ead.schema.effects.TrackEffect;
-import es.eucm.ead.schema.effects.controlstructures.ControlStructure;
 
 /**
- * An index relating the short string representation of an effect (translated to
- * the current language) and its class
+ * 
+ * Adds {@link TrackEffect} to the {@link Animation}
+ * <dl>
+ * <dt><strong>Arguments</strong></dt>
+ * <dd><strong>args[0]</strong> <em>{@link Animation}</em></dd>
+ * <dd><strong>args[1]</strong> <em>{@link TrackEffect}</em></dd>
+ * </dl>
+ * 
  */
-public class EffectsIndex extends ModelIndex {
+public class AddTrackEffect extends ModelAction {
 
-	private Array<Term> animationEffects;
-
-	private Array<Term> standardEffects;
-
-	private boolean init;
-
-	public EffectsIndex() {
-		super(Effect.class);
-		animationEffects = new Array<Term>();
-		standardEffects = new Array<Term>();
-		init = false;
+	public AddTrackEffect() {
+		super(true, false, Animation.class, TrackEffect.class);
 	}
 
-	private void initialize() {
-		Array<Term> terms = getTerms();
-		for (Term t : terms) {
-			if (!ClassReflection.isAssignableFrom(ControlStructure.class,
-					(Class) t.getData())
-					&& !(((Class) t.getData()) == TrackEffect.class)
-					&& !(((Class) t.getData()) == AnimationEffect.class)) {
-				if (ClassReflection.isAssignableFrom(AnimationEffect.class,
-						(Class) t.getData())) {
-					animationEffects.add(t);
-				} else {
-					standardEffects.add(t);
-				}
-			}
-		}
-		init = true;
-	}
+	@Override
+	public Command perform(Object... args) {
 
-	public Array<Term> getInstantTypeEffects() {
-		if (!init) {
-			initialize();
-		}
-		return standardEffects;
-	}
+		Animation parent = (Animation) args[0];
 
-	public Array<Term> getAnimationTypeEffects() {
-		if (!init) {
-			initialize();
-		}
-		return animationEffects;
-	}
+		TrackEffect trackEffect = (TrackEffect) args[1];
 
+		return new AddToListCommand(parent, parent.getEffects(), trackEffect);
+	}
 }

@@ -34,65 +34,50 @@
  *      You should have received a copy of the GNU Lesser General Public License
  *      along with eAdventure.  If not, see <http://www.gnu.org/licenses/>.
  */
-package es.eucm.ead.editor.indexes;
+package es.eucm.ead.editor.control.actions.model;
 
-import com.badlogic.gdx.utils.Array;
-import com.badlogic.gdx.utils.reflect.ClassReflection;
-
-import es.eucm.ead.schema.effects.AnimationEffect;
-import es.eucm.ead.schema.effects.Effect;
+import es.eucm.ead.editor.control.actions.ModelAction;
+import es.eucm.ead.editor.control.commands.Command;
+import es.eucm.ead.editor.control.commands.CompositeCommand;
+import es.eucm.ead.schema.effects.TimedEffect;
 import es.eucm.ead.schema.effects.TrackEffect;
-import es.eucm.ead.schema.effects.controlstructures.ControlStructure;
 
-/**
- * An index relating the short string representation of an effect (translated to
- * the current language) and its class
+/***
+ * 
+ * Move a {@link TimedEffect} in {@link TrackEffect} to another
+ * {@link TrackEffect}
+ * 
  */
-public class EffectsIndex extends ModelIndex {
+public class ChangeTrackEffect extends ModelAction {
 
-	private Array<Term> animationEffects;
-
-	private Array<Term> standardEffects;
-
-	private boolean init;
-
-	public EffectsIndex() {
-		super(Effect.class);
-		animationEffects = new Array<Term>();
-		standardEffects = new Array<Term>();
-		init = false;
+	public ChangeTrackEffect() {
+		super(true, false, TimedEffect.class, TrackEffect.class,
+				TrackEffect.class, Float.class);
 	}
 
-	private void initialize() {
-		Array<Term> terms = getTerms();
-		for (Term t : terms) {
-			if (!ClassReflection.isAssignableFrom(ControlStructure.class,
-					(Class) t.getData())
-					&& !(((Class) t.getData()) == TrackEffect.class)
-					&& !(((Class) t.getData()) == AnimationEffect.class)) {
-				if (ClassReflection.isAssignableFrom(AnimationEffect.class,
-						(Class) t.getData())) {
-					animationEffects.add(t);
-				} else {
-					standardEffects.add(t);
-				}
-			}
-		}
-		init = true;
-	}
+	@Override
+	public Command perform(Object... args) {
 
-	public Array<Term> getInstantTypeEffects() {
-		if (!init) {
-			initialize();
-		}
-		return standardEffects;
-	}
+		TimedEffect e = (TimedEffect) args[0];
 
-	public Array<Term> getAnimationTypeEffects() {
-		if (!init) {
-			initialize();
-		}
-		return animationEffects;
+		TrackEffect newTrack = (TrackEffect) args[1];
+
+		TrackEffect oldTrack = (TrackEffect) args[2];
+
+		float newTime = (Float) args[3];
+
+		CompositeCommand command = new CompositeCommand();
+
+		command.addCommand(controller.getActions()
+				.getAction(ChangeTimedEffectTime.class).perform(e, newTime));
+
+		command.addCommand(controller.getActions()
+				.getAction(RemoveTimedEffectInTrack.class).perform(oldTrack, e));
+
+		command.addCommand(controller.getActions()
+				.getAction(AddTimedEffectInTrack.class).perform(newTrack, e));
+
+		return command;
 	}
 
 }

@@ -454,7 +454,7 @@ public class LinearLayout extends AbstractWidget {
 		return horizontal ? c.margin.left : c.margin.bottom;
 	}
 
-	private float marginRight(Constraints c) {
+	protected float marginRight(Constraints c) {
 		return horizontal ? c.margin.right : c.margin.top;
 	}
 
@@ -466,7 +466,7 @@ public class LinearLayout extends AbstractWidget {
 		return horizontal ? c.margin.bottom : c.margin.left;
 	}
 
-	private boolean expandX(Constraints c) {
+	protected boolean expandX(Constraints c) {
 		return horizontal ? c.expandX : c.expandY;
 	}
 

@@ -176,6 +176,8 @@ public class IconTextButton extends Button {
 	public float getPrefWidth() {
 		if (pos == Position.LEFT || pos == Position.RIGHT && size != 0) {
 			return size;
+		} else if (label != null && label.getWidth() > super.getPrefWidth()) {
+			return label.getWidth();
 		}
 		return super.getPrefWidth();
 	}
