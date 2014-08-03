@@ -165,7 +165,9 @@ public class FieldName {
 	 */
 	TEXT = "text",
 
-	DURATION = "duration",
+	/**
+	 * Refers to {@link es.eucm.ead.schema.effects.AnimationEffect#duration}
+	 */
+	DURATION = "duration";
 
-	EFFECT = "effect";
 }

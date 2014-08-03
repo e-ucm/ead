@@ -34,11 +34,50 @@
  *      You should have received a copy of the GNU Lesser General Public License
  *      along with eAdventure.  If not, see <http://www.gnu.org/licenses/>.
  */
-package es.eucm.ead.editor.view.widgets.timeline;
+package es.eucm.ead.editor.control.actions.model;
 
+import es.eucm.ead.editor.control.actions.ModelAction;
+import es.eucm.ead.editor.control.commands.Command;
 import es.eucm.ead.editor.control.commands.CompositeCommand;
+import es.eucm.ead.schema.effects.TimedEffect;
+import es.eucm.ead.schema.effects.TrackEffect;
 
-public interface EffectButton {
+/***
+ * 
+ * Move a {@link TimedEffect} in {@link TrackEffect} to another
+ * {@link TrackEffect}
+ * 
+ */
+public class ChangeTrackEffect extends ModelAction {
 
-	public void changeEffectValues(CompositeCommand command);
+	public ChangeTrackEffect() {
+		super(true, false, TimedEffect.class, TrackEffect.class,
+				TrackEffect.class, Float.class);
+	}
+
+	@Override
+	public Command perform(Object... args) {
+
+		TimedEffect e = (TimedEffect) args[0];
+
+		TrackEffect newTrack = (TrackEffect) args[1];
+
+		TrackEffect oldTrack = (TrackEffect) args[2];
+
+		float newTime = (Float) args[3];
+
+		CompositeCommand command = new CompositeCommand();
+
+		command.addCommand(controller.getActions()
+				.getAction(ChangeTimedEffectTime.class).perform(e, newTime));
+
+		command.addCommand(controller.getActions()
+				.getAction(RemoveTimedEffectInTrack.class).perform(oldTrack, e));
+
+		command.addCommand(controller.getActions()
+				.getAction(AddTimedEffectInTrack.class).perform(newTrack, e));
+
+		return command;
+	}
+
 }

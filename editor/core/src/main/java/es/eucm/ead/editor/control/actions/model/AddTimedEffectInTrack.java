@@ -38,7 +38,9 @@ package es.eucm.ead.editor.control.actions.model;
 
 import es.eucm.ead.editor.control.actions.ModelAction;
 import es.eucm.ead.editor.control.commands.Command;
+import es.eucm.ead.editor.control.commands.CompositeCommand;
 import es.eucm.ead.editor.control.commands.ListCommand.AddToListCommand;
+import es.eucm.ead.schema.effects.AnimationEffect;
 import es.eucm.ead.schema.effects.TimedEffect;
 import es.eucm.ead.schema.effects.TrackEffect;
 
@@ -60,11 +62,57 @@ public class AddTimedEffectInTrack extends ModelAction {
 	@Override
 	public Command perform(Object... args) {
 		TrackEffect track = (TrackEffect) args[0];
-		track.getEffects();
 
 		TimedEffect effect = (TimedEffect) args[1];
 
-		return new AddToListCommand(track, track.getEffects(), effect);
+		CompositeCommand command = new CompositeCommand();
+		int index = 0;
+		float beforeX = 0;
+		float lastW = 0;
+		float leftX = 0;
+
+		for (TimedEffect e : track.getEffects()) {
+			float width = e.getEffect() instanceof AnimationEffect ? ((AnimationEffect) e
+					.getEffect()).getDuration() : 0;
+
+			float x = 0;
+
+			float auxX = leftX + e.getTime();
+
+			if (!(e.getEffect() instanceof AnimationEffect)) {
+				x = e.getTime();
+			} else {
+				command.addCommand(controller.getActions()
+						.getAction(ChangeEffectDuration.class)
+						.perform(track, e, width, 0));
+				x = leftX
+						+ (auxX < beforeX + lastW ? beforeX + lastW : e
+								.getTime());
+			}
+
+			beforeX = x;
+			lastW = width;
+
+			if (effect.getEffect() instanceof AnimationEffect
+					&& effect.getTime() > beforeX
+					&& effect.getTime() < beforeX + lastW / 2) {
+				command.addCommand(controller
+						.getActions()
+						.getAction(ChangeTimedEffectTime.class)
+						.perform(
+								e,
+								effect.getTime()
+										+ ((AnimationEffect) effect.getEffect())
+												.getDuration()));
+			} else if (effect.getTime() > beforeX + lastW / 2) {
+				index++;
+			}
+
+		}
+		command.addCommand(new AddToListCommand(track, track.getEffects(),
+				effect, index));
+
+		return command;
 	}
 
 }

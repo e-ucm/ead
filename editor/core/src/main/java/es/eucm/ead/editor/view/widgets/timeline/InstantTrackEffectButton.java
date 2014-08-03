@@ -36,17 +36,14 @@
  */
 package es.eucm.ead.editor.view.widgets.timeline;
 
+import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.InputListener;
 import com.badlogic.gdx.scenes.scene2d.utils.Drawable;
 
 import es.eucm.ead.editor.control.Controller;
-import es.eucm.ead.editor.control.actions.ModelAction;
-import es.eucm.ead.editor.control.actions.model.AddTimedEffectInTrack;
 import es.eucm.ead.editor.control.actions.model.ChangeTimedEffectTime;
-import es.eucm.ead.editor.control.actions.model.RemoveTimedEffectInTrack;
-import es.eucm.ead.editor.control.commands.Command;
-import es.eucm.ead.editor.control.commands.CompositeCommand;
+import es.eucm.ead.editor.control.actions.model.ChangeTrackEffect;
 import es.eucm.ead.editor.model.Model.FieldListener;
 import es.eucm.ead.editor.model.events.FieldEvent;
 import es.eucm.ead.editor.view.widgets.FixedButton;
@@ -63,6 +60,8 @@ import es.eucm.ead.schemax.FieldName;
  */
 public class InstantTrackEffectButton extends FixedButton implements
 		FieldListener {
+
+	private static final Vector2 v = new Vector2();
 
 	private float pixelsPerSecond;
 
@@ -93,7 +92,6 @@ public class InstantTrackEffectButton extends FixedButton implements
 	private InputListener changeListener() {
 
 		return new InputListener() {
-
 			private TrackEffect old;
 
 			@Override
@@ -106,18 +104,15 @@ public class InstantTrackEffectButton extends FixedButton implements
 			@Override
 			public void touchUp(InputEvent event, float x, float y,
 					int pointer, int button) {
+				v.set(x, y);
+				localToParentCoordinates(v);
 				if (old != ((TrackEffectLayout) getParent()).getTrackEffect()) {
-					controller
-							.command(changeTrackEffect(old,
-									((TrackEffectLayout) getParent())
-											.getTrackEffect()));
+					controller.action(ChangeTrackEffect.class, getEffect(),
+							((TrackEffectLayout) getParent()).getTrackEffect(),
+							old, v.x / pixelsPerSecond);
 				} else {
-					controller
-							.action(ChangeTimedEffectTime.class,
-									getEffect(),
-									((TrackLayout) getParent())
-											.getLeftMargin(InstantTrackEffectButton.this)
-											/ pixelsPerSecond);
+					controller.action(ChangeTimedEffectTime.class, getEffect(),
+							v.x / pixelsPerSecond);
 				}
 			}
 		};
@@ -136,26 +131,4 @@ public class InstantTrackEffectButton extends FixedButton implements
 	public boolean listenToField(String fieldName) {
 		return fieldName == FieldName.TIME;
 	}
-
-	public Command changeTrackEffect(TrackEffect oldValue, TrackEffect newValue) {
-		CompositeCommand command = new CompositeCommand();
-
-		ModelAction action = new ChangeTimedEffectTime();
-		Command c = action.perform(getEffect(),
-				((TrackLayout) getParent()).getLeftMargin(this)
-						/ pixelsPerSecond);
-
-		ModelAction action2 = new RemoveTimedEffectInTrack();
-		Command c2 = action2.perform(oldValue, getEffect());
-
-		ModelAction action3 = new AddTimedEffectInTrack();
-		Command c3 = action3.perform(newValue, getEffect());
-
-		command.addCommand(c);
-		command.addCommand(c2);
-		command.addCommand(c3);
-
-		return command;
-	}
-
 }

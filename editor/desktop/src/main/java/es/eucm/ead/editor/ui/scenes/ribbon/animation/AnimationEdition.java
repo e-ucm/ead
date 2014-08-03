@@ -57,12 +57,9 @@ import com.badlogic.gdx.utils.Array;
 
 import es.eucm.ead.editor.control.Controller;
 import es.eucm.ead.editor.control.Selection;
-import es.eucm.ead.editor.control.actions.ModelAction;
 import es.eucm.ead.editor.control.actions.model.AddAnimation;
 import es.eucm.ead.editor.control.actions.model.AddTimedEffectInTrack;
 import es.eucm.ead.editor.control.actions.model.AddTrackEffect;
-import es.eucm.ead.editor.control.commands.Command;
-import es.eucm.ead.editor.control.commands.CompositeCommand;
 import es.eucm.ead.editor.indexes.EffectsIndex;
 import es.eucm.ead.editor.indexes.FuzzyIndex.Term;
 import es.eucm.ead.editor.model.Model.ModelListener;
@@ -77,7 +74,6 @@ import es.eucm.ead.editor.view.widgets.Separator;
 import es.eucm.ead.editor.view.widgets.TimelineWidget;
 import es.eucm.ead.editor.view.widgets.dragndrop.DraggableScrollPane;
 import es.eucm.ead.editor.view.widgets.layouts.TrackLayout;
-import es.eucm.ead.editor.view.widgets.timeline.EffectButton;
 import es.eucm.ead.editor.view.widgets.timeline.GradualTrackEffectButton;
 import es.eucm.ead.editor.view.widgets.timeline.InstantTrackEffectButton;
 import es.eucm.ead.editor.view.widgets.timeline.TrackEffectLayout;
@@ -233,20 +229,8 @@ public class AnimationEdition extends Table {
 								.getLeftMargin(payload.getDragActor())
 								/ PIXEL_PER_SECOND);
 
-						CompositeCommand c = new CompositeCommand();
-						ModelAction action = new AddTimedEffectInTrack();
-						Command add = action.perform(track, effect);
-
-						c.addCommand(add);
-						for (Actor actor : ((TrackEffectLayout) target
-								.getActor()).getChildren()) {
-							if (actor instanceof EffectButton) {
-								((EffectButton) actor).changeEffectValues(c);
-							}
-						}
-
-						c.getCommandList().reverse();
-						controller.command(c);
+						controller.action(AddTimedEffectInTrack.class, track,
+								effect);
 					}
 					gradualsTweens.cancelScrollFocus(true);
 				}
@@ -275,7 +259,6 @@ public class AnimationEdition extends Table {
 					InstantTrackEffectButton instant = new InstantTrackEffectButton(
 							actor.getDrawableImage(), actor.getDrawableImage(),
 							controller, effect, PIXEL_PER_SECOND);
-					System.out.println(effect.getEffect().getTarget());
 					payload.setDragActor(instant);
 					return payload;
 				}
@@ -361,7 +344,7 @@ public class AnimationEdition extends Table {
 					animationListener);
 		}
 
-		public void actualizeTimeline() {
+		public void refreshTimeline() {
 			Table aux = ((Table) scroll.getWidget());
 			trackLayouts.clear();
 
@@ -423,7 +406,7 @@ public class AnimationEdition extends Table {
 					animation = (Animation) component;
 					controller.getModel().retargetListener(aux.getEffects(),
 							animation.getEffects(), animationListener);
-					actualizeTimeline();
+					refreshTimeline();
 					return;
 				}
 			}
@@ -432,7 +415,7 @@ public class AnimationEdition extends Table {
 			controller.action(AddAnimation.class, modelEntity, animation);
 			controller.getModel().retargetListener(aux.getEffects(),
 					animation.getEffects(), animationListener);
-			actualizeTimeline();
+			refreshTimeline();
 		}
 
 		@Override
@@ -449,7 +432,7 @@ public class AnimationEdition extends Table {
 			return new ModelListener<ListEvent>() {
 				@Override
 				public void modelChanged(ListEvent event) {
-					actualizeTimeline();
+					refreshTimeline();
 				}
 			};
 		}
@@ -458,7 +441,7 @@ public class AnimationEdition extends Table {
 			return new ModelListener<ListEvent>() {
 				@Override
 				public void modelChanged(ListEvent event) {
-					actualizeTimeline();
+					refreshTimeline();
 				}
 			};
 		}

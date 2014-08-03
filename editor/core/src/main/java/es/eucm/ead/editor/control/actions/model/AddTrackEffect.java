@@ -60,11 +60,11 @@ public class AddTrackEffect extends ModelAction {
 
 	@Override
 	public Command perform(Object... args) {
+
 		Animation parent = (Animation) args[0];
-		parent.getEffects();
 
-		TrackEffect effect = (TrackEffect) args[1];
+		TrackEffect trackEffect = (TrackEffect) args[1];
 
-		return new AddToListCommand(parent, parent.getEffects(), effect);
+		return new AddToListCommand(parent, parent.getEffects(), trackEffect);
 	}
 }

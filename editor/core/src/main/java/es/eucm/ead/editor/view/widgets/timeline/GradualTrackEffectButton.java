@@ -36,19 +36,15 @@
  */
 package es.eucm.ead.editor.view.widgets.timeline;
 
+import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.InputListener;
 import com.badlogic.gdx.scenes.scene2d.utils.Drawable;
 
 import es.eucm.ead.editor.control.Controller;
-import es.eucm.ead.editor.control.actions.ModelAction;
-import es.eucm.ead.editor.control.actions.model.AddTimedEffectInTrack;
-import es.eucm.ead.editor.control.actions.model.ChangeAnimationEffectDuration;
-import es.eucm.ead.editor.control.actions.model.ChangeTimedEffectTime;
-import es.eucm.ead.editor.control.actions.model.RemoveTimedEffectInTrack;
-import es.eucm.ead.editor.control.commands.Command;
-import es.eucm.ead.editor.control.commands.CompositeCommand;
+import es.eucm.ead.editor.control.actions.model.ChangeEffectDuration;
+import es.eucm.ead.editor.control.actions.model.ChangeTrackEffect;
 import es.eucm.ead.editor.model.Model.FieldListener;
 import es.eucm.ead.editor.model.events.FieldEvent;
 import es.eucm.ead.editor.view.widgets.StretchableButton;
@@ -65,7 +61,9 @@ import es.eucm.ead.schemax.FieldName;
  * 
  */
 public class GradualTrackEffectButton extends StretchableButton implements
-		EffectButton, FieldListener {
+		FieldListener {
+
+	private static final Vector2 v = new Vector2();
 
 	private float pixelsPerSecond;
 
@@ -103,32 +101,38 @@ public class GradualTrackEffectButton extends StretchableButton implements
 
 			private TrackEffect old;
 
+			private int side;
+
 			@Override
 			public boolean touchDown(InputEvent event, float x, float y,
 					int pointer, int button) {
 				old = ((TrackEffectLayout) getParent()).getTrackEffect();
+				if (isDragLeft()) {
+					side = -1;
+				} else if (isDragRight()) {
+					side = 1;
+				} else {
+					side = 0;
+				}
 				return true;
 			}
 
 			@Override
 			public void touchUp(InputEvent event, float x, float y,
 					int pointer, int button) {
-				CompositeCommand c = new CompositeCommand();
-				for (Actor actor : ((TrackLayout) getParent()).getChildren()) {
-					if (actor instanceof EffectButton) {
-						((EffectButton) actor).changeEffectValues(c);
-					}
-				}
+				v.set(x, y);
+				localToParentCoordinates(v);
+
 				if (old != ((TrackEffectLayout) getParent()).getTrackEffect()) {
-					changeTrackEffect(c, old,
-							((TrackEffectLayout) getParent()).getTrackEffect());
+					controller.action(ChangeTrackEffect.class, getEffect(),
+							((TrackEffectLayout) getParent()).getTrackEffect(),
+							old, v.x / pixelsPerSecond);
+
+				} else if (side != 0) {
+					controller.action(ChangeEffectDuration.class,
+							((TrackEffectLayout) getParent()).getTrackEffect(),
+							getEffect(), v.x / pixelsPerSecond, side);
 				}
-				c.getCommandList().reverse(); // In undo command, is necessary
-												// to reposition actors starting
-												// by the beginning of the track
-												// to avoid collisions between
-												// buttons.
-				controller.command(c);
 			}
 		};
 	}
@@ -148,39 +152,5 @@ public class GradualTrackEffectButton extends StretchableButton implements
 	@Override
 	public boolean listenToField(String fieldName) {
 		return (fieldName == FieldName.DURATION || fieldName == FieldName.TIME);
-	}
-
-	@Override
-	public void changeEffectValues(CompositeCommand command) {
-		if (((AnimationEffect) getEffect().getEffect()).getDuration() != getWidth()
-				/ pixelsPerSecond) {
-			ModelAction action = new ChangeAnimationEffectDuration();
-			Command c = action.perform((AnimationEffect) getEffect()
-					.getEffect(), getWidth() / pixelsPerSecond);
-
-			command.addCommand(c);
-		}
-
-		if (getEffect().getTime() != ((TrackLayout) getParent())
-				.getLeftMargin(this) / pixelsPerSecond) {
-			ModelAction action2 = new ChangeTimedEffectTime();
-			Command c2 = action2.perform(getEffect(),
-					((TrackLayout) getParent()).getLeftMargin(this)
-							/ pixelsPerSecond);
-
-			command.addCommand(c2);
-		}
-	}
-
-	public void changeTrackEffect(CompositeCommand command,
-			TrackEffect oldValue, TrackEffect newValue) {
-		ModelAction action = new RemoveTimedEffectInTrack();
-		Command c = action.perform(oldValue, getEffect());
-
-		ModelAction action2 = new AddTimedEffectInTrack();
-		Command c2 = action2.perform(newValue, getEffect());
-
-		command.addCommand(c);
-		command.addCommand(c2);
 	}
 }
