@@ -40,10 +40,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 import android.content.Intent;
-import android.graphics.PixelFormat;
 import android.os.Bundle;
-import android.view.SurfaceView;
-import android.view.WindowManager;
 
 import com.badlogic.gdx.backends.android.AndroidApplication;
 import com.badlogic.gdx.backends.android.AndroidApplicationConfiguration;
@@ -56,33 +53,16 @@ public class EditorActivity extends AndroidApplication {
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 
-		getWindow().addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
-
-		final AndroidApplicationConfiguration config = new AndroidApplicationConfiguration();
+		AndroidApplicationConfiguration config = new AndroidApplicationConfiguration();
 		config.useAccelerometer = false;
-		config.useImmersiveMode = true;
+		config.useImmersiveMode = false;
 		config.hideStatusBar = true;
-		config.useWakelock = false;
+		config.useWakelock = true;
 		config.useCompass = false;
-		// We need to change the default pixel format - since it does not
-		// include an alpha channel.
-		// We need the alpha channel so the camera preview will be seen behind
-		// the GL scene.
-		config.r = 8;
-		config.g = 8;
-		config.b = 8;
-		config.a = 8;
 
 		this.listeners = new HashMap<Integer, ActivityResultListener>();
-		initialize(new AndroidEditorApplicationListener(new AndroidPlatform(
-				this)), config);
-		if (super.graphics.getView() instanceof SurfaceView) {
-			// Force alpha channel.
-			final SurfaceView glView = (SurfaceView) this.graphics.getView();
-			// If we don't set the format to PixelFormat.TRANSLUCENT we won't
-			// see the camera preview through our OpenGL ES view.
-			glView.getHolder().setFormat(PixelFormat.TRANSLUCENT);
-		}
+		initialize(new AndroidEditorApplicationListener(new AndroidPlatform()),
+				config);
 	}
 
 	public void startActivityForResult(Intent intent, int requestCode,
