@@ -97,7 +97,7 @@ public class AndroidPlatform extends AbstractPlatform {
 	private final Vector2 screenDimensions;
 	private final String[] names;
 
-	public AndroidPlatform(EditorActivity activity) {
+	public AndroidPlatform() {
 
 		this.screenDimensions = new Vector2(1280f, 800f);
 

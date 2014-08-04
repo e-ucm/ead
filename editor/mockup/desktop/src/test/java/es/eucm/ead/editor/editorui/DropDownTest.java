@@ -34,44 +34,28 @@
  *      You should have received a copy of the GNU Lesser General Public License
  *      along with eAdventure.  If not, see <http://www.gnu.org/licenses/>.
  */
-package es.eucm.ead.editor.view.builders;
+package es.eucm.ead.editor.editorui;
 
-import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.graphics.Color;
+import com.badlogic.gdx.backends.lwjgl.LwjglApplication;
 import com.badlogic.gdx.scenes.scene2d.Actor;
-import com.badlogic.gdx.scenes.scene2d.ui.Container;
 import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
-import com.badlogic.gdx.scenes.scene2d.ui.Table;
 
-import es.eucm.ead.editor.control.Controller;
+import es.eucm.ead.editor.view.widgets.DropDown;
+import es.eucm.ead.engine.I18N;
 
-public class HomeView implements ViewBuilder {
-
-	private Actor view;
+public class DropDownTest extends MockupUITest {
 
 	@Override
-	public void initialize(Controller controller) {
-		Skin skin = controller.getApplicationAssets().getSkin();
-		Gdx.gl.glClearColor(.5f, .5F, 1F, 1F);
-		Table table = new Table(skin);
-		table.setBackground(skin.getDrawable("panel"));
-		Label lab = new Label(getClass().getSimpleName(), skin);
-		lab.setColor(Color.RED);
-		table.add(lab);
-		Container cont = new Container(table);
-		cont.setFillParent(true);
-		view = cont;
+	protected Actor builUI(Skin skin, I18N i18n) {
+
+		DropDown dropDown = new DropDown(skin);
+		dropDown.setItems(new Label("123", skin), new Label("456", skin));
+
+		return dropDown;
 	}
 
-	@Override
-	public void release(Controller controller) {
-
+	public static void main(String[] args) {
+		new LwjglApplication(new DropDownTest(), "Drop Down test", 1000, 600);
 	}
-
-	@Override
-	public Actor getView(Object... args) {
-		return view;
-	}
-
 }

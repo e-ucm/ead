@@ -384,12 +384,12 @@
         </profile>
         <!-- This profile generates editor-android apk -->
         <profile>
-            <id>editor-android</id>
+            <id>mockup-android</id>
             <modules>
                 <module>engine/schema</module>
                 <module>engine/core</module>
-                <module>editor/core</module>
-                <module>editor/android/</module>
+                <module>editor/mockup/core</module>
+                <module>editor/mockup/android/</module>
             </modules>
         </profile>
     </profiles>
