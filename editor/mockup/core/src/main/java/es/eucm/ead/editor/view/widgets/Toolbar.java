@@ -34,44 +34,26 @@
  *      You should have received a copy of the GNU Lesser General Public License
  *      along with eAdventure.  If not, see <http://www.gnu.org/licenses/>.
  */
-package es.eucm.ead.editor.view.builders;
+package es.eucm.ead.editor.view.widgets;
 
-import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.graphics.Color;
-import com.badlogic.gdx.scenes.scene2d.Actor;
-import com.badlogic.gdx.scenes.scene2d.ui.Container;
-import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
+import com.badlogic.gdx.scenes.scene2d.utils.Drawable;
 
-import es.eucm.ead.editor.control.Controller;
+public class Toolbar extends Table {
 
-public class HomeView implements ViewBuilder {
-
-	private Actor view;
-
-	@Override
-	public void initialize(Controller controller) {
-		Skin skin = controller.getApplicationAssets().getSkin();
-		Gdx.gl.glClearColor(.5f, .5F, 1F, 1F);
-		Table table = new Table(skin);
-		table.setBackground(skin.getDrawable("panel"));
-		Label lab = new Label(getClass().getSimpleName(), skin);
-		lab.setColor(Color.RED);
-		table.add(lab);
-		Container cont = new Container(table);
-		cont.setFillParent(true);
-		view = cont;
+	public Toolbar(Skin skin) {
+		this(skin, "default");
 	}
 
-	@Override
-	public void release(Controller controller) {
-
+	public Toolbar(Skin skin, String style) {
+		super(skin);
+		setBackground(skin.get(style, ToolbarStyle.class).background);
 	}
 
-	@Override
-	public Actor getView(Object... args) {
-		return view;
-	}
+	public static class ToolbarStyle {
 
+		private Drawable background;
+
+	}
 }
