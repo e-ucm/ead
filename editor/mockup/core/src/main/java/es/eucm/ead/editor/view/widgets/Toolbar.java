@@ -36,9 +36,11 @@
  */
 package es.eucm.ead.editor.view.widgets;
 
+import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.scenes.scene2d.utils.Drawable;
+import com.esotericsoftware.tablelayout.Cell;
 
 public class Toolbar extends Table {
 
@@ -49,6 +51,11 @@ public class Toolbar extends Table {
 	public Toolbar(Skin skin, String style) {
 		super(skin);
 		setBackground(skin.get(style, ToolbarStyle.class).background);
+	}
+
+	public Cell addInNewRow(Actor actor) {
+		row();
+		return add(actor);
 	}
 
 	public static class ToolbarStyle {

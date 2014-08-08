@@ -38,6 +38,7 @@ package es.eucm.ead.editor.editorui;
 
 import com.badlogic.gdx.backends.lwjgl.LwjglApplication;
 import com.badlogic.gdx.scenes.scene2d.Actor;
+import com.badlogic.gdx.scenes.scene2d.ui.Container;
 import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 
@@ -49,10 +50,15 @@ public class DropDownTest extends MockupUITest {
 	@Override
 	protected Actor builUI(Skin skin, I18N i18n) {
 
+		Container container = new Container();
+
 		DropDown dropDown = new DropDown(skin);
 		dropDown.setItems(new Label("123", skin), new Label("456", skin));
 
-		return dropDown;
+		container.setWidget(dropDown);
+		container.setFillParent(true);
+
+		return container;
 	}
 
 	public static void main(String[] args) {
