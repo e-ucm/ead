@@ -5,6 +5,12 @@
 		}
 	},
 	com.badlogic.gdx.graphics.Color: {
+		transparent: {
+            a: 0,
+            r: 0,
+            g: 0,
+            b: 0
+        },
 		white: { 
 			r: 1, 
 			g: 1, 
@@ -16,19 +22,44 @@
 			g: 0, 
 			b: 0,
 			a: 1 
-		}
+		},
+		gray: {
+            r: 0.5,
+            g: 0.5,
+            b: 0.5,
+            a: 1
+        }
 	},
 	com.badlogic.gdx.scenes.scene2d.ui.Skin$TintedDrawable: {
     	white-bg: { 
     		name: panel, 
     		color: white
+    	},
+    	transparent-bg: { 
+    		name: blank, 
+    		color: transparent
     	}
 	},
 	com.badlogic.gdx.scenes.scene2d.ui.ScrollPane$ScrollPaneStyle: {
 		default: { 
-			background: scroll_opaque,
-			hScrollKnob: scroll_horizontal_knob, 
-			vScrollKnob: scroll_vertical_knob
+			background: transparent-bg,
+			hScrollKnob: scroll_horizontal, 
+			vScrollKnob: scroll_vertical
+		},
+		white: { 
+			background: panel,
+			hScrollKnob: scroll_horizontal, 
+			vScrollKnob: scroll_vertical
+		},
+		white_down: {
+			background: dropdown_to_down,
+			hScrollKnob: scroll_horizontal, 
+			vScrollKnob: scroll_vertical
+		},
+		white_up: {
+			background: dropdown_to_up,
+			hScrollKnob: scroll_horizontal, 
+			vScrollKnob: scroll_vertical
 		}
 	},
 	com.badlogic.gdx.scenes.scene2d.ui.Label$LabelStyle: {
@@ -37,17 +68,198 @@
 			fontColor: black
 		}
 	},
-	es.eucm.ead.editor.view.widgets.Toolbar$ToolbarStyle: {
+	com.badlogic.gdx.scenes.scene2d.ui.Button$ButtonStyle: {
 		default: { 
-			background: panel
+			up: transparent-bg, 
+			down: transparent-bg, 
+			over: transparent-bg, 
+			disabled: transparent-bg
+		},
+		white: {
+			up: button_normal, 
+			down: button_pressed, 
+			over: button_normal, 
+			disabled: button_disabled
 		}
 	},
-	es.eucm.ead.editor.view.widgets.DropDown$DropDownStyle: {
+	com.badlogic.gdx.scenes.scene2d.ui.TextButton$TextButtonStyle: {
+		default: { 
+			up: transparent-bg, 
+			down: transparent-bg,  
+			disabled: transparent-bg,
+			disabledFontColor: gray,
+            font: default-font,
+            fontColor: black
+		},
+		white: {
+			up: button_normal, 
+			down: button_pressed,  
+			disabled: button_disabled,
+			disabledFontColor: gray,
+            font: default-font,
+            fontColor: black
+		}
+	},
+	com.badlogic.gdx.scenes.scene2d.ui.CheckBox$CheckBoxStyle: {
+		default: { 
+			font: default-font, 
+			fontColor: black, 
+			downFontColor: black, 
+			overFontColor: black, 
+			checkedFontColor: black, 
+			checkedOverFontColor: black, 
+			disabledFontColor: gray, 
+			checkboxOn: button_check_on, 
+			checkboxOff: button_check_off, 
+			checkboxOver: button_check_off_focused
+		},
+		default-radio: {  
+			font: default-font, 
+			fontColor: black, 
+			downFontColor: black, 
+			overFontColor: black, 
+			checkedFontColor: black, 
+			checkedOverFontColor: black, 
+			disabledFontColor: gray, 
+			checkboxOn: button_radio_on, 
+			checkboxOff: button_radio_off,
+			checkboxOver: button_radio_off_focused
+		}
+	},
+	com.badlogic.gdx.scenes.scene2d.ui.List$ListStyle: {
+		default: {
+            font: default-font,
+            fontColorSelected: black,
+            fontColorUnselected: black,
+            selection: transparent-bg,
+            background: transparent-bg
+        }
+	},
+	com.badlogic.gdx.scenes.scene2d.ui.SelectBox$SelectBoxStyle: {
 		default: {
 			background: spinner_default, 
 			backgroundOver: spinner_focused, 
 			backgroundOpen: spinner_pressed, 
-			scrollStyle: default
+			font: default-font, 
+			fontColor: black,
+			scrollStyle: white,
+			listStyle: default
 		}
+	},
+	com.badlogic.gdx.scenes.scene2d.ui.TextField$TextFieldStyle: {
+		default: { 
+			selection: textfield_selection, 
+			background: textfield_default, 
+			focusedBackground: textfield_focused, 
+			disabledBackground: textfield_disabled, 
+			font: default-font, 
+			fontColor: black, 
+			focusedFontColor: black, 
+			disabledFontColor: black, 
+			cursor: textfield_cursor, 
+			messageFont: default-font, 
+			messageFontColor: black 
+		}
+	},
+	com.badlogic.gdx.scenes.scene2d.ui.Slider$SliderStyle: {
+		white-horizontal: { 
+			background: scrubber_track, 
+			knob: scrubber_control, 
+			knobBefore: scrubber_before
+		},
+		white-vertical: { 
+			background: scrubber_vertical_track, 
+			knob: scrubber_control,
+			knobBefore: scrubber_vertical_before
+		}
+	},
+	es.eucm.ead.editor.view.widgets.IconButton$IconButtonStyle: {
+		default: { 
+			up: transparent-bg, 
+			down: button_pressed, 
+			over: transparent-bg, 
+			disabled: transparent-bg,  
+			disabledImageColor: black,
+            enabledImageColor: white
+		},
+		white_union: { 
+			up: nav_button_up, 
+			down: nav_button_down, 
+			over: nav_button_up, 
+			disabled: nav_button_up,  
+			disabledImageColor: black,
+            enabledImageColor: white
+		}, 
+		white_center: {
+			up: dropdown_center, 
+			down: dropdown_center, 
+			over: dropdown_center, 
+			disabled: dropdown_center,  
+			disabledImageColor: black,
+            enabledImageColor: white
+		},
+		white_right: {
+			up: dropdown_right, 
+			down: dropdown_right, 
+			over: dropdown_right, 
+			disabled: dropdown_right,  
+			disabledImageColor: black,
+            enabledImageColor: white
+		},
+		white_left: {
+			up: dropdown_left, 
+			down: dropdown_left, 
+			over: dropdown_left, 
+			disabled: dropdown_left,  
+			disabledImageColor: black,
+            enabledImageColor: white
+		}
+	},
+	es.eucm.ead.editor.view.widgets.Toolbar$ToolbarStyle: {
+		default: { 
+			background: transparent-bg
+		}, 
+		white_top: {
+			background: toolbar_top
+		},
+		white_left: {
+			background: toolbar_left
+		},
+		white_bottom: {
+			background: bottom_bar
+		}
+	},
+	es.eucm.ead.editor.view.widgets.DropDown$DropDownStyle: {
+		default: {
+			background: transparent-bg, 
+			backgroundOver: transparent-bg, 
+			backgroundOpen: transparent-bg, 
+			scrollStyle: white
+		},
+		white: {
+			background: panel, 
+			backgroundOver: panel, 
+			backgroundOpen: dropdown_to_down, 
+			scrollStyle: white_up
+		},
+		white_center: {
+			background: dropdown_center, 
+			backgroundOver: dropdown_center, 
+			backgroundOpen: dropdown_center_to_down, 
+			scrollStyle: white_up
+		},
+		white_right: {
+			background: dropdown_right, 
+			backgroundOver: dropdown_right, 
+			backgroundOpen: dropdown_right_to_down, 
+			scrollStyle: white_up
+		},
+		white_left: {
+			background: dropdown_left, 
+			backgroundOver: dropdown_left, 
+			backgroundOpen: dropdown_left_to_down, 
+			scrollStyle: white_up
+		}
+		
 	}
 }
