@@ -49,7 +49,6 @@ import com.badlogic.gdx.scenes.scene2d.Group;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.InputListener;
 import com.badlogic.gdx.scenes.scene2d.Stage;
-import com.badlogic.gdx.scenes.scene2d.ui.Container;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.utils.UIUtils;
 import com.badlogic.gdx.utils.viewport.ExtendViewport;
@@ -111,10 +110,7 @@ public abstract class MockupUITest implements ApplicationListener {
 		platform.setBatch(stage.getSpriteBatch());
 		Gdx.input.setInputProcessor(stage);
 		ApplicationAssets assets = controller.getApplicationAssets();
-		Container container = new Container(builUI(assets.getSkin(),
-				assets.getI18N()));
-		container.setFillParent(true);
-		stage.getRoot().addActor(container);
+		stage.getRoot().addActor(builUI(assets.getSkin(), assets.getI18N()));
 
 		stage.addListener(new ShortcutListener());
 	}
