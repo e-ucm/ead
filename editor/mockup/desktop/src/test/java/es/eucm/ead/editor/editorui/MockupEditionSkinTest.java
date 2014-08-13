@@ -338,43 +338,48 @@ public class MockupEditionSkinTest extends MockupUITest {
 				0.92f * stage.getHeight());
 		leftPanel.setVisible(false);
 
-		// Multiple DropDowns
-		IconButton gateway = new IconButton("gateway_reverse80x80", 0, skin);
-		IconButton variables = new IconButton("variable80x80", 0, skin);
-		IconButton sound = new IconButton("sound80x80", 0, skin);
-		IconButton conversations = new IconButton("conversation80x80", 0, skin);
-		IconButton visibility = new IconButton("visibility80x80", 0, skin);
-		IconButton lock = new IconButton("lock80x80", 0, skin);
-		IconButton tween = new IconButton("tween80x80", 0, skin);
+		LinearLayout[] lists = new LinearLayout[2];
 
-		Array a = new Array();
-		a.add(gateway);
-		a.add(variables);
-		a.add(sound);
-		Array b = new Array();
-		b.add(visibility);
-		b.add(lock);
-		Array c = new Array();
-		c.add(tween);
-		c.add(conversations);
+		for (int i = 0; i < lists.length; ++i) {
+			// Multiple DropDowns
+			IconButton gateway = new IconButton("gateway_reverse80x80", 0, skin);
+			IconButton variables = new IconButton("variable80x80", 0, skin);
+			IconButton sound = new IconButton("sound80x80", 0, skin);
+			IconButton conversations = new IconButton("conversation80x80", 0,
+					skin);
+			IconButton visibility = new IconButton("visibility80x80", 0, skin);
+			IconButton lock = new IconButton("lock80x80", 0, skin);
+			IconButton tween = new IconButton("tween80x80", 0, skin);
 
-		LinearLayout list = new LinearLayout(true);
+			Array a = new Array();
+			a.add(gateway);
+			a.add(variables);
+			a.add(sound);
+			Array b = new Array();
+			b.add(visibility);
+			b.add(lock);
+			Array c = new Array();
+			c.add(tween);
+			c.add(conversations);
 
-		DropDown drop1 = new DropDown(skin, "white_left");
-		drop1.setItems(a);
-		DropDown drop2 = new DropDown(skin, "white_center");
-		drop2.setItems(b);
-		DropDown drop3 = new DropDown(skin, "white_right");
-		drop3.setItems(c);
+			LinearLayout list = new LinearLayout(true);
 
-		list.add(drop1);
-		list.add(drop2);
-		list.add(new IconButton("lock80x80", 0, skin, "white_center"));
-		list.add(drop3);
+			DropDown drop1 = new DropDown(skin, "white_left");
+			drop1.setItems(a);
+			DropDown drop2 = new DropDown(skin, "white_center");
+			drop2.setItems(b);
+			DropDown drop3 = new DropDown(skin, "white_right");
+			drop3.setItems(c);
 
-		leftPanel.add(list).padBottom(NORMAL_PAD);
+			list.add(drop1);
+			list.add(drop2);
+			list.add(new IconButton("lock80x80", 0, skin, "white_center"));
+			list.add(drop3);
+			lists[i] = list;
+		}
+
+		leftPanel.add(lists[0]).padBottom(NORMAL_PAD);
 		leftPanel.row();
-
 		// SelectBox
 		SelectBox<String> selectBox = new SelectBox<String>(skin);
 		Array array = new Array();
@@ -392,6 +397,8 @@ public class MockupEditionSkinTest extends MockupUITest {
 
 		leftPanel.add(text).expandX().fill().padBottom(NORMAL_PAD);
 		leftPanel.row();
+		leftPanel.add(lists[1]).padBottom(NORMAL_PAD);
+		leftPanel.bottom();
 	}
 
 	private IconButton createNavigationButton() {

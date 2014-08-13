@@ -49,42 +49,37 @@ import com.badlogic.gdx.scenes.scene2d.InputListener;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.Touchable;
 import com.badlogic.gdx.scenes.scene2d.actions.Actions;
+import com.badlogic.gdx.scenes.scene2d.ui.Container;
 import com.badlogic.gdx.scenes.scene2d.ui.List.ListStyle;
-import com.badlogic.gdx.scenes.scene2d.ui.ScrollPane;
-import com.badlogic.gdx.scenes.scene2d.ui.ScrollPane.ScrollPaneStyle;
-import com.badlogic.gdx.scenes.scene2d.ui.SelectBox.SelectBoxStyle;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
-import com.badlogic.gdx.scenes.scene2d.ui.WidgetGroup;
+import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener.ChangeEvent;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.scenes.scene2d.utils.Disableable;
 import com.badlogic.gdx.scenes.scene2d.utils.Drawable;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.Pools;
-import com.badlogic.gdx.utils.SnapshotArray;
-
-import es.eucm.ead.editor.view.widgets.layouts.LinearLayout;
+import com.esotericsoftware.tablelayout.Cell;
 
 /**
- * A select box (aka a drop-down list) allows a user to choose one of a number
- * of values from a list. When inactive, the selected value is displayed. When
- * activated, it shows the list of values that may be selected.
+ * A drop down allows a user to choose one of a number of values from a list.
+ * When inactive, the selected value is displayed. When activated, it shows the
+ * list of values that may be selected.
  * <p>
- * {@link ChangeEvent} is fired when the selectbox selection changes.
+ * {@link ChangeEvent} is fired when the drop down selection changes.
  * <p>
- * The preferred size of the select box is determined by the maximum text bounds
- * of the items and the size of the {@link SelectBoxStyle#background}.
+ * The preferred size of the select box is determined by the maximum bounds of
+ * the items and the size of the {@link DropDownStyle#background}.
  */
-public class DropDown extends WidgetGroup implements Disableable {
-	static final Vector2 tmpCoords = new Vector2();
+public class DropDown extends Container implements Disableable {
+	private static final Vector2 tmpCoords = new Vector2();
 
-	DropDownStyle style;
-	ListScroll scroll;
-	Actor previousScrollFocus;
-	Actor previousSelection;
-	private float prefWidth, prefHeight;
 	private ClickListener clickListener;
-	boolean disabled;
+	private Actor previousScrollFocus;
+	private DropDownStyle style;
+	private ListScroll scroll;
+	private boolean disabled;
+	private Actor selection;
 
 	public DropDown(Skin skin) {
 		this(skin.get(DropDownStyle.class));
@@ -96,8 +91,9 @@ public class DropDown extends WidgetGroup implements Disableable {
 
 	public DropDown(DropDownStyle style) {
 		setStyle(style);
+		setBackground(style.background);
 		scroll = new ListScroll();
-		setSize(getPrefWidth(), getPrefHeight());
+		scroll.setBackground(style.listBackgroundDown);
 
 		addListener(clickListener = new ClickListener() {
 			public boolean touchDown(InputEvent event, float x, float y,
@@ -120,8 +116,8 @@ public class DropDown extends WidgetGroup implements Disableable {
 	}
 
 	/**
-	 * Returns the select box's style. Modifying the returned style may not have
-	 * an effect until {@link #setStyle(SelectBoxStyle)} is called.
+	 * Returns the drop down's style. Modifying the returned style may not have
+	 * an effect until {@link #setStyle(DropDowntyle)} is called.
 	 */
 	public DropDownStyle getStyle() {
 		return style;
@@ -131,100 +127,80 @@ public class DropDown extends WidgetGroup implements Disableable {
 		if (newItems == null)
 			throw new IllegalArgumentException("newItems cannot be null.");
 
-		scroll.list.clearChildren();
-		for (Actor item : newItems) {
-			scroll.list.add(item);
+		scroll.clearChildren();
+		for (int i = 1; i < newItems.length; ++i) {
+			addToList(newItems[i]);
 		}
 
 		if (newItems.length > 0) {
 			setSelected(newItems[0]);
 		}
 
-		invalidateHierarchy();
 	}
 
 	public void setItems(Array<Actor> newItems) {
 		if (newItems == null)
 			throw new IllegalArgumentException("newItems cannot be null.");
 
-		scroll.list.clearChildren();
-		for (Actor item : newItems) {
-			scroll.list.add(item);
+		scroll.clearChildren();
+		for (int i = 1; i < newItems.size; ++i) {
+			addToList(newItems.get(i));
 		}
 
 		if (newItems.size > 0) {
 			setSelected(newItems.first());
 		}
 
-		invalidateHierarchy();
 	}
 
 	public Array<Actor> getItems() {
-		return scroll.list.getChildren();
-	}
-
-	public void layout() {
-		Drawable bg = style.background;
-
-		prefHeight = Math.max(bg.getTopHeight() + bg.getBottomHeight()
-				+ scroll.list.getChildrenMaxHeight(), bg.getMinHeight());
-
-		float maxItemWidth = scroll.list.getChildrenMaxWidth();
-
-		prefWidth = bg.getLeftWidth() + bg.getRightWidth() + maxItemWidth;
-
-		ScrollPaneStyle scrollStyle = style.scrollStyle;
-		prefWidth = Math
-				.max(prefWidth,
-						maxItemWidth
-								+ scrollStyle.background.getLeftWidth()
-								+ scrollStyle.background.getRightWidth()
-								+ Math.max(
-										style.scrollStyle.vScroll != null ? style.scrollStyle.vScroll
-												.getMinWidth() : 0,
-										style.scrollStyle.vScrollKnob != null ? style.scrollStyle.vScrollKnob
-												.getMinWidth() : 0));
+		return scroll.getChildren();
 	}
 
 	@Override
-	protected void drawChildren(Batch batch, float parentAlpha) {
+	protected void drawBackground(Batch batch, float parentAlpha, float x,
+			float y) {
 		Drawable background;
-		if (disabled && style.backgroundDisabled != null)
+		if (disabled && style.backgroundDisabled != null) {
 			background = style.backgroundDisabled;
-		else if (scroll.hasParent() && style.backgroundOpen != null)
-			background = style.backgroundOpen;
-		else if (clickListener.isOver() && style.backgroundOver != null)
+		} else if (scroll.hasParent()) {
+			if (scroll.getBackground() == style.listBackgroundUp) {
+				background = style.backgroundOpenUp;
+			} else {
+				background = style.backgroundOpenDown;
+			}
+		} else if (clickListener.isOver() && style.backgroundOver != null) {
 			background = style.backgroundOver;
-		else
+		} else {
 			background = style.background;
-
-		background.draw(batch, 0f, 0f, getWidth(), getHeight());
-		super.drawChildren(batch, parentAlpha);
+		}
+		if (background != null) {
+			setBackground(background);
+		}
+		super.drawBackground(batch, parentAlpha, x, y);
 	}
 
-	/** Returns the selected item, or null. */
+	/** Returns the selected actor, or null. */
 	public Actor getSelected() {
-		return null;
+		return selection;
 	}
 
 	/**
 	 * Sets the selection
 	 */
-	public void setSelected(Actor item) {
-		if (previousSelection != null) {
-			scroll.list.add(previousSelection);
+	private void setSelected(Actor item) {
+		Cell cell = scroll.getCell(item);
+		if (selection != null) {
+			cell.setWidget(selection);
 		}
-		previousSelection = item;
-		addActor(item);
+		selection = item;
+		setWidget(item);
+		invalidateHierarchy();
 	}
 
-	/**
-	 * @return The index of the first selected item. The top item has an index
-	 *         of 0. Nothing selected has an index of -1.
-	 */
-	public int getSelectedIndex() {
-		SnapshotArray<Actor> children = scroll.list.getChildren();
-		return -1;
+	private void addToList(Actor actor) {
+		scroll.add(actor);
+		scroll.row();
 	}
 
 	public void setDisabled(boolean disabled) {
@@ -233,25 +209,15 @@ public class DropDown extends WidgetGroup implements Disableable {
 		this.disabled = disabled;
 	}
 
-	public float getPrefWidth() {
-		validate();
-		return prefWidth;
-	}
-
-	public float getPrefHeight() {
-		validate();
-		return prefHeight;
-	}
-
 	public void showList() {
-		scroll.list.setTouchable(Touchable.enabled);
+		scroll.setTouchable(Touchable.enabled);
 		scroll.show(getStage());
 	}
 
 	public void hideList() {
 		if (!scroll.hasParent())
 			return;
-		scroll.list.setTouchable(Touchable.disabled);
+		scroll.setTouchable(Touchable.disabled);
 		Stage stage = scroll.getStage();
 		if (stage != null) {
 			if (previousScrollFocus != null
@@ -261,48 +227,37 @@ public class DropDown extends WidgetGroup implements Disableable {
 			if (actor == null || actor.isDescendantOf(scroll))
 				stage.setScrollFocus(previousScrollFocus);
 		}
-		scroll.addAction(sequence(fadeOut(0.15f, Interpolation.fade),
+		scroll.addAction(sequence(fadeOut(0.2f, Interpolation.fade),
 				Actions.removeActor()));
 	}
 
 	/** Returns the list shown when the select box is open. */
-	public LinearLayout getList() {
-		return scroll.list;
-	}
-
-	/**
-	 * Returns the scroll pane containing the list that is shown when the select
-	 * box is open.
-	 */
-	public ScrollPane getScrollPane() {
+	public Table getList() {
 		return scroll;
 	}
 
-	private class ListScroll extends ScrollPane {
-		final LinearLayout list;
-		final Vector2 screenCoords = new Vector2();
+	private class ListScroll extends Table {
 
 		public ListScroll() {
-			super(null, style.scrollStyle);
-
-			setOverscroll(false, false);
-			setFadeScrollBars(false);
-
-			list = new LinearLayout(false);
-			setWidget(list);
+			defaults().uniform();
 
 			addListener(new InputListener() {
 				public boolean touchDown(InputEvent event, float x, float y,
 						int pointer, int button) {
-					if (event.getTarget() == list)
-						return true;
+					Actor target = event.getTarget();
+					if (target != null) {
+						Cell cell = getCell(target);
+						if (cell != null) {
+							setSelected(target);
+						}
+					}
 					hideList();
 					return false;
 				}
 
 				public void touchUp(InputEvent event, float x, float y,
 						int pointer, int button) {
-					if (hit(x, y, true) == list) {
+					if (hit(x, y, true) == ListScroll.this) {
 						ChangeEvent changeEvent = Pools
 								.obtain(ChangeEvent.class);
 						DropDown.this.fire(changeEvent);
@@ -316,14 +271,16 @@ public class DropDown extends WidgetGroup implements Disableable {
 		public void show(Stage stage) {
 			stage.addActor(this);
 
-			DropDown.this.localToStageCoordinates(tmpCoords.set(0, 0));
-			screenCoords.set(tmpCoords);
+			float prefWidth = getPrefWidth();
+			DropDown.this.localToStageCoordinates(tmpCoords.set(
+					(DropDown.this.getWidth() - prefWidth) * .5f, 0));
 
-			float height = list.getHeight();
+			float height = getPrefHeight();
 			Drawable background = getStyle().background;
-			if (background != null)
+			if (background != null) {
 				height += background.getTopHeight()
 						+ background.getBottomHeight();
+			}
 
 			float heightBelow = tmpCoords.y;
 			float heightAbove = stage.getCamera().viewportHeight - tmpCoords.y
@@ -333,23 +290,22 @@ public class DropDown extends WidgetGroup implements Disableable {
 				if (heightAbove > heightBelow) {
 					below = false;
 					height = Math.min(height, heightAbove);
-				} else
+				} else {
 					height = heightBelow;
+				}
 			}
 
-			if (below)
-				setY(tmpCoords.y - height);
-			else
-				setY(tmpCoords.y + DropDown.this.getHeight());
-			setX(tmpCoords.x);
-			setWidth(DropDown.this.getWidth());
-			setHeight(height);
-
+			if (below) {
+				setY(Math.round(tmpCoords.y - height));
+				setBackground(style.listBackgroundDown);
+			} else {
+				setY(Math.round(tmpCoords.y + DropDown.this.getHeight()));
+				setBackground(style.listBackgroundUp);
+			}
+			setX(Math.round(tmpCoords.x));
+			setWidth(Math.round(prefWidth));
+			setHeight(Math.round(height));
 			validate();
-			// TODO scroll to center
-			// scrollToCenter(0, list.getHeight() - getSelectedIndex()
-			// * itemHeight - itemHeight / 2, 0, 0);
-			// updateVisualScroll();
 
 			clearActions();
 			getColor().a = 0;
@@ -357,8 +313,9 @@ public class DropDown extends WidgetGroup implements Disableable {
 
 			previousScrollFocus = null;
 			Actor actor = stage.getScrollFocus();
-			if (actor != null && !actor.isDescendantOf(this))
+			if (actor != null && !actor.isDescendantOf(this)) {
 				previousScrollFocus = actor;
+			}
 
 			stage.setScrollFocus(this);
 		}
@@ -368,13 +325,6 @@ public class DropDown extends WidgetGroup implements Disableable {
 			Actor actor = super.hit(x, y, touchable);
 			return actor != null ? actor : this;
 		}
-
-		public void act(float delta) {
-			super.act(delta);
-			DropDown.this.localToStageCoordinates(tmpCoords.set(0, 0));
-			if (tmpCoords.x != screenCoords.x || tmpCoords.y != screenCoords.y)
-				hideList();
-		}
 	}
 
 	/**
@@ -382,27 +332,34 @@ public class DropDown extends WidgetGroup implements Disableable {
 	 * 
 	 */
 	static public class DropDownStyle {
+
 		/** Optional. */
 		public Drawable background;
-		public ScrollPaneStyle scrollStyle;
+
+		public Drawable listBackgroundUp, listBackgroundDown,
+				backgroundOpenDown, backgroundOpenUp;
+
 		/** Optional. */
-		public Drawable backgroundOver, backgroundOpen, backgroundDisabled;
+		public Drawable backgroundOver, backgroundDisabled;
 
 		public DropDownStyle() {
 		}
 
-		public DropDownStyle(Drawable background, ScrollPaneStyle scrollStyle,
-				ListStyle listStyle) {
+		public DropDownStyle(Drawable background, Drawable listBackgroundUp,
+				Drawable listBackgroundDown, ListStyle listStyle) {
 			this.background = background;
-			this.scrollStyle = scrollStyle;
+			this.listBackgroundUp = listBackgroundUp;
+			this.listBackgroundDown = listBackgroundDown;
 		}
 
 		public DropDownStyle(DropDownStyle style) {
 			this.background = style.background;
 			this.backgroundOver = style.backgroundOver;
-			this.backgroundOpen = style.backgroundOpen;
+			this.backgroundOpenUp = style.backgroundOpenUp;
+			this.backgroundOpenDown = style.backgroundOpenDown;
 			this.backgroundDisabled = style.backgroundDisabled;
-			this.scrollStyle = new ScrollPaneStyle(style.scrollStyle);
+			this.listBackgroundUp = style.listBackgroundUp;
+			this.listBackgroundDown = style.listBackgroundDown;
 		}
 	}
 }
