@@ -36,35 +36,18 @@
  */
 package es.eucm.ead.editor;
 
-import java.io.InputStream;
-
+import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.Input.TextInputListener;
 import com.badlogic.gdx.backends.lwjgl.LwjglFrame;
-import com.badlogic.gdx.math.Vector2;
 
-import es.eucm.ead.editor.control.Controller;
-import es.eucm.ead.editor.control.Tracker;
-import es.eucm.ead.editor.platform.AbstractPlatform;
-import es.eucm.ead.editor.platform.Platform.FileChooserListener;
-import es.eucm.ead.engine.I18N;
-import es.eucm.network.requests.RequestHelper;
+import es.eucm.ead.editor.platform.MockupPlatform;
 
-public class MockupDesktopPlatform extends AbstractPlatform implements
-		FileChooserListener {
+public class MockupDesktopPlatform extends MockupPlatform {
 
 	private LwjglFrame frame;
 
 	public void setFrame(LwjglFrame frame) {
 		this.frame = frame;
-	}
-
-	@Override
-	public void askForFile(FileChooserListener listener) {
-
-	}
-
-	@Override
-	public void askForFolder(FileChooserListener listener) {
-
 	}
 
 	@Override
@@ -77,41 +60,23 @@ public class MockupDesktopPlatform extends AbstractPlatform implements
 		frame.setSize(width, height);
 	}
 
-	@Override
-	public Vector2 getSize() {
-		return null;
-	}
-
-	@Override
-	public Tracker createTracker(Controller controller) {
-		return new Tracker(controller);
-	}
-
-	@Override
-	public RequestHelper getRequestHelper() {
-		return null;
-	}
-
 	public LwjglFrame getFrame() {
 		return frame;
 	}
 
 	@Override
-	public void fileChosen(String path) {
+	public void askForFile(final FileChooserListener listener) {
+		Gdx.input.getTextInput(new TextInputListener() {
 
-	}
+			@Override
+			public void input(String text) {
+				listener.fileChosen(text);
+			}
 
-	@Override
-	public void editImage(I18N i18n, String image, FileChooserListener listener) {
-		// Nothing to do
-	}
+			@Override
+			public void canceled() {
+			}
 
-	/**
-	 * Determines the width and height of an image without loading it from disk.
-	 */
-	@Override
-	public es.eucm.ead.schema.data.Dimension getImageDimension(
-			InputStream imageInputStream) {
-		return null;
+		}, "File path!", "");
 	}
 }
