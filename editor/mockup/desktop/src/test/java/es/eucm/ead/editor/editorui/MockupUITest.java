@@ -40,7 +40,6 @@ import java.util.Map;
 
 import com.badlogic.gdx.Application;
 import com.badlogic.gdx.ApplicationListener;
-import com.badlogic.gdx.Files;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input.Keys;
 import com.badlogic.gdx.graphics.GL20;
@@ -56,6 +55,7 @@ import com.badlogic.gdx.utils.viewport.ExtendViewport;
 import es.eucm.ead.editor.MockupDesktopPlatform;
 import es.eucm.ead.editor.assets.ApplicationAssets;
 import es.eucm.ead.editor.control.Controller;
+import es.eucm.ead.editor.control.MockupController;
 import es.eucm.ead.editor.control.Selection;
 import es.eucm.ead.editor.control.actions.editor.Exit;
 import es.eucm.ead.editor.control.actions.editor.OpenGame;
@@ -99,13 +99,9 @@ public abstract class MockupUITest implements ApplicationListener {
 		Gdx.app.setLogLevel(Application.LOG_DEBUG);
 		Gdx.gl.glClearColor(.5f, .5f, 1f, 1f);
 		stage = new Stage(new ExtendViewport(1280f, 800f));
-		controller = new Controller(platform = new MockupDesktopPlatform(),
-				Gdx.files, stage.getRoot(), stage.getRoot()) {
-			@Override
-			protected ApplicationAssets createApplicationAssets(Files files) {
-				return new ApplicationAssets(files, "skins/mockup/skin");
-			}
-		};
+		controller = new MockupController(
+				platform = new MockupDesktopPlatform(), Gdx.files,
+				stage.getRoot());
 		controller.getCommands().pushStack();
 		platform.setBatch(stage.getSpriteBatch());
 		Gdx.input.setInputProcessor(stage);

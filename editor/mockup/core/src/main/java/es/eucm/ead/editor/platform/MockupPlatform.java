@@ -34,44 +34,58 @@
  *      You should have received a copy of the GNU Lesser General Public License
  *      along with eAdventure.  If not, see <http://www.gnu.org/licenses/>.
  */
-package es.eucm.ead.android;
+package es.eucm.ead.editor.platform;
 
-import com.badlogic.gdx.Gdx;
+import java.io.InputStream;
+
 import com.badlogic.gdx.math.Vector2;
-import com.badlogic.gdx.scenes.scene2d.Stage;
-import com.badlogic.gdx.utils.viewport.ExtendViewport;
 
-import es.eucm.ead.editor.EditorApplicationListener;
-import es.eucm.ead.editor.control.Controller;
-import es.eucm.ead.editor.control.actions.editor.ChangeView;
-import es.eucm.ead.editor.platform.Platform;
-import es.eucm.ead.editor.view.builders.HomeView;
+import es.eucm.ead.engine.I18N;
+import es.eucm.ead.schema.data.Dimension;
+import es.eucm.network.requests.RequestHelper;
 
-public class AndroidEditorApplicationListener extends EditorApplicationListener {
+public abstract class MockupPlatform extends AbstractPlatform {
 
-	public AndroidEditorApplicationListener(Platform platform) {
-		super(platform);
+	private final Vector2 screenDimensions = new Vector2(1280f, 800f);
+
+	@Override
+	public void askForFile(FileChooserListener listener) {
+
 	}
 
 	@Override
-	public void resize(int width, int height) {
-		super.stage.getViewport().update(width, height, true);
+	public void askForFolder(FileChooserListener listener) {
+
 	}
 
 	@Override
-	protected void initialize() {
-		controller.action(ChangeView.class, HomeView.class);
+	public void setTitle(String title) {
+
 	}
 
 	@Override
-	protected Stage createStage() {
-		final Vector2 viewport = super.platform.getSize();
-		return new Stage(new ExtendViewport(viewport.x, viewport.y));
+	public void editImage(I18N i18n, String image, FileChooserListener listener) {
+
 	}
 
 	@Override
-	protected Controller createController() {
-		return new AndroidController(this.platform, Gdx.files,
-				super.stage.getRoot());
+	public void setSize(int width, int height) {
+
 	}
+
+	@Override
+	public Vector2 getSize() {
+		return screenDimensions;
+	}
+
+	@Override
+	public RequestHelper getRequestHelper() {
+		return null;
+	}
+
+	@Override
+	public Dimension getImageDimension(InputStream imageInputStream) {
+		return null;
+	}
+
 }
