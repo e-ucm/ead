@@ -34,18 +34,16 @@
  *      You should have received a copy of the GNU Lesser General Public License
  *      along with eAdventure.  If not, see <http://www.gnu.org/licenses/>.
  */
-package es.eucm.ead.android;
+package es.eucm.ead.editor.control;
 
 import com.badlogic.gdx.scenes.scene2d.Group;
 
-import es.eucm.ead.editor.control.Controller;
-import es.eucm.ead.editor.control.Controller.BackListener;
-import es.eucm.ead.editor.control.Views;
+import es.eucm.ead.editor.control.MockupController.BackListener;
 
-public class AndroidViews extends Views implements BackListener {
+public class MockupViews extends Views implements BackListener {
 
-	public AndroidViews(Controller controller, Group rootContainer) {
-		super(controller, rootContainer, rootContainer);
+	public MockupViews(Controller controller, Group viewsContainer) {
+		super(controller, viewsContainer, viewsContainer);
 	}
 
 	@Override
@@ -56,4 +54,5 @@ public class AndroidViews extends Views implements BackListener {
 			back();
 		}
 	}
+
 }

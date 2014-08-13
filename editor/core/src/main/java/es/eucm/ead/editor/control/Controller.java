@@ -187,7 +187,7 @@ public class Controller {
 	/**
 	 * Process preferences concerning the controller
 	 */
-	private void loadPreferences() {
+	protected void loadPreferences() {
 		getApplicationAssets().getI18N().setLang(
 				preferences.getString(Preferences.EDITOR_LANGUAGE));
 	}
@@ -392,12 +392,5 @@ public class Controller {
 		applicationAssets.update();
 		backgroundExecutor.act();
 		engine.update(delta);
-	}
-
-	public static interface BackListener {
-		/**
-		 * Called when the Back key was pressed in Android.
-		 */
-		void onBackPressed();
 	}
 }

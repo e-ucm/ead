@@ -36,36 +36,42 @@
  */
 package es.eucm.ead.editor;
 
-import javax.swing.JFrame;
+import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.math.Vector2;
+import com.badlogic.gdx.scenes.scene2d.Stage;
+import com.badlogic.gdx.utils.viewport.ExtendViewport;
 
-import com.badlogic.gdx.backends.lwjgl.LwjglApplicationConfiguration;
-import com.badlogic.gdx.backends.lwjgl.LwjglFrame;
+import es.eucm.ead.editor.control.Controller;
+import es.eucm.ead.editor.control.MockupController;
+import es.eucm.ead.editor.control.actions.editor.ChangeView;
+import es.eucm.ead.editor.platform.Platform;
+import es.eucm.ead.editor.view.builders.HomeView;
 
-import es.eucm.ead.engine.utils.SwingEDTUtils;
+public class MockupApplicationListener extends EditorApplicationListener {
 
-public class MockupMain {
+	public MockupApplicationListener(Platform platform) {
+		super(platform);
+	}
 
-	public static void main(String[] args) {
+	@Override
+	public void resize(int width, int height) {
+		super.stage.getViewport().update(width, height, true);
+	}
 
-		LwjglApplicationConfiguration config = new LwjglApplicationConfiguration();
-		config.width = 854;
-		config.height = 480;
-		config.forceExit = true;
-		config.title = "eAdventure Mockup";
+	@Override
+	protected void initialize() {
+		controller.action(ChangeView.class, HomeView.class);
+	}
 
-		MockupDesktopPlatform platform = new MockupDesktopPlatform();
-		final LwjglFrame frame = new LwjglFrame(new MockupApplicationListener(
-				platform), config);
-		frame.setDefaultCloseOperation(JFrame.HIDE_ON_CLOSE);
-		platform.setFrame(frame);
+	@Override
+	protected Stage createStage() {
+		final Vector2 viewport = super.platform.getSize();
+		return new Stage(new ExtendViewport(viewport.x, viewport.y));
+	}
 
-		// set visible calls create()
-		SwingEDTUtils.invokeLater(new Runnable() {
-
-			@Override
-			public void run() {
-				frame.setVisible(true);
-			}
-		});
+	@Override
+	protected Controller createController() {
+		return new MockupController(this.platform, Gdx.files,
+				super.stage.getRoot());
 	}
 }

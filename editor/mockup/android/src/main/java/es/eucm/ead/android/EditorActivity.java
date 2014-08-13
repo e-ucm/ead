@@ -45,6 +45,8 @@ import android.os.Bundle;
 import com.badlogic.gdx.backends.android.AndroidApplication;
 import com.badlogic.gdx.backends.android.AndroidApplicationConfiguration;
 
+import es.eucm.ead.editor.MockupApplicationListener;
+
 public class EditorActivity extends AndroidApplication {
 
 	private Map<Integer, ActivityResultListener> listeners;
@@ -61,8 +63,7 @@ public class EditorActivity extends AndroidApplication {
 		config.useCompass = false;
 
 		this.listeners = new HashMap<Integer, ActivityResultListener>();
-		initialize(new AndroidEditorApplicationListener(new AndroidPlatform()),
-				config);
+		initialize(new MockupApplicationListener(new AndroidPlatform()), config);
 	}
 
 	public void startActivityForResult(Intent intent, int requestCode,
