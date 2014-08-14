@@ -215,7 +215,6 @@ public class MockupEditionSkinTest extends MockupUITest {
 				"You can create your background scene instantly \n Take a Picture",
 				skin);
 		photoText.setAlignment(Align.center);
-		photoText.setFontScale(0.7f);
 
 		top.add(photo);
 		top.add(photoText);
@@ -225,7 +224,6 @@ public class MockupEditionSkinTest extends MockupUITest {
 		Label paintText = new Label(
 				"You can paint your first image \n with your fingers", skin);
 		paintText.setAlignment(Align.center);
-		paintText.setFontScale(0.4f);
 		paintT.add(paint);
 		paintT.row();
 		paintT.add(paintText).pad(0, TEXT_PAD, 0, TEXT_PAD);
@@ -236,7 +234,6 @@ public class MockupEditionSkinTest extends MockupUITest {
 				"Without ideas? \n You can find items shared by other \n in the repository",
 				skin);
 		repoText.setAlignment(Align.center);
-		repoText.setFontScale(0.4f);
 		repoT.add(repo);
 		repoT.row();
 		repoT.add(repoText).pad(0, TEXT_PAD, 0, TEXT_PAD);
@@ -247,7 +244,6 @@ public class MockupEditionSkinTest extends MockupUITest {
 				"Do you have the image that wanted? \n Add the image from \n your phone's gallery",
 				skin);
 		androidText.setAlignment(Align.center);
-		androidText.setFontScale(0.4f);
 		androidT.add(android);
 		androidT.row();
 		androidT.add(androidText).pad(0, TEXT_PAD, 0, TEXT_PAD);
