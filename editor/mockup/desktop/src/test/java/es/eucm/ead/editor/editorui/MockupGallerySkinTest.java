@@ -39,21 +39,17 @@ package es.eucm.ead.editor.editorui;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.backends.lwjgl.LwjglApplication;
 import com.badlogic.gdx.scenes.scene2d.Actor;
-import com.badlogic.gdx.scenes.scene2d.InputEvent;
-import com.badlogic.gdx.scenes.scene2d.ui.ButtonGroup;
-import com.badlogic.gdx.scenes.scene2d.ui.CheckBox;
 import com.badlogic.gdx.scenes.scene2d.ui.Image;
 import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.scenes.scene2d.ui.SelectBox;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.scenes.scene2d.utils.Align;
-import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.utils.Array;
 
-import es.eucm.ead.editor.view.widgets.HiddenPanel;
 import es.eucm.ead.editor.view.widgets.IconButton;
 import es.eucm.ead.editor.view.widgets.Toolbar;
+import es.eucm.ead.editor.view.widgets.iconwithpanel.Settings;
 import es.eucm.ead.editor.view.widgets.layouts.LinearLayout;
 import es.eucm.ead.engine.I18N;
 
@@ -69,8 +65,6 @@ public class MockupGallerySkinTest extends MockupUITest {
 
 	private Toolbar topBar;
 
-	private HiddenPanel settingsPanel;
-
 	private Table gallery;
 
 	@Override
@@ -84,13 +78,10 @@ public class MockupGallerySkinTest extends MockupUITest {
 		root.setFillParent(true);
 
 		createTopToolbar();
-
-		createSettingsPanel();
 		createGallegyTable();
 
 		LinearLayout bot = new LinearLayout(true);
 		bot.add(gallery).expand(true, true);
-		bot.add(settingsPanel).expandY();
 
 		root.add(topBar).expandX();
 		root.add(bot).expand(true, true);
@@ -129,40 +120,11 @@ public class MockupGallerySkinTest extends MockupUITest {
 		topBar.add(selectBox).size(icon_size * 4, icon_size)
 				.padRight(NORMAL_PAD);
 
-		IconButton settings = new IconButton("settings80x80", 0, skin);
-		settings.addListener(new ClickListener() {
-			@Override
-			public void clicked(InputEvent event, float x, float y) {
-				if (!settingsPanel.isVisible()) {
-					settingsPanel.show(topBar.getStage());
-				}
-			}
-		});
+		Settings settings = new Settings(controller);
+		settings.getPanel().addTouchableActor(topBar);
+
 		topBar.add(settings).size(icon_size).padRight(SMALL_PAD);
 
-	}
-
-	private void createSettingsPanel() {
-		Array<Actor> touchableActors = new Array<Actor>();
-		touchableActors.add(topBar);
-		settingsPanel = new HiddenPanel(skin, "right_panel", touchableActors);
-
-		CheckBox rectangle1 = new CheckBox("Option1", skin);
-		CheckBox rectangle2 = new CheckBox("Option2", skin);
-		rectangle2.setChecked(true);
-
-		CheckBox radio1 = new CheckBox("Option3", skin, "default-radio");
-		CheckBox radio2 = new CheckBox("Option4", skin, "default-radio");
-		ButtonGroup group = new ButtonGroup();
-		group.add(radio1, radio2);
-
-		settingsPanel.add(rectangle1).pad(NORMAL_PAD);
-		settingsPanel.row();
-		settingsPanel.add(rectangle2).pad(NORMAL_PAD);
-		settingsPanel.row();
-		settingsPanel.add(radio1).pad(NORMAL_PAD);
-		settingsPanel.row();
-		settingsPanel.add(radio2).pad(NORMAL_PAD);
 	}
 
 	private void createGallegyTable() {
