@@ -151,10 +151,23 @@
 			font: default-font, 
 			fontColor: black, 
 			focusedFontColor: black, 
-			disabledFontColor: black, 
+			disabledFontColor: gray, 
 			cursor: textfield_cursor, 
 			messageFont: default-font, 
-			messageFontColor: black 
+			messageFontColor: gray 
+		},
+		transparent: { 
+			selection: textfield_selection, 
+			background: transparent-bg, 
+			focusedBackground: transparent-bg, 
+			disabledBackground: transparent-bg, 
+			font: default-font, 
+			fontColor: black, 
+			focusedFontColor: black, 
+			disabledFontColor: gray, 
+			cursor: textfield_cursor, 
+			messageFont: default-font, 
+			messageFontColor: gray 
 		}
 	},
 	com.badlogic.gdx.scenes.scene2d.ui.Slider$SliderStyle: {
@@ -262,5 +275,12 @@
 			listBackgroundDown: dropdown_to_up
 		}
 		
+	},
+	es.eucm.ead.editor.view.widgets.GalleryItem$GalleryItemStyle : {
+		default: {
+			imageBackground: project,
+			textBackground: project_name,
+			textStyle: transparent
+		}
 	}
 }
