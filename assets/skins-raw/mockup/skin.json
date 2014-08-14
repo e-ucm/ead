@@ -52,14 +52,10 @@
 			vScrollKnob: scroll_vertical
 		},
 		white_down: {
-			background: dropdown_to_down,
-			hScrollKnob: scroll_horizontal, 
-			vScrollKnob: scroll_vertical
+			background: dropdown_to_down
 		},
 		white_up: {
-			background: dropdown_to_up,
-			hScrollKnob: scroll_horizontal, 
-			vScrollKnob: scroll_vertical
+			background: dropdown_to_up
 		}
 	},
 	com.badlogic.gdx.scenes.scene2d.ui.Label$LabelStyle: {
@@ -232,33 +228,38 @@
 	es.eucm.ead.editor.view.widgets.DropDown$DropDownStyle: {
 		default: {
 			background: transparent-bg, 
-			backgroundOver: transparent-bg, 
-			backgroundOpen: transparent-bg, 
-			scrollStyle: white
+			backgroundOpenUp: transparent-bg,
+			backgroundOpenDown: transparent-bg, 
+			listBackgroundUp: panel,
+			listBackgroundDown: panel
 		},
 		white: {
 			background: panel, 
-			backgroundOver: panel, 
-			backgroundOpen: dropdown_to_down, 
-			scrollStyle: white_up
+			backgroundOpenUp: dropdown_to_up, 
+			backgroundOpenDown: dropdown_to_down, 
+			listBackgroundUp: dropdown_to_down,
+			listBackgroundDown: dropdown_to_up
 		},
 		white_center: {
 			background: dropdown_center, 
-			backgroundOver: dropdown_center, 
-			backgroundOpen: dropdown_center_to_down, 
-			scrollStyle: white_up
+			backgroundOpenUp: dropdown_center_to_up, 
+			backgroundOpenDown: dropdown_center_to_down, 
+			listBackgroundUp: dropdown_to_down,
+			listBackgroundDown: dropdown_to_up
 		},
 		white_right: {
 			background: dropdown_right, 
-			backgroundOver: dropdown_right, 
-			backgroundOpen: dropdown_right_to_down, 
-			scrollStyle: white_up
+			backgroundOpenUp: dropdown_right_to_up,
+			backgroundOpenDown: dropdown_right_to_down, 
+			listBackgroundUp: dropdown_to_down,
+			listBackgroundDown: dropdown_to_up
 		},
 		white_left: {
 			background: dropdown_left, 
-			backgroundOver: dropdown_left, 
-			backgroundOpen: dropdown_left_to_down, 
-			scrollStyle: white_up
+			backgroundOpenUp: dropdown_left_to_up, 
+			backgroundOpenDown: dropdown_left_to_down, 
+			listBackgroundUp: dropdown_to_down,
+			listBackgroundDown: dropdown_to_up
 		}
 		
 	}
