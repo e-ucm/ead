@@ -134,7 +134,7 @@ public class MockupGallerySkinTest extends MockupUITest {
 			@Override
 			public void clicked(InputEvent event, float x, float y) {
 				if (!settingsPanel.isVisible()) {
-					settingsPanel.show();
+					settingsPanel.show(topBar.getStage());
 				}
 			}
 		});
