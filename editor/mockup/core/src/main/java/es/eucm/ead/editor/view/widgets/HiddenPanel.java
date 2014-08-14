@@ -36,14 +36,18 @@
  */
 package es.eucm.ead.editor.view.widgets;
 
+import static com.badlogic.gdx.scenes.scene2d.actions.Actions.sequence;
+
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.g2d.Batch;
-import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Vector2;
+import com.badlogic.gdx.scenes.scene2d.Action;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.InputListener;
 import com.badlogic.gdx.scenes.scene2d.Stage;
+import com.badlogic.gdx.scenes.scene2d.Touchable;
+import com.badlogic.gdx.scenes.scene2d.actions.Actions;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.scenes.scene2d.utils.Drawable;
@@ -82,6 +86,10 @@ public class HiddenPanel extends Table {
 
 	}
 
+	public void addTouchableActor(Actor actor) {
+		touchableActors.add(actor);
+	}
+
 	public HiddenPanel(Skin skin, String drawableBackground) {
 		super(skin);
 		setBackground(drawableBackground);
@@ -115,14 +123,12 @@ public class HiddenPanel extends Table {
 		this.isModal = true;
 
 		addListener(new InputListener() {
-			private final Rectangle rtmp = new Rectangle();
 
 			@Override
 			public boolean touchDown(InputEvent event, float x, float y,
 					int pointer, int button) {
-				localToParentCoordinates(temp.set(x, y));
-				rtmp.set(getX(), getY(), getWidth(), getHeight());
-				if (hideOnExternalTouch && !rtmp.contains(temp.x, temp.y)) {
+				if (hideOnExternalTouch
+						&& HiddenPanel.super.hit(x, y, isTouchable()) == null) {
 					hide();
 				}
 				return isModal;
@@ -156,15 +162,30 @@ public class HiddenPanel extends Table {
 		});
 	}
 
-	public void show() {
-		if (!isVisible()) {
-			setVisible(true);
+	public void show(Stage stage) {
+		show(stage, null);
+	}
+
+	public void show(Stage stage, Action action) {
+		stage.addActor(this);
+		setTouchable(Touchable.enabled);
+		clearActions();
+		if (action != null) {
+			addAction(action);
 		}
+		validate();
 	}
 
 	public void hide() {
-		if (isVisible()) {
-			setVisible(false);
+		hide(null);
+	}
+
+	public void hide(Action action) {
+		setTouchable(Touchable.disabled);
+		if (action != null) {
+			addAction(sequence(action, Actions.removeActor()));
+		} else {
+			addAction(Actions.removeActor());
 		}
 	}
 
