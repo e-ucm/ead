@@ -112,6 +112,12 @@ public abstract class IconWithPanel extends IconButton {
 			public void hide() {
 				hide(getHideAction());
 			}
+
+			@Override
+			public void hide(Action action) {
+				openPanel = null;
+				super.hide(action);
+			}
 		};
 		addListener(showOrHide);
 	}
