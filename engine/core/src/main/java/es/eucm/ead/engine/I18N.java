@@ -42,16 +42,17 @@
 
 package es.eucm.ead.engine;
 
-import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.files.FileHandle;
-import es.eucm.ead.engine.assets.Assets;
-
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+
+import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.files.FileHandle;
+
+import es.eucm.ead.engine.assets.Assets;
 
 /**
  * Internationalization (I18N) for eAdventure. This class is intended to be used
@@ -165,7 +166,8 @@ public class I18N {
 			// makes sure that defaultLanguage has been set
 			getAvailable();
 		}
-		currentLanguage = (lang == null) ? defaultLanguage : lang;
+		currentLanguage = (lang == null || lang.isEmpty()) ? defaultLanguage
+				: lang;
 
 		// loads properties, using nested defaults
 		messages.clear();

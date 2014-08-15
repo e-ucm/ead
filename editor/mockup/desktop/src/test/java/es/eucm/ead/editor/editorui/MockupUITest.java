@@ -97,7 +97,7 @@ public abstract class MockupUITest implements ApplicationListener {
 	@Override
 	public void create() {
 		Gdx.app.setLogLevel(Application.LOG_DEBUG);
-		Gdx.gl.glClearColor(.5f, .5f, 1f, 1f);
+		Gdx.gl.glClearColor(1f, 1f, 1f, 1f);
 		stage = new Stage(new ExtendViewport(1280f, 800f));
 		controller = new MockupController(
 				platform = new MockupDesktopPlatform(), Gdx.files,

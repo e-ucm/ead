@@ -3,3 +3,7 @@
 # (via Editor.controller.setLang("en_US"), for example)
 #
 # Each '{}' will be interpreted as a placeholder for the next argument
+
+settings.language = language
+settings.more = more
+settings.enableHelpMessages = Enable help messages

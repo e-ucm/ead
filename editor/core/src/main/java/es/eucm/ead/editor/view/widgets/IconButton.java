@@ -123,7 +123,7 @@ public class IconButton extends Button implements Tooltip {
 
 	}
 
-	private void init(Drawable icon, float padding, Skin skin) {
+	protected void init(Drawable icon, float padding, Skin skin) {
 
 		iconImage = new Image(icon);
 		iconImage.setScaling(Scaling.fit);

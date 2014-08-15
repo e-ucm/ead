@@ -42,6 +42,7 @@ import static com.badlogic.gdx.scenes.scene2d.actions.Actions.sequence;
 
 import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.math.Interpolation;
+import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
@@ -296,15 +297,15 @@ public class DropDown extends Container implements Disableable {
 			}
 
 			if (below) {
-				setY(Math.round(tmpCoords.y - height));
+				setY(MathUtils.round(tmpCoords.y - height));
 				setBackground(style.listBackgroundDown);
 			} else {
-				setY(Math.round(tmpCoords.y + DropDown.this.getHeight()));
+				setY(MathUtils.round(tmpCoords.y + DropDown.this.getHeight()));
 				setBackground(style.listBackgroundUp);
 			}
-			setX(Math.round(tmpCoords.x));
-			setWidth(Math.round(prefWidth));
-			setHeight(Math.round(height));
+			setX(MathUtils.round(tmpCoords.x));
+			setWidth(MathUtils.round(prefWidth));
+			setHeight(MathUtils.round(height));
 			validate();
 
 			clearActions();
