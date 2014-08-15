@@ -34,39 +34,66 @@
  *      You should have received a copy of the GNU Lesser General Public License
  *      along with eAdventure.  If not, see <http://www.gnu.org/licenses/>.
  */
-package es.eucm.ead.editor.view.builders;
+package es.eucm.ead.editor.view.widgets;
 
-import com.badlogic.gdx.scenes.scene2d.Actor;
-import com.badlogic.gdx.scenes.scene2d.ui.Image;
-import com.badlogic.gdx.utils.Scaling;
+import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 
-import es.eucm.ead.editor.view.builders.gallery.BaseGallery;
-import es.eucm.ead.editor.view.widgets.GalleryItem;
+/**
+ * {@link IconButton} for {@link Toolbar} that can receive by constructor the
+ * size
+ * 
+ */
+public class ToolbarIcon extends IconButton {
 
-public class HomeView extends BaseGallery<GalleryItem> {
+	private float height;
 
-	@Override
-	protected Actor createPlayButton() {
-		// TODO Auto-generated method stub
-		return null;
+	private float width;
+
+	public ToolbarIcon(String icon, float padding, Skin skin) {
+		this(icon, padding, -1, -1, skin);
+	}
+
+	public ToolbarIcon(String icon, float padding, Skin skin, String styleName) {
+		this(icon, padding, -1f, -1f, skin, styleName);
+	}
+
+	public ToolbarIcon(String icon, float padding, float size, Skin skin) {
+		this(icon, padding, size, size, skin);
+	}
+
+	public ToolbarIcon(String icon, float padding, float width, float height,
+			Skin skin) {
+		super(icon, padding, skin);
+		this.height = height;
+		this.width = width;
+	}
+
+	public ToolbarIcon(String icon, float padding, float size, Skin skin,
+			String styleName) {
+		this(icon, padding, size, size, skin, styleName);
+	}
+
+	public ToolbarIcon(String icon, float padding, float width, float height,
+			Skin skin, String styleName) {
+		super(icon, padding, skin, styleName);
+		this.height = height;
+		this.width = width;
 	}
 
 	@Override
-	protected Actor createBackButton() {
-		// TODO Auto-generated method stub
-		return null;
+	public float getPrefHeight() {
+		if (height == -1) {
+			return super.getPrefHeight();
+		}
+		return height;
 	}
 
 	@Override
-	protected Actor createToolbarText() {
-		Image eAdventure = new Image(skin, "eAdventure");
-		eAdventure.setScaling(Scaling.fit);
-		return eAdventure;
-	}
-
-	@Override
-	protected Actor createSettings() {
-		return null;
+	public float getPrefWidth() {
+		if (width == -1) {
+			return super.getPrefWidth();
+		}
+		return width;
 	}
 
 }
