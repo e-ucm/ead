@@ -41,7 +41,6 @@ import com.badlogic.gdx.scenes.scene2d.Action;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.actions.Actions;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
-import com.badlogic.gdx.scenes.scene2d.utils.Drawable;
 
 /**
  * A {@link IconWithPanel} that has a scale in/out animation.
@@ -51,35 +50,19 @@ public class IconWithScalePanel extends IconWithPanel {
 	private static final float IN_DURATION = .3F;
 	private static final float OUT_DURATION = .2F;
 
-	public IconWithScalePanel(Drawable icon, float padding, Skin skin,
-			String styleName) {
-		super(icon, padding, skin, styleName);
-
-	}
-
-	public IconWithScalePanel(Drawable icon, float padding, Skin skin) {
-		super(icon, padding, skin);
-
-	}
-
-	public IconWithScalePanel(Drawable icon, Skin skin) {
-		super(icon, skin);
-
-	}
-
 	public IconWithScalePanel(String icon, float padding, Skin skin,
 			String styleName) {
 		super(icon, padding, skin, styleName);
 
 	}
 
-	public IconWithScalePanel(String icon, float padding, Skin skin) {
-		super(icon, padding, skin);
+	public IconWithScalePanel(String icon, float padding, float size, Skin skin) {
+		super(icon, padding, size, skin);
 
 	}
 
-	public IconWithScalePanel(String icon, Skin skin) {
-		super(icon, skin);
+	public IconWithScalePanel(String icon, float padding, Skin skin) {
+		super(icon, padding, skin);
 
 	}
 

@@ -45,6 +45,7 @@ import com.badlogic.gdx.scenes.scene2d.ui.Table;
 
 import es.eucm.ead.editor.editorui.MockupUITest;
 import es.eucm.ead.editor.view.widgets.iconwithpanel.IconWithFadePanel;
+import es.eucm.ead.editor.view.widgets.iconwithpanel.IconWithFadePanel.Position;
 import es.eucm.ead.editor.view.widgets.iconwithpanel.IconWithPanel;
 import es.eucm.ead.editor.view.widgets.iconwithpanel.IconWithScalePanel;
 import es.eucm.ead.engine.I18N;
@@ -57,12 +58,17 @@ public class IconWithPanelTest extends MockupUITest {
 		Container container = new Container();
 		Table table = new Table(skin);
 
-		IconWithPanel fade = new IconWithFadePanel(
-				skin.getDrawable("conversation80x80"), 0f, skin);
+		IconWithPanel fade = new IconWithFadePanel("conversation80x80", 0f,
+				skin);
 		fade.getPanel().add(new Image(skin.getDrawable("conversation80x80")));
 
-		IconWithPanel scaleRight = new IconWithScalePanel(
-				skin.getDrawable("conversation80x80"), 0f, skin);
+		IconWithPanel fadeBottom = new IconWithFadePanel("conversation80x80",
+				0f, skin, Position.BOTTOM);
+		fadeBottom.getPanel().add(
+				new Image(skin.getDrawable("conversation80x80")));
+
+		IconWithPanel scaleRight = new IconWithScalePanel("conversation80x80",
+				0f, skin);
 		scaleRight.getPanel().add(
 				new Image(skin.getDrawable("conversation80x80")));
 		scaleRight.getPanel().add(
@@ -72,8 +78,8 @@ public class IconWithPanelTest extends MockupUITest {
 		scaleRight.getPanel().add(
 				new Image(skin.getDrawable("conversation80x80")));
 
-		IconWithPanel scaleLeft = new IconWithScalePanel(
-				skin.getDrawable("conversation80x80"), 0f, skin);
+		IconWithPanel scaleLeft = new IconWithScalePanel("conversation80x80",
+				0f, skin);
 		scaleLeft.getPanel().add(
 				new Image(skin.getDrawable("conversation80x80")));
 		scaleLeft.getPanel().add(
@@ -84,13 +90,17 @@ public class IconWithPanelTest extends MockupUITest {
 				new Image(skin.getDrawable("conversation80x80")));
 
 		table.defaults().expand();
-		table.add("Icon With Fade Panel");
+		table.add("Icon With Fade Panel Right");
 		table.row();
 		table.add(fade);
 		table.row();
 		table.add("Icon With Scale Panel: left <-> right");
 		table.row();
 		table.add(scaleLeft, scaleRight);
+		table.row();
+		table.add("Icon With Fade Panel Bottom");
+		table.row();
+		table.add(fadeBottom);
 
 		container.setWidget(table);
 		container.setFillParent(true);
