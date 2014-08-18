@@ -47,6 +47,7 @@ import com.badlogic.gdx.scenes.scene2d.utils.Drawable;
 
 import es.eucm.ead.editor.view.widgets.HiddenPanel;
 import es.eucm.ead.editor.view.widgets.IconButton;
+import es.eucm.ead.editor.view.widgets.ToolbarIcon;
 
 /**
  * An {@link IconButton} with a {@link HiddenPanel} as attribute, when clicked
@@ -54,7 +55,7 @@ import es.eucm.ead.editor.view.widgets.IconButton;
  * when clicked again. The panel is drawn in {@link Stage} coordinates.
  * 
  */
-public abstract class IconWithPanel extends IconButton {
+public abstract class IconWithPanel extends ToolbarIcon {
 
 	private static final Vector2 TEMP = new Vector2();
 	private static HiddenPanel openPanel;
@@ -73,22 +74,6 @@ public abstract class IconWithPanel extends IconButton {
 
 	protected HiddenPanel panel;
 
-	public IconWithPanel(Drawable icon, float padding, Skin skin,
-			String styleName) {
-		super(icon, padding, skin, styleName);
-
-	}
-
-	public IconWithPanel(Drawable icon, float padding, Skin skin) {
-		super(icon, padding, skin);
-
-	}
-
-	public IconWithPanel(Drawable icon, Skin skin) {
-		super(icon, skin);
-
-	}
-
 	public IconWithPanel(String icon, float padding, Skin skin, String styleName) {
 		super(icon, padding, skin, styleName);
 
@@ -99,9 +84,8 @@ public abstract class IconWithPanel extends IconButton {
 
 	}
 
-	public IconWithPanel(String icon, Skin skin) {
-		super(icon, skin);
-
+	public IconWithPanel(String icon, float padding, float size, Skin skin) {
+		super(icon, padding, size, skin);
 	}
 
 	@Override
