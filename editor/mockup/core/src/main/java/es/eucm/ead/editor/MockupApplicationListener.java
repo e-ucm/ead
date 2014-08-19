@@ -45,12 +45,18 @@ import es.eucm.ead.editor.control.Controller;
 import es.eucm.ead.editor.control.MockupController;
 import es.eucm.ead.editor.control.actions.editor.ChangeView;
 import es.eucm.ead.editor.platform.Platform;
-import es.eucm.ead.editor.view.builders.HomeView;
+import es.eucm.ead.editor.view.builders.gallery.ProjectsView;
 
 public class MockupApplicationListener extends EditorApplicationListener {
 
 	public MockupApplicationListener(Platform platform) {
 		super(platform);
+	}
+
+	@Override
+	public void create() {
+		super.create();
+		Gdx.gl.glClearColor(1f, 1f, 1f, 1f);
 	}
 
 	@Override
@@ -60,7 +66,7 @@ public class MockupApplicationListener extends EditorApplicationListener {
 
 	@Override
 	protected void initialize() {
-		controller.action(ChangeView.class, HomeView.class);
+		controller.action(ChangeView.class, ProjectsView.class);
 	}
 
 	@Override
