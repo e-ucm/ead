@@ -7,3 +7,16 @@
 settings.language = language
 settings.more = more
 settings.enableHelpMessages = Enable help messages
+gallery.search = Search...
+gallery.enterAName = Enter a name
+undo = Undo
+gallery.deletedElement = Deleted element
+gallery.deletedElements = {} deleted elements
+gallery.enterAName = Enter a name
+scene.delete.error-message = The scene hasn't been deleted because games should have at least one scene
+repository.selectLibrary = Select a library
+repository.importing = Importing...
+repository.importingError = Something went wrong while importing
+repository.refreshing = Refreshing...
+repository.refreshingError = Something went wrong while refreshing
+project = Project

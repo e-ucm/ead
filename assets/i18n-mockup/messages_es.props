@@ -9,3 +9,16 @@
 settings.language = idioma
 settings.more = más
 settings.enableHelpMessages = Habilitar mensajes de ayuda
+gallery.search = Buscar...
+gallery.enterAName = Introduce un nombre
+undo = Deshacer
+gallery.deletedElement = Elemento eliminado
+gallery.deletedElements = {} elementos eliminados
+gallery.enterAName = Introduce un nombre
+scene.delete.error-message = La escena no se ha eliminado por que los juegos deben tener por lo menos una
+repository.selectLibrary = Selecciona una librería
+repository.importing = Importando...
+repository.importingError = Algo salió mal al importar
+repository.refreshing = Actualizando...
+repository.refreshingError = Algo salió mal al actualizar
+project = Proyecto
