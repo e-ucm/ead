@@ -34,60 +34,89 @@
  *      You should have received a copy of the GNU Lesser General Public License
  *      along with eAdventure.  If not, see <http://www.gnu.org/licenses/>.
  */
-package es.eucm.ead.editor.view.widgets;
+package es.eucm.ead.editor.view.widgets.gallery;
 
+import com.badlogic.gdx.graphics.Texture;
+import com.badlogic.gdx.graphics.g2d.TextureRegion;
+import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
+import com.badlogic.gdx.scenes.scene2d.ui.Button;
 import com.badlogic.gdx.scenes.scene2d.ui.Image;
+import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.scenes.scene2d.ui.TextField;
 import com.badlogic.gdx.scenes.scene2d.ui.TextField.TextFieldStyle;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.scenes.scene2d.utils.Drawable;
+import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable;
+import com.badlogic.gdx.utils.Scaling;
 
-public class GalleryItem extends Table {
+import es.eucm.ead.editor.view.builders.gallery.BaseGallery;
+import es.eucm.ead.editor.view.widgets.IconButton;
+
+public abstract class GalleryItem extends Button {
 
 	private static final String DELETE_ICON = "recycle24x24";
 
 	private static final ClickListener iconListener = new ClickListener() {
 		public void clicked(InputEvent event, float x, float y) {
-			((GalleryItem) event.getListenerActor().getUserObject())
-					.iconClicked();
+			Actor actor = event.getListenerActor();
+			GalleryItem item = ((GalleryItem) actor.getUserObject());
+			if (actor instanceof IconButton) {
+				item.gallery.deleteItem(item);
+			} else {
+				item.gallery.itemClicked(item);
+			}
 		};
 	};
 
-	private TextField name;
+	protected Actor name;
 
 	private GalleryItemStyle style;
 
+	protected Image image;
+
+	private BaseGallery gallery;
+
 	public GalleryItem(Image image, String text, float pad,
-			boolean canBeDeleted, Skin skin) {
-		this(image, text, pad, pad, canBeDeleted, skin, null);
+			boolean canBeDeleted, Skin skin, BaseGallery gallery) {
+		this(image, text, pad, pad, canBeDeleted, skin, null, true, gallery);
 	}
 
-	public GalleryItem(Image image, String text, boolean canBeDeleted, Skin skin) {
-		this(image, text, 0, 0, canBeDeleted, skin, null);
-	}
-
-	public GalleryItem(Image image, String text, float padImage, float padText,
-			boolean canBeDeleted, Skin skin) {
-		this(image, text, padImage, padText, canBeDeleted, skin, null);
+	public GalleryItem(Image image, String text, boolean canBeDeleted,
+			Skin skin, BaseGallery gallery) {
+		this(image, text, 0, 0, canBeDeleted, skin, null, true, gallery);
 	}
 
 	public GalleryItem(Image image, String text, float padImage, float padText,
-			boolean canBeDeleted, Skin skin, String nameStyle) {
-		super(skin);
+			boolean canBeDeleted, Skin skin, BaseGallery gallery) {
+		this(image, text, padImage, padText, canBeDeleted, skin, null, true,
+				gallery);
+	}
 
+	public GalleryItem(Image image, String text, float padImage, float padText,
+			boolean canBeDeleted, Skin skin, String nameStyle,
+			boolean editableName, BaseGallery gallery) {
+		super(skin.get(ButtonStyle.class));
+		this.gallery = gallery;
 		if (nameStyle != null) {
 			style = skin.get(nameStyle, GalleryItemStyle.class);
 		} else {
 			style = skin.get(GalleryItemStyle.class);
 		}
 
-		name = new TextField("", style.textStyle);
-		name.setMessageText(text);
+		if (editableName) {
+			TextField nameTf = new TextField("", style.textStyle);
+			nameTf.setFocusTraversal(false);
+			nameTf.setMessageText(text);
+			name = nameTf;
+		} else {
+			Label nameLabel = new Label(text, skin);
+			name = nameLabel;
+		}
 
-		Table top = new Table(skin);
+		Table top = new Table();
 		top.setBackground(style.imageBackground);
 
 		if (canBeDeleted) {
@@ -98,7 +127,12 @@ public class GalleryItem extends Table {
 			top.row();
 		}
 
-		top.add(image).pad(padImage).expand().center();
+		this.image = image;
+		image.setScaling(Scaling.fit);
+		image.setUserObject(this);
+		image.addListener(iconListener);
+		image.setDrawable(skin.getDrawable("new_project80x80"));
+		top.add(image).pad(padImage).expand().center().fill();
 
 		Table bot = new Table(skin);
 		bot.setBackground(style.textBackground);
@@ -109,8 +143,15 @@ public class GalleryItem extends Table {
 		add(bot).expandX().fill();
 	}
 
-	protected void iconClicked() {
-		this.remove();
+	public void deleteItem() {
+	}
+
+	public String getName() {
+		if (name instanceof TextField) {
+			return ((TextField) name).getText();
+		} else {
+			return ((Label) name).getText().toString();
+		}
 	}
 
 	static public class GalleryItemStyle {
@@ -134,5 +175,9 @@ public class GalleryItem extends Table {
 			this.textBackground = style.textBackground;
 			this.textStyle = style.textStyle;
 		}
+	}
+
+	public void setThumbnail(Texture asset) {
+		image.setDrawable(new TextureRegionDrawable(new TextureRegion(asset)));
 	}
 }
