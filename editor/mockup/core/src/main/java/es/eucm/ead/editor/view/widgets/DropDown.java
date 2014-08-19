@@ -250,21 +250,14 @@ public class DropDown extends Container implements Disableable {
 						Cell cell = getCell(target);
 						if (cell != null) {
 							setSelected(target);
+							ChangeEvent changeEvent = Pools
+									.obtain(ChangeEvent.class);
+							DropDown.this.fire(changeEvent);
+							Pools.free(changeEvent);
 						}
 					}
 					hideList();
 					return false;
-				}
-
-				public void touchUp(InputEvent event, float x, float y,
-						int pointer, int button) {
-					if (hit(x, y, true) == ListScroll.this) {
-						ChangeEvent changeEvent = Pools
-								.obtain(ChangeEvent.class);
-						DropDown.this.fire(changeEvent);
-						Pools.free(changeEvent);
-						hideList();
-					}
 				}
 			});
 		}

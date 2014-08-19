@@ -34,39 +34,32 @@
  *      You should have received a copy of the GNU Lesser General Public License
  *      along with eAdventure.  If not, see <http://www.gnu.org/licenses/>.
  */
-package es.eucm.ead.editor.view.builders;
+package es.eucm.ead.editor.view.listeners;
 
-import com.badlogic.gdx.scenes.scene2d.Actor;
-import com.badlogic.gdx.scenes.scene2d.ui.Image;
-import com.badlogic.gdx.utils.Scaling;
+import com.badlogic.gdx.scenes.scene2d.InputEvent;
+import com.badlogic.gdx.scenes.scene2d.InputListener;
+import com.badlogic.gdx.scenes.scene2d.ui.TextField;
 
-import es.eucm.ead.editor.view.builders.gallery.BaseGallery;
-import es.eucm.ead.editor.view.widgets.GalleryItem;
+public abstract class TextFieldListener extends InputListener {
 
-public class HomeView extends BaseGallery<GalleryItem> {
+	private String currentText;
+	private TextField textField;
 
-	@Override
-	protected Actor createPlayButton() {
-		// TODO Auto-generated method stub
-		return null;
+	public TextFieldListener(TextField textField) {
+		this.textField = textField;
 	}
 
 	@Override
-	protected Actor createBackButton() {
-		// TODO Auto-generated method stub
-		return null;
+	public boolean keyTyped(InputEvent event, char character) {
+		String text = textField.getText();
+		if (!text.equals(currentText)) {
+			currentText = text;
+			keyTyped(text);
+			return true;
+		}
+		return false;
 	}
 
-	@Override
-	protected Actor createToolbarText() {
-		Image eAdventure = new Image(skin, "eAdventure");
-		eAdventure.setScaling(Scaling.fit);
-		return eAdventure;
-	}
-
-	@Override
-	protected Actor createSettings() {
-		return null;
-	}
+	protected abstract void keyTyped(String text);
 
 }
