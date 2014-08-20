@@ -49,7 +49,7 @@ public class MockupViews extends Views implements BackListener {
 	@Override
 	public void onBackPressed() {
 		if (currentView instanceof BackListener) {
-			((BackListener) super.currentView).onBackPressed();
+			((BackListener) currentView).onBackPressed();
 		} else {
 			back();
 		}

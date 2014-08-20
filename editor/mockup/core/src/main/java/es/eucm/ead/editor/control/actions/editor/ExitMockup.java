@@ -34,39 +34,38 @@
  *      You should have received a copy of the GNU Lesser General Public License
  *      along with eAdventure.  If not, see <http://www.gnu.org/licenses/>.
  */
-package es.eucm.ead.editor.view.builders;
+package es.eucm.ead.editor.control.actions.editor;
 
-import com.badlogic.gdx.scenes.scene2d.Actor;
-import com.badlogic.gdx.scenes.scene2d.ui.Image;
-import com.badlogic.gdx.utils.Scaling;
+import com.badlogic.gdx.Gdx;
 
-import es.eucm.ead.editor.view.builders.gallery.BaseGallery;
-import es.eucm.ead.editor.view.widgets.GalleryItem;
+import es.eucm.ead.editor.control.actions.EditorAction;
 
-public class HomeView extends BaseGallery<GalleryItem> {
+/**
+ * <p>
+ * Closes the entire editor, finalizing the application completely. Performs
+ * {@link Save} action before exiting.
+ * </p>
+ * 
+ * <dl>
+ * <dt><strong>Arguments</strong></dt>
+ * <dd>None.</dd>
+ * </dl>
+ * 
+ */
+public class ExitMockup extends EditorAction {
 
-	@Override
-	protected Actor createPlayButton() {
-		// TODO Auto-generated method stub
-		return null;
+	public ExitMockup() {
+		super(true, false);
 	}
 
 	@Override
-	protected Actor createBackButton() {
-		// TODO Auto-generated method stub
-		return null;
+	public void perform(Object... args) {
+		controller.action(Save.class);
+		Gdx.app.postRunnable(new Runnable() {
+			@Override
+			public void run() {
+				Gdx.app.exit();
+			}
+		});
 	}
-
-	@Override
-	protected Actor createToolbarText() {
-		Image eAdventure = new Image(skin, "eAdventure");
-		eAdventure.setScaling(Scaling.fit);
-		return eAdventure;
-	}
-
-	@Override
-	protected Actor createSettings() {
-		return null;
-	}
-
 }

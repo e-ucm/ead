@@ -119,6 +119,9 @@ public class Q {
 	 *            value if the name is null
 	 */
 	public static String getName(ModelEntity modelEntity, String defaultValue) {
+		if (modelEntity == null) {
+			return defaultValue;
+		}
 		Documentation documentation = getComponent(modelEntity,
 				Documentation.class);
 		return documentation.getName() == null ? defaultValue : documentation

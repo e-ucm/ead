@@ -34,32 +34,36 @@
  *      You should have received a copy of the GNU Lesser General Public License
  *      along with eAdventure.  If not, see <http://www.gnu.org/licenses/>.
  */
-package es.eucm.ead.editor.view.builders;
+package es.eucm.ead.editor.control.actions.model;
 
-import com.badlogic.gdx.scenes.scene2d.Actor;
-import com.badlogic.gdx.scenes.scene2d.ui.Label;
+import es.eucm.ead.editor.control.actions.ModelAction;
+import es.eucm.ead.editor.control.commands.Command;
+import es.eucm.ead.editor.control.commands.FieldCommand;
+import es.eucm.ead.editor.model.Q;
+import es.eucm.ead.schema.editor.components.Documentation;
+import es.eucm.ead.schemax.FieldName;
 
-import es.eucm.ead.editor.control.Controller;
+/**
+ * <p>
+ * Changes the name of the current game.
+ * </p>
+ * <dl>
+ * <dt><strong>Arguments</strong></dt>
+ * <dd><strong>args[0]</strong> <em>String</em> tThe new title of the project.
+ * </dl>
+ */
+public class ChangeProjectName extends ModelAction {
 
-public class GameView implements ViewBuilder {
-
-	private Actor view;
-
-	@Override
-	public void initialize(Controller controller) {
-
-		view = new Label(getClass().getSimpleName(), controller
-				.getApplicationAssets().getSkin());
+	public ChangeProjectName() {
+		super(true, false, String.class);
 	}
 
 	@Override
-	public void release(Controller controller) {
-
-	}
-
-	@Override
-	public Actor getView(Object... args) {
-		return view;
+	public Command perform(Object... args) {
+		Documentation component = Q.getComponent(controller.getModel()
+				.getGame(), Documentation.class);
+		return new FieldCommand(component, FieldName.NAME, args[0].toString(),
+				true);
 	}
 
 }

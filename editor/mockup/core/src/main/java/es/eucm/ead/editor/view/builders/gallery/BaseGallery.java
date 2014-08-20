@@ -36,51 +36,123 @@
  */
 package es.eucm.ead.editor.view.builders.gallery;
 
-import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.scenes.scene2d.Actor;
+import com.badlogic.gdx.scenes.scene2d.InputEvent;
+import com.badlogic.gdx.scenes.scene2d.ui.Button;
+import com.badlogic.gdx.scenes.scene2d.ui.Button.ButtonStyle;
 import com.badlogic.gdx.scenes.scene2d.ui.Image;
+import com.badlogic.gdx.scenes.scene2d.ui.ScrollPane;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
+import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
 import com.badlogic.gdx.scenes.scene2d.utils.Align;
+import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.utils.Array;
+import com.badlogic.gdx.utils.Scaling;
+import com.esotericsoftware.tablelayout.Cell;
 
+import es.eucm.ead.editor.assets.ApplicationAssets;
 import es.eucm.ead.editor.control.Controller;
 import es.eucm.ead.editor.view.builders.ViewBuilder;
-import es.eucm.ead.editor.view.widgets.DropDown;
-import es.eucm.ead.editor.view.widgets.GalleryItem;
+import es.eucm.ead.editor.view.widgets.GridPanel;
+import es.eucm.ead.editor.view.widgets.Notification;
 import es.eucm.ead.editor.view.widgets.Toolbar;
-import es.eucm.ead.editor.view.widgets.ToolbarIcon;
+import es.eucm.ead.editor.view.widgets.gallery.GalleryItem;
+import es.eucm.ead.editor.view.widgets.gallery.SearchWidget;
+import es.eucm.ead.editor.view.widgets.gallery.SortWidget;
+import es.eucm.ead.editor.view.widgets.iconwithpanel.Settings;
+import es.eucm.ead.engine.I18N;
 
-public abstract class BaseGallery<T extends GalleryItem> implements ViewBuilder {
+public abstract class BaseGallery implements ViewBuilder {
 
-	private static final float TOOLBAR_SIZE = 0.07f, ICON_PAD = 5,
-			SMALL_PAD = 20;
+	public static final float TOOLBAR_SIZE = 0.07f, ICON_PAD = 5f,
+			SMALL_PAD = 20f, DEFAULT_ENTYTY_SPACING = 20f,
+			MIN_ITEM_HEIGHT = 165F, UNDO_POPUP_TIMEOUT = 5F;
 
-	private Table view;
+	private static final ClickListener newButtonListener = new ClickListener() {
 
+		public void clicked(com.badlogic.gdx.scenes.scene2d.InputEvent event,
+				float x, float y) {
+			BaseGallery gallery = (BaseGallery) event.getListenerActor()
+					.getUserObject();
+			gallery.newItem();
+		};
+	};
+
+	protected int getColumns() {
+		return 5;
+	}
+
+	private static final ClickListener undoListener = new ClickListener() {
+
+		public void clicked(InputEvent event, float x, float y) {
+			BaseGallery gallery = (BaseGallery) event.getListenerActor()
+					.getUserObject();
+			Array<Undoable> undosPending = gallery.undosPending;
+
+			if (undosPending.size != 0) {
+				undosPending.pop().undo();
+				gallery.updateDisplayedElements();
+			}
+
+			// Dismiss dialog or change text
+			Notification notif = gallery.undoNotification;
+			if (undosPending.size != 0) {
+				gallery.changePopupText();
+				notif.show(gallery.topBar.getStage(), UNDO_POPUP_TIMEOUT);
+			} else {
+				if (notif.hasParent()) {
+					notif.hide();
+				}
+			}
+		};
+	};
+
+	protected Notification undoNotification;
+	protected Array<Undoable> undosPending;
+	protected GridPanel<Actor> galleryGrid;
+	protected Array<GalleryItem> items;
+	private SearchWidget searchWidget;
+	protected Controller controller;
+	private SortWidget sortWidget;
+	private Button newButton;
+	protected Toolbar topBar;
+	private TextButton undo;
+	protected float size;
+	protected Table view;
 	protected Skin skin;
-
-	private Array<T> items;
-
-	private float height;
-
-	private Table gallery;
+	protected I18N i18n;
 
 	@Override
 	public void initialize(Controller controller) {
-		this.skin = controller.getApplicationAssets().getSkin();
-		Gdx.gl.glClearColor(1f, 1f, 1f, 1f);
+		this.controller = controller;
+		ApplicationAssets applicationAssets = controller.getApplicationAssets();
+		this.skin = applicationAssets.getSkin();
+		i18n = applicationAssets.getI18N();
 
-		height = controller.getPlatform().getSize().y;
+		undoNotification = new Notification(skin) {
+			public void hide() {
+				super.hide();
+				discardUndo();
+			};
+		}.modal(false);
+		undo = new TextButton(i18n.m("undo"), skin, "white");
+		undo.setUserObject(this);
+		undo.addListener(undoListener);
+		undoNotification.add(undo);
+		this.items = new Array<GalleryItem>(true, 8, GalleryItem.class);
+		undosPending = new Array<Undoable>(4);
+
+		size = controller.getPlatform().getSize().y * TOOLBAR_SIZE;
 
 		view = new Table();
 		view.align(Align.top);
 		view.setFillParent(true);
 
-		Toolbar topBar = new Toolbar(skin, "white_top") {
+		topBar = new Toolbar(skin, "white_top") {
 			@Override
 			public float getPrefHeight() {
-				return TOOLBAR_SIZE * height;
+				return size;
 			}
 		};
 
@@ -91,55 +163,128 @@ public abstract class BaseGallery<T extends GalleryItem> implements ViewBuilder 
 			topBar.add(backButton).expand().left().padLeft(SMALL_PAD);
 		}
 
+		Actor play = createPlayButton();
+		if (play != null) {
+			topBar.add(play).expand().left().padLeft(SMALL_PAD);
+		}
+
 		Actor toolbarText = createToolbarText();
 		topBar.add(toolbarText).expand().center();
 
-		Actor search = createSearchWidget();
-		topBar.add(search).padRight(SMALL_PAD);
+		searchWidget = createSearchWidget();
+		topBar.add(searchWidget).padRight(SMALL_PAD);
 
-		Actor reorder = addReorderWidget();
-		topBar.add(reorder).padRight(SMALL_PAD);
+		sortWidget = addReorderWidget();
+		topBar.add(sortWidget).padRight(SMALL_PAD);
 
-		Actor settings = createSettings();
+		Actor settings = createSettings(controller);
 		if (settings != null) {
 			topBar.add(settings).padRight(SMALL_PAD);
 		}
 
-		loadItems();
+		createnNewButton();
+
+		galleryGrid = new GridPanel<Actor>(getColumns(), DEFAULT_ENTYTY_SPACING);
+		ScrollPane galleryPane = new ScrollPane(galleryGrid);
+		galleryPane.setScrollingDisabled(true, false);
 
 		view.add(topBar).expandX().fill();
 		view.row();
-		view.add(gallery).expandX().fill();
+		view.add(galleryPane).expand().fillX().top();
 	}
 
-	protected Actor addReorderWidget() {
-		// TODO reorder functionality
-		DropDown reorder = new DropDown(skin);
-		Array array = new Array();
-		array.add(new ToolbarIcon("reorderAZ80x80", ICON_PAD, TOOLBAR_SIZE
-				* height, skin));
-		array.add(new ToolbarIcon("reorderZA80x80", ICON_PAD, TOOLBAR_SIZE
-				* height, skin));
-		reorder.setItems(array);
+	private void createnNewButton() {
+		String newButtonIcon = getNewButtonIcon();
+		if (newButtonIcon != null) {
+			newButton = new Button(skin.get(ButtonStyle.class));
+			Image image = new Image(skin.getDrawable(newButtonIcon));
+			image.setScaling(Scaling.fit);
+			newButton.add(image);
+			newButton.setUserObject(this);
+			newButton.addListener(newButtonListener);
+		}
+	}
 
-		return reorder;
-	};
+	/**
+	 * Invoked when {@link #newButton} was clicked.
+	 */
+	protected void newItem() {
 
-	protected Actor createSearchWidget() {
-		// TODO search widget
-		return new ToolbarIcon("search80x80", ICON_PAD, TOOLBAR_SIZE * height,
-				skin);
-	};
+	}
 
-	protected void loadItems() {
-		// TODO complete gallery
-		gallery = new Table();
+	/**
+	 * Invoked when a {@link GalleryItem} was clicked.
+	 */
+	public void itemClicked(GalleryItem item) {
 
-		Image logo = new Image(skin, "eAdventure");
-		gallery.add(new GalleryItem(logo, "", 20, 0, true, skin));
-	};
+	}
 
-	protected abstract Actor createSettings();
+	/**
+	 * Invoked when an item was deleted.
+	 * 
+	 * @param item
+	 */
+	public void deleteItem(final GalleryItem item) {
+		Cell<?> cell = galleryGrid.getCell(item);
+		if (cell != null) {
+			item.remove();
+			final int position = items.indexOf(item, true);
+			items.removeValue(item, true);
+			updateDisplayedElements();
+			undosPending.add(new Undoable() {
+
+				@Override
+				public void undo() {
+					items.insert(position, item);
+				}
+
+				@Override
+				public String getTitle() {
+					return item.getName();
+				}
+
+				@Override
+				public void discard() {
+					item.deleteItem();
+				}
+			});
+			changePopupText();
+			undoNotification.show(topBar.getStage(), UNDO_POPUP_TIMEOUT);
+		}
+	}
+
+	/**
+	 * Discard all stored undos and hide the undo popup dialog.
+	 */
+	public void discardUndo() {
+		for (Undoable undoable : undosPending) {
+			undoable.discard();
+		}
+		undosPending.clear();
+	}
+
+	protected SortWidget addReorderWidget() {
+		SortWidget sortWidget = new SortWidget(skin, ICON_PAD, size, items,
+				this);
+		return sortWidget;
+	}
+
+	protected SearchWidget createSearchWidget() {
+		SearchWidget searchWidget = new SearchWidget(ICON_PAD, size, skin,
+				i18n, items, this);
+		searchWidget.getPanel().addTouchableActor(topBar);
+		return searchWidget;
+	}
+
+	protected void loadItems(Array<GalleryItem> items) {
+
+	}
+
+	protected Actor createSettings(Controller controller) {
+		Settings settings = new Settings(controller, ICON_PAD, size);
+		settings.getPanel().addTouchableActor(topBar);
+		return settings;
+	}
 
 	protected abstract Actor createPlayButton();
 
@@ -147,13 +292,79 @@ public abstract class BaseGallery<T extends GalleryItem> implements ViewBuilder 
 
 	protected abstract Actor createToolbarText();
 
+	protected abstract String getNewButtonIcon();
+
 	@Override
 	public void release(Controller controller) {
-
+		discardUndo();
+		undoNotification.hide();
 	}
 
 	@Override
 	public Actor getView(Object... args) {
+		loadItems(items);
+		searchWidget.filter();
+		sort();
+		updateDisplayedElements();
 		return view;
+	}
+
+	public void sort() {
+		sortWidget.sort();
+	}
+
+	/**
+	 * Updates the displayed elements depending of the sorting order and search
+	 * value.
+	 */
+	public void updateDisplayedElements() {
+		this.galleryGrid.clear();
+		if (this.newButton != null) {
+			this.galleryGrid.addItem(this.newButton).minHeight(MIN_ITEM_HEIGHT);
+		}
+		for (GalleryItem element : items) {
+			galleryGrid.addItem(element);
+		}
+		galleryGrid.invalidateHierarchy();
+	}
+
+	public abstract static class Undoable {
+
+		public abstract void undo();
+
+		public String getTitle() {
+			return null;
+		}
+
+		public void discard() {
+		}
+
+	}
+
+	/**
+	 * Changes the text of the undo popup. If more then one item can be undone,
+	 * the number of deleted items will be shown. If only one deletion can be
+	 * undone, the title of this deletion (or a default string in case the title
+	 * is {@code null}) will be shown.
+	 */
+	private void changePopupText() {
+		String msg = null;
+		if (undosPending.size > 1) {
+			msg = i18n.m("gallery.deletedElements", undosPending.size);
+		} else if (undosPending.size == 1) {
+			String title = undosPending.peek().getTitle();
+			if (title == null || title.isEmpty()) {
+				msg = "1 " + i18n.m("gallery.deletedElement");
+			} else {
+				msg = i18n.m("gallery.deletedElement") + ": " + title;
+			}
+		}
+		undoNotification.clearChildren();
+		undoNotification.text(msg);
+		undoNotification.add(undo);
+	}
+
+	public I18N getI18n() {
+		return i18n;
 	}
 }

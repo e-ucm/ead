@@ -36,22 +36,18 @@
  */
 package es.eucm.ead.editor.actions;
 
-import es.eucm.ead.editor.control.actions.editor.DeleteProject;
-import es.eucm.ead.editor.control.actions.editor.DeleteProject.DeleteProjectListener;
-import es.eucm.ead.editor.control.actions.editor.NewGame;
-
-import es.eucm.ead.schema.editor.components.EditState;
-import es.eucm.ead.schema.entities.ModelEntity;
-import org.junit.Test;
+import static org.junit.Assert.assertFalse;
 
 import java.io.File;
 
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
+import org.junit.Test;
+
+import es.eucm.ead.editor.control.actions.editor.DeleteProject;
+import es.eucm.ead.editor.control.actions.editor.NewGame;
+import es.eucm.ead.schema.editor.components.EditState;
+import es.eucm.ead.schema.entities.ModelEntity;
 
 public class DeleteProjectTest extends ActionTest {
-
-	private boolean success = false;
 
 	@Test
 	public void test() {
@@ -62,17 +58,8 @@ public class DeleteProjectTest extends ActionTest {
 		controller.action(NewGame.class, file.getAbsolutePath(), game,
 				new ModelEntity());
 
-		controller.action(DeleteProject.class, file.getAbsolutePath(),
-				new DeleteProjectListener() {
-					@Override
-					public void projectDeleted(boolean succeeded) {
-						success = succeeded;
-					}
-				});
+		controller.action(DeleteProject.class, file.getAbsolutePath());
 
-		assertTrue(
-				"Project deletion failed (listener invoked with succeeded=false)",
-				success);
 		assertFalse("Project deletion failed (project file still exists)",
 				file.exists());
 	}

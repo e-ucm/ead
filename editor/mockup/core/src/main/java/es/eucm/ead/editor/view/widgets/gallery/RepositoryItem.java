@@ -34,50 +34,62 @@
  *      You should have received a copy of the GNU Lesser General Public License
  *      along with eAdventure.  If not, see <http://www.gnu.org/licenses/>.
  */
-package es.eucm.ead.editor;
+package es.eucm.ead.editor.view.widgets.gallery;
 
-import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.math.Vector2;
-import com.badlogic.gdx.scenes.scene2d.Stage;
-import com.badlogic.gdx.utils.viewport.ExtendViewport;
+import com.badlogic.gdx.graphics.Texture;
+import com.badlogic.gdx.scenes.scene2d.ui.Image;
+import com.badlogic.gdx.scenes.scene2d.ui.Label;
 
+import es.eucm.ead.editor.assets.ApplicationAssets;
 import es.eucm.ead.editor.control.Controller;
 import es.eucm.ead.editor.control.MockupController;
-import es.eucm.ead.editor.control.actions.editor.ChangeView;
-import es.eucm.ead.editor.platform.Platform;
-import es.eucm.ead.editor.view.builders.gallery.ProjectsView;
+import es.eucm.ead.editor.model.Q;
+import es.eucm.ead.editor.view.builders.gallery.BaseGallery;
+import es.eucm.ead.engine.assets.Assets.AssetLoadedCallback;
+import es.eucm.ead.schema.editor.components.RepoElement;
+import es.eucm.ead.schema.entities.ModelEntity;
 
-public class MockupApplicationListener extends EditorApplicationListener {
+public class RepositoryItem extends GalleryItem implements
+		AssetLoadedCallback<Texture> {
 
-	public MockupApplicationListener(Platform platform) {
-		super(platform);
+	private ModelEntity element;
+	private RepoElement documentation;
+
+	public RepositoryItem(Controller controller, ModelEntity element,
+			BaseGallery gallery) {
+		super(new Image(), "", 0f, 0f, false, controller.getApplicationAssets()
+				.getSkin(), null, false, gallery);
+		this.element = element;
+
+		documentation = Q.getComponent(element, RepoElement.class);
+
+		((Label) name).setText(getDocumentationName());
+
+		ApplicationAssets assets = controller.getApplicationAssets();
+		assets.get(((MockupController) controller).getRepositoryManager()
+				.getCurrentLibraryPath() + documentation.getThumbnail(),
+				Texture.class, this);
 	}
 
 	@Override
-	public void create() {
-		super.create();
-		Gdx.gl.glClearColor(1f, 1f, 1f, 1f);
+	public void loaded(String fileName, Texture asset) {
+		setThumbnail(asset);
 	}
 
 	@Override
-	public void resize(int width, int height) {
-		super.stage.getViewport().update(width, height, true);
+	public String getName() {
+		return getDocumentationName();
 	}
 
-	@Override
-	protected void initialize() {
-		controller.action(ChangeView.class, ProjectsView.class);
+	private String getDocumentationName() {
+		if (documentation == null) {
+			return " ";
+		}
+		String name = documentation.getName();
+		return name == null ? " " : name;
 	}
 
-	@Override
-	protected Stage createStage() {
-		final Vector2 viewport = super.platform.getSize();
-		return new Stage(new ExtendViewport(viewport.x, viewport.y));
-	}
-
-	@Override
-	protected Controller createController() {
-		return new MockupController(this.platform, Gdx.files,
-				super.stage.getRoot());
+	public ModelEntity getElement() {
+		return element;
 	}
 }

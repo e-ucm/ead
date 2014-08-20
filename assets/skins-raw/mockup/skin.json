@@ -66,10 +66,7 @@
 	},
 	com.badlogic.gdx.scenes.scene2d.ui.Button$ButtonStyle: {
 		default: { 
-			up: transparent-bg, 
-			down: transparent-bg, 
-			over: transparent-bg, 
-			disabled: transparent-bg
+			down: button_pressed
 		},
 		white: {
 			up: button_normal, 
@@ -80,9 +77,6 @@
 	},
 	com.badlogic.gdx.scenes.scene2d.ui.TextButton$TextButtonStyle: {
 		default: { 
-			up: transparent-bg, 
-			down: transparent-bg,  
-			disabled: transparent-bg,
 			disabledFontColor: gray,
             font: default-font,
             fontColor: black
@@ -276,11 +270,16 @@
 		}
 		
 	},
-	es.eucm.ead.editor.view.widgets.GalleryItem$GalleryItemStyle : {
+	es.eucm.ead.editor.view.widgets.gallery.GalleryItem$GalleryItemStyle : {
 		default: {
 			imageBackground: project,
 			textBackground: project_name,
 			textStyle: transparent
+		}
+	},
+	es.eucm.ead.editor.view.widgets.Notification$NotificationStyle: {
+		default: {
+			background: dialog
 		}
 	}
 }

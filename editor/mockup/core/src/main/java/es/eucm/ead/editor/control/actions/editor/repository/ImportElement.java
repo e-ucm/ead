@@ -34,42 +34,33 @@
  *      You should have received a copy of the GNU Lesser General Public License
  *      along with eAdventure.  If not, see <http://www.gnu.org/licenses/>.
  */
-package es.eucm.ead.editor.control.actions.editor;
+package es.eucm.ead.editor.control.actions.editor.repository;
 
-import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.files.FileHandle;
-
-import es.eucm.ead.editor.assets.EditorGameAssets;
+import es.eucm.ead.editor.control.MockupController;
+import es.eucm.ead.editor.control.RepositoryManager.OnEntityImportedListener;
 import es.eucm.ead.editor.control.actions.EditorAction;
+import es.eucm.ead.schema.entities.ModelEntity;
 
 /**
- * Deletes a project given the path (args[0]).
+ * <p>
+ * Tries to import a {@link ModelEntity} from the repository to the current
+ * project.
+ * </p>
+ * <p>
+ * The second argument must be the {@link ModelEntity}. The second argument must
+ * be a {@link OnEntityImportedListener}.
+ * </p>
  */
-public class DeleteProject extends EditorAction {
+public class ImportElement extends EditorAction {
 
-	private static final String DELETE_PROJECT = "Delete project";
-
-	public DeleteProject() {
-		super(true, true, String.class);
+	public ImportElement() {
+		super(true, false, ModelEntity.class, OnEntityImportedListener.class);
 	}
 
 	@Override
 	public void perform(Object... args) {
-		EditorGameAssets editorGameAssets = controller.getEditorGameAssets();
-		String projectPath = args[0].toString();
-
-		// Try to delete the project, if possible
-		FileHandle projectHandle = editorGameAssets.absolute(projectPath);
-		if (!projectHandle.exists()) {
-			Gdx.app.log(DELETE_PROJECT, "Project file doesn't exist: "
-					+ projectPath);
-			return;
-		}
-		if (!projectHandle.isDirectory()) {
-			Gdx.app.log(DELETE_PROJECT, "Project file is not a directory: "
-					+ projectPath);
-			return;
-		}
-		projectHandle.deleteDirectory();
+		((MockupController) controller).getRepositoryManager().importElement(
+				(ModelEntity) args[0], controller,
+				(OnEntityImportedListener) args[1]);
 	}
 }

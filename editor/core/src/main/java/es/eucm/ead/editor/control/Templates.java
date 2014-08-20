@@ -46,7 +46,6 @@ import es.eucm.ead.editor.model.Q;
 import es.eucm.ead.engine.assets.Assets.AssetLoadedCallback;
 import es.eucm.ead.schema.editor.components.Documentation;
 import es.eucm.ead.schema.editor.components.GameData;
-import es.eucm.ead.schema.editor.components.Note;
 import es.eucm.ead.schema.effects.GoScene;
 import es.eucm.ead.schema.entities.ModelEntity;
 import es.eucm.ead.schema.renderers.Image;
@@ -81,8 +80,8 @@ public class Templates {
 	public ModelEntity createGame(String title, String description, int width,
 			int height) {
 		ModelEntity game = new ModelEntity();
-		Note note = Q.getComponent(game, Note.class);
-		note.setTitle(title);
+		Documentation note = Q.getComponent(game, Documentation.class);
+		note.setName(title);
 		note.setDescription(description);
 		GameData gameData = Q.getComponent(game, GameData.class);
 		gameData.setWidth(width);

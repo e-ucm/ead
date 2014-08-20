@@ -51,9 +51,12 @@ import es.eucm.ead.editor.platform.Platform;
 
 public class MockupController extends Controller {
 
+	private RepositoryManager repositoryManager;
+
 	public MockupController(Platform platform, Files files,
 			final Group rootComponent) {
 		super(platform, files, rootComponent, rootComponent);
+		repositoryManager = new RepositoryManager();
 
 		// This allows us to catch events related with
 		// the back key in Android.
@@ -67,14 +70,15 @@ public class MockupController extends Controller {
 				// touch down anywhere else but the text field.
 				Stage stage = rootComponent.getStage();
 				if (!(event.getTarget() instanceof TextField)) {
-					stage.unfocusAll();
 					Gdx.input.setOnscreenKeyboardVisible(false);
+					stage.setKeyboardFocus(null);
+					stage.unfocusAll();
 				}
 				return false;
 			}
 
 			@Override
-			public boolean keyDown(InputEvent event, int keycode) {
+			public boolean keyUp(InputEvent event, int keycode) {
 				if (keycode == Keys.BACK
 						|| (Gdx.app.getType() == Application.ApplicationType.Desktop && keycode == Keys.ALT_LEFT)) {
 					((MockupViews) MockupController.this.views).onBackPressed();
@@ -82,6 +86,10 @@ public class MockupController extends Controller {
 				return true;
 			}
 		});
+	}
+
+	public RepositoryManager getRepositoryManager() {
+		return repositoryManager;
 	}
 
 	@Override

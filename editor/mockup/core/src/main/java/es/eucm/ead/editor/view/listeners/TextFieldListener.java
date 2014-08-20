@@ -34,42 +34,32 @@
  *      You should have received a copy of the GNU Lesser General Public License
  *      along with eAdventure.  If not, see <http://www.gnu.org/licenses/>.
  */
-package es.eucm.ead.editor.control.actions.editor;
+package es.eucm.ead.editor.view.listeners;
 
-import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.files.FileHandle;
+import com.badlogic.gdx.scenes.scene2d.InputEvent;
+import com.badlogic.gdx.scenes.scene2d.InputListener;
+import com.badlogic.gdx.scenes.scene2d.ui.TextField;
 
-import es.eucm.ead.editor.assets.EditorGameAssets;
-import es.eucm.ead.editor.control.actions.EditorAction;
+public abstract class TextFieldListener extends InputListener {
 
-/**
- * Deletes a project given the path (args[0]).
- */
-public class DeleteProject extends EditorAction {
+	private String currentText;
+	private TextField textField;
 
-	private static final String DELETE_PROJECT = "Delete project";
-
-	public DeleteProject() {
-		super(true, true, String.class);
+	public TextFieldListener(TextField textField) {
+		this.textField = textField;
 	}
 
 	@Override
-	public void perform(Object... args) {
-		EditorGameAssets editorGameAssets = controller.getEditorGameAssets();
-		String projectPath = args[0].toString();
-
-		// Try to delete the project, if possible
-		FileHandle projectHandle = editorGameAssets.absolute(projectPath);
-		if (!projectHandle.exists()) {
-			Gdx.app.log(DELETE_PROJECT, "Project file doesn't exist: "
-					+ projectPath);
-			return;
+	public boolean keyTyped(InputEvent event, char character) {
+		String text = textField.getText();
+		if (!text.equals(currentText)) {
+			currentText = text;
+			keyTyped(text);
+			return true;
 		}
-		if (!projectHandle.isDirectory()) {
-			Gdx.app.log(DELETE_PROJECT, "Project file is not a directory: "
-					+ projectPath);
-			return;
-		}
-		projectHandle.deleteDirectory();
+		return false;
 	}
+
+	protected abstract void keyTyped(String text);
+
 }
