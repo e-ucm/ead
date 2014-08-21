@@ -36,6 +36,8 @@
  */
 package es.eucm.ead.editor;
 
+import java.io.File;
+
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input.TextInputListener;
 import com.badlogic.gdx.backends.lwjgl.LwjglFrame;
@@ -78,5 +80,17 @@ public class MockupDesktopPlatform extends MockupPlatform {
 			}
 
 		}, "File path!", "");
+	}
+
+	@Override
+	public void captureImage(File photoFile,
+			final ImageCapturedListener listener) {
+		Gdx.app.postRunnable(new Runnable() {
+
+			@Override
+			public void run() {
+				listener.imageCaptured(true);
+			}
+		});
 	}
 }
