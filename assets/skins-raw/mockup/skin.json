@@ -71,6 +71,7 @@
 		white: {
 			up: button_normal, 
 			down: button_pressed, 
+			checked: button_pressed,
 			over: button_normal, 
 			disabled: button_disabled
 		}
