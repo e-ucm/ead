@@ -226,6 +226,7 @@ public class Model {
 		clearListeners();
 		index.clear();
 		selection.clear();
+		viewListeners.clear();
 		removedResources.clear();
 	}
 

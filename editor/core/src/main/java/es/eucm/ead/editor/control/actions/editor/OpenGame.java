@@ -47,8 +47,10 @@ import com.badlogic.gdx.utils.reflect.ReflectionException;
 
 import es.eucm.ead.editor.assets.EditorGameAssets;
 import es.eucm.ead.editor.control.Preferences;
+import es.eucm.ead.editor.control.Selection;
 import es.eucm.ead.editor.control.actions.EditorAction;
 import es.eucm.ead.editor.control.actions.EditorActionException;
+import es.eucm.ead.editor.control.actions.model.EditScene;
 import es.eucm.ead.editor.model.Model;
 import es.eucm.ead.editor.model.Model.ModelListener;
 import es.eucm.ead.editor.model.Model.Resource;
@@ -181,7 +183,7 @@ public class OpenGame extends EditorAction implements FileChooserListener,
 	 * 
 	 * @param model
 	 */
-	private void checks(Model model) {
+	protected void checks(Model model) {
 		addParents(model);
 		setEditionState(model);
 		checkSceneMap(model);
@@ -203,10 +205,16 @@ public class OpenGame extends EditorAction implements FileChooserListener,
 	}
 
 	private void setEditionState(Model model) {
-		final EditState editState = Q.getComponent(model.getGame(),
-				EditState.class);
+		ModelEntity game = model.getGame();
+		final EditState editState = Q.getComponent(game, EditState.class);
+		final String gameId = model.getIdFor(game);
 		if (editState.getView() != null) {
 			try {
+				String editScene = editState.getEditScene();
+				if (editScene != null && !editScene.isEmpty()) {
+					controller.action(EditScene.class, editScene);
+				}
+
 				Class viewClass = ClassReflection.forName(editState.getView());
 
 				int i = 0;
@@ -215,7 +223,6 @@ public class OpenGame extends EditorAction implements FileChooserListener,
 				for (Object arg : editState.getArguments()) {
 					args[i++] = arg;
 				}
-
 				controller.action(ChangeView.class, args);
 			} catch (ReflectionException e) {
 				Gdx.app.error("OpenGame",
@@ -225,9 +232,16 @@ public class OpenGame extends EditorAction implements FileChooserListener,
 		controller.getModel().addViewListener(new ModelListener<ViewEvent>() {
 			@Override
 			public void modelChanged(ViewEvent event) {
+				Model model = controller.getModel();
+				model.getResource(gameId).setModified(true);
 				editState.setView(event.getViewClass().getName());
 				editState.getArguments().clear();
 				editState.getArguments().addAll(event.getArgs());
+				Object object = model.getSelection().getSingle(Selection.SCENE);
+				if (object instanceof ModelEntity) {
+					String id = model.getIdFor(object);
+					editState.setEditScene(id);
+				}
 			}
 		});
 	}

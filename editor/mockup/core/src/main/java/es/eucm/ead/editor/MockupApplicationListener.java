@@ -43,7 +43,11 @@ import com.badlogic.gdx.utils.viewport.ExtendViewport;
 
 import es.eucm.ead.editor.control.Controller;
 import es.eucm.ead.editor.control.MockupController;
+import es.eucm.ead.editor.control.Preferences;
+import es.eucm.ead.editor.control.actions.EditorActionException;
 import es.eucm.ead.editor.control.actions.editor.ChangeView;
+import es.eucm.ead.editor.control.actions.editor.OpenMockupGame;
+import es.eucm.ead.editor.control.actions.editor.Save;
 import es.eucm.ead.editor.platform.Platform;
 import es.eucm.ead.editor.view.builders.gallery.ProjectsView;
 
@@ -66,7 +70,28 @@ public class MockupApplicationListener extends EditorApplicationListener {
 
 	@Override
 	protected void initialize() {
-		controller.action(ChangeView.class, ProjectsView.class);
+		String projectToOpenPath = controller.getPreferences().getString(
+				Preferences.LAST_OPENED_GAME);
+
+		if (projectToOpenPath != null && !"".equals(projectToOpenPath)) {
+			try {
+				controller.action(OpenMockupGame.class, projectToOpenPath,
+						stage);
+			} catch (EditorActionException eae) {
+				// the project is probably corrupt; complain but continue
+				Gdx.app.log("OpenLastProject", "Error opening '"
+						+ projectToOpenPath + "'; ignoring request");
+				controller.action(ChangeView.class, ProjectsView.class);
+			}
+		} else {
+			controller.action(ChangeView.class, ProjectsView.class);
+		}
+	}
+
+	@Override
+	public void pause() {
+		super.pause();
+		controller.action(Save.class);
 	}
 
 	@Override

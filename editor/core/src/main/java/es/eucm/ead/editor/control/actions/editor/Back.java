@@ -39,6 +39,7 @@ package es.eucm.ead.editor.control.actions.editor;
 import es.eucm.ead.editor.control.Controller;
 import es.eucm.ead.editor.control.actions.EditorAction;
 import es.eucm.ead.editor.model.Model.ModelListener;
+import es.eucm.ead.editor.model.events.LoadEvent;
 import es.eucm.ead.editor.model.events.ViewEvent;
 
 /**
@@ -46,17 +47,26 @@ import es.eucm.ead.editor.model.events.ViewEvent;
  */
 public class Back extends EditorAction {
 
+	private final ModelListener<ViewEvent> updateEnable = new ModelListener<ViewEvent>() {
+		@Override
+		public void modelChanged(ViewEvent event) {
+			updateEnable();
+		}
+	};
+
 	public Back() {
 		super(true, false);
 	}
 
 	@Override
-	public void initialize(Controller controller) {
+	public void initialize(final Controller controller) {
 		super.initialize(controller);
-		controller.getModel().addViewListener(new ModelListener<ViewEvent>() {
+		controller.getModel().addLoadListener(new ModelListener<LoadEvent>() {
+
 			@Override
-			public void modelChanged(ViewEvent event) {
-				updateEnable();
+			public void modelChanged(LoadEvent event) {
+				controller.getModel().addViewListener(updateEnable);
+
 			}
 		});
 		updateEnable();
