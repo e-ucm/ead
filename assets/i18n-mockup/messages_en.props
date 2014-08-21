@@ -20,3 +20,4 @@ repository.importingError = Something went wrong while importing
 repository.refreshing = Refreshing...
 repository.refreshingError = Something went wrong while refreshing
 project = Project
+picture = Picture
