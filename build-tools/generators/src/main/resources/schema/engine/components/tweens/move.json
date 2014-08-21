@@ -9,11 +9,11 @@
     "properties": {
         "x": {
             "type": "number",
-            "description": "x target for the tween"
+            "description": "x target for the tween. When its value is {@link Float#NaN} the entity only moves vertically"
         },
         "y": {
             "type": "number",
-            "description": "y target for the tween"
+            "description": "y target for the tween. When its value is {@link Float#NaN} the entity only moves horizontally"
         }
     }
 }

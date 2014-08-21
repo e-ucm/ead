@@ -52,7 +52,15 @@ public class MoveTweenCreator extends TweenCreator<MoveTween> {
 			} else if (moveTween.getY() == 0.0f) {
 				return GroupAccessor.X;
 			}
+		} else {
+			if (Float.isNaN(moveTween.getX())) {
+				return GroupAccessor.Y;
+			}
+			if (Float.isNaN(moveTween.getY())) {
+				return GroupAccessor.X;
+			}
 		}
+
 		return GroupAccessor.POSITION;
 	}
 
