@@ -34,80 +34,63 @@
  *      You should have received a copy of the GNU Lesser General Public License
  *      along with eAdventure.  If not, see <http://www.gnu.org/licenses/>.
  */
-package es.eucm.ead.editor.view.builders;
+package es.eucm.ead.editor.view.widgets.editionview;
 
-import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
-import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.scenes.scene2d.utils.Align;
 
 import es.eucm.ead.editor.control.Controller;
 import es.eucm.ead.editor.view.widgets.IconButton;
 import es.eucm.ead.editor.view.widgets.Toolbar;
-import es.eucm.ead.editor.view.widgets.editionview.LeftEditionToolbar;
-import es.eucm.ead.editor.view.widgets.editionview.TopEditionToolbar;
-import es.eucm.ead.editor.view.widgets.layouts.LinearLayout;
+import es.eucm.ead.editor.view.widgets.editionview.prefabs.ChangeVariablePanel;
+import es.eucm.ead.editor.view.widgets.editionview.prefabs.DeparturePanel;
+import es.eucm.ead.editor.view.widgets.editionview.prefabs.TweensPanel;
+import es.eucm.ead.editor.view.widgets.editionview.prefabs.VisibilityPanel;
 
-public class EditionView implements ViewBuilder {
+public class LeftEditionToolbar extends Toolbar {
 
-	private static final float PAD = 40, HEIGHT = 0.06f, ICON_SIZE = 0.04f;
+	private float width;
 
-	private Table view;
-
-	@Override
-	public void initialize(Controller controller) {
-
-		Gdx.gl.glClearColor(1f, 1f, 1f, 1f);
-
-		float toolbarSize = controller.getPlatform().getSize().y * HEIGHT;
-		float iconSize = controller.getPlatform().getSize().y * ICON_SIZE;
+	public LeftEditionToolbar(Controller controller, String style, float width,
+			float iconSize, float PAD) {
+		super(controller.getApplicationAssets().getSkin(), style);
 
 		Skin skin = controller.getApplicationAssets().getSkin();
 
-		view = new Table();
-		view.setFillParent(true);
-		view.align(Align.top);
+		this.width = width;
 
-		final Toolbar topBar = new TopEditionToolbar(controller, "white_top",
-				toolbarSize, iconSize, PAD);
-		final Toolbar leftBar = new LeftEditionToolbar(controller,
-				"white_left", toolbarSize, iconSize, PAD);
+		align(Align.center);
 
-		// TODO widget
-		IconButton union = new IconButton("menu", 0, skin, "white_union") {
-			@Override
-			public float getPrefHeight() {
-				return topBar.getPrefHeight();
-			}
+		addInNewRow(
+				new DeparturePanel("gateway_reverse80x80", iconSize,
+						controller, this)).padBottom(PAD);
+		addInNewRow(
+				new ChangeVariablePanel("variable80x80", iconSize, controller,
+						this)).padBottom(PAD);
 
-			@Override
-			public float getPrefWidth() {
-				return leftBar.getPrefWidth();
-			}
-		};
+		// TODO change
+		IconButton sound = new IconButton("sound80x80", 0, skin);
+		addInNewRow(sound).size(iconSize).padBottom(PAD);
 
-		LinearLayout top = new LinearLayout(true);
-		top.add(union);
-		top.add(topBar).expandX();
+		// TODO change
+		IconButton conversations = new IconButton("conversation80x80", 0, skin);
+		addInNewRow(conversations).size(iconSize).padBottom(PAD);
 
-		Table center = new Table();
-		center.align(Align.left);
-		center.add(leftBar).expandY().fill();
+		addInNewRow(
+				new VisibilityPanel("visibility80x80", iconSize, controller,
+						this)).padBottom(PAD);
 
-		view.add(top).expandX().fill();
-		view.row();
-		view.add(center).expand().fill();
+		// TODO change
+		IconButton lock = new IconButton("lock80x80", 0, skin);
+		addInNewRow(lock).size(iconSize).padBottom(PAD);
+
+		addInNewRow(new TweensPanel("tween80x80", iconSize, controller, this))
+				.padBottom(PAD);
 	}
 
 	@Override
-	public void release(Controller controller) {
-
-	}
-
-	@Override
-	public Actor getView(Object... args) {
-		return view;
+	public float getPrefWidth() {
+		return width;
 	}
 
 }
