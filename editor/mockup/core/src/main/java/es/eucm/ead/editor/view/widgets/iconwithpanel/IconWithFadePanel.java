@@ -53,32 +53,35 @@ public class IconWithFadePanel extends IconWithPanel {
 	private static final float IN_DURATION = .3F;
 	private static final float OUT_DURATION = .2F;
 	private Position position;
+	private float separation;
 
 	public static enum Position {
 		BOTTOM, RIGHT
 	}
 
-	public IconWithFadePanel(String icon, float padding, Skin skin) {
-		this(icon, padding, -1, skin, Position.RIGHT);
+	public IconWithFadePanel(String icon, float padding, float separation,
+			Skin skin) {
+		this(icon, padding, separation, -1, skin, Position.RIGHT);
 
 	}
 
-	public IconWithFadePanel(String icon, float padding, Skin skin,
-			Position position) {
-		this(icon, padding, -1, skin, position);
+	public IconWithFadePanel(String icon, float padding, float separation,
+			Skin skin, Position position) {
+		this(icon, padding, separation, -1, skin, position);
 
 	}
 
-	public IconWithFadePanel(String icon, float padding, float size, Skin skin) {
-		this(icon, padding, size, skin, Position.RIGHT);
+	public IconWithFadePanel(String icon, float padding, float separation,
+			float size, Skin skin) {
+		this(icon, padding, separation, size, skin, Position.RIGHT);
 
 	}
 
-	public IconWithFadePanel(String icon, float padding, float size, Skin skin,
-			Position position) {
+	public IconWithFadePanel(String icon, float padding, float separation,
+			float size, Skin skin, Position position) {
 		super(icon, padding, size, skin);
 		this.position = position;
-
+		this.separation = separation;
 	}
 
 	@Override
@@ -112,12 +115,13 @@ public class IconWithFadePanel extends IconWithPanel {
 		float panelPrefHeight = panel.getPrefHeight();
 		if (position == Position.RIGHT) {
 			float panelPrefY = Math.max(0f, y + getHeight() - panelPrefHeight);
-			setPanelBounds(x + getWidth(), panelPrefY, panel.getPrefWidth(),
-					panelPrefHeight);
+			setPanelBounds(x + getWidth() + separation, panelPrefY,
+					panel.getPrefWidth(), panelPrefHeight);
 		} else if (position == Position.BOTTOM) {
 			float panelPrefWidth = panel.getPrefWidth();
 			setPanelBounds(x + (getWidth() - panelPrefWidth) * .5f, y
-					- panelPrefHeight, panel.getPrefWidth(), panelPrefHeight);
+					- panelPrefHeight - separation, panel.getPrefWidth(),
+					panelPrefHeight);
 		}
 	}
 }
