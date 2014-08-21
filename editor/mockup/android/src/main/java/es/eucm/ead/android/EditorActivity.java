@@ -74,7 +74,7 @@ public class EditorActivity extends AndroidApplication {
 
 	@Override
 	protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-		final ActivityResultListener listener = this.listeners.get(requestCode);
+		ActivityResultListener listener = this.listeners.get(requestCode);
 		if (listener != null) {
 			listener.result(resultCode, data);
 		}

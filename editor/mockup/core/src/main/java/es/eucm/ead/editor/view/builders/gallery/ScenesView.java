@@ -54,7 +54,6 @@ import es.eucm.ead.editor.control.actions.model.scene.NewScene;
 import es.eucm.ead.editor.model.Model.Resource;
 import es.eucm.ead.editor.model.Q;
 import es.eucm.ead.editor.view.builders.EditionView;
-import es.eucm.ead.editor.view.builders.LibrariesView;
 import es.eucm.ead.editor.view.listeners.TextFieldListener;
 import es.eucm.ead.editor.view.widgets.Notification;
 import es.eucm.ead.editor.view.widgets.ToolbarIcon;
@@ -173,6 +172,7 @@ public class ScenesView extends BaseGallery {
 
 	@Override
 	public Actor getView(Object... args) {
+		controller.getCommands().clear();
 		ModelEntity game = controller.getModel().getGame();
 		projectName.setText(Q.getName(game, ""));
 		return super.getView(args);
@@ -184,7 +184,7 @@ public class ScenesView extends BaseGallery {
 				((SceneItem) item).getScene());
 		if (sceneId != null) {
 			controller.action(EditScene.class, sceneId);
-			controller.action(ChangeView.class, LibrariesView.class);
+			controller.action(ChangeView.class, EditionView.class);
 		}
 	}
 }

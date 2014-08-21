@@ -67,7 +67,7 @@ public class RepositoryView extends BaseGallery implements ProgressListener,
 
 	private static final float DEFAULT_NOTIF_TIMEOUT = 2.5F;
 
-	private Notification importingNotif, updatingNotif, errorRefreshing,
+	private Notification importingNotif, updatingNotif, errorUpdating,
 			errorImporting;
 
 	@Override
@@ -77,7 +77,7 @@ public class RepositoryView extends BaseGallery implements ProgressListener,
 				.m("repository.importing"));
 		this.updatingNotif = new Notification(skin).text(i18n
 				.m("repository.refreshing"));
-		this.errorRefreshing = new Notification(skin).text(i18n
+		this.errorUpdating = new Notification(skin).text(i18n
 				.m("repository.refreshingError"));
 		this.errorImporting = new Notification(skin).text(i18n
 				.m("repository.importingError"));
@@ -142,7 +142,7 @@ public class RepositoryView extends BaseGallery implements ProgressListener,
 	@Override
 	public void finished(boolean succeeded, Controller controller) {
 		if (!succeeded) {
-			errorRefreshing.show(getStage(), DEFAULT_NOTIF_TIMEOUT);
+			errorUpdating.show(getStage(), DEFAULT_NOTIF_TIMEOUT);
 		}
 		controller.getBackgroundExecutor().submit(loadingTask, taskListener);
 	}
@@ -220,6 +220,8 @@ public class RepositoryView extends BaseGallery implements ProgressListener,
 
 		@Override
 		public void error(Throwable e) {
+			updatingNotif.hide();
+			errorUpdating.show(getStage(), DEFAULT_NOTIF_TIMEOUT);
 		}
 	};
 }

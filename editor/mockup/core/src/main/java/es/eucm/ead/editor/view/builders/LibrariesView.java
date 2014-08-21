@@ -74,6 +74,7 @@ public class LibrariesView implements ViewBuilder, ProgressListener {
 
 	@Override
 	public Actor getView(Object... args) {
+		libsGrid.clear();
 		Gdx.app.postRunnable(new Runnable() {
 			@Override
 			public void run() {
@@ -95,7 +96,7 @@ public class LibrariesView implements ViewBuilder, ProgressListener {
 		this.refreshingNotif = new Notification(skin).text(i18n
 				.m("repository.refreshing"));
 		this.errorReftreshing = new Notification(skin).text(i18n
-				.m("refreshingError"));
+				.m("repository.refreshingError"));
 
 		Button backButton = new ToolbarIcon(IC_GO_BACK, BaseGallery.ICON_PAD,
 				viewport.y * BaseGallery.TOOLBAR_SIZE, skin);
@@ -158,11 +159,10 @@ public class LibrariesView implements ViewBuilder, ProgressListener {
 			if (libs.size == 0)
 				return;
 
-			libsGrid.clear();
-			final Skin skin = controller.getApplicationAssets().getSkin();
+			Skin skin = controller.getApplicationAssets().getSkin();
 
 			for (int i = 0; i < libs.size; ++i) {
-				TextButton lib = new TextButton(libs.get(i), skin);
+				TextButton lib = new TextButton(libs.get(i), skin, "white");
 				lib.getLabel().setWrap(true);
 				libsGrid.addItem(lib).minHeight(BaseGallery.MIN_ITEM_HEIGHT);
 			}
