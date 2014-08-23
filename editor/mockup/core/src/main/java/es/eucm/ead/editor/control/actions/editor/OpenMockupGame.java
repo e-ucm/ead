@@ -36,49 +36,62 @@
  */
 package es.eucm.ead.editor.control.actions.editor;
 
-import es.eucm.ead.editor.control.Controller;
-import es.eucm.ead.editor.control.actions.EditorAction;
-import es.eucm.ead.editor.model.Model.ModelListener;
-import es.eucm.ead.editor.model.events.LoadEvent;
-import es.eucm.ead.editor.model.events.ViewEvent;
+import static com.badlogic.gdx.scenes.scene2d.actions.Actions.delay;
+import static com.badlogic.gdx.scenes.scene2d.actions.Actions.forever;
+import static com.badlogic.gdx.scenes.scene2d.actions.Actions.run;
 
-/**
- * Goes to previous view. It receives no arguments
- */
-public class Back extends EditorAction {
+import com.badlogic.gdx.scenes.scene2d.Stage;
 
-	private final ModelListener<ViewEvent> updateEnable = new ModelListener<ViewEvent>() {
-		@Override
-		public void modelChanged(ViewEvent event) {
-			updateEnable();
-		}
-	};
+import es.eucm.ead.editor.control.background.BackgroundExecutor;
+import es.eucm.ead.editor.control.background.BackgroundExecutor.BackgroundTaskListener;
+import es.eucm.ead.editor.control.background.BackgroundTask;
 
-	public Back() {
-		super(true, false);
-	}
+public class OpenMockupGame extends OpenGame {
+	/**
+	 * Saving interval in seconds.
+	 */
+	private static final float SAVE_DELAY = 30f;
 
-	@Override
-	public void initialize(final Controller controller) {
-		super.initialize(controller);
-		controller.getModel().addLoadListener(new ModelListener<LoadEvent>() {
-
-			@Override
-			public void modelChanged(LoadEvent event) {
-				controller.getModel().addViewListener(updateEnable);
-
-			}
-		});
-		updateEnable();
-	}
+	private boolean saving = false;
 
 	@Override
 	public void perform(Object... args) {
-		controller.getViews().back();
+		fileChosen(args[0].toString());
+		if (!saving) {
+			saving = true;
+			((Stage) args[1])
+					.addAction(forever(delay(SAVE_DELAY, run(saveGame))));
+		}
 	}
 
-	protected void updateEnable() {
-		setEnabled(controller.getViews().getViewsHistory().getPreviousViews()
-				.size() > 1);
-	}
+	private final Runnable saveGame = new Runnable() {
+		@Override
+		public void run() {
+			controller.getBackgroundExecutor().submit(saveTask, saveListener);
+		}
+
+		private final BackgroundTaskListener<Boolean> saveListener = new BackgroundTaskListener<Boolean>() {
+
+			@Override
+			public void completionPercentage(float percentage) {
+			}
+
+			@Override
+			public void done(BackgroundExecutor backgroundExecutor,
+					Boolean result) {
+			}
+
+			@Override
+			public void error(Throwable e) {
+			}
+		};
+
+		private final BackgroundTask<Boolean> saveTask = new BackgroundTask<Boolean>() {
+			@Override
+			public Boolean call() throws Exception {
+				controller.action(Save.class);
+				return true;
+			}
+		};
+	};
 }

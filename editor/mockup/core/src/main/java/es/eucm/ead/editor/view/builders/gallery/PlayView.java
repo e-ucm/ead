@@ -46,6 +46,7 @@ import com.badlogic.gdx.scenes.scene2d.ui.Stack;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 
 import es.eucm.ead.editor.control.Controller;
+import es.eucm.ead.editor.control.MockupViews;
 import es.eucm.ead.editor.control.engine.Engine;
 import es.eucm.ead.editor.view.builders.ViewBuilder;
 import es.eucm.ead.editor.view.widgets.EnginePlayer;
@@ -77,7 +78,7 @@ public class PlayView implements ViewBuilder {
 		back.addListener(new ClickListener() {
 			@Override
 			public void clicked(InputEvent event, float x, float y) {
-				controller.getViews().back();
+				((MockupViews) controller.getViews()).onBackPressed();
 			}
 		});
 		Container container = new Container(back);

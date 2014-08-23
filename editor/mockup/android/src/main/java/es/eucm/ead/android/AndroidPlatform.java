@@ -36,10 +36,18 @@
  */
 package es.eucm.ead.android;
 
+import java.io.Closeable;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.IOException;
 import java.io.InputStream;
 import java.util.List;
 
+import android.app.Activity;
 import android.app.AlertDialog;
+import android.app.ProgressDialog;
 import android.content.ComponentName;
 import android.content.Context;
 import android.content.DialogInterface;
@@ -50,25 +58,29 @@ import android.content.pm.PackageManager;
 import android.content.pm.PackageManager.NameNotFoundException;
 import android.content.pm.ResolveInfo;
 import android.database.Cursor;
+import android.graphics.Bitmap;
+import android.graphics.Bitmap.CompressFormat;
+import android.graphics.BitmapFactory;
 import android.net.Uri;
+import android.os.AsyncTask;
 import android.provider.MediaStore;
 
 import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.math.Vector2;
 
 import es.eucm.ead.android.EditorActivity.ActivityResultListener;
-import es.eucm.ead.editor.platform.AbstractPlatform;
+import es.eucm.ead.editor.platform.MockupPlatform;
 import es.eucm.ead.engine.I18N;
 import es.eucm.ead.schema.data.Dimension;
 import es.eucm.network.requests.RequestHelper;
 
-public class AndroidPlatform extends AbstractPlatform {
+public class AndroidPlatform extends MockupPlatform {
 
 	private static final String IMAGE_TO_EDIT_MIME_TYPE = "image/*";
 	private static final String PLATFORM_TAG = "AndroidPlatform";
 
 	private static final int PICK_FILE = 0;
 	private static final int EDIT_FILE = 1;
+	private static final int CAPTURE_PHOTO = 2;
 
 	private enum Editor {
 
@@ -94,12 +106,9 @@ public class AndroidPlatform extends AbstractPlatform {
 		}
 	}
 
-	private final Vector2 screenDimensions;
 	private final String[] names;
 
 	public AndroidPlatform() {
-
-		this.screenDimensions = new Vector2(1280f, 800f);
 
 		Editor[] values = Editor.values();
 		names = new String[values.length];
@@ -315,11 +324,6 @@ public class AndroidPlatform extends AbstractPlatform {
 	}
 
 	@Override
-	public Vector2 getSize() {
-		return this.screenDimensions;
-	}
-
-	@Override
 	public RequestHelper getRequestHelper() {
 		// Do nothing
 		return null;
@@ -329,5 +333,187 @@ public class AndroidPlatform extends AbstractPlatform {
 	public Dimension getImageDimension(InputStream imageInputStream) {
 		// Do nothing
 		return null;
+	}
+
+	@Override
+	public void captureImage(final File photoFile,
+			final ImageCapturedListener listener) {
+		final EditorActivity activity = (EditorActivity) Gdx.app;
+		if (activity.getPackageManager().hasSystemFeature(
+				PackageManager.FEATURE_CAMERA)) {
+			Intent takePictureIntent = new Intent(
+					MediaStore.ACTION_IMAGE_CAPTURE);
+
+			// Ensure that there's a camera activity to handle the intent
+			if (takePictureIntent.resolveActivity(activity.getPackageManager()) != null) {
+				// We need to create an empty file if it doesn't exist in order
+				// to avoid a known bug in some devices with the camera intent
+				if (!photoFile.exists()) {
+					photoFile.getParentFile().mkdirs();
+					try {
+						photoFile.createNewFile();
+					} catch (IOException ioex) {
+						listener.imageCaptured(false);
+						Gdx.app.error(PLATFORM_TAG,
+								"Failed to create an empty photo file:  "
+										+ ioex);
+						return;
+					}
+				}
+				takePictureIntent.putExtra(MediaStore.EXTRA_OUTPUT,
+						Uri.fromFile(photoFile));
+				activity.startActivityForResult(takePictureIntent,
+						CAPTURE_PHOTO, new ActivityResultListener() {
+
+							@Override
+							public void result(int resultCode, Intent data) {
+								if (resultCode == Activity.RESULT_OK) {
+									new DecodeTask(listener, photoFile)
+											.execute();
+								}
+							}
+						});
+			} else {
+				listener.imageCaptured(false);
+			}
+		} else {
+			listener.imageCaptured(false);
+		}
+	}
+
+	public class DecodeTask extends AsyncTask<Void, Void, Boolean> {
+
+		private ProgressDialog mPleaseWaitDialog = null;
+		private ImageCapturedListener listener;
+		private File file;
+
+		public DecodeTask(ImageCapturedListener listener, File file) {
+			this.listener = listener;
+			this.file = file;
+		}
+
+		public void showDecodingDialog() {
+			if (mPleaseWaitDialog != null) {
+				return;
+			}
+
+			mPleaseWaitDialog = new ProgressDialog((EditorActivity) Gdx.app);
+			mPleaseWaitDialog.setIndeterminate(true);
+			mPleaseWaitDialog.show();
+		}
+
+		public void cancelDecodingDialog() {
+			if (mPleaseWaitDialog != null) {
+				mPleaseWaitDialog.dismiss();
+				mPleaseWaitDialog = null;
+			}
+		}
+
+		@Override
+		protected void onPostExecute(Boolean success) {
+			super.onPostExecute(success);
+			cancelDecodingDialog();
+			listener.imageCaptured(success);
+		}
+
+		@Override
+		protected void onPreExecute() {
+			super.onPreExecute();
+			showDecodingDialog();
+		}
+
+		@Override
+		protected Boolean doInBackground(Void... args) {
+
+			return decodeFile(file, Gdx.graphics.getWidth(),
+					Gdx.graphics.getHeight());
+		}
+	};
+
+	/**
+	 * Decodes image and scales it to reduce memory consumption.
+	 */
+	private boolean decodeFile(File file, int targetWidth, int targetHeight) {
+		boolean success = false;
+		FileInputStream decodedFis = null;
+		FileInputStream scaledFis = null;
+		FileOutputStream savedFos = null;
+		Bitmap retBmap = null;
+		try {
+
+			// Decode image size
+			BitmapFactory.Options bmOptions = new BitmapFactory.Options();
+			bmOptions.inJustDecodeBounds = true;
+			decodedFis = new FileInputStream(file);
+			BitmapFactory.decodeStream(decodedFis, null, bmOptions);
+
+			if (bmOptions.outWidth > targetWidth
+					|| bmOptions.outHeight > targetHeight) {
+				// Find the correct scale value. It should be the power of 2.
+				int scale = 1;
+				while (bmOptions.outWidth / scale / 2 >= targetWidth
+						&& bmOptions.outHeight / scale / 2 >= targetHeight) {
+					scale *= 2;
+				}
+
+				if (scale != 1) {
+					// Decode with inSampleSize
+					bmOptions.inJustDecodeBounds = false;
+					bmOptions.inSampleSize = scale;
+					bmOptions.inPurgeable = true;
+					scaledFis = new FileInputStream(file);
+					retBmap = BitmapFactory.decodeStream(scaledFis, null,
+							bmOptions);
+
+					savedFos = new FileOutputStream(file);
+					retBmap.compress(CompressFormat.JPEG, 90, savedFos);
+					savedFos.flush();
+					Gdx.app.error(PLATFORM_TAG,
+							"Scaling image, scalingFactor:  " + scale);
+				}
+			}
+
+			success = true;
+			Gdx.app.error(PLATFORM_TAG,
+					"New image saved! " + file.getAbsolutePath());
+		} catch (FileNotFoundException fnfex) {
+			deleteFile(file);
+			Gdx.app.error(PLATFORM_TAG, "File not found! ", fnfex);
+		} catch (IOException ioex) {
+			deleteFile(file);
+			Gdx.app.error(PLATFORM_TAG, "File not saved! ", ioex);
+		} finally {
+			if (retBmap != null) {
+				retBmap.recycle();
+				retBmap = null;
+			}
+			close(decodedFis);
+			close(scaledFis);
+			close(savedFos);
+		}
+		return success;
+	}
+
+	private void close(Closeable closeable) {
+		if (closeable != null) {
+			try {
+				closeable.close();
+			} catch (Exception ex) {
+				Gdx.app.log(
+						PLATFORM_TAG,
+						"Something went wrong closing the stream "
+								+ closeable.toString(), ex);
+				// Ignore ...
+				// any significant errors should already have been
+				// reported via an IOException from the final flush.
+			}
+			closeable = null;
+		}
+	}
+
+	private void deleteFile(File file) {
+		if (file != null && file.exists()) {
+			file.delete();
+		}
 	}
 }

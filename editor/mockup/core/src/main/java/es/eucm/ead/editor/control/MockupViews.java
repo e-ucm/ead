@@ -39,6 +39,9 @@ package es.eucm.ead.editor.control;
 import com.badlogic.gdx.scenes.scene2d.Group;
 
 import es.eucm.ead.editor.control.MockupController.BackListener;
+import es.eucm.ead.editor.control.actions.editor.ChangeView;
+import es.eucm.ead.editor.view.builders.ViewBuilder;
+import es.eucm.ead.editor.view.builders.gallery.ScenesView;
 
 public class MockupViews extends Views implements BackListener {
 
@@ -51,7 +54,11 @@ public class MockupViews extends Views implements BackListener {
 		if (currentView instanceof BackListener) {
 			((BackListener) currentView).onBackPressed();
 		} else {
+			ViewBuilder currView = currentView;
 			back();
+			if (currView == currentView) {
+				controller.action(ChangeView.class, ScenesView.class);
+			}
 		}
 	}
 

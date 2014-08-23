@@ -59,7 +59,7 @@ public class IconWithFadePanel extends IconWithPanel {
 	}
 
 	public IconWithFadePanel(String icon, float padding, Skin skin) {
-		this(icon, padding, -1, skin);
+		this(icon, padding, -1, skin, Position.RIGHT);
 
 	}
 
@@ -70,8 +70,7 @@ public class IconWithFadePanel extends IconWithPanel {
 	}
 
 	public IconWithFadePanel(String icon, float padding, float size, Skin skin) {
-		super(icon, padding, size, skin);
-		position = Position.RIGHT;
+		this(icon, padding, size, skin, Position.RIGHT);
 
 	}
 

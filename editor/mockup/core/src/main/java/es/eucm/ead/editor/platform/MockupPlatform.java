@@ -36,6 +36,7 @@
  */
 package es.eucm.ead.editor.platform;
 
+import java.io.File;
 import java.io.InputStream;
 
 import com.badlogic.gdx.math.Vector2;
@@ -86,6 +87,14 @@ public abstract class MockupPlatform extends AbstractPlatform {
 	@Override
 	public Dimension getImageDimension(InputStream imageInputStream) {
 		return null;
+	}
+
+	public abstract void captureImage(File photoFile,
+			ImageCapturedListener listener);
+
+	public interface ImageCapturedListener {
+
+		void imageCaptured(boolean success);
 	}
 
 }

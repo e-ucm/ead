@@ -47,7 +47,7 @@ import es.eucm.ead.editor.control.MockupController.BackListener;
 import es.eucm.ead.editor.control.actions.editor.ChangeView;
 import es.eucm.ead.editor.control.actions.editor.ExitMockup;
 import es.eucm.ead.editor.control.actions.editor.NewGame;
-import es.eucm.ead.editor.control.actions.editor.OpenGame;
+import es.eucm.ead.editor.control.actions.editor.OpenMockupGame;
 import es.eucm.ead.editor.view.widgets.gallery.GalleryItem;
 import es.eucm.ead.editor.view.widgets.gallery.ProjectItem;
 import es.eucm.ead.schema.entities.ModelEntity;
@@ -112,9 +112,11 @@ public class ProjectsView extends BaseGallery implements BackListener {
 
 	@Override
 	public void itemClicked(GalleryItem item) {
-		controller
-				.action(OpenGame.class, ((ProjectItem) item).getProjectPath());
-		controller.action(ChangeView.class, ScenesView.class);
+		controller.action(OpenMockupGame.class,
+				((ProjectItem) item).getProjectPath(), topBar.getStage());
+		if (controller.getViews().getCurrentView() == this) {
+			controller.action(ChangeView.class, ScenesView.class);
+		}
 	}
 
 	@Override

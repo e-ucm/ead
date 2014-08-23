@@ -9,6 +9,10 @@
             "type": "string",
             "description": "Fully qualified class of the current view"
         },
+        "editScene": {
+            "type": "string",
+            "description": "the Id of the edited scene"
+        },
         "arguments": {
             "type": "array",
             "description": "Arguments of the view"
