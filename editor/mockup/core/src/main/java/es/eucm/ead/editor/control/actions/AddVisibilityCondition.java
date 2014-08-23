@@ -34,46 +34,34 @@
  *      You should have received a copy of the GNU Lesser General Public License
  *      along with eAdventure.  If not, see <http://www.gnu.org/licenses/>.
  */
-package es.eucm.ead.engine.systems.tweens.tweencreators;
+package es.eucm.ead.editor.control.actions;
 
-import es.eucm.ead.engine.systems.tweens.GroupAccessor;
-import es.eucm.ead.schema.components.tweens.MoveTween;
+import es.eucm.ead.editor.control.Selection;
+import es.eucm.ead.schema.components.Visibility;
+import es.eucm.ead.schema.entities.ModelEntity;
 
 /**
- * Creates tweens for {@link MoveTween}
+ * Adds a {@link Visibility} component to the current scene element selected
+ * </p>
+ * <dl>
+ * <dt><strong>Arguments</strong></dt>
+ * <dd><strong>args[0]</strong> <em>{@link Visibility}</em> to add</dd>
+ * </dl>
  */
-public class MoveTweenCreator extends TweenCreator<MoveTween> {
+public class AddVisibilityCondition extends EditorAction {
 
-	@Override
-	public int getTweenType(MoveTween moveTween) {
-		if (moveTween.isRelative()) {
-			if (moveTween.getX() == 0.0f) {
-				return GroupAccessor.Y;
-			} else if (moveTween.getY() == 0.0f) {
-				return GroupAccessor.X;
-			}
-		} else {
-			if (Float.isNaN(moveTween.getX())) {
-				return GroupAccessor.Y;
-			}
-			if (Float.isNaN(moveTween.getY())) {
-				return GroupAccessor.X;
-			}
-		}
-
-		return GroupAccessor.POSITION;
+	public AddVisibilityCondition() {
+		super(true, false, Visibility.class);
 	}
 
 	@Override
-	public float[] getTargets(int type, MoveTween tween) {
-		switch (type) {
-		case GroupAccessor.X:
-			return new float[] { tween.getX() };
-		case GroupAccessor.Y:
-			return new float[] { tween.getY() };
-		case GroupAccessor.POSITION:
-			return new float[] { tween.getX(), tween.getY() };
-		}
-		return null;
+	public void perform(Object... args) {
+		Visibility visibility = (Visibility) args[0];
+
+		ModelEntity modelEntity = (ModelEntity) controller.getModel()
+				.getSelection().getSingle(Selection.SCENE_ELEMENT);
+
+		modelEntity.getComponents().add(visibility);
 	}
+
 }

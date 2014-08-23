@@ -34,46 +34,30 @@
  *      You should have received a copy of the GNU Lesser General Public License
  *      along with eAdventure.  If not, see <http://www.gnu.org/licenses/>.
  */
-package es.eucm.ead.engine.systems.tweens.tweencreators;
+package es.eucm.ead.editor.view.widgets.editionview.prefabs.prefabtweens;
 
-import es.eucm.ead.engine.systems.tweens.GroupAccessor;
-import es.eucm.ead.schema.components.tweens.MoveTween;
+import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 
-/**
- * Creates tweens for {@link MoveTween}
- */
-public class MoveTweenCreator extends TweenCreator<MoveTween> {
+import es.eucm.ead.editor.control.Controller;
+import es.eucm.ead.schema.components.tweens.RotateTween;
+import es.eucm.ead.schema.components.tweens.Tween;
 
-	@Override
-	public int getTweenType(MoveTween moveTween) {
-		if (moveTween.isRelative()) {
-			if (moveTween.getX() == 0.0f) {
-				return GroupAccessor.Y;
-			} else if (moveTween.getY() == 0.0f) {
-				return GroupAccessor.X;
-			}
-		} else {
-			if (Float.isNaN(moveTween.getX())) {
-				return GroupAccessor.Y;
-			}
-			if (Float.isNaN(moveTween.getY())) {
-				return GroupAccessor.X;
-			}
-		}
+public class Rotate360Tween extends PrefabTween {
 
-		return GroupAccessor.POSITION;
+	public Rotate360Tween(String icon, String name, Controller controller,
+			Skin skin) {
+		super(icon, name, controller, skin);
 	}
 
 	@Override
-	public float[] getTargets(int type, MoveTween tween) {
-		switch (type) {
-		case GroupAccessor.X:
-			return new float[] { tween.getX() };
-		case GroupAccessor.Y:
-			return new float[] { tween.getY() };
-		case GroupAccessor.POSITION:
-			return new float[] { tween.getX(), tween.getY() };
-		}
-		return null;
+	protected Tween createTween() {
+		RotateTween tween = new RotateTween();
+		tween.setRepeat(-1);
+		tween.setDuration(2);
+		tween.setRelative(true);
+		tween.setRotation(360);
+
+		return tween;
 	}
+
 }

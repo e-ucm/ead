@@ -34,46 +34,32 @@
  *      You should have received a copy of the GNU Lesser General Public License
  *      along with eAdventure.  If not, see <http://www.gnu.org/licenses/>.
  */
-package es.eucm.ead.engine.systems.tweens.tweencreators;
+package es.eucm.ead.editor.editorui;
 
-import es.eucm.ead.engine.systems.tweens.GroupAccessor;
-import es.eucm.ead.schema.components.tweens.MoveTween;
+import java.io.File;
+import java.io.IOException;
 
-/**
- * Creates tweens for {@link MoveTween}
- */
-public class MoveTweenCreator extends TweenCreator<MoveTween> {
+import com.badlogic.gdx.utils.Array;
 
-	@Override
-	public int getTweenType(MoveTween moveTween) {
-		if (moveTween.isRelative()) {
-			if (moveTween.getX() == 0.0f) {
-				return GroupAccessor.Y;
-			} else if (moveTween.getY() == 0.0f) {
-				return GroupAccessor.X;
+import es.eucm.ead.editor.MockupDesktopPlatform;
+
+public class MockPlatform extends MockupDesktopPlatform {
+
+	private Array<File> tempFiles = new Array();
+
+	public File createTempFile(boolean folder) {
+		try {
+			File file = File.createTempFile("eadeditortest", folder ? "folder"
+					: "file");
+			if (folder) {
+				file.delete();
+				file.mkdir();
 			}
-		} else {
-			if (Float.isNaN(moveTween.getX())) {
-				return GroupAccessor.Y;
-			}
-			if (Float.isNaN(moveTween.getY())) {
-				return GroupAccessor.X;
-			}
+			tempFiles.add(file);
+			return file;
+		} catch (IOException e) {
+			e.printStackTrace();
+			return null;
 		}
-
-		return GroupAccessor.POSITION;
-	}
-
-	@Override
-	public float[] getTargets(int type, MoveTween tween) {
-		switch (type) {
-		case GroupAccessor.X:
-			return new float[] { tween.getX() };
-		case GroupAccessor.Y:
-			return new float[] { tween.getY() };
-		case GroupAccessor.POSITION:
-			return new float[] { tween.getX(), tween.getY() };
-		}
-		return null;
 	}
 }

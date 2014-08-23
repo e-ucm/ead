@@ -42,6 +42,7 @@ import static com.badlogic.gdx.scenes.scene2d.actions.Actions.run;
 
 import com.badlogic.gdx.scenes.scene2d.Stage;
 
+import es.eucm.ead.editor.control.actions.EditorActionException;
 import es.eucm.ead.editor.control.background.BackgroundExecutor;
 import es.eucm.ead.editor.control.background.BackgroundExecutor.BackgroundTaskListener;
 import es.eucm.ead.editor.control.background.BackgroundTask;
@@ -56,7 +57,12 @@ public class OpenMockupGame extends OpenGame {
 
 	@Override
 	public void perform(Object... args) {
-		fileChosen(args[0].toString());
+		String path = args[0].toString();
+		fileChosen(path);
+		if (!path.equals(controller.getEditorGameAssets().getLoadingPath())) {
+			throw new EditorActionException("Failed opening: " + path
+					+ ", probably deleted.");
+		}
 		if (!saving) {
 			saving = true;
 			((Stage) args[1])
