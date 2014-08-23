@@ -63,7 +63,7 @@ public class SearchWidget extends IconWithFadePanel {
 
 	public SearchWidget(float padding, float size, Skin skin, I18N i18n,
 			Array<GalleryItem> items, final BaseGallery baseGallery) {
-		super("search80x80", padding, size, skin, Position.BOTTOM);
+		super("search80x80", padding, 0, size, skin, Position.BOTTOM);
 		this.items = items;
 		this.prevSearchItems = new Array<GalleryItem>(true, 8,
 				GalleryItem.class);

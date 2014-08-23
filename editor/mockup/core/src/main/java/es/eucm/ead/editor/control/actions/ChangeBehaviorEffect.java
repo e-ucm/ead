@@ -74,8 +74,6 @@ public class ChangeBehaviorEffect extends EditorAction {
 		if (old != null) {
 			behavior.getEffects().removeValue(old, true);
 		}
-
-		System.out.println(behavior.getEffects());
 	}
 
 }

@@ -36,7 +36,6 @@
  */
 package es.eucm.ead.editor.view.builders;
 
-import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
@@ -57,8 +56,6 @@ public class EditionView implements ViewBuilder {
 
 	@Override
 	public void initialize(Controller controller) {
-
-		Gdx.gl.glClearColor(1f, 1f, 1f, 1f);
 
 		float toolbarSize = controller.getPlatform().getSize().y * HEIGHT;
 		float iconSize = controller.getPlatform().getSize().y * ICON_SIZE;

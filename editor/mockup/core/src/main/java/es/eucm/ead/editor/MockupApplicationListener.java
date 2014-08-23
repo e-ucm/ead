@@ -80,7 +80,7 @@ public class MockupApplicationListener extends EditorApplicationListener {
 			} catch (EditorActionException eae) {
 				// the project is probably corrupt; complain but continue
 				Gdx.app.log("OpenLastProject", "Error opening '"
-						+ projectToOpenPath + "'; ignoring request");
+						+ projectToOpenPath + "'; Request ignored");
 				controller.action(ChangeView.class, ProjectsView.class);
 			}
 		} else {
