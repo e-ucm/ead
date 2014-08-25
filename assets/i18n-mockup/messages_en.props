@@ -39,4 +39,7 @@ edition.blink = Blink
 edition.visible = Visible
 edition.ifVariable = if the variable
 edition.is = Is
-
+help.newProject = It seeps that you have no projects, start by creating a new one
+help.newScene = You can create new scenes here
+help.topBarButtons = Add new scene elements with these buttons
+help.leftBarButtons = Modify the selected element with these buttons

@@ -41,3 +41,7 @@ edition.blink = Parpadear
 edition.visible = Visible
 edition.ifVariable = Si la variable
 edition.is = Es
+help.newProject = Parece que no tienes ningún proyecto, empieza creando uno nuevo
+help.newScene = Puedes crear nuevas escenas con este botón
+help.topBarButtons = Añade nuevos elementos a la escena con estos botones
+help.leftBarButtons = Modifica el elemento seleccionado mediante estos botones
