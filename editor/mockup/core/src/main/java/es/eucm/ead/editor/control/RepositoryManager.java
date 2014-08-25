@@ -153,7 +153,7 @@ public class RepositoryManager {
 	 * Name of the folder storing all the online data. Used to cache locally the
 	 * repository resources.
 	 */
-	private static final String REPOSITORY_FOLDER_NAME = "/Online repository";
+	public static final String REPOSITORY_FOLDER_NAME = "/Online repository";
 	private static final String REPOSITORY_FOLDER_PATH = MOCKUP_PROJECTS_PATH
 			+ REPOSITORY_FOLDER_NAME;
 

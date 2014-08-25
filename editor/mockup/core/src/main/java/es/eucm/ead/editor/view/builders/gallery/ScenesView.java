@@ -59,6 +59,8 @@ import es.eucm.ead.editor.view.widgets.Notification;
 import es.eucm.ead.editor.view.widgets.ToolbarIcon;
 import es.eucm.ead.editor.view.widgets.gallery.GalleryItem;
 import es.eucm.ead.editor.view.widgets.gallery.SceneItem;
+import es.eucm.ead.editor.view.widgets.helpmessage.sequence.HelpSequence;
+import es.eucm.ead.editor.view.widgets.helpmessage.sequence.ScenesViewHelp;
 import es.eucm.ead.schema.entities.ModelEntity;
 import es.eucm.ead.schemax.entities.ResourceCategory;
 
@@ -186,5 +188,10 @@ public class ScenesView extends BaseGallery {
 			controller.action(EditScene.class, sceneId);
 			controller.action(ChangeView.class, EditionView.class);
 		}
+	}
+
+	@Override
+	protected HelpSequence getHelpSequence(Controller controller) {
+		return new ScenesViewHelp(controller, this, newButton);
 	}
 }

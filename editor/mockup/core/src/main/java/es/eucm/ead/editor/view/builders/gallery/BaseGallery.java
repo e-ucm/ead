@@ -53,6 +53,7 @@ import com.esotericsoftware.tablelayout.Cell;
 
 import es.eucm.ead.editor.assets.ApplicationAssets;
 import es.eucm.ead.editor.control.Controller;
+import es.eucm.ead.editor.control.MockupViews;
 import es.eucm.ead.editor.view.builders.ViewBuilder;
 import es.eucm.ead.editor.view.widgets.GridPanel;
 import es.eucm.ead.editor.view.widgets.Notification;
@@ -60,6 +61,7 @@ import es.eucm.ead.editor.view.widgets.Toolbar;
 import es.eucm.ead.editor.view.widgets.gallery.GalleryItem;
 import es.eucm.ead.editor.view.widgets.gallery.SearchWidget;
 import es.eucm.ead.editor.view.widgets.gallery.SortWidget;
+import es.eucm.ead.editor.view.widgets.helpmessage.sequence.HelpSequence;
 import es.eucm.ead.editor.view.widgets.iconwithpanel.Settings;
 import es.eucm.ead.engine.I18N;
 
@@ -115,7 +117,7 @@ public abstract class BaseGallery implements ViewBuilder {
 	private SearchWidget searchWidget;
 	protected Controller controller;
 	private SortWidget sortWidget;
-	private Button newButton;
+	protected Button newButton;
 	protected Toolbar topBar;
 	private TextButton undo;
 	protected float size;
@@ -191,6 +193,12 @@ public abstract class BaseGallery implements ViewBuilder {
 		view.add(topBar).expandX().fill();
 		view.row();
 		view.add(galleryPane).expand().fillX().top();
+
+		HelpSequence helpSequence = getHelpSequence(controller);
+		if (helpSequence != null) {
+			((MockupViews) controller.getViews())
+					.registerHelpMessage(helpSequence);
+		}
 	}
 
 	private void createnNewButton() {
@@ -293,6 +301,8 @@ public abstract class BaseGallery implements ViewBuilder {
 	protected abstract Actor createToolbarText();
 
 	protected abstract String getNewButtonIcon();
+
+	protected abstract HelpSequence getHelpSequence(Controller controller);
 
 	@Override
 	public void release(Controller controller) {

@@ -42,10 +42,12 @@ import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.scenes.scene2d.utils.Align;
 
 import es.eucm.ead.editor.control.Controller;
+import es.eucm.ead.editor.control.MockupViews;
 import es.eucm.ead.editor.view.widgets.IconButton;
 import es.eucm.ead.editor.view.widgets.Toolbar;
 import es.eucm.ead.editor.view.widgets.editionview.LeftEditionToolbar;
 import es.eucm.ead.editor.view.widgets.editionview.TopEditionToolbar;
+import es.eucm.ead.editor.view.widgets.helpmessage.sequence.EditionViewHelp;
 import es.eucm.ead.editor.view.widgets.layouts.LinearLayout;
 
 public class EditionView implements ViewBuilder {
@@ -95,6 +97,10 @@ public class EditionView implements ViewBuilder {
 		view.add(top).expandX().fill();
 		view.row();
 		view.add(center).expand().fill();
+
+		((MockupViews) controller.getViews())
+				.registerHelpMessage(new EditionViewHelp(controller, this,
+						topBar, leftBar));
 	}
 
 	@Override
