@@ -69,7 +69,7 @@ public class Views implements ModelListener<LoadEvent> {
 
 	private Group viewsContainer;
 
-	private Group modalsContainer;
+	protected Group modalsContainer;
 
 	private Map<Class, ViewBuilder> viewsBuilders;
 
