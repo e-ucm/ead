@@ -42,64 +42,54 @@ import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.actions.Actions;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 
+import es.eucm.ead.editor.view.widgets.PositionedHiddenPanel;
+
 /**
  * A {@link IconWithPanel} that has a scale in/out animation.
  */
 public class IconWithScalePanel extends IconWithPanel {
 
-	private static final float IN_DURATION = .3F;
-	private static final float OUT_DURATION = .2F;
-
-	public IconWithScalePanel(String icon, float padding, Skin skin,
-			String styleName) {
-		super(icon, padding, skin, styleName);
+	public IconWithScalePanel(String icon, float padding, Skin skin) {
+		this(icon, padding, -1, skin);
 
 	}
 
 	public IconWithScalePanel(String icon, float padding, float size, Skin skin) {
-		super(icon, padding, size, skin);
+		super(icon, padding, 0f, size, skin, null);
 
-	}
-
-	public IconWithScalePanel(String icon, float padding, Skin skin) {
-		super(icon, padding, skin);
-
-	}
-
-	private void adjustBackground(boolean left) {
-		panel.setBackground(left ? "left_panel" : "right_panel");
 	}
 
 	@Override
-	protected Action getShowAction(float x, float y) {
-		boolean left = x < getStage().getWidth() * .5f;
-		adjustBackground(left);
-		positionPanel(x, y, left);
-		panel.setOrigin(left ? 0 : panel.getWidth(), panel.getHeight());
+	protected PositionedHiddenPanel createPanel(Skin skin) {
+		return new Panel(skin) {
+			@Override
+			protected void positionPanel(float x, float y) {
+				Stage stage = IconWithScalePanel.this.getStage();
+				boolean left = x < stage.getWidth() * .5f;
+				setTransform(true);
+				float panelPrefHeight = y;
+				float panelPrefY = 0f;
+				float prefX = left ? 0 : stage.getWidth() - getPrefWidth();
+				setPanelBounds(prefX, panelPrefY, getPrefWidth(),
+						panelPrefHeight);
+				adjustBackground(left);
+				setOrigin(left ? 0 : getWidth(), getHeight());
+			}
+
+			private void adjustBackground(boolean left) {
+				setBackground(left ? "left_panel" : "right_panel");
+			}
+		};
+	}
+
+	@Override
+	protected Action getShowAction() {
 		panel.setScale(0f);
-		panel.setTransform(true);
 		return Actions.scaleTo(1f, 1f, IN_DURATION, Interpolation.sine);
 	}
 
 	@Override
 	protected Action getHideAction() {
-		panel.setTransform(true);
 		return Actions.scaleTo(0f, 0f, OUT_DURATION);
-	}
-
-	/**
-	 * Invoked when this panels is going to be shown, use this method to decide
-	 * the bounds of the panel.
-	 * 
-	 * @param y
-	 *            position of the icon in {@link Stage} coordinates.
-	 * @param x
-	 *            position of the icon in {@link Stage} coordinates.
-	 */
-	protected void positionPanel(float x, float y, boolean left) {
-		float panelPrefHeight = y;
-		float panelPrefY = 0f;
-		float prefX = left ? 0 : getStage().getWidth() - panel.getPrefWidth();
-		setPanelBounds(prefX, panelPrefY, panel.getPrefWidth(), panelPrefHeight);
 	}
 }

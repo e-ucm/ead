@@ -41,47 +41,26 @@ import static com.badlogic.gdx.scenes.scene2d.actions.Actions.fadeOut;
 
 import com.badlogic.gdx.math.Interpolation;
 import com.badlogic.gdx.scenes.scene2d.Action;
-import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.utils.Drawable;
+
+import es.eucm.ead.editor.view.widgets.PositionedHiddenPanel.Position;
 
 /**
  * A {@link IconWithPanel} that has a Fade in/out animation.
  */
 public class IconWithFadePanel extends IconWithPanel {
 
-	private static final float IN_DURATION = .3F;
-	private static final float OUT_DURATION = .2F;
-	private Position position;
-	private float separation;
-
-	public static enum Position {
-		BOTTOM, RIGHT
-	}
-
 	public IconWithFadePanel(String icon, float padding, float separation,
 			Skin skin) {
-		this(icon, padding, separation, -1, skin, Position.RIGHT);
-
-	}
-
-	public IconWithFadePanel(String icon, float padding, float separation,
-			Skin skin, Position position) {
-		this(icon, padding, separation, -1, skin, position);
-
-	}
-
-	public IconWithFadePanel(String icon, float padding, float separation,
-			float size, Skin skin) {
-		this(icon, padding, separation, size, skin, Position.RIGHT);
+		this(icon, padding, separation, -1f, skin, Position.RIGHT);
 
 	}
 
 	public IconWithFadePanel(String icon, float padding, float separation,
 			float size, Skin skin, Position position) {
-		super(icon, padding, size, skin);
-		this.position = position;
-		this.separation = separation;
+		super(icon, padding, separation, size, skin, position);
+
 	}
 
 	@Override
@@ -91,8 +70,7 @@ public class IconWithFadePanel extends IconWithPanel {
 	}
 
 	@Override
-	protected Action getShowAction(float x, float y) {
-		positionPanel(x, y);
+	protected Action getShowAction() {
 		panel.getColor().a = 0f;
 		return fadeIn(IN_DURATION, Interpolation.fade);
 	}
@@ -100,28 +78,5 @@ public class IconWithFadePanel extends IconWithPanel {
 	@Override
 	protected Action getHideAction() {
 		return fadeOut(OUT_DURATION, Interpolation.fade);
-	}
-
-	/**
-	 * Invoked when this panels is going to be shown, use this method to decide
-	 * the bounds of the panel.
-	 * 
-	 * @param y
-	 *            position of the icon in {@link Stage} coordinates.
-	 * @param x
-	 *            position of the icon in {@link Stage} coordinates.
-	 */
-	protected void positionPanel(float x, float y) {
-		float panelPrefHeight = panel.getPrefHeight();
-		if (position == Position.RIGHT) {
-			float panelPrefY = Math.max(0f, y + getHeight() - panelPrefHeight);
-			setPanelBounds(x + getWidth() + separation, panelPrefY,
-					panel.getPrefWidth(), panelPrefHeight);
-		} else if (position == Position.BOTTOM) {
-			float panelPrefWidth = panel.getPrefWidth();
-			setPanelBounds(x + (getWidth() - panelPrefWidth) * .5f, y
-					- panelPrefHeight - separation, panel.getPrefWidth(),
-					panelPrefHeight);
-		}
 	}
 }

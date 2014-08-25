@@ -44,6 +44,7 @@ import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import es.eucm.ead.editor.control.Controller;
 import es.eucm.ead.editor.control.Selection;
 import es.eucm.ead.editor.view.widgets.IconButton;
+import es.eucm.ead.editor.view.widgets.PositionedHiddenPanel.Position;
 import es.eucm.ead.editor.view.widgets.iconwithpanel.IconWithFadePanel;
 import es.eucm.ead.editor.view.widgets.layouts.LinearLayout;
 import es.eucm.ead.engine.I18N;
@@ -60,8 +61,8 @@ public abstract class PrefabPanel extends IconWithFadePanel {
 
 	public PrefabPanel(String icon, float size, String panelName,
 			Controller controller, Actor touchable) {
-		super(icon, 0, SEPARATION, size, controller.getApplicationAssets()
-				.getSkin());
+		super(icon, 0f, SEPARATION, size, controller.getApplicationAssets()
+				.getSkin(), Position.RIGHT);
 		this.controller = controller;
 		this.skin = controller.getApplicationAssets().getSkin();
 		this.i18n = controller.getApplicationAssets().getI18N();

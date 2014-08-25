@@ -48,6 +48,7 @@ import com.badlogic.gdx.utils.Array;
 
 import es.eucm.ead.editor.view.builders.gallery.BaseGallery;
 import es.eucm.ead.editor.view.listeners.TextFieldListener;
+import es.eucm.ead.editor.view.widgets.PositionedHiddenPanel.Position;
 import es.eucm.ead.editor.view.widgets.iconwithpanel.IconWithFadePanel;
 import es.eucm.ead.engine.I18N;
 
@@ -87,13 +88,13 @@ public class SearchWidget extends IconWithFadePanel {
 	}
 
 	@Override
-	protected Action getShowAction(float x, float y) {
+	protected Action getShowAction() {
 		Stage stage = getStage();
 		if (stage != null) {
 			stage.setKeyboardFocus(searchTextField);
 			Gdx.input.setOnscreenKeyboardVisible(true);
 		}
-		return super.getShowAction(x, y);
+		return super.getShowAction();
 	}
 
 	@Override
