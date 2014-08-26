@@ -44,8 +44,8 @@ import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
 
 import es.eucm.ead.editor.editorui.MockupUITest;
+import es.eucm.ead.editor.view.widgets.PositionedHiddenPanel.Position;
 import es.eucm.ead.editor.view.widgets.iconwithpanel.IconWithFadePanel;
-import es.eucm.ead.editor.view.widgets.iconwithpanel.IconWithFadePanel.Position;
 import es.eucm.ead.editor.view.widgets.iconwithpanel.IconWithPanel;
 import es.eucm.ead.editor.view.widgets.iconwithpanel.IconWithScalePanel;
 import es.eucm.ead.engine.I18N;
@@ -63,7 +63,7 @@ public class IconWithPanelTest extends MockupUITest {
 		fade.getPanel().add(new Image(skin.getDrawable("conversation80x80")));
 
 		IconWithPanel fadeBottom = new IconWithFadePanel("conversation80x80",
-				0f, 5f, skin, Position.BOTTOM);
+				0f, 5f, -1f, skin, Position.BOTTOM);
 		fadeBottom.getPanel().add(
 				new Image(skin.getDrawable("conversation80x80")));
 

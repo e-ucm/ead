@@ -60,6 +60,7 @@ import es.eucm.ead.editor.view.widgets.Notification;
 import es.eucm.ead.editor.view.widgets.ToolbarIcon;
 import es.eucm.ead.editor.view.widgets.gallery.GalleryItem;
 import es.eucm.ead.editor.view.widgets.gallery.RepositoryItem;
+import es.eucm.ead.editor.view.widgets.helpmessage.sequence.HelpSequence;
 import es.eucm.ead.schema.entities.ModelEntity;
 
 public class RepositoryView extends BaseGallery implements ProgressListener,
@@ -224,4 +225,9 @@ public class RepositoryView extends BaseGallery implements ProgressListener,
 			errorUpdating.show(getStage(), DEFAULT_NOTIF_TIMEOUT);
 		}
 	};
+
+	@Override
+	protected HelpSequence getHelpSequence(Controller controller) {
+		return null;
+	}
 }

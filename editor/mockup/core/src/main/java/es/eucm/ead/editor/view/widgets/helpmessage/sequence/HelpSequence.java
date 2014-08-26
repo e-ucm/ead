@@ -34,49 +34,43 @@
  *      You should have received a copy of the GNU Lesser General Public License
  *      along with eAdventure.  If not, see <http://www.gnu.org/licenses/>.
  */
-package es.eucm.ead.editor.view.widgets.iconwithpanel;
+package es.eucm.ead.editor.view.widgets.helpmessage.sequence;
 
-import static com.badlogic.gdx.scenes.scene2d.actions.Actions.fadeIn;
-import static com.badlogic.gdx.scenes.scene2d.actions.Actions.fadeOut;
+import com.badlogic.gdx.utils.Array;
 
-import com.badlogic.gdx.math.Interpolation;
-import com.badlogic.gdx.scenes.scene2d.Action;
-import com.badlogic.gdx.scenes.scene2d.ui.Skin;
-import com.badlogic.gdx.scenes.scene2d.utils.Drawable;
+import es.eucm.ead.editor.view.builders.ViewBuilder;
+import es.eucm.ead.editor.view.widgets.helpmessage.HelpMessage;
 
-import es.eucm.ead.editor.view.widgets.PositionedHiddenPanel.Position;
+public class HelpSequence {
 
-/**
- * A {@link IconWithPanel} that has a Fade in/out animation.
- */
-public class IconWithFadePanel extends IconWithPanel {
+	private boolean shown = false;
+	private ViewBuilder builder;
+	protected Array<HelpMessage> messages;
 
-	public IconWithFadePanel(String icon, float padding, float separation,
-			Skin skin) {
-		this(icon, padding, separation, -1f, skin, Position.RIGHT);
-
+	public HelpSequence(ViewBuilder builder) {
+		messages = new Array<HelpMessage>(2);
+		this.builder = builder;
 	}
 
-	public IconWithFadePanel(String icon, float padding, float separation,
-			float size, Skin skin, Position position) {
-		super(icon, padding, separation, size, skin, position);
-
+	public void addHelpMessage(HelpMessage msg) {
+		if (messages.size > 0) {
+			messages.peek().setNextMessage(msg);
+		}
+		messages.add(msg);
 	}
 
-	@Override
-	protected void init(Drawable icon, float padding, Skin skin) {
-		super.init(icon, padding, skin);
-		panel.setBackground("panel");
+	public void show() {
+		if (messages.size > 0) {
+			shown = true;
+			messages.first().show();
+		}
 	}
 
-	@Override
-	protected Action getShowAction() {
-		panel.getColor().a = 0f;
-		return fadeIn(IN_DURATION, Interpolation.fade);
+	public ViewBuilder getViewBuilder() {
+		return builder;
 	}
 
-	@Override
-	protected Action getHideAction() {
-		return fadeOut(OUT_DURATION, Interpolation.fade);
+	public boolean getCondition() {
+		return !shown;
 	}
 }

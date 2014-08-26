@@ -36,8 +36,6 @@
  */
 package es.eucm.ead.editor.view.widgets.iconwithpanel;
 
-import com.badlogic.gdx.math.MathUtils;
-import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.scenes.scene2d.Action;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.Stage;
@@ -47,6 +45,8 @@ import com.badlogic.gdx.scenes.scene2d.utils.Drawable;
 
 import es.eucm.ead.editor.view.widgets.HiddenPanel;
 import es.eucm.ead.editor.view.widgets.IconButton;
+import es.eucm.ead.editor.view.widgets.PositionedHiddenPanel;
+import es.eucm.ead.editor.view.widgets.PositionedHiddenPanel.Position;
 import es.eucm.ead.editor.view.widgets.ToolbarIcon;
 
 /**
@@ -57,8 +57,9 @@ import es.eucm.ead.editor.view.widgets.ToolbarIcon;
  */
 public abstract class IconWithPanel extends ToolbarIcon {
 
-	private static final Vector2 TEMP = new Vector2();
-	private static HiddenPanel openPanel;
+	protected static HiddenPanel openPanel;
+	protected static final float IN_DURATION = .3F;
+	protected static final float OUT_DURATION = .2F;
 
 	private static final ClickListener showOrHide = new ClickListener() {
 
@@ -72,45 +73,32 @@ public abstract class IconWithPanel extends ToolbarIcon {
 		};
 	};
 
-	protected HiddenPanel panel;
+	protected PositionedHiddenPanel panel;
 
-	public IconWithPanel(String icon, float padding, Skin skin, String styleName) {
-		super(icon, padding, skin, styleName);
-
-	}
-
-	public IconWithPanel(String icon, float padding, Skin skin) {
-		super(icon, padding, skin);
-
-	}
-
-	public IconWithPanel(String icon, float padding, float size, Skin skin) {
+	public IconWithPanel(String icon, float padding, float separation,
+			float size, Skin skin, Position position) {
 		super(icon, padding, size, skin);
+		panel.setPosition(position);
+		panel.setSpace(separation);
 	}
 
 	@Override
 	protected void init(Drawable icon, float padding, Skin skin) {
 		super.init(icon, padding, skin);
-		panel = new HiddenPanel(skin) {
-			@Override
-			public void hide() {
-				hide(getHideAction());
-			}
-
-			@Override
-			public void hide(Action action) {
-				openPanel = null;
-				super.hide(action);
-			}
-		};
+		panel = createPanel(skin);
+		panel.setReference(this);
 		addListener(showOrHide);
+	}
+
+	protected PositionedHiddenPanel createPanel(Skin skin) {
+		return new Panel(skin);
 	}
 
 	/**
 	 * Invoked when the panel is going to be displayed, this method should
 	 * return the {@link Action} used to display the {@link #panel}.
 	 */
-	protected abstract Action getShowAction(float x, float y);
+	protected abstract Action getShowAction();
 
 	/**
 	 * Invoked when the panel is going to be hidden, this method should return
@@ -123,8 +111,7 @@ public abstract class IconWithPanel extends ToolbarIcon {
 			openPanel.hide();
 		}
 
-		localToStageCoordinates(TEMP.set(0f, 0f));
-		panel.show(getStage(), getShowAction(TEMP.x, TEMP.y));
+		panel.show(getShowAction());
 		openPanel = panel;
 	}
 
@@ -132,20 +119,26 @@ public abstract class IconWithPanel extends ToolbarIcon {
 		panel.hide(getHideAction());
 	}
 
-	/**
-	 * Rounds and sets the given bounds for the {@link #panel}.
-	 * 
-	 * @param x
-	 * @param y
-	 * @param width
-	 * @param height
-	 */
-	protected void setPanelBounds(float x, float y, float width, float height) {
-		panel.setBounds(MathUtils.round(x), MathUtils.round(y),
-				MathUtils.round(width), MathUtils.round(height));
-	}
-
 	public HiddenPanel getPanel() {
 		return panel;
+	}
+
+	protected class Panel extends PositionedHiddenPanel {
+
+		public Panel(Skin skin) {
+			super(skin);
+
+		}
+
+		@Override
+		public void hide() {
+			hide(getHideAction());
+		}
+
+		@Override
+		public void hide(Action action) {
+			openPanel = null;
+			super.hide(action);
+		}
 	}
 }

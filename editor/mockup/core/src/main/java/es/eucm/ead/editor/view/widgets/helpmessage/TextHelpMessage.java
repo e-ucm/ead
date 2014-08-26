@@ -34,49 +34,19 @@
  *      You should have received a copy of the GNU Lesser General Public License
  *      along with eAdventure.  If not, see <http://www.gnu.org/licenses/>.
  */
-package es.eucm.ead.editor.view.widgets.iconwithpanel;
+package es.eucm.ead.editor.view.widgets.helpmessage;
 
-import static com.badlogic.gdx.scenes.scene2d.actions.Actions.fadeIn;
-import static com.badlogic.gdx.scenes.scene2d.actions.Actions.fadeOut;
-
-import com.badlogic.gdx.math.Interpolation;
-import com.badlogic.gdx.scenes.scene2d.Action;
+import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
-import com.badlogic.gdx.scenes.scene2d.utils.Drawable;
 
-import es.eucm.ead.editor.view.widgets.PositionedHiddenPanel.Position;
+import es.eucm.ead.engine.I18N;
 
-/**
- * A {@link IconWithPanel} that has a Fade in/out animation.
- */
-public class IconWithFadePanel extends IconWithPanel {
+public class TextHelpMessage extends HelpMessage {
 
-	public IconWithFadePanel(String icon, float padding, float separation,
-			Skin skin) {
-		this(icon, padding, separation, -1f, skin, Position.RIGHT);
-
+	public TextHelpMessage(Skin skin, I18N i18n, Position position,
+			Actor reference, String i18nKey) {
+		super(skin, position, reference);
+		add(i18n.m(i18nKey));
 	}
 
-	public IconWithFadePanel(String icon, float padding, float separation,
-			float size, Skin skin, Position position) {
-		super(icon, padding, separation, size, skin, position);
-
-	}
-
-	@Override
-	protected void init(Drawable icon, float padding, Skin skin) {
-		super.init(icon, padding, skin);
-		panel.setBackground("panel");
-	}
-
-	@Override
-	protected Action getShowAction() {
-		panel.getColor().a = 0f;
-		return fadeIn(IN_DURATION, Interpolation.fade);
-	}
-
-	@Override
-	protected Action getHideAction() {
-		return fadeOut(OUT_DURATION, Interpolation.fade);
-	}
 }

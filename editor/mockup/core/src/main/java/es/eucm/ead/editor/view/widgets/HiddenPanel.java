@@ -75,14 +75,14 @@ public class HiddenPanel extends Table {
 
 	public HiddenPanel(Skin skin) {
 		super(skin);
-		initialize(skin, new Array<Actor>());
+		initialize(skin, new Array<Actor>(2));
 	}
 
 	public HiddenPanel(Skin skin, String drawableBackground, String colorStage) {
 		super(skin);
 		this.stageBackground = skin.getDrawable(colorStage);
 		setBackground(drawableBackground);
-		initialize(skin, new Array<Actor>());
+		initialize(skin, new Array<Actor>(2));
 
 	}
 
@@ -93,7 +93,7 @@ public class HiddenPanel extends Table {
 	public HiddenPanel(Skin skin, String drawableBackground) {
 		super(skin);
 		setBackground(drawableBackground);
-		initialize(skin, new Array<Actor>());
+		initialize(skin, new Array<Actor>(2));
 	}
 
 	public HiddenPanel(Skin skin, Array<Actor> actors) {

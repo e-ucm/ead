@@ -43,6 +43,7 @@ import com.badlogic.gdx.scenes.scene2d.ui.Image;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.Scaling;
 
+import es.eucm.ead.editor.control.Controller;
 import es.eucm.ead.editor.control.MockupController.BackListener;
 import es.eucm.ead.editor.control.actions.editor.ChangeView;
 import es.eucm.ead.editor.control.actions.editor.ExitMockup;
@@ -50,6 +51,8 @@ import es.eucm.ead.editor.control.actions.editor.NewGame;
 import es.eucm.ead.editor.control.actions.editor.OpenMockupGame;
 import es.eucm.ead.editor.view.widgets.gallery.GalleryItem;
 import es.eucm.ead.editor.view.widgets.gallery.ProjectItem;
+import es.eucm.ead.editor.view.widgets.helpmessage.sequence.HelpSequence;
+import es.eucm.ead.editor.view.widgets.helpmessage.sequence.ProjectsViewHelp;
 import es.eucm.ead.schema.entities.ModelEntity;
 import es.eucm.ead.schemax.GameStructure;
 
@@ -122,5 +125,12 @@ public class ProjectsView extends BaseGallery implements BackListener {
 	@Override
 	public void onBackPressed() {
 		controller.action(ExitMockup.class);
+	}
+
+	@Override
+	protected HelpSequence getHelpSequence(Controller controller) {
+		return new ProjectsViewHelp(
+				controller.getApplicationAssets().getSkin(), getI18n(), this,
+				newButton);
 	}
 }

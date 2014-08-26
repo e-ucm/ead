@@ -34,62 +34,63 @@
  *      You should have received a copy of the GNU Lesser General Public License
  *      along with eAdventure.  If not, see <http://www.gnu.org/licenses/>.
  */
-package es.eucm.ead.editor.view.widgets.iconwithpanel;
+package es.eucm.ead.editor.view.widgets.helpmessage;
+
+import static com.badlogic.gdx.scenes.scene2d.actions.Actions.fadeIn;
+import static com.badlogic.gdx.scenes.scene2d.actions.Actions.fadeOut;
 
 import com.badlogic.gdx.math.Interpolation;
 import com.badlogic.gdx.scenes.scene2d.Action;
-import com.badlogic.gdx.scenes.scene2d.Stage;
-import com.badlogic.gdx.scenes.scene2d.actions.Actions;
+import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 
 import es.eucm.ead.editor.view.widgets.PositionedHiddenPanel;
 
-/**
- * A {@link IconWithPanel} that has a scale in/out animation.
- */
-public class IconWithScalePanel extends IconWithPanel {
+public abstract class HelpMessage extends PositionedHiddenPanel {
 
-	public IconWithScalePanel(String icon, float padding, Skin skin) {
-		this(icon, padding, -1, skin);
+	private static final float DEFAULT_SPACING = 20F;
+	protected static final float IN_DURATION = .3F;
+	protected static final float OUT_DURATION = .2F;
 
+	private HelpMessage nextMessage;
+
+	public HelpMessage(Skin skin, Position position, Actor reference) {
+		super(skin, position, reference);
+		setBackground(skin
+				.getDrawable(position == Position.BOTTOM ? "bubble_top"
+						: (position == Position.RIGHT ? "bubble_left"
+								: "dialog")));
+		padBottom(getPadBottom() + DEFAULT_SPACING);
+		padRight(getPadRight() + DEFAULT_SPACING);
+		padTop(getPadTop() + DEFAULT_SPACING);
+		padLeft(getPadLeft() + DEFAULT_SPACING);
+		defaults().space(DEFAULT_SPACING);
+		setModal(true);
 	}
 
-	public IconWithScalePanel(String icon, float padding, float size, Skin skin) {
-		super(icon, padding, 0f, size, skin, null);
-
-	}
-
-	@Override
-	protected PositionedHiddenPanel createPanel(Skin skin) {
-		return new Panel(skin) {
-			@Override
-			protected void positionPanel(float x, float y) {
-				Stage stage = IconWithScalePanel.this.getStage();
-				boolean left = x < stage.getWidth() * .5f;
-				setTransform(true);
-				float panelPrefHeight = y;
-				float panelPrefY = 0f;
-				float prefX = left ? 0 : stage.getWidth() - getPrefWidth();
-				setPanelBounds(prefX, panelPrefY, getPrefWidth(),
-						panelPrefHeight);
-				adjustBackground(left);
-				setOrigin(left ? 0 : getWidth(), getHeight());
-			}
-
-			private void adjustBackground(boolean left) {
-				setBackground(left ? "left_panel" : "right_panel");
-			}
-		};
+	public void show() {
+		getColor().a = 0f;
+		show(fadeIn(IN_DURATION, Interpolation.fade));
 	}
 
 	@Override
-	protected Action getShowAction() {
-		panel.setScale(0f);
-		return Actions.scaleTo(1f, 1f, IN_DURATION, Interpolation.sine);
+	public void hide() {
+		hide(getHideAction());
+	}
+
+	private Action getHideAction() {
+		return fadeOut(OUT_DURATION, Interpolation.fade);
 	}
 
 	@Override
-	protected Action getHideAction() {
-		return Actions.scaleTo(0f, 0f, OUT_DURATION);
+	public void hide(Action action) {
+		if (nextMessage != null) {
+			nextMessage.show();
+		}
+		super.hide(action);
+	}
+
+	public void setNextMessage(HelpMessage nextMessage) {
+		this.nextMessage = nextMessage;
 	}
 }

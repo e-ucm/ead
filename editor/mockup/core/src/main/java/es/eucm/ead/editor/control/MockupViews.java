@@ -37,16 +37,22 @@
 package es.eucm.ead.editor.control;
 
 import com.badlogic.gdx.scenes.scene2d.Group;
+import com.badlogic.gdx.scenes.scene2d.actions.Actions;
+import com.badlogic.gdx.utils.ObjectMap;
 
 import es.eucm.ead.editor.control.MockupController.BackListener;
 import es.eucm.ead.editor.control.actions.editor.ChangeView;
 import es.eucm.ead.editor.view.builders.ViewBuilder;
 import es.eucm.ead.editor.view.builders.gallery.ScenesView;
+import es.eucm.ead.editor.view.widgets.helpmessage.sequence.HelpSequence;
 
 public class MockupViews extends Views implements BackListener {
 
+	private ObjectMap<ViewBuilder, HelpSequence> helpMessages;
+
 	public MockupViews(Controller controller, Group viewsContainer) {
 		super(controller, viewsContainer, viewsContainer);
+		helpMessages = new ObjectMap<ViewBuilder, HelpSequence>(8);
 	}
 
 	@Override
@@ -60,6 +66,36 @@ public class MockupViews extends Views implements BackListener {
 				controller.action(ChangeView.class, ScenesView.class);
 			}
 		}
+	}
+
+	@Override
+	public <T extends ViewBuilder> void setView(Class<T> viewClass,
+			Object... args) {
+		super.setView(viewClass, args);
+
+		modalsContainer
+				.addAction(com.badlogic.gdx.scenes.scene2d.actions.Actions
+						.delay(0.1f, Actions.run(showHelpMessage)));
+	}
+
+	private final Runnable showHelpMessage = new Runnable() {
+
+		@Override
+		public void run() {
+			HelpSequence helpSequence = helpMessages.get(currentView);
+			if (helpSequence != null) {
+				boolean helpMessages = controller.getPreferences().getBoolean(
+						Preferences.ENABLE_HELP_MSGS, true);
+				if (helpMessages && helpSequence.getCondition()) {
+					helpSequence.show();
+				}
+
+			}
+		}
+	};
+
+	public void registerHelpMessage(HelpSequence seq) {
+		helpMessages.put(seq.getViewBuilder(), seq);
 	}
 
 }
