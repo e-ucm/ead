@@ -39,6 +39,9 @@ package es.eucm.ead.editor.control.actions.editor.repository;
 import es.eucm.ead.editor.control.MockupController;
 import es.eucm.ead.editor.control.RepositoryManager.OnEntityImportedListener;
 import es.eucm.ead.editor.control.actions.EditorAction;
+import es.eucm.ead.editor.control.background.BackgroundExecutor;
+import es.eucm.ead.editor.control.background.BackgroundExecutor.BackgroundTaskListener;
+import es.eucm.ead.editor.control.background.BackgroundTask;
 import es.eucm.ead.schema.entities.ModelEntity;
 
 /**
@@ -53,14 +56,47 @@ import es.eucm.ead.schema.entities.ModelEntity;
  */
 public class ImportElement extends EditorAction {
 
+	private OnEntityImportedListener listener;
+	private ModelEntity target;
+
 	public ImportElement() {
 		super(true, false, ModelEntity.class, OnEntityImportedListener.class);
 	}
 
 	@Override
-	public void perform(Object... args) {
-		((MockupController) controller).getRepositoryManager().importElement(
-				(ModelEntity) args[0], controller,
-				(OnEntityImportedListener) args[1]);
+	public void perform(final Object... args) {
+		target = (ModelEntity) args[0];
+		listener = ((OnEntityImportedListener) args[1]);
+		controller.getBackgroundExecutor().submit(importElemTask,
+				importListener);
 	}
+
+	private final BackgroundTask<ModelEntity> importElemTask = new BackgroundTask<ModelEntity>() {
+
+		@Override
+		public ModelEntity call() throws Exception {
+			return ((MockupController) controller).getRepositoryManager()
+					.importElement(target, controller);
+		}
+	};
+
+	private final BackgroundTaskListener<ModelEntity> importListener = new BackgroundTaskListener<ModelEntity>() {
+
+		@Override
+		public void completionPercentage(float percentage) {
+
+		}
+
+		@Override
+		public void done(BackgroundExecutor backgroundExecutor,
+				ModelEntity result) {
+			listener.entityImported(result, controller);
+		}
+
+		@Override
+		public void error(Throwable e) {
+			listener.entityImported(null, controller);
+		}
+
+	};
 }
