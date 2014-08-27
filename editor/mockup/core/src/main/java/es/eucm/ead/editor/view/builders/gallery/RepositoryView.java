@@ -40,6 +40,7 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.Stage;
+import com.badlogic.gdx.scenes.scene2d.Touchable;
 import com.badlogic.gdx.scenes.scene2d.ui.Button;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.utils.Array;
@@ -128,10 +129,12 @@ public class RepositoryView extends BaseGallery implements ProgressListener,
 		importingNotif.show(getStage());
 		controller.action(ImportElement.class,
 				((RepositoryItem) item).getElement(), this);
+		view.setTouchable(Touchable.disabled);
 	}
 
 	@Override
 	public void entityImported(ModelEntity entity, Controller controller) {
+		view.setTouchable(Touchable.enabled);
 		if (entity != null) {
 			controller.action(ChangeView.class, EditionView.class);
 		} else {

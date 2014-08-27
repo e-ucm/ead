@@ -68,6 +68,8 @@ public class TakePicture extends EditorAction {
 
 	private FileHandle pictureFile;
 
+	private ModelEntity sceneElement;
+
 	private Stage stage;
 
 	public TakePicture() {
@@ -111,8 +113,11 @@ public class TakePicture extends EditorAction {
 				importingNotif.text(
 						controller.getApplicationAssets().getI18N()
 								.m("repository.importing")).show(stage);
+
+				sceneElement = controller.getTemplates().createSceneElement(
+						pictureFile.path());
 				controller.getBackgroundExecutor().submit(importElemTask,
-						dunnyListener);
+						dummyListener);
 			}
 		}
 	};
@@ -121,14 +126,12 @@ public class TakePicture extends EditorAction {
 
 		@Override
 		public Boolean call() throws Exception {
-			ModelEntity sceneElement = controller.getTemplates()
-					.createSceneElement(pictureFile.path());
 			controller.action(AddSceneElement.class, sceneElement);
 			return true;
 		}
 	};
 
-	private final BackgroundTaskListener<Boolean> dunnyListener = new BackgroundTaskListener<Boolean>() {
+	private final BackgroundTaskListener<Boolean> dummyListener = new BackgroundTaskListener<Boolean>() {
 
 		@Override
 		public void completionPercentage(float percentage) {

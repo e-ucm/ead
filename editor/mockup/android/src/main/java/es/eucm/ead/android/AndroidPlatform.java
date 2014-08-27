@@ -128,17 +128,23 @@ public class AndroidPlatform extends MockupPlatform {
 
 						@Override
 						public void result(int resultCode, final Intent data) {
-							if (resultCode != EditorActivity.RESULT_OK)
-								return;
-							Gdx.app.postRunnable(new Runnable() {
-								@Override
-								public void run() {
-									if (data != null) {
-										listener.fileChosen(getStringFromIntent(
-												activity, data));
+							if (resultCode == EditorActivity.RESULT_OK) {
+								if (data != null) {
+									String path = getStringFromIntent(activity,
+											data);
+									if (path != null) {
+										File file = new File(path);
+										if (file.exists()) {
+											new DecodePictureTask(listener,
+													file).execute();
+										} else {
+											listener.fileChosen(null);
+										}
+									} else {
+										listener.fileChosen(null);
 									}
 								}
-							});
+							}
 						}
 					});
 		}
@@ -368,8 +374,10 @@ public class AndroidPlatform extends MockupPlatform {
 							@Override
 							public void result(int resultCode, Intent data) {
 								if (resultCode == Activity.RESULT_OK) {
-									new DecodeTask(listener, photoFile)
+									new DecodePictureTask(listener, photoFile)
 											.execute();
+								} else {
+									photoFile.delete();
 								}
 							}
 						});
@@ -381,14 +389,22 @@ public class AndroidPlatform extends MockupPlatform {
 		}
 	}
 
-	public class DecodeTask extends AsyncTask<Void, Void, Boolean> {
+	public static class DecodePictureTask extends
+			AsyncTask<Void, Void, Boolean> {
 
+		private final PostRunnable postRunnable = new PostRunnable();
 		private ProgressDialog mPleaseWaitDialog = null;
-		private ImageCapturedListener listener;
+		private ImageCapturedListener captureListener;
+		private FileChooserListener fileListener;
 		private File file;
 
-		public DecodeTask(ImageCapturedListener listener, File file) {
-			this.listener = listener;
+		public DecodePictureTask(FileChooserListener listener, File file) {
+			this.fileListener = listener;
+			this.file = file;
+		}
+
+		public DecodePictureTask(ImageCapturedListener listener, File file) {
+			this.captureListener = listener;
 			this.file = file;
 		}
 
@@ -413,7 +429,29 @@ public class AndroidPlatform extends MockupPlatform {
 		protected void onPostExecute(Boolean success) {
 			super.onPostExecute(success);
 			cancelDecodingDialog();
-			listener.imageCaptured(success);
+			postRunnable.setSuccess(success);
+			Gdx.app.postRunnable(postRunnable);
+		}
+
+		private class PostRunnable implements Runnable {
+
+			private boolean success;
+
+			public void setSuccess(boolean success) {
+				this.success = success;
+			}
+
+			@Override
+			public void run() {
+				if (captureListener != null) {
+					captureListener.imageCaptured(success);
+				} else if (fileListener != null) {
+					fileListener.fileChosen(file.getAbsolutePath());
+				}
+				captureListener = null;
+				fileListener = null;
+				file = null;
+			}
 		}
 
 		@Override
@@ -425,95 +463,109 @@ public class AndroidPlatform extends MockupPlatform {
 		@Override
 		protected Boolean doInBackground(Void... args) {
 
-			return decodeFile(file, Gdx.graphics.getWidth(),
-					Gdx.graphics.getHeight());
+			return decodeFile(Gdx.graphics.getWidth(),
+					Gdx.graphics.getHeight(), captureListener == null);
+		}
+
+		/**
+		 * Decodes image and scales it to reduce memory consumption.
+		 */
+		private boolean decodeFile(int targetWidth, int targetHeight,
+				boolean replaceSrc) {
+			boolean success = false;
+			FileInputStream decodedFis = null;
+			FileInputStream scaledFis = null;
+			FileOutputStream savedFos = null;
+			Bitmap retBmap = null;
+			try {
+
+				// Decode image size
+				BitmapFactory.Options bmOptions = new BitmapFactory.Options();
+				bmOptions.inJustDecodeBounds = true;
+				decodedFis = new FileInputStream(file);
+				BitmapFactory.decodeStream(decodedFis, null, bmOptions);
+
+				if (bmOptions.outWidth > targetWidth
+						|| bmOptions.outHeight > targetHeight) {
+					// Find the correct scale value. It should be the power of
+					// 2.
+					int scale = 1;
+					while (bmOptions.outWidth / scale >= targetWidth
+							&& bmOptions.outHeight / scale >= targetHeight) {
+						scale *= 2;
+					}
+
+					if (scale != 1) {
+						// Decode with inSampleSize
+						bmOptions.inJustDecodeBounds = false;
+						bmOptions.inSampleSize = scale;
+						bmOptions.inPurgeable = true;
+						scaledFis = new FileInputStream(file);
+						retBmap = BitmapFactory.decodeStream(scaledFis, null,
+								bmOptions);
+
+						if (replaceSrc) {
+							String absolutePath = file.getParentFile()
+									.getAbsolutePath();
+							if (!absolutePath.endsWith(File.separator)) {
+								absolutePath += File.separator;
+							}
+							String name = file.getName();
+							int i = 1;
+							do {
+								file = new File(absolutePath + +(++i) + name);
+							} while (file.exists());
+						}
+						savedFos = new FileOutputStream(file);
+						retBmap.compress(CompressFormat.JPEG, 90, savedFos);
+						savedFos.flush();
+						Gdx.app.error(PLATFORM_TAG,
+								"Scaling image, scalingFactor:  " + scale);
+					}
+				}
+
+				success = true;
+				Gdx.app.error(PLATFORM_TAG,
+						"New image saved! " + file.getAbsolutePath());
+			} catch (FileNotFoundException fnfex) {
+				deleteFile(file);
+				Gdx.app.error(PLATFORM_TAG, "File not found! ", fnfex);
+			} catch (IOException ioex) {
+				deleteFile(file);
+				Gdx.app.error(PLATFORM_TAG, "File not saved! ", ioex);
+			} finally {
+				if (retBmap != null) {
+					retBmap.recycle();
+					retBmap = null;
+				}
+				close(decodedFis);
+				close(scaledFis);
+				close(savedFos);
+			}
+			return success;
+		}
+
+		private void close(Closeable closeable) {
+			if (closeable != null) {
+				try {
+					closeable.close();
+				} catch (Exception ex) {
+					Gdx.app.log(PLATFORM_TAG,
+							"Something went wrong closing the stream "
+									+ closeable.toString(), ex);
+					// Ignore ...
+					// any significant errors should already have been
+					// reported via an IOException from the final flush.
+				}
+				closeable = null;
+			}
+		}
+
+		private void deleteFile(File file) {
+			if (file != null && file.exists()) {
+				file.delete();
+			}
 		}
 	};
 
-	/**
-	 * Decodes image and scales it to reduce memory consumption.
-	 */
-	private boolean decodeFile(File file, int targetWidth, int targetHeight) {
-		boolean success = false;
-		FileInputStream decodedFis = null;
-		FileInputStream scaledFis = null;
-		FileOutputStream savedFos = null;
-		Bitmap retBmap = null;
-		try {
-
-			// Decode image size
-			BitmapFactory.Options bmOptions = new BitmapFactory.Options();
-			bmOptions.inJustDecodeBounds = true;
-			decodedFis = new FileInputStream(file);
-			BitmapFactory.decodeStream(decodedFis, null, bmOptions);
-
-			if (bmOptions.outWidth > targetWidth
-					|| bmOptions.outHeight > targetHeight) {
-				// Find the correct scale value. It should be the power of 2.
-				int scale = 1;
-				while (bmOptions.outWidth / scale / 2 >= targetWidth
-						&& bmOptions.outHeight / scale / 2 >= targetHeight) {
-					scale *= 2;
-				}
-
-				if (scale != 1) {
-					// Decode with inSampleSize
-					bmOptions.inJustDecodeBounds = false;
-					bmOptions.inSampleSize = scale;
-					bmOptions.inPurgeable = true;
-					scaledFis = new FileInputStream(file);
-					retBmap = BitmapFactory.decodeStream(scaledFis, null,
-							bmOptions);
-
-					savedFos = new FileOutputStream(file);
-					retBmap.compress(CompressFormat.JPEG, 90, savedFos);
-					savedFos.flush();
-					Gdx.app.error(PLATFORM_TAG,
-							"Scaling image, scalingFactor:  " + scale);
-				}
-			}
-
-			success = true;
-			Gdx.app.error(PLATFORM_TAG,
-					"New image saved! " + file.getAbsolutePath());
-		} catch (FileNotFoundException fnfex) {
-			deleteFile(file);
-			Gdx.app.error(PLATFORM_TAG, "File not found! ", fnfex);
-		} catch (IOException ioex) {
-			deleteFile(file);
-			Gdx.app.error(PLATFORM_TAG, "File not saved! ", ioex);
-		} finally {
-			if (retBmap != null) {
-				retBmap.recycle();
-				retBmap = null;
-			}
-			close(decodedFis);
-			close(scaledFis);
-			close(savedFos);
-		}
-		return success;
-	}
-
-	private void close(Closeable closeable) {
-		if (closeable != null) {
-			try {
-				closeable.close();
-			} catch (Exception ex) {
-				Gdx.app.log(
-						PLATFORM_TAG,
-						"Something went wrong closing the stream "
-								+ closeable.toString(), ex);
-				// Ignore ...
-				// any significant errors should already have been
-				// reported via an IOException from the final flush.
-			}
-			closeable = null;
-		}
-	}
-
-	private void deleteFile(File file) {
-		if (file != null && file.exists()) {
-			file.delete();
-		}
-	}
 }
