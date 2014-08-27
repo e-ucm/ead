@@ -116,8 +116,17 @@ public class Templates {
 		return scene;
 	}
 
+	/**
+	 * Creates an element in the center of the screen.
+	 * 
+	 * @param imagePath
+	 * @return
+	 */
 	public ModelEntity createSceneElement(String imagePath) {
-		return createSceneElement(imagePath, 0, 0);
+		GameData data = Q.getComponent(controller.getModel().getGame(),
+				GameData.class);
+		return createSceneElement(imagePath, data.getWidth() * .5f,
+				data.getHeight() * .5f);
 	}
 
 	/**
@@ -133,24 +142,26 @@ public class Templates {
 	 *            the center y coordinate of the scene element
 	 * @return the scene element created
 	 */
-	public ModelEntity createSceneElement(String imagePath, float x, float y) {
-		EditorGameAssets assets = controller.getEditorGameAssets();
+	public ModelEntity createSceneElement(String imagePath, final float x,
+			final float y) {
+		final EditorGameAssets assets = controller.getEditorGameAssets();
 
-		String newPath = assets.copyToProjectIfNeeded(imagePath, Texture.class);
+		final String newPath = assets.copyToProjectIfNeeded(imagePath,
+				Texture.class);
 
 		final ModelEntity sceneElement = new ModelEntity();
 		assets.get(newPath, Texture.class, new AssetLoadedCallback<Texture>() {
 			@Override
 			public void loaded(String fileName, Texture texture) {
 				// Center the origin
-				sceneElement.setOriginX(texture.getWidth() / 2.0f);
-				sceneElement.setOriginY(texture.getHeight() / 2.0f);
+				sceneElement.setOriginX(texture.getWidth() * .5f);
+				sceneElement.setOriginY(texture.getHeight() * .5f);
 			}
 		});
 		assets.finishLoading();
-
 		sceneElement.setX(x - sceneElement.getOriginX());
 		sceneElement.setY(y - sceneElement.getOriginY());
+
 		Image renderer = new Image();
 		renderer.setUri(newPath);
 
