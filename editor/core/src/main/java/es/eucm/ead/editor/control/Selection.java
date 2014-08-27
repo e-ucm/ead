@@ -49,13 +49,13 @@ public class Selection {
 
 	private static final Object[] NO_SELECTION = new Object[0];
 
-	public static String SCENE = "scene";
+	public static final String SCENE = "scene";
 
-	public static String EDITED_GROUP = "editedGroup";
+	public static final String EDITED_GROUP = "editedGroup";
 
-	public static String SCENE_ELEMENT = "sceneElement";
+	public static final String SCENE_ELEMENT = "sceneElement";
 
-	public static String BEHAVIOR = "behavior";
+	public static final String BEHAVIOR = "behavior";
 
 	public static final String FRAMES = "frames";
 

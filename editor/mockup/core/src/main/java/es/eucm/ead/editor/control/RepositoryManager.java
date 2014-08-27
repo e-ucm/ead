@@ -225,11 +225,10 @@ public class RepositoryManager {
 	 * @param target
 	 * @param controller
 	 */
-	public void importElement(ModelEntity target, Controller controller,
-			OnEntityImportedListener importListener) {
+	public ModelEntity importElement(ModelEntity target, Controller controller) {
 
-		importElementFromLocal(target, controller.getEditorGameAssets(),
-				controller, importListener);
+		return importElementFromLocal(target, controller.getEditorGameAssets(),
+				controller);
 	}
 
 	/**
@@ -244,9 +243,8 @@ public class RepositoryManager {
 	 * @param gameAssets
 	 * @param controller
 	 */
-	private void importElementFromLocal(ModelEntity target,
-			EditorGameAssets gameAssets, Controller controller,
-			OnEntityImportedListener importListener) {
+	private ModelEntity importElementFromLocal(ModelEntity target,
+			EditorGameAssets gameAssets, Controller controller) {
 
 		// Take special care in order to import correctly the
 		// elements
@@ -304,7 +302,7 @@ public class RepositoryManager {
 			}
 		}
 		controller.action(AddSceneElement.class, elem);
-		importListener.entityImported(elem, controller);
+		return elem;
 	}
 
 	private void importRenderers(ModelEntity elem, Controller controller) {

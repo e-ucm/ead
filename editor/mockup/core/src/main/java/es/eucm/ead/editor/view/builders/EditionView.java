@@ -46,8 +46,10 @@ import es.eucm.ead.editor.control.MockupViews;
 import es.eucm.ead.editor.view.widgets.IconButton;
 import es.eucm.ead.editor.view.widgets.Toolbar;
 import es.eucm.ead.editor.view.widgets.editionview.LeftEditionToolbar;
+import es.eucm.ead.editor.view.widgets.editionview.MockupSceneEditor;
 import es.eucm.ead.editor.view.widgets.editionview.TopEditionToolbar;
 import es.eucm.ead.editor.view.widgets.helpmessage.sequence.EditionViewHelp;
+import es.eucm.ead.editor.view.widgets.editionview.draw.PaintToolbar;
 import es.eucm.ead.editor.view.widgets.layouts.LinearLayout;
 
 public class EditionView implements ViewBuilder {
@@ -55,6 +57,10 @@ public class EditionView implements ViewBuilder {
 	private static final float PAD = 40, HEIGHT = 0.06f, ICON_SIZE = 0.04f;
 
 	private Table view;
+
+	private MockupSceneEditor sceneEditor;
+
+	private PaintToolbar paintToolbar;
 
 	@Override
 	public void initialize(Controller controller) {
@@ -68,8 +74,12 @@ public class EditionView implements ViewBuilder {
 		view.setFillParent(true);
 		view.align(Align.top);
 
+		sceneEditor = new MockupSceneEditor(controller);
+
+		paintToolbar = new PaintToolbar(sceneEditor, controller);
+
 		final Toolbar topBar = new TopEditionToolbar(controller, "white_top",
-				toolbarSize, iconSize, PAD);
+				toolbarSize, iconSize, PAD, paintToolbar);
 		final Toolbar leftBar = new LeftEditionToolbar(controller,
 				"white_left", toolbarSize, iconSize, PAD);
 
@@ -93,10 +103,13 @@ public class EditionView implements ViewBuilder {
 		Table center = new Table();
 		center.align(Align.left);
 		center.add(leftBar).expandY().fill();
+		center.add(sceneEditor).expand().fill();
 
 		view.add(top).expandX().fill();
 		view.row();
 		view.add(center).expand().fill();
+		sceneEditor.toBack();
+		top.toFront();
 
 		((MockupViews) controller.getViews())
 				.registerHelpMessage(new EditionViewHelp(controller, this,
@@ -105,11 +118,13 @@ public class EditionView implements ViewBuilder {
 
 	@Override
 	public void release(Controller controller) {
-
+		sceneEditor.release();
+		paintToolbar.hide();
 	}
 
 	@Override
 	public Actor getView(Object... args) {
+		sceneEditor.prepare();
 		return view;
 	}
 

@@ -38,7 +38,9 @@ package es.eucm.ead.editor.control.actions.editor;
 
 import es.eucm.ead.editor.control.actions.EditorAction;
 import es.eucm.ead.editor.control.actions.model.AddSceneElement;
+import es.eucm.ead.editor.model.Q;
 import es.eucm.ead.editor.platform.Platform.FileChooserListener;
+import es.eucm.ead.schema.editor.components.GameData;
 import es.eucm.ead.schema.entities.ModelEntity;
 
 /**
@@ -71,8 +73,10 @@ public class AddSceneElementFromResource extends EditorAction implements
 			x = (Number) args[0];
 			y = (Number) args[1];
 		} else {
-			x = 0;
-			y = 0;
+			GameData component = Q.getComponent(
+					controller.getModel().getGame(), GameData.class);
+			x = component.getWidth() * .5f;
+			y = component.getHeight() * .5f;
 		}
 	}
 

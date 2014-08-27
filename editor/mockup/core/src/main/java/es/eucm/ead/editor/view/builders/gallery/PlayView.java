@@ -51,6 +51,7 @@ import es.eucm.ead.editor.control.engine.Engine;
 import es.eucm.ead.editor.view.builders.ViewBuilder;
 import es.eucm.ead.editor.view.widgets.EnginePlayer;
 import es.eucm.ead.editor.view.widgets.ToolbarIcon;
+import es.eucm.ead.schemax.GameStructure;
 
 /**
  * View that shows the engine in debug mode
@@ -62,7 +63,6 @@ public class PlayView implements ViewBuilder {
 	private Controller controller;
 
 	private EnginePlayer enginePlayer;
-
 	private Stack window;
 
 	@Override
@@ -94,6 +94,8 @@ public class PlayView implements ViewBuilder {
 	@Override
 	public Actor getView(Object... args) {
 		Engine engine = controller.getEngine();
+		engine.getGameLoader().loaded(GameStructure.GAME_FILE,
+				controller.getModel().getGame());
 		engine.setGameView(enginePlayer);
 		engine.play();
 		return window;
