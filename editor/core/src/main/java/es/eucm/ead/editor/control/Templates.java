@@ -144,9 +144,9 @@ public class Templates {
 	 */
 	public ModelEntity createSceneElement(String imagePath, final float x,
 			final float y) {
-		final EditorGameAssets assets = controller.getEditorGameAssets();
+		EditorGameAssets assets = controller.getEditorGameAssets();
 
-		final String newPath = assets.copyToProjectIfNeeded(imagePath,
+		String newPath = assets.copyToProjectIfNeeded(imagePath,
 				Texture.class);
 
 		final ModelEntity sceneElement = new ModelEntity();
