@@ -56,10 +56,12 @@ import com.badlogic.gdx.graphics.Pixmap;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
+import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.utils.Json;
 import com.badlogic.gdx.utils.JsonValue;
 import com.badlogic.gdx.utils.SerializationException;
+
 import es.eucm.ead.engine.I18N;
 
 /**
@@ -83,7 +85,8 @@ public abstract class Assets extends Json implements FileHandleResolver {
 	/**
 	 * Default time slot for loading assets.
 	 */
-	private static final int LOAD_TIME_SLOT_DURATION = 1000;
+	private static final int LOAD_TIME_SLOT_DURATION = MathUtils
+			.round(1000F / 60F);
 
 	/**
 	 * LibGDX asset manager.
