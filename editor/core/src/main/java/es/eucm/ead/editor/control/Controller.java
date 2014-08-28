@@ -155,11 +155,15 @@ public class Controller {
 		// Get the release info from editor assets
 		this.releaseInfo = applicationAssets.loadReleaseInfo();
 		this.shortcutsMap = new ShortcutsMap(this);
-		this.engine = new Engine(this);
+		this.engine = createEngine();
 		setTracker();
 		setClipboard();
 		loadPreferences();
 		indexes = new HashMap<Class, ControllerIndex>();
+	}
+
+	protected Engine createEngine() {
+		return new Engine(this);
 	}
 
 	protected ApplicationAssets createApplicationAssets(Files files) {
