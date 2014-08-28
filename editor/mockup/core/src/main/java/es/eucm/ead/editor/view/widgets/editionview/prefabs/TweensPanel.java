@@ -52,6 +52,10 @@ import es.eucm.ead.editor.view.widgets.editionview.prefabs.prefabtweens.PrefabTw
 import es.eucm.ead.editor.view.widgets.editionview.prefabs.prefabtweens.Rotate360Tween;
 import es.eucm.ead.editor.view.widgets.editionview.prefabs.prefabtweens.VerticalMoveTween;
 import es.eucm.ead.schema.components.ModelComponent;
+import es.eucm.ead.schema.components.tweens.AlphaTween;
+import es.eucm.ead.schema.components.tweens.MoveTween;
+import es.eucm.ead.schema.components.tweens.RotateTween;
+import es.eucm.ead.schema.components.tweens.ScaleTween;
 import es.eucm.ead.schema.components.tweens.Tween;
 import es.eucm.ead.schema.entities.ModelEntity;
 
@@ -97,22 +101,60 @@ public class TweensPanel extends PrefabPanel {
 
 		ModelEntity modelEntity = (ModelEntity) selection
 				.getSingle(Selection.SCENE_ELEMENT);
+
 		for (Actor actor : table.getChildren()) {
 			if (actor instanceof PrefabTween) {
 				PrefabTween button = (PrefabTween) actor;
+				button.setState(false);
 				for (ModelComponent component : modelEntity.getComponents())
 					if (component instanceof Tween) {
-						if (button.getTween() == (Tween) component) {
+						if (isTheSameTween(button.getTween(), (Tween) component)) {
+							button.setTween((Tween) component);
 							button.setState(true);
 							break;
-						} else {
-							button.setState(false);
 						}
 					}
 			}
 		}
 
 		super.showPanel();
+	}
+
+	private boolean isTheSameTween(Tween tween1, Tween tween2) {
+		if (tween1.getClass() == tween2.getClass()
+				&& tween1.getDuration() == tween1.getDuration()
+				&& tween1.getRepeat() == tween2.getRepeat()
+				&& tween1.isYoyo() == tween2.isYoyo()
+				&& tween1.isRelative() == tween2.isRelative()
+				&& tween1.getDelay() == tween2.getDelay()) {
+			if (tween1 instanceof AlphaTween) {
+				if (((AlphaTween) tween1).getAlpha() != ((AlphaTween) tween2)
+						.getAlpha()) {
+					return false;
+				}
+			} else if (tween1 instanceof MoveTween) {
+				MoveTween aux1 = (MoveTween) tween1;
+				MoveTween aux2 = (MoveTween) tween2;
+				if (Float.compare(aux1.getX(), aux2.getX()) != 0
+						|| Float.compare(aux1.getY(), aux2.getY()) != 0) {
+					return false;
+				}
+			} else if (tween1 instanceof ScaleTween) {
+				ScaleTween aux1 = (ScaleTween) tween1;
+				ScaleTween aux2 = (ScaleTween) tween2;
+				if (aux1.getScaleX() != aux2.getScaleX()
+						|| aux1.getScaleY() != aux2.getScaleY()) {
+					return false;
+				}
+			} else if (tween1 instanceof RotateTween) {
+				if (((RotateTween) tween1).getRotation() != ((RotateTween) tween2)
+						.getRotation()) {
+					return false;
+				}
+			}
+			return true;
+		}
+		return false;
 	}
 
 	@Override

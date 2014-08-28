@@ -34,32 +34,30 @@
  *      You should have received a copy of the GNU Lesser General Public License
  *      along with eAdventure.  If not, see <http://www.gnu.org/licenses/>.
  */
-package es.eucm.ead.editor.view.widgets.editionview.prefabs.prefabtweens;
+package es.eucm.ead.editor.control.actions;
 
-import com.badlogic.gdx.scenes.scene2d.ui.Skin;
+import es.eucm.ead.schema.editor.components.Variables;
 
-import es.eucm.ead.editor.control.Controller;
-import es.eucm.ead.schema.components.tweens.ScaleTween;
-import es.eucm.ead.schema.components.tweens.Tween;
+/**
+ * 
+ * Adds a <em>{@link Variables}</em> component in <em>{@link MadelEntity}</em>
+ * game
+ * <dl>
+ * <dt><strong>Arguments</strong></dt>
+ * <dd><strong>args[0]</strong> <em>{@link Variables}</em> to add</dd>
+ * </dl>
+ */
+public class AddVariables extends EditorAction {
 
-public class DecreaseTween extends PrefabTween {
-
-	public DecreaseTween(String icon, String name, Controller controller,
-			Skin skin) {
-		super(icon, name, controller, skin);
+	public AddVariables() {
+		super(true, false, Variables.class);
 	}
 
 	@Override
-	protected Tween createTween() {
-		ScaleTween tween = new ScaleTween();
-		tween.setRelative(false);
-		tween.setYoyo(true);
-		tween.setDuration(1.5f);
-		tween.setRepeat(-1);
-		tween.setScaleX(0f);
-		tween.setScaleY(0f);
+	public void perform(Object... args) {
+		Variables variables = (Variables) args[0];
 
-		return tween;
+		controller.getModel().getGame().getComponents().add(variables);
 	}
 
 }
