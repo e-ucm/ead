@@ -132,9 +132,7 @@ public class ChangeVariablePanel extends PrefabPanel {
 			if (behavior == null) {
 				behavior = new Behavior();
 				behavior.setEvent(new Touch());
-				Array effects = new Array();
-				effects.add(changeVar);
-				behavior.setEffects(effects);
+				behavior.getEffects().add(changeVar);
 
 				controller.action(AddBehavior.class, behavior);
 			} else {

@@ -51,7 +51,7 @@ public class PositionedHiddenPanel extends HiddenPanel {
 
 	private static final Vector2 TEMP = new Vector2();
 
-	private float space;
+	protected float space;
 	private Actor reference;
 	private Position position;
 
@@ -104,8 +104,12 @@ public class PositionedHiddenPanel extends HiddenPanel {
 	protected void positionPanel(float x, float y) {
 		float panelPrefHeight = getPrefHeight();
 		if (position == Position.RIGHT) {
-			float panelPrefY = Math.max(0f, y
-					+ (reference.getHeight() - panelPrefHeight) * .5f);
+			float coordinateY = Math.min(y
+					+ (reference.getHeight() - panelPrefHeight) * .5f,
+					reference.getParent().getHeight() - panelPrefHeight);
+			float panelPrefY = Math.max(0f, coordinateY);
+			panelPrefHeight = Math.min(getPrefHeight(), reference.getParent()
+					.getHeight());
 			setPanelBounds(x + space + reference.getWidth(), panelPrefY,
 					getPrefWidth(), panelPrefHeight);
 		} else if (position == Position.BOTTOM) {
