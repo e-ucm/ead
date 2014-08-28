@@ -45,6 +45,7 @@ import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 
 import es.eucm.ead.editor.control.Actions;
 import es.eucm.ead.editor.control.Controller;
+import es.eucm.ead.editor.control.actions.AddLabelToScene;
 import es.eucm.ead.editor.control.actions.editor.AddSceneElementFromResource;
 import es.eucm.ead.editor.control.actions.editor.ChangeView;
 import es.eucm.ead.editor.control.actions.editor.Redo;
@@ -117,7 +118,7 @@ public class TopEditionToolbar extends Toolbar {
 						paintToolbar.show();
 					}
 				} else if (listenerActor == text) {
-
+					controller.action(AddLabelToScene.class);
 				}
 			}
 		};
