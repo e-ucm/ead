@@ -44,7 +44,7 @@ import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 
 import es.eucm.ead.editor.control.Controller;
 import es.eucm.ead.editor.control.Selection;
-import es.eucm.ead.editor.control.actions.AddBehavior;
+import es.eucm.ead.editor.control.actions.AddTouchEffect;
 import es.eucm.ead.editor.control.actions.ChangeBehaviorEffect;
 import es.eucm.ead.editor.control.actions.RemoveBehavior;
 import es.eucm.ead.editor.view.widgets.editionview.SceneButton;
@@ -75,10 +75,7 @@ public class DeparturePanel extends PrefabPanel {
 				goScene.setSceneId(sceneId);
 
 				if (behavior == null) {
-					behavior = new Behavior();
-					behavior.setEvent(new Touch());
-					behavior.getEffects().add(goScene);
-					controller.action(AddBehavior.class, behavior);
+					controller.action(AddTouchEffect.class, goScene);
 				} else {
 					controller.action(ChangeBehaviorEffect.class, behavior,
 							goScene);
@@ -126,7 +123,7 @@ public class DeparturePanel extends PrefabPanel {
 
 	private void loadItems() {
 		if (behavior != null) {
-			table.initialize(((GoScene) behavior.getEffects().first())
+			table.selectScene(((GoScene) behavior.getEffects().first())
 					.getSceneId());
 		}
 	}

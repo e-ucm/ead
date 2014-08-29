@@ -36,6 +36,10 @@
  */
 package es.eucm.ead.editor.control.actions;
 
+import com.badlogic.gdx.graphics.g2d.BitmapFont.TextBounds;
+import com.badlogic.gdx.scenes.scene2d.ui.Label.LabelStyle;
+import com.badlogic.gdx.scenes.scene2d.ui.Skin;
+
 import es.eucm.ead.editor.control.Selection;
 import es.eucm.ead.editor.control.commands.Command;
 import es.eucm.ead.editor.control.commands.CompositeCommand;
@@ -43,6 +47,7 @@ import es.eucm.ead.editor.control.commands.FieldCommand;
 import es.eucm.ead.editor.control.commands.ListCommand.AddToListCommand;
 import es.eucm.ead.editor.model.Q;
 import es.eucm.ead.schema.components.controls.Label;
+import es.eucm.ead.schema.editor.components.GameData;
 import es.eucm.ead.schema.editor.components.Parent;
 import es.eucm.ead.schema.entities.ModelEntity;
 import es.eucm.ead.schemax.FieldName;
@@ -70,14 +75,18 @@ public class AddLabelToScene extends ModelAction {
 	@Override
 	public Command perform(Object... args) {
 		ModelEntity textLabel = new ModelEntity();
+		GameData gameData = Q.getComponent(controller.getModel().getGame(),
+				GameData.class);
 
 		ModelEntity parent = (ModelEntity) controller.getModel().getSelection()
 				.getSingle(Selection.SCENE);
 
+		Label label = null;
 		if (args.length == 1 && args[0] instanceof Label) {
-			textLabel.getComponents().add((Label) args[0]);
+			label = (Label) args[0];
+			textLabel.getComponents().add(label);
 		} else if (args.length == 0) {
-			Label label = new Label();
+			label = new Label();
 			label.setText(controller.getApplicationAssets().getI18N()
 					.m("general.text")); // default text
 			label.setStyle("welcome"); // default style
@@ -87,6 +96,14 @@ public class AddLabelToScene extends ModelAction {
 					+ this.getClass().getCanonicalName()
 					+ ": the argument received should be a Label");
 		}
+
+		Skin skin = controller.getEditorGameAssets().getSkin();
+		LabelStyle labelStyle = skin.get(label.getStyle(), LabelStyle.class);
+		TextBounds bounds = labelStyle.font.getBounds(label.getText());
+		textLabel.setX((gameData.getWidth() - bounds.width) * 0.5f);
+		textLabel.setY((gameData.getHeight() - bounds.height) * 0.5f);
+		textLabel.setOriginX(bounds.width * 0.5f);
+		textLabel.setOriginY(bounds.height * 0.5f);
 
 		CompositeCommand compositeCommand = new CompositeCommand();
 		compositeCommand.addCommand(new AddToListCommand(parent, parent

@@ -37,7 +37,9 @@
 package es.eucm.ead.editor.view.widgets.editionview;
 
 import java.util.Collection;
+import java.util.Map.Entry;
 
+import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.InputListener;
 import com.badlogic.gdx.scenes.scene2d.ui.ButtonGroup;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
@@ -45,13 +47,17 @@ import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.esotericsoftware.tablelayout.Cell;
 
 import es.eucm.ead.editor.control.Controller;
+import es.eucm.ead.editor.model.Model.ModelListener;
 import es.eucm.ead.editor.model.Model.Resource;
 import es.eucm.ead.editor.model.Q;
+import es.eucm.ead.editor.model.events.LoadEvent;
+import es.eucm.ead.editor.model.events.ResourceEvent;
 import es.eucm.ead.schema.editor.components.GameData;
 import es.eucm.ead.schema.entities.ModelEntity;
 import es.eucm.ead.schemax.entities.ResourceCategory;
 
-public class ScenesTableList extends Table {
+public class ScenesTableList extends Table implements
+		ModelListener<ResourceEvent> {
 
 	private static final float PAD = 10;
 
@@ -62,6 +68,8 @@ public class ScenesTableList extends Table {
 	private Controller controller;
 
 	private String styleButton;
+
+	private ModelListener<LoadEvent> loadListener;
 
 	public ScenesTableList(Controller controller, InputListener listener) {
 		this(controller, listener, "default");
@@ -75,6 +83,19 @@ public class ScenesTableList extends Table {
 		this.controller = controller;
 		this.styleButton = styleButton;
 
+		loadListener = new ModelListener<LoadEvent>() {
+			@Override
+			public void modelChanged(LoadEvent event) {
+				if (event.getType() == LoadEvent.Type.LOADED) {
+					initialize();
+				} else {
+					clear();
+				}
+			}
+		};
+
+		controller.getModel().addResourceListener(this);
+		controller.getModel().addLoadListener(loadListener);
 		initialize();
 	}
 
@@ -94,15 +115,15 @@ public class ScenesTableList extends Table {
 
 		Cell initial = add().expandX().fill();
 
-		Collection<Resource> values = controller.getModel()
-				.getResources(ResourceCategory.SCENE).values();
+		Collection<Entry<String, Resource>> values = controller.getModel()
+				.getResources(ResourceCategory.SCENE).entrySet();
 
-		for (Resource value : values) {
-			ModelEntity scene = (ModelEntity) value.getObject();
+		for (Entry<String, Resource> value : values) {
+			ModelEntity scene = (ModelEntity) value.getValue().getObject();
 			SceneButton sceneButton = new SceneButton(scene, controller, PAD,
 					skin, styleButton);
 			sceneButton.addListener(listener);
-			if (controller.getModel().getIdFor(scene).equals(initialName)) {
+			if (value.getKey().equals(initialName)) {
 				initial.setWidget(sceneButton);
 			} else {
 				row();
@@ -116,5 +137,24 @@ public class ScenesTableList extends Table {
 				sceneButton.setChecked(true);
 			}
 		}
+	}
+
+	public void selectScene(String id) {
+		for (Actor actor : getChildren()) {
+			SceneButton button = (SceneButton) actor;
+			if (controller.getModel().getIdFor(button.getScene()).equals(id)) {
+				button.setChecked(true);
+				break;
+			}
+		}
+
+	}
+
+	@Override
+	public void modelChanged(ResourceEvent event) {
+		if (event.getCategory() == ResourceCategory.SCENE) {
+			initialize();
+		}
+
 	}
 }

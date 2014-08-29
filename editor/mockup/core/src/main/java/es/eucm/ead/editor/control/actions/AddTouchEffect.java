@@ -38,24 +38,31 @@ package es.eucm.ead.editor.control.actions;
 
 import es.eucm.ead.editor.control.Selection;
 import es.eucm.ead.schema.components.behaviors.Behavior;
+import es.eucm.ead.schema.components.behaviors.events.Touch;
+import es.eucm.ead.schema.effects.Effect;
 import es.eucm.ead.schema.entities.ModelEntity;
 
 /**
- * Adds a {@link Behavior} to the current scene element selected </p>
+ * Adds a {@link Effect} to the current scene element selected. The effect will
+ * be thrown when the user touch the scene element </p>
  * <dl>
  * <dt><strong>Arguments</strong></dt>
- * <dd><strong>args[0]</strong> <em>{@link Behavior}</em> to add</dd>
+ * <dd><strong>args[0]</strong> <em>{@link Effect}</em> to add</dd>
  * </dl>
  */
-public class AddBehavior extends EditorAction {
+public class AddTouchEffect extends EditorAction {
 
-	public AddBehavior() {
-		super(true, false, Behavior.class);
+	public AddTouchEffect() {
+		super(true, false, Effect.class);
 	}
 
 	@Override
 	public void perform(Object... args) {
-		Behavior behavior = (Behavior) args[0];
+
+		Behavior behavior = new Behavior();
+		behavior.setEvent(new Touch());
+
+		behavior.getEffects().add((Effect) args[0]);
 
 		ModelEntity modelEntity = (ModelEntity) controller.getModel()
 				.getSelection().getSingle(Selection.SCENE_ELEMENT);

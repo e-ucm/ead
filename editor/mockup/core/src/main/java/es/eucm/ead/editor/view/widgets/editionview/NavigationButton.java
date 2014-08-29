@@ -96,6 +96,7 @@ public class NavigationButton extends IconWithScalePanel implements
 		};
 
 		sceneList = new ScenesTableList(controller, changeView, "white");
+
 		ScrollPane list = new ScrollPane(sceneList);
 		list.setScrollingDisabled(true, false);
 
@@ -109,9 +110,9 @@ public class NavigationButton extends IconWithScalePanel implements
 		});
 
 		panel.align(Align.top);
-		panel.add(goGallery).center().expand().pad(PAD, PAD, PAD, PAD);
+		panel.add(goGallery).pad(PAD, PAD, PAD, PAD).top();
 		panel.row();
-		panel.add(list).expand().fill().pad(20);
+		panel.add(list).pad(20).top();
 
 		controller.getModel().addSelectionListener(this);
 	}
@@ -129,7 +130,7 @@ public class NavigationButton extends IconWithScalePanel implements
 
 	@Override
 	protected void showPanel() {
-		sceneList.initialize(model.getIdFor(model.getSelection().getSingle(
+		sceneList.selectScene(model.getIdFor(model.getSelection().getSingle(
 				Selection.SCENE)));
 		super.showPanel();
 	}
@@ -146,17 +147,14 @@ public class NavigationButton extends IconWithScalePanel implements
 
 	@Override
 	public void modelChanged(SelectionEvent event) {
-		if (event.getType() == Type.FOCUSED) {
-			SceneButton button = getSceneButton(model.getIdFor(model
-					.getSelection().getSingle(Selection.SCENE)));
-			if (button != null) {
-				button.setChecked(true);
-			}
+		if (event.getType() == Type.FOCUSED || event.getType() == Type.REMOVED) {
+			sceneList.selectScene(model.getIdFor(model.getSelection()
+					.getSingle(Selection.SCENE)));
 		}
 	}
 
 	@Override
 	public boolean listenToContext(String contextId) {
-		return contextId.equals("editedGroup");
+		return contextId.equals(Selection.EDITED_GROUP);
 	}
 }
