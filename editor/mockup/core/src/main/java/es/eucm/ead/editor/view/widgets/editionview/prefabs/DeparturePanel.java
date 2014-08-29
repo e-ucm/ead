@@ -37,20 +37,101 @@
 package es.eucm.ead.editor.view.widgets.editionview.prefabs;
 
 import com.badlogic.gdx.scenes.scene2d.Actor;
+import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.InputListener;
+import com.badlogic.gdx.scenes.scene2d.ui.ScrollPane;
+import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 
 import es.eucm.ead.editor.control.Controller;
+import es.eucm.ead.editor.control.Selection;
+import es.eucm.ead.editor.control.actions.AddTouchEffect;
+import es.eucm.ead.editor.control.actions.ChangeBehaviorEffect;
+import es.eucm.ead.editor.control.actions.RemoveBehavior;
+import es.eucm.ead.editor.view.widgets.editionview.SceneButton;
+import es.eucm.ead.editor.view.widgets.editionview.ScenesTableList;
+import es.eucm.ead.schema.components.ModelComponent;
+import es.eucm.ead.schema.components.behaviors.Behavior;
+import es.eucm.ead.schema.components.behaviors.events.Touch;
+import es.eucm.ead.schema.effects.GoScene;
+import es.eucm.ead.schema.entities.ModelEntity;
 
 public class DeparturePanel extends PrefabPanel {
 
-	public DeparturePanel(String icon, float size, Controller controller,
+	private ScenesTableList table;
+
+	private Behavior behavior;
+
+	public DeparturePanel(String icon, float size, final Controller controller,
 			Actor touchable) {
 		super(icon, size, "edition.exits", controller, touchable);
+
+		InputListener makeExit = new ClickListener() {
+			public void clicked(InputEvent event, float x, float y) {
+				SceneButton button = (SceneButton) event.getListenerActor();
+				String sceneId = controller.getModel().getIdFor(
+						button.getScene());
+
+				GoScene goScene = new GoScene();
+				goScene.setSceneId(sceneId);
+
+				if (behavior == null) {
+					controller.action(AddTouchEffect.class, goScene);
+				} else {
+					controller.action(ChangeBehaviorEffect.class, behavior,
+							goScene);
+				}
+			}
+
+		};
+
+		table = new ScenesTableList(controller, makeExit, "white");
+
+		ScrollPane scroll = new ScrollPane(table, skin, "white");
+		panel.add(scroll).expandY().fill();
+
 	}
 
 	@Override
 	protected InputListener trashListener() {
-		// TODO Auto-generated method stub
-		return null;
+		return new ClickListener() {
+			@Override
+			public void clicked(InputEvent event, float x, float y) {
+				if (behavior != null) {
+					controller.action(RemoveBehavior.class, behavior);
+					behavior = null;
+					loadItems();
+				}
+			}
+		};
+	}
+
+	private void loadBehavior() {
+		ModelEntity modelEntity = (ModelEntity) selection
+				.getSingle(Selection.SCENE_ELEMENT);
+		this.behavior = null;
+		for (ModelComponent component : modelEntity.getComponents()) {
+			if (component instanceof Behavior) {
+				Behavior behavior = (Behavior) component;
+				if (behavior.getEffects().first() instanceof GoScene
+						&& behavior.getEvent() instanceof Touch) {
+					this.behavior = behavior;
+					break;
+				}
+			}
+		}
+	}
+
+	private void loadItems() {
+		if (behavior != null) {
+			table.selectScene(((GoScene) behavior.getEffects().first())
+					.getSceneId());
+		}
+	}
+
+	@Override
+	protected void showPanel() {
+		loadBehavior();
+		loadItems();
+		super.showPanel();
 	}
 }

@@ -38,18 +38,22 @@ package es.eucm.ead.editor.view.widgets.editionview.prefabs;
 
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.InputListener;
+import com.badlogic.gdx.scenes.scene2d.Touchable;
 import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 
 import es.eucm.ead.editor.control.Controller;
 import es.eucm.ead.editor.control.Selection;
+import es.eucm.ead.editor.model.Model.SelectionListener;
+import es.eucm.ead.editor.model.events.SelectionEvent;
 import es.eucm.ead.editor.view.widgets.IconButton;
 import es.eucm.ead.editor.view.widgets.PositionedHiddenPanel.Position;
 import es.eucm.ead.editor.view.widgets.iconwithpanel.IconWithFadePanel;
 import es.eucm.ead.editor.view.widgets.layouts.LinearLayout;
 import es.eucm.ead.engine.I18N;
 
-public abstract class PrefabPanel extends IconWithFadePanel {
+public abstract class PrefabPanel extends IconWithFadePanel implements
+		SelectionListener {
 
 	private static final float SEPARATION = 5, PAD_TITLE = 100, PAD = 20;
 
@@ -84,8 +88,29 @@ public abstract class PrefabPanel extends IconWithFadePanel {
 		top.add(trash).margin(PAD);
 		panel.add(top);
 		panel.row().padBottom(PAD);
+
+		this.setTouchable(Touchable.disabled);
+		this.setDisabled(true);
+
+		controller.getModel().addSelectionListener(this);
 	}
 
 	protected abstract InputListener trashListener();
+
+	@Override
+	public boolean listenToContext(String contextId) {
+		return true;
+	}
+
+	@Override
+	public void modelChanged(SelectionEvent event) {
+		if (selection.get(Selection.SCENE_ELEMENT).length == 1) {
+			this.setTouchable(Touchable.enabled);
+			this.setDisabled(false);
+		} else {
+			this.setTouchable(Touchable.disabled);
+			this.setDisabled(true);
+		}
+	}
 
 }

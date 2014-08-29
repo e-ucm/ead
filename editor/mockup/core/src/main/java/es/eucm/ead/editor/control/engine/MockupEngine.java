@@ -34,33 +34,21 @@
  *      You should have received a copy of the GNU Lesser General Public License
  *      along with eAdventure.  If not, see <http://www.gnu.org/licenses/>.
  */
-package es.eucm.ead.editor.control.actions;
+package es.eucm.ead.editor.control.engine;
 
-import es.eucm.ead.editor.control.Selection;
-import es.eucm.ead.schema.components.behaviors.Behavior;
-import es.eucm.ead.schema.entities.ModelEntity;
+import es.eucm.ead.editor.control.Controller;
+import es.eucm.ead.engine.ComponentLoader;
+import es.eucm.ead.engine.variables.VariablesManager;
 
-/**
- * Adds a {@link Behavior} to the current scene element selected </p>
- * <dl>
- * <dt><strong>Arguments</strong></dt>
- * <dd><strong>args[0]</strong> <em>{@link Behavior}</em> to add</dd>
- * </dl>
- */
-public class AddBehavior extends EditorAction {
+public class MockupEngine extends Engine {
 
-	public AddBehavior() {
-		super(true, false, Behavior.class);
+	public MockupEngine(Controller controller) {
+		super(controller);
 	}
 
 	@Override
-	public void perform(Object... args) {
-		Behavior behavior = (Behavior) args[0];
-
-		ModelEntity modelEntity = (ModelEntity) controller.getModel()
-				.getSelection().getSingle(Selection.SCENE_ELEMENT);
-
-		modelEntity.getComponents().add(behavior);
+	protected void registerComponentsProcessors(
+			ComponentLoader componentLoader, Controller controller,
+			VariablesManager variablesManager) {
 	}
-
 }

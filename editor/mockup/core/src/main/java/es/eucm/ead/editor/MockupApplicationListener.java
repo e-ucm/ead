@@ -50,6 +50,7 @@ import es.eucm.ead.editor.control.actions.editor.OpenMockupGame;
 import es.eucm.ead.editor.control.actions.editor.Save;
 import es.eucm.ead.editor.platform.Platform;
 import es.eucm.ead.editor.view.builders.gallery.ProjectsView;
+import es.eucm.ead.editor.view.builders.gallery.ScenesView;
 
 public class MockupApplicationListener extends EditorApplicationListener {
 
@@ -77,6 +78,9 @@ public class MockupApplicationListener extends EditorApplicationListener {
 			try {
 				controller.action(OpenMockupGame.class, projectToOpenPath,
 						stage);
+				if (controller.getViews().getCurrentView() == null) {
+					controller.action(ChangeView.class, ScenesView.class);
+				}
 			} catch (EditorActionException eae) {
 				// the project is probably corrupt; complain but continue
 				Gdx.app.log("OpenLastProject", "Error opening '"

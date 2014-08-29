@@ -48,6 +48,7 @@ import es.eucm.ead.editor.editorui.OpenMockGame;
 import es.eucm.ead.editor.editorui.OpenMockGame.Game;
 import es.eucm.ead.editor.view.widgets.editionview.LeftEditionToolbar;
 import es.eucm.ead.engine.I18N;
+import es.eucm.ead.schema.editor.components.Documentation;
 import es.eucm.ead.schema.editor.components.Parent;
 import es.eucm.ead.schema.editor.components.VariableDef;
 import es.eucm.ead.schema.editor.components.VariableDef.Type;
@@ -83,7 +84,11 @@ public class LeftToolbarPanelsTest extends MockupUITest {
 
 		Game game = new Game();
 		game.setGame(new ModelEntity());
+
 		ModelEntity scene = new ModelEntity();
+		ModelEntity scene2 = new ModelEntity();
+		ModelEntity scene3 = new ModelEntity();
+
 		ModelEntity sceneElement = new ModelEntity();
 		scene.getChildren().add(sceneElement);
 		Parent parent = new Parent();
@@ -91,6 +96,19 @@ public class LeftToolbarPanelsTest extends MockupUITest {
 		sceneElement.getComponents().add(parent);
 
 		game.addScene("scenes/scene1.json", scene);
+		Documentation d1 = new Documentation();
+		d1.setName("Escena1");
+		scene.getComponents().add(d1);
+
+		game.addScene("scenes/scene2.json", scene2);
+		Documentation d2 = new Documentation();
+		d2.setName("Escena2");
+		scene2.getComponents().add(d2);
+
+		game.addScene("scenes/scene3.json", scene3);
+		Documentation d3 = new Documentation();
+		d3.setName("Escena3");
+		scene3.getComponents().add(d3);
 
 		controller.action(OpenMockGame.class, game);
 

@@ -80,7 +80,7 @@ public class ScenesView extends BaseGallery {
 
 	@Override
 	protected Actor createPlayButton() {
-		Button play = new ToolbarIcon("play80x80", ICON_PAD, size, skin);
+		Button play = new ToolbarIcon("play80x80", ICON_PAD, iconSize, skin);
 		play.addListener(new ClickListener() {
 			@Override
 			public void clicked(InputEvent event, float x, float y) {
@@ -92,7 +92,7 @@ public class ScenesView extends BaseGallery {
 
 	@Override
 	protected Actor createBackButton() {
-		Button back = new ToolbarIcon("play80x80", ICON_PAD, size, skin);
+		Button back = new ToolbarIcon("play80x80", ICON_PAD, iconSize, skin);
 		back.addListener(new ClickListener() {
 			@Override
 			public void clicked(InputEvent event, float x, float y) {
@@ -118,7 +118,7 @@ public class ScenesView extends BaseGallery {
 
 			@Override
 			public float getPrefHeight() {
-				return size;
+				return iconSize;
 			}
 		};
 		projectName.setMessageText(i18n.m("gallery.enterAName"));

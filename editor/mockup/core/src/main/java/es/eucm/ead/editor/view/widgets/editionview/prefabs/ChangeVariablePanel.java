@@ -47,7 +47,7 @@ import com.badlogic.gdx.utils.Array;
 
 import es.eucm.ead.editor.control.Controller;
 import es.eucm.ead.editor.control.Selection;
-import es.eucm.ead.editor.control.actions.AddBehavior;
+import es.eucm.ead.editor.control.actions.AddTouchEffect;
 import es.eucm.ead.editor.control.actions.ChangeBehaviorEffect;
 import es.eucm.ead.editor.control.actions.RemoveBehavior;
 import es.eucm.ead.editor.view.widgets.MultiStateButton;
@@ -130,17 +130,13 @@ public class ChangeVariablePanel extends PrefabPanel {
 					.getName());
 
 			if (behavior == null) {
-				behavior = new Behavior();
-				behavior.setEvent(new Touch());
-				Array effects = new Array();
-				effects.add(changeVar);
-				behavior.setEffects(effects);
-
-				controller.action(AddBehavior.class, behavior);
+				controller.action(AddTouchEffect.class, changeVar);
 			} else {
 				controller.action(ChangeBehaviorEffect.class, behavior,
 						changeVar);
 			}
+
+			reloadBehavior();
 		}
 	}
 
@@ -148,6 +144,13 @@ public class ChangeVariablePanel extends PrefabPanel {
 	protected void showPanel() {
 		behavior = null;
 
+		reloadBehavior();
+
+		actualizePanel();
+		super.showPanel();
+	}
+
+	public void reloadBehavior() {
 		ModelEntity modelEntity = (ModelEntity) selection
 				.getSingle(Selection.SCENE_ELEMENT);
 		for (ModelComponent component : modelEntity.getComponents()) {
@@ -160,9 +163,6 @@ public class ChangeVariablePanel extends PrefabPanel {
 				}
 			}
 		}
-
-		actualizePanel();
-		super.showPanel();
 	}
 
 	public void actualizePanel() {
@@ -175,16 +175,16 @@ public class ChangeVariablePanel extends PrefabPanel {
 			expression = effect.getExpression();
 			// initialize text
 		}
-		varTextDown.reloadPanel(var);
 		stateButton.selectText(booleanToString(expression));
+		varTextDown.reloadPanel(var);
 		textArea.setText(text);
 
 	}
 
 	private String booleanToString(String string) {
-		if (string != null && string.equals("btrue")) {
+		if (string != null && string == "btrue") {
 			return i18n.m("edition.true");
-		} else if (string != null && string.equals("bfalse")) {
+		} else if (string != null && string == "bfalse") {
 			return i18n.m("edition.false");
 		} else {
 			return i18n.m("edition.opposite");
@@ -198,7 +198,8 @@ public class ChangeVariablePanel extends PrefabPanel {
 				.equals(i18n.m("edition.false"))) {
 			return "bfalse";
 		} else {
-			return "not $" + varTextDown.getSelectedVariableDef().getName();
+			return "( not $" + varTextDown.getSelectedVariableDef().getName()
+					+ " )";
 		}
 	}
 

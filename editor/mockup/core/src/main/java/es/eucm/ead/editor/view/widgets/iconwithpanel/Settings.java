@@ -55,8 +55,8 @@ public class Settings extends IconWithScalePanel {
 	private static final float SMALL_PAD = 20;
 
 	public Settings(final Controller controller, float iconPad, float size) {
-		super("settings80x80", iconPad, size, controller.getApplicationAssets()
-				.getSkin());
+		super("settings80x80", iconPad, 0, size, controller
+				.getApplicationAssets().getSkin());
 		Skin skin = controller.getApplicationAssets().getSkin();
 		I18N i18n = controller.getApplicationAssets().getI18N();
 

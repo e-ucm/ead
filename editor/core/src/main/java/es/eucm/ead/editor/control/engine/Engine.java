@@ -95,9 +95,17 @@ public class Engine {
 				new EditorImageProcessor(gameLoop, editorGameAssets, controller
 						.getShapeRenderer()));
 
-		componentLoader.registerComponentProcessor(Label.class,
-				new EditableLabelProccesor(gameLoop, editorGameAssets,
-						variablesManager, controller));
+		registerComponentsProcessors(componentLoader, controller,
+				variablesManager);
+	}
+
+	protected void registerComponentsProcessors(
+			ComponentLoader componentLoader, Controller controller,
+			VariablesManager variablesManager) {
+		componentLoader.registerComponentProcessor(
+				Label.class,
+				new EditableLabelProccesor(gameLoop, controller
+						.getEditorGameAssets(), variablesManager, controller));
 	}
 
 	public EntitiesLoader getEntitiesLoader() {

@@ -34,32 +34,40 @@
  *      You should have received a copy of the GNU Lesser General Public License
  *      along with eAdventure.  If not, see <http://www.gnu.org/licenses/>.
  */
-package es.eucm.ead.editor.view.widgets.editionview.prefabs.prefabtweens;
+package es.eucm.ead.editor.control.actions;
 
-import com.badlogic.gdx.scenes.scene2d.ui.Skin;
+import es.eucm.ead.editor.control.Selection;
+import es.eucm.ead.schema.components.behaviors.Behavior;
+import es.eucm.ead.schema.components.behaviors.events.Touch;
+import es.eucm.ead.schema.effects.Effect;
+import es.eucm.ead.schema.entities.ModelEntity;
 
-import es.eucm.ead.editor.control.Controller;
-import es.eucm.ead.schema.components.tweens.ScaleTween;
-import es.eucm.ead.schema.components.tweens.Tween;
+/**
+ * Adds a {@link Effect} to the current scene element selected. The effect will
+ * be thrown when the user touch the scene element </p>
+ * <dl>
+ * <dt><strong>Arguments</strong></dt>
+ * <dd><strong>args[0]</strong> <em>{@link Effect}</em> to add</dd>
+ * </dl>
+ */
+public class AddTouchEffect extends EditorAction {
 
-public class DecreaseTween extends PrefabTween {
-
-	public DecreaseTween(String icon, String name, Controller controller,
-			Skin skin) {
-		super(icon, name, controller, skin);
+	public AddTouchEffect() {
+		super(true, false, Effect.class);
 	}
 
 	@Override
-	protected Tween createTween() {
-		ScaleTween tween = new ScaleTween();
-		tween.setRelative(false);
-		tween.setYoyo(true);
-		tween.setDuration(1.5f);
-		tween.setRepeat(-1);
-		tween.setScaleX(0f);
-		tween.setScaleY(0f);
+	public void perform(Object... args) {
 
-		return tween;
+		Behavior behavior = new Behavior();
+		behavior.setEvent(new Touch());
+
+		behavior.getEffects().add((Effect) args[0]);
+
+		ModelEntity modelEntity = (ModelEntity) controller.getModel()
+				.getSelection().getSingle(Selection.SCENE_ELEMENT);
+
+		modelEntity.getComponents().add(behavior);
 	}
 
 }

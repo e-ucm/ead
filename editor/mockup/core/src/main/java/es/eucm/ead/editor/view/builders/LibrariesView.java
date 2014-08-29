@@ -99,7 +99,7 @@ public class LibrariesView implements ViewBuilder, ProgressListener {
 				.m("repository.refreshingError"));
 
 		Button backButton = new ToolbarIcon(IC_GO_BACK, BaseGallery.ICON_PAD,
-				viewport.y * BaseGallery.TOOLBAR_SIZE, skin);
+				viewport.y * BaseGallery.ICON_SIZE, skin);
 		backButton.addListener(new ClickListener() {
 			@Override
 			public void clicked(InputEvent event, float x, float y) {

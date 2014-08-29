@@ -56,8 +56,8 @@ public class IncreaseTween extends PrefabTween {
 		tween.setYoyo(true);
 		tween.setDuration(1.5f);
 		tween.setRepeat(-1);
-		tween.setScaleX(2);
-		tween.setScaleY(2);
+		tween.setScaleX(0.5f);
+		tween.setScaleY(0.5f);
 
 		return tween;
 	}

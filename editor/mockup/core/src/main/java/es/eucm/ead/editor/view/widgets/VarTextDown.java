@@ -47,11 +47,16 @@ import com.badlogic.gdx.utils.Array;
 
 import es.eucm.ead.editor.control.Controller;
 import es.eucm.ead.editor.control.actions.AddNewVariableDef;
+import es.eucm.ead.editor.control.actions.AddVariables;
 import es.eucm.ead.engine.I18N;
 import es.eucm.ead.schema.components.ModelComponent;
+import es.eucm.ead.schema.components.behaviors.Behavior;
+import es.eucm.ead.schema.components.behaviors.events.Init;
 import es.eucm.ead.schema.editor.components.VariableDef;
 import es.eucm.ead.schema.editor.components.VariableDef.Type;
 import es.eucm.ead.schema.editor.components.Variables;
+import es.eucm.ead.schema.effects.ChangeVar;
+import es.eucm.ead.schema.effects.ChangeVar.Context;
 
 public class VarTextDown extends SelectBox<Label> {
 
@@ -84,6 +89,12 @@ public class VarTextDown extends SelectBox<Label> {
 					Gdx.input.getTextInput(new TextInputListener() {
 						@Override
 						public void input(String text) {
+							if (variables == null) {
+								variables = new Variables();
+								controller
+										.action(AddVariables.class, variables);
+							}
+
 							VariableDef newVariable = newVariableDef(text);
 							controller.action(AddNewVariableDef.class,
 									newVariable, variables);
@@ -92,6 +103,7 @@ public class VarTextDown extends SelectBox<Label> {
 							setItems(items);
 
 							setSelectedIndex(items.size - 1);
+							lastSelectedIndex = items.size - 1;
 						}
 
 						@Override
@@ -128,6 +140,7 @@ public class VarTextDown extends SelectBox<Label> {
 		int count = 1;
 		int index = -1;
 
+		variables = null;
 		items.add(i18n.m("general.newVariable"));
 		for (ModelComponent component : controller.getModel().getGame()
 				.getComponents()) {
@@ -159,11 +172,36 @@ public class VarTextDown extends SelectBox<Label> {
 		variable.setInitialValue("bfalse");
 		variable.setType(Type.BOOLEAN);
 
+		ChangeVar change = new ChangeVar();
+		change.setContext(Context.GLOBAL);
+		change.setExpression(variable.getInitialValue());
+		change.setVariable(variable.getName());
+
+		Array<ModelComponent> components = controller.getModel().getGame()
+				.getComponents();
+		Behavior behavior = null;
+
+		for (ModelComponent component : components) {
+			if (component instanceof Behavior) {
+				behavior = (Behavior) component;
+				if (behavior.getEvent() instanceof Init) {
+					behavior.getEffects().add(change);
+					return variable;
+				}
+			}
+		}
+
+		behavior = new Behavior();
+		behavior.setEvent(new Init());
+		behavior.getEffects().add(change);
+
+		components.add(behavior);
+
 		return variable;
 	}
 
 	public VariableDef getSelectedVariableDef() {
-		if (getSelectedIndex() > 0) {
+		if (getSelectedIndex() > 0 && variables != null) {
 			return variables.getVariablesDefinitions().get(
 					getSelectedIndex() - 1);
 		} else {

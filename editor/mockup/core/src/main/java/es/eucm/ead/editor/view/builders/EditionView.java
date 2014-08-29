@@ -43,18 +43,18 @@ import com.badlogic.gdx.scenes.scene2d.utils.Align;
 
 import es.eucm.ead.editor.control.Controller;
 import es.eucm.ead.editor.control.MockupViews;
-import es.eucm.ead.editor.view.widgets.IconButton;
 import es.eucm.ead.editor.view.widgets.Toolbar;
 import es.eucm.ead.editor.view.widgets.editionview.LeftEditionToolbar;
 import es.eucm.ead.editor.view.widgets.editionview.MockupSceneEditor;
+import es.eucm.ead.editor.view.widgets.editionview.NavigationButton;
 import es.eucm.ead.editor.view.widgets.editionview.TopEditionToolbar;
-import es.eucm.ead.editor.view.widgets.helpmessage.sequence.EditionViewHelp;
 import es.eucm.ead.editor.view.widgets.editionview.draw.PaintToolbar;
+import es.eucm.ead.editor.view.widgets.helpmessage.sequence.EditionViewHelp;
 import es.eucm.ead.editor.view.widgets.layouts.LinearLayout;
 
 public class EditionView implements ViewBuilder {
 
-	private static final float PAD = 40, HEIGHT = 0.06f, ICON_SIZE = 0.04f;
+	private static final float PAD = 40, HEIGHT = 0.065f, ICON_SIZE = 0.04f;
 
 	private Table view;
 
@@ -83,18 +83,9 @@ public class EditionView implements ViewBuilder {
 		final Toolbar leftBar = new LeftEditionToolbar(controller,
 				"white_left", toolbarSize, iconSize, PAD);
 
-		// TODO widget
-		IconButton union = new IconButton("menu", 0, skin, "white_union") {
-			@Override
-			public float getPrefHeight() {
-				return topBar.getPrefHeight();
-			}
-
-			@Override
-			public float getPrefWidth() {
-				return leftBar.getPrefWidth();
-			}
-		};
+		NavigationButton union = new NavigationButton(skin, controller,
+				toolbarSize);
+		union.getPanel().addTouchableActor(topBar);
 
 		LinearLayout top = new LinearLayout(true);
 		top.add(union);

@@ -47,6 +47,8 @@ import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.TextField;
 
 import es.eucm.ead.editor.assets.ApplicationAssets;
+import es.eucm.ead.editor.control.engine.Engine;
+import es.eucm.ead.editor.control.engine.MockupEngine;
 import es.eucm.ead.editor.platform.Platform;
 
 public class MockupController extends Controller {
@@ -96,6 +98,11 @@ public class MockupController extends Controller {
 	protected void loadPreferences() {
 		getApplicationAssets().getI18N().setI18nPath("i18n-mockup");
 		super.loadPreferences();
+	}
+
+	@Override
+	protected Engine createEngine() {
+		return new MockupEngine(this);
 	}
 
 	@Override

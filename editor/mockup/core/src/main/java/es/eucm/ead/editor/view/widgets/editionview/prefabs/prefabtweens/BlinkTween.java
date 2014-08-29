@@ -51,8 +51,7 @@ public class BlinkTween extends PrefabTween {
 	@Override
 	protected Tween createTween() {
 		AlphaTween tween = new AlphaTween();
-		tween.setYoyo(true);
-		tween.setDuration(1.5f);
+		tween.setDuration(0.5f);
 		tween.setRepeat(-1);
 		tween.setAlpha(0);
 

@@ -98,5 +98,9 @@ public abstract class PrefabTween extends Button {
 		return tween;
 	}
 
+	public void setTween(Tween tween) {
+		this.tween = tween;
+	}
+
 	protected abstract Tween createTween();
 }
