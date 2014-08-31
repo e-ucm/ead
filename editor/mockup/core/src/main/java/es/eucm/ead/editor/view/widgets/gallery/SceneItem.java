@@ -62,7 +62,7 @@ public class SceneItem extends GalleryItem implements
 	public SceneItem(final Controller controller, ModelEntity scene,
 			BaseGallery gallery) {
 		super(new Image(), "", 0f, 0f, true, controller.getApplicationAssets()
-				.getSkin(), null, true, gallery);
+				.getSkin(), "scene", true, gallery);
 		this.scene = scene;
 		this.controller = controller;
 		Thumbnail thumbnail = Q.getThumbnail(controller, scene);

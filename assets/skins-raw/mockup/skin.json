@@ -74,6 +74,19 @@
 			checked: button_pressed,
 			over: button_normal, 
 			disabled: button_disabled
+		},
+		white_tween: {
+			up: tweenButton_normal, 
+			down: tweenButton_pressed, 
+			checked: tweenButton_pressed,
+			over: tweenButton_normal, 
+			disabled: tweenButton_disabled
+		},
+		scene: {
+			up: scene_name, 
+			down: scene, 
+			checked: scene,
+			over: scene_name, 
 		}
 	},
 	com.badlogic.gdx.scenes.scene2d.ui.TextButton$TextButtonStyle: {
@@ -183,40 +196,40 @@
 			down: button_pressed, 
 			over: transparent-bg, 
 			disabled: transparent-bg,  
-			disabledImageColor: black,
-            enabledImageColor: white
+			disabledImageColor: gray,
+            enabledImageColor: black
 		},
 		white_union: { 
 			up: nav_button_up, 
 			down: nav_button_down, 
 			over: nav_button_up, 
 			disabled: nav_button_up,  
-			disabledImageColor: black,
-            enabledImageColor: white
+			disabledImageColor: gray,
+            enabledImageColor: black
 		}, 
 		white_center: {
 			up: dropdown_center, 
 			down: dropdown_center, 
 			over: dropdown_center, 
 			disabled: dropdown_center,  
-			disabledImageColor: black,
-            enabledImageColor: white
+			disabledImageColor: gray,
+            enabledImageColor: black
 		},
 		white_right: {
 			up: dropdown_right, 
 			down: dropdown_right, 
 			over: dropdown_right, 
 			disabled: dropdown_right,  
-			disabledImageColor: black,
-            enabledImageColor: white
+			disabledImageColor: gray,
+            enabledImageColor: black
 		},
 		white_left: {
 			up: dropdown_left, 
 			down: dropdown_left, 
 			over: dropdown_left, 
 			disabled: dropdown_left,  
-			disabledImageColor: black,
-            enabledImageColor: white
+			disabledImageColor: gray,
+            enabledImageColor: black
 		}
 	},
 	es.eucm.ead.editor.view.widgets.Toolbar$ToolbarStyle: {
@@ -272,9 +285,19 @@
 		
 	},
 	es.eucm.ead.editor.view.widgets.gallery.GalleryItem$GalleryItemStyle : {
-		default: {
+		project: {
 			imageBackground: project,
 			textBackground: project_name,
+			textStyle: transparent
+		},
+		scene: {
+			imageBackground: scene,
+			textBackground: scene_name,
+			textStyle: transparent
+		},
+		repository: {
+			imageBackground: repository,
+			textBackground: repository_name,
 			textStyle: transparent
 		}
 	},

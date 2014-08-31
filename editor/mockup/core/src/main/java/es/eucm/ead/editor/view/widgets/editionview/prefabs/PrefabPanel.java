@@ -75,7 +75,7 @@ public abstract class PrefabPanel extends IconWithFadePanel implements
 
 		panel.addTouchableActor(touchable);
 
-		IconButton trash = new IconButton("recycle24x24", 0, skin);
+		IconButton trash = new IconButton("recycle", 0, skin);
 		InputListener listener = trashListener();
 		if (listener != null) {
 			trash.addListener(listener);

@@ -62,7 +62,7 @@ public class ProjectItem extends GalleryItem implements
 	public ProjectItem(Controller controller, String projectPath,
 			BaseGallery gallery) {
 		super(new Image(), "", 0f, 0f, true, controller.getApplicationAssets()
-				.getSkin(), null, false, gallery);
+				.getSkin(), "project", false, gallery);
 		this.controller = controller;
 		alternativeName = gallery.getI18n().m("project") + " "
 				+ projectPath.substring(projectPath.lastIndexOf("/") + 1);

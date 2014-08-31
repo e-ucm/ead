@@ -58,7 +58,7 @@ public class RepositoryItem extends GalleryItem implements
 	public RepositoryItem(Controller controller, ModelEntity element,
 			BaseGallery gallery) {
 		super(new Image(), "", 0f, 0f, false, controller.getApplicationAssets()
-				.getSkin(), null, false, gallery);
+				.getSkin(), "repository", false, gallery);
 		this.element = element;
 
 		documentation = Q.getComponent(element, RepoElement.class);
