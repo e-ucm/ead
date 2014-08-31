@@ -73,24 +73,25 @@ public class TweensPanel extends PrefabPanel {
 		table.defaults().uniform();
 
 		table.add(
-				new Rotate360Tween("tween80x80", i18n.m("edition.rotate360"),
+				new Rotate360Tween("rotate80x80", i18n.m("edition.rotate360"),
 						controller, skin)).pad(SPACE).fill();
 		table.add(
-				new HorizontalMoveTween("tween80x80", i18n
+				new HorizontalMoveTween("horizontal_move80x80", i18n
 						.m("edition.horizontal"), controller, skin)).pad(SPACE)
 				.fill();
 		table.add(
-				new VerticalMoveTween("tween80x80", i18n.m("edition.vertical"),
-						controller, skin)).pad(SPACE).fill();
+				new VerticalMoveTween("vertical_move80x80", i18n
+						.m("edition.vertical"), controller, skin)).pad(SPACE)
+				.fill();
 		table.row();
 		table.add(
-				new DecreaseTween("tween80x80", i18n.m("edition.decrease"),
+				new DecreaseTween("decrease80x80", i18n.m("edition.decrease"),
 						controller, skin)).pad(SPACE).fill();
 		table.add(
-				new IncreaseTween("tween80x80", i18n.m("edition.increase"),
+				new IncreaseTween("increase80x80", i18n.m("edition.increase"),
 						controller, skin)).pad(SPACE).fill();
 		table.add(
-				new BlinkTween("tween80x80", i18n.m("edition.blink"),
+				new BlinkTween("blink80x80", i18n.m("edition.blink"),
 						controller, skin)).pad(SPACE).fill();
 
 		panel.add(table);

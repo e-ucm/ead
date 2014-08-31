@@ -92,7 +92,7 @@ public class ScenesView extends BaseGallery {
 
 	@Override
 	protected Actor createBackButton() {
-		Button back = new ToolbarIcon("play80x80", ICON_PAD, iconSize, skin);
+		Button back = new ToolbarIcon("back80x80", ICON_PAD, iconSize, skin);
 		back.addListener(new ClickListener() {
 			@Override
 			public void clicked(InputEvent event, float x, float y) {

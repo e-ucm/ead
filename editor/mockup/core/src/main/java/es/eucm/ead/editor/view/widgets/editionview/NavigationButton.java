@@ -95,12 +95,12 @@ public class NavigationButton extends IconWithScalePanel implements
 
 		};
 
-		sceneList = new ScenesTableList(controller, changeView, "white");
+		sceneList = new ScenesTableList(controller, changeView, "scene");
 
 		ScrollPane list = new ScrollPane(sceneList);
 		list.setScrollingDisabled(true, false);
 
-		IconButton goGallery = new IconButton("menu", skin);
+		IconButton goGallery = new IconButton("home", skin);
 		goGallery.add(i18n.m("general.scenes")).padLeft(PAD);
 		goGallery.addListener(new ClickListener() {
 			@Override

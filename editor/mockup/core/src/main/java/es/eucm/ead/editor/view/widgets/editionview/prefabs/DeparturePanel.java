@@ -84,7 +84,7 @@ public class DeparturePanel extends PrefabPanel {
 
 		};
 
-		table = new ScenesTableList(controller, makeExit, "white");
+		table = new ScenesTableList(controller, makeExit, "scene");
 
 		ScrollPane scroll = new ScrollPane(table, skin, "white");
 		panel.add(scroll).expandY().fill();

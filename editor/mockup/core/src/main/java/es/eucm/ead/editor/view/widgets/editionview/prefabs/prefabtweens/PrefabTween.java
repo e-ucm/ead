@@ -50,7 +50,7 @@ import es.eucm.ead.schema.components.tweens.Tween;
 
 public abstract class PrefabTween extends Button {
 
-	private static final float SEPARATION = 5;
+	private static final float SEPARATION = 1;
 
 	protected Controller controller;
 
@@ -62,7 +62,7 @@ public abstract class PrefabTween extends Button {
 
 	public PrefabTween(String icon, String name, Controller controller,
 			Skin skin) {
-		super(skin, "white");
+		super(skin, "white_tween");
 
 		I18N i18n = controller.getApplicationAssets().getI18N();
 

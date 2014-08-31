@@ -57,7 +57,7 @@ import es.eucm.ead.editor.view.widgets.IconButton;
 
 public abstract class GalleryItem extends Button {
 
-	private static final String DELETE_ICON = "recycle24x24";
+	private static final String DELETE_ICON = "recycle";
 
 	private static final ClickListener iconListener = new ClickListener() {
 		public void clicked(InputEvent event, float x, float y) {
@@ -119,8 +119,9 @@ public abstract class GalleryItem extends Button {
 		Table top = new Table();
 		top.setBackground(style.imageBackground);
 
+		IconButton iconButton = null;
 		if (canBeDeleted) {
-			IconButton iconButton = new IconButton(DELETE_ICON, skin);
+			iconButton = new IconButton(DELETE_ICON, skin);
 			iconButton.setUserObject(this);
 			iconButton.addListener(iconListener);
 			top.add(iconButton).expand().right();
@@ -132,7 +133,13 @@ public abstract class GalleryItem extends Button {
 		image.setUserObject(this);
 		image.addListener(iconListener);
 		image.setDrawable(skin.getDrawable("new_project80x80"));
-		top.add(image).pad(padImage).expand().center().fill();
+		top.add(image)
+				.pad(padImage)
+				.expand()
+				.center()
+				.fill()
+				.padBottom(
+						padImage + (canBeDeleted ? iconButton.getHeight() : 0));
 
 		Table bot = new Table(skin);
 		bot.setBackground(style.textBackground);
