@@ -40,6 +40,7 @@ import com.badlogic.gdx.graphics.Pixmap;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.utils.Array;
 import com.vividsolutions.jts.geom.Geometry;
+
 import es.eucm.ead.editor.components.EditorImageComponent;
 import es.eucm.ead.editor.utils.GeometryUtils;
 import es.eucm.ead.engine.GameLoop;
@@ -51,12 +52,30 @@ import es.eucm.ead.schema.renderers.Image;
 
 public class EditorImageProcessor extends ImageProcessor {
 
-	private ShapeRenderer shapeRenderer;
+	private double threshold, distanceTolerance;
+	protected ShapeRenderer shapeRenderer;
 
 	public EditorImageProcessor(GameLoop engine, GameAssets gameAssets,
 			ShapeRenderer shapeRenderer) {
+		this(engine, gameAssets, shapeRenderer, .1D, 2D);
+	}
+
+	/**
+	 * @param threshold
+	 *            a number between 0 (transparent) and 1 (opaque) used to
+	 *            determine the sensitivity of the borders. Recommended value is
+	 *            0.3 (lower = only very transparent things are 'out')
+	 * @param distanceTolerance
+	 *            used during polygon-simplification. Points in the polygon will
+	 *            be separated by at least distanceTolerance pixels.
+	 */
+	public EditorImageProcessor(GameLoop engine, GameAssets gameAssets,
+			ShapeRenderer shapeRenderer, double threshold,
+			double distanceTolerance) {
 		super(engine, gameAssets);
 		this.shapeRenderer = shapeRenderer;
+		this.threshold = threshold;
+		this.distanceTolerance = distanceTolerance;
 	}
 
 	@Override
@@ -65,7 +84,7 @@ public class EditorImageProcessor extends ImageProcessor {
 			try {
 				Pixmap pixmap = new Pixmap(gameAssets.resolve(image.getUri()));
 				Array<Geometry> geometryArray = GeometryUtils.findBorders(
-						pixmap, .1, 2);
+						pixmap, threshold, distanceTolerance);
 				for (Geometry geometry : geometryArray) {
 					image.getCollider().add(
 							GeometryUtils.jtsToSchemaPolygon(geometry));
