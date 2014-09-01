@@ -65,23 +65,24 @@ public class LibrariesView implements ViewBuilder, ProgressListener {
 
 	private static final int COLS = 2;
 
-	private static final String IC_GO_BACK = "play80x80";
+	private static final String IC_GO_BACK = "back80x80";
 
 	private Controller controller;
 	private Table view, topWidgets;
 	private Notification refreshingNotif, errorReftreshing;
 	private GridPanel<TextButton> libsGrid;
+	private Runnable updateLibraries = new Runnable() {
+		@Override
+		public void run() {
+			refreshingNotif.show(view.getStage());
+			controller.action(UpdateLibraries.class, LibrariesView.this);
+		}
+	};
 
 	@Override
 	public Actor getView(Object... args) {
 		libsGrid.clear();
-		Gdx.app.postRunnable(new Runnable() {
-			@Override
-			public void run() {
-				refreshingNotif.show(view.getStage());
-				controller.action(UpdateLibraries.class, LibrariesView.this);
-			}
-		});
+		Gdx.app.postRunnable(updateLibraries);
 		return view;
 	}
 
@@ -107,6 +108,8 @@ public class LibrariesView implements ViewBuilder, ProgressListener {
 			}
 		});
 
+		final float toolbarSize = controller.getPlatform().getSize().y
+				* BaseGallery.TOOLBAR_SIZE;
 		topWidgets = new Toolbar(skin, "white_top");
 		topWidgets.add(backButton).left().padLeft(BaseGallery.SMALL_PAD);
 		topWidgets.add(i18n.m("repository.selectLibrary")).expandX();
@@ -138,7 +141,7 @@ public class LibrariesView implements ViewBuilder, ProgressListener {
 
 		view = new Table().debug();
 		view.setFillParent(true);
-		view.add(topWidgets).expandX().fillX();
+		view.add(topWidgets).expandX().fill().height(toolbarSize);
 		view.row();
 		view.add(galleryTableScroll).expand().fillX().top();
 

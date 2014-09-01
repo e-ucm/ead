@@ -47,10 +47,15 @@ import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 
 import es.eucm.ead.editor.control.Controller;
 import es.eucm.ead.editor.control.MockupViews;
+import es.eucm.ead.editor.control.Selection;
+import es.eucm.ead.editor.control.actions.model.EditScene;
+import es.eucm.ead.editor.control.actions.model.SetSelection;
 import es.eucm.ead.editor.control.engine.Engine;
+import es.eucm.ead.editor.model.Q;
 import es.eucm.ead.editor.view.builders.ViewBuilder;
 import es.eucm.ead.editor.view.widgets.EnginePlayer;
 import es.eucm.ead.editor.view.widgets.ToolbarIcon;
+import es.eucm.ead.schema.editor.components.EditState;
 import es.eucm.ead.schemax.GameStructure;
 
 /**
@@ -93,6 +98,7 @@ public class PlayView implements ViewBuilder {
 
 	@Override
 	public Actor getView(Object... args) {
+		controller.action(SetSelection.class, null, Selection.DEBUG);
 		Engine engine = controller.getEngine();
 		engine.getGameLoader().loaded(GameStructure.GAME_FILE,
 				controller.getModel().getGame());
@@ -103,6 +109,12 @@ public class PlayView implements ViewBuilder {
 
 	@Override
 	public void release(Controller controller) {
+		EditState component = Q.getComponent(controller.getModel().getGame(),
+				EditState.class);
+		String editScene = component.getEditScene();
+		if (editScene != null) {
+			controller.action(EditScene.class, editScene);
+		}
 		Engine engine = controller.getEngine();
 		engine.stop();
 		engine.setGameView(null);

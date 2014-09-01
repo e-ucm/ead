@@ -55,6 +55,8 @@ import es.eucm.ead.editor.view.widgets.layouts.LinearLayout;
 public class EditionView implements ViewBuilder {
 
 	private static final float PAD = 40, HEIGHT = 0.065f, ICON_SIZE = 0.04f;
+	private static final String TOP_STYLE = "white_top",
+			LEFT_STYLE = "white_left";
 
 	private Table view;
 
@@ -62,8 +64,11 @@ public class EditionView implements ViewBuilder {
 
 	private PaintToolbar paintToolbar;
 
+	private Controller controller;
+
 	@Override
 	public void initialize(Controller controller) {
+		this.controller = controller;
 
 		float toolbarSize = controller.getPlatform().getSize().y * HEIGHT;
 		float iconSize = controller.getPlatform().getSize().y * ICON_SIZE;
@@ -74,18 +79,20 @@ public class EditionView implements ViewBuilder {
 		view.setFillParent(true);
 		view.align(Align.top);
 
-		sceneEditor = new MockupSceneEditor(controller);
+		sceneEditor = new MockupSceneEditor(controller, LEFT_STYLE, TOP_STYLE);
 
 		paintToolbar = new PaintToolbar(sceneEditor, controller);
 
-		final Toolbar topBar = new TopEditionToolbar(controller, "white_top",
-				toolbarSize, iconSize, PAD, paintToolbar);
-		final Toolbar leftBar = new LeftEditionToolbar(controller,
-				"white_left", toolbarSize, iconSize, PAD);
-
-		NavigationButton union = new NavigationButton(skin, controller,
+		final NavigationButton union = new NavigationButton(skin, controller,
 				toolbarSize);
+
+		final TopEditionToolbar topBar = new TopEditionToolbar(controller,
+				TOP_STYLE, toolbarSize, iconSize, PAD, paintToolbar);
+		final Toolbar leftBar = new LeftEditionToolbar(controller, LEFT_STYLE,
+				toolbarSize, iconSize, PAD, union, topBar);
+
 		union.getPanel().addTouchableActor(topBar);
+		topBar.addTouchableActors(union, leftBar);
 
 		LinearLayout top = new LinearLayout(true);
 		top.add(union);
@@ -111,11 +118,13 @@ public class EditionView implements ViewBuilder {
 	public void release(Controller controller) {
 		sceneEditor.release();
 		paintToolbar.hide();
+		controller.getCommands().popStack(false);
 	}
 
 	@Override
 	public Actor getView(Object... args) {
 		sceneEditor.prepare();
+		controller.getCommands().pushStack();
 		return view;
 	}
 
