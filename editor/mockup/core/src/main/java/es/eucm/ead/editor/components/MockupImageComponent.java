@@ -34,27 +34,25 @@
  *      You should have received a copy of the GNU Lesser General Public License
  *      along with eAdventure.  If not, see <http://www.gnu.org/licenses/>.
  */
-package es.eucm.ead.editor.control.engine;
+package es.eucm.ead.editor.components;
 
-import es.eucm.ead.editor.control.Controller;
-import es.eucm.ead.editor.processors.MockupImageProcessor;
-import es.eucm.ead.engine.ComponentLoader;
-import es.eucm.ead.engine.variables.VariablesManager;
-import es.eucm.ead.schema.renderers.Image;
+import com.badlogic.gdx.graphics.g2d.Batch;
 
-public class MockupEngine extends Engine {
+import es.eucm.ead.engine.GameLoop;
 
-	public MockupEngine(Controller controller) {
-		super(controller);
+public class MockupImageComponent extends EditorImageComponent {
+
+	private GameLoop gameLoop;
+
+	public void setGameLoop(GameLoop gameLoop) {
+		this.gameLoop = gameLoop;
 	}
 
 	@Override
-	protected void registerComponentsProcessors(
-			ComponentLoader componentLoader, Controller controller,
-			VariablesManager variablesManager) {
-		componentLoader.registerComponentProcessor(
-				Image.class,
-				new MockupImageProcessor(getGameLoop(), controller
-						.getEditorGameAssets(), controller.getShapeRenderer()));
+	protected void drawCollider(Batch batch) {
+		if (!gameLoop.isPlaying()) {
+			super.drawCollider(batch);
+		}
 	}
+
 }
