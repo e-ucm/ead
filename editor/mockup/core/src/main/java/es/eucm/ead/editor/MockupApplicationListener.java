@@ -94,8 +94,8 @@ public class MockupApplicationListener extends EditorApplicationListener {
 
 	@Override
 	public void pause() {
-		super.pause();
 		controller.action(Save.class);
+		super.pause();
 	}
 
 	@Override

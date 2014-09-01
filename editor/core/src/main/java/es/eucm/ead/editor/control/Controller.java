@@ -294,7 +294,7 @@ public class Controller {
 
 		for (int i = 0; i < args.length; i++) {
 			Object object = args[i];
-			message += " \n\t" + object.toString();
+			message += " \n\t" + (object == null ? "null" : object.toString());
 			if (i < args.length - 1) {
 				message += ", ";
 			}

@@ -547,6 +547,15 @@ public class Model {
 	}
 
 	/**
+	 * Removes a listener from the {@link #selectionListeners}.
+	 * 
+	 * @param listener
+	 */
+	public void removeSelectionListener(SelectionListener listener) {
+		selectionListeners.removeValue(listener, true);
+	}
+
+	/**
 	 * The listener stops listening to oldTarget and starts listening to
 	 * newTarget
 	 * 
