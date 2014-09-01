@@ -47,19 +47,26 @@ import es.eucm.ead.schemax.FieldName;
 
 /**
  * A {@link FieldListener} that gets notified when the name of the
- * {@link Documentation} of a given {@link ModelEntity} scene has changed. Has a
- * convenience method that is invoked when the value changed. See
- * {@link #nameChanged(String)}.
+ * {@link Documentation} of a given {@link ModelEntity} scene has changed. Has
+ * convenience methods that are invoked when the values change. See
+ * {@link #nameChanged(String)} and {@link #descriptionChanged(String)}.
  * 
  */
-public class SceneNameListener implements FieldListener {
+public class SceneDocumentationListener implements FieldListener {
+
+	public enum DefaultName {
+		SCENE_ID, EMPTY
+	}
 
 	protected String sceneId;
+	private boolean isName;
 	private Controller controller;
+	private DefaultName defaultName;
 	private Documentation sceneDocumentation;
 
-	public SceneNameListener(Controller controller) {
+	public SceneDocumentationListener(Controller controller) {
 		this.controller = controller;
+		defaultName = DefaultName.SCENE_ID;
 	}
 
 	/**
@@ -79,8 +86,19 @@ public class SceneNameListener implements FieldListener {
 			remove();
 			model.addFieldListener(documentation, this);
 			sceneDocumentation = documentation;
-			this.sceneId = model.getIdFor(scene);
+			if (defaultName == DefaultName.SCENE_ID) {
+				this.sceneId = model.getIdFor(scene);
+			}
 		}
+	}
+
+	/**
+	 * Sets the value used when the name of the scene is null.
+	 * 
+	 * @param defaultName
+	 */
+	public void setDefaultName(DefaultName defaultName) {
+		this.defaultName = defaultName;
 	}
 
 	/**
@@ -95,7 +113,19 @@ public class SceneNameListener implements FieldListener {
 	@Override
 	public void modelChanged(FieldEvent event) {
 		Object value = event.getValue();
-		nameChanged(value == null ? sceneId : value.toString());
+		if (isName) {
+			nameChanged(value == null ? getDefaultName() : value.toString());
+		} else {
+			descriptionChanged(value == null ? "" : value.toString());
+		}
+	}
+
+	private String getDefaultName() {
+		if (defaultName == DefaultName.SCENE_ID) {
+			return sceneId;
+		} else {
+			return "";
+		}
 	}
 
 	/**
@@ -110,9 +140,21 @@ public class SceneNameListener implements FieldListener {
 
 	}
 
-	@Override
-	public boolean listenToField(String fieldName) {
-		return FieldName.NAME.equals(fieldName);
+	/**
+	 * Invoked when the description field of the {@link Documentation} this
+	 * listener is attached to has changed. If the new value of the field is
+	 * null the description will be empty.
+	 * 
+	 * @param name
+	 *            the new value or, if its null, empty string
+	 */
+	public void descriptionChanged(String description) {
+
 	}
 
+	@Override
+	public boolean listenToField(String fieldName) {
+		isName = FieldName.NAME.equals(fieldName);
+		return isName || FieldName.DESCRIPTION.equals(fieldName);
+	}
 }
