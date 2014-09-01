@@ -43,6 +43,7 @@ import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.Pools;
 import com.badlogic.gdx.utils.Predicate;
+
 import es.eucm.ead.editor.control.Controller;
 import es.eucm.ead.editor.control.Selection;
 import es.eucm.ead.editor.model.Model;
@@ -72,7 +73,7 @@ public abstract class SceneEditor extends AbstractWidget {
 
 	public static final String NAME = "sceneEditor";
 
-	private Controller controller;
+	protected Controller controller;
 
 	private Model model;
 
@@ -149,9 +150,10 @@ public abstract class SceneEditor extends AbstractWidget {
 		if (scene != null) {
 			removeListeners(Q.getModelEntity(scene.getGroup()));
 		}
+		controller.getModel().removeSelectionListener(sceneSelectionListener);
 	}
 
-	private void readSceneContext() {
+	protected void readSceneContext() {
 		sceneEntity = (ModelEntity) model.getSelection().getSingle(
 				Selection.SCENE);
 		if (sceneEntity != null) {
@@ -203,9 +205,7 @@ public abstract class SceneEditor extends AbstractWidget {
 		Object[] selection = model.getSelection().get(Selection.SCENE_ELEMENT);
 		for (Object object : selection) {
 			if (object instanceof ModelEntity) {
-				// Check if this model entity is inside the current scene
-				entityPredicate.setEntity((ModelEntity) object);
-				Actor actor = findActor(scene.getGroup(), entityPredicate);
+				Actor actor = findActor((ModelEntity) object);
 				if (actor != null) {
 					actors.add(actor);
 				}
@@ -221,11 +221,19 @@ public abstract class SceneEditor extends AbstractWidget {
 	}
 
 	private void updateEditState() {
-		SceneEditState state = Q
-				.getComponent(sceneEntity, SceneEditState.class);
-		state.setZoom(groupEditor.getZoom());
-		state.setX(groupEditor.getPanningX());
-		state.setY(groupEditor.getPanningY());
+		if (sceneEntity != null) {
+			SceneEditState state = Q.getComponent(sceneEntity,
+					SceneEditState.class);
+			state.setZoom(groupEditor.getZoom());
+			state.setX(groupEditor.getPanningX());
+			state.setY(groupEditor.getPanningY());
+		}
+	}
+
+	protected Actor findActor(ModelEntity entity) {
+		// Check if this model entity is inside the current scene
+		entityPredicate.setEntity(entity);
+		return findActor(scene.getGroup(), entityPredicate);
 	}
 
 	/**
@@ -271,6 +279,9 @@ public abstract class SceneEditor extends AbstractWidget {
 		public void modelChanged(ListEvent event) {
 			entityPredicate.setEntity((ModelEntity) event.getParent());
 			Actor actor = findActor(scene.getGroup(), entityPredicate);
+			if (actor == null) {
+				return;
+			}
 			switch (event.getType()) {
 			case ADDED:
 				ModelEntity added = (ModelEntity) event.getElement();
