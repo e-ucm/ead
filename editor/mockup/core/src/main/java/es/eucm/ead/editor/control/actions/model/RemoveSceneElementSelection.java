@@ -34,29 +34,36 @@
  *      You should have received a copy of the GNU Lesser General Public License
  *      along with eAdventure.  If not, see <http://www.gnu.org/licenses/>.
  */
-package es.eucm.ead.editor.control.actions.editor;
+package es.eucm.ead.editor.control.actions.model;
 
-import es.eucm.ead.editor.control.Clipboard;
+import es.eucm.ead.editor.control.Controller;
+import es.eucm.ead.editor.control.Selection;
+import es.eucm.ead.editor.control.commands.Command;
+import es.eucm.ead.editor.control.commands.CompositeCommand;
+import es.eucm.ead.editor.control.commands.ListCommand.RemoveFromListCommand;
+import es.eucm.ead.schema.entities.ModelEntity;
 
 /**
- * <p>
- * Copies the current selection to the clipboard and automatically pastes it.
- * </p>
- * <dl>
- * <dt><strong>Arguments</strong></dt>
- * <dd>None</dd>
- * </dl>
+ * Replaces the {@link Selection#SCENE_ELEMENT} selection. No arguments are
+ * needed.
  */
-public class Clone extends Copy {
+public class RemoveSceneElementSelection extends SceneElementSelection {
 
-	public Clone() {
-		super();
+	private SetSelection setSelection;
+
+	@Override
+	public void initialize(Controller controller) {
+		super.initialize(controller);
+		setSelection = controller.getActions().getAction(SetSelection.class);
 	}
 
 	@Override
-	public void perform(Object... args) {
-		Clipboard clipboard = controller.getClipboard();
-		clipboard.copy(false);
-		clipboard.paste();
+	public Command getCommand(ModelEntity scene, ModelEntity sceneElement) {
+		CompositeCommand composite = new CompositeCommand();
+		composite.addCommand(new RemoveFromListCommand(scene, scene
+				.getChildren(), sceneElement));
+		composite.addCommand(setSelection.perform(Selection.EDITED_GROUP,
+				Selection.SCENE_ELEMENT));
+		return composite;
 	}
 }
