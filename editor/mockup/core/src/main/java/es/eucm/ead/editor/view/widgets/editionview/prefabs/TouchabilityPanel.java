@@ -39,32 +39,31 @@ package es.eucm.ead.editor.view.widgets.editionview.prefabs;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 
 import es.eucm.ead.editor.control.Controller;
-import es.eucm.ead.editor.control.actions.AddVisibilityCondition;
-import es.eucm.ead.editor.control.actions.ChangeVisibilityCondition;
-import es.eucm.ead.schema.components.Visibility;
+import es.eucm.ead.editor.control.actions.AddTouchabilityCondition;
+import es.eucm.ead.editor.control.actions.ChangeTouchabilityCondition;
+import es.eucm.ead.schema.components.Touchability;
 
-public class VisibilityPanel extends ConditionalPanel {
+public class TouchabilityPanel extends ConditionalPanel {
 
-	public VisibilityPanel(String icon, float size, Controller controller,
+	public TouchabilityPanel(String icon, float size, Controller controller,
 			Actor touchable) {
-		super(icon, "edition.visible", size, controller, touchable,
-				Visibility.class);
+		super(icon, "edition.touchable", size, controller, touchable,
+				Touchability.class);
 	}
 
 	@Override
 	protected void actualizeCondition() {
 		if (varTextDown != null && varTextDown.getSelectedVariableDef() != null) {
 			if (conditionedComponent == null) {
-				conditionedComponent = new Visibility();
+				conditionedComponent = new Touchability();
 				conditionedComponent.setCondition(createCondition());
-				controller.action(AddVisibilityCondition.class,
+				controller.action(AddTouchabilityCondition.class,
 						conditionedComponent);
 			} else {
-				controller.action(ChangeVisibilityCondition.class,
+				controller.action(ChangeTouchabilityCondition.class,
 						createCondition());
 			}
 		}
 
 	}
-
 }

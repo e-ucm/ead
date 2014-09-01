@@ -37,30 +37,31 @@
 package es.eucm.ead.editor.control.actions;
 
 import es.eucm.ead.editor.control.Selection;
-import es.eucm.ead.schema.components.Visibility;
+import es.eucm.ead.schema.components.ModelConditionedComponent;
 import es.eucm.ead.schema.entities.ModelEntity;
 
 /**
- * Removes a {@link Visibility} component to the current scene element selected
- * </p>
+ * Removes a {@link ModelConditionedComponent} component to the current scene
+ * element selected </p>
  * <dl>
  * <dt><strong>Arguments</strong></dt>
- * <dd><strong>args[0]</strong> <em>{@link Visibility}</em> to remove</dd>
+ * <dd><strong>args[0]</strong> <em>{@link ModelConditionedComponent}</em> to
+ * remove</dd>
  * </dl>
  */
-public class RemoveVisibilityCondition extends EditorAction {
+public class RemoveConditionedComponent extends EditorAction {
 
-	public RemoveVisibilityCondition() {
-		super(true, false, Visibility.class);
+	public RemoveConditionedComponent() {
+		super(true, false, ModelConditionedComponent.class);
 	}
 
 	@Override
 	public void perform(Object... args) {
-		Visibility visibility = (Visibility) args[0];
+		ModelConditionedComponent condition = (ModelConditionedComponent) args[0];
 
 		ModelEntity modelEntity = (ModelEntity) controller.getModel()
 				.getSelection().getSingle(Selection.SCENE_ELEMENT);
 
-		modelEntity.getComponents().removeValue(visibility, true);
+		modelEntity.getComponents().removeValue(condition, true);
 	}
 }
