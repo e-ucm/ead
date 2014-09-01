@@ -34,69 +34,34 @@
  *      You should have received a copy of the GNU Lesser General Public License
  *      along with eAdventure.  If not, see <http://www.gnu.org/licenses/>.
  */
-package es.eucm.ead.engine.entities.actors;
+package es.eucm.ead.editor.control.actions;
 
-import com.badlogic.gdx.graphics.g2d.Batch;
-import com.badlogic.gdx.scenes.scene2d.Actor;
-import com.badlogic.gdx.utils.Pool.Poolable;
+import es.eucm.ead.editor.control.Selection;
+import es.eucm.ead.schema.components.Touchability;
+import es.eucm.ead.schema.entities.ModelEntity;
 
-import es.eucm.ead.engine.components.renderers.RendererComponent;
+/**
+ * Adds a {@link Touchability} component to the current scene element selected
+ * </p>
+ * <dl>
+ * <dt><strong>Arguments</strong></dt>
+ * <dd><strong>args[0]</strong> <em>{@link Touchability}</em> to add</dd>
+ * </dl>
+ */
+public class AddTouchabilityCondition extends EditorAction {
 
-public class RendererActor extends EntityGroup implements Poolable {
-
-	protected RendererComponent renderer;
-
-	public void setRenderer(RendererComponent renderer) {
-		this.renderer = renderer;
-		this.setWidth(renderer.getWidth());
-		this.setHeight(renderer.getHeight());
+	public AddTouchabilityCondition() {
+		super(true, false, Touchability.class);
 	}
 
 	@Override
-	public void act(float delta) {
-		super.act(delta);
-		renderer.act(delta);
+	public void perform(Object... args) {
+		Touchability touchability = (Touchability) args[0];
+
+		ModelEntity modelEntity = (ModelEntity) controller.getModel()
+				.getSelection().getSingle(Selection.SCENE_ELEMENT);
+
+		modelEntity.getComponents().add(touchability);
 	}
 
-	@Override
-	public void drawChildren(Batch batch, float parentAlpha) {
-		if (renderer != null) {
-			// Set alpha and color
-			float alpha = this.getColor().a;
-			this.getColor().a *= parentAlpha;
-			batch.setColor(this.getColor());
-
-			renderer.draw(batch);
-
-			// Restore alpha
-			this.getColor().a = alpha;
-
-		}
-		super.drawChildren(batch, parentAlpha);
-	}
-
-	@Override
-	public float getWidth() {
-		return renderer == null ? 0 : renderer.getWidth();
-	}
-
-	@Override
-	public float getHeight() {
-		return renderer == null ? 0 : renderer.getHeight();
-	}
-
-	@Override
-	public void reset() {
-		this.renderer = null;
-	}
-
-	@Override
-	public Actor hit(float x, float y, boolean touchable) {
-		Actor actor = super.hit(x, y, touchable);
-		if (actor == null && isTouchable()) {
-			return renderer != null && renderer.hit(x, y) ? this : null;
-		} else {
-			return actor;
-		}
-	}
 }

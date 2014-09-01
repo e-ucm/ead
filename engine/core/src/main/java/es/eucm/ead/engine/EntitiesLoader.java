@@ -139,7 +139,7 @@ public class EntitiesLoader implements AssetLoadedCallback<Object> {
 
 		if (entity.getGroup() == null) {
 			Group container = new EntityGroup();
-			container.setTouchable(Touchable.childrenOnly);
+			container.setTouchable(Touchable.enabled);
 			entity.setGroup(container);
 		}
 		for (ModelEntity child : modelEntity.getChildren()) {

@@ -34,69 +34,44 @@
  *      You should have received a copy of the GNU Lesser General Public License
  *      along with eAdventure.  If not, see <http://www.gnu.org/licenses/>.
  */
-package es.eucm.ead.engine.entities.actors;
+package es.eucm.ead.engine.systems;
 
-import com.badlogic.gdx.graphics.g2d.Batch;
-import com.badlogic.gdx.scenes.scene2d.Actor;
-import com.badlogic.gdx.utils.Pool.Poolable;
+import ashley.core.Entity;
+import ashley.core.Family;
 
-import es.eucm.ead.engine.components.renderers.RendererComponent;
+import com.badlogic.gdx.scenes.scene2d.Touchable;
 
-public class RendererActor extends EntityGroup implements Poolable {
+import es.eucm.ead.engine.GameLoop;
+import es.eucm.ead.engine.components.TouchabilityComponent;
+import es.eucm.ead.engine.entities.EngineEntity;
+import es.eucm.ead.engine.variables.VariablesManager;
 
-	protected RendererComponent renderer;
+/**
+ * Deals with entities that have conditioned visibility. For each of these
+ * entities, it evaluates its condition and updates its visibility accordingly.
+ */
+public class TouchabilitySystem extends ConditionalSystem {
 
-	public void setRenderer(RendererComponent renderer) {
-		this.renderer = renderer;
-		this.setWidth(renderer.getWidth());
-		this.setHeight(renderer.getHeight());
+	public TouchabilitySystem(GameLoop engine, VariablesManager variablesManager) {
+		super(engine, variablesManager, Family
+				.getFamilyFor(TouchabilityComponent.class), 0);
 	}
 
 	@Override
-	public void act(float delta) {
-		super.act(delta);
-		renderer.act(delta);
-	}
+	public void doProcessEntity(Entity entity, float deltaTime) {
+		TouchabilityComponent touchabilityComponent = entity
+				.getComponent(TouchabilityComponent.class);
 
-	@Override
-	public void drawChildren(Batch batch, float parentAlpha) {
-		if (renderer != null) {
-			// Set alpha and color
-			float alpha = this.getColor().a;
-			this.getColor().a *= parentAlpha;
-			batch.setColor(this.getColor());
-
-			renderer.draw(batch);
-
-			// Restore alpha
-			this.getColor().a = alpha;
-
-		}
-		super.drawChildren(batch, parentAlpha);
-	}
-
-	@Override
-	public float getWidth() {
-		return renderer == null ? 0 : renderer.getWidth();
-	}
-
-	@Override
-	public float getHeight() {
-		return renderer == null ? 0 : renderer.getHeight();
-	}
-
-	@Override
-	public void reset() {
-		this.renderer = null;
-	}
-
-	@Override
-	public Actor hit(float x, float y, boolean touchable) {
-		Actor actor = super.hit(x, y, touchable);
-		if (actor == null && isTouchable()) {
-			return renderer != null && renderer.hit(x, y) ? this : null;
-		} else {
-			return actor;
+		if (entity instanceof EngineEntity) {
+			boolean condition = evaluateCondition(touchabilityComponent
+					.getCondition());
+			// Change the touchability
+			EngineEntity engineEntity = (EngineEntity) entity;
+			if (condition) {
+				engineEntity.getGroup().setTouchable(Touchable.enabled);
+			} else {
+				engineEntity.getGroup().setTouchable(Touchable.disabled);
+			}
 		}
 	}
 }
