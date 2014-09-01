@@ -83,14 +83,19 @@ public class ProjectItem extends GalleryItem implements
 		}
 		if (project == null) {
 			// The game.json file was loaded
-			this.project = (ModelEntity) asset;
+			if (asset instanceof ModelEntity) {
+				this.project = (ModelEntity) asset;
 
-			documentation = Q.getComponent(project, Documentation.class);
-			((Label) name).setText(getDocumentationName());
-			GameData gameData = Q.getComponent(project, GameData.class);
-			String initialScene = gameData.getInitialScene();
-			controller.getEditorGameAssets().get(projectPath + initialScene,
-					Object.class, this);
+				documentation = Q.getComponent(project, Documentation.class);
+				((Label) name).setText(getDocumentationName());
+				GameData gameData = Q.getComponent(project, GameData.class);
+				String initialScene = gameData.getInitialScene();
+				controller.getEditorGameAssets().get(
+						projectPath + initialScene, Object.class, this);
+			} else {
+				clear();
+				remove();
+			}
 		} else {
 			// The initial scene was loaded
 			// TODO load the initial scene thumbnail.

@@ -51,8 +51,10 @@ import es.eucm.ead.editor.control.actions.editor.Save;
 import es.eucm.ead.editor.control.actions.model.ChangeProjectName;
 import es.eucm.ead.editor.control.actions.model.EditScene;
 import es.eucm.ead.editor.control.actions.model.scene.NewScene;
+import es.eucm.ead.editor.model.Model.FieldListener;
 import es.eucm.ead.editor.model.Model.Resource;
 import es.eucm.ead.editor.model.Q;
+import es.eucm.ead.editor.model.events.FieldEvent;
 import es.eucm.ead.editor.view.builders.EditionView;
 import es.eucm.ead.editor.view.listeners.TextFieldListener;
 import es.eucm.ead.editor.view.widgets.Notification;
@@ -61,7 +63,9 @@ import es.eucm.ead.editor.view.widgets.gallery.GalleryItem;
 import es.eucm.ead.editor.view.widgets.gallery.SceneItem;
 import es.eucm.ead.editor.view.widgets.helpmessage.sequence.HelpSequence;
 import es.eucm.ead.editor.view.widgets.helpmessage.sequence.ScenesViewHelp;
+import es.eucm.ead.schema.editor.components.GameData;
 import es.eucm.ead.schema.entities.ModelEntity;
+import es.eucm.ead.schemax.FieldName;
 import es.eucm.ead.schemax.entities.ResourceCategory;
 
 public class ScenesView extends BaseGallery {
@@ -70,6 +74,26 @@ public class ScenesView extends BaseGallery {
 
 	private Notification uniqueSceneNotif;
 	private TextField projectName;
+
+	private FieldListener initalSceneListener = new FieldListener() {
+
+		@Override
+		public void modelChanged(FieldEvent event) {
+			Object value = event.getValue();
+			if (value != null) {
+				for (Actor actor : galleryGrid.getChildren()) {
+					if (actor instanceof SceneItem) {
+						((SceneItem) actor).checkInitial();
+					}
+				}
+			}
+		}
+
+		@Override
+		public boolean listenToField(String fieldName) {
+			return fieldName.equals(FieldName.INITIAL_SCENE);
+		}
+	};
 
 	@Override
 	public void initialize(Controller controller) {
@@ -80,7 +104,8 @@ public class ScenesView extends BaseGallery {
 
 	@Override
 	protected Actor createPlayButton() {
-		Button play = new ToolbarIcon("play80x80", ICON_PAD, iconSize, skin);
+		Button play = new ToolbarIcon("play80x80", ICON_PAD, iconSize, skin,
+				"inverted");
 		play.addListener(new ClickListener() {
 			@Override
 			public void clicked(InputEvent event, float x, float y) {
@@ -167,17 +192,27 @@ public class ScenesView extends BaseGallery {
 		Collection<Resource> values = controller.getModel()
 				.getResources(ResourceCategory.SCENE).values();
 		for (Resource value : values) {
-			items.add(new SceneItem(controller,
-					(ModelEntity) value.getObject(), this));
+			ModelEntity scene = (ModelEntity) value.getObject();
+			SceneItem sceneItem = new SceneItem(controller, scene, this);
+			sceneItem.setUserObject(scene);
+			items.add(sceneItem);
 		}
 	}
 
 	@Override
 	public Actor getView(Object... args) {
-		controller.getCommands().clear();
 		ModelEntity game = controller.getModel().getGame();
 		projectName.setText(Q.getName(game, ""));
+		controller.getModel().addFieldListener(
+				Q.getComponent(game, GameData.class), initalSceneListener);
 		return super.getView(args);
+	}
+
+	@Override
+	public void release(Controller controller) {
+		super.release(controller);
+		controller.getModel().removeListenerFromAllTargets(initalSceneListener);
+		controller.action(Save.class);
 	}
 
 	@Override

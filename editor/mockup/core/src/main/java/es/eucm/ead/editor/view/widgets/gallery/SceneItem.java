@@ -37,20 +37,27 @@
 package es.eucm.ead.editor.view.widgets.gallery;
 
 import com.badlogic.gdx.graphics.Texture;
+import com.badlogic.gdx.scenes.scene2d.Actor;
+import com.badlogic.gdx.scenes.scene2d.Touchable;
+import com.badlogic.gdx.scenes.scene2d.ui.Container;
 import com.badlogic.gdx.scenes.scene2d.ui.Image;
 import com.badlogic.gdx.scenes.scene2d.ui.TextField;
+import com.badlogic.gdx.scenes.scene2d.utils.FocusListener;
 
 import es.eucm.ead.editor.control.Controller;
+import es.eucm.ead.editor.control.actions.model.ChangeDocumentation;
 import es.eucm.ead.editor.control.actions.model.DeleteScene;
-import es.eucm.ead.editor.control.actions.model.generic.SetField;
+import es.eucm.ead.editor.control.actions.model.EditScene;
+import es.eucm.ead.editor.model.Model;
 import es.eucm.ead.editor.model.Q;
 import es.eucm.ead.editor.view.builders.gallery.BaseGallery;
 import es.eucm.ead.editor.view.listeners.TextFieldListener;
 import es.eucm.ead.engine.assets.Assets.AssetLoadedCallback;
 import es.eucm.ead.schema.editor.components.Documentation;
+import es.eucm.ead.schema.editor.components.GameData;
 import es.eucm.ead.schema.editor.components.Thumbnail;
 import es.eucm.ead.schema.entities.ModelEntity;
-import es.eucm.ead.schemax.FieldName;
+import es.eucm.ead.schemax.entities.ResourceCategory;
 
 public class SceneItem extends GalleryItem implements
 		AssetLoadedCallback<Texture> {
@@ -58,12 +65,14 @@ public class SceneItem extends GalleryItem implements
 	private ModelEntity scene;
 	private Controller controller;
 	private Documentation documentation;
+	private Container container;
 
-	public SceneItem(final Controller controller, ModelEntity scene,
+	public SceneItem(final Controller controller, ModelEntity scen,
 			BaseGallery gallery) {
 		super(new Image(), "", 0f, 0f, true, controller.getApplicationAssets()
 				.getSkin(), "scene", true, gallery);
-		this.scene = scene;
+		this.scene = scen;
+
 		this.controller = controller;
 		Thumbnail thumbnail = Q.getThumbnail(controller, scene);
 		documentation = Q.getComponent(scene, Documentation.class);
@@ -76,10 +85,45 @@ public class SceneItem extends GalleryItem implements
 
 			@Override
 			protected void keyTyped(String text) {
-				controller.action(SetField.class, documentation,
-						FieldName.NAME, text);
+				controller.action(ChangeDocumentation.class, documentation,
+						true, text);
 			}
 		});
+		nameTf.addListener(new FocusListener() {
+			@Override
+			public void keyboardFocusChanged(FocusEvent event, Actor actor,
+					boolean focused) {
+				if (focused) {
+					String sceneId = controller.getModel().getIdFor(scene);
+					if (sceneId != null) {
+						controller.action(EditScene.class, sceneId);
+					}
+				}
+			}
+		});
+		container = new Container(new Image(skin.getDrawable("first")));
+		container.setFillParent(true);
+		container.setTouchable(Touchable.disabled);
+		container.top().left();
+		checkInitial();
+	}
+
+	public void checkInitial() {
+		Model model = controller.getModel();
+		String sceneId = model.getIdFor(scene);
+		if (sceneId != null) {
+			ModelEntity game = model.getGame();
+			String initialScene = Q.getComponent(game, GameData.class)
+					.getInitialScene();
+			if (!container.hasParent() && initialScene != null
+					&& sceneId.equals(initialScene)) {
+				addActor(container);
+				model.getResource(model.getIdFor(game), ResourceCategory.GAME)
+						.setModified(true);
+			} else if (container.hasParent()) {
+				container.remove();
+			}
+		}
 	}
 
 	@Override
