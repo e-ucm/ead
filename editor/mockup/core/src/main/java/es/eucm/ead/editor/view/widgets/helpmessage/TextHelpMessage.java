@@ -37,16 +37,22 @@
 package es.eucm.ead.editor.view.widgets.helpmessage;
 
 import com.badlogic.gdx.scenes.scene2d.Actor;
+import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 
 import es.eucm.ead.engine.I18N;
 
 public class TextHelpMessage extends HelpMessage {
 
+	private static final float WIDTH = 200;
+	private static final float HEIGHT = 100;
+
 	public TextHelpMessage(Skin skin, I18N i18n, Position position,
-			Actor reference, String i18nKey) {
+			final Actor reference, String i18nKey) {
 		super(skin, position, reference);
-		add(i18n.m(i18nKey));
+		Label label = new Label(i18n.m(i18nKey), skin);
+		label.setWrap(true);
+		add(label).width(WIDTH).height(HEIGHT);
 	}
 
 }

@@ -60,7 +60,7 @@ public class Toolbar extends Table {
 
 	public static class ToolbarStyle {
 
-		private Drawable background;
+		public Drawable background;
 
 	}
 }

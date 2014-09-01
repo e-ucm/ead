@@ -36,6 +36,7 @@
  */
 package es.eucm.ead.editor.view.widgets;
 
+import com.badlogic.gdx.scenes.scene2d.ui.Image;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 
 /**
@@ -94,6 +95,10 @@ public class ToolbarIcon extends IconButton {
 			return super.getPrefWidth();
 		}
 		return width;
+	}
+
+	public Image getIcon() {
+		return iconImage;
 	}
 
 }

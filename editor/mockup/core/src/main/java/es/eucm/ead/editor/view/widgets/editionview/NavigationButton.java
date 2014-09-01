@@ -36,6 +36,8 @@
  */
 package es.eucm.ead.editor.view.widgets.editionview;
 
+import com.badlogic.gdx.graphics.Color;
+import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.InputListener;
 import com.badlogic.gdx.scenes.scene2d.ui.ScrollPane;
@@ -96,7 +98,13 @@ public class NavigationButton extends IconWithScalePanel implements
 
 		sceneList = new ScenesTableList(controller, changeView, "scene");
 
-		ScrollPane list = new ScrollPane(sceneList);
+		ScrollPane list = new ScrollPane(sceneList) {
+			@Override
+			public void draw(Batch batch, float parentAlpha) {
+				super.draw(batch, parentAlpha);
+				batch.setColor(Color.WHITE);
+			}
+		};
 		list.setScrollingDisabled(true, false);
 
 		IconButton goGallery = new IconButton("home", skin);
@@ -114,7 +122,6 @@ public class NavigationButton extends IconWithScalePanel implements
 		panel.add(list).top();
 
 		controller.getModel().addSelectionListener(this);
-
 	}
 
 	@Override
@@ -144,6 +151,6 @@ public class NavigationButton extends IconWithScalePanel implements
 
 	@Override
 	public boolean listenToContext(String contextId) {
-		return contextId.equals(Selection.EDITED_GROUP);
+		return contextId.equals(Selection.SCENE);
 	}
 }

@@ -38,7 +38,6 @@ package es.eucm.ead.editor.view.widgets.editionview.prefabs;
 
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.InputListener;
-import com.badlogic.gdx.scenes.scene2d.Touchable;
 import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 
@@ -89,7 +88,6 @@ public abstract class PrefabPanel extends IconWithFadePanel implements
 		panel.add(top);
 		panel.row().padBottom(PAD);
 
-		this.setTouchable(Touchable.disabled);
 		this.setDisabled(true);
 
 		controller.getModel().addSelectionListener(this);
@@ -105,10 +103,8 @@ public abstract class PrefabPanel extends IconWithFadePanel implements
 	@Override
 	public void modelChanged(SelectionEvent event) {
 		if (selection.get(Selection.SCENE_ELEMENT).length == 1) {
-			this.setTouchable(Touchable.enabled);
 			this.setDisabled(false);
 		} else {
-			this.setTouchable(Touchable.disabled);
 			this.setDisabled(true);
 		}
 	}
