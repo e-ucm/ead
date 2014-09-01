@@ -47,11 +47,16 @@ import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.esotericsoftware.tablelayout.Cell;
 
 import es.eucm.ead.editor.control.Controller;
+import es.eucm.ead.editor.control.Selection;
+import es.eucm.ead.editor.model.Model;
 import es.eucm.ead.editor.model.Model.ModelListener;
 import es.eucm.ead.editor.model.Model.Resource;
+import es.eucm.ead.editor.model.Model.SelectionListener;
 import es.eucm.ead.editor.model.Q;
 import es.eucm.ead.editor.model.events.LoadEvent;
 import es.eucm.ead.editor.model.events.ResourceEvent;
+import es.eucm.ead.editor.model.events.SelectionEvent;
+import es.eucm.ead.editor.view.listeners.SceneNameListener;
 import es.eucm.ead.schema.editor.components.GameData;
 import es.eucm.ead.schema.entities.ModelEntity;
 import es.eucm.ead.schemax.entities.ResourceCategory;
@@ -71,11 +76,17 @@ public class ScenesTableList extends Table implements
 
 	private ModelListener<LoadEvent> loadListener;
 
+	private SelectionListener selectionListener;
+
+	private SceneNameListener nameListener;
+
+	private ButtonGroup group;
+
 	public ScenesTableList(Controller controller, InputListener listener) {
 		this(controller, listener, "default");
 	}
 
-	public ScenesTableList(Controller controller, InputListener listener,
+	public ScenesTableList(final Controller controller, InputListener listener,
 			String styleButton) {
 		super();
 		this.skin = controller.getApplicationAssets().getSkin();
@@ -97,6 +108,41 @@ public class ScenesTableList extends Table implements
 		controller.getModel().addResourceListener(this);
 		controller.getModel().addLoadListener(loadListener);
 		initialize();
+
+		final Model model = controller.getModel();
+		nameListener = new SceneNameListener(controller) {
+			@Override
+			public void nameChanged(String name) {
+				SceneButton button = getSceneButton(model.getIdFor(model
+						.getSelection().getSingle(Selection.SCENE)));
+				button.actualizeName();
+			}
+		};
+
+		ModelEntity scene = (ModelEntity) model.getSelection().getSingle(
+				Selection.SCENE);
+		if (scene != null) {
+			nameListener.setUp(scene);
+		}
+
+		selectionListener = new SelectionListener() {
+
+			@Override
+			public void modelChanged(SelectionEvent event) {
+				ModelEntity scene = (ModelEntity) model.getSelection()
+						.getSingle(Selection.SCENE);
+				if (scene != null) {
+					nameListener.setUp(scene);
+				}
+			}
+
+			@Override
+			public boolean listenToContext(String contextId) {
+				return contextId == Selection.SCENE;
+			}
+		};
+
+		controller.getModel().addSelectionListener(selectionListener);
 	}
 
 	public void initialize() {
@@ -109,11 +155,11 @@ public class ScenesTableList extends Table implements
 
 		clear();
 
-		ButtonGroup group = new ButtonGroup();
+		group = new ButtonGroup();
 		group.setMaxCheckCount(1);
 		group.setMinCheckCount(0);
 
-		Cell initial = add().expandX().fill();
+		Cell initial = add().expandX().fill().pad(PAD);
 
 		Collection<Entry<String, Resource>> values = controller.getModel()
 				.getResources(ResourceCategory.SCENE).entrySet();
@@ -127,7 +173,7 @@ public class ScenesTableList extends Table implements
 				initial.setWidget(sceneButton);
 			} else {
 				row();
-				add(sceneButton).expandX().fill();
+				add(sceneButton).expandX().fill().pad(PAD);
 			}
 
 			group.add(sceneButton);
@@ -139,6 +185,18 @@ public class ScenesTableList extends Table implements
 		}
 	}
 
+	public SceneButton getSceneButton(String sceneId) {
+		for (Actor actor : getChildren()) {
+			SceneButton button = (SceneButton) actor;
+			if (controller.getModel().getIdFor(button.getScene())
+					.equals(sceneId)) {
+				return button;
+			}
+		}
+
+		return null;
+	}
+
 	public void selectScene(String id) {
 		for (Actor actor : getChildren()) {
 			SceneButton button = (SceneButton) actor;
@@ -148,6 +206,10 @@ public class ScenesTableList extends Table implements
 			}
 		}
 
+	}
+
+	public void deselectAll() {
+		group.uncheckAll();
 	}
 
 	@Override

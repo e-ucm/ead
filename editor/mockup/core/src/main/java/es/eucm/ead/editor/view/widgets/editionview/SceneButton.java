@@ -142,4 +142,14 @@ public class SceneButton extends Button implements AssetLoadedCallback<Texture> 
 					Texture.class, this);
 		}
 	}
+
+	public void actualizeName() {
+		Documentation documentation = Q
+				.getComponent(scene, Documentation.class);
+		if (documentation != null && documentation.getName() != null) {
+			label.setText(documentation.getName());
+		} else {
+			label.setText(" ");
+		}
+	}
 }

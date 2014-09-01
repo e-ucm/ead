@@ -40,6 +40,7 @@ import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.InputListener;
 import com.badlogic.gdx.scenes.scene2d.ui.ScrollPane;
+import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 
 import es.eucm.ead.editor.control.Controller;
@@ -47,6 +48,7 @@ import es.eucm.ead.editor.control.Selection;
 import es.eucm.ead.editor.control.actions.AddTouchEffect;
 import es.eucm.ead.editor.control.actions.ChangeBehaviorEffect;
 import es.eucm.ead.editor.control.actions.RemoveBehavior;
+import es.eucm.ead.editor.control.actions.SelectionGoToNewScene;
 import es.eucm.ead.editor.view.widgets.editionview.SceneButton;
 import es.eucm.ead.editor.view.widgets.editionview.ScenesTableList;
 import es.eucm.ead.schema.components.ModelComponent;
@@ -56,6 +58,8 @@ import es.eucm.ead.schema.effects.GoScene;
 import es.eucm.ead.schema.entities.ModelEntity;
 
 public class DeparturePanel extends PrefabPanel {
+
+	private static final float PAD = 20;
 
 	private ScenesTableList table;
 
@@ -88,6 +92,19 @@ public class DeparturePanel extends PrefabPanel {
 
 		ScrollPane scroll = new ScrollPane(table, skin, "white");
 		panel.add(scroll).expandY().fill();
+		panel.row();
+
+		TextButton newScene = new TextButton(i18n.m("edition.exits.newScene")
+				+ " \n(" + i18n.m("edition.exits.newSceneInfo") + ")", skin,
+				"white");
+		panel.add(newScene).expandX().fill().pad(0, PAD, PAD, PAD);
+
+		newScene.addListener(new ClickListener() {
+			public void clicked(InputEvent event, float x, float y) {
+				controller.action(SelectionGoToNewScene.class, behavior);
+				getPanel().hide();
+			};
+		});
 
 	}
 
@@ -125,6 +142,8 @@ public class DeparturePanel extends PrefabPanel {
 		if (behavior != null) {
 			table.selectScene(((GoScene) behavior.getEffects().first())
 					.getSceneId());
+		} else {
+			table.deselectAll();
 		}
 	}
 
