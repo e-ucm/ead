@@ -45,10 +45,22 @@ import es.eucm.ead.editor.control.commands.ListCommand.RemoveFromListCommand;
 import es.eucm.ead.editor.model.Model;
 import es.eucm.ead.schema.components.behaviors.Behavior;
 import es.eucm.ead.schema.components.behaviors.events.Touch;
+import es.eucm.ead.schema.effects.Effect;
 import es.eucm.ead.schema.effects.GoScene;
 import es.eucm.ead.schema.entities.ModelEntity;
 import es.eucm.ead.schemax.entities.ResourceCategory;
 
+/**
+ * 
+ * Adds a {@link Behavior } with {@link GoScene} {@link Effect} that goes to a
+ * new scene created in this action.
+ * <dl>
+ * <dt><strong>Arguments</strong></dt>
+ * <dd><strong>args[0]</strong> <em>{@link Behavior}</em> where is added the
+ * {@link GoScene} if is null creates a new {@link Behavior}, if not replaces
+ * the effect</dd>
+ * </dl>
+ */
 public class SelectionGoToNewScene extends ModelAction {
 
 	public SelectionGoToNewScene() {
