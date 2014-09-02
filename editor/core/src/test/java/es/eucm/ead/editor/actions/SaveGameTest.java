@@ -174,6 +174,8 @@ public class SaveGameTest extends ActionTest {
 		model.getResource(EditorGameAssets.SCENES_PATH + "scene6.json")
 				.setModified(false);
 
+		controller.getEditorGameAssets().toJsonPath(
+				controller.getModel().getGame(), "game.json");
 		ObjectMap<String, Long> modifiedLenghts = new ObjectMap<String, Long>();
 		ObjectMap<String, Long> notModifiedLenghts = new ObjectMap<String, Long>();
 		Iterable<Entry<String, Resource>> listNamedResources = model
@@ -181,6 +183,7 @@ public class SaveGameTest extends ActionTest {
 		for (Entry<String, Resource> entry : listNamedResources) {
 			Long currentLenght = new File(gameFolderPath, entry.getKey())
 					.length();
+
 			if (entry.getValue().isModified()) {
 				modifiedLenghts.put(entry.getKey(), currentLenght);
 				ModelEntity entity = (ModelEntity) entry.getValue().getObject();
@@ -198,7 +201,10 @@ public class SaveGameTest extends ActionTest {
 				.entries()) {
 			Long currentModifiedLength = new File(gameFolderPath, entry.key)
 					.length();
-			assertTrue("A modified resource wasn't overridden.",
+			assertTrue(
+					"A modified resource wasn't overridden: " + entry.key
+							+ " (" + entry.value + " >= "
+							+ currentModifiedLength + ")",
 					entry.value < currentModifiedLength);
 
 		}
@@ -206,7 +212,7 @@ public class SaveGameTest extends ActionTest {
 		for (com.badlogic.gdx.utils.ObjectMap.Entry<String, Long> entry : notModifiedLenghts
 				.entries()) {
 			Long currentNotModifiedLnegth = new File(gameFolderPath, entry.key)
-					.lastModified();
+					.length();
 			assertEquals("A modified resource wasn't overridden.", entry.value,
 					currentNotModifiedLnegth);
 		}
