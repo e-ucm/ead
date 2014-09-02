@@ -5,5 +5,11 @@
     "description": "Basis class for all eAdventure components",
     "extends": {
         "$ref": "../data/parameters.json"
+    },
+    "properties": {
+       "id": {
+           "type": "string",
+           "description": "Used to identify special types of components. May be null."
+       }
     }
 }

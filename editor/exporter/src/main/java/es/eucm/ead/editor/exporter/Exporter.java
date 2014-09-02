@@ -36,12 +36,20 @@
  */
 package es.eucm.ead.editor.exporter;
 
+import java.io.FileNotFoundException;
+import java.io.IOException;
+import java.io.OutputStream;
+import java.util.Map;
+import java.util.zip.ZipOutputStream;
+
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.files.FileHandle;
+import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.Json;
 import com.badlogic.gdx.utils.reflect.ClassReflection;
 import com.badlogic.gdx.utils.reflect.Field;
 import com.badlogic.gdx.utils.reflect.ReflectionException;
+
 import es.eucm.ead.editor.utils.ZipUtils;
 import es.eucm.ead.schema.components.ModelComponent;
 import es.eucm.ead.schema.components.behaviors.Behavior;
@@ -58,10 +66,6 @@ import es.eucm.ead.schemax.GameStructure;
 import es.eucm.ead.schemax.JsonExtension;
 import es.eucm.ead.schemax.Layer;
 
-import java.io.*;
-import java.util.Map;
-import java.util.zip.*;
-
 /**
  * This class contains the functionality for exporting a given game project to a
  * JAR file. It is placed into a separate project so it can be used either from
@@ -69,6 +73,8 @@ import java.util.zip.*;
  * application (through {@link ExporterApplication}).
  */
 public class Exporter {
+
+	private static final String INIT_BEHAVIOR_ID = "initBehavior";
 
 	/**
 	 * Builds a {@link Behavior} component with just one {@link Init} behavior
@@ -84,11 +90,16 @@ public class Exporter {
 		GameData gameData = null;
 		Variables variables = null;
 
+		Behavior initBehavior = null;
 		for (ModelComponent modelComponent : modelEntity.getComponents()) {
 			if (modelComponent instanceof GameData) {
 				gameData = (GameData) modelComponent;
 			} else if (modelComponent instanceof Variables) {
 				variables = (Variables) modelComponent;
+			}
+			String id = modelComponent.getId();
+			if (id != null && id.equals(INIT_BEHAVIOR_ID)) {
+				initBehavior = (Behavior) modelComponent;
 			}
 		}
 
@@ -96,9 +107,14 @@ public class Exporter {
 			return;
 		}
 
-		Behavior initBehavior = new Behavior();
-		Init init = new Init();
-		initBehavior.setEvent(init);
+		if (initBehavior == null) {
+			initBehavior = new Behavior();
+			Init init = new Init();
+			initBehavior.setEvent(init);
+			initBehavior.setId(INIT_BEHAVIOR_ID);
+		} else {
+			initBehavior.getEffects().clear();
+		}
 
 		// First, register global variables
 		if (variables != null) {
@@ -152,7 +168,10 @@ public class Exporter {
 			initBehavior.getEffects().add(setViewport);
 		}
 
-		modelEntity.getComponents().add(initBehavior);
+		Array<ModelComponent> components = modelEntity.getComponents();
+		if (!components.contains(initBehavior, true)) {
+			components.add(initBehavior);
+		}
 	}
 
 	/**
