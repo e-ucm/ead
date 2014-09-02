@@ -34,30 +34,38 @@
  *      You should have received a copy of the GNU Lesser General Public License
  *      along with eAdventure.  If not, see <http://www.gnu.org/licenses/>.
  */
-package es.eucm.ead.editor.control.actions;
+package es.eucm.ead.editor.control.actions.irreversibles.scene;
 
-import es.eucm.ead.schema.editor.components.Variables;
+import es.eucm.ead.editor.control.actions.irreversibles.IrreversibleAction;
+import es.eucm.ead.schema.components.behaviors.Behavior;
+import es.eucm.ead.schema.components.behaviors.events.Touch;
+import es.eucm.ead.schema.effects.Effect;
+import es.eucm.ead.schema.entities.ModelEntity;
+import es.eucm.ead.schemax.entities.ResourceCategory;
 
 /**
- * 
- * Adds a <em>{@link Variables}</em> component in <em>{@link MadelEntity}</em>
- * game
+ * Adds a {@link Effect} to the current scene element selected. The effect will
+ * be thrown when the user touch the scene element </p>
  * <dl>
  * <dt><strong>Arguments</strong></dt>
- * <dd><strong>args[0]</strong> <em>{@link Variables}</em> to add</dd>
+ * <dd><strong>args[0]</strong> <em>{@link Effect}</em> to add</dd>
  * </dl>
  */
-public class AddVariables extends EditorAction {
+public class AddTouchEffect extends IrreversibleAction {
 
-	public AddVariables() {
-		super(true, false, Variables.class);
+	public AddTouchEffect() {
+		super(ResourceCategory.SCENE, true, false, Effect.class);
 	}
 
 	@Override
-	public void perform(Object... args) {
-		Variables variables = (Variables) args[0];
+	protected void action(ModelEntity entity, Object[] args) {
+		Behavior behavior = new Behavior();
+		behavior.setEvent(new Touch());
 
-		controller.getModel().getGame().getComponents().add(variables);
+		behavior.getEffects().add((Effect) args[0]);
+
+		entity.getComponents().add(behavior);
+
 	}
 
 }

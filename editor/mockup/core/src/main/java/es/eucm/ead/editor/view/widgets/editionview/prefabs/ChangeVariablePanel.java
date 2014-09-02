@@ -47,9 +47,9 @@ import com.badlogic.gdx.utils.Array;
 
 import es.eucm.ead.editor.control.Controller;
 import es.eucm.ead.editor.control.Selection;
-import es.eucm.ead.editor.control.actions.AddTouchEffect;
-import es.eucm.ead.editor.control.actions.ChangeBehaviorEffect;
-import es.eucm.ead.editor.control.actions.RemoveBehavior;
+import es.eucm.ead.editor.control.actions.irreversibles.scene.AddTouchEffect;
+import es.eucm.ead.editor.control.actions.irreversibles.scene.ChangeBehaviorEffect;
+import es.eucm.ead.editor.control.actions.irreversibles.scene.RemoveBehavior;
 import es.eucm.ead.editor.view.widgets.MultiStateButton;
 import es.eucm.ead.editor.view.widgets.VarTextDown;
 import es.eucm.ead.editor.view.widgets.layouts.LinearLayout;

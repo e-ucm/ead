@@ -34,11 +34,12 @@
  *      You should have received a copy of the GNU Lesser General Public License
  *      along with eAdventure.  If not, see <http://www.gnu.org/licenses/>.
  */
-package es.eucm.ead.editor.control.actions;
+package es.eucm.ead.editor.control.actions.irreversibles.scene;
 
-import es.eucm.ead.editor.control.Selection;
+import es.eucm.ead.editor.control.actions.irreversibles.IrreversibleAction;
 import es.eucm.ead.schema.components.ModelConditionedComponent;
 import es.eucm.ead.schema.entities.ModelEntity;
+import es.eucm.ead.schemax.entities.ResourceCategory;
 
 /**
  * Removes a {@link ModelConditionedComponent} component to the current scene
@@ -49,19 +50,18 @@ import es.eucm.ead.schema.entities.ModelEntity;
  * remove</dd>
  * </dl>
  */
-public class RemoveConditionedComponent extends EditorAction {
+public class RemoveConditionedComponent extends IrreversibleAction {
 
 	public RemoveConditionedComponent() {
-		super(true, false, ModelConditionedComponent.class);
+		super(ResourceCategory.SCENE, true, false,
+				ModelConditionedComponent.class);
 	}
 
 	@Override
-	public void perform(Object... args) {
+	protected void action(ModelEntity entity, Object[] args) {
 		ModelConditionedComponent condition = (ModelConditionedComponent) args[0];
 
-		ModelEntity modelEntity = (ModelEntity) controller.getModel()
-				.getSelection().getSingle(Selection.SCENE_ELEMENT);
+		entity.getComponents().removeValue(condition, true);
 
-		modelEntity.getComponents().removeValue(condition, true);
 	}
 }

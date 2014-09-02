@@ -34,34 +34,31 @@
  *      You should have received a copy of the GNU Lesser General Public License
  *      along with eAdventure.  If not, see <http://www.gnu.org/licenses/>.
  */
-package es.eucm.ead.editor.control.actions;
+package es.eucm.ead.editor.control.actions.irreversibles.scene;
 
-import es.eucm.ead.editor.control.Selection;
-import es.eucm.ead.schema.components.Visibility;
+import es.eucm.ead.editor.control.actions.irreversibles.IrreversibleAction;
+import es.eucm.ead.schema.components.tweens.Tween;
 import es.eucm.ead.schema.entities.ModelEntity;
+import es.eucm.ead.schemax.entities.ResourceCategory;
 
 /**
- * Adds a {@link Visibility} component to the current scene element selected
- * </p>
+ * Removes a {@link Tween} to the current scene element selected </p>
  * <dl>
  * <dt><strong>Arguments</strong></dt>
- * <dd><strong>args[0]</strong> <em>{@link Visibility}</em> to add</dd>
+ * <dd><strong>args[0]</strong> <em>{@link Tween}</em> to remove</dd>
  * </dl>
  */
-public class AddVisibilityCondition extends EditorAction {
+public class RemoveTween extends IrreversibleAction {
 
-	public AddVisibilityCondition() {
-		super(true, false, Visibility.class);
+	public RemoveTween() {
+		super(ResourceCategory.SCENE, true, false, Tween.class);
 	}
 
 	@Override
-	public void perform(Object... args) {
-		Visibility visibility = (Visibility) args[0];
+	protected void action(ModelEntity entity, Object[] args) {
+		Tween tween = (Tween) args[0];
 
-		ModelEntity modelEntity = (ModelEntity) controller.getModel()
-				.getSelection().getSingle(Selection.SCENE_ELEMENT);
-
-		modelEntity.getComponents().add(visibility);
+		entity.getComponents().removeValue(tween, true);
 	}
 
 }

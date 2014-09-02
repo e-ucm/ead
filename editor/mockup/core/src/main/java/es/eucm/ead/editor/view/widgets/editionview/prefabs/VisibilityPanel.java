@@ -39,8 +39,8 @@ package es.eucm.ead.editor.view.widgets.editionview.prefabs;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 
 import es.eucm.ead.editor.control.Controller;
-import es.eucm.ead.editor.control.actions.AddVisibilityCondition;
-import es.eucm.ead.editor.control.actions.ChangeVisibilityCondition;
+import es.eucm.ead.editor.control.actions.irreversibles.scene.AddVisibilityCondition;
+import es.eucm.ead.editor.control.actions.irreversibles.scene.ChangeVisibilityCondition;
 import es.eucm.ead.schema.components.Visibility;
 
 public class VisibilityPanel extends ConditionalPanel {
