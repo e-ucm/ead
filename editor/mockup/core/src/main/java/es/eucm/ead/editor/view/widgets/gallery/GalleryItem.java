@@ -41,6 +41,7 @@ import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.ui.Button;
+import com.badlogic.gdx.scenes.scene2d.ui.Container;
 import com.badlogic.gdx.scenes.scene2d.ui.Image;
 import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
@@ -79,6 +80,8 @@ public abstract class GalleryItem extends Button {
 
 	private BaseGallery gallery;
 
+	protected Skin skin;
+
 	public GalleryItem(Image image, String text, float pad,
 			boolean canBeDeleted, Skin skin, BaseGallery gallery) {
 		this(image, text, pad, pad, canBeDeleted, skin, null, true, gallery);
@@ -99,6 +102,7 @@ public abstract class GalleryItem extends Button {
 			boolean canBeDeleted, Skin skin, String nameStyle,
 			boolean editableName, BaseGallery gallery) {
 		super(skin.get(ButtonStyle.class));
+		this.skin = skin;
 		this.gallery = gallery;
 		if (nameStyle != null) {
 			style = skin.get(nameStyle, GalleryItemStyle.class);
@@ -141,9 +145,8 @@ public abstract class GalleryItem extends Button {
 				.padBottom(
 						padImage + (canBeDeleted ? iconButton.getHeight() : 0));
 
-		Table bot = new Table(skin);
+		Container bot = new Container(name).pad(padText);
 		bot.setBackground(style.textBackground);
-		bot.add(name).pad(padText);
 
 		add(top).expand().fill();
 		row();

@@ -34,29 +34,25 @@
  *      You should have received a copy of the GNU Lesser General Public License
  *      along with eAdventure.  If not, see <http://www.gnu.org/licenses/>.
  */
-package es.eucm.ead.editor.control.actions.editor;
+package es.eucm.ead.editor.components;
 
-import es.eucm.ead.editor.control.Clipboard;
+import com.badlogic.gdx.graphics.g2d.Batch;
 
-/**
- * <p>
- * Copies the current selection to the clipboard and automatically pastes it.
- * </p>
- * <dl>
- * <dt><strong>Arguments</strong></dt>
- * <dd>None</dd>
- * </dl>
- */
-public class Clone extends Copy {
+import es.eucm.ead.engine.GameLoop;
 
-	public Clone() {
-		super();
+public class MockupImageComponent extends EditorImageComponent {
+
+	private GameLoop gameLoop;
+
+	public void setGameLoop(GameLoop gameLoop) {
+		this.gameLoop = gameLoop;
 	}
 
 	@Override
-	public void perform(Object... args) {
-		Clipboard clipboard = controller.getClipboard();
-		clipboard.copy(false);
-		clipboard.paste();
+	protected void drawCollider(Batch batch) {
+		if (!gameLoop.isPlaying()) {
+			super.drawCollider(batch);
+		}
 	}
+
 }

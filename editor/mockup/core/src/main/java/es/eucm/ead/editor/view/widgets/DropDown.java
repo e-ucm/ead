@@ -252,6 +252,7 @@ public class DropDown extends Container implements Disableable {
 							setSelected(target);
 							ChangeEvent changeEvent = Pools
 									.obtain(ChangeEvent.class);
+							changeEvent.setListenerActor(DropDown.this);
 							DropDown.this.fire(changeEvent);
 							Pools.free(changeEvent);
 						}

@@ -58,7 +58,7 @@ import es.eucm.ead.editor.model.Q;
 import es.eucm.ead.editor.model.events.FieldEvent;
 import es.eucm.ead.editor.model.events.ListEvent;
 import es.eucm.ead.editor.model.events.SelectionEvent;
-import es.eucm.ead.editor.view.listeners.SceneNameListener;
+import es.eucm.ead.editor.view.listeners.SceneDocumentationListener;
 import es.eucm.ead.editor.view.widgets.IconButton;
 import es.eucm.ead.editor.view.widgets.dragndrop.DraggableGridLayout;
 import es.eucm.ead.editor.view.widgets.dragndrop.DraggableLinearLayout.DropListener;
@@ -344,7 +344,7 @@ public class SceneMapWidget extends DraggableGridLayout {
 	/**
 	 * Updates the name of the selected scene.
 	 */
-	private class NameListener extends SceneNameListener {
+	private class NameListener extends SceneDocumentationListener {
 
 		public NameListener(Controller controller) {
 			super(controller);

@@ -132,7 +132,7 @@ public interface Platform {
 	 */
 	Tracker createTracker(Controller controller);
 
-	interface FileChooserListener {
+	public interface FileChooserListener {
 		/**
 		 * 
 		 * @param path

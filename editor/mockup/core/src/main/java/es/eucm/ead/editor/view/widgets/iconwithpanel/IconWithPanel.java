@@ -37,10 +37,9 @@
 package es.eucm.ead.editor.view.widgets.iconwithpanel;
 
 import com.badlogic.gdx.scenes.scene2d.Action;
-import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
-import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
+import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
 import com.badlogic.gdx.scenes.scene2d.utils.Drawable;
 
 import es.eucm.ead.editor.view.widgets.HiddenPanel;
@@ -61,9 +60,10 @@ public abstract class IconWithPanel extends ToolbarIcon {
 	protected static final float IN_DURATION = .3F;
 	protected static final float OUT_DURATION = .2F;
 
-	private static final ClickListener showOrHide = new ClickListener() {
+	private static final ChangeListener showOrHide = new ChangeListener() {
 
-		public void clicked(InputEvent event, float x, float y) {
+		public void changed(ChangeEvent event,
+				com.badlogic.gdx.scenes.scene2d.Actor actor) {
 			IconWithPanel icon = (IconWithPanel) event.getListenerActor();
 			if (icon.panel.hasParent()) {
 				icon.hidePanel();

@@ -95,6 +95,10 @@ public class GroupEditorDragListener extends DragListener {
 
 	private ClickListener clickListener;
 
+	private boolean multipleSelection;
+
+	private boolean nestedGroupEdition;
+
 	public GroupEditorDragListener(GroupEditor groupEditor,
 			ShapeRenderer shapeRenderer, GroupEditorConfiguration config) {
 		this.groupEditor = groupEditor;
@@ -102,17 +106,21 @@ public class GroupEditorDragListener extends DragListener {
 		groupEditor.addActor(container);
 		setTapSquareSize(0);
 		setButton(-1);
+		this.multipleSelection = config.multipleSelection;
+		this.nestedGroupEdition = config.nestedGroupEdition;
 		this.modifier = new Modifier(shapeRenderer, groupEditor, config);
-		clickListener = new ClickListener() {
+		if (nestedGroupEdition) {
+			clickListener = new ClickListener() {
 
-			@Override
-			public void clicked(InputEvent event, float x, float y) {
-				if (getTapCount() == 2) {
-					Group group = getEditedGroupChild(event.getTarget());
-					enterGroupEdition(group);
+				@Override
+				public void clicked(InputEvent event, float x, float y) {
+					if (getTapCount() == 2) {
+						Group group = getEditedGroupChild(event.getTarget());
+						enterGroupEdition(group);
+					}
 				}
-			}
-		};
+			};
+		}
 	}
 
 	public Group getContainer() {
@@ -121,7 +129,9 @@ public class GroupEditorDragListener extends DragListener {
 
 	@Override
 	public boolean handle(Event e) {
-		clickListener.handle(e);
+		if (nestedGroupEdition) {
+			clickListener.handle(e);
+		}
 		return super.handle(e);
 	}
 
@@ -433,7 +443,7 @@ public class GroupEditorDragListener extends DragListener {
 					&& target.isDescendantOf(editedGroup)) {
 				dragging = getEditedGroupChild(target);
 				modifier.deselectAll(false);
-			} else {
+			} else if (multipleSelection) {
 				selecting = true;
 				groupEditor.setSelectionStart(x, y);
 				dragging = null;
@@ -625,7 +635,7 @@ public class GroupEditorDragListener extends DragListener {
 	/**
 	 * Fires some actors has been transformed
 	 */
-	private void fireTransformed(Actor transformed) {
+	public void fireTransformed(Actor transformed) {
 		GroupEvent groupEvent = Pools.obtain(GroupEvent.class);
 		groupEvent.setType(Type.transformed);
 		groupEvent.setParent(editedGroup);
@@ -695,5 +705,9 @@ public class GroupEditorDragListener extends DragListener {
 			shapeRenderer.end();
 			batch.begin();
 		}
+	}
+
+	public Modifier getModifier() {
+		return modifier;
 	}
 }

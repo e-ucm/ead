@@ -134,9 +134,8 @@
 		default: {
             font: default-font,
             fontColorSelected: black,
-            fontColorUnselected: black,
             selection: transparent-bg,
-            background: transparent-bg
+            fontColorUnselected: black
         }
 	},
 	com.badlogic.gdx.scenes.scene2d.ui.SelectBox$SelectBoxStyle: {
@@ -166,9 +165,6 @@
 		},
 		transparent: { 
 			selection: textfield_selection, 
-			background: transparent-bg, 
-			focusedBackground: transparent-bg, 
-			disabledBackground: transparent-bg, 
 			font: default-font, 
 			fontColor: black, 
 			focusedFontColor: black, 
@@ -192,17 +188,33 @@
 	},
 	es.eucm.ead.editor.view.widgets.IconButton$IconButtonStyle: {
 		default: { 
-			up: transparent-bg, 
-			down: button_pressed, 
-			over: transparent-bg, 
-			disabled: transparent-bg,  
+			down: button_pressed,  
 			disabledImageColor: gray,
             enabledImageColor: black
+		},
+		inverted: { 
+			down: button_pressed,  
+			disabledImageColor: gray,
+            enabledImageColor: white
+		},
+		checkable: { 
+			down: button_pressed,  
+			disabledImageColor: gray,
+            enabledImageColor: black,
+            checked: button_pressed
 		},
 		white_union: { 
 			up: nav_button_up, 
 			down: nav_button_down, 
 			over: nav_button_up, 
+			disabled: nav_button_up,  
+			disabledImageColor: gray,
+            enabledImageColor: black
+		}, 
+		white_single: { 
+			up: panel, 
+			down: panel, 
+			over: panel, 
 			disabled: nav_button_up,  
 			disabledImageColor: gray,
             enabledImageColor: black
@@ -234,7 +246,6 @@
 	},
 	es.eucm.ead.editor.view.widgets.Toolbar$ToolbarStyle: {
 		default: { 
-			background: transparent-bg
 		}, 
 		white_top: {
 			background: toolbar_top
@@ -248,9 +259,6 @@
 	},
 	es.eucm.ead.editor.view.widgets.DropDown$DropDownStyle: {
 		default: {
-			background: transparent-bg, 
-			backgroundOpenUp: transparent-bg,
-			backgroundOpenDown: transparent-bg, 
 			listBackgroundUp: panel,
 			listBackgroundDown: panel
 		},

@@ -46,8 +46,8 @@ import es.eucm.ead.editor.control.MockupController;
 import es.eucm.ead.editor.control.Preferences;
 import es.eucm.ead.editor.control.actions.EditorActionException;
 import es.eucm.ead.editor.control.actions.editor.ChangeView;
+import es.eucm.ead.editor.control.actions.editor.ForceSave;
 import es.eucm.ead.editor.control.actions.editor.OpenMockupGame;
-import es.eucm.ead.editor.control.actions.editor.Save;
 import es.eucm.ead.editor.platform.Platform;
 import es.eucm.ead.editor.view.builders.gallery.ProjectsView;
 import es.eucm.ead.editor.view.builders.gallery.ScenesView;
@@ -94,8 +94,8 @@ public class MockupApplicationListener extends EditorApplicationListener {
 
 	@Override
 	public void pause() {
+		controller.action(ForceSave.class);
 		super.pause();
-		controller.action(Save.class);
 	}
 
 	@Override

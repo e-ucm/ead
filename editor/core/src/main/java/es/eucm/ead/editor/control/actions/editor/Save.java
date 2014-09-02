@@ -92,7 +92,6 @@ public class Save extends EditorAction implements CommandListener {
 	@Override
 	public void perform(Object... args) {
 		save();
-		controller.getCommands().updateSavePoint();
 	}
 
 	/**

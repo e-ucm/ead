@@ -124,6 +124,7 @@ public class ProjectsView extends BaseGallery implements BackListener {
 
 	@Override
 	public void onBackPressed() {
+		release(null);
 		controller.action(ExitMockup.class);
 	}
 

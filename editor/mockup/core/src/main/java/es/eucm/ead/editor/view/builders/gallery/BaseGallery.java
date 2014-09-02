@@ -153,12 +153,7 @@ public abstract class BaseGallery implements ViewBuilder {
 		view.align(Align.top);
 		view.setFillParent(true);
 
-		topBar = new Toolbar(skin, "white_top") {
-			@Override
-			public float getPrefHeight() {
-				return toolbarSize;
-			}
-		};
+		topBar = new Toolbar(skin, "white_top");
 
 		topBar.align(Align.right);
 
@@ -192,7 +187,7 @@ public abstract class BaseGallery implements ViewBuilder {
 		ScrollPane galleryPane = new ScrollPane(galleryGrid);
 		galleryPane.setScrollingDisabled(true, false);
 
-		view.add(topBar).expandX().fill();
+		view.add(topBar).expandX().fill().height(toolbarSize);
 		view.row();
 		view.add(galleryPane).expand().fillX().top();
 

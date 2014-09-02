@@ -257,8 +257,13 @@ public class MeshHelper implements Disposable {
 			@Override
 			public void enableChanged(Class actionClass, boolean enable) {
 				if (!enable) {
-					release(drawLine.undoPixmaps);
-					release(eraseLine.undoPixmaps);
+					if (actionClass == Undo.class) {
+						release(drawLine.undoPixmaps);
+						release(eraseLine.undoPixmaps);
+					} else {
+						release(drawLine.redoPixmaps);
+						release(eraseLine.redoPixmaps);
+					}
 				}
 			}
 		};
@@ -442,28 +447,26 @@ public class MeshHelper implements Disposable {
 			this.showingTexRegion.setTexture(colorTexture);
 			translateResources(this.scaledView);
 
-			float x = scaledView.getX(), y = scaledView.getY(), w = scaledView
-					.getWidth() * scaledView.getScaleX(), h = scaledView
-					.getHeight() * scaledView.getScaleY();
+			float w = scaledView.getWidth(), h = scaledView.getHeight();
 
-			temp.set(x, y);
+			scaledView.localToStageCoordinates(temp.set(0f, 0f));
 			clampMinX = temp.x;
 			clampMinY = temp.y;
 
-			temp.set(x + w, y + h);
+			scaledView.localToStageCoordinates(temp.set(w, h));
 			clampMaxX = temp.x;
 			clampMaxY = temp.y;
 
-			Gdx.app.log(MESH_TAG, "clamp bounds ~> " + clampMinX + ", "
-					+ clampMinY + ", " + clampMaxX + ", " + clampMaxY);
+			Gdx.app.log(MESH_TAG, "(Stage coords) clamp bounds ~> " + clampMinX
+					+ ", " + clampMinY + ", " + (clampMaxX - clampMinX) + ", "
+					+ (clampMaxY - clampMinY));
 
-			Gdx.app.log(MESH_TAG, "texture region ~> " + x + ", " + y + ", "
-					+ w + ", " + h);
+			Gdx.app.log(MESH_TAG, "(Local coords) texture region ~> "
+					+ clampMinX + ", " + clampMinY + ", " + w + ", " + h);
 
 			this.showingTexRegion.setRegion(MathUtils.round(clampMinX),
-					MathUtils.round(clampMinY),
-					MathUtils.round(clampMaxX - clampMinX),
-					MathUtils.round(clampMaxY - clampMinY));
+					MathUtils.round(clampMinY), MathUtils.round(w),
+					MathUtils.round(h));
 			this.showingTexRegion.flip(false, true);
 
 			if (this.flusher.pixmap == null) {
@@ -486,8 +489,9 @@ public class MeshHelper implements Disposable {
 	 * @param parent
 	 */
 	private void translateResources(Actor parent) {
-		// scaledView.localToStageCoordinates();
-		temp.set(parent.getX(), parent.getY());
+		scaledView.localToStageCoordinates(temp.set(parent.getX(),
+				parent.getY()));
+
 		int newx = MathUtils.round(temp.x);
 		int newy = MathUtils.round(temp.y);
 		int offsetX = newx - this.prevParentX;
@@ -595,8 +599,8 @@ public class MeshHelper implements Disposable {
 				this.recalculateMatrix = false;
 				// this.combinedMatrix.idt().mul(
 				// scaledView.getStage().getCamera().combined);
-				this.combinedMatrix.set(batch.getProjectionMatrix().mul(
-						batch.getTransformMatrix()));
+				this.combinedMatrix.set(scaledView.getStage().getViewport()
+						.getCamera().combined);
 			}
 			return;
 		}
@@ -614,9 +618,9 @@ public class MeshHelper implements Disposable {
 	 * @param batch
 	 */
 	private void drawShowingTexture(Batch batch) {
-		batch.draw(this.showingTexRegion, 0, 0, 0, 0,
+		batch.draw(this.showingTexRegion, 0f, 0f, 0, 0,
 				this.showingTexRegion.getRegionWidth(),
-				this.showingTexRegion.getRegionHeight(), 1f, 1f, 0);
+				this.showingTexRegion.getRegionHeight(), scaleX, scaleY, 0);
 	}
 
 	/**

@@ -50,9 +50,15 @@ public class GroupEditorConfiguration {
 
 	private static final int ROTATION_HANDLE_OFFSET = 20;
 
+	private static final boolean MULTIPLE_SELECTION = true;
+
+	private static final boolean NESTED_GROUP_EDITION = true;
+
 	int handleSquareSize = HANDLE_SQUARE_SIZE;
 	int handleCircleSize = HANDLE_CIRCLE_SIZE;
 	int rotationHandleOffset = ROTATION_HANDLE_OFFSET;
+	boolean multipleSelection = MULTIPLE_SELECTION;
+	boolean nestedGroupEdition = NESTED_GROUP_EDITION;
 
 	/**
 	 * Changes the size of the square handles around the grouper. Default value
@@ -82,5 +88,25 @@ public class GroupEditorConfiguration {
 	 */
 	public void setRotationHandleOffset(int rotationHandleOffset) {
 		this.rotationHandleOffset = rotationHandleOffset;
+	}
+
+	/**
+	 * Whether the {@link GroupEditorDragListener} should allow multiple
+	 * selection or not.
+	 * 
+	 * @param multipleSelection
+	 */
+	public void setMultipleSelection(boolean multipleSelection) {
+		this.multipleSelection = multipleSelection;
+	}
+
+	/**
+	 * Whether the {@link GroupEditorDragListener} should allow nested group
+	 * edition by double clicking or not.
+	 * 
+	 * @param nestedGroupEdition
+	 */
+	public void setNestedGroupEdition(boolean nestedGroupEdition) {
+		this.nestedGroupEdition = nestedGroupEdition;
 	}
 }

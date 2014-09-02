@@ -34,25 +34,39 @@
  *      You should have received a copy of the GNU Lesser General Public License
  *      along with eAdventure.  If not, see <http://www.gnu.org/licenses/>.
  */
-package es.eucm.ead.editor.view.widgets.helpmessage;
+package es.eucm.ead.editor.control.actions.model;
 
-import com.badlogic.gdx.scenes.scene2d.Actor;
-import com.badlogic.gdx.scenes.scene2d.ui.Label;
-import com.badlogic.gdx.scenes.scene2d.ui.Skin;
+import es.eucm.ead.editor.control.Selection;
+import es.eucm.ead.editor.control.actions.ModelAction;
+import es.eucm.ead.editor.control.commands.Command;
+import es.eucm.ead.schema.entities.ModelEntity;
 
-import es.eucm.ead.engine.I18N;
+/**
+ * <p>
+ * Performs an action over the {@link Selection#SCENE_ELEMENT}.
+ * </p>
+ * <dl>
+ * <dt><strong>Arguments</strong></dt>
+ * <dd>None</dd>
+ * </dl>
+ */
+public abstract class SceneElementSelection extends ModelAction {
 
-public class TextHelpMessage extends HelpMessage {
-
-	private static final float WIDTH = 200;
-	private static final float HEIGHT = 100;
-
-	public TextHelpMessage(Skin skin, I18N i18n, Position position,
-			final Actor reference, String i18nKey) {
-		super(skin, position, reference);
-		Label label = new Label(i18n.m(i18nKey), skin);
-		label.setWrap(true);
-		add(label).width(WIDTH).height(HEIGHT);
+	@Override
+	public Command perform(Object... args) {
+		Selection selection = controller.getModel().getSelection();
+		Object sceneObject = selection.getSingle(Selection.SCENE);
+		if (sceneObject instanceof ModelEntity) {
+			ModelEntity scene = (ModelEntity) sceneObject;
+			Object elemObject = selection.getSingle(Selection.SCENE_ELEMENT);
+			if (elemObject instanceof ModelEntity) {
+				ModelEntity element = (ModelEntity) elemObject;
+				return getCommand(scene, element);
+			}
+		}
+		return null;
 	}
 
+	public abstract Command getCommand(ModelEntity scene,
+			ModelEntity sceneElement);
 }

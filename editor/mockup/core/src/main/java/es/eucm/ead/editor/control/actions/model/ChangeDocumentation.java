@@ -34,25 +34,35 @@
  *      You should have received a copy of the GNU Lesser General Public License
  *      along with eAdventure.  If not, see <http://www.gnu.org/licenses/>.
  */
-package es.eucm.ead.editor.view.widgets.helpmessage;
+package es.eucm.ead.editor.control.actions.model;
 
-import com.badlogic.gdx.scenes.scene2d.Actor;
-import com.badlogic.gdx.scenes.scene2d.ui.Label;
-import com.badlogic.gdx.scenes.scene2d.ui.Skin;
+import es.eucm.ead.editor.control.actions.ModelAction;
+import es.eucm.ead.editor.control.commands.Command;
+import es.eucm.ead.editor.control.commands.FieldCommand;
+import es.eucm.ead.schema.editor.components.Documentation;
+import es.eucm.ead.schemax.FieldName;
 
-import es.eucm.ead.engine.I18N;
+/**
+ * Changes the documentation name or description
+ * <dl>
+ * <dt><strong>Arguments</strong></dt>
+ * <dd><strong>args[0]</strong> <em>{@link Documentation}</em> target object
+ * whose field will be changed</dd>
+ * <dd><strong>args[1]</strong> <em>{@link Boolean}</em> whether it's the name
+ * or the description that will be changed (if true then the name will be
+ * changed)</dd>
+ * <dd><strong>args[2]</strong> <em>{@link String}</em> new value for the field</dd>
+ * </dl>
+ */
+public class ChangeDocumentation extends ModelAction {
 
-public class TextHelpMessage extends HelpMessage {
-
-	private static final float WIDTH = 200;
-	private static final float HEIGHT = 100;
-
-	public TextHelpMessage(Skin skin, I18N i18n, Position position,
-			final Actor reference, String i18nKey) {
-		super(skin, position, reference);
-		Label label = new Label(i18n.m(i18nKey), skin);
-		label.setWrap(true);
-		add(label).width(WIDTH).height(HEIGHT);
+	public ChangeDocumentation() {
+		super(true, false, Documentation.class, Boolean.class, String.class);
 	}
 
+	@Override
+	public Command perform(Object... args) {
+		return new FieldCommand(args[0], ((Boolean) args[1]) ? FieldName.NAME
+				: FieldName.DESCRIPTION, args[2], true);
+	}
 }

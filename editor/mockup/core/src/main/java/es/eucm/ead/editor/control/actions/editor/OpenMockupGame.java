@@ -95,7 +95,7 @@ public class OpenMockupGame extends OpenGame {
 		private final BackgroundTask<Boolean> saveTask = new BackgroundTask<Boolean>() {
 			@Override
 			public Boolean call() throws Exception {
-				controller.action(Save.class);
+				controller.action(ForceSave.class);
 				return true;
 			}
 		};

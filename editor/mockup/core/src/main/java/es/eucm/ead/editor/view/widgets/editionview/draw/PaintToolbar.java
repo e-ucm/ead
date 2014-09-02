@@ -38,39 +38,52 @@ package es.eucm.ead.editor.view.widgets.editionview.draw;
 
 import static com.badlogic.gdx.scenes.scene2d.actions.Actions.sequence;
 
+import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.math.Interpolation;
 import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.scenes.scene2d.Actor;
-import com.badlogic.gdx.scenes.scene2d.InputEvent;
+import com.badlogic.gdx.scenes.scene2d.Event;
+import com.badlogic.gdx.scenes.scene2d.EventListener;
 import com.badlogic.gdx.scenes.scene2d.Touchable;
 import com.badlogic.gdx.scenes.scene2d.actions.Actions;
-import com.badlogic.gdx.scenes.scene2d.ui.Image;
+import com.badlogic.gdx.scenes.scene2d.ui.ButtonGroup;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.ui.Slider;
 import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
 import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
-import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
+import com.badlogic.gdx.utils.Pools;
 
 import es.eucm.ead.editor.assets.ApplicationAssets;
 import es.eucm.ead.editor.control.Controller;
+import es.eucm.ead.editor.control.background.BackgroundExecutor;
+import es.eucm.ead.editor.control.background.BackgroundExecutor.BackgroundTaskListener;
+import es.eucm.ead.editor.control.background.BackgroundTask;
+import es.eucm.ead.editor.view.widgets.Notification;
 import es.eucm.ead.editor.view.widgets.Toolbar;
+import es.eucm.ead.editor.view.widgets.ToolbarIcon;
 import es.eucm.ead.editor.view.widgets.editionview.MockupSceneEditor;
 import es.eucm.ead.editor.view.widgets.editionview.draw.BrushStrokes.Mode;
 import es.eucm.ead.engine.I18N;
 
 public class PaintToolbar extends Toolbar {
 
+	private static final String LOGTAG = "PaintToolbar";
+
 	private static final Vector2 TEMP = new Vector2();
 
-	private static final float NORMAL_PAD = 40;
+	private static final float NORMAL_PAD = 40F;
+	private static final float IN_DURATION = .3F;
+	private static final float OUT_DURATION = .2F;
 
 	private MockupSceneEditor parent;
 
 	private BrushStrokes brushStrokes;
 
-	public PaintToolbar(MockupSceneEditor parent, Controller controller) {
+	private Notification importingNotif;
+
+	public PaintToolbar(MockupSceneEditor parent, final Controller controller) {
 		super(controller.getApplicationAssets().getSkin(), "white_bottom");
 		this.parent = parent;
 		brushStrokes = new BrushStrokes(parent, controller);
@@ -78,27 +91,32 @@ public class PaintToolbar extends Toolbar {
 		Skin skin = assets.getSkin();
 		I18N i18n = assets.getI18N();
 
-		final Image erase = new Image(skin, "rectangle");
+		this.importingNotif = new Notification(skin).text(i18n
+				.m("repository.importing"));
+
+		String styleName = "checkable";
+		final ToolbarIcon erase = new ToolbarIcon("rubber80x80", 0f,
+				NORMAL_PAD, skin, styleName);
 		erase.setColor(Color.PINK);
 
 		// Colors
-		Image color1 = new Image(skin, "rectangle");
-		color1.setColor(Color.YELLOW);
+		ToolbarIcon color1 = new ToolbarIcon("rectangle", 0f, skin, styleName);
+		color1.getIcon().setColor(Color.YELLOW);
 
-		Image color2 = new Image(skin, "rectangle");
-		color2.setColor(Color.ORANGE);
+		ToolbarIcon color2 = new ToolbarIcon("rectangle", 0f, skin, styleName);
+		color2.getIcon().setColor(Color.ORANGE);
 
-		Image color3 = new Image(skin, "rectangle");
-		color3.setColor(Color.RED);
+		ToolbarIcon color3 = new ToolbarIcon("rectangle", 0f, skin, styleName);
+		color3.getIcon().setColor(Color.RED);
 
-		Image color4 = new Image(skin, "rectangle");
-		color4.setColor(Color.GREEN);
+		ToolbarIcon color4 = new ToolbarIcon("rectangle", 0f, skin, styleName);
+		color4.getIcon().setColor(Color.GREEN);
 
-		Image color5 = new Image(skin, "rectangle");
-		color5.setColor(Color.BLUE);
+		ToolbarIcon color5 = new ToolbarIcon("rectangle", 0f, skin, styleName);
+		color5.getIcon().setColor(Color.BLUE);
 
-		Image color6 = new Image(skin, "rectangle");
-		color6.setColor(Color.BLACK);
+		ToolbarIcon color6 = new ToolbarIcon("rectangle", 0f, skin, styleName);
+		color6.getIcon().setColor(Color.BLACK);
 
 		final Slider slider = new Slider(10, 40, 1, false, skin,
 				"white-horizontal");
@@ -109,7 +127,6 @@ public class PaintToolbar extends Toolbar {
 
 		final TextButton cancel = new TextButton(i18n.m("cancel"), skin,
 				"white");
-		cancel.setDisabled(true);
 
 		add(erase).padLeft(NORMAL_PAD).padRight(NORMAL_PAD);
 		add(color1);
@@ -130,49 +147,78 @@ public class PaintToolbar extends Toolbar {
 				if (listener == cancel) {
 					hide();
 				} else if (listener == save) {
-					if (brushStrokes.save()) {
-						brushStrokes.createSceneElement();
-					}
-					hide();
+					importingNotif.show(getStage());
+					controller.getBackgroundExecutor().submit(saveTask,
+							saveListener);
+					hide(false);
 				} else if (listener == slider) {
 					brushStrokes.setRadius(slider.getValue());
-				}
-			}
-		};
-
-		ClickListener clickListener = new ClickListener() {
-			@Override
-			public void clicked(InputEvent event, float x, float y) {
-				Actor listener = event.getListenerActor();
-				Mode mode;
-				if (listener == erase) {
-					mode = Mode.ERASE;
 				} else {
-					mode = Mode.DRAW;
-					brushStrokes.setColor(event.getListenerActor().getColor());
+					Mode mode;
+					if (listener == erase) {
+						mode = Mode.ERASE;
+					} else {
+						mode = Mode.DRAW;
+						brushStrokes.setColor(((ToolbarIcon) event
+								.getListenerActor()).getIcon().getColor());
+					}
+					brushStrokes.setMode(mode);
 				}
-				brushStrokes.setMode(mode);
 			}
+
+			private final BackgroundTaskListener<Boolean> saveListener = new BackgroundTaskListener<Boolean>() {
+
+				@Override
+				public void completionPercentage(float percentage) {
+				}
+
+				@Override
+				public void done(BackgroundExecutor backgroundExecutor,
+						Boolean result) {
+					Gdx.app.log(LOGTAG, "done saving, result is: " + result);
+					importingNotif.hide();
+					if (result) {
+						brushStrokes.createSceneElement();
+					}
+				}
+
+				@Override
+				public void error(Throwable e) {
+					Gdx.app.error(LOGTAG, "error saving", e);
+					importingNotif.hide();
+				}
+			};
+
+			private final BackgroundTask<Boolean> saveTask = new BackgroundTask<Boolean>() {
+				@Override
+				public Boolean call() throws Exception {
+
+					boolean saved = brushStrokes.save();
+					brushStrokes.release();
+					return saved;
+				}
+			};
 		};
-		erase.addListener(clickListener);
-		color1.addListener(clickListener);
-		color2.addListener(clickListener);
-		color3.addListener(clickListener);
-		color4.addListener(clickListener);
-		color5.addListener(clickListener);
-		color6.addListener(clickListener);
+		erase.addListener(listener);
+		color1.addListener(listener);
+		color2.addListener(listener);
+		color3.addListener(listener);
+		color4.addListener(listener);
+		color5.addListener(listener);
+		color6.addListener(listener);
 		slider.addListener(listener);
 		save.addListener(listener);
 		cancel.addListener(listener);
+
+		new ButtonGroup(erase, color1, color2, color3, color4, color5, color6);
+		color1.setChecked(true);
+		brushStrokes.setColor(color1.getIcon().getColor());
 	}
 
 	public void show() {
 		setTouchable(Touchable.enabled);
 		parent.getStage().addActor(this);
 		parent.localToStageCoordinates(TEMP.set(0f, 0f));
-		parent.addActor(brushStrokes);
-		parent.getGroupEditor().setTouchable(Touchable.disabled);
-		brushStrokes.setBounds(0f, 0f, parent.getWidth(), parent.getHeight());
 		brushStrokes.show();
 
 		float prefW = MathUtils.round(getPrefWidth());
@@ -181,25 +227,79 @@ public class PaintToolbar extends Toolbar {
 		float y = -prefH;
 
 		setBounds(x, y, prefW, prefH);
-		addAction(Actions.moveTo(x, 0f, .3f, Interpolation.sineOut));
+		addAction(Actions.moveTo(x, 0f, IN_DURATION, Interpolation.sineOut));
+		fireDraw(true);
 	}
 
 	public void hide() {
+		hide(true);
+	}
+
+	private void hide(boolean release) {
 		if (!isShowing())
 			return;
 		clearActions();
 		setTouchable(Touchable.disabled);
-		brushStrokes.remove();
-		brushStrokes.hide();
-		parent.getGroupEditor().setTouchable(Touchable.enabled);
+		brushStrokes.hide(release);
 
-		addAction(sequence(
-				Actions.moveTo(getX(), -getHeight(), .2f, Interpolation.fade),
-				Actions.removeActor()));
+		addAction(sequence(Actions.moveTo(getX(), -getHeight(), OUT_DURATION,
+				Interpolation.fade), Actions.removeActor()));
+		fireDraw(false);
 	}
 
 	public boolean isShowing() {
 		return hasParent() && isTouchable();
 	}
 
+	public void addDrawListener(DrawListener listener) {
+		brushStrokes.addListener(listener);
+	}
+
+	/**
+	 * Fires that this actor is going to draw or not
+	 */
+	private void fireDraw(boolean show) {
+		DrawEvent drawEvent = Pools.obtain(DrawEvent.class);
+		drawEvent.show = show;
+		fire(drawEvent);
+		Pools.free(drawEvent);
+	}
+
+	/**
+	 * Base class to listen to {@link DrawEvent}s produced by
+	 * {@link PaintToolbar}.
+	 */
+	public static abstract class DrawListener implements EventListener {
+
+		@Override
+		public boolean handle(Event event) {
+			if (event instanceof DrawEvent) {
+				if (((DrawEvent) event).show) {
+					drawStarted();
+				} else {
+					drawEnded();
+				}
+			}
+			return true;
+		}
+
+		/**
+		 * The draw process has started
+		 * 
+		 * @param event
+		 */
+		public abstract void drawStarted();
+
+		/**
+		 * The draw process has ended
+		 * 
+		 * @param event
+		 */
+		public abstract void drawEnded();
+	}
+
+	public static class DrawEvent extends Event {
+
+		private boolean show;
+	}
 }

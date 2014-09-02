@@ -34,25 +34,36 @@
  *      You should have received a copy of the GNU Lesser General Public License
  *      along with eAdventure.  If not, see <http://www.gnu.org/licenses/>.
  */
-package es.eucm.ead.editor.view.widgets.helpmessage;
+package es.eucm.ead.editor.control.actions.model;
 
-import com.badlogic.gdx.scenes.scene2d.Actor;
-import com.badlogic.gdx.scenes.scene2d.ui.Label;
-import com.badlogic.gdx.scenes.scene2d.ui.Skin;
+import es.eucm.ead.editor.control.Controller;
+import es.eucm.ead.editor.control.Selection;
+import es.eucm.ead.editor.control.commands.Command;
+import es.eucm.ead.editor.control.commands.CompositeCommand;
+import es.eucm.ead.editor.control.commands.ListCommand.RemoveFromListCommand;
+import es.eucm.ead.schema.entities.ModelEntity;
 
-import es.eucm.ead.engine.I18N;
+/**
+ * Replaces the {@link Selection#SCENE_ELEMENT} selection. No arguments are
+ * needed.
+ */
+public class RemoveSceneElementSelection extends SceneElementSelection {
 
-public class TextHelpMessage extends HelpMessage {
+	private SetSelection setSelection;
 
-	private static final float WIDTH = 200;
-	private static final float HEIGHT = 100;
-
-	public TextHelpMessage(Skin skin, I18N i18n, Position position,
-			final Actor reference, String i18nKey) {
-		super(skin, position, reference);
-		Label label = new Label(i18n.m(i18nKey), skin);
-		label.setWrap(true);
-		add(label).width(WIDTH).height(HEIGHT);
+	@Override
+	public void initialize(Controller controller) {
+		super.initialize(controller);
+		setSelection = controller.getActions().getAction(SetSelection.class);
 	}
 
+	@Override
+	public Command getCommand(ModelEntity scene, ModelEntity sceneElement) {
+		CompositeCommand composite = new CompositeCommand();
+		composite.addCommand(new RemoveFromListCommand(scene, scene
+				.getChildren(), sceneElement));
+		composite.addCommand(setSelection.perform(Selection.EDITED_GROUP,
+				Selection.SCENE_ELEMENT));
+		return composite;
+	}
 }

@@ -58,7 +58,7 @@ import es.eucm.ead.editor.model.Model.SelectionListener;
 import es.eucm.ead.editor.model.Q;
 import es.eucm.ead.editor.model.events.ResourceEvent;
 import es.eucm.ead.editor.model.events.SelectionEvent;
-import es.eucm.ead.editor.view.listeners.SceneNameListener;
+import es.eucm.ead.editor.view.listeners.SceneDocumentationListener;
 import es.eucm.ead.editor.view.widgets.dragndrop.focus.FocusItemList.FocusEvent;
 import es.eucm.ead.editor.view.widgets.dragndrop.focus.FocusItemList.FocusListener;
 import es.eucm.ead.engine.assets.Assets;
@@ -78,7 +78,7 @@ public class SceneList extends Table {
 
 	private ButtonGroup buttonGroup;
 
-	private SceneNameListener nameListener;
+	private SceneDocumentationListener nameListener;
 
 	private ModelListener<ResourceEvent> scenesChangedListener;
 
@@ -99,7 +99,7 @@ public class SceneList extends Table {
 			}
 		});
 
-		nameListener = new SceneNameListener(controller) {
+		nameListener = new SceneDocumentationListener(controller) {
 
 			@Override
 			public void nameChanged(String name) {

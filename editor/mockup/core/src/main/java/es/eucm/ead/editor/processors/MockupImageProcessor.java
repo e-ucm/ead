@@ -34,25 +34,33 @@
  *      You should have received a copy of the GNU Lesser General Public License
  *      along with eAdventure.  If not, see <http://www.gnu.org/licenses/>.
  */
-package es.eucm.ead.editor.view.widgets.helpmessage;
+package es.eucm.ead.editor.processors;
 
-import com.badlogic.gdx.scenes.scene2d.Actor;
-import com.badlogic.gdx.scenes.scene2d.ui.Label;
-import com.badlogic.gdx.scenes.scene2d.ui.Skin;
+import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 
-import es.eucm.ead.engine.I18N;
+import es.eucm.ead.editor.components.MockupImageComponent;
+import es.eucm.ead.engine.GameLoop;
+import es.eucm.ead.engine.assets.GameAssets;
+import es.eucm.ead.engine.components.renderers.ImageComponent;
 
-public class TextHelpMessage extends HelpMessage {
+public class MockupImageProcessor extends EditorImageProcessor {
 
-	private static final float WIDTH = 200;
-	private static final float HEIGHT = 100;
+	private static final double THRESHOLD = .3D;
+	private static final double DISTANCE_TOLERANCE = 6D;
 
-	public TextHelpMessage(Skin skin, I18N i18n, Position position,
-			final Actor reference, String i18nKey) {
-		super(skin, position, reference);
-		Label label = new Label(i18n.m(i18nKey), skin);
-		label.setWrap(true);
-		add(label).width(WIDTH).height(HEIGHT);
+	public MockupImageProcessor(GameLoop engine, GameAssets gameAssets,
+			ShapeRenderer shapeRenderer) {
+		super(engine, gameAssets, shapeRenderer, THRESHOLD, DISTANCE_TOLERANCE);
+
+	}
+
+	@Override
+	protected ImageComponent createComponent() {
+		MockupImageComponent component = gameLoop
+				.createComponent(MockupImageComponent.class);
+		component.setShapeRenderer(shapeRenderer);
+		component.setGameLoop(gameLoop);
+		return component;
 	}
 
 }

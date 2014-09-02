@@ -37,11 +37,10 @@
 package es.eucm.ead.editor.view.widgets.editionview;
 
 import com.badlogic.gdx.scenes.scene2d.Actor;
-import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.ui.Image;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.utils.Align;
-import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
+import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
 
 import es.eucm.ead.editor.control.Actions;
 import es.eucm.ead.editor.control.Controller;
@@ -54,15 +53,39 @@ import es.eucm.ead.editor.control.actions.editor.Undo;
 import es.eucm.ead.editor.view.builders.LibrariesView;
 import es.eucm.ead.editor.view.builders.gallery.PlayView;
 import es.eucm.ead.editor.view.listeners.ActionListener;
+import es.eucm.ead.editor.view.widgets.HiddenPanel;
 import es.eucm.ead.editor.view.widgets.IconButton;
 import es.eucm.ead.editor.view.widgets.Toolbar;
 import es.eucm.ead.editor.view.widgets.editionview.draw.PaintToolbar;
+import es.eucm.ead.editor.view.widgets.editionview.draw.PaintToolbar.DrawListener;
 
 public class TopEditionToolbar extends Toolbar {
 
 	private static final float BIG_PAD = 160, NORMAL_PAD = 40, SMALL_PAD = 20;
 
 	private float height;
+
+	private OthersWidget others;
+
+	private IconButton play;
+
+	private IconButton undo;
+
+	private IconButton redo;
+
+	private IconButton camera;
+
+	private IconButton repository;
+
+	private IconButton android;
+
+	private IconButton paint;
+
+	private IconButton text;
+
+	private IconButton zones;
+
+	private IconButton gate;
 
 	public TopEditionToolbar(final Controller controller, String style,
 			float height, float iconSize, float PAD,
@@ -75,29 +98,43 @@ public class TopEditionToolbar extends Toolbar {
 
 		align(Align.right);
 
-		// TODO change for widgets
-		final IconButton play = new IconButton("play80x80", 0, skin);
+		play = new IconButton("play80x80", 0, skin, "inverted");
 
-		final IconButton undo = new IconButton("undo80x80", 0, skin);
-		final IconButton redo = new IconButton("redo80x80", 0, skin);
+		undo = new IconButton("undo80x80", 0, skin);
+		redo = new IconButton("redo80x80", 0, skin);
 
-		final IconButton camera = new IconButton("camera80x80", 0, skin);
-		final IconButton repository = new IconButton("repository80x80", 0, skin);
-		final IconButton android = new IconButton("android_gallery80x80", 0,
-				skin);
+		camera = new IconButton("camera80x80", 0, skin);
+		repository = new IconButton("repository80x80", 0, skin);
+		android = new IconButton("android_gallery80x80", 0, skin);
 
-		final IconButton paint = new IconButton("paint80x80", 0, skin);
-		final IconButton text = new IconButton("text80x80", 0, skin);
+		paint = new IconButton("paint80x80", 0, skin);
+		text = new IconButton("text80x80", 0, skin);
 
-		IconButton zones = new IconButton("interactive80x80", 0, skin);
-		IconButton gate = new IconButton("gateway80x80", 0, skin);
+		zones = new IconButton("interactive80x80", 0, skin);
+		gate = new IconButton("gateway80x80", 0, skin);
 
-		IconButton others = new IconButton("others80x80", 0, skin);
+		others = new OthersWidget(controller);
+		HiddenPanel panel = others.getPanel();
+		panel.addTouchableActor(this);
 
-		ClickListener buttonsListener = new ClickListener() {
+		paintToolbar.addListener(new DrawListener() {
 
 			@Override
-			public void clicked(InputEvent event, float x, float y) {
+			public void drawStarted() {
+				setDisabled(true);
+			}
+
+			@Override
+			public void drawEnded() {
+				setDisabled(false);
+			}
+
+		});
+
+		ChangeListener buttonsListener = new ChangeListener() {
+
+			@Override
+			public void changed(ChangeEvent event, Actor actor) {
 				Actor listenerActor = event.getListenerActor();
 				if (listenerActor == play) {
 					controller.action(ChangeView.class, PlayView.class);
@@ -119,6 +156,10 @@ public class TopEditionToolbar extends Toolbar {
 					}
 				} else if (listenerActor == text) {
 					controller.action(AddLabelToScene.class);
+				} else if (listenerActor == zones) {
+
+				} else if (listenerActor == gate) {
+
 				}
 			}
 		};
@@ -168,8 +209,28 @@ public class TopEditionToolbar extends Toolbar {
 		add(others).size(iconSize).padRight(SMALL_PAD);
 	}
 
+	public void addTouchableActors(Actor... actors) {
+		HiddenPanel panel = others.getPanel();
+		for (int i = 0; i < actors.length; ++i) {
+			panel.addTouchableActor(actors[i]);
+		}
+	}
+
 	@Override
 	public float getPrefHeight() {
 		return height;
+	}
+
+	private void setDisabled(boolean disabled) {
+		play.setDisabled(disabled);
+		undo.setDisabled(disabled);
+		redo.setDisabled(disabled);
+		camera.setDisabled(disabled);
+		repository.setDisabled(disabled);
+		android.setDisabled(disabled);
+		paint.setDisabled(disabled);
+		text.setDisabled(disabled);
+		zones.setDisabled(disabled);
+		gate.setDisabled(disabled);
 	}
 }

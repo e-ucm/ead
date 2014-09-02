@@ -83,9 +83,11 @@ public class PositionedHiddenPanel extends HiddenPanel {
 
 	@Override
 	public void show(Stage stage, Action action) {
-		reference.localToStageCoordinates(TEMP.set(0f, 0f));
-		positionPanel(TEMP.x, TEMP.y);
-		super.show(stage, action);
+		if (stage != null) {
+			reference.localToStageCoordinates(TEMP.set(0f, 0f));
+			positionPanel(TEMP.x, TEMP.y);
+			super.show(stage, action);
+		}
 	}
 
 	public void setSpace(float space) {

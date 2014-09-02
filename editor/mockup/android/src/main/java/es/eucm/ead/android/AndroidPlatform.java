@@ -131,7 +131,7 @@ public class AndroidPlatform extends MockupPlatform {
 							if (resultCode == EditorActivity.RESULT_OK) {
 								if (data != null) {
 									String path = getStringFromIntent(activity,
-											data);
+											data, MediaStore.Images.Media.DATA);
 									if (path != null) {
 										File file = new File(path);
 										if (file.exists()) {
@@ -151,6 +151,29 @@ public class AndroidPlatform extends MockupPlatform {
 	}
 
 	@Override
+	public void askForAudio(final FileChooserListener listener) {
+		final EditorActivity activity = (EditorActivity) Gdx.app;
+		final Intent intent = new Intent(Intent.ACTION_PICK,
+				android.provider.MediaStore.Audio.Media.EXTERNAL_CONTENT_URI);
+		if (intent.resolveActivity(activity.getPackageManager()) != null) {
+			activity.startActivityForResult(intent, PICK_FILE,
+					new ActivityResultListener() {
+
+						@Override
+						public void result(int resultCode, final Intent data) {
+							if (resultCode == EditorActivity.RESULT_OK) {
+								if (data != null) {
+									String path = getStringFromIntent(activity,
+											data, MediaStore.Audio.Media.DATA);
+									listener.fileChosen(path);
+								}
+							}
+						}
+					});
+		}
+	}
+
+	@Override
 	public void editImage(final I18N i18n, final String image,
 			final FileChooserListener listener) {
 		final EditorActivity activity = (EditorActivity) Gdx.app;
@@ -159,8 +182,7 @@ public class AndroidPlatform extends MockupPlatform {
 
 			@Override
 			public void run() {
-				showItemsAlert(activity, i18n.m("edition.tool.editors"),
-						i18n.m("edition.tool.chooseEditor"), names,
+				showItemsAlert(activity, i18n.m("edition.chooseEditor"), names,
 						new OnClickListener() {
 
 							@Override
@@ -226,7 +248,8 @@ public class AndroidPlatform extends MockupPlatform {
 									String picturePath = null;
 									if (data != null) {
 										picturePath = getStringFromIntent(
-												activity, data);
+												activity, data,
+												MediaStore.Images.Media.DATA);
 									}
 									listener.fileChosen(picturePath);
 								}
@@ -240,10 +263,9 @@ public class AndroidPlatform extends MockupPlatform {
 
 			Gdx.app.log(PLATFORM_TAG,
 					"the user doesn't have any supported editors");
-			showMessageDialog(activity, i18n.m("edition.tool.editorNotFound"),
-					i18n.m("edition.tool.installEditor"),
-					i18n.m("general.accept"), i18n.m("general.cancel"),
-					new OnClickListener() {
+			showMessageDialog(activity, i18n.m("edition.editorNotFound"),
+					i18n.m("edition.installEditor"), i18n.m("accept"),
+					i18n.m("cancel"), new OnClickListener() {
 
 						@Override
 						public void onClick(DialogInterface dialog, int which) {
@@ -277,12 +299,11 @@ public class AndroidPlatform extends MockupPlatform {
 		}
 	}
 
-	private void showItemsAlert(final EditorActivity activity,
-			final String title, final String text, final String[] items,
-			final DialogInterface.OnClickListener listener) {
+	private void showItemsAlert(EditorActivity activity, String text,
+			String[] items, DialogInterface.OnClickListener listener) {
 
 		AlertDialog.Builder builder = new AlertDialog.Builder(activity)
-				.setTitle(title + ". " + text).setItems(items, listener);
+				.setTitle(text).setItems(items, listener);
 
 		builder.create().show();
 	}
@@ -298,9 +319,10 @@ public class AndroidPlatform extends MockupPlatform {
 		alertDialogBuilder.create().show();
 	}
 
-	private String getStringFromIntent(Context context, Intent data) {
+	private String getStringFromIntent(Context context, Intent data,
+			String pathColumn) {
 		Uri selectedImage = data.getData();
-		String[] filePathColumn = { MediaStore.Images.Media.DATA };
+		String[] filePathColumn = { pathColumn };
 		Cursor cursor = context.getContentResolver().query(selectedImage,
 				filePathColumn, null, null, null);
 		cursor.moveToFirst();

@@ -36,6 +36,7 @@
  */
 package es.eucm.ead.editor.view.widgets.editionview;
 
+import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.utils.Align;
 
@@ -53,7 +54,7 @@ public class LeftEditionToolbar extends Toolbar {
 	private float width;
 
 	public LeftEditionToolbar(Controller controller, String style, float width,
-			float iconSize, float PAD) {
+			float iconSize, float PAD, Actor... touchableActors) {
 		super(controller.getApplicationAssets().getSkin(), style);
 
 		Skin skin = controller.getApplicationAssets().getSkin();
@@ -61,13 +62,19 @@ public class LeftEditionToolbar extends Toolbar {
 		this.width = width;
 
 		align(Align.center);
+		DeparturePanel departurePanel = new DeparturePanel(
+				"gateway_reverse80x80", iconSize, controller, this);
+		ChangeVariablePanel changeVariablePanel = new ChangeVariablePanel(
+				"variable80x80", iconSize, controller, this);
+		VisibilityPanel visibilityPanel = new VisibilityPanel(
+				"visibility80x80", iconSize, controller, this);
+		TweensPanel tweensPanel = new TweensPanel("tween80x80", iconSize,
+				controller, this);
+		TouchabilityPanel touchabilityPanel = new TouchabilityPanel(
+				"lock80x80", iconSize, controller, this);
 
-		addInNewRow(
-				new DeparturePanel("gateway_reverse80x80", iconSize,
-						controller, this)).padBottom(PAD);
-		addInNewRow(
-				new ChangeVariablePanel("variable80x80", iconSize, controller,
-						this)).padBottom(PAD);
+		addInNewRow(departurePanel).padBottom(PAD);
+		addInNewRow(changeVariablePanel).padBottom(PAD);
 
 		// TODO change
 		IconButton sound = new IconButton("sound80x80", 0, skin);
@@ -77,16 +84,20 @@ public class LeftEditionToolbar extends Toolbar {
 		IconButton conversations = new IconButton("conversation80x80", 0, skin);
 		addInNewRow(conversations).size(iconSize).padBottom(PAD);
 
-		addInNewRow(
-				new VisibilityPanel("visibility80x80", iconSize, controller,
-						this)).padBottom(PAD);
+		addInNewRow(visibilityPanel).padBottom(PAD);
 
-		addInNewRow(
-				new TouchabilityPanel("lock80x80", iconSize, controller, this))
-				.padBottom(PAD);
+		addInNewRow(touchabilityPanel).padBottom(PAD);
 
-		addInNewRow(new TweensPanel("tween80x80", iconSize, controller, this))
-				.padBottom(PAD);
+		addInNewRow(tweensPanel).padBottom(PAD);
+
+		for (int i = 0; i < touchableActors.length; ++i) {
+			Actor actor = touchableActors[i];
+			departurePanel.getPanel().addTouchableActor(actor);
+			changeVariablePanel.getPanel().addTouchableActor(actor);
+			visibilityPanel.getPanel().addTouchableActor(actor);
+			tweensPanel.getPanel().addTouchableActor(actor);
+			touchabilityPanel.getPanel().addTouchableActor(actor);
+		}
 	}
 
 	@Override

@@ -34,25 +34,34 @@
  *      You should have received a copy of the GNU Lesser General Public License
  *      along with eAdventure.  If not, see <http://www.gnu.org/licenses/>.
  */
-package es.eucm.ead.editor.view.widgets.helpmessage;
+package es.eucm.ead.editor.view.widgets.editionview.elementcontext;
 
-import com.badlogic.gdx.scenes.scene2d.Actor;
-import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
+import com.badlogic.gdx.scenes.scene2d.ui.Table;
 
-import es.eucm.ead.engine.I18N;
+import es.eucm.ead.editor.view.widgets.IconButton;
+import es.eucm.ead.editor.view.widgets.IconButton.IconButtonStyle;
 
-public class TextHelpMessage extends HelpMessage {
+public class ContextBar extends Table {
 
-	private static final float WIDTH = 200;
-	private static final float HEIGHT = 100;
-
-	public TextHelpMessage(Skin skin, I18N i18n, Position position,
-			final Actor reference, String i18nKey) {
-		super(skin, position, reference);
-		Label label = new Label(i18n.m(i18nKey), skin);
-		label.setWrap(true);
-		add(label).width(WIDTH).height(HEIGHT);
+	public ContextBar(Skin skin, IconButton... actors) {
+		if (actors.length == 1) {
+			IconButton actor = actors[0];
+			setUpButtonStyle(skin, actor, "white_single");
+		} else if (actors.length > 1) {
+			setUpButtonStyle(skin, actors[0], "white_left");
+			for (int i = 1; i < actors.length - 1; ++i) {
+				setUpButtonStyle(skin, actors[i], "white_center");
+			}
+			setUpButtonStyle(skin, actors[actors.length - 1], "white_right");
+		}
 	}
 
+	private void setUpButtonStyle(Skin skin, IconButton button, String style) {
+		IconButtonStyle panelStyle = skin.get(style, IconButtonStyle.class);
+		if (button.getStyle() != panelStyle) {
+			button.setStyle(panelStyle);
+		}
+		add(button);
+	}
 }

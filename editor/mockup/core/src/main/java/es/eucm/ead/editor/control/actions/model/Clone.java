@@ -34,25 +34,30 @@
  *      You should have received a copy of the GNU Lesser General Public License
  *      along with eAdventure.  If not, see <http://www.gnu.org/licenses/>.
  */
-package es.eucm.ead.editor.view.widgets.helpmessage;
+package es.eucm.ead.editor.control.actions.model;
 
-import com.badlogic.gdx.scenes.scene2d.Actor;
-import com.badlogic.gdx.scenes.scene2d.ui.Label;
-import com.badlogic.gdx.scenes.scene2d.ui.Skin;
+import es.eucm.ead.editor.control.Selection;
+import es.eucm.ead.editor.control.commands.Command;
+import es.eucm.ead.editor.control.commands.ListCommand.AddToListCommand;
+import es.eucm.ead.editor.model.Q;
+import es.eucm.ead.schema.editor.components.Parent;
+import es.eucm.ead.schema.entities.ModelEntity;
 
-import es.eucm.ead.engine.I18N;
+/**
+ * <p>
+ * Clones the current {@link Selection#SCENE_ELEMENT}.
+ * </p>
+ * <dl>
+ * <dt><strong>Arguments</strong></dt>
+ * <dd>None</dd>
+ * </dl>
+ */
+public class Clone extends SceneElementSelection {
 
-public class TextHelpMessage extends HelpMessage {
-
-	private static final float WIDTH = 200;
-	private static final float HEIGHT = 100;
-
-	public TextHelpMessage(Skin skin, I18N i18n, Position position,
-			final Actor reference, String i18nKey) {
-		super(skin, position, reference);
-		Label label = new Label(i18n.m(i18nKey), skin);
-		label.setWrap(true);
-		add(label).width(WIDTH).height(HEIGHT);
+	@Override
+	public Command getCommand(ModelEntity scene, ModelEntity sceneElement) {
+		ModelEntity copy = controller.getEditorGameAssets().copy(sceneElement);
+		Q.getComponent(copy, Parent.class).setParent(scene);
+		return new AddToListCommand(scene, scene.getChildren(), copy);
 	}
-
 }

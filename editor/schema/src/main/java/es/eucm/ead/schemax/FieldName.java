@@ -62,14 +62,9 @@ public class FieldName {
 	NAME = "name",
 
 	/**
-	 * Refers to {@link Note#title}.
+	 * Refers to {@link Documentation#description}
 	 */
-	NOTE_TITLE = "title",
-
-	/**
-	 * Refers to {@link Note#description}.
-	 */
-	NOTE_DESCRIPTION = "description",
+	DESCRIPTION = "description",
 
 	/**
 	 * Refers to {@link GameData#initialScene}

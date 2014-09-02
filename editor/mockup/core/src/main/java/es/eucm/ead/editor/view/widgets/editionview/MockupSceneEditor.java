@@ -36,12 +36,28 @@
  */
 package es.eucm.ead.editor.view.widgets.editionview;
 
+import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.graphics.GL20;
+import com.badlogic.gdx.graphics.g2d.Batch;
+import com.badlogic.gdx.math.MathUtils;
+import com.badlogic.gdx.math.Rectangle;
+import com.badlogic.gdx.math.Vector2;
+import com.badlogic.gdx.scenes.scene2d.Actor;
+import com.badlogic.gdx.scenes.scene2d.Group;
+import com.badlogic.gdx.scenes.scene2d.InputEvent;
+import com.badlogic.gdx.scenes.scene2d.InputListener;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 
 import es.eucm.ead.editor.control.Controller;
-import es.eucm.ead.editor.view.widgets.groupeditor.GroupEditor;
+import es.eucm.ead.editor.control.Selection;
+import es.eucm.ead.editor.model.Model.SelectionListener;
+import es.eucm.ead.editor.model.events.SelectionEvent;
+import es.eucm.ead.editor.view.widgets.Toolbar.ToolbarStyle;
+import es.eucm.ead.editor.view.widgets.editionview.elementcontext.ElementContext;
 import es.eucm.ead.editor.view.widgets.groupeditor.GroupEditorConfiguration;
+import es.eucm.ead.editor.view.widgets.groupeditor.Handles;
 import es.eucm.ead.editor.view.widgets.scenes.SceneEditor;
+import es.eucm.ead.schema.entities.ModelEntity;
 
 public class MockupSceneEditor extends SceneEditor {
 
@@ -51,25 +67,243 @@ public class MockupSceneEditor extends SceneEditor {
 
 	private static final int ROTATION_HANDLE_OFFSET = 44;
 
-	public MockupSceneEditor(Controller controller) {
+	private static final boolean MULTIPLE_SELECTION = false;
+
+	private static final boolean NESTED_GROUP_EDITION = false;
+
+	private SelectionListener elementSelected;
+
+	private ElementContext context;
+
+	private final Rectangle scissorBounds;
+	private final float leftPad;
+	private final float topPad;
+	private boolean hasSelection;
+
+	public MockupSceneEditor(final Controller controller, String leftStyle,
+			String topStyle) {
 		super(controller);
 
+		Skin skin = controller.getApplicationAssets().getSkin();
+		ToolbarStyle toolbarStyle = skin.get(leftStyle, ToolbarStyle.class);
+		leftPad = toolbarStyle.background.getRightWidth();
+		toolbarStyle = skin.get(topStyle, ToolbarStyle.class);
+		topPad = toolbarStyle.background.getBottomHeight();
+
+		scissorBounds = new Rectangle();
+		context = new ElementContext(controller, this);
+		hasSelection = false;
+		elementSelected = new SelectionListener() {
+
+			@Override
+			public void modelChanged(SelectionEvent event) {
+				if (event.getType() == SelectionEvent.Type.FOCUSED) {
+					Object[] selection = event.getSelection();
+					if (selection.length > 0) {
+						Object object = event.getSelection()[0];
+						if (object instanceof ModelEntity) {
+							ModelEntity entity = (ModelEntity) object;
+							Actor actor = findActor(entity);
+							if (actor != null) {
+								hasSelection = true;
+								context.show(entity, actor);
+							}
+						}
+					}
+				} else if (event.getType() == SelectionEvent.Type.REMOVED) {
+					hasSelection = false;
+					context.show(null, null);
+				}
+			}
+
+			@Override
+			public boolean listenToContext(String contextId) {
+				return Selection.SCENE_ELEMENT.equals(contextId);
+			}
+		};
+
+		groupEditor.addListener(new InputListener() {
+			private Vector2 aux_pointer1 = new Vector2();
+			private Vector2 aux_pointer2 = new Vector2();
+			private Vector2 aux_initialPointer1 = new Vector2();
+			private Vector2 aux_initialPointer2 = new Vector2();
+			private Vector2 pointer1 = new Vector2();
+			private Vector2 pointer2 = new Vector2();
+			private Vector2 initialPointer1 = new Vector2();
+			private Vector2 initialPointer2 = new Vector2();
+
+			private float rotation, scaleX, scaleY;
+			private boolean rotationStarted, scaleStarted;
+			private Handles handles = groupEditor.getGroupEditorDragListener()
+					.getModifier().getHandles();
+			private boolean pinching;
+
+			@Override
+			public boolean touchDown(InputEvent event, float x, float y,
+					int pointer, int button) {
+				if (!hasSelection) {
+					return false;
+				}
+				if (pointer < 2) {
+
+					if (pointer == 0) {
+						initialPointer1.set(x, y);
+						pointer1.set(initialPointer1);
+					} else {
+						// Start pinch.
+						initialPointer2.set(x, y);
+						pointer2.set(initialPointer2);
+						pinching = true;
+					}
+				}
+				context.show(null, null);
+				return true;
+			}
+
+			@Override
+			public void touchDragged(InputEvent event, float x, float y,
+					int pointer) {
+
+				if (pointer == 1) {
+					pointer2.set(x, y);
+				}
+				pointer1.set(Gdx.input.getX(0), Gdx.input.getY(0));
+				getStage().screenToStageCoordinates(pointer1);
+				groupEditor.stageToLocalCoordinates(pointer1);
+				// handle pinch zoom
+				if (pinching) {
+					aux_initialPointer1.set(initialPointer1);
+					aux_initialPointer2.set(initialPointer2);
+					aux_pointer1.set(pointer1);
+					aux_pointer2.set(pointer2);
+					pinch(aux_initialPointer1, aux_initialPointer2,
+							aux_pointer1, aux_pointer2);
+					zoom(initialPointer1.dst(initialPointer2),
+							pointer1.dst(pointer2));
+				}
+			}
+
+			public void pinch(Vector2 initialPointer1, Vector2 initialPointer2,
+					Vector2 pointer1, Vector2 pointer2) {
+				Actor influencedActor = handles.getInfluencedActor();
+				if (influencedActor == null) {
+					return;
+				} else if (!rotationStarted) {
+					rotationStarted = true;
+					rotation = influencedActor.getRotation();
+				}
+
+				Vector2 a = initialPointer2.sub(initialPointer1);
+				Vector2 b = pointer2.sub(pointer1);
+
+				float deltaRot = MathUtils.atan2(b.y, b.x)
+						- MathUtils.atan2(a.y, a.x);
+				float deltaRotDeg = (deltaRot * MathUtils.radiansToDegrees + 360);
+
+				influencedActor.setRotation((deltaRotDeg + rotation) % 360);
+			}
+
+			public void zoom(float initialDistance, float distance) {
+				Actor influencedActor = handles.getInfluencedActor();
+				if (influencedActor == null) {
+					return;
+				} else if (!scaleStarted) {
+					scaleStarted = true;
+					scaleX = influencedActor.getScaleX();
+					scaleY = influencedActor.getScaleY();
+				}
+
+				float ratio = distance / initialDistance;
+				influencedActor.setScaleX(ratio * scaleX);
+				influencedActor.setScaleY(ratio * scaleY);
+			}
+
+			@Override
+			public void touchUp(InputEvent event, float x, float y,
+					int pointer, int button) {
+				pinching = false;
+				Object object = controller.getModel().getSelection()
+						.getSingle(Selection.SCENE_ELEMENT);
+				if (object instanceof ModelEntity) {
+					ModelEntity entity = (ModelEntity) object;
+					Actor actor = findActor(entity);
+					if (actor != null) {
+						context.show(entity, actor);
+					}
+				}
+				if (rotationStarted || scaleStarted) {
+					rotationStarted = scaleStarted = false;
+
+					// Notify the controller that something has changed so the
+					// model gets updated
+					Actor influencedActor = handles.getInfluencedActor();
+					if (influencedActor == null) {
+						return;
+					}
+					groupEditor.getGroupEditorDragListener().fireTransformed(
+							influencedActor);
+				}
+			}
+		});
+	}
+
+	public Group getContainer() {
+		return groupEditor.getGroupEditorDragListener().getContainer();
 	}
 
 	@Override
-	protected void addWidgets(Skin skin) {
-		super.addWidgets(skin);
-
+	public void prepare() {
+		super.prepare();
+		groupEditor.fit(false);
+		controller.getModel().addSelectionListener(elementSelected);
 	}
 
-	public GroupEditor getGroupEditor() {
-		return groupEditor;
+	@Override
+	protected void readSceneContext() {
+		super.readSceneContext();
+		groupEditor.fit(false);
 	}
 
 	@Override
 	public void layout() {
 		groupEditor.setBounds(0, 0, getWidth(), getHeight());
 		groupEditor.fit(false);
+
+		scissorBounds.set(getX() - leftPad, getY(), getWidth() + 4 * leftPad,
+				getHeight() + topPad);
+		getStage().calculateScissors(scissorBounds, scissorBounds);
+		fixScissorBounds();
+	}
+
+	private void fixScissorBounds() {
+		scissorBounds.x = Math.round(scissorBounds.x);
+		scissorBounds.y = Math.round(scissorBounds.y);
+		scissorBounds.width = Math.round(scissorBounds.width);
+		scissorBounds.height = Math.round(scissorBounds.height);
+		if (scissorBounds.width < 0) {
+			scissorBounds.width = -scissorBounds.width;
+			scissorBounds.x -= scissorBounds.width;
+		}
+		if (scissorBounds.height < 0) {
+			scissorBounds.height = -scissorBounds.height;
+			scissorBounds.y -= scissorBounds.height;
+		}
+	}
+
+	@Override
+	protected void drawChildren(Batch batch, float parentAlpha) {
+		// Enable scissors for widget area and draw the widget.
+		Gdx.gl.glEnable(GL20.GL_SCISSOR_TEST);
+		Gdx.gl.glScissor((int) scissorBounds.x, (int) scissorBounds.y,
+				(int) scissorBounds.width, (int) scissorBounds.height);
+		super.drawChildren(batch, parentAlpha);
+		Gdx.gl.glDisable(GL20.GL_SCISSOR_TEST);
+	}
+
+	@Override
+	public void release() {
+		super.release();
+		controller.getModel().removeSelectionListener(elementSelected);
 	}
 
 	@Override
@@ -77,6 +311,8 @@ public class MockupSceneEditor extends SceneEditor {
 
 		GroupEditorConfiguration config = new GroupEditorConfiguration();
 		config.setRotationHandleOffset(ROTATION_HANDLE_OFFSET);
+		config.setNestedGroupEdition(NESTED_GROUP_EDITION);
+		config.setMultipleSelection(MULTIPLE_SELECTION);
 		config.setHandleSquareSize(HANDLE_SQUARE_SIZE);
 		config.setHandleCircleSize(HANDLE_CIRCLE_SIZE);
 
