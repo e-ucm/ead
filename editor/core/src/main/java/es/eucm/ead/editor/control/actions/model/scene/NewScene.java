@@ -58,6 +58,9 @@ import es.eucm.ead.schemax.entities.ResourceCategory;
  * <dl>
  * <dt><strong>Arguments</strong></dt>
  * <dd><strong>args[0]</strong> <em>String</em> the scene name</dd>
+ * <dd>You can pass the following optional arguments:</dd>
+ * <dd><strong>args[1]</strong> <em>String</em> Optional: the scene id</dd>
+ * <dd>or</dd>
  * <dd><strong>args[1]</strong> <em>Integer</em> Optional: the row of the new
  * scene in the {@link SceneMap}</dd>
  * <dd><strong>args[2]</strong> <em>Integer</em> Optional: the column of the new
@@ -70,7 +73,8 @@ public class NewScene extends ModelAction {
 
 	public NewScene() {
 		super(true, false, new Class[] { String.class }, new Class[] {
-				String.class, Integer.class, Integer.class });
+				String.class, String.class }, new Class[] { String.class,
+				Integer.class, Integer.class });
 	}
 
 	@Override
@@ -83,7 +87,13 @@ public class NewScene extends ModelAction {
 	public CompositeCommand perform(Object... args) {
 		Model model = controller.getModel();
 
-		String id = model.createId(ResourceCategory.SCENE);
+		String id;
+		if (args.length == 2) {
+			id = (String) args[1];
+		} else {
+			id = model.createId(ResourceCategory.SCENE);
+		}
+
 		ModelEntity scene = controller.getTemplates().createScene(
 				(String) args[0]);
 
@@ -94,7 +104,7 @@ public class NewScene extends ModelAction {
 		CompositeCommand compositeCommand = new CompositeCommand();
 		compositeCommand.addCommand(new AddResourceCommand(model, id, scene,
 				ResourceCategory.SCENE));
-		if (args.length == 1) {
+		if (args.length <= 2) {
 			createCell(id, sceneMap, compositeCommand);
 		} else {
 			createCellAt(id, (Integer) args[1], (Integer) args[2], sceneMap,

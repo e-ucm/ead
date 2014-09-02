@@ -44,6 +44,7 @@ import es.eucm.ead.editor.view.widgets.IconButton;
 import es.eucm.ead.editor.view.widgets.Toolbar;
 import es.eucm.ead.editor.view.widgets.editionview.prefabs.ChangeVariablePanel;
 import es.eucm.ead.editor.view.widgets.editionview.prefabs.DeparturePanel;
+import es.eucm.ead.editor.view.widgets.editionview.prefabs.TouchabilityPanel;
 import es.eucm.ead.editor.view.widgets.editionview.prefabs.TweensPanel;
 import es.eucm.ead.editor.view.widgets.editionview.prefabs.VisibilityPanel;
 
@@ -80,9 +81,9 @@ public class LeftEditionToolbar extends Toolbar {
 				new VisibilityPanel("visibility80x80", iconSize, controller,
 						this)).padBottom(PAD);
 
-		// TODO change
-		IconButton lock = new IconButton("lock80x80", 0, skin);
-		addInNewRow(lock).size(iconSize).padBottom(PAD);
+		addInNewRow(
+				new TouchabilityPanel("lock80x80", iconSize, controller, this))
+				.padBottom(PAD);
 
 		addInNewRow(new TweensPanel("tween80x80", iconSize, controller, this))
 				.padBottom(PAD);

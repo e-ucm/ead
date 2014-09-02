@@ -36,7 +36,6 @@
  */
 package es.eucm.ead.editor.view.widgets.editionview;
 
-import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.InputListener;
 import com.badlogic.gdx.scenes.scene2d.ui.ScrollPane;
@@ -112,20 +111,10 @@ public class NavigationButton extends IconWithScalePanel implements
 		panel.align(Align.top);
 		panel.add(goGallery).pad(PAD, PAD, PAD, PAD).top();
 		panel.row();
-		panel.add(list).pad(20).top();
+		panel.add(list).top();
 
 		controller.getModel().addSelectionListener(this);
-	}
 
-	private SceneButton getSceneButton(String sceneId) {
-		for (Actor actor : sceneList.getChildren()) {
-			SceneButton button = (SceneButton) actor;
-			if (model.getIdFor(button.getScene()).equals(sceneId)) {
-				return button;
-			}
-		}
-
-		return null;
 	}
 
 	@Override

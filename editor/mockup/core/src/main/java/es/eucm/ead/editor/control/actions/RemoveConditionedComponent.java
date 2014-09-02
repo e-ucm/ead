@@ -34,37 +34,34 @@
  *      You should have received a copy of the GNU Lesser General Public License
  *      along with eAdventure.  If not, see <http://www.gnu.org/licenses/>.
  */
-package es.eucm.ead.editor.view.widgets.editionview.prefabs;
+package es.eucm.ead.editor.control.actions;
 
-import com.badlogic.gdx.scenes.scene2d.Actor;
+import es.eucm.ead.editor.control.Selection;
+import es.eucm.ead.schema.components.ModelConditionedComponent;
+import es.eucm.ead.schema.entities.ModelEntity;
 
-import es.eucm.ead.editor.control.Controller;
-import es.eucm.ead.editor.control.actions.AddVisibilityCondition;
-import es.eucm.ead.editor.control.actions.ChangeVisibilityCondition;
-import es.eucm.ead.schema.components.Visibility;
+/**
+ * Removes a {@link ModelConditionedComponent} component to the current scene
+ * element selected </p>
+ * <dl>
+ * <dt><strong>Arguments</strong></dt>
+ * <dd><strong>args[0]</strong> <em>{@link ModelConditionedComponent}</em> to
+ * remove</dd>
+ * </dl>
+ */
+public class RemoveConditionedComponent extends EditorAction {
 
-public class VisibilityPanel extends ConditionalPanel {
-
-	public VisibilityPanel(String icon, float size, Controller controller,
-			Actor touchable) {
-		super(icon, "edition.visible", size, controller, touchable,
-				Visibility.class);
+	public RemoveConditionedComponent() {
+		super(true, false, ModelConditionedComponent.class);
 	}
 
 	@Override
-	protected void actualizeCondition() {
-		if (varTextDown != null && varTextDown.getSelectedVariableDef() != null) {
-			if (conditionedComponent == null) {
-				conditionedComponent = new Visibility();
-				conditionedComponent.setCondition(createCondition());
-				controller.action(AddVisibilityCondition.class,
-						conditionedComponent);
-			} else {
-				controller.action(ChangeVisibilityCondition.class,
-						createCondition());
-			}
-		}
+	public void perform(Object... args) {
+		ModelConditionedComponent condition = (ModelConditionedComponent) args[0];
 
+		ModelEntity modelEntity = (ModelEntity) controller.getModel()
+				.getSelection().getSingle(Selection.SCENE_ELEMENT);
+
+		modelEntity.getComponents().removeValue(condition, true);
 	}
-
 }

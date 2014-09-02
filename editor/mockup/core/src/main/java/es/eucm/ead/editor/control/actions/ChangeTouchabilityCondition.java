@@ -34,37 +34,38 @@
  *      You should have received a copy of the GNU Lesser General Public License
  *      along with eAdventure.  If not, see <http://www.gnu.org/licenses/>.
  */
-package es.eucm.ead.editor.view.widgets.editionview.prefabs;
+package es.eucm.ead.editor.control.actions;
 
-import com.badlogic.gdx.scenes.scene2d.Actor;
+import es.eucm.ead.editor.control.Selection;
+import es.eucm.ead.schema.components.ModelComponent;
+import es.eucm.ead.schema.components.Touchability;
+import es.eucm.ead.schema.entities.ModelEntity;
 
-import es.eucm.ead.editor.control.Controller;
-import es.eucm.ead.editor.control.actions.AddVisibilityCondition;
-import es.eucm.ead.editor.control.actions.ChangeVisibilityCondition;
-import es.eucm.ead.schema.components.Visibility;
+/**
+ * Change the touchability condition in the current scene element selected </p>
+ * <dl>
+ * <dt><strong>Arguments</strong></dt>
+ * <dd><strong>args[0]</strong> <em>{@link String}</em> new condition</dd>
+ * </dl>
+ */
+public class ChangeTouchabilityCondition extends EditorAction {
 
-public class VisibilityPanel extends ConditionalPanel {
-
-	public VisibilityPanel(String icon, float size, Controller controller,
-			Actor touchable) {
-		super(icon, "edition.visible", size, controller, touchable,
-				Visibility.class);
+	public ChangeTouchabilityCondition() {
+		super(true, false, String.class);
 	}
 
 	@Override
-	protected void actualizeCondition() {
-		if (varTextDown != null && varTextDown.getSelectedVariableDef() != null) {
-			if (conditionedComponent == null) {
-				conditionedComponent = new Visibility();
-				conditionedComponent.setCondition(createCondition());
-				controller.action(AddVisibilityCondition.class,
-						conditionedComponent);
-			} else {
-				controller.action(ChangeVisibilityCondition.class,
-						createCondition());
+	public void perform(Object... args) {
+		String condition = (String) args[0];
+
+		ModelEntity modelEntity = (ModelEntity) controller.getModel()
+				.getSelection().getSingle(Selection.SCENE_ELEMENT);
+
+		for (ModelComponent component : modelEntity.getComponents()) {
+			if (component instanceof Touchability) {
+				((Touchability) component).setCondition(condition);
 			}
 		}
-
 	}
 
 }

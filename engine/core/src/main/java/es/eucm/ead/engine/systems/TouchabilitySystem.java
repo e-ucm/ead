@@ -34,37 +34,44 @@
  *      You should have received a copy of the GNU Lesser General Public License
  *      along with eAdventure.  If not, see <http://www.gnu.org/licenses/>.
  */
-package es.eucm.ead.editor.view.widgets.editionview.prefabs;
+package es.eucm.ead.engine.systems;
 
-import com.badlogic.gdx.scenes.scene2d.Actor;
+import ashley.core.Entity;
+import ashley.core.Family;
 
-import es.eucm.ead.editor.control.Controller;
-import es.eucm.ead.editor.control.actions.AddVisibilityCondition;
-import es.eucm.ead.editor.control.actions.ChangeVisibilityCondition;
-import es.eucm.ead.schema.components.Visibility;
+import com.badlogic.gdx.scenes.scene2d.Touchable;
 
-public class VisibilityPanel extends ConditionalPanel {
+import es.eucm.ead.engine.GameLoop;
+import es.eucm.ead.engine.components.TouchabilityComponent;
+import es.eucm.ead.engine.entities.EngineEntity;
+import es.eucm.ead.engine.variables.VariablesManager;
 
-	public VisibilityPanel(String icon, float size, Controller controller,
-			Actor touchable) {
-		super(icon, "edition.visible", size, controller, touchable,
-				Visibility.class);
+/**
+ * Deals with entities that have conditioned visibility. For each of these
+ * entities, it evaluates its condition and updates its visibility accordingly.
+ */
+public class TouchabilitySystem extends ConditionalSystem {
+
+	public TouchabilitySystem(GameLoop engine, VariablesManager variablesManager) {
+		super(engine, variablesManager, Family
+				.getFamilyFor(TouchabilityComponent.class), 0);
 	}
 
 	@Override
-	protected void actualizeCondition() {
-		if (varTextDown != null && varTextDown.getSelectedVariableDef() != null) {
-			if (conditionedComponent == null) {
-				conditionedComponent = new Visibility();
-				conditionedComponent.setCondition(createCondition());
-				controller.action(AddVisibilityCondition.class,
-						conditionedComponent);
+	public void doProcessEntity(Entity entity, float deltaTime) {
+		TouchabilityComponent touchabilityComponent = entity
+				.getComponent(TouchabilityComponent.class);
+
+		if (entity instanceof EngineEntity) {
+			boolean condition = evaluateCondition(touchabilityComponent
+					.getCondition());
+			// Change the touchability
+			EngineEntity engineEntity = (EngineEntity) entity;
+			if (condition) {
+				engineEntity.getGroup().setTouchable(Touchable.enabled);
 			} else {
-				controller.action(ChangeVisibilityCondition.class,
-						createCondition());
+				engineEntity.getGroup().setTouchable(Touchable.disabled);
 			}
 		}
-
 	}
-
 }

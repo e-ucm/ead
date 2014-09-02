@@ -58,7 +58,7 @@ import es.eucm.ead.schema.editor.components.Variables;
 import es.eucm.ead.schema.effects.ChangeVar;
 import es.eucm.ead.schema.effects.ChangeVar.Context;
 
-public class VarTextDown extends SelectBox<Label> {
+public class VarTextDown extends SelectBox<String> implements TextInputListener {
 
 	private Controller controller;
 
@@ -67,6 +67,8 @@ public class VarTextDown extends SelectBox<Label> {
 	private Array items;
 
 	private I18N i18n;
+
+	private int lastSelectedIndex;
 
 	public VarTextDown(Skin skin, final Controller controller) {
 		super(skin);
@@ -80,38 +82,12 @@ public class VarTextDown extends SelectBox<Label> {
 		reloadPanel();
 
 		addListener(new ChangeListener() {
-
-			private int lastSelectedIndex = 0;
-
 			@Override
 			public void changed(ChangeEvent event, Actor actor) {
 				if (getSelectedIndex() == 0) {
-					Gdx.input.getTextInput(new TextInputListener() {
-						@Override
-						public void input(String text) {
-							if (variables == null) {
-								variables = new Variables();
-								controller
-										.action(AddVariables.class, variables);
-							}
-
-							VariableDef newVariable = newVariableDef(text);
-							controller.action(AddNewVariableDef.class,
-									newVariable, variables);
-
-							items.add(text);
-							setItems(items);
-
-							setSelectedIndex(items.size - 1);
-							lastSelectedIndex = items.size - 1;
-						}
-
-						@Override
-						public void canceled() {
-							setSelectedIndex(lastSelectedIndex);
-						}
-					}, i18n.m("edition.insertVariable "), i18n
-							.m("general.variable"));
+					Gdx.input.getPlaceholderTextInput(VarTextDown.this,
+							i18n.m("edition.insertVariable "),
+							i18n.m("general.variable"));
 				} else {
 					lastSelectedIndex = getSelectedIndex();
 					doAction();
@@ -207,5 +183,43 @@ public class VarTextDown extends SelectBox<Label> {
 		} else {
 			return null;
 		}
+	}
+
+	@Override
+	public void input(String text) {
+		if (text != null && !text.isEmpty() && text.trim().isEmpty()) {
+			if (variables == null) {
+				variables = new Variables();
+				controller.action(AddVariables.class, variables);
+			}
+
+			int index = 0;
+			for (String label : getItems()) {
+				if (label.equals(text)) {
+					break;
+				}
+				index++;
+			}
+
+			if (index == getItems().size) {
+				VariableDef newVariable = newVariableDef(text);
+				controller.action(AddNewVariableDef.class, newVariable,
+						variables);
+
+				items.add(text);
+				setItems(items);
+
+				setSelectedIndex(items.size - 1);
+				lastSelectedIndex = items.size - 1;
+			} else {
+				setSelectedIndex(index);
+				lastSelectedIndex = index;
+			}
+		}
+	}
+
+	@Override
+	public void canceled() {
+		setSelectedIndex(lastSelectedIndex);
 	}
 }

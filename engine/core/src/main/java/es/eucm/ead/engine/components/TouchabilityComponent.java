@@ -34,33 +34,11 @@
  *      You should have received a copy of the GNU Lesser General Public License
  *      along with eAdventure.  If not, see <http://www.gnu.org/licenses/>.
  */
-package es.eucm.ead.editor.control.actions;
-
-import es.eucm.ead.editor.control.Selection;
-import es.eucm.ead.schema.components.Visibility;
-import es.eucm.ead.schema.entities.ModelEntity;
+package es.eucm.ead.engine.components;
 
 /**
- * Removes a {@link Visibility} component to the current scene element selected
- * </p>
- * <dl>
- * <dt><strong>Arguments</strong></dt>
- * <dd><strong>args[0]</strong> <em>{@link Visibility}</em> to remove</dd>
- * </dl>
+ * Engine equivalent for {@link es.eucm.ead.schema.components.Touchability}
  */
-public class RemoveVisibilityCondition extends EditorAction {
+public class TouchabilityComponent extends ConditionedComponent {
 
-	public RemoveVisibilityCondition() {
-		super(true, false, Visibility.class);
-	}
-
-	@Override
-	public void perform(Object... args) {
-		Visibility visibility = (Visibility) args[0];
-
-		ModelEntity modelEntity = (ModelEntity) controller.getModel()
-				.getSelection().getSingle(Selection.SCENE_ELEMENT);
-
-		modelEntity.getComponents().removeValue(visibility, true);
-	}
 }

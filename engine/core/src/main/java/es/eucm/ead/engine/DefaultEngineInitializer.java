@@ -46,6 +46,7 @@ import es.eucm.ead.engine.processors.ConversationProcessor;
 import es.eucm.ead.engine.processors.PathProcessor;
 import es.eucm.ead.engine.processors.RefProcessor;
 import es.eucm.ead.engine.processors.TagsProcessor;
+import es.eucm.ead.engine.processors.TouchabilityProcessor;
 import es.eucm.ead.engine.processors.VisibilityProcessor;
 import es.eucm.ead.engine.processors.assets.SoundProcessor;
 import es.eucm.ead.engine.processors.behaviors.BehaviorsProcessor;
@@ -69,6 +70,7 @@ import es.eucm.ead.engine.systems.KeyPressedSystem;
 import es.eucm.ead.engine.systems.PathSystem;
 import es.eucm.ead.engine.systems.RemoveEntitiesSystem;
 import es.eucm.ead.engine.systems.SoundSystem;
+import es.eucm.ead.engine.systems.TouchabilitySystem;
 import es.eucm.ead.engine.systems.TouchedSystem;
 import es.eucm.ead.engine.systems.VelocitySystem;
 import es.eucm.ead.engine.systems.VisibilitySystem;
@@ -123,6 +125,7 @@ import es.eucm.ead.schema.components.Animation;
 import es.eucm.ead.schema.components.PathBoundary;
 import es.eucm.ead.schema.components.RefComponent;
 import es.eucm.ead.schema.components.Tags;
+import es.eucm.ead.schema.components.Touchability;
 import es.eucm.ead.schema.components.Visibility;
 import es.eucm.ead.schema.components.behaviors.Behavior;
 import es.eucm.ead.schema.components.cameras.Cameras;
@@ -210,6 +213,7 @@ public class DefaultEngineInitializer implements EngineInitializer {
 		gameLoop.addSystem(new VelocitySystem());
 		gameLoop.addSystem(tweenSystem);
 		gameLoop.addSystem(new VisibilitySystem(gameLoop, variablesManager));
+		gameLoop.addSystem(new TouchabilitySystem(gameLoop, variablesManager));
 		gameLoop.addSystem(new PathSystem());
 		gameLoop.addSystem(new RemoveEntitiesSystem(gameLoop, variablesManager));
 		gameLoop.addSystem(new TouchedSystem());
@@ -368,6 +372,8 @@ public class DefaultEngineInitializer implements EngineInitializer {
 
 		componentLoader.registerComponentProcessor(Visibility.class,
 				new VisibilityProcessor(gameLoop));
+		componentLoader.registerComponentProcessor(Touchability.class,
+				new TouchabilityProcessor(gameLoop));
 		componentLoader.registerComponentProcessor(PathBoundary.class,
 				new PathProcessor(gameLoop));
 		componentLoader.registerComponentProcessor(Cameras.class,

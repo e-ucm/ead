@@ -34,37 +34,27 @@
  *      You should have received a copy of the GNU Lesser General Public License
  *      along with eAdventure.  If not, see <http://www.gnu.org/licenses/>.
  */
-package es.eucm.ead.editor.view.widgets.editionview.prefabs;
+package es.eucm.ead.engine.processors;
 
-import com.badlogic.gdx.scenes.scene2d.Actor;
+import ashley.core.Component;
+import es.eucm.ead.engine.GameLoop;
+import es.eucm.ead.engine.components.TouchabilityComponent;
+import es.eucm.ead.schema.components.Touchability;
 
-import es.eucm.ead.editor.control.Controller;
-import es.eucm.ead.editor.control.actions.AddVisibilityCondition;
-import es.eucm.ead.editor.control.actions.ChangeVisibilityCondition;
-import es.eucm.ead.schema.components.Visibility;
-
-public class VisibilityPanel extends ConditionalPanel {
-
-	public VisibilityPanel(String icon, float size, Controller controller,
-			Actor touchable) {
-		super(icon, "edition.visible", size, controller, touchable,
-				Visibility.class);
+/**
+ * Converts {@link Touchability} model components to
+ * {@link TouchabilityComponent}
+ */
+public class TouchabilityProcessor extends ComponentProcessor<Touchability> {
+	public TouchabilityProcessor(GameLoop engine) {
+		super(engine);
 	}
 
 	@Override
-	protected void actualizeCondition() {
-		if (varTextDown != null && varTextDown.getSelectedVariableDef() != null) {
-			if (conditionedComponent == null) {
-				conditionedComponent = new Visibility();
-				conditionedComponent.setCondition(createCondition());
-				controller.action(AddVisibilityCondition.class,
-						conditionedComponent);
-			} else {
-				controller.action(ChangeVisibilityCondition.class,
-						createCondition());
-			}
-		}
-
+	public Component getComponent(Touchability component) {
+		TouchabilityComponent touchabilityComponent = gameLoop
+				.createComponent(TouchabilityComponent.class);
+		touchabilityComponent.setCondition(component.getCondition());
+		return touchabilityComponent;
 	}
-
 }
