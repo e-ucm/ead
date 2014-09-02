@@ -58,9 +58,9 @@ import es.eucm.ead.editor.control.Controller;
 import es.eucm.ead.editor.control.MockupController;
 import es.eucm.ead.editor.control.Selection;
 import es.eucm.ead.editor.control.actions.editor.Exit;
+import es.eucm.ead.editor.control.actions.editor.ForceSave;
 import es.eucm.ead.editor.control.actions.editor.OpenGame;
 import es.eucm.ead.editor.control.actions.editor.Redo;
-import es.eucm.ead.editor.control.actions.editor.Save;
 import es.eucm.ead.editor.control.actions.editor.Undo;
 import es.eucm.ead.editor.control.actions.model.EditScene;
 import es.eucm.ead.editor.model.Model;
@@ -155,7 +155,7 @@ public abstract class MockupUITest implements ApplicationListener {
 				break;
 			case Keys.S:
 				if (UIUtils.ctrl()) {
-					controller.action(Save.class);
+					controller.action(ForceSave.class);
 				}
 				break;
 			case Keys.Z:

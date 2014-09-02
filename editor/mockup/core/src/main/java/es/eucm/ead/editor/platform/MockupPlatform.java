@@ -69,6 +69,10 @@ public abstract class MockupPlatform extends AbstractPlatform {
 
 	}
 
+	public void askForAudio(FileChooserListener listener) {
+
+	}
+
 	@Override
 	public void setSize(int width, int height) {
 

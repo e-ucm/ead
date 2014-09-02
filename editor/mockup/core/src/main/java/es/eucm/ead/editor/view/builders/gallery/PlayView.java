@@ -48,6 +48,7 @@ import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import es.eucm.ead.editor.control.Controller;
 import es.eucm.ead.editor.control.MockupViews;
 import es.eucm.ead.editor.control.Selection;
+import es.eucm.ead.editor.control.actions.editor.ForceSave;
 import es.eucm.ead.editor.control.actions.model.EditScene;
 import es.eucm.ead.editor.control.actions.model.SetSelection;
 import es.eucm.ead.editor.control.engine.Engine;
@@ -79,7 +80,8 @@ public class PlayView implements ViewBuilder {
 		Skin skin = controller.getApplicationAssets().getSkin();
 		Vector2 viewport = controller.getPlatform().getSize();
 
-		Button back = new ToolbarIcon(IC_GO_BACK, 0f, viewport.y * .07f, skin);
+		Button back = new ToolbarIcon(IC_GO_BACK, 0f, viewport.y * .07f, skin,
+				"inverted");
 		back.addListener(new ClickListener() {
 			@Override
 			public void clicked(InputEvent event, float x, float y) {
@@ -98,6 +100,7 @@ public class PlayView implements ViewBuilder {
 
 	@Override
 	public Actor getView(Object... args) {
+		controller.action(ForceSave.class);
 		controller.action(SetSelection.class, null, Selection.DEBUG);
 		Engine engine = controller.getEngine();
 		engine.getGameLoader().loaded(GameStructure.GAME_FILE,

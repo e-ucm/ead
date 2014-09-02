@@ -56,7 +56,8 @@ import es.eucm.ead.editor.model.Q;
 import es.eucm.ead.editor.model.events.LoadEvent;
 import es.eucm.ead.editor.model.events.ResourceEvent;
 import es.eucm.ead.editor.model.events.SelectionEvent;
-import es.eucm.ead.editor.view.listeners.SceneNameListener;
+import es.eucm.ead.editor.view.listeners.SceneDocumentationListener;
+import es.eucm.ead.editor.view.listeners.SceneDocumentationListener.DefaultName;
 import es.eucm.ead.schema.editor.components.GameData;
 import es.eucm.ead.schema.entities.ModelEntity;
 import es.eucm.ead.schemax.entities.ResourceCategory;
@@ -78,7 +79,7 @@ public class ScenesTableList extends Table implements
 
 	private SelectionListener selectionListener;
 
-	private SceneNameListener nameListener;
+	private SceneDocumentationListener nameListener;
 
 	private ButtonGroup group;
 
@@ -110,7 +111,7 @@ public class ScenesTableList extends Table implements
 		initialize();
 
 		final Model model = controller.getModel();
-		nameListener = new SceneNameListener(controller) {
+		nameListener = new SceneDocumentationListener(controller) {
 			@Override
 			public void nameChanged(String name) {
 				SceneButton button = getSceneButton(model.getIdFor(model
@@ -118,6 +119,7 @@ public class ScenesTableList extends Table implements
 				button.actualizeName();
 			}
 		};
+		nameListener.setDefaultName(DefaultName.EMPTY);
 
 		ModelEntity scene = (ModelEntity) model.getSelection().getSingle(
 				Selection.SCENE);

@@ -47,7 +47,7 @@ import com.badlogic.gdx.utils.Array;
 
 import es.eucm.ead.editor.control.Controller;
 import es.eucm.ead.editor.control.actions.editor.ChangeView;
-import es.eucm.ead.editor.control.actions.editor.Save;
+import es.eucm.ead.editor.control.actions.editor.ForceSave;
 import es.eucm.ead.editor.control.actions.model.ChangeProjectName;
 import es.eucm.ead.editor.control.actions.model.EditScene;
 import es.eucm.ead.editor.control.actions.model.scene.NewScene;
@@ -121,7 +121,6 @@ public class ScenesView extends BaseGallery {
 		back.addListener(new ClickListener() {
 			@Override
 			public void clicked(InputEvent event, float x, float y) {
-				controller.action(Save.class);
 				controller.action(ChangeView.class, ProjectsView.class);
 			}
 		});
@@ -212,7 +211,7 @@ public class ScenesView extends BaseGallery {
 	public void release(Controller controller) {
 		super.release(controller);
 		controller.getModel().removeListenerFromAllTargets(initalSceneListener);
-		controller.action(Save.class);
+		controller.action(ForceSave.class);
 	}
 
 	@Override

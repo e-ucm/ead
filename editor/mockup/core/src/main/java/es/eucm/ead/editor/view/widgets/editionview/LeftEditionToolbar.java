@@ -70,6 +70,8 @@ public class LeftEditionToolbar extends Toolbar {
 				"visibility80x80", iconSize, controller, this);
 		TweensPanel tweensPanel = new TweensPanel("tween80x80", iconSize,
 				controller, this);
+		TouchabilityPanel touchabilityPanel = new TouchabilityPanel(
+				"lock80x80", iconSize, controller, this);
 
 		addInNewRow(departurePanel).padBottom(PAD);
 		addInNewRow(changeVariablePanel).padBottom(PAD);
@@ -84,9 +86,7 @@ public class LeftEditionToolbar extends Toolbar {
 
 		addInNewRow(visibilityPanel).padBottom(PAD);
 
-		addInNewRow(
-				new TouchabilityPanel("lock80x80", iconSize, controller, this))
-				.padBottom(PAD);
+		addInNewRow(touchabilityPanel).padBottom(PAD);
 
 		addInNewRow(tweensPanel).padBottom(PAD);
 
@@ -96,6 +96,7 @@ public class LeftEditionToolbar extends Toolbar {
 			changeVariablePanel.getPanel().addTouchableActor(actor);
 			visibilityPanel.getPanel().addTouchableActor(actor);
 			tweensPanel.getPanel().addTouchableActor(actor);
+			touchabilityPanel.getPanel().addTouchableActor(actor);
 		}
 	}
 

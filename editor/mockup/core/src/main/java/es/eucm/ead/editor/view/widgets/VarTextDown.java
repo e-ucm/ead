@@ -39,7 +39,6 @@ package es.eucm.ead.editor.view.widgets;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input.TextInputListener;
 import com.badlogic.gdx.scenes.scene2d.Actor;
-import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.scenes.scene2d.ui.SelectBox;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
@@ -50,13 +49,9 @@ import es.eucm.ead.editor.control.actions.AddNewVariableDef;
 import es.eucm.ead.editor.control.actions.AddVariables;
 import es.eucm.ead.engine.I18N;
 import es.eucm.ead.schema.components.ModelComponent;
-import es.eucm.ead.schema.components.behaviors.Behavior;
-import es.eucm.ead.schema.components.behaviors.events.Init;
 import es.eucm.ead.schema.editor.components.VariableDef;
 import es.eucm.ead.schema.editor.components.VariableDef.Type;
 import es.eucm.ead.schema.editor.components.Variables;
-import es.eucm.ead.schema.effects.ChangeVar;
-import es.eucm.ead.schema.effects.ChangeVar.Context;
 
 public class VarTextDown extends SelectBox<String> implements TextInputListener {
 
@@ -86,7 +81,7 @@ public class VarTextDown extends SelectBox<String> implements TextInputListener 
 			public void changed(ChangeEvent event, Actor actor) {
 				if (getSelectedIndex() == 0) {
 					Gdx.input.getPlaceholderTextInput(VarTextDown.this,
-							i18n.m("edition.insertVariable "),
+							i18n.m("edition.insertVariable"),
 							i18n.m("general.variable"));
 				} else {
 					lastSelectedIndex = getSelectedIndex();
@@ -145,33 +140,8 @@ public class VarTextDown extends SelectBox<String> implements TextInputListener 
 	private VariableDef newVariableDef(String text) {
 		VariableDef variable = new VariableDef();
 		variable.setName(text);
-		variable.setInitialValue("bfalse");
+		variable.setInitialValue("false");
 		variable.setType(Type.BOOLEAN);
-
-		ChangeVar change = new ChangeVar();
-		change.setContext(Context.GLOBAL);
-		change.setExpression(variable.getInitialValue());
-		change.setVariable(variable.getName());
-
-		Array<ModelComponent> components = controller.getModel().getGame()
-				.getComponents();
-		Behavior behavior = null;
-
-		for (ModelComponent component : components) {
-			if (component instanceof Behavior) {
-				behavior = (Behavior) component;
-				if (behavior.getEvent() instanceof Init) {
-					behavior.getEffects().add(change);
-					return variable;
-				}
-			}
-		}
-
-		behavior = new Behavior();
-		behavior.setEvent(new Init());
-		behavior.getEffects().add(change);
-
-		components.add(behavior);
 
 		return variable;
 	}
@@ -187,7 +157,7 @@ public class VarTextDown extends SelectBox<String> implements TextInputListener 
 
 	@Override
 	public void input(String text) {
-		if (text != null && !text.isEmpty() && text.trim().isEmpty()) {
+		if (text != null && !text.isEmpty() && !text.trim().isEmpty()) {
 			if (variables == null) {
 				variables = new Variables();
 				controller.action(AddVariables.class, variables);
