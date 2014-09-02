@@ -46,7 +46,7 @@ import com.badlogic.gdx.utils.Array;
 
 import es.eucm.ead.editor.control.Controller;
 import es.eucm.ead.editor.control.Selection;
-import es.eucm.ead.editor.control.actions.RemoveConditionedComponent;
+import es.eucm.ead.editor.control.actions.irreversibles.scene.RemoveConditionedComponent;
 import es.eucm.ead.editor.view.widgets.MultiStateButton;
 import es.eucm.ead.editor.view.widgets.VarTextDown;
 import es.eucm.ead.editor.view.widgets.layouts.LinearLayout;

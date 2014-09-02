@@ -34,33 +34,35 @@
  *      You should have received a copy of the GNU Lesser General Public License
  *      along with eAdventure.  If not, see <http://www.gnu.org/licenses/>.
  */
-package es.eucm.ead.editor.control.actions;
+package es.eucm.ead.editor.control.actions.irreversibles.scene;
 
-import es.eucm.ead.editor.control.Selection;
-import es.eucm.ead.schema.components.tweens.Tween;
+import es.eucm.ead.editor.control.actions.irreversibles.IrreversibleAction;
+import es.eucm.ead.schema.components.behaviors.Behavior;
+import es.eucm.ead.schema.effects.Effect;
 import es.eucm.ead.schema.entities.ModelEntity;
+import es.eucm.ead.schemax.entities.ResourceCategory;
 
 /**
- * Adds a {@link Tween} to the current scene element selected </p>
+ * Removes a {@link Effect} in a {@link Behavior} </p>
  * <dl>
  * <dt><strong>Arguments</strong></dt>
- * <dd><strong>args[0]</strong> <em>{@link Tween}</em> to add</dd>
+ * <dd><strong>args[0]</strong> <em>{@link Behavior}</em></dd>
+ * <dd><strong>args[1]</strong> <em>{@link Effect}</em> to remove</dd>
  * </dl>
  */
-public class AddTween extends EditorAction {
+public class RemoveBehaviorEffect extends IrreversibleAction {
 
-	public AddTween() {
-		super(true, false, Tween.class);
+	public RemoveBehaviorEffect() {
+		super(ResourceCategory.SCENE, true, false, Behavior.class, Effect.class);
 	}
 
 	@Override
-	public void perform(Object... args) {
-		Tween tween = (Tween) args[0];
+	protected void action(ModelEntity entity, Object[] args) {
+		Behavior behavior = (Behavior) args[0];
+		Effect effect = (Effect) args[1];
 
-		ModelEntity modelEntity = (ModelEntity) controller.getModel()
-				.getSelection().getSingle(Selection.SCENE_ELEMENT);
+		behavior.getEffects().removeValue(effect, true);
 
-		modelEntity.getComponents().add(tween);
 	}
 
 }

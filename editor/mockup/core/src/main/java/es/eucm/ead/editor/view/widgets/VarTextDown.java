@@ -45,8 +45,8 @@ import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
 import com.badlogic.gdx.utils.Array;
 
 import es.eucm.ead.editor.control.Controller;
-import es.eucm.ead.editor.control.actions.AddNewVariableDef;
-import es.eucm.ead.editor.control.actions.AddVariables;
+import es.eucm.ead.editor.control.actions.irreversibles.game.AddNewVariableDef;
+import es.eucm.ead.editor.control.actions.irreversibles.game.AddVariables;
 import es.eucm.ead.engine.I18N;
 import es.eucm.ead.schema.components.ModelComponent;
 import es.eucm.ead.schema.editor.components.VariableDef;

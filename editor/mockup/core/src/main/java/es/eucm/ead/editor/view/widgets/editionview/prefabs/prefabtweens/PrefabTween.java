@@ -43,8 +43,8 @@ import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.utils.Scaling;
 
 import es.eucm.ead.editor.control.Controller;
-import es.eucm.ead.editor.control.actions.AddTween;
-import es.eucm.ead.editor.control.actions.RemoveTween;
+import es.eucm.ead.editor.control.actions.irreversibles.scene.AddTween;
+import es.eucm.ead.editor.control.actions.irreversibles.scene.RemoveTween;
 import es.eucm.ead.engine.I18N;
 import es.eucm.ead.schema.components.tweens.Tween;
 

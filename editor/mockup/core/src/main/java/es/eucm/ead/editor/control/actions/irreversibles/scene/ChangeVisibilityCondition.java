@@ -34,46 +34,37 @@
  *      You should have received a copy of the GNU Lesser General Public License
  *      along with eAdventure.  If not, see <http://www.gnu.org/licenses/>.
  */
-package es.eucm.ead.editor.control.actions;
+package es.eucm.ead.editor.control.actions.irreversibles.scene;
 
-import es.eucm.ead.schema.components.behaviors.Behavior;
-import es.eucm.ead.schema.effects.Effect;
+import es.eucm.ead.editor.control.actions.irreversibles.IrreversibleAction;
+import es.eucm.ead.schema.components.ModelComponent;
+import es.eucm.ead.schema.components.Visibility;
+import es.eucm.ead.schema.entities.ModelEntity;
+import es.eucm.ead.schemax.entities.ResourceCategory;
 
 /**
- * Changes a {@link Effect} in a {@link Behavior} for other of the same type
- * </p>
+ * Change the visibility condition in the current scene element selected </p>
  * <dl>
  * <dt><strong>Arguments</strong></dt>
- * <dd><strong>args[0]</strong> <em>{@link Behavior}</em></dd>
- * <dd><strong>args[1]</strong> <em>{@link Effect}</em> to change</dd>
+ * <dd><strong>args[0]</strong> <em>{@link String}</em> new condition</dd>
  * </dl>
  */
-public class ChangeBehaviorEffect extends EditorAction {
+public class ChangeVisibilityCondition extends IrreversibleAction {
 
-	public ChangeBehaviorEffect() {
-		super(true, false, Behavior.class, Effect.class);
+	public ChangeVisibilityCondition() {
+		super(ResourceCategory.SCENE, true, false, String.class);
 	}
 
 	@Override
-	public void perform(Object... args) {
-		Behavior behavior = (Behavior) args[0];
-		Effect effect = (Effect) args[1];
-		Class c = effect.getClass();
+	protected void action(ModelEntity entity, Object[] args) {
+		String condition = (String) args[0];
 
-		int i = 0;
-		Effect old = null;
-		for (Effect e : behavior.getEffects()) {
-			if (e.getClass() == c) {
-				old = e;
-				break;
+		for (ModelComponent component : entity.getComponents()) {
+			if (component instanceof Visibility) {
+				((Visibility) component).setCondition(condition);
 			}
-			i++;
 		}
-		behavior.getEffects().insert(i, effect);
 
-		if (old != null) {
-			behavior.getEffects().removeValue(old, true);
-		}
 	}
 
 }

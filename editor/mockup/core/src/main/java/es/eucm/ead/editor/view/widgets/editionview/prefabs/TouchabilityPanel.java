@@ -39,8 +39,8 @@ package es.eucm.ead.editor.view.widgets.editionview.prefabs;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 
 import es.eucm.ead.editor.control.Controller;
-import es.eucm.ead.editor.control.actions.AddTouchabilityCondition;
-import es.eucm.ead.editor.control.actions.ChangeTouchabilityCondition;
+import es.eucm.ead.editor.control.actions.irreversibles.scene.AddTouchabilityCondition;
+import es.eucm.ead.editor.control.actions.irreversibles.scene.ChangeTouchabilityCondition;
 import es.eucm.ead.schema.components.Touchability;
 
 public class TouchabilityPanel extends ConditionalPanel {

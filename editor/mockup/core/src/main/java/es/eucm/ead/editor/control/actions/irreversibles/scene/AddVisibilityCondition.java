@@ -34,31 +34,33 @@
  *      You should have received a copy of the GNU Lesser General Public License
  *      along with eAdventure.  If not, see <http://www.gnu.org/licenses/>.
  */
-package es.eucm.ead.editor.control.actions;
+package es.eucm.ead.editor.control.actions.irreversibles.scene;
 
-import es.eucm.ead.schema.editor.components.VariableDef;
-import es.eucm.ead.schema.editor.components.Variables;
+import es.eucm.ead.editor.control.actions.irreversibles.IrreversibleAction;
+import es.eucm.ead.schema.components.Visibility;
+import es.eucm.ead.schema.entities.ModelEntity;
+import es.eucm.ead.schemax.entities.ResourceCategory;
 
 /**
- * Adds a {@link VariableDef} in {@link Variables} </p>
+ * Adds a {@link Visibility} component to the current scene element selected
+ * </p>
  * <dl>
  * <dt><strong>Arguments</strong></dt>
- * <dd><strong>args[0]</strong> <em>{@link VariableDef}</em> to add</dd>
- * <dd><strong>args[1]</strong> <em>{@link Variables}</em></dd>
+ * <dd><strong>args[0]</strong> <em>{@link Visibility}</em> to add</dd>
  * </dl>
  */
-public class AddNewVariableDef extends EditorAction {
+public class AddVisibilityCondition extends IrreversibleAction {
 
-	public AddNewVariableDef() {
-		super(true, false, VariableDef.class, Variables.class);
+	public AddVisibilityCondition() {
+		super(ResourceCategory.SCENE, true, false, Visibility.class);
 	}
 
 	@Override
-	public void perform(Object... args) {
-		VariableDef var = (VariableDef) args[0];
-		Variables arrayVar = (Variables) args[1];
+	protected void action(ModelEntity entity, Object[] args) {
+		Visibility visibility = (Visibility) args[0];
 
-		arrayVar.getVariablesDefinitions().add(var);
+		entity.getComponents().add(visibility);
+
 	}
 
 }
