@@ -44,12 +44,14 @@ import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
 
 import es.eucm.ead.editor.control.Actions;
 import es.eucm.ead.editor.control.Controller;
+import es.eucm.ead.editor.control.Selection;
 import es.eucm.ead.editor.control.actions.AddLabelToScene;
 import es.eucm.ead.editor.control.actions.editor.AddSceneElementFromResource;
-import es.eucm.ead.editor.control.actions.editor.ChangeView;
+import es.eucm.ead.editor.control.actions.editor.ChangeMockupView;
 import es.eucm.ead.editor.control.actions.editor.Redo;
 import es.eucm.ead.editor.control.actions.editor.TakePicture;
 import es.eucm.ead.editor.control.actions.editor.Undo;
+import es.eucm.ead.editor.control.actions.model.SetSelection;
 import es.eucm.ead.editor.view.builders.LibrariesView;
 import es.eucm.ead.editor.view.builders.gallery.PlayView;
 import es.eucm.ead.editor.view.listeners.ActionListener;
@@ -119,14 +121,26 @@ public class TopEditionToolbar extends Toolbar {
 
 		paintToolbar.addListener(new DrawListener() {
 
+			private Object selection;
+
 			@Override
 			public void drawStarted() {
+				selection = controller.getModel().getSelection()
+						.getSingle(Selection.SCENE_ELEMENT);
+				if (selection != null) {
+					controller.action(SetSelection.class, Selection.SCENE,
+							Selection.SCENE_ELEMENT);
+				}
 				setDisabled(true);
 			}
 
 			@Override
-			public void drawEnded() {
+			public void drawEnded(boolean saved) {
 				setDisabled(false);
+				if (!saved && selection != null) {
+					controller.action(SetSelection.class, Selection.SCENE,
+							Selection.SCENE_ELEMENT, selection);
+				}
 			}
 
 		});
@@ -137,7 +151,7 @@ public class TopEditionToolbar extends Toolbar {
 			public void changed(ChangeEvent event, Actor actor) {
 				Actor listenerActor = event.getListenerActor();
 				if (listenerActor == play) {
-					controller.action(ChangeView.class, PlayView.class);
+					controller.action(ChangeMockupView.class, PlayView.class);
 				} else if (listenerActor == undo) {
 					controller.action(Undo.class);
 				} else if (listenerActor == redo) {
@@ -145,7 +159,8 @@ public class TopEditionToolbar extends Toolbar {
 				} else if (listenerActor == camera) {
 					controller.action(TakePicture.class, getStage());
 				} else if (listenerActor == repository) {
-					controller.action(ChangeView.class, LibrariesView.class);
+					controller.action(ChangeMockupView.class,
+							LibrariesView.class);
 				} else if (listenerActor == android) {
 					controller.action(AddSceneElementFromResource.class);
 				} else if (listenerActor == paint) {
@@ -228,7 +243,6 @@ public class TopEditionToolbar extends Toolbar {
 		camera.setDisabled(disabled);
 		repository.setDisabled(disabled);
 		android.setDisabled(disabled);
-		paint.setDisabled(disabled);
 		text.setDisabled(disabled);
 		zones.setDisabled(disabled);
 		gate.setDisabled(disabled);
