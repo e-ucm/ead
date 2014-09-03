@@ -51,6 +51,7 @@ import com.badlogic.gdx.utils.Array;
 import es.eucm.ead.editor.control.Controller;
 import es.eucm.ead.editor.control.MockupController;
 import es.eucm.ead.editor.control.RepositoryManager.ProgressListener;
+import es.eucm.ead.editor.control.actions.editor.ChangeMockupView;
 import es.eucm.ead.editor.control.actions.editor.ChangeView;
 import es.eucm.ead.editor.control.actions.editor.repository.UpdateLibraries;
 import es.eucm.ead.editor.view.builders.gallery.BaseGallery;
@@ -104,7 +105,7 @@ public class LibrariesView implements ViewBuilder, ProgressListener {
 		backButton.addListener(new ClickListener() {
 			@Override
 			public void clicked(InputEvent event, float x, float y) {
-				controller.action(ChangeView.class, EditionView.class);
+				controller.action(ChangeMockupView.class, EditionView.class);
 			}
 		});
 
@@ -129,8 +130,8 @@ public class LibrariesView implements ViewBuilder, ProgressListener {
 				if (target instanceof TextButton) {
 					String targetLib = ((TextButton) target).getText()
 							.toString();
-					controller.action(ChangeView.class, RepositoryView.class,
-							targetLib);
+					controller.action(ChangeMockupView.class,
+							RepositoryView.class, targetLib);
 				}
 			}
 

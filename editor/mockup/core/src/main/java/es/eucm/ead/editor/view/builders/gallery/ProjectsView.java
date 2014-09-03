@@ -45,7 +45,7 @@ import com.badlogic.gdx.utils.Scaling;
 
 import es.eucm.ead.editor.control.Controller;
 import es.eucm.ead.editor.control.MockupController.BackListener;
-import es.eucm.ead.editor.control.actions.editor.ChangeView;
+import es.eucm.ead.editor.control.actions.editor.ChangeMockupView;
 import es.eucm.ead.editor.control.actions.editor.ExitMockup;
 import es.eucm.ead.editor.control.actions.editor.NewGame;
 import es.eucm.ead.editor.control.actions.editor.OpenMockupGame;
@@ -97,7 +97,7 @@ public class ProjectsView extends BaseGallery implements BackListener {
 
 		controller.action(NewGame.class, file.file().getAbsolutePath(),
 				defaultGame);
-		controller.action(ChangeView.class, ScenesView.class);
+		controller.action(ChangeMockupView.class, ScenesView.class);
 	}
 
 	@Override
@@ -118,7 +118,7 @@ public class ProjectsView extends BaseGallery implements BackListener {
 		controller.action(OpenMockupGame.class,
 				((ProjectItem) item).getProjectPath(), topBar.getStage());
 		if (controller.getViews().getCurrentView() == this) {
-			controller.action(ChangeView.class, ScenesView.class);
+			controller.action(ChangeMockupView.class, ScenesView.class);
 		}
 	}
 

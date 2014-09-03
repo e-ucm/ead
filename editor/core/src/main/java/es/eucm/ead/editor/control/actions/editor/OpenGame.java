@@ -204,16 +204,12 @@ public class OpenGame extends EditorAction implements FileChooserListener,
 		}
 	}
 
-	private void setEditionState(Model model) {
+	protected void setEditionState(Model model) {
 		ModelEntity game = model.getGame();
 		final EditState editState = Q.getComponent(game, EditState.class);
 		final String gameId = model.getIdFor(game);
 		if (editState.getView() != null) {
 			try {
-				String editScene = editState.getEditScene();
-				if (editScene != null && !editScene.isEmpty()) {
-					controller.action(EditScene.class, editScene);
-				}
 
 				Class viewClass = ClassReflection.forName(editState.getView());
 

@@ -46,8 +46,8 @@ import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.utils.Array;
 
 import es.eucm.ead.editor.control.Controller;
-import es.eucm.ead.editor.control.actions.editor.ChangeView;
-import es.eucm.ead.editor.control.actions.editor.ForceSave;
+import es.eucm.ead.editor.control.actions.editor.ChangeMockupView;
+import es.eucm.ead.editor.control.actions.editor.CloseMockupGame;
 import es.eucm.ead.editor.control.actions.model.ChangeProjectName;
 import es.eucm.ead.editor.control.actions.model.EditScene;
 import es.eucm.ead.editor.control.actions.model.scene.NewScene;
@@ -95,6 +95,10 @@ public class ScenesView extends BaseGallery {
 		}
 	};
 
+	protected int getColumns() {
+		return 4;
+	};
+
 	@Override
 	public void initialize(Controller controller) {
 		super.initialize(controller);
@@ -109,7 +113,7 @@ public class ScenesView extends BaseGallery {
 		play.addListener(new ClickListener() {
 			@Override
 			public void clicked(InputEvent event, float x, float y) {
-				controller.action(ChangeView.class, PlayView.class);
+				controller.action(ChangeMockupView.class, PlayView.class);
 			}
 		});
 		return play;
@@ -121,7 +125,7 @@ public class ScenesView extends BaseGallery {
 		back.addListener(new ClickListener() {
 			@Override
 			public void clicked(InputEvent event, float x, float y) {
-				controller.action(ChangeView.class, ProjectsView.class);
+				controller.action(CloseMockupGame.class);
 			}
 		});
 		return back;
@@ -182,7 +186,7 @@ public class ScenesView extends BaseGallery {
 	@Override
 	protected void newItem() {
 		controller.action(NewScene.class, "");
-		controller.action(ChangeView.class, EditionView.class);
+		controller.action(ChangeMockupView.class, EditionView.class);
 	}
 
 	@Override
@@ -200,6 +204,7 @@ public class ScenesView extends BaseGallery {
 
 	@Override
 	public Actor getView(Object... args) {
+		controller.getCommands().pushStack();
 		ModelEntity game = controller.getModel().getGame();
 		projectName.setText(Q.getName(game, ""));
 		controller.getModel().addFieldListener(
@@ -211,7 +216,7 @@ public class ScenesView extends BaseGallery {
 	public void release(Controller controller) {
 		super.release(controller);
 		controller.getModel().removeListenerFromAllTargets(initalSceneListener);
-		controller.action(ForceSave.class);
+		controller.getCommands().popStack(false);
 	}
 
 	@Override
@@ -220,7 +225,7 @@ public class ScenesView extends BaseGallery {
 				((SceneItem) item).getScene());
 		if (sceneId != null) {
 			controller.action(EditScene.class, sceneId);
-			controller.action(ChangeView.class, EditionView.class);
+			controller.action(ChangeMockupView.class, EditionView.class);
 		}
 	}
 

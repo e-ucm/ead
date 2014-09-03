@@ -276,7 +276,11 @@ public class Views implements ModelListener<LoadEvent> {
 		args[0] = viewUpdate.getViewClass();
 		System.arraycopy(viewUpdate.getArgs(), 0, args, 1,
 				viewUpdate.getArgs().length);
-		controller.action(ChangeView.class, args);
+		controller.action(getChangeViewClass(), args);
+	}
+
+	protected Class getChangeViewClass() {
+		return ChangeView.class;
 	}
 
 	@Override
