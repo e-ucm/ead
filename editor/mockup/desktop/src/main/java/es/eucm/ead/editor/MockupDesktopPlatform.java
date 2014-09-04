@@ -83,13 +83,29 @@ public class MockupDesktopPlatform extends MockupPlatform {
 	}
 
 	@Override
+	public void askForAudio(final FileChooserListener listener) {
+		Gdx.input.getTextInput(new TextInputListener() {
+
+			@Override
+			public void input(String text) {
+				listener.fileChosen(text);
+			}
+
+			@Override
+			public void canceled() {
+			}
+
+		}, "File path!", "");
+	}
+
+	@Override
 	public void captureImage(File photoFile,
 			final ImageCapturedListener listener) {
 		Gdx.app.postRunnable(new Runnable() {
 
 			@Override
 			public void run() {
-				listener.imageCaptured(true);
+				listener.imageCaptured(false);
 			}
 		});
 	}

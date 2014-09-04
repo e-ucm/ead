@@ -54,18 +54,19 @@ import es.eucm.ead.editor.control.actions.EditorAction;
  */
 public class ExitMockup extends EditorAction {
 
+	private Runnable exit = new Runnable() {
+		@Override
+		public void run() {
+			Gdx.app.exit();
+		}
+	};
+
 	public ExitMockup() {
 		super(true, false);
 	}
 
 	@Override
 	public void perform(Object... args) {
-		controller.action(ForceSave.class);
-		Gdx.app.postRunnable(new Runnable() {
-			@Override
-			public void run() {
-				Gdx.app.exit();
-			}
-		});
+		Gdx.app.postRunnable(exit);
 	}
 }

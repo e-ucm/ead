@@ -48,7 +48,7 @@ import es.eucm.ead.schema.entities.ModelEntity;
 
 /**
  * <p>
- * Changes the editor main view without performing a command.
+ * Changes the Mockup's current view without performing a command.
  * </p>
  * <dl>
  * <dt><strong>Arguments</strong></dt>

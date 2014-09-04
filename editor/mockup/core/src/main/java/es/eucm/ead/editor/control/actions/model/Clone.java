@@ -40,6 +40,7 @@ import es.eucm.ead.editor.control.Selection;
 import es.eucm.ead.editor.control.commands.Command;
 import es.eucm.ead.editor.control.commands.ListCommand.AddToListCommand;
 import es.eucm.ead.editor.model.Q;
+import es.eucm.ead.schema.editor.components.GameData;
 import es.eucm.ead.schema.editor.components.Parent;
 import es.eucm.ead.schema.entities.ModelEntity;
 
@@ -57,6 +58,27 @@ public class Clone extends SceneElementSelection {
 	@Override
 	public Command getCommand(ModelEntity scene, ModelEntity sceneElement) {
 		ModelEntity copy = controller.getEditorGameAssets().copy(sceneElement);
+
+		GameData gameData = Q.getComponent(controller.getModel().getGame(),
+				GameData.class);
+
+		float offsetX = gameData.getWidth() / 100f;
+		float offsetY = gameData.getHeight() / 100f;
+
+		float newX = sceneElement.getX() + offsetX;
+		float newY = sceneElement.getY() + offsetY;
+
+		if (newX >= gameData.getWidth()) {
+			newX = sceneElement.getX() - offsetX * 10f;
+		}
+
+		if (newY >= gameData.getHeight()) {
+			newY = sceneElement.getY() - offsetY * 10f;
+		}
+
+		copy.setX(newX);
+		copy.setY(newY);
+
 		Q.getComponent(copy, Parent.class).setParent(scene);
 		return new AddToListCommand(scene, scene.getChildren(), copy);
 	}
