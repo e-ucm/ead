@@ -150,7 +150,7 @@ public class PaintToolbar extends Toolbar {
 					importingNotif.show(getStage());
 					controller.getBackgroundExecutor().submit(saveTask,
 							saveListener);
-					hide(false);
+					hide(false, true);
 				} else if (listener == slider) {
 					brushStrokes.setRadius(slider.getValue());
 				} else {
@@ -216,6 +216,7 @@ public class PaintToolbar extends Toolbar {
 	}
 
 	public void show() {
+		clearActions();
 		setTouchable(Touchable.enabled);
 		parent.getStage().addActor(this);
 		parent.localToStageCoordinates(TEMP.set(0f, 0f));
@@ -228,14 +229,14 @@ public class PaintToolbar extends Toolbar {
 
 		setBounds(x, y, prefW, prefH);
 		addAction(Actions.moveTo(x, 0f, IN_DURATION, Interpolation.sineOut));
-		fireDraw(true);
+		fireDraw(true, false);
 	}
 
 	public void hide() {
-		hide(true);
+		hide(true, false);
 	}
 
-	private void hide(boolean release) {
+	private void hide(boolean release, boolean saved) {
 		if (!isShowing())
 			return;
 		clearActions();
@@ -244,7 +245,7 @@ public class PaintToolbar extends Toolbar {
 
 		addAction(sequence(Actions.moveTo(getX(), -getHeight(), OUT_DURATION,
 				Interpolation.fade), Actions.removeActor()));
-		fireDraw(false);
+		fireDraw(false, saved);
 	}
 
 	public boolean isShowing() {
@@ -258,9 +259,10 @@ public class PaintToolbar extends Toolbar {
 	/**
 	 * Fires that this actor is going to draw or not
 	 */
-	private void fireDraw(boolean show) {
+	private void fireDraw(boolean show, boolean saved) {
 		DrawEvent drawEvent = Pools.obtain(DrawEvent.class);
 		drawEvent.show = show;
+		drawEvent.saved = saved;
 		fire(drawEvent);
 		Pools.free(drawEvent);
 	}
@@ -274,10 +276,11 @@ public class PaintToolbar extends Toolbar {
 		@Override
 		public boolean handle(Event event) {
 			if (event instanceof DrawEvent) {
-				if (((DrawEvent) event).show) {
+				DrawEvent draw = ((DrawEvent) event);
+				if (draw.show) {
 					drawStarted();
 				} else {
-					drawEnded();
+					drawEnded(draw.saved);
 				}
 			}
 			return true;
@@ -295,11 +298,11 @@ public class PaintToolbar extends Toolbar {
 		 * 
 		 * @param event
 		 */
-		public abstract void drawEnded();
+		public abstract void drawEnded(boolean saved);
 	}
 
 	public static class DrawEvent extends Event {
 
-		private boolean show;
+		private boolean show, saved;
 	}
 }

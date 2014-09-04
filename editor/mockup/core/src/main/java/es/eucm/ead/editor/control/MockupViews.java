@@ -41,8 +41,10 @@ import com.badlogic.gdx.scenes.scene2d.actions.Actions;
 import com.badlogic.gdx.utils.ObjectMap;
 
 import es.eucm.ead.editor.control.MockupController.BackListener;
-import es.eucm.ead.editor.control.actions.editor.ChangeView;
+import es.eucm.ead.editor.control.actions.editor.ChangeMockupView;
+import es.eucm.ead.editor.control.actions.editor.ForceSave;
 import es.eucm.ead.editor.view.builders.ViewBuilder;
+import es.eucm.ead.editor.view.builders.gallery.ProjectsView;
 import es.eucm.ead.editor.view.builders.gallery.ScenesView;
 import es.eucm.ead.editor.view.widgets.helpmessage.sequence.HelpSequence;
 
@@ -60,12 +62,16 @@ public class MockupViews extends Views implements BackListener {
 		if (currentView instanceof BackListener) {
 			((BackListener) currentView).onBackPressed();
 		} else {
-			ViewBuilder currView = currentView;
+			ViewBuilder nextView = currentView;
 			back();
-			if (currView == currentView) {
-				controller.action(ChangeView.class, ScenesView.class);
+			if (nextView == currentView) {
+				controller.action(ChangeMockupView.class, ScenesView.class);
 			}
 		}
+	}
+
+	protected Class getChangeViewClass() {
+		return ChangeMockupView.class;
 	}
 
 	@Override
@@ -96,6 +102,12 @@ public class MockupViews extends Views implements BackListener {
 
 	public void registerHelpMessage(HelpSequence seq) {
 		helpMessages.put(seq.getViewBuilder(), seq);
+	}
+
+	public void pause() {
+		if (currentView.getClass() != ProjectsView.class) {
+			controller.action(ForceSave.class);
+		}
 	}
 
 }

@@ -40,20 +40,28 @@ import static com.badlogic.gdx.scenes.scene2d.actions.Actions.delay;
 import static com.badlogic.gdx.scenes.scene2d.actions.Actions.forever;
 import static com.badlogic.gdx.scenes.scene2d.actions.Actions.run;
 
-import com.badlogic.gdx.scenes.scene2d.Stage;
+import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.scenes.scene2d.Group;
+import com.badlogic.gdx.utils.reflect.ClassReflection;
+import com.badlogic.gdx.utils.reflect.ReflectionException;
 
+import es.eucm.ead.editor.control.MockupController;
 import es.eucm.ead.editor.control.actions.EditorActionException;
+import es.eucm.ead.editor.control.actions.model.EditScene;
 import es.eucm.ead.editor.control.background.BackgroundExecutor;
 import es.eucm.ead.editor.control.background.BackgroundExecutor.BackgroundTaskListener;
 import es.eucm.ead.editor.control.background.BackgroundTask;
+import es.eucm.ead.editor.model.Model;
+import es.eucm.ead.editor.model.Q;
+import es.eucm.ead.editor.view.builders.gallery.ProjectsView;
+import es.eucm.ead.schema.editor.components.EditState;
+import es.eucm.ead.schema.entities.ModelEntity;
 
 public class OpenMockupGame extends OpenGame {
 	/**
 	 * Saving interval in seconds.
 	 */
-	private static final float SAVE_DELAY = 30f;
-
-	private boolean saving = false;
+	private static final float SAVE_DELAY = 20f;
 
 	@Override
 	public void perform(Object... args) {
@@ -63,11 +71,11 @@ public class OpenMockupGame extends OpenGame {
 			throw new EditorActionException("Failed opening: " + path
 					+ ", probably deleted.");
 		}
-		if (!saving) {
-			saving = true;
-			((Stage) args[1])
-					.addAction(forever(delay(SAVE_DELAY, run(saveGame))));
-		}
+		Group rootComponent = ((MockupController) controller)
+				.getRootComponent();
+		rootComponent.clearActions();
+		rootComponent.addAction(forever(delay(SAVE_DELAY, run(saveGame))));
+		controller.getPreferences().flush();
 	}
 
 	private final Runnable saveGame = new Runnable() {
@@ -100,4 +108,32 @@ public class OpenMockupGame extends OpenGame {
 			}
 		};
 	};
+
+	protected void setEditionState(Model model) {
+		ModelEntity game = model.getGame();
+		EditState editState = Q.getComponent(game, EditState.class);
+		if (editState.getView() != null) {
+			try {
+				String editScene = editState.getEditScene();
+				if (editScene != null && !editScene.isEmpty()) {
+					controller.action(EditScene.class, editScene);
+				}
+
+				Class viewClass = ClassReflection.forName(editState.getView());
+
+				int i = 0;
+				Object[] args = new Object[editState.getArguments().size + 1];
+				args[i++] = viewClass;
+				for (Object arg : editState.getArguments()) {
+					args[i++] = arg;
+				}
+				controller.action(ChangeMockupView.class, args);
+			} catch (ReflectionException e) {
+				Gdx.app.error("OpenGame",
+						"Impossible to set view " + editState.getView());
+				controller.action(ChangeMockupView.class, ProjectsView.class);
+			}
+		}
+	}
+
 }

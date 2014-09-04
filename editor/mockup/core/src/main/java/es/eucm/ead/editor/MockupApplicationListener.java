@@ -45,8 +45,7 @@ import es.eucm.ead.editor.control.Controller;
 import es.eucm.ead.editor.control.MockupController;
 import es.eucm.ead.editor.control.Preferences;
 import es.eucm.ead.editor.control.actions.EditorActionException;
-import es.eucm.ead.editor.control.actions.editor.ChangeView;
-import es.eucm.ead.editor.control.actions.editor.ForceSave;
+import es.eucm.ead.editor.control.actions.editor.ChangeMockupView;
 import es.eucm.ead.editor.control.actions.editor.OpenMockupGame;
 import es.eucm.ead.editor.platform.Platform;
 import es.eucm.ead.editor.view.builders.gallery.ProjectsView;
@@ -79,23 +78,22 @@ public class MockupApplicationListener extends EditorApplicationListener {
 				controller.action(OpenMockupGame.class, projectToOpenPath,
 						stage);
 				if (controller.getViews().getCurrentView() == null) {
-					controller.action(ChangeView.class, ScenesView.class);
+					controller.action(ChangeMockupView.class, ScenesView.class);
 				}
 			} catch (EditorActionException eae) {
 				// the project is probably corrupt; complain but continue
 				Gdx.app.log("OpenLastProject", "Error opening '"
 						+ projectToOpenPath + "'; Request ignored");
-				controller.action(ChangeView.class, ProjectsView.class);
+				controller.action(ChangeMockupView.class, ProjectsView.class);
 			}
 		} else {
-			controller.action(ChangeView.class, ProjectsView.class);
+			controller.action(ChangeMockupView.class, ProjectsView.class);
 		}
 	}
 
 	@Override
 	public void pause() {
-		controller.action(ForceSave.class);
-		super.pause();
+		((MockupController) controller).pause();
 	}
 
 	@Override

@@ -49,7 +49,7 @@ import es.eucm.ead.editor.control.Controller;
 import es.eucm.ead.editor.control.MockupController;
 import es.eucm.ead.editor.control.RepositoryManager.OnEntityImportedListener;
 import es.eucm.ead.editor.control.RepositoryManager.ProgressListener;
-import es.eucm.ead.editor.control.actions.editor.ChangeView;
+import es.eucm.ead.editor.control.actions.editor.ChangeMockupView;
 import es.eucm.ead.editor.control.actions.editor.repository.ImportElement;
 import es.eucm.ead.editor.control.actions.editor.repository.UpdateLibraryElements;
 import es.eucm.ead.editor.control.background.BackgroundExecutor;
@@ -92,7 +92,7 @@ public class RepositoryView extends BaseGallery implements ProgressListener,
 		play.addListener(new ClickListener() {
 			@Override
 			public void clicked(InputEvent event, float x, float y) {
-				controller.action(ChangeView.class, PlayView.class);
+				controller.action(ChangeMockupView.class, PlayView.class);
 			}
 		});
 		return play;
@@ -104,7 +104,7 @@ public class RepositoryView extends BaseGallery implements ProgressListener,
 		back.addListener(new ClickListener() {
 			@Override
 			public void clicked(InputEvent event, float x, float y) {
-				controller.action(ChangeView.class, LibrariesView.class);
+				controller.action(ChangeMockupView.class, LibrariesView.class);
 			}
 		});
 		return back;
@@ -137,7 +137,7 @@ public class RepositoryView extends BaseGallery implements ProgressListener,
 	public void entityImported(ModelEntity entity, Controller controller) {
 		view.setTouchable(Touchable.enabled);
 		if (entity != null) {
-			controller.action(ChangeView.class, EditionView.class);
+			controller.action(ChangeMockupView.class, EditionView.class);
 		} else {
 			errorImporting.show(getStage(), DEFAULT_NOTIF_TIMEOUT);
 		}

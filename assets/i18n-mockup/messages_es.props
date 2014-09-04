@@ -6,6 +6,7 @@
 #
 # Each '{}' will be interpreted as a placeholder for the next argument
 
+initial = Escena inicial
 settings.language = idioma
 settings.more = más
 settings.enableHelpMessages = Habilitar mensajes de ayuda

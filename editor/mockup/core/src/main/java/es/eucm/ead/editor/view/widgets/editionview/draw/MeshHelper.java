@@ -67,11 +67,11 @@ import com.badlogic.gdx.utils.viewport.Viewport;
 
 import es.eucm.ead.editor.control.Actions;
 import es.eucm.ead.editor.control.Controller;
-import es.eucm.ead.editor.view.listeners.ActionListener;
 import es.eucm.ead.editor.control.actions.editor.Redo;
 import es.eucm.ead.editor.control.actions.editor.Undo;
 import es.eucm.ead.editor.control.commands.Command;
 import es.eucm.ead.editor.model.events.ModelEvent;
+import es.eucm.ead.editor.view.listeners.ActionListener;
 
 /**
  * Handles all the necessary data required to draw brush strokes, undo/redo and
@@ -86,7 +86,7 @@ public class MeshHelper implements Disposable {
 	 * process. But this will increase the memory usage and decrease the
 	 * performance if the number of triangles is too high.
 	 */
-	private static final int MAX_TRIANGLES = 500;
+	private static final int MAX_TRIANGLES = 750;
 	/**
 	 * Used to decide when to draw a dot or to start drawing the brush stroke.
 	 */
@@ -673,8 +673,9 @@ public class MeshHelper implements Disposable {
 	 * @param y
 	 */
 	void drawTouchDragged(float x, float y) {
-		if (this.vertexIndex == MAX_VERTICES_2)
+		if (this.vertexIndex == MAX_VERTICES_2) {
 			return;
+		}
 
 		this.unprojectedVertex.set(x, y);
 
@@ -701,8 +702,8 @@ public class MeshHelper implements Disposable {
 				minNorY = y - this.unprojectedVertex.y;
 				this.lineVertices[this.vertexIndex++] = minNorY;
 			} else {
-				minNorX = Float.MAX_VALUE;
-				minNorY = minNorX;
+				minNorX = x;
+				minNorY = y;
 			}
 
 			if (this.vertexIndex >= MIN_VERTICES) {
@@ -749,10 +750,11 @@ public class MeshHelper implements Disposable {
 					+ (drawRadius * MathUtils.sin(circleStep));
 
 			for (int i = startCount; i <= triangleAmount; ++i) {
+				float deg = i * circleStep;
 				lineVertices[vertexIndex++] = x
-						+ (drawRadius * MathUtils.cos(i * circleStep));
+						+ (drawRadius * MathUtils.cos(deg));
 				lineVertices[vertexIndex++] = y
-						+ (drawRadius * MathUtils.sin(i * circleStep));
+						+ (drawRadius * MathUtils.sin(deg));
 			}
 
 			clampTotalBounds(x - drawRadius, y - drawRadius, rightMostX, y

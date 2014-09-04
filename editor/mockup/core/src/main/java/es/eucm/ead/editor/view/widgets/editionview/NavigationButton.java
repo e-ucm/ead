@@ -47,7 +47,7 @@ import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 
 import es.eucm.ead.editor.control.Controller;
 import es.eucm.ead.editor.control.Selection;
-import es.eucm.ead.editor.control.actions.editor.ChangeView;
+import es.eucm.ead.editor.control.actions.editor.ChangeMockupView;
 import es.eucm.ead.editor.control.actions.model.EditScene;
 import es.eucm.ead.editor.model.Model;
 import es.eucm.ead.editor.model.Model.SelectionListener;
@@ -112,7 +112,7 @@ public class NavigationButton extends IconWithScalePanel implements
 		goGallery.addListener(new ClickListener() {
 			@Override
 			public void clicked(InputEvent event, float x, float y) {
-				controller.action(ChangeView.class, ScenesView.class);
+				controller.action(ChangeMockupView.class, ScenesView.class);
 			}
 		});
 

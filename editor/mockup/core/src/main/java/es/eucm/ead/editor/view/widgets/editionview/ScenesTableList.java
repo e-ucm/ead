@@ -89,7 +89,6 @@ public class ScenesTableList extends Table implements
 
 	public ScenesTableList(final Controller controller, InputListener listener,
 			String styleButton) {
-		super();
 		this.skin = controller.getApplicationAssets().getSkin();
 		this.listener = listener;
 		this.controller = controller;

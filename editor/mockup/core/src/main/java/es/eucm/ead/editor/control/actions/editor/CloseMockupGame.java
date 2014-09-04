@@ -34,79 +34,30 @@
  *      You should have received a copy of the GNU Lesser General Public License
  *      along with eAdventure.  If not, see <http://www.gnu.org/licenses/>.
  */
-package es.eucm.ead.editor;
+package es.eucm.ead.editor.control.actions.editor;
 
-import java.io.File;
+import com.badlogic.gdx.scenes.scene2d.Group;
 
-import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.Input.TextInputListener;
-import com.badlogic.gdx.backends.lwjgl.LwjglFrame;
+import es.eucm.ead.editor.control.MockupController;
+import es.eucm.ead.editor.control.Preferences;
+import es.eucm.ead.editor.control.actions.EditorAction;
+import es.eucm.ead.editor.view.builders.gallery.ProjectsView;
 
-import es.eucm.ead.editor.platform.MockupPlatform;
-
-public class MockupDesktopPlatform extends MockupPlatform {
-
-	private LwjglFrame frame;
-
-	public void setFrame(LwjglFrame frame) {
-		this.frame = frame;
-	}
+/**
+ * Close the current edited game. It receives no arguments.
+ */
+public class CloseMockupGame extends EditorAction {
 
 	@Override
-	public void setTitle(String title) {
-		frame.setTitle(title);
-	}
-
-	@Override
-	public void setSize(int width, int height) {
-		frame.setSize(width, height);
-	}
-
-	public LwjglFrame getFrame() {
-		return frame;
-	}
-
-	@Override
-	public void askForFile(final FileChooserListener listener) {
-		Gdx.input.getTextInput(new TextInputListener() {
-
-			@Override
-			public void input(String text) {
-				listener.fileChosen(text);
-			}
-
-			@Override
-			public void canceled() {
-			}
-
-		}, "File path!", "");
-	}
-
-	@Override
-	public void askForAudio(final FileChooserListener listener) {
-		Gdx.input.getTextInput(new TextInputListener() {
-
-			@Override
-			public void input(String text) {
-				listener.fileChosen(text);
-			}
-
-			@Override
-			public void canceled() {
-			}
-
-		}, "File path!", "");
-	}
-
-	@Override
-	public void captureImage(File photoFile,
-			final ImageCapturedListener listener) {
-		Gdx.app.postRunnable(new Runnable() {
-
-			@Override
-			public void run() {
-				listener.imageCaptured(false);
-			}
-		});
+	public void perform(Object... args) {
+		Group rootComponent = ((MockupController) controller)
+				.getRootComponent();
+		rootComponent.clearActions();
+		controller.getPreferences().putString(Preferences.LAST_OPENED_GAME, "");
+		controller.getPreferences().flush();
+		controller.action(ForceSave.class);
+		controller.getEditorGameAssets().clear();
+		controller.getEditorGameAssets().setLoadingPath("");
+		controller.action(ChangeMockupView.class, ProjectsView.class);
 	}
 }

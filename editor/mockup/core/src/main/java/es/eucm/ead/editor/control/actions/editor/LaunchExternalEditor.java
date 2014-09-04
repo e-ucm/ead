@@ -45,9 +45,11 @@ import es.eucm.ead.editor.control.Controller;
 import es.eucm.ead.editor.control.Selection;
 import es.eucm.ead.editor.control.actions.EditorAction;
 import es.eucm.ead.editor.control.actions.model.ReplaceEntity;
+import es.eucm.ead.editor.control.actions.model.SetSelection;
 import es.eucm.ead.editor.model.Q;
 import es.eucm.ead.editor.platform.Platform.FileChooserListener;
 import es.eucm.ead.engine.I18N;
+import es.eucm.ead.schema.editor.components.Parent;
 import es.eucm.ead.schema.entities.ModelEntity;
 import es.eucm.ead.schema.renderers.Image;
 import es.eucm.ead.schemax.GameStructure;
@@ -115,6 +117,9 @@ public class LaunchExternalEditor extends EditorAction implements
 			// previous image.
 			ModelEntity newElem = controller.getEditorGameAssets().copy(
 					selectedElement);
+			Q.getComponent(newElem, Parent.class).setParent(
+					(ModelEntity) controller.getModel().getSelection()
+							.getSingle(Selection.SCENE));
 			// We must rename this image in order to be able
 			// to reload the image through EditorGameAssets
 			FileHandle renamedImg = null;
@@ -132,6 +137,8 @@ public class LaunchExternalEditor extends EditorAction implements
 			changeUriAndClear(renderer, renamedImg.file().getAbsolutePath());
 
 			controller.action(ReplaceEntity.class, selectedElement, newElem);
+			controller.action(SetSelection.class, Selection.SCENE,
+					Selection.SCENE_ELEMENT);
 		} else {
 
 			// The edited image was saved in path
@@ -139,7 +146,9 @@ public class LaunchExternalEditor extends EditorAction implements
 					path);
 
 			if (savedFile.exists()) {
-				replaceRenderers(controller, path, selectedElement, image);
+				replaceRenderers(controller,
+						savedFile.file().getAbsolutePath(), selectedElement,
+						image);
 			}
 		}
 	}
@@ -174,18 +183,19 @@ public class LaunchExternalEditor extends EditorAction implements
 		}
 
 		ModelEntity newElem = gameAssets.copy(selectedElement);
+		Q.getComponent(newElem, Parent.class).setParent(
+				(ModelEntity) controller.getModel().getSelection()
+						.getSingle(Selection.SCENE));
 		Image renderer = Q.getComponent(newElem, Image.class);
 		changeUriAndClear(renderer, newPath);
 
 		controller.action(ReplaceEntity.class, selectedElement, newElem);
+		controller.action(SetSelection.class, Selection.SCENE,
+				Selection.SCENE_ELEMENT);
 	}
 
 	private void changeUriAndClear(Image image, String newUri) {
 		image.getCollider().clear();
 		image.setUri(newUri);
-	}
-
-	public void setImage(Image image) {
-		this.image = image;
 	}
 }

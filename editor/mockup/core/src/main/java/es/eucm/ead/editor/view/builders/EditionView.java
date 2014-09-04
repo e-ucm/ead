@@ -118,13 +118,11 @@ public class EditionView implements ViewBuilder {
 	public void release(Controller controller) {
 		sceneEditor.release();
 		paintToolbar.hide();
-		controller.getCommands().popStack(false);
 	}
 
 	@Override
 	public Actor getView(Object... args) {
 		sceneEditor.prepare();
-		controller.getCommands().pushStack();
 		return view;
 	}
 

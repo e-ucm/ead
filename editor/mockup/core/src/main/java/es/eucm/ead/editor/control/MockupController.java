@@ -53,11 +53,13 @@ import es.eucm.ead.editor.platform.Platform;
 
 public class MockupController extends Controller {
 
+	private Group rootComponent;
 	private RepositoryManager repositoryManager;
 
 	public MockupController(Platform platform, Files files,
 			final Group rootComponent) {
 		super(platform, files, rootComponent, rootComponent);
+		this.rootComponent = rootComponent;
 		repositoryManager = new RepositoryManager();
 
 		// This allows us to catch events related with
@@ -88,6 +90,15 @@ public class MockupController extends Controller {
 				return true;
 			}
 		});
+	}
+
+	public void pause() {
+		getPreferences().flush();
+		((MockupViews) views).pause();
+	}
+
+	public Group getRootComponent() {
+		return rootComponent;
 	}
 
 	public RepositoryManager getRepositoryManager() {
