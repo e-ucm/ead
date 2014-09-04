@@ -117,14 +117,18 @@ public class EditorGameAssets extends GameAssets {
 	 */
 	private String copyToProject(String path, Class<?> type) {
 		FileHandle fh = files.absolute(path);
-		if (fh.exists()) {
+		return copyToProject(fh, type);
+	}
+
+	private String copyToProject(FileHandle path, Class<?> type) {
+		if (path.exists()) {
 			String folderPath = getFolder(type);
 			FileHandle folder = absolute(getLoadingPath() + folderPath);
-			String extension = fh.extension();
+			String extension = path.extension();
 			if (!"".equals(extension)) {
 				extension = "." + extension;
 			}
-			String name = fh.nameWithoutExtension();
+			String name = path.nameWithoutExtension();
 			String fileName = name + extension;
 			int count = 1;
 			FileHandle dst;
@@ -132,7 +136,7 @@ public class EditorGameAssets extends GameAssets {
 				fileName = name + count++ + extension;
 			}
 
-			fh.copyTo(dst);
+			path.copyTo(dst);
 
 			return folderPath + fileName;
 		} else {
@@ -157,6 +161,21 @@ public class EditorGameAssets extends GameAssets {
 			return copyToProject(path, type);
 		}
 		return path;
+	}
+
+	/**
+	 * Copies and loads the asset in the given path to the project folder only
+	 * if they weren't already loaded.
+	 * 
+	 * @param path
+	 *            the path
+	 * @param type
+	 *            the asset type associated to the file
+	 * @return the path of the project in which the file was copied, may be null
+	 *         if the path doesn't exist
+	 */
+	public String copyToProjectIfNeeded(FileHandle path, Class<?> type) {
+		return copyToProject(path, type);
 	}
 
 	private String getFolder(Class<?> clazz) {
