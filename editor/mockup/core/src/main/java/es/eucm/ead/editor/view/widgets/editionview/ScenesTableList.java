@@ -189,8 +189,9 @@ public class ScenesTableList extends Table implements
 	public SceneButton getSceneButton(String sceneId) {
 		for (Actor actor : getChildren()) {
 			SceneButton button = (SceneButton) actor;
-			if (controller.getModel().getIdFor(button.getScene())
-					.equals(sceneId)) {
+			String id_button = controller.getModel()
+					.getIdFor(button.getScene());
+			if (id_button != null && id_button.equals(sceneId)) {
 				return button;
 			}
 		}
@@ -201,7 +202,9 @@ public class ScenesTableList extends Table implements
 	public void selectScene(String id) {
 		for (Actor actor : getChildren()) {
 			SceneButton button = (SceneButton) actor;
-			if (controller.getModel().getIdFor(button.getScene()).equals(id)) {
+			String id_button = controller.getModel()
+					.getIdFor(button.getScene());
+			if (id_button != null && id_button.equals(id)) {
 				button.setChecked(true);
 				break;
 			}
