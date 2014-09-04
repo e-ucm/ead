@@ -53,16 +53,18 @@ public class Settings extends IconWithScalePanel {
 
 	private static final float NORMAL_PAD = 40;
 	private static final float SMALL_PAD = 20;
+	private CheckBox helpMessages;
+	private Controller controller;
 
 	public Settings(final Controller controller, float iconPad, float size) {
 		super("settings80x80", iconPad, 0, size, controller
 				.getApplicationAssets().getSkin());
+		this.controller = controller;
 		Skin skin = controller.getApplicationAssets().getSkin();
 		I18N i18n = controller.getApplicationAssets().getI18N();
 
 		String skinStyle = "default-radio";
-		final CheckBox helpMessages = new CheckBox(
-				i18n.m("settings.enableHelpMessages"), skin);
+		helpMessages = new CheckBox(i18n.m("settings.enableHelpMessages"), skin);
 
 		Label languages = new Label(i18n.m("settings.language").toUpperCase(),
 				skin);
@@ -93,8 +95,6 @@ public class Settings extends IconWithScalePanel {
 
 		};
 		helpMessages.addListener(listener);
-		helpMessages.setChecked(controller.getPreferences().getBoolean(
-				Preferences.ENABLE_HELP_MSGS, true));
 
 		ButtonGroup languagesGroup = new ButtonGroup();
 		for (Lang lang : i18n.getAvailable()) {
@@ -112,5 +112,12 @@ public class Settings extends IconWithScalePanel {
 		panel.add(more).padTop(NORMAL_PAD + SMALL_PAD);
 		panel.row();
 		panel.add(helpMessages).left().pad(SMALL_PAD);
+	}
+
+	@Override
+	protected void showPanel() {
+		helpMessages.setChecked(controller.getPreferences().getBoolean(
+				Preferences.ENABLE_HELP_MSGS, true));
+		super.showPanel();
 	}
 }

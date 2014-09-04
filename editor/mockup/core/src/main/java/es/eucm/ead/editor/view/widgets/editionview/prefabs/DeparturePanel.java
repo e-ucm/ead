@@ -81,8 +81,15 @@ public class DeparturePanel extends PrefabPanel {
 				if (behavior == null) {
 					controller.action(AddTouchEffect.class, goScene);
 				} else {
-					controller.action(ChangeBehaviorEffect.class, behavior,
-							goScene);
+					GoScene goScen = (GoScene) behavior.getEffects().first();
+					String scenId = controller.getModel().getIdFor(
+							button.getScene());
+					if (scenId != null && goScen.getSceneId().equals(scenId)) {
+						controller.action(RemoveBehavior.class, behavior);
+					} else {
+						controller.action(ChangeBehaviorEffect.class, behavior,
+								goScene);
+					}
 				}
 			}
 
