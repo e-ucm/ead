@@ -34,33 +34,49 @@
  *      You should have received a copy of the GNU Lesser General Public License
  *      along with eAdventure.  If not, see <http://www.gnu.org/licenses/>.
  */
-package es.eucm.ead.editor.control.engine;
+package es.eucm.ead.editor.control.actions.model;
 
-import es.eucm.ead.editor.control.Controller;
-import es.eucm.ead.editor.processors.MockupEmptyRendererProcessor;
-import es.eucm.ead.editor.processors.MockupImageProcessor;
-import es.eucm.ead.engine.ComponentLoader;
-import es.eucm.ead.engine.variables.VariablesManager;
+import com.badlogic.gdx.math.MathUtils;
+
+import es.eucm.ead.editor.control.actions.ModelAction;
+import es.eucm.ead.editor.control.commands.Command;
+import es.eucm.ead.editor.model.Q;
+import es.eucm.ead.schema.data.shape.Rectangle;
+import es.eucm.ead.schema.editor.components.GameData;
+import es.eucm.ead.schema.entities.ModelEntity;
 import es.eucm.ead.schema.renderers.EmptyRenderer;
-import es.eucm.ead.schema.renderers.Image;
 
-public class MockupEngine extends Engine {
-
-	public MockupEngine(Controller controller) {
-		super(controller);
-	}
+/**
+ * 
+ * Adds a new {@link ModelEntity} with a {@link EmptyRenderer} in the current
+ * edited scene.
+ */
+public class AddInteractiveZone extends ModelAction {
 
 	@Override
-	protected void registerComponentsProcessors(
-			ComponentLoader componentLoader, Controller controller,
-			VariablesManager variablesManager) {
-		componentLoader.registerComponentProcessor(
-				Image.class,
-				new MockupImageProcessor(getGameLoop(), controller
-						.getEditorGameAssets(), controller.getShapeRenderer()));
-		componentLoader.registerComponentProcessor(
-				EmptyRenderer.class,
-				new MockupEmptyRendererProcessor(getGameLoop(), controller
-						.getApplicationAssets()));
+	public Command perform(Object... args) {
+		GameData gameData = Q.getComponent(controller.getModel().getGame(),
+				GameData.class);
+
+		int size = MathUtils.round(gameData.getHeight() * 0.25f);
+		float halfSize = size / 2;
+
+		ModelEntity zone = new ModelEntity();
+		zone.setX(gameData.getWidth() / 2 - halfSize);
+		zone.setY(gameData.getHeight() / 2 - halfSize);
+		zone.setOriginX(halfSize);
+		zone.setOriginY(halfSize);
+
+		EmptyRenderer empty = new EmptyRenderer();
+		Rectangle rectangle = new Rectangle();
+		rectangle.setHeight(size);
+		rectangle.setWidth(size);
+
+		empty.setShape(rectangle);
+		zone.getComponents().add(empty);
+
+		return controller.getActions().getAction(AddSceneElement.class)
+				.perform(zone);
 	}
+
 }

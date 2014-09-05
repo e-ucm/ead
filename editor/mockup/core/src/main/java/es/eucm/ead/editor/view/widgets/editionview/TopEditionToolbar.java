@@ -52,6 +52,7 @@ import es.eucm.ead.editor.control.actions.editor.ChangeMockupView;
 import es.eucm.ead.editor.control.actions.editor.Redo;
 import es.eucm.ead.editor.control.actions.editor.TakePicture;
 import es.eucm.ead.editor.control.actions.editor.Undo;
+import es.eucm.ead.editor.control.actions.model.AddInteractiveZone;
 import es.eucm.ead.editor.control.actions.model.SetSelection;
 import es.eucm.ead.editor.view.builders.LibrariesView;
 import es.eucm.ead.editor.view.builders.gallery.PlayView;
@@ -174,7 +175,7 @@ public class TopEditionToolbar extends Toolbar {
 				} else if (listenerActor == text) {
 					controller.action(AddLabelToScene.class);
 				} else if (listenerActor == zones) {
-
+					controller.action(AddInteractiveZone.class);
 				} else if (listenerActor == gate) {
 					controller.action(AddGatewayDefaultElement.class,
 							new ModelEntity());
@@ -189,6 +190,7 @@ public class TopEditionToolbar extends Toolbar {
 		android.addListener(buttonsListener);
 		paint.addListener(buttonsListener);
 		text.addListener(buttonsListener);
+		zones.addListener(buttonsListener);
 		gate.addListener(buttonsListener);
 
 		ActionListener undoRedo = new ActionListener() {
