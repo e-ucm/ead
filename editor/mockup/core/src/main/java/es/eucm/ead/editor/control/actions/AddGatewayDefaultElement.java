@@ -41,9 +41,11 @@ import com.badlogic.gdx.graphics.Texture;
 
 import es.eucm.ead.editor.control.ComponentId;
 import es.eucm.ead.editor.control.Selection;
+import es.eucm.ead.editor.control.actions.model.SetSelection;
 import es.eucm.ead.editor.control.actions.model.scene.NewScene;
 import es.eucm.ead.editor.control.commands.Command;
 import es.eucm.ead.editor.control.commands.CompositeCommand;
+import es.eucm.ead.editor.control.commands.FieldCommand;
 import es.eucm.ead.editor.control.commands.ListCommand.AddToListCommand;
 import es.eucm.ead.editor.model.Model;
 import es.eucm.ead.editor.model.Q;
@@ -52,8 +54,10 @@ import es.eucm.ead.schema.components.ModelComponent;
 import es.eucm.ead.schema.components.behaviors.Behavior;
 import es.eucm.ead.schema.components.behaviors.events.Touch;
 import es.eucm.ead.schema.editor.components.GameData;
+import es.eucm.ead.schema.editor.components.Parent;
 import es.eucm.ead.schema.effects.GoScene;
 import es.eucm.ead.schema.entities.ModelEntity;
+import es.eucm.ead.schemax.FieldName;
 import es.eucm.ead.schemax.entities.ResourceCategory;
 
 /**
@@ -84,13 +88,13 @@ public class AddGatewayDefaultElement extends ModelAction {
 
 		// Creates the new scene with a new element
 		String id = model.createId(ResourceCategory.SCENE);
-		CompositeCommand command;
+
 		ModelEntity new_scene;
 
 		new_scene = (ModelEntity) args[0];
 
-		command = controller.getActions().getAction(NewScene.class)
-				.perform("", id, new_scene);
+		CompositeCommand command = controller.getActions()
+				.getAction(NewScene.class).perform("", id, new_scene);
 
 		FileHandle internal = controller.getApplicationAssets().resolve(
 				"predefined/door_in.png");
@@ -103,8 +107,13 @@ public class AddGatewayDefaultElement extends ModelAction {
 		} else {
 			return null;
 		}
+		command.addCommand(new FieldCommand(Q.getComponent(exit, Parent.class),
+				FieldName.PARENT, new_scene));
 		command.addCommand(new AddToListCommand(new_scene, new_scene
 				.getChildren(), exit));
+		command.addCommand(controller.getActions()
+				.getAction(SetSelection.class)
+				.perform(Selection.SCENE, Selection.SCENE_ELEMENT, exit));
 
 		// Adds to old scene a new element
 		FileHandle internal2 = controller.getApplicationAssets().resolve(
@@ -143,6 +152,9 @@ public class AddGatewayDefaultElement extends ModelAction {
 					}
 				}, true);
 
+		command.addCommand(new FieldCommand(
+				Q.getComponent(entry, Parent.class), FieldName.PARENT,
+				editedScene));
 		command.addCommand(new AddToListCommand(editedScene, editedScene
 				.getChildren(), entry));
 
