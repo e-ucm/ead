@@ -34,41 +34,57 @@
  *      You should have received a copy of the GNU Lesser General Public License
  *      along with eAdventure.  If not, see <http://www.gnu.org/licenses/>.
  */
-package es.eucm.ead.editor.control.actions.irreversibles.scene;
+package es.eucm.ead.editor.control.actions.irreversibles.scene.sound;
 
-import es.eucm.ead.editor.control.ComponentId;
+import es.eucm.ead.editor.control.Selection;
 import es.eucm.ead.editor.control.actions.irreversibles.IrreversibleAction;
-import es.eucm.ead.schema.components.behaviors.Behavior;
-import es.eucm.ead.schema.components.behaviors.events.Touch;
-import es.eucm.ead.schema.effects.Effect;
+import es.eucm.ead.editor.model.Model;
+import es.eucm.ead.editor.model.Model.Resource;
+import es.eucm.ead.schema.effects.PlaySound;
 import es.eucm.ead.schema.entities.ModelEntity;
 import es.eucm.ead.schemax.entities.ResourceCategory;
 
 /**
- * Adds a {@link Effect} to the current scene element selected. The effect will
- * be thrown when the user touch the scene element </p>
+ * Changes the {@link PlaySound#setVolume(float)} or
+ * {@link PlaySound#setLoop(boolean)} of a given {@link PlaySound}. </p>
  * <dl>
  * <dt><strong>Arguments</strong></dt>
- * <dd><strong>args[0]</strong> <em>{@link Effect}</em> to add</dd>
- * <dd><strong>args[1]</strong> <em>{@link String}</em> The {@link ComponentId}
- * of the new Behavior.</dd>
+ * <dd><strong>args[0]</strong> <em>{@link PlaySound}</em> to be changed</dd>
+ * <dd><strong>args[1]</strong> <em>{@link Float} or {@link Boolean}</em> the
+ * new value</dd>
  * </dl>
  */
-public class AddTouchEffect extends IrreversibleAction {
+public class ChangeSound extends IrreversibleAction {
 
-	public AddTouchEffect() {
-		super(ResourceCategory.SCENE, true, false, Effect.class, String.class);
+	public ChangeSound() {
+		super(ResourceCategory.SCENE, true, false, new Class[] {
+				PlaySound.class, Boolean.class }, new Class[] {
+				PlaySound.class, Float.class });
 	}
 
 	@Override
 	protected void action(ModelEntity entity, Object[] args) {
-		Behavior behavior = new Behavior();
-		behavior.setEvent(new Touch());
-		behavior.setId(args[1].toString());
-		behavior.getEffects().add((Effect) args[0]);
 
-		entity.getComponents().add(behavior);
+		PlaySound playSound = (PlaySound) args[0];
+		Object value = args[1];
+		if (value instanceof Boolean) {
+			playSound.setLoop((Boolean) value);
+		} else if (value instanceof Float) {
+			playSound.setVolume((Float) value);
+		}
+		modifyResource();
+	}
 
+	private void modifyResource() {
+		Model model = controller.getModel();
+		Object single = model.getSelection().getSingle(Selection.RESOURCE);
+		if (single != null) {
+			String id = single.toString();
+			Resource resource = model.getResource(id, ResourceCategory.SCENE);
+			if (resource != null) {
+				resource.setModified(true);
+			}
+		}
 	}
 
 }
