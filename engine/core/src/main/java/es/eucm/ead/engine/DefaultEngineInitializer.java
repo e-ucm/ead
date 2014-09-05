@@ -92,6 +92,7 @@ import es.eucm.ead.engine.systems.effects.ChangeVarExecutor;
 import es.eucm.ead.engine.systems.effects.EndGameExecutor;
 import es.eucm.ead.engine.systems.effects.GoSceneExecutor;
 import es.eucm.ead.engine.systems.effects.GoToExecutor;
+import es.eucm.ead.engine.systems.effects.PlaySoundExecutor;
 import es.eucm.ead.engine.systems.effects.RemoveComponentExecutor;
 import es.eucm.ead.engine.systems.effects.RemoveEntityExecutor;
 import es.eucm.ead.engine.systems.effects.SetCameraExecutor;
@@ -161,6 +162,7 @@ import es.eucm.ead.schema.effects.EndGame;
 import es.eucm.ead.schema.effects.GoScene;
 import es.eucm.ead.schema.effects.GoTo;
 import es.eucm.ead.schema.effects.MoveEffect;
+import es.eucm.ead.schema.effects.PlaySound;
 import es.eucm.ead.schema.effects.RemoveComponent;
 import es.eucm.ead.schema.effects.RemoveEntity;
 import es.eucm.ead.schema.effects.RotateEffect;
@@ -262,6 +264,8 @@ public class DefaultEngineInitializer implements EngineInitializer {
 				new AddEntityExecutor(entitiesLoader, variablesManager));
 		effectsSystem.registerEffectExecutor(SetCamera.class,
 				new SetCameraExecutor(gameView, variablesManager));
+		effectsSystem.registerEffectExecutor(PlaySound.class,
+				new PlaySoundExecutor(effectsSystem));
 
 		TrackEffectExecutor timelineExecutor = new TrackEffectExecutor(
 				effectsSystem);
