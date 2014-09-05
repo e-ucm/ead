@@ -71,9 +71,10 @@ public class ChangeVariablePanel extends PrefabPanel {
 	private TextArea textArea;
 	private MultiStateButton stateButton;
 
-	public ChangeVariablePanel(String icon, float size,
-			final Controller controller, Actor touchable) {
-		super(icon, size, "edition.changeVariable", controller, touchable);
+	public ChangeVariablePanel(float size, final Controller controller,
+			Actor touchable) {
+		super("variable80x80", size, "edition.changeVariable", controller,
+				touchable);
 
 		Array<String> states = new Array<String>();
 		states.add(i18n.m("edition.true"));

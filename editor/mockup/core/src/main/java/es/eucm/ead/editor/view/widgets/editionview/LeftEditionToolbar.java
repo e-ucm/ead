@@ -45,6 +45,7 @@ import es.eucm.ead.editor.view.widgets.IconButton;
 import es.eucm.ead.editor.view.widgets.Toolbar;
 import es.eucm.ead.editor.view.widgets.editionview.prefabs.ChangeVariablePanel;
 import es.eucm.ead.editor.view.widgets.editionview.prefabs.DeparturePanel;
+import es.eucm.ead.editor.view.widgets.editionview.prefabs.SoundPanel;
 import es.eucm.ead.editor.view.widgets.editionview.prefabs.TouchabilityPanel;
 import es.eucm.ead.editor.view.widgets.editionview.prefabs.TweensPanel;
 import es.eucm.ead.editor.view.widgets.editionview.prefabs.VisibilityPanel;
@@ -62,22 +63,19 @@ public class LeftEditionToolbar extends Toolbar {
 		this.width = width;
 
 		align(Align.center);
-		DeparturePanel departurePanel = new DeparturePanel(
-				"gateway_reverse80x80", iconSize, controller, this);
-		ChangeVariablePanel changeVariablePanel = new ChangeVariablePanel(
-				"variable80x80", iconSize, controller, this);
-		VisibilityPanel visibilityPanel = new VisibilityPanel(
-				"visibility80x80", iconSize, controller, this);
-		TweensPanel tweensPanel = new TweensPanel("tween80x80", iconSize,
+		DeparturePanel departurePanel = new DeparturePanel(iconSize,
 				controller, this);
-		TouchabilityPanel touchabilityPanel = new TouchabilityPanel(
-				"lock80x80", iconSize, controller, this);
+		ChangeVariablePanel changeVariablePanel = new ChangeVariablePanel(
+				iconSize, controller, this);
+		VisibilityPanel visibilityPanel = new VisibilityPanel(iconSize,
+				controller, this);
+		TweensPanel tweensPanel = new TweensPanel(iconSize, controller, this);
+		TouchabilityPanel touchabilityPanel = new TouchabilityPanel(iconSize,
+				controller, this);
+		SoundPanel sound = new SoundPanel(iconSize, controller, this);
 
 		addInNewRow(departurePanel).padBottom(PAD);
 		addInNewRow(changeVariablePanel).padBottom(PAD);
-
-		// TODO change
-		IconButton sound = new IconButton("sound80x80", 0, skin);
 		addInNewRow(sound).size(iconSize).padBottom(PAD);
 
 		// TODO change
@@ -97,6 +95,7 @@ public class LeftEditionToolbar extends Toolbar {
 			visibilityPanel.getPanel().addTouchableActor(actor);
 			tweensPanel.getPanel().addTouchableActor(actor);
 			touchabilityPanel.getPanel().addTouchableActor(actor);
+			sound.getPanel().addTouchableActor(actor);
 		}
 	}
 
