@@ -40,17 +40,12 @@ import com.badlogic.gdx.graphics.g2d.BitmapFont.TextBounds;
 import com.badlogic.gdx.scenes.scene2d.ui.Label.LabelStyle;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 
-import es.eucm.ead.editor.control.Selection;
+import es.eucm.ead.editor.control.actions.model.AddSceneElement;
 import es.eucm.ead.editor.control.commands.Command;
-import es.eucm.ead.editor.control.commands.CompositeCommand;
-import es.eucm.ead.editor.control.commands.FieldCommand;
-import es.eucm.ead.editor.control.commands.ListCommand.AddToListCommand;
 import es.eucm.ead.editor.model.Q;
 import es.eucm.ead.schema.components.controls.Label;
 import es.eucm.ead.schema.editor.components.GameData;
-import es.eucm.ead.schema.editor.components.Parent;
 import es.eucm.ead.schema.entities.ModelEntity;
-import es.eucm.ead.schemax.FieldName;
 
 /**
  * 
@@ -78,9 +73,6 @@ public class AddLabelToScene extends ModelAction {
 		GameData gameData = Q.getComponent(controller.getModel().getGame(),
 				GameData.class);
 
-		ModelEntity parent = (ModelEntity) controller.getModel().getSelection()
-				.getSingle(Selection.SCENE);
-
 		Label label = null;
 		if (args.length == 1 && args[0] instanceof Label) {
 			label = (Label) args[0];
@@ -105,15 +97,8 @@ public class AddLabelToScene extends ModelAction {
 		textLabel.setOriginX(bounds.width * 0.5f);
 		textLabel.setOriginY(bounds.height * 0.5f);
 
-		CompositeCommand compositeCommand = new CompositeCommand();
-		compositeCommand.addCommand(new AddToListCommand(parent, parent
-				.getChildren(), textLabel));
-
-		Parent parentComponent = Q.getComponent(textLabel, Parent.class);
-		compositeCommand.addCommand(new FieldCommand(parentComponent,
-				FieldName.PARENT, parent));
-
-		return compositeCommand;
+		return controller.getActions().getAction(AddSceneElement.class)
+				.perform(textLabel);
 	}
 
 }

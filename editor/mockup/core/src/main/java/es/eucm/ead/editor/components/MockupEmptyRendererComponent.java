@@ -34,33 +34,45 @@
  *      You should have received a copy of the GNU Lesser General Public License
  *      along with eAdventure.  If not, see <http://www.gnu.org/licenses/>.
  */
-package es.eucm.ead.editor.control.engine;
+package es.eucm.ead.editor.components;
 
-import es.eucm.ead.editor.control.Controller;
-import es.eucm.ead.editor.processors.MockupEmptyRendererProcessor;
-import es.eucm.ead.editor.processors.MockupImageProcessor;
-import es.eucm.ead.engine.ComponentLoader;
-import es.eucm.ead.engine.variables.VariablesManager;
-import es.eucm.ead.schema.renderers.EmptyRenderer;
-import es.eucm.ead.schema.renderers.Image;
+import com.badlogic.gdx.graphics.g2d.Batch;
+import com.badlogic.gdx.scenes.scene2d.utils.Drawable;
 
-public class MockupEngine extends Engine {
+import es.eucm.ead.editor.assets.ApplicationAssets;
+import es.eucm.ead.engine.GameLoop;
+import es.eucm.ead.engine.components.renderers.frames.EmptyRendererComponent;
 
-	public MockupEngine(Controller controller) {
-		super(controller);
+public class MockupEmptyRendererComponent extends EmptyRendererComponent {
+
+	private GameLoop gameLoop;
+
+	private Drawable drawable;
+
+	private float width, height;
+
+	public void setApplicationAssets(ApplicationAssets applicationAssets) {
+		drawable = applicationAssets.getSkin().getDrawable("active_zone");
+	}
+
+	public void setGameLoop(GameLoop gameLoop) {
+		this.gameLoop = gameLoop;
 	}
 
 	@Override
-	protected void registerComponentsProcessors(
-			ComponentLoader componentLoader, Controller controller,
-			VariablesManager variablesManager) {
-		componentLoader.registerComponentProcessor(
-				Image.class,
-				new MockupImageProcessor(getGameLoop(), controller
-						.getEditorGameAssets(), controller.getShapeRenderer()));
-		componentLoader.registerComponentProcessor(
-				EmptyRenderer.class,
-				new MockupEmptyRendererProcessor(getGameLoop(), controller
-						.getApplicationAssets()));
+	public void draw(Batch batch) {
+		super.draw(batch);
+		drawCollider(batch);
+	}
+
+	protected void drawCollider(Batch batch) {
+		if (!gameLoop.isPlaying() && getCollider() != null) {
+			if (width == 0) {
+				float[] vertices = collider.first().getVertices();
+				width = vertices[2] - vertices[0];
+				height = vertices[5] - vertices[3];
+			}
+			drawable.draw(batch, 0, 0, width, height);
+		}
 	}
 }

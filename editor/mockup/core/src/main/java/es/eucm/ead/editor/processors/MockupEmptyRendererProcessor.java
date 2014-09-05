@@ -34,33 +34,45 @@
  *      You should have received a copy of the GNU Lesser General Public License
  *      along with eAdventure.  If not, see <http://www.gnu.org/licenses/>.
  */
-package es.eucm.ead.editor.control.engine;
+package es.eucm.ead.editor.processors;
 
-import es.eucm.ead.editor.control.Controller;
-import es.eucm.ead.editor.processors.MockupEmptyRendererProcessor;
-import es.eucm.ead.editor.processors.MockupImageProcessor;
-import es.eucm.ead.engine.ComponentLoader;
-import es.eucm.ead.engine.variables.VariablesManager;
+import ashley.core.Component;
+
+import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
+import com.badlogic.gdx.math.Polygon;
+import com.badlogic.gdx.utils.Array;
+
+import es.eucm.ead.editor.assets.ApplicationAssets;
+import es.eucm.ead.editor.components.MockupEmptyRendererComponent;
+import es.eucm.ead.engine.GameLoop;
+import es.eucm.ead.engine.processors.renderers.EmptyRendererProcessor;
+import es.eucm.ead.engine.utils.ShapeToCollider;
 import es.eucm.ead.schema.renderers.EmptyRenderer;
-import es.eucm.ead.schema.renderers.Image;
 
-public class MockupEngine extends Engine {
+public class MockupEmptyRendererProcessor extends EmptyRendererProcessor {
 
-	public MockupEngine(Controller controller) {
-		super(controller);
+	private ApplicationAssets applicationAssets;
+
+	public MockupEmptyRendererProcessor(GameLoop engine,
+			ApplicationAssets applicationAssets) {
+		super(engine);
+		this.applicationAssets = applicationAssets;
 	}
 
+	protected ShapeRenderer shapeRenderer;
+
 	@Override
-	protected void registerComponentsProcessors(
-			ComponentLoader componentLoader, Controller controller,
-			VariablesManager variablesManager) {
-		componentLoader.registerComponentProcessor(
-				Image.class,
-				new MockupImageProcessor(getGameLoop(), controller
-						.getEditorGameAssets(), controller.getShapeRenderer()));
-		componentLoader.registerComponentProcessor(
-				EmptyRenderer.class,
-				new MockupEmptyRendererProcessor(getGameLoop(), controller
-						.getApplicationAssets()));
+	public Component getComponent(EmptyRenderer component) {
+		MockupEmptyRendererComponent emptyRendererComponent = gameLoop
+				.createComponent(MockupEmptyRendererComponent.class);
+		emptyRendererComponent.setApplicationAssets(applicationAssets);
+		emptyRendererComponent.setGameLoop(gameLoop);
+
+		Array<Polygon> collider = new Array<Polygon>();
+		Polygon polygon = ShapeToCollider.buildShapeCollider(
+				component.getShape(), N_SIDES_FOR_CIRCLE);
+		collider.add(polygon);
+		emptyRendererComponent.setCollider(collider);
+		return emptyRendererComponent;
 	}
 }
