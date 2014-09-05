@@ -38,6 +38,7 @@ package es.eucm.ead.editor.assets;
 
 import com.badlogic.gdx.Files;
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.audio.Music;
 import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.graphics.Pixmap;
 import com.badlogic.gdx.graphics.Texture;
@@ -45,6 +46,7 @@ import com.badlogic.gdx.utils.GdxRuntimeException;
 import com.badlogic.gdx.utils.Json;
 import com.badlogic.gdx.utils.JsonValue;
 import com.badlogic.gdx.utils.JsonWriter.OutputType;
+
 import es.eucm.ead.engine.assets.GameAssets;
 import es.eucm.ead.schema.editor.components.Parent;
 
@@ -181,6 +183,9 @@ public class EditorGameAssets extends GameAssets {
 	private String getFolder(Class<?> clazz) {
 		if (clazz == Texture.class) {
 			return IMAGES_FOLDER;
+		} else if (clazz == Music.class
+				|| clazz == com.badlogic.gdx.audio.Sound.class) {
+			return SOUNDS_FOLDER;
 		} else {
 			return null;
 		}

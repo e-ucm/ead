@@ -51,7 +51,6 @@ import es.eucm.ead.engine.expressions.operators.OperationsFactory;
 import es.eucm.ead.engine.variables.VariablesManager;
 import es.eucm.ead.schema.components.controls.Label;
 import es.eucm.ead.schema.renderers.Image;
-import es.eucm.ead.schemax.Layer;
 
 /**
  * Contains an instance of the engine
@@ -138,9 +137,7 @@ public class Engine {
 	 * Plays the engine, with the given game
 	 */
 	public void play() {
-		for (Layer layer : Layer.values()) {
-			gameView.clearLayer(layer, true);
-		}
+		gameView.clearAllLayers();
 		gameLoop.setPlaying(true);
 	}
 
@@ -148,6 +145,7 @@ public class Engine {
 	 * Stops the engine
 	 */
 	public void stop() {
+		gameView.clearAllLayers();
 		gameLoop.setPlaying(false);
 	}
 }

@@ -41,5 +41,6 @@ package es.eucm.ead.editor.control;
  */
 public class ComponentId {
 
-	public static final String PREFAB_EXIT = "predefined_exit";
+	public static final String PREFAB_EXIT = "prefabExit";
+	public static final String PREFAB_SOUND = "prefabSound";
 }
