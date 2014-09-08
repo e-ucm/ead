@@ -45,10 +45,9 @@ import es.eucm.ead.schema.components.Visibility;
 
 public class VisibilityPanel extends ConditionalPanel {
 
-	public VisibilityPanel(String icon, float size, Controller controller,
-			Actor touchable) {
-		super(icon, "edition.visible", size, controller, touchable,
-				Visibility.class);
+	public VisibilityPanel(float size, Controller controller, Actor touchable) {
+		super("visibility80x80", "edition.visible", size, controller,
+				touchable, Visibility.class);
 	}
 
 	@Override

@@ -65,9 +65,10 @@ public class DeparturePanel extends PrefabPanel {
 
 	private Behavior behavior;
 
-	public DeparturePanel(String icon, float size, final Controller controller,
+	public DeparturePanel(float size, final Controller controller,
 			Actor touchable) {
-		super(icon, size, "edition.exits", controller, touchable);
+		super("gateway_reverse80x80", size, "edition.exits", controller,
+				touchable);
 
 		InputListener makeExit = new ClickListener() {
 			public void clicked(InputEvent event, float x, float y) {
@@ -81,8 +82,15 @@ public class DeparturePanel extends PrefabPanel {
 				if (behavior == null) {
 					controller.action(AddTouchEffect.class, goScene);
 				} else {
-					controller.action(ChangeBehaviorEffect.class, behavior,
-							goScene);
+					GoScene goScen = (GoScene) behavior.getEffects().first();
+					String scenId = controller.getModel().getIdFor(
+							button.getScene());
+					if (scenId != null && goScen.getSceneId().equals(scenId)) {
+						controller.action(RemoveBehavior.class, behavior);
+					} else {
+						controller.action(ChangeBehaviorEffect.class, behavior,
+								goScene);
+					}
 				}
 			}
 

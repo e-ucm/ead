@@ -53,6 +53,12 @@ public class FacadeGameView implements GameView {
 		gameView.clearLayer(layer, clearChildrenLayers);
 	}
 
+	public void clearAllLayers() {
+		for (Layer layer : Layer.values()) {
+			gameView.clearLayer(layer, true);
+		}
+	}
+
 	@Override
 	public void addEntityToLayer(Layer layer, EngineEntity entity) {
 		gameView.addEntityToLayer(layer, entity);

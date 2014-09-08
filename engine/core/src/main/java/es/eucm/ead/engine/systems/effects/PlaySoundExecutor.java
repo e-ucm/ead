@@ -34,42 +34,40 @@
  *      You should have received a copy of the GNU Lesser General Public License
  *      along with eAdventure.  If not, see <http://www.gnu.org/licenses/>.
  */
-package es.eucm.ead.schemax;
+package es.eucm.ead.engine.systems.effects;
 
-/**
- * This interface describes the internal structure of game files and projects.
- * It provides constants for accessing the subfolders where scenes, images and
- * subgames are stored, for example.
- * 
- * Created by Javier Torrente on 3/04/14.
- */
-public interface GameStructure {
+import ashley.core.Entity;
 
-	public static final String IMAGES_FOLDER = "images/";
+import com.badlogic.gdx.utils.Array;
 
-	public static final String VIDEOS_FOLDER = "videos/";
+import es.eucm.ead.engine.systems.EffectsSystem;
+import es.eucm.ead.schema.assets.Sound;
+import es.eucm.ead.schema.effects.AddComponent;
+import es.eucm.ead.schema.effects.Effect;
+import es.eucm.ead.schema.effects.PlaySound;
 
-	public static final String SOUNDS_FOLDER = "sounds/";
+public class PlaySoundExecutor extends EffectExecutor<PlaySound> {
 
-	public static final String GAME_FILE = "game.json";
+	private Array<Effect> list;
+	private EffectsSystem system;
 
-	public static final String SCENES_PATH = "scenes/";
+	public PlaySoundExecutor(EffectsSystem system) {
+		list = new Array<Effect>(1);
+		this.system = system;
+	}
 
-	public static final String HUDS_PATH = "huds/";
+	@Override
+	public void execute(Entity owner, PlaySound effect) {
 
-	public static final String SUBGAMES_PATH = "subgames/";
+		Sound sound = new Sound();
+		sound.setLoop(effect.isLoop());
+		sound.setUri(effect.getUri());
+		sound.setVolume(effect.getVolume());
 
-	public static final String ANIMATION_PATH = "anim/";
-
-	/**
-	 * Internal folder where the game is stored when it is exported as a Jar.
-	 * This constant should be the same than the one defined in EngineJarGame,
-	 * the class that launches jar games.
-	 * 
-	 * All the game contents (e.g. "scenes/", "game.json") should be placed
-	 * under this folder in the jar file generated.
-	 */
-	public static final String JAR_GAME_FOLDER = "assets/";
-
-	public static final String THUMBNAILS_PATH = "thumbnails/";
+		AddComponent addSound = new AddComponent();
+		addSound.setComponent(sound);
+		list.clear();
+		list.add(addSound);
+		system.executeEffectList(list);
+	}
 }

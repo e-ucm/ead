@@ -115,7 +115,7 @@ public abstract class IconWithPanel extends ToolbarIcon {
 		openPanel = panel;
 	}
 
-	private void hidePanel() {
+	protected void hidePanel() {
 		panel.hide(getHideAction());
 	}
 

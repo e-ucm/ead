@@ -166,10 +166,16 @@ public class AndroidPlatform extends MockupPlatform {
 									String path = getStringFromIntent(activity,
 											data, MediaStore.Audio.Media.DATA);
 									listener.fileChosen(path);
+								} else {
+									listener.fileChosen(null);
 								}
+							} else {
+								listener.fileChosen(null);
 							}
 						}
 					});
+		} else {
+			listener.fileChosen(null);
 		}
 	}
 

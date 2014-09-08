@@ -45,9 +45,8 @@ import es.eucm.ead.schema.components.Touchability;
 
 public class TouchabilityPanel extends ConditionalPanel {
 
-	public TouchabilityPanel(String icon, float size, Controller controller,
-			Actor touchable) {
-		super(icon, "edition.touchable", size, controller, touchable,
+	public TouchabilityPanel(float size, Controller controller, Actor touchable) {
+		super("lock80x80", "edition.touchable", size, controller, touchable,
 				Touchability.class);
 	}
 

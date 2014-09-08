@@ -85,6 +85,10 @@ public class SoundComponent extends Component implements Pool.Poolable {
 		return started;
 	}
 
+	public boolean isLoaded() {
+		return music != null || sound != null;
+	}
+
 	/**
 	 * @return true if finished. Finished sounds can be removed & recycled.
 	 */
@@ -93,7 +97,8 @@ public class SoundComponent extends Component implements Pool.Poolable {
 			// there is no API for LibGDX sound-effect-finished; assume 2s
 			// duration
 			if (sound != null) {
-				if (TimeUtils.millis() - soundStart > 2000.0f) {
+				if (!config.isLoop()
+						&& TimeUtils.timeSinceMillis(soundStart) > 2000.0f) {
 					finished = true;
 				}
 			} else if (music != null) {
@@ -114,11 +119,13 @@ public class SoundComponent extends Component implements Pool.Poolable {
 			soundId = sound.play();
 			soundStart = TimeUtils.millis();
 			sound.setVolume(soundId, volume);
+			sound.setLooping(soundId, config.isLoop());
 			started = true;
 		} else if (music != null) {
 			try {
 				music.play();
 				music.setVolume(volume);
+				music.setLooping(config.isLoop());
 				started = true;
 			} catch (GdxRuntimeException gre) {
 				// now debugging
@@ -180,11 +187,9 @@ public class SoundComponent extends Component implements Pool.Poolable {
 		started = finished = false;
 		if (sound != null) {
 			sound.stop(soundId);
-			// sound is NOT disposed, as it would fail if reused elsewhere
 			sound = null;
 		} else if (music != null) {
 			music.stop();
-			music.dispose();
 			music = null;
 		}
 	}

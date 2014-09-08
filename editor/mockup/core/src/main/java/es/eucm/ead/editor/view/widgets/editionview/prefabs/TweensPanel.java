@@ -65,9 +65,9 @@ public class TweensPanel extends PrefabPanel {
 
 	private Table table;
 
-	public TweensPanel(String icon, float size, Controller controller,
-			Actor touchable) {
-		super(icon, size, "edition.prefabAnimations", controller, touchable);
+	public TweensPanel(float size, Controller controller, Actor touchable) {
+		super("tween80x80", size, "edition.prefabAnimations", controller,
+				touchable);
 
 		table = new Table();
 		table.defaults().uniform();
