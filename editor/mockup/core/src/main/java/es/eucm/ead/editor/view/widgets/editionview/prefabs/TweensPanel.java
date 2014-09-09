@@ -38,12 +38,12 @@ package es.eucm.ead.editor.view.widgets.editionview.prefabs;
 
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
-import com.badlogic.gdx.scenes.scene2d.InputListener;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 
 import es.eucm.ead.editor.control.Controller;
 import es.eucm.ead.editor.control.Selection;
+import es.eucm.ead.editor.model.events.SelectionEvent;
 import es.eucm.ead.editor.view.widgets.editionview.prefabs.prefabtweens.BlinkTween;
 import es.eucm.ead.editor.view.widgets.editionview.prefabs.prefabtweens.DecreaseTween;
 import es.eucm.ead.editor.view.widgets.editionview.prefabs.prefabtweens.HorizontalMoveTween;
@@ -52,10 +52,6 @@ import es.eucm.ead.editor.view.widgets.editionview.prefabs.prefabtweens.PrefabTw
 import es.eucm.ead.editor.view.widgets.editionview.prefabs.prefabtweens.Rotate360Tween;
 import es.eucm.ead.editor.view.widgets.editionview.prefabs.prefabtweens.VerticalMoveTween;
 import es.eucm.ead.schema.components.ModelComponent;
-import es.eucm.ead.schema.components.tweens.AlphaTween;
-import es.eucm.ead.schema.components.tweens.MoveTween;
-import es.eucm.ead.schema.components.tweens.RotateTween;
-import es.eucm.ead.schema.components.tweens.ScaleTween;
 import es.eucm.ead.schema.components.tweens.Tween;
 import es.eucm.ead.schema.entities.ModelEntity;
 
@@ -65,6 +61,27 @@ public class TweensPanel extends PrefabPanel {
 
 	private Table table;
 
+	private static int count = 0;
+
+	private static ClickListener tweenListener = new ClickListener() {
+		@Override
+		public void clicked(InputEvent event, float x, float y) {
+			PrefabTween listenerActor = (PrefabTween) event.getListenerActor();
+			TweensPanel panel = (TweensPanel) listenerActor.getUserObject();
+			if (listenerActor.isChecked()) {
+				if (count == 0) {
+					panel.setUsed(true);
+				}
+				count++;
+			} else {
+				count--;
+				if (count == 0) {
+					panel.setUsed(false);
+				}
+			}
+		}
+	};
+
 	public TweensPanel(float size, Controller controller, Actor touchable) {
 		super("tween80x80", size, "edition.prefabAnimations", controller,
 				touchable);
@@ -72,107 +89,95 @@ public class TweensPanel extends PrefabPanel {
 		table = new Table();
 		table.defaults().uniform();
 
-		table.add(
-				new Rotate360Tween("rotate80x80", i18n.m("edition.rotate360"),
-						controller, skin)).pad(SPACE).fill();
-		table.add(
-				new HorizontalMoveTween("horizontal_move80x80", i18n
-						.m("edition.horizontal"), controller, skin)).pad(SPACE)
-				.fill();
-		table.add(
-				new VerticalMoveTween("vertical_move80x80", i18n
-						.m("edition.vertical"), controller, skin)).pad(SPACE)
-				.fill();
+		Rotate360Tween rotate360 = new Rotate360Tween("rotate80x80",
+				i18n.m("edition.rotate360"), controller, skin);
+		rotate360.addListener(tweenListener);
+		rotate360.setUserObject(this);
+		table.add(rotate360).pad(SPACE).fill();
+
+		HorizontalMoveTween horizontal = new HorizontalMoveTween(
+				"horizontal_move80x80", i18n.m("edition.horizontal"),
+				controller, skin);
+		horizontal.addListener(tweenListener);
+		horizontal.setUserObject(this);
+		table.add(horizontal).pad(SPACE).fill();
+
+		VerticalMoveTween vertical = new VerticalMoveTween(
+				"vertical_move80x80", i18n.m("edition.vertical"), controller,
+				skin);
+		vertical.addListener(tweenListener);
+		vertical.setUserObject(this);
+		table.add(vertical).pad(SPACE).fill();
+
 		table.row();
-		table.add(
-				new DecreaseTween("decrease80x80", i18n.m("edition.decrease"),
-						controller, skin)).pad(SPACE).fill();
-		table.add(
-				new IncreaseTween("increase80x80", i18n.m("edition.increase"),
-						controller, skin)).pad(SPACE).fill();
-		table.add(
-				new BlinkTween("blink80x80", i18n.m("edition.blink"),
-						controller, skin)).pad(SPACE).fill();
+
+		DecreaseTween decrease = new DecreaseTween("vertical_move80x80",
+				i18n.m("edition.vertical"), controller, skin);
+		decrease.addListener(tweenListener);
+		decrease.setUserObject(this);
+		table.add(decrease).pad(SPACE).fill();
+
+		IncreaseTween increase = new IncreaseTween("increase80x80",
+				i18n.m("edition.increase"), controller, skin);
+		increase.addListener(tweenListener);
+		increase.setUserObject(this);
+		table.add(increase).pad(SPACE).fill();
+
+		BlinkTween blink = new BlinkTween("blink80x80",
+				i18n.m("edition.blink"), controller, skin);
+		blink.addListener(tweenListener);
+		blink.setUserObject(this);
+		table.add(blink).pad(SPACE).fill();
 
 		panel.add(table);
 	}
 
 	@Override
-	protected void showPanel() {
-
-		ModelEntity modelEntity = (ModelEntity) selection
-				.getSingle(Selection.SCENE_ELEMENT);
-
-		for (Actor actor : table.getChildren()) {
-			if (actor instanceof PrefabTween) {
-				PrefabTween button = (PrefabTween) actor;
-				button.setState(false);
-				for (ModelComponent component : modelEntity.getComponents())
-					if (component instanceof Tween) {
-						if (isTheSameTween(button.getTween(), (Tween) component)) {
-							button.setTween((Tween) component);
-							button.setState(true);
-							break;
-						}
-					}
-			}
-		}
-
-		super.showPanel();
-	}
-
-	private boolean isTheSameTween(Tween tween1, Tween tween2) {
-		if (tween1.getClass() == tween2.getClass()
-				&& tween1.getDuration() == tween1.getDuration()
-				&& tween1.getRepeat() == tween2.getRepeat()
-				&& tween1.isYoyo() == tween2.isYoyo()
-				&& tween1.isRelative() == tween2.isRelative()
-				&& tween1.getDelay() == tween2.getDelay()) {
-			if (tween1 instanceof AlphaTween) {
-				if (((AlphaTween) tween1).getAlpha() != ((AlphaTween) tween2)
-						.getAlpha()) {
-					return false;
-				}
-			} else if (tween1 instanceof MoveTween) {
-				MoveTween aux1 = (MoveTween) tween1;
-				MoveTween aux2 = (MoveTween) tween2;
-				if (Float.compare(aux1.getX(), aux2.getX()) != 0
-						|| Float.compare(aux1.getY(), aux2.getY()) != 0) {
-					return false;
-				}
-			} else if (tween1 instanceof ScaleTween) {
-				ScaleTween aux1 = (ScaleTween) tween1;
-				ScaleTween aux2 = (ScaleTween) tween2;
-				if (aux1.getScaleX() != aux2.getScaleX()
-						|| aux1.getScaleY() != aux2.getScaleY()) {
-					return false;
-				}
-			} else if (tween1 instanceof RotateTween) {
-				if (((RotateTween) tween1).getRotation() != ((RotateTween) tween2)
-						.getRotation()) {
-					return false;
-				}
-			}
-			return true;
-		}
-		return false;
+	protected void actualizePanel() {
 	}
 
 	@Override
-	protected InputListener trashListener() {
-		return new ClickListener() {
-			@Override
-			public void clicked(InputEvent event, float x, float y) {
-				for (Actor actor : table.getChildren()) {
-					if (actor instanceof PrefabTween) {
-						PrefabTween button = (PrefabTween) actor;
-						if (button.isChecked()) {
-							button.setChecked(false);
+	public void modelChanged(SelectionEvent event) {
+		if (selection.get(Selection.SCENE_ELEMENT).length == 1) {
+			this.setDisabled(false);
+
+			ModelEntity modelEntity = (ModelEntity) selection
+					.getSingle(Selection.SCENE_ELEMENT);
+			setUsed(false);
+			for (Actor actor : table.getChildren()) {
+				if (actor instanceof PrefabTween) {
+					PrefabTween button = (PrefabTween) actor;
+					button.setState(false);
+					for (ModelComponent component : modelEntity.getComponents())
+						if (component instanceof Tween) {
+							String id = component.getId();
+							if (id != null
+									&& button.getTween().getId().equals(id)) {
+								button.setTween((Tween) component);
+								button.setState(true);
+								setUsed(true);
+								break;
+							}
 						}
-					}
 				}
 			}
-		};
+		} else {
+			this.setDisabled(true);
+			setUsed(false);
+		}
+	}
+
+	@Override
+	protected void trashClicked() {
+		for (Actor actor : table.getChildren()) {
+			if (actor instanceof PrefabTween) {
+				PrefabTween button = (PrefabTween) actor;
+				if (button.isChecked()) {
+					button.setChecked(false);
+				}
+			}
+		}
+		setUsed(false);
 	}
 
 }

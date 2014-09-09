@@ -38,6 +38,7 @@ package es.eucm.ead.editor.view.widgets.editionview.prefabs;
 
 import com.badlogic.gdx.scenes.scene2d.Actor;
 
+import es.eucm.ead.editor.control.ComponentId;
 import es.eucm.ead.editor.control.Controller;
 import es.eucm.ead.editor.control.actions.irreversibles.scene.AddVisibilityCondition;
 import es.eucm.ead.editor.control.actions.irreversibles.scene.ChangeVisibilityCondition;
@@ -46,24 +47,25 @@ import es.eucm.ead.schema.components.Visibility;
 public class VisibilityPanel extends ConditionalPanel {
 
 	public VisibilityPanel(float size, Controller controller, Actor touchable) {
-		super("visibility80x80", "edition.visible", size, controller,
-				touchable, Visibility.class);
+		super("visibility80x80", "edition.visible",
+				ComponentId.PREFAB_VISIBILITY, size, controller, touchable,
+				Visibility.class);
 	}
 
 	@Override
-	protected void actualizeCondition() {
+	protected void updateCondition() {
 		if (varTextDown != null && varTextDown.getSelectedVariableDef() != null) {
-			if (conditionedComponent == null) {
-				conditionedComponent = new Visibility();
-				conditionedComponent.setCondition(createCondition());
-				controller.action(AddVisibilityCondition.class,
-						conditionedComponent);
+			if (component == null) {
+				component = new Visibility();
+				component.setId(componentId);
+				((Visibility) component).setCondition(createCondition());
+				controller.action(AddVisibilityCondition.class, component);
 			} else {
-				controller.action(ChangeVisibilityCondition.class,
+				controller.action(ChangeVisibilityCondition.class, componentId,
 						createCondition());
 			}
+			setUsed(true);
 		}
-
 	}
 
 }

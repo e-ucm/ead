@@ -39,22 +39,17 @@ package es.eucm.ead.editor.view.widgets.editionview.prefabs;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
-import com.badlogic.gdx.scenes.scene2d.InputListener;
 import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.utils.Array;
 
 import es.eucm.ead.editor.control.Controller;
-import es.eucm.ead.editor.control.Selection;
-import es.eucm.ead.editor.control.actions.irreversibles.scene.RemoveConditionedComponent;
 import es.eucm.ead.editor.view.widgets.MultiStateButton;
 import es.eucm.ead.editor.view.widgets.VarTextDown;
 import es.eucm.ead.editor.view.widgets.layouts.LinearLayout;
-import es.eucm.ead.schema.components.ModelComponent;
 import es.eucm.ead.schema.components.ModelConditionedComponent;
-import es.eucm.ead.schema.entities.ModelEntity;
 
-public abstract class ConditionalPanel extends PrefabPanel {
+public abstract class ConditionalPanel extends PrefabComponentPanel {
 
 	private static final float PAD = 20, BUTTON_MARGIN = 75;
 
@@ -62,21 +57,15 @@ public abstract class ConditionalPanel extends PrefabPanel {
 
 	private MultiStateButton stateButton;
 
-	protected ModelConditionedComponent conditionedComponent;
-
-	private Class<? extends ModelConditionedComponent> myClass;
-
-	public ConditionalPanel(String icon, String namei18n, float size,
-			Controller controller, Actor touchable,
-			Class<? extends ModelConditionedComponent> myClass) {
-		super(icon, size, namei18n, controller, touchable);
-
-		this.myClass = myClass;
+	public ConditionalPanel(String icon, String namei18n,
+			final String componentId, float size, final Controller controller,
+			Actor touchable, Class<? extends ModelConditionedComponent> myClass) {
+		super(icon, size, namei18n, componentId, controller, touchable);
 
 		varTextDown = new VarTextDown(skin, controller) {
 			@Override
 			protected void doAction() {
-				actualizeCondition();
+				updateCondition();
 			}
 		};
 
@@ -91,7 +80,7 @@ public abstract class ConditionalPanel extends PrefabPanel {
 		stateButton.addListener(new ClickListener() {
 			@Override
 			public void clicked(InputEvent event, float x, float y) {
-				actualizeCondition();
+				updateCondition();
 			}
 		});
 
@@ -109,24 +98,7 @@ public abstract class ConditionalPanel extends PrefabPanel {
 		panel.add(bot).pad(PAD).center().expand();
 	}
 
-	protected abstract void actualizeCondition();
-
-	@Override
-	protected void showPanel() {
-		conditionedComponent = null;
-
-		ModelEntity modelEntity = (ModelEntity) selection
-				.getSingle(Selection.SCENE_ELEMENT);
-		for (ModelComponent component : modelEntity.getComponents()) {
-			if (component.getClass().equals(myClass)) {
-				conditionedComponent = (ModelConditionedComponent) component;
-				break;
-			}
-		}
-
-		actualizePanel();
-		super.showPanel();
-	}
+	protected abstract void updateCondition();
 
 	protected String createCondition() {
 		return "(eq $" + varTextDown.getSelectedVariableDef().getName() + " "
@@ -141,12 +113,14 @@ public abstract class ConditionalPanel extends PrefabPanel {
 		}
 	}
 
+	@Override
 	public void actualizePanel() {
 		String var = null;
 		String expression = null;
-		if (conditionedComponent != null) {
+
+		if (component != null) {
 			// expression of the "(eq $var bvalor)" form
-			String aux = conditionedComponent.getCondition();
+			String aux = ((ModelConditionedComponent) component).getCondition();
 			aux = aux.replace("(", "");
 			aux = aux.replace(")", "");
 			aux = aux.replace("$", "");
@@ -168,20 +142,4 @@ public abstract class ConditionalPanel extends PrefabPanel {
 			return i18n.m("edition.false");
 		}
 	}
-
-	@Override
-	protected InputListener trashListener() {
-		return new ClickListener() {
-			@Override
-			public void clicked(InputEvent event, float x, float y) {
-				if (conditionedComponent != null) {
-					controller.action(RemoveConditionedComponent.class,
-							conditionedComponent);
-					conditionedComponent = null;
-				}
-				actualizePanel();
-			}
-		};
-	}
-
 }

@@ -38,6 +38,7 @@ package es.eucm.ead.editor.view.widgets.editionview.prefabs.prefabtweens;
 
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 
+import es.eucm.ead.editor.control.ComponentId;
 import es.eucm.ead.editor.control.Controller;
 import es.eucm.ead.schema.components.tweens.AlphaTween;
 import es.eucm.ead.schema.components.tweens.Tween;
@@ -51,6 +52,7 @@ public class BlinkTween extends PrefabTween {
 	@Override
 	protected Tween createTween() {
 		AlphaTween tween = new AlphaTween();
+		tween.setId(ComponentId.PREFAB_BLINK);
 		tween.setDuration(0.5f);
 		tween.setRepeat(-1);
 		tween.setAlpha(0);

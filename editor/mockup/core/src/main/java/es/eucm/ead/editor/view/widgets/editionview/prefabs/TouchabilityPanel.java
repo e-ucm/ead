@@ -38,6 +38,7 @@ package es.eucm.ead.editor.view.widgets.editionview.prefabs;
 
 import com.badlogic.gdx.scenes.scene2d.Actor;
 
+import es.eucm.ead.editor.control.ComponentId;
 import es.eucm.ead.editor.control.Controller;
 import es.eucm.ead.editor.control.actions.irreversibles.scene.AddTouchabilityCondition;
 import es.eucm.ead.editor.control.actions.irreversibles.scene.ChangeTouchabilityCondition;
@@ -46,23 +47,24 @@ import es.eucm.ead.schema.components.Touchability;
 public class TouchabilityPanel extends ConditionalPanel {
 
 	public TouchabilityPanel(float size, Controller controller, Actor touchable) {
-		super("lock80x80", "edition.touchable", size, controller, touchable,
+		super("lock80x80", "edition.touchable",
+				ComponentId.PREFAB_TOUCHABILITY, size, controller, touchable,
 				Touchability.class);
 	}
 
 	@Override
-	protected void actualizeCondition() {
+	protected void updateCondition() {
 		if (varTextDown != null && varTextDown.getSelectedVariableDef() != null) {
-			if (conditionedComponent == null) {
-				conditionedComponent = new Touchability();
-				conditionedComponent.setCondition(createCondition());
-				controller.action(AddTouchabilityCondition.class,
-						conditionedComponent);
+			if (component == null) {
+				component = new Touchability();
+				component.setId(componentId);
+				((Touchability) component).setCondition(createCondition());
+				controller.action(AddTouchabilityCondition.class, component);
 			} else {
 				controller.action(ChangeTouchabilityCondition.class,
-						createCondition());
+						componentId, createCondition());
 			}
+			setUsed(true);
 		}
-
 	}
 }

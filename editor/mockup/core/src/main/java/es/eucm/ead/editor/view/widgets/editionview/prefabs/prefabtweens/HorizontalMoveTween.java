@@ -38,6 +38,7 @@ package es.eucm.ead.editor.view.widgets.editionview.prefabs.prefabtweens;
 
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 
+import es.eucm.ead.editor.control.ComponentId;
 import es.eucm.ead.editor.control.Controller;
 import es.eucm.ead.schema.components.tweens.MoveTween;
 import es.eucm.ead.schema.components.tweens.Tween;
@@ -52,6 +53,7 @@ public class HorizontalMoveTween extends PrefabTween {
 	@Override
 	protected Tween createTween() {
 		MoveTween tween = new MoveTween();
+		tween.setId(ComponentId.PREFAB_HORIZONTAL);
 		tween.setYoyo(true);
 		tween.setDuration(3);
 		tween.setRepeat(-1);

@@ -39,42 +39,38 @@ package es.eucm.ead.editor.view.widgets.editionview.prefabs;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
-import com.badlogic.gdx.scenes.scene2d.InputListener;
 import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.scenes.scene2d.ui.TextArea;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.utils.Array;
 
+import es.eucm.ead.editor.control.ComponentId;
 import es.eucm.ead.editor.control.Controller;
-import es.eucm.ead.editor.control.Selection;
-import es.eucm.ead.editor.control.actions.irreversibles.scene.AddTouchEffect;
+import es.eucm.ead.editor.control.actions.irreversibles.scene.AddBehaviorPrefab;
 import es.eucm.ead.editor.control.actions.irreversibles.scene.ChangeBehaviorEffect;
-import es.eucm.ead.editor.control.actions.irreversibles.scene.RemoveBehavior;
 import es.eucm.ead.editor.view.widgets.MultiStateButton;
 import es.eucm.ead.editor.view.widgets.VarTextDown;
 import es.eucm.ead.editor.view.widgets.layouts.LinearLayout;
-import es.eucm.ead.schema.components.ModelComponent;
 import es.eucm.ead.schema.components.behaviors.Behavior;
 import es.eucm.ead.schema.components.behaviors.events.Touch;
 import es.eucm.ead.schema.effects.ChangeVar;
 import es.eucm.ead.schema.effects.ChangeVar.Context;
-import es.eucm.ead.schema.entities.ModelEntity;
 
-public class ChangeVariablePanel extends PrefabPanel {
+public class ChangeVariablePanel extends PrefabComponentPanel {
 
 	private static final int PREFS_TEXT_ROWS = 3;
 	private static final float PAD = 20, BUTTON_MARGIN = 75;
-
-	private Behavior behavior;
 
 	private VarTextDown varTextDown;
 	private TextArea textArea;
 	private MultiStateButton stateButton;
 
+	private ChangeVar changeVar;
+
 	public ChangeVariablePanel(float size, final Controller controller,
 			Actor touchable) {
-		super("variable80x80", size, "edition.changeVariable", controller,
-				touchable);
+		super("variable80x80", size, "edition.changeVariable",
+				ComponentId.PREFAB_CHANGE_VAR, controller, touchable);
 
 		Array<String> states = new Array<String>();
 		states.add(i18n.m("edition.true"));
@@ -85,11 +81,14 @@ public class ChangeVariablePanel extends PrefabPanel {
 		colors.add(Color.RED);
 		colors.add(Color.YELLOW);
 
+		changeVar = new ChangeVar();
+		changeVar.setContext(Context.GLOBAL);
+
 		stateButton = new MultiStateButton(skin, states, colors, BUTTON_MARGIN);
 		stateButton.addListener(new ClickListener() {
 			@Override
 			public void clicked(InputEvent event, float x, float y) {
-				actualizeBehavior();
+				updateChangeVar();
 			}
 		});
 
@@ -100,7 +99,7 @@ public class ChangeVariablePanel extends PrefabPanel {
 		varTextDown = new VarTextDown(skin, controller) {
 			@Override
 			protected void doAction() {
-				actualizeBehavior();
+				updateChangeVar();
 			}
 		};
 
@@ -121,59 +120,35 @@ public class ChangeVariablePanel extends PrefabPanel {
 		panel.row();
 	}
 
-	// TODO complete functionality, throw notification when change var
-	private void actualizeBehavior() {
+	private void updateChangeVar() {
 		if (varTextDown != null && varTextDown.getSelectedVariableDef() != null) {
-			ChangeVar changeVar = new ChangeVar();
-			changeVar.setContext(Context.GLOBAL);
-			changeVar.setExpression(getState());
-			changeVar.setVariable(varTextDown.getSelectedVariableDef()
-					.getName());
-
-			if (behavior == null) {
-				controller.action(AddTouchEffect.class, changeVar);
-			} else {
-				controller.action(ChangeBehaviorEffect.class, behavior,
-						changeVar);
+			if (component == null) {
+				component = new Behavior();
+				((Behavior) component).setEvent(new Touch());
+				component.setId(componentId);
+				controller.action(AddBehaviorPrefab.class, component);
 			}
+			String nameVar = varTextDown.getSelectedVariableDef().getName();
+			String expression = getState();
+			changeVar.setVariable(nameVar);
+			changeVar.setExpression(expression);
 
-			reloadBehavior();
+			controller.action(ChangeBehaviorEffect.class, component, changeVar);
+			if (nameVar != null) {
+				setUsed(true);
+			}
 		}
 	}
 
 	@Override
-	protected void showPanel() {
-		behavior = null;
-
-		reloadBehavior();
-
-		actualizePanel();
-		super.showPanel();
-	}
-
-	public void reloadBehavior() {
-		ModelEntity modelEntity = (ModelEntity) selection
-				.getSingle(Selection.SCENE_ELEMENT);
-		for (ModelComponent component : modelEntity.getComponents()) {
-			if (component instanceof Behavior) {
-				Behavior behavior = (Behavior) component;
-				if (behavior.getEffects().first() instanceof ChangeVar
-						&& behavior.getEvent() instanceof Touch) {
-					this.behavior = behavior;
-					break;
-				}
-			}
-		}
-	}
-
-	public void actualizePanel() {
+	protected void actualizePanel() {
 		String var = null;
 		String expression = null;
 		String text = "";
-		if (behavior != null) {
-			ChangeVar effect = ((ChangeVar) behavior.getEffects().first());
-			var = effect.getVariable();
-			expression = effect.getExpression();
+		if (component != null && ((Behavior) component).getEffects().size > 0) {
+			changeVar = (ChangeVar) ((Behavior) component).getEffects().first();
+			var = changeVar.getVariable();
+			expression = changeVar.getExpression();
 			// initialize text
 		}
 		stateButton.selectText(booleanToString(expression));
@@ -202,19 +177,5 @@ public class ChangeVariablePanel extends PrefabPanel {
 			return "( not $" + varTextDown.getSelectedVariableDef().getName()
 					+ " )";
 		}
-	}
-
-	@Override
-	protected InputListener trashListener() {
-		return new ClickListener() {
-			@Override
-			public void clicked(InputEvent event, float x, float y) {
-				if (behavior != null) {
-					controller.action(RemoveBehavior.class, behavior);
-					behavior = null;
-				}
-				actualizePanel();
-			}
-		};
 	}
 }
