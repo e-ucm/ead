@@ -36,39 +36,35 @@
  */
 package es.eucm.ead.editor.control.actions.irreversibles.scene;
 
+import com.badlogic.gdx.utils.Array;
+
 import es.eucm.ead.editor.control.actions.irreversibles.IrreversibleAction;
 import es.eucm.ead.schema.components.ModelComponent;
-import es.eucm.ead.schema.components.Touchability;
 import es.eucm.ead.schema.entities.ModelEntity;
 import es.eucm.ead.schemax.entities.ResourceCategory;
 
 /**
- * Change the touchability condition in the current scene element selected </p>
- * <dl>
- * <dt><strong>Arguments</strong></dt>
- * <dd><strong>args[0]</strong> <em>{@link String}</em> new condition</dd>
- * </dl>
+ * 
+ * Removes a {@link ModelComponent} of current selected scene element.
  */
-public class ChangeTouchabilityCondition extends IrreversibleAction {
+public class RemoveComponents extends IrreversibleAction {
 
-	public ChangeTouchabilityCondition() {
-		super(ResourceCategory.SCENE, true, false, String.class, String.class);
+	public RemoveComponents() {
+		super(ResourceCategory.SCENE, true, false, String.class);
 	}
 
 	@Override
 	protected void action(ModelEntity entity, Object[] args) {
 		String id = (String) args[0];
-		String condition = (String) args[1];
 
-		for (ModelComponent component : entity.getComponents()) {
+		Array<ModelComponent> components = entity.getComponents();
+		for (ModelComponent component : components) {
 			String componentId = component.getId();
-			if (component instanceof Touchability) {
-				if (id == null
-						|| (componentId != null && componentId.equals(id))) {
-					((Touchability) component).setCondition(condition);
-				}
+			if (componentId != null && componentId.equals(id)) {
+				components.removeValue(component, true);
 			}
 		}
+
 	}
 
 }
