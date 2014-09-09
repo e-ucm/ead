@@ -36,10 +36,13 @@
  */
 package es.eucm.ead.editor.view.widgets.editionview.prefabs;
 
+import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.scenes.scene2d.Actor;
-import com.badlogic.gdx.scenes.scene2d.InputListener;
+import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
+import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
+import com.badlogic.gdx.scenes.scene2d.utils.Drawable;
 
 import es.eucm.ead.editor.control.Controller;
 import es.eucm.ead.editor.control.Selection;
@@ -62,23 +65,38 @@ public abstract class PrefabPanel extends IconWithFadePanel implements
 
 	protected Selection selection;
 
+	private PrefabPanelStyle style;
+
+	private boolean used;
+
+	private static ClickListener trashListener = new ClickListener() {
+		@Override
+		public void clicked(InputEvent event, float x, float y) {
+			Actor listenerActor = event.getListenerActor();
+			PrefabPanel panel = (PrefabPanel) listenerActor.getUserObject();
+			panel.trashClicked();
+		}
+	};
+
 	public PrefabPanel(String icon, float size, String panelName,
 			Controller controller, Actor touchable) {
 		super(icon, 0f, SEPARATION, size, controller.getApplicationAssets()
 				.getSkin(), Position.RIGHT);
+
 		this.controller = controller;
 		this.skin = controller.getApplicationAssets().getSkin();
 		this.i18n = controller.getApplicationAssets().getI18N();
+
+		this.used = false;
+		setStyle(skin.get(PrefabPanelStyle.class));
 
 		selection = controller.getModel().getSelection();
 
 		panel.addTouchableActor(touchable);
 
 		IconButton trash = new IconButton("recycle", 0, skin);
-		InputListener listener = trashListener();
-		if (listener != null) {
-			trash.addListener(listener);
-		}
+		trash.addListener(trashListener);
+		trash.setUserObject(this);
 
 		LinearLayout top = new LinearLayout(true);
 
@@ -93,7 +111,7 @@ public abstract class PrefabPanel extends IconWithFadePanel implements
 		controller.getModel().addSelectionListener(this);
 	}
 
-	protected abstract InputListener trashListener();
+	protected abstract void trashClicked();
 
 	@Override
 	public boolean listenToContext(String contextId) {
@@ -101,12 +119,57 @@ public abstract class PrefabPanel extends IconWithFadePanel implements
 	}
 
 	@Override
-	public void modelChanged(SelectionEvent event) {
-		if (selection.get(Selection.SCENE_ELEMENT).length == 1) {
-			this.setDisabled(false);
-		} else {
-			this.setDisabled(true);
+	public abstract void modelChanged(SelectionEvent event);
+
+	@Override
+	protected void showPanel() {
+		actualizePanel();
+		super.showPanel();
+	}
+
+	protected abstract void actualizePanel();
+
+	public void setStyle(PrefabPanelStyle style) {
+		this.style = style;
+		super.setStyle(style);
+	}
+
+	public void setUsed(boolean used) {
+		this.used = used;
+	}
+
+	@Override
+	public void draw(Batch batch, float parentAlpha) {
+		super.draw(batch, parentAlpha);
+		if (used) {
+			style.inUse.draw(batch, getX(), getY(), getWidth(), getHeight());
 		}
 	}
 
+	/**
+	 * The style for {@link PrefabPanel} See also {@link IconButtonStyle}
+	 */
+	public static class PrefabPanelStyle extends IconButtonStyle {
+
+		/**
+		 * {@link PrefabPanelStyle#inUse}.
+		 */
+		public Drawable inUse;
+
+		/**
+		 * Default constructor used for reflection
+		 */
+		public PrefabPanelStyle() {
+		}
+
+		public PrefabPanelStyle(Drawable inUse) {
+			this.inUse = inUse;
+		}
+
+		public PrefabPanelStyle(PrefabPanelStyle prefabPanelStyle) {
+			super(prefabPanelStyle);
+			this.inUse = prefabPanelStyle.inUse;
+		}
+
+	}
 }
