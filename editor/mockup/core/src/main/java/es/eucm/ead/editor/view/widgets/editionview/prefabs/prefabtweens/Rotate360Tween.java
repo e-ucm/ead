@@ -38,6 +38,7 @@ package es.eucm.ead.editor.view.widgets.editionview.prefabs.prefabtweens;
 
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 
+import es.eucm.ead.editor.control.ComponentId;
 import es.eucm.ead.editor.control.Controller;
 import es.eucm.ead.schema.components.tweens.RotateTween;
 import es.eucm.ead.schema.components.tweens.Tween;
@@ -52,6 +53,7 @@ public class Rotate360Tween extends PrefabTween {
 	@Override
 	protected Tween createTween() {
 		RotateTween tween = new RotateTween();
+		tween.setId(ComponentId.PREFAB_ROTATE360);
 		tween.setRepeat(-1);
 		tween.setDuration(2);
 		tween.setRelative(true);

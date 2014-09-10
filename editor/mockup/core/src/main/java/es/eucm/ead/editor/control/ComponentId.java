@@ -41,6 +41,25 @@ package es.eucm.ead.editor.control;
  */
 public class ComponentId {
 
-	public static final String PREFAB_EXIT = "prefabExit";
-	public static final String PREFAB_SOUND = "prefabSound";
+	public static final String PREFAB_SOUND = "predefinedSound";
+
+	public static final String PREFAB_EXIT = "predefinedExit";
+
+	public static final String PREFAB_CHANGE_VAR = "predefinedChangeVar";
+
+	public static final String PREFAB_VISIBILITY = "predefinedVisibility";
+
+	public static final String PREFAB_TOUCHABILITY = "predefinedTouchability";
+
+	public static final String PREFAB_BLINK = "predefinedBlinkTween";
+
+	public static final String PREFAB_HORIZONTAL = "predefinedHorizontalTween";
+
+	public static final String PREFAB_VERTICAL = "predefinedVerticalTween";
+
+	public static final String PREFAB_INCREASE = "predefinedIncreaseTween";
+
+	public static final String PREFAB_DECREASE = "predefinedDecreaseTween";
+
+	public static final String PREFAB_ROTATE360 = "predefinedRotate360Tween";
 }

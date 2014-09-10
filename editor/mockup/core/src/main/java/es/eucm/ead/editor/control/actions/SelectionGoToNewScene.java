@@ -59,12 +59,13 @@ import es.eucm.ead.schemax.entities.ResourceCategory;
  * <dd><strong>args[0]</strong> <em>{@link Behavior}</em> where is added the
  * {@link GoScene} if is null creates a new {@link Behavior}, if not replaces
  * the effect</dd>
+ * <dd><strong>args[1]</strong> <em>{@link String}</em> the componentId</dd>
  * </dl>
  */
 public class SelectionGoToNewScene extends ModelAction {
 
 	public SelectionGoToNewScene() {
-		super(true, true, Behavior.class);
+		super(true, true, Behavior.class, String.class);
 	}
 
 	@Override
@@ -83,6 +84,9 @@ public class SelectionGoToNewScene extends ModelAction {
 		Behavior oldBehavior = (Behavior) args[0];
 
 		Behavior behavior = new Behavior();
+		if (args[1] != null) {
+			behavior.setId((String) args[1]);
+		}
 		behavior.setEvent(new Touch());
 		GoScene go = new GoScene();
 		go.setSceneId(id);

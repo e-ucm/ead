@@ -244,6 +244,14 @@
             enabledImageColor: black
 		}
 	},
+	es.eucm.ead.editor.view.widgets.editionview.prefabs.PrefabPanel$PrefabPanelStyle: {
+		default: { 
+			down: button_pressed,  
+			inUse: button_active,
+			disabledImageColor: gray,
+            enabledImageColor: black
+		}
+	},
 	es.eucm.ead.editor.view.widgets.Toolbar$ToolbarStyle: {
 		default: { 
 		}, 

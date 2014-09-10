@@ -39,9 +39,11 @@ package es.eucm.ead.editor.view.widgets;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input.TextInputListener;
 import com.badlogic.gdx.scenes.scene2d.Actor;
+import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.ui.SelectBox;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
+import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.utils.Array;
 
 import es.eucm.ead.editor.control.Controller;
@@ -57,9 +59,9 @@ public class VarTextDown extends SelectBox<String> implements TextInputListener 
 
 	private Controller controller;
 
-	private Variables variables;
+	private static Variables variables;
 
-	private Array items;
+	private static Array<String> items;
 
 	private I18N i18n;
 
@@ -71,7 +73,9 @@ public class VarTextDown extends SelectBox<String> implements TextInputListener 
 		this.controller = controller;
 		this.i18n = controller.getApplicationAssets().getI18N();
 
-		items = new Array();
+		if (items == null) {
+			items = new Array<String>();
+		}
 		setItems(items);
 
 		reloadPanel();
@@ -80,9 +84,7 @@ public class VarTextDown extends SelectBox<String> implements TextInputListener 
 			@Override
 			public void changed(ChangeEvent event, Actor actor) {
 				if (getSelectedIndex() == 0) {
-					Gdx.input.getPlaceholderTextInput(VarTextDown.this,
-							i18n.m("edition.insertVariable"),
-							i18n.m("general.variable"));
+					showVarDialog();
 				} else {
 					lastSelectedIndex = getSelectedIndex();
 					doAction();
@@ -91,6 +93,26 @@ public class VarTextDown extends SelectBox<String> implements TextInputListener 
 			}
 		});
 
+		addListener(new ClickListener() {
+			@Override
+			public void clicked(InputEvent event, float x, float y) {
+				if (items.size <= 1) {
+					hideList();
+					showVarDialog();
+				}
+			}
+		});
+	}
+
+	private void showVarDialog() {
+		Gdx.input.getPlaceholderTextInput(VarTextDown.this,
+				i18n.m("edition.insertVariable"), i18n.m("general.variable"));
+	}
+
+	@Override
+	public void showList() {
+		setItems(items);
+		super.showList();
 	}
 
 	protected void doAction() {

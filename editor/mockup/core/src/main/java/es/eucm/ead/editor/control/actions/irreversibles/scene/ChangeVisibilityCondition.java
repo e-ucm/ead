@@ -52,19 +52,21 @@ import es.eucm.ead.schemax.entities.ResourceCategory;
 public class ChangeVisibilityCondition extends IrreversibleAction {
 
 	public ChangeVisibilityCondition() {
-		super(ResourceCategory.SCENE, true, false, String.class);
+		super(ResourceCategory.SCENE, true, false, String.class, String.class);
 	}
 
 	@Override
 	protected void action(ModelEntity entity, Object[] args) {
-		String condition = (String) args[0];
+		String id = (String) args[0];
+		String condition = (String) args[1];
 
 		for (ModelComponent component : entity.getComponents()) {
+			String componentId = component.getId();
 			if (component instanceof Visibility) {
-				((Visibility) component).setCondition(condition);
+				if (id == null || componentId != null && componentId.equals(id)) {
+					((Visibility) component).setCondition(condition);
+				}
 			}
 		}
-
 	}
-
 }

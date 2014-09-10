@@ -52,16 +52,21 @@ import es.eucm.ead.schemax.entities.ResourceCategory;
 public class ChangeTouchabilityCondition extends IrreversibleAction {
 
 	public ChangeTouchabilityCondition() {
-		super(ResourceCategory.SCENE, true, false, String.class);
+		super(ResourceCategory.SCENE, true, false, String.class, String.class);
 	}
 
 	@Override
 	protected void action(ModelEntity entity, Object[] args) {
-		String condition = (String) args[0];
+		String id = (String) args[0];
+		String condition = (String) args[1];
 
 		for (ModelComponent component : entity.getComponents()) {
+			String componentId = component.getId();
 			if (component instanceof Touchability) {
-				((Touchability) component).setCondition(condition);
+				if (id == null
+						|| (componentId != null && componentId.equals(id))) {
+					((Touchability) component).setCondition(condition);
+				}
 			}
 		}
 	}

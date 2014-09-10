@@ -38,34 +38,66 @@ package es.eucm.ead.editor.view.widgets.editionview.prefabs;
 
 import com.badlogic.gdx.scenes.scene2d.Actor;
 
-import es.eucm.ead.editor.control.ComponentId;
 import es.eucm.ead.editor.control.Controller;
-import es.eucm.ead.editor.control.actions.irreversibles.scene.AddVisibilityCondition;
-import es.eucm.ead.editor.control.actions.irreversibles.scene.ChangeVisibilityCondition;
-import es.eucm.ead.schema.components.Visibility;
+import es.eucm.ead.editor.control.Selection;
+import es.eucm.ead.editor.control.actions.irreversibles.scene.RemoveComponents;
+import es.eucm.ead.editor.model.events.SelectionEvent;
+import es.eucm.ead.schema.components.ModelComponent;
+import es.eucm.ead.schema.entities.ModelEntity;
 
-public class VisibilityPanel extends ConditionalPanel {
+public abstract class PrefabComponentPanel extends PrefabPanel {
 
-	public VisibilityPanel(float size, Controller controller, Actor touchable) {
-		super("visibility80x80", "edition.visible",
-				ComponentId.PREFAB_VISIBILITY, size, controller, touchable,
-				Visibility.class);
+	protected ModelComponent component;
+
+	protected String componentId;
+
+	public PrefabComponentPanel(String icon, float size, String panelName,
+			String componentId, Controller controller, Actor touchable) {
+		super(icon, size, panelName, controller, touchable);
+		this.componentId = componentId;
 	}
 
 	@Override
-	protected void updateCondition() {
-		if (varTextDown != null && varTextDown.getSelectedVariableDef() != null) {
-			if (component == null) {
-				component = new Visibility();
-				component.setId(componentId);
-				((Visibility) component).setCondition(createCondition());
-				controller.action(AddVisibilityCondition.class, component);
-			} else {
-				controller.action(ChangeVisibilityCondition.class, componentId,
-						createCondition());
-			}
-			setUsed(true);
+	protected void trashClicked() {
+		if (component != null) {
+			controller.action(RemoveComponents.class, componentId);
+			component = null;
+			setUsed(false);
 		}
+
+		actualizePanel();
+	}
+
+	@Override
+	protected abstract void actualizePanel();
+
+	@Override
+	public void modelChanged(SelectionEvent event) {
+		if (selection.get(Selection.SCENE_ELEMENT).length == 1) {
+			this.setDisabled(false);
+			this.component = null;
+
+			ModelEntity modelEntity = (ModelEntity) selection
+					.getSingle(Selection.SCENE_ELEMENT);
+			for (ModelComponent component : modelEntity.getComponents()) {
+				String id = component.getId();
+				if (id != null && id.equals(componentId)) {
+					this.component = component;
+					setUsed(true);
+					return;
+				}
+			}
+			setUsed(false);
+		} else {
+			this.setDisabled(true);
+			setUsed(false);
+		}
+	}
+
+	@Override
+	protected void showPanel() {
+		actualizePanel();
+		super.showPanel();
 	}
 
 }

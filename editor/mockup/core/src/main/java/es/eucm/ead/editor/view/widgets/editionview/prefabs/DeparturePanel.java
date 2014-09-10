@@ -43,32 +43,28 @@ import com.badlogic.gdx.scenes.scene2d.ui.ScrollPane;
 import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 
+import es.eucm.ead.editor.control.ComponentId;
 import es.eucm.ead.editor.control.Controller;
-import es.eucm.ead.editor.control.Selection;
 import es.eucm.ead.editor.control.actions.SelectionGoToNewScene;
-import es.eucm.ead.editor.control.actions.irreversibles.scene.AddTouchEffect;
+import es.eucm.ead.editor.control.actions.irreversibles.scene.AddBehaviorPrefab;
 import es.eucm.ead.editor.control.actions.irreversibles.scene.ChangeBehaviorEffect;
 import es.eucm.ead.editor.control.actions.irreversibles.scene.RemoveBehavior;
 import es.eucm.ead.editor.view.widgets.editionview.SceneButton;
 import es.eucm.ead.editor.view.widgets.editionview.ScenesTableList;
-import es.eucm.ead.schema.components.ModelComponent;
 import es.eucm.ead.schema.components.behaviors.Behavior;
 import es.eucm.ead.schema.components.behaviors.events.Touch;
 import es.eucm.ead.schema.effects.GoScene;
-import es.eucm.ead.schema.entities.ModelEntity;
 
-public class DeparturePanel extends PrefabPanel {
+public class DeparturePanel extends PrefabComponentPanel {
 
 	private static final float PAD = 20;
 
 	private ScenesTableList table;
 
-	private Behavior behavior;
-
 	public DeparturePanel(float size, final Controller controller,
 			Actor touchable) {
-		super("gateway_reverse80x80", size, "edition.exits", controller,
-				touchable);
+		super("gateway_reverse80x80", size, "edition.exits",
+				ComponentId.PREFAB_EXIT, controller, touchable);
 
 		InputListener makeExit = new ClickListener() {
 			public void clicked(InputEvent event, float x, float y) {
@@ -76,24 +72,31 @@ public class DeparturePanel extends PrefabPanel {
 				String sceneId = controller.getModel().getIdFor(
 						button.getScene());
 
-				GoScene goScene = new GoScene();
-				goScene.setSceneId(sceneId);
-
-				if (behavior == null) {
-					controller.action(AddTouchEffect.class, goScene);
-				} else {
-					GoScene goScen = (GoScene) behavior.getEffects().first();
-					String scenId = controller.getModel().getIdFor(
-							button.getScene());
-					if (scenId != null && goScen.getSceneId().equals(scenId)) {
-						controller.action(RemoveBehavior.class, behavior);
-					} else {
-						controller.action(ChangeBehaviorEffect.class, behavior,
-								goScene);
-					}
+				if (component == null) {
+					component = new Behavior();
+					component.setId(componentId);
+					((Behavior) component).setEvent(new Touch());
+					controller.action(AddBehaviorPrefab.class, component);
 				}
-			}
+				GoScene goScene;
+				if (((Behavior) component).getEffects().size > 0) {
+					goScene = (GoScene) ((Behavior) component).getEffects()
+							.first();
+				} else {
+					goScene = new GoScene();
+					goScene.setSceneId("");
+				}
 
+				if (sceneId != null && sceneId.equals(goScene.getSceneId())) {
+					controller.action(RemoveBehavior.class, component);
+				} else {
+					goScene.setSceneId(sceneId);
+					controller.action(ChangeBehaviorEffect.class, component,
+							goScene);
+				}
+
+				setUsed(true);
+			}
 		};
 
 		table = new ScenesTableList(controller, makeExit, "scene");
@@ -109,7 +112,8 @@ public class DeparturePanel extends PrefabPanel {
 
 		newScene.addListener(new ClickListener() {
 			public void clicked(InputEvent event, float x, float y) {
-				controller.action(SelectionGoToNewScene.class, behavior);
+				controller.action(SelectionGoToNewScene.class, component,
+						componentId);
 				getPanel().hide();
 			};
 		});
@@ -117,48 +121,12 @@ public class DeparturePanel extends PrefabPanel {
 	}
 
 	@Override
-	protected InputListener trashListener() {
-		return new ClickListener() {
-			@Override
-			public void clicked(InputEvent event, float x, float y) {
-				if (behavior != null) {
-					controller.action(RemoveBehavior.class, behavior);
-					behavior = null;
-					loadItems();
-				}
-			}
-		};
-	}
-
-	private void loadBehavior() {
-		ModelEntity modelEntity = (ModelEntity) selection
-				.getSingle(Selection.SCENE_ELEMENT);
-		this.behavior = null;
-		for (ModelComponent component : modelEntity.getComponents()) {
-			if (component instanceof Behavior) {
-				Behavior behavior = (Behavior) component;
-				if (behavior.getEffects().first() instanceof GoScene
-						&& behavior.getEvent() instanceof Touch) {
-					this.behavior = behavior;
-					break;
-				}
-			}
-		}
-	}
-
-	private void loadItems() {
-		if (behavior != null) {
-			table.selectScene(((GoScene) behavior.getEffects().first())
-					.getSceneId());
+	protected void actualizePanel() {
+		if (component != null) {
+			table.selectScene(((GoScene) ((Behavior) component).getEffects()
+					.first()).getSceneId());
 		} else {
 			table.deselectAll();
 		}
-	}
-
-	@Override
-	protected void showPanel() {
-		loadBehavior();
-		loadItems();
-		super.showPanel();
 	}
 }

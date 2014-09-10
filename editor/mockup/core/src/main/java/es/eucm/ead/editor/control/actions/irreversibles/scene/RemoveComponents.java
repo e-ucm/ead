@@ -34,30 +34,37 @@
  *      You should have received a copy of the GNU Lesser General Public License
  *      along with eAdventure.  If not, see <http://www.gnu.org/licenses/>.
  */
-package es.eucm.ead.editor.view.widgets.editionview.prefabs.prefabtweens;
+package es.eucm.ead.editor.control.actions.irreversibles.scene;
 
-import com.badlogic.gdx.scenes.scene2d.ui.Skin;
+import com.badlogic.gdx.utils.Array;
 
-import es.eucm.ead.editor.control.ComponentId;
-import es.eucm.ead.editor.control.Controller;
-import es.eucm.ead.schema.components.tweens.AlphaTween;
-import es.eucm.ead.schema.components.tweens.Tween;
+import es.eucm.ead.editor.control.actions.irreversibles.IrreversibleAction;
+import es.eucm.ead.schema.components.ModelComponent;
+import es.eucm.ead.schema.entities.ModelEntity;
+import es.eucm.ead.schemax.entities.ResourceCategory;
 
-public class BlinkTween extends PrefabTween {
+/**
+ * 
+ * Removes a {@link ModelComponent} of current selected scene element.
+ */
+public class RemoveComponents extends IrreversibleAction {
 
-	public BlinkTween(String icon, String name, Controller controller, Skin skin) {
-		super(icon, name, controller, skin);
+	public RemoveComponents() {
+		super(ResourceCategory.SCENE, true, false, String.class);
 	}
 
 	@Override
-	protected Tween createTween() {
-		AlphaTween tween = new AlphaTween();
-		tween.setId(ComponentId.PREFAB_BLINK);
-		tween.setDuration(0.5f);
-		tween.setRepeat(-1);
-		tween.setAlpha(0);
+	protected void action(ModelEntity entity, Object[] args) {
+		String id = (String) args[0];
 
-		return tween;
+		Array<ModelComponent> components = entity.getComponents();
+		for (ModelComponent component : components) {
+			String componentId = component.getId();
+			if (componentId != null && componentId.equals(id)) {
+				components.removeValue(component, true);
+			}
+		}
+
 	}
 
 }

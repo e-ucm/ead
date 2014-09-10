@@ -38,6 +38,7 @@ package es.eucm.ead.editor.view.widgets.editionview.prefabs.prefabtweens;
 
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 
+import es.eucm.ead.editor.control.ComponentId;
 import es.eucm.ead.editor.control.Controller;
 import es.eucm.ead.schema.components.tweens.ScaleTween;
 import es.eucm.ead.schema.components.tweens.Tween;
@@ -52,6 +53,7 @@ public class IncreaseTween extends PrefabTween {
 	@Override
 	protected Tween createTween() {
 		ScaleTween tween = new ScaleTween();
+		tween.setId(ComponentId.PREFAB_INCREASE);
 		tween.setRelative(true);
 		tween.setYoyo(true);
 		tween.setDuration(1.5f);
