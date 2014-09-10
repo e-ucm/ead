@@ -36,13 +36,23 @@
  */
 package es.eucm.ead.editor;
 
+import java.awt.FlowLayout;
+import java.awt.event.WindowEvent;
+import java.awt.event.WindowFocusListener;
 import java.io.File;
+
+import javax.swing.JDialog;
+import javax.swing.JOptionPane;
+import javax.swing.JPanel;
+import javax.swing.JTextArea;
+import javax.swing.SwingUtilities;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input.TextInputListener;
 import com.badlogic.gdx.backends.lwjgl.LwjglFrame;
 
 import es.eucm.ead.editor.platform.MockupPlatform;
+import es.eucm.ead.engine.I18N;
 
 public class MockupDesktopPlatform extends MockupPlatform {
 
@@ -106,6 +116,57 @@ public class MockupDesktopPlatform extends MockupPlatform {
 			@Override
 			public void run() {
 				listener.imageCaptured(false);
+			}
+		});
+	}
+
+	@Override
+	public void getMultilineTextInput(final TextInputListener listener,
+			final String title, final String text, I18N i18n) {
+		SwingUtilities.invokeLater(new Runnable() {
+			@Override
+			public void run() {
+				JPanel panel = new JPanel(new FlowLayout());
+
+				final JTextArea textArea = new JTextArea(text);
+				panel.add(textArea);
+
+				JOptionPane pane = new JOptionPane(panel,
+						JOptionPane.QUESTION_MESSAGE,
+						JOptionPane.OK_CANCEL_OPTION, null, null, null);
+
+				pane.setInitialValue(null);
+				pane.setComponentOrientation(JOptionPane.getRootFrame()
+						.getComponentOrientation());
+
+				JDialog dialog = pane.createDialog(null, title);
+				pane.selectInitialValue();
+
+				dialog.addWindowFocusListener(new WindowFocusListener() {
+
+					@Override
+					public void windowLostFocus(WindowEvent arg0) {
+					}
+
+					@Override
+					public void windowGainedFocus(WindowEvent arg0) {
+						textArea.requestFocusInWindow();
+					}
+				});
+
+				dialog.setVisible(true);
+				dialog.dispose();
+
+				Object selectedValue = pane.getValue();
+
+				if (selectedValue != null
+						&& (selectedValue instanceof Integer)
+						&& ((Integer) selectedValue).intValue() == JOptionPane.OK_OPTION) {
+					listener.input(textArea.getText());
+				} else {
+					listener.canceled();
+				}
+
 			}
 		});
 	}

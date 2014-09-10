@@ -39,6 +39,8 @@ package es.eucm.ead.editor.platform;
 import java.io.File;
 import java.io.InputStream;
 
+import com.badlogic.gdx.Input.TextInputListener;
+import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.math.Vector2;
 
 import es.eucm.ead.engine.I18N;
@@ -48,6 +50,7 @@ import es.eucm.network.requests.RequestHelper;
 public abstract class MockupPlatform extends AbstractPlatform {
 
 	private final Vector2 screenDimensions = new Vector2(1280f, 800f);
+	private String importProjectPath;
 
 	@Override
 	public void askForFile(FileChooserListener listener) {
@@ -57,6 +60,19 @@ public abstract class MockupPlatform extends AbstractPlatform {
 	@Override
 	public void askForFolder(FileChooserListener listener) {
 
+	}
+
+	public void setImportProjectPath(String importProjectPath) {
+		this.importProjectPath = importProjectPath;
+	}
+
+	/**
+	 * 
+	 * @return the path of a file that was exported by an editor and should be
+	 *         imported in this editor's working space.
+	 */
+	public String getImportProjectPath() {
+		return importProjectPath;
 	}
 
 	@Override
@@ -83,6 +99,16 @@ public abstract class MockupPlatform extends AbstractPlatform {
 		return screenDimensions;
 	}
 
+	public void getMultilineTextInput(TextInputListener listener,
+			final String title, final String text, I18N i18n) {
+
+	}
+
+	public void sendProject(FileHandle projectHandle, I18N i18n,
+			ProjectSentListener listener) {
+
+	}
+
 	@Override
 	public RequestHelper getRequestHelper() {
 		return null;
@@ -101,4 +127,8 @@ public abstract class MockupPlatform extends AbstractPlatform {
 		void imageCaptured(boolean success);
 	}
 
+	public interface ProjectSentListener {
+
+		void projectSent(boolean success);
+	}
 }
