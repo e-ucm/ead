@@ -40,10 +40,11 @@ import static com.badlogic.gdx.scenes.scene2d.actions.Actions.delay;
 import static com.badlogic.gdx.scenes.scene2d.actions.Actions.forever;
 import static com.badlogic.gdx.scenes.scene2d.actions.Actions.run;
 
+import java.io.File;
+
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.scenes.scene2d.Group;
 import com.badlogic.gdx.utils.reflect.ClassReflection;
-import com.badlogic.gdx.utils.reflect.ReflectionException;
 
 import es.eucm.ead.editor.control.MockupController;
 import es.eucm.ead.editor.control.actions.EditorActionException;
@@ -57,6 +58,10 @@ import es.eucm.ead.editor.view.builders.gallery.ProjectsView;
 import es.eucm.ead.schema.editor.components.EditState;
 import es.eucm.ead.schema.entities.ModelEntity;
 
+/**
+ * @see OpenGame
+ * 
+ */
 public class OpenMockupGame extends OpenGame {
 	/**
 	 * Saving interval in seconds.
@@ -66,6 +71,9 @@ public class OpenMockupGame extends OpenGame {
 	@Override
 	public void perform(Object... args) {
 		String path = args[0].toString();
+		if (!path.endsWith(File.separator)) {
+			path += File.separator;
+		}
 		fileChosen(path);
 		if (!path.equals(controller.getEditorGameAssets().getLoadingPath())) {
 			throw new EditorActionException("Failed opening: " + path
@@ -128,10 +136,10 @@ public class OpenMockupGame extends OpenGame {
 					args[i++] = arg;
 				}
 				controller.action(ChangeMockupView.class, args);
-			} catch (ReflectionException e) {
+			} catch (Exception e) {
 				Gdx.app.error("OpenGame",
 						"Impossible to set view " + editState.getView());
-				controller.action(ChangeMockupView.class, ProjectsView.class);
+				controller.action(CloseMockupGame.class);
 			}
 		}
 	}

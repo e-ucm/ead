@@ -98,11 +98,15 @@ public class NewGame extends EditorAction {
 			sceneMap.getCells().add(cell);
 
 			controller.action(ForceSave.class);
-			controller
-					.action(OpenGame.class, editorGameAssets.getLoadingPath());
+			controller.action(getOpenGameAction(),
+					editorGameAssets.getLoadingPath());
 		} else {
 			throw new EditorActionException("Impossible to create project",
 					new FileNotFoundException(path));
 		}
+	}
+
+	protected Class getOpenGameAction() {
+		return OpenGame.class;
 	}
 }
