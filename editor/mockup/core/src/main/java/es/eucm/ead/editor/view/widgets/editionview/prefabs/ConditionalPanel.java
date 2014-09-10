@@ -57,10 +57,10 @@ public abstract class ConditionalPanel extends PrefabComponentPanel {
 
 	private MultiStateButton stateButton;
 
-	public ConditionalPanel(String icon, String namei18n,
+	public ConditionalPanel(String icon, float iconPad, String namei18n,
 			final String componentId, float size, final Controller controller,
 			Actor touchable, Class<? extends ModelConditionedComponent> myClass) {
-		super(icon, size, namei18n, componentId, controller, touchable);
+		super(icon, iconPad, size, namei18n, componentId, controller, touchable);
 
 		varTextDown = new VarTextDown(skin, controller) {
 			@Override

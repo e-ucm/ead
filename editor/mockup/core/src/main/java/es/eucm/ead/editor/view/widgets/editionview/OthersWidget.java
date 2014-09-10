@@ -93,8 +93,9 @@ public class OthersWidget extends IconWithScalePanel implements FieldListener {
 
 	private Documentation documentation;
 
-	public OthersWidget(Controller controlle) {
-		super("others80x80", 0, controlle.getApplicationAssets().getSkin());
+	public OthersWidget(Controller controlle, float iconPad, float iconSize) {
+		super("others80x80", iconPad, 0f, iconSize, controlle
+				.getApplicationAssets().getSkin());
 		this.controller = controlle;
 
 		Assets assets = controller.getApplicationAssets();

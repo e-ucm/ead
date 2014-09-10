@@ -39,6 +39,7 @@ package es.eucm.ead.editor.view.widgets.editionview.prefabs;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
+import com.badlogic.gdx.scenes.scene2d.InputListener;
 import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.scenes.scene2d.ui.TextArea;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
@@ -46,6 +47,7 @@ import com.badlogic.gdx.utils.Array;
 
 import es.eucm.ead.editor.control.ComponentId;
 import es.eucm.ead.editor.control.Controller;
+import es.eucm.ead.editor.control.Selection;
 import es.eucm.ead.editor.control.actions.irreversibles.scene.AddBehaviorPrefab;
 import es.eucm.ead.editor.control.actions.irreversibles.scene.ChangeBehaviorEffect;
 import es.eucm.ead.editor.view.widgets.MultiStateButton;
@@ -53,8 +55,12 @@ import es.eucm.ead.editor.view.widgets.VarTextDown;
 import es.eucm.ead.editor.view.widgets.layouts.LinearLayout;
 import es.eucm.ead.schema.components.behaviors.Behavior;
 import es.eucm.ead.schema.components.behaviors.events.Touch;
+import es.eucm.ead.schema.components.conversation.Conversation;
+import es.eucm.ead.schema.components.conversation.LineNode;
 import es.eucm.ead.schema.effects.ChangeVar;
 import es.eucm.ead.schema.effects.ChangeVar.Context;
+import es.eucm.ead.schema.effects.TriggerConversation;
+import es.eucm.ead.schema.entities.ModelEntity;
 
 public class ChangeVariablePanel extends PrefabComponentPanel {
 
@@ -67,9 +73,9 @@ public class ChangeVariablePanel extends PrefabComponentPanel {
 
 	private ChangeVar changeVar;
 
-	public ChangeVariablePanel(float size, final Controller controller,
-			Actor touchable) {
-		super("variable80x80", size, "edition.changeVariable",
+	public ChangeVariablePanel(float iconPad, float size,
+			final Controller controller, Actor touchable) {
+		super("variable80x80", iconPad, size, "edition.changeVariable",
 				ComponentId.PREFAB_CHANGE_VAR, controller, touchable);
 
 		Array<String> states = new Array<String>();

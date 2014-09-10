@@ -78,10 +78,10 @@ public abstract class PrefabPanel extends IconWithFadePanel implements
 		}
 	};
 
-	public PrefabPanel(String icon, float size, String panelName,
-			Controller controller, Actor touchable) {
-		super(icon, 0f, SEPARATION, size, controller.getApplicationAssets()
-				.getSkin(), Position.RIGHT);
+	public PrefabPanel(String icon, float iconPad, float size,
+			String panelName, Controller controller, Actor touchable) {
+		super(icon, iconPad, SEPARATION, size, controller
+				.getApplicationAssets().getSkin(), Position.RIGHT);
 
 		this.controller = controller;
 		this.skin = controller.getApplicationAssets().getSkin();

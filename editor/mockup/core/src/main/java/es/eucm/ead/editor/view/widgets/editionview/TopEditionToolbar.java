@@ -37,36 +37,38 @@
 package es.eucm.ead.editor.view.widgets.editionview;
 
 import com.badlogic.gdx.scenes.scene2d.Actor;
-import com.badlogic.gdx.scenes.scene2d.ui.Image;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
-import com.badlogic.gdx.scenes.scene2d.utils.Align;
 import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
 
 import es.eucm.ead.editor.control.Actions;
 import es.eucm.ead.editor.control.Controller;
 import es.eucm.ead.editor.control.Selection;
-import es.eucm.ead.editor.control.actions.AddGatewayDefaultElement;
-import es.eucm.ead.editor.control.actions.AddLabelToScene;
 import es.eucm.ead.editor.control.actions.editor.AddSceneElementFromResource;
 import es.eucm.ead.editor.control.actions.editor.ChangeMockupView;
+import es.eucm.ead.editor.control.actions.editor.ExportMockupProject;
 import es.eucm.ead.editor.control.actions.editor.Redo;
 import es.eucm.ead.editor.control.actions.editor.TakePicture;
 import es.eucm.ead.editor.control.actions.editor.Undo;
+import es.eucm.ead.editor.control.actions.model.AddGatewayDefaultElement;
 import es.eucm.ead.editor.control.actions.model.AddInteractiveZone;
+import es.eucm.ead.editor.control.actions.model.AddLabelToScene;
 import es.eucm.ead.editor.control.actions.model.SetSelection;
 import es.eucm.ead.editor.view.builders.LibrariesView;
+import es.eucm.ead.editor.view.builders.gallery.BaseGallery;
 import es.eucm.ead.editor.view.builders.gallery.PlayView;
 import es.eucm.ead.editor.view.listeners.ActionListener;
 import es.eucm.ead.editor.view.widgets.HiddenPanel;
 import es.eucm.ead.editor.view.widgets.IconButton;
 import es.eucm.ead.editor.view.widgets.Toolbar;
+import es.eucm.ead.editor.view.widgets.ToolbarIcon;
 import es.eucm.ead.editor.view.widgets.editionview.draw.PaintToolbar;
 import es.eucm.ead.editor.view.widgets.editionview.draw.PaintToolbar.DrawListener;
 import es.eucm.ead.schema.entities.ModelEntity;
 
 public class TopEditionToolbar extends Toolbar {
 
-	private static final float BIG_PAD = 160, NORMAL_PAD = 40, SMALL_PAD = 20;
+	private static final float BIG_PAD = 160, NORMAL_PAD = 40,
+			SMALL_PAD = BaseGallery.SMALL_PAD;
 
 	private float height;
 
@@ -92,8 +94,10 @@ public class TopEditionToolbar extends Toolbar {
 
 	private IconButton gate;
 
+	private IconButton share;
+
 	public TopEditionToolbar(final Controller controller, String style,
-			float height, float iconSize, float PAD,
+			float height, float iconSize, float iconPad,
 			final PaintToolbar paintToolbar) {
 		super(controller.getApplicationAssets().getSkin(), style);
 
@@ -101,24 +105,25 @@ public class TopEditionToolbar extends Toolbar {
 
 		this.height = height;
 
-		align(Align.right);
+		play = new ToolbarIcon("play80x80", iconPad, iconSize, skin, "inverted");
+		share = new ToolbarIcon("play80x80", iconPad, iconSize, skin,
+				"inverted");
 
-		play = new IconButton("play80x80", 0, skin, "inverted");
+		undo = new ToolbarIcon("undo80x80", iconPad, iconSize, skin);
+		redo = new ToolbarIcon("redo80x80", iconPad, iconSize, skin);
 
-		undo = new IconButton("undo80x80", 0, skin);
-		redo = new IconButton("redo80x80", 0, skin);
+		camera = new ToolbarIcon("camera80x80", iconPad, iconSize, skin);
+		repository = new ToolbarIcon("repository80x80", iconPad, iconSize, skin);
+		android = new ToolbarIcon("android_gallery80x80", iconPad, iconSize,
+				skin);
 
-		camera = new IconButton("camera80x80", 0, skin);
-		repository = new IconButton("repository80x80", 0, skin);
-		android = new IconButton("android_gallery80x80", 0, skin);
+		paint = new ToolbarIcon("paint80x80", iconPad, iconSize, skin);
+		text = new ToolbarIcon("text80x80", iconPad, iconSize, skin);
 
-		paint = new IconButton("paint80x80", 0, skin);
-		text = new IconButton("text80x80", 0, skin);
+		zones = new ToolbarIcon("interactive80x80", iconPad, iconSize, skin);
+		gate = new ToolbarIcon("gateway80x80", iconPad, iconSize, skin);
 
-		zones = new IconButton("interactive80x80", 0, skin);
-		gate = new IconButton("gateway80x80", 0, skin);
-
-		others = new OthersWidget(controller);
+		others = new OthersWidget(controller, iconPad, iconSize);
 		HiddenPanel panel = others.getPanel();
 		panel.addTouchableActor(this);
 
@@ -155,12 +160,14 @@ public class TopEditionToolbar extends Toolbar {
 				Actor listenerActor = event.getListenerActor();
 				if (listenerActor == play) {
 					controller.action(ChangeMockupView.class, PlayView.class);
+				} else if (listenerActor == share) {
+					controller.action(ExportMockupProject.class);
 				} else if (listenerActor == undo) {
 					controller.action(Undo.class);
 				} else if (listenerActor == redo) {
 					controller.action(Redo.class);
 				} else if (listenerActor == camera) {
-					controller.action(TakePicture.class, getStage());
+					controller.action(TakePicture.class);
 				} else if (listenerActor == repository) {
 					controller.action(ChangeMockupView.class,
 							LibrariesView.class);
@@ -183,6 +190,7 @@ public class TopEditionToolbar extends Toolbar {
 			}
 		};
 		play.addListener(buttonsListener);
+		share.addListener(buttonsListener);
 		undo.addListener(buttonsListener);
 		redo.addListener(buttonsListener);
 		camera.addListener(buttonsListener);
@@ -192,6 +200,7 @@ public class TopEditionToolbar extends Toolbar {
 		text.addListener(buttonsListener);
 		zones.addListener(buttonsListener);
 		gate.addListener(buttonsListener);
+		zones.addListener(buttonsListener);
 
 		ActionListener undoRedo = new ActionListener() {
 
@@ -210,25 +219,25 @@ public class TopEditionToolbar extends Toolbar {
 		undo.setDisabled(true);
 		redo.setDisabled(true);
 
-		Image logo = new Image(skin, "eAdventure");
-		add(logo).size(iconSize * 4.5f, iconSize).padRight(NORMAL_PAD * 2);
+		defaults().expandY().fill();
+		add(play).padLeft(BaseGallery.PLAY_PAD);
+		add(share).padLeft(SMALL_PAD);
 
-		add(play).size(iconSize).padRight(BIG_PAD);
+		add(undo).padRight(SMALL_PAD).padLeft(BaseGallery.PLAY_PAD * 2F);
+		add(redo).padRight(BIG_PAD);
 
-		add(undo).size(iconSize).pad(SMALL_PAD);
-		add(redo).size(iconSize).padRight(BIG_PAD);
+		add().expandX();
+		add(camera).padRight(SMALL_PAD).right();
+		add(repository).padRight(SMALL_PAD);
+		add(android).padRight(NORMAL_PAD);
 
-		add(camera).size(iconSize).padRight(SMALL_PAD);
-		add(repository).size(iconSize).padRight(SMALL_PAD);
-		add(android).size(iconSize).padRight(NORMAL_PAD);
+		add(paint).padRight(SMALL_PAD);
+		add(text).padRight(NORMAL_PAD);
 
-		add(paint).size(iconSize).padRight(SMALL_PAD);
-		add(text).size(iconSize).padRight(NORMAL_PAD);
+		add(zones).padRight(SMALL_PAD);
+		add(gate).padRight(NORMAL_PAD);
 
-		add(zones).size(iconSize).padRight(SMALL_PAD);
-		add(gate).size(iconSize).padRight(NORMAL_PAD);
-
-		add(others).size(iconSize).padRight(SMALL_PAD);
+		add(others).padRight(SMALL_PAD);
 	}
 
 	public void addTouchableActors(Actor... actors) {
@@ -245,6 +254,7 @@ public class TopEditionToolbar extends Toolbar {
 
 	private void setDisabled(boolean disabled) {
 		play.setDisabled(disabled);
+		share.setDisabled(disabled);
 		undo.setDisabled(disabled);
 		redo.setDisabled(disabled);
 		camera.setDisabled(disabled);
