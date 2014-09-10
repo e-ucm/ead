@@ -71,8 +71,24 @@ public class ZipUtils {
 					+ inputFolder.file().getAbsolutePath()
 					+ " is not a directory");
 		}
-		writeDirectoryToZip(new ZipOutputStream(outputZip.write(false)),
-				inputFolder, null);
+		ZipOutputStream zipOutputStream = null;
+		try {
+			zipOutputStream = new ZipOutputStream(outputZip.write(false));
+			writeDirectoryToZip(zipOutputStream, inputFolder, null);
+			zipOutputStream.flush();
+		} catch (IOException e) {
+		} finally {
+			if (zipOutputStream != null) {
+				try {
+					zipOutputStream.close();
+				} catch (IOException e) {
+					// Ignore exception, any important stuff should have been
+					// cached in the IOException
+				} finally {
+					zipOutputStream = null;
+				}
+			}
+		}
 	}
 
 	/**
@@ -82,6 +98,8 @@ public class ZipUtils {
 
 		byte[] buffer = new byte[1024];
 
+		ZipInputStream zis = null;
+		OutputStream fos = null;
 		try {
 			// Create output folder structure if does not exist
 			if (!outputFolder.exists()) {
@@ -89,7 +107,7 @@ public class ZipUtils {
 			}
 
 			// Get the zip file content
-			ZipInputStream zis = new ZipInputStream(sourceZip.read());
+			zis = new ZipInputStream(sourceZip.read());
 			// Get the zipped file list entry
 			ZipEntry ze = zis.getNextEntry();
 
@@ -101,24 +119,36 @@ public class ZipUtils {
 					newFile.mkdirs();
 				}
 
-				OutputStream fos = newFile.write(false);
+				fos = newFile.write(false);
 
 				int len;
 				while ((len = zis.read(buffer)) > 0) {
 					fos.write(buffer, 0, len);
 				}
 
+				zis.closeEntry();
+				fos.flush();
 				fos.close();
+				fos = null;
 				ze = zis.getNextEntry();
 			}
-
-			zis.closeEntry();
-			zis.close();
 
 		} catch (IOException ex) {
 			Gdx.app.error("Unzipping", "IOException while unzipping "
 					+ sourceZip.file().getAbsolutePath() + " to "
 					+ outputFolder.file().getAbsolutePath(), ex);
+		} finally {
+			try {
+				if (fos != null) {
+					fos.close();
+				}
+				if (zis != null) {
+					zis.close();
+				}
+			} catch (IOException ignored) {
+				// Ignore exception, anything important should have been catched
+				// already
+			}
 		}
 	}
 
