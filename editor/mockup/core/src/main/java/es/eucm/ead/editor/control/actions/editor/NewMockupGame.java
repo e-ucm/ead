@@ -34,55 +34,13 @@
  *      You should have received a copy of the GNU Lesser General Public License
  *      along with eAdventure.  If not, see <http://www.gnu.org/licenses/>.
  */
-package es.eucm.ead.editor;
+package es.eucm.ead.editor.control.actions.editor;
 
-import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.math.Vector2;
-import com.badlogic.gdx.scenes.scene2d.Stage;
-import com.badlogic.gdx.scenes.scene2d.ui.Table;
-import com.badlogic.gdx.utils.viewport.ExtendViewport;
-
-import es.eucm.ead.editor.control.Controller;
-import es.eucm.ead.editor.control.MockupController;
-import es.eucm.ead.editor.control.actions.editor.OpenApplication;
-import es.eucm.ead.editor.platform.Platform;
-
-public class MockupApplicationListener extends EditorApplicationListener {
-
-	public MockupApplicationListener(Platform platform) {
-		super(platform);
-	}
+public class NewMockupGame extends NewGame {
 
 	@Override
-	public void create() {
-		super.create();
-		Gdx.gl.glClearColor(1f, 1f, 1f, 1f);
+	protected Class getOpenGameAction() {
+		return OpenMockupGame.class;
 	}
 
-	@Override
-	public void resize(int width, int height) {
-		super.stage.getViewport().update(width, height, true);
-	}
-
-	@Override
-	protected void initialize() {
-		controller.action(OpenApplication.class);
-	}
-
-	@Override
-	public void pause() {
-		((MockupController) controller).pause();
-	}
-
-	@Override
-	protected Stage createStage() {
-		final Vector2 viewport = super.platform.getSize();
-		return new Stage(new ExtendViewport(viewport.x, viewport.y));
-	}
-
-	@Override
-	protected Controller createController() {
-		return new MockupController(this.platform, Gdx.files,
-				super.stage.getRoot());
-	}
 }
