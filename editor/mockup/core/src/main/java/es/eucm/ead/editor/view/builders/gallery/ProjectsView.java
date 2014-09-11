@@ -45,9 +45,11 @@ import com.badlogic.gdx.utils.Scaling;
 
 import es.eucm.ead.editor.control.Controller;
 import es.eucm.ead.editor.control.MockupController.BackListener;
+import es.eucm.ead.editor.control.actions.EditorActionException;
 import es.eucm.ead.editor.control.actions.editor.ChangeMockupView;
+import es.eucm.ead.editor.control.actions.editor.CloseMockupGame;
 import es.eucm.ead.editor.control.actions.editor.ExitMockup;
-import es.eucm.ead.editor.control.actions.editor.NewGame;
+import es.eucm.ead.editor.control.actions.editor.NewMockupGame;
 import es.eucm.ead.editor.control.actions.editor.OpenMockupGame;
 import es.eucm.ead.editor.view.widgets.gallery.GalleryItem;
 import es.eucm.ead.editor.view.widgets.gallery.ProjectItem;
@@ -95,7 +97,7 @@ public class ProjectsView extends BaseGallery implements BackListener {
 
 		} while (file.exists());
 
-		controller.action(NewGame.class, file.file().getAbsolutePath(),
+		controller.action(NewMockupGame.class, file.file().getAbsolutePath(),
 				defaultGame);
 		controller.action(ChangeMockupView.class, ScenesView.class);
 	}
@@ -115,8 +117,13 @@ public class ProjectsView extends BaseGallery implements BackListener {
 
 	@Override
 	public void itemClicked(GalleryItem item) {
-		controller.action(OpenMockupGame.class,
-				((ProjectItem) item).getProjectPath(), topBar.getStage());
+		try {
+			controller.action(OpenMockupGame.class,
+					((ProjectItem) item).getProjectPath());
+		} catch (EditorActionException eae) {
+			controller.action(CloseMockupGame.class);
+			return;
+		}
 		if (controller.getViews().getCurrentView() == this) {
 			controller.action(ChangeMockupView.class, ScenesView.class);
 		}

@@ -53,6 +53,8 @@ import com.badlogic.gdx.utils.ScreenUtils;
 import es.eucm.ead.editor.assets.EditorGameAssets;
 import es.eucm.ead.editor.control.Controller;
 import es.eucm.ead.editor.control.actions.EditorAction;
+import es.eucm.ead.editor.model.Model;
+import es.eucm.ead.editor.model.Model.Resource;
 import es.eucm.ead.editor.model.Q;
 import es.eucm.ead.engine.EntitiesLoader;
 import es.eucm.ead.engine.GameLoop;
@@ -116,7 +118,8 @@ public class CreateThumbnail extends EditorAction {
 		if (!thumbSavingDir.exists()) {
 			thumbSavingDir.mkdirs();
 		}
-		String id = controller.getModel().getIdFor(modelEntity);
+		Model model = controller.getModel();
+		String id = model.getIdFor(modelEntity);
 		FileHandle temp = editorGameAssets.resolve(id);
 		thumbSavingPath += temp.nameWithoutExtension();
 		FileHandle thumbSavingImage = editorGameAssets.resolve(thumbSavingPath
@@ -192,6 +195,11 @@ public class CreateThumbnail extends EditorAction {
 		gameLoop.removeEntity(engineEntity);
 
 		Thumbnail thumbnail = Q.getComponent(modelEntity, Thumbnail.class);
-		thumbnail.setThumbnail(thumbSavingImage.path());
+		thumbnail.setThumbnail(GameStructure.THUMBNAILS_PATH
+				+ thumbSavingImage.name());
+		Resource resource = model.getResource(id);
+		if (resource != null) {
+			resource.setModified(true);
+		}
 	}
 }

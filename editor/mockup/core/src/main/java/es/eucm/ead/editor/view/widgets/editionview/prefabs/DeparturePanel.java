@@ -45,10 +45,10 @@ import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 
 import es.eucm.ead.editor.control.ComponentId;
 import es.eucm.ead.editor.control.Controller;
-import es.eucm.ead.editor.control.actions.SelectionGoToNewScene;
 import es.eucm.ead.editor.control.actions.irreversibles.scene.AddBehaviorPrefab;
 import es.eucm.ead.editor.control.actions.irreversibles.scene.ChangeBehaviorEffect;
 import es.eucm.ead.editor.control.actions.irreversibles.scene.RemoveBehavior;
+import es.eucm.ead.editor.control.actions.model.SelectionGoToNewScene;
 import es.eucm.ead.editor.view.widgets.editionview.SceneButton;
 import es.eucm.ead.editor.view.widgets.editionview.ScenesTableList;
 import es.eucm.ead.schema.components.behaviors.Behavior;
@@ -61,9 +61,9 @@ public class DeparturePanel extends PrefabComponentPanel {
 
 	private ScenesTableList table;
 
-	public DeparturePanel(float size, final Controller controller,
-			Actor touchable) {
-		super("gateway_reverse80x80", size, "edition.exits",
+	public DeparturePanel(float iconPad, float size,
+			final Controller controller, Actor touchable) {
+		super("gateway_reverse80x80", iconPad, size, "edition.exits",
 				ComponentId.PREFAB_EXIT, controller, touchable);
 
 		InputListener makeExit = new ClickListener() {

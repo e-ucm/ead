@@ -87,15 +87,7 @@ public class RepositoryView extends BaseGallery implements ProgressListener,
 
 	@Override
 	protected Actor createPlayButton() {
-		Button play = new ToolbarIcon("play80x80", ICON_PAD, iconSize, skin,
-				"inverted");
-		play.addListener(new ClickListener() {
-			@Override
-			public void clicked(InputEvent event, float x, float y) {
-				controller.action(ChangeMockupView.class, PlayView.class);
-			}
-		});
-		return play;
+		return null;
 	}
 
 	@Override

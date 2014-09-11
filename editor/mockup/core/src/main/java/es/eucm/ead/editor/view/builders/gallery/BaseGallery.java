@@ -67,9 +67,11 @@ import es.eucm.ead.engine.I18N;
 
 public abstract class BaseGallery implements ViewBuilder {
 
-	public static final float ICON_SIZE = 0.04f, TOOLBAR_SIZE = 0.065f,
-			ICON_PAD = 0f, SMALL_PAD = 20f, DEFAULT_ENTYTY_SPACING = 20f,
-			MIN_ITEM_HEIGHT = 165F, UNDO_POPUP_TIMEOUT = 5F;
+	private static final int DEFAULT_COLUMNS = 5;
+
+	public static final float ICON_SIZE = 0.06f, TOOLBAR_SIZE = 0.075f,
+			ICON_PAD = 0.0075f, SMALL_PAD = 20f, DEFAULT_ENTYTY_SPACING = 20f,
+			MIN_ITEM_HEIGHT = 165F, UNDO_POPUP_TIMEOUT = 5F, PLAY_PAD = 100F;
 
 	private static final ClickListener newButtonListener = new ClickListener() {
 
@@ -82,7 +84,7 @@ public abstract class BaseGallery implements ViewBuilder {
 	};
 
 	protected int getColumns() {
-		return 5;
+		return DEFAULT_COLUMNS;
 	}
 
 	private static final ClickListener undoListener = new ClickListener() {
@@ -119,8 +121,9 @@ public abstract class BaseGallery implements ViewBuilder {
 	private SortWidget sortWidget;
 	protected Button newButton;
 	protected Toolbar topBar;
-	private TextButton undo;
 	protected float iconSize;
+	protected float iconPad;
+	private TextButton undo;
 	protected Table view;
 	protected Skin skin;
 	protected I18N i18n;
@@ -145,9 +148,10 @@ public abstract class BaseGallery implements ViewBuilder {
 		this.items = new Array<GalleryItem>(true, 8, GalleryItem.class);
 		undosPending = new Array<Undoable>(4);
 
-		iconSize = controller.getPlatform().getSize().y * ICON_SIZE;
-		final float toolbarSize = controller.getPlatform().getSize().y
-				* TOOLBAR_SIZE;
+		float viewportHeight = controller.getPlatform().getSize().y;
+		iconSize = viewportHeight * ICON_SIZE;
+		iconPad = viewportHeight * ICON_PAD;
+		float toolbarSize = viewportHeight * TOOLBAR_SIZE;
 
 		view = new Table();
 		view.align(Align.top);
@@ -155,30 +159,33 @@ public abstract class BaseGallery implements ViewBuilder {
 
 		topBar = new Toolbar(skin, "white_top");
 
-		topBar.align(Align.right);
-
 		Actor backButton = createBackButton();
 		if (backButton != null) {
-			topBar.add(backButton).expand().left().padLeft(SMALL_PAD);
+			topBar.add(backButton).left().fill().size(toolbarSize);
 		}
 
 		Actor play = createPlayButton();
 		if (play != null) {
-			topBar.add(play).expand().left().padLeft(SMALL_PAD);
+			topBar.add(play).left().padLeft(PLAY_PAD).fill();
+		}
+
+		Actor share = createShareButton();
+		if (share != null) {
+			topBar.add(share).left().padLeft(SMALL_PAD).fill();
 		}
 
 		Actor toolbarText = createToolbarText();
-		topBar.add(toolbarText).expand().center();
+		topBar.add(toolbarText).expand();
 
 		searchWidget = createSearchWidget();
-		topBar.add(searchWidget).padRight(SMALL_PAD);
+		topBar.add(searchWidget).padRight(SMALL_PAD).fill();
 
 		sortWidget = addReorderWidget();
-		topBar.add(sortWidget).padRight(SMALL_PAD);
+		topBar.add(sortWidget).padRight(SMALL_PAD).fill();
 
 		Actor settings = createSettings(controller);
 		if (settings != null) {
-			topBar.add(settings).padRight(SMALL_PAD);
+			topBar.add(settings).padRight(SMALL_PAD).fill();
 		}
 
 		createnNewButton();
@@ -269,13 +276,13 @@ public abstract class BaseGallery implements ViewBuilder {
 	}
 
 	protected SortWidget addReorderWidget() {
-		SortWidget sortWidget = new SortWidget(skin, ICON_PAD, iconSize, items,
+		SortWidget sortWidget = new SortWidget(skin, iconPad, iconSize, items,
 				this);
 		return sortWidget;
 	}
 
 	protected SearchWidget createSearchWidget() {
-		SearchWidget searchWidget = new SearchWidget(ICON_PAD, iconSize, skin,
+		SearchWidget searchWidget = new SearchWidget(iconPad, iconSize, skin,
 				i18n, items, this);
 		searchWidget.getPanel().addTouchableActor(topBar);
 		return searchWidget;
@@ -286,9 +293,13 @@ public abstract class BaseGallery implements ViewBuilder {
 	}
 
 	protected Actor createSettings(Controller controller) {
-		Settings settings = new Settings(controller, ICON_PAD, iconSize);
+		Settings settings = new Settings(controller, iconPad, iconSize);
 		settings.getPanel().addTouchableActor(topBar);
 		return settings;
+	}
+
+	protected Actor createShareButton() {
+		return null;
 	}
 
 	protected abstract Actor createPlayButton();

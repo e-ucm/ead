@@ -40,12 +40,14 @@ import java.util.HashMap;
 import java.util.Map;
 
 import android.content.Intent;
+import android.net.Uri;
 import android.os.Bundle;
 
 import com.badlogic.gdx.backends.android.AndroidApplication;
 import com.badlogic.gdx.backends.android.AndroidApplicationConfiguration;
 
 import es.eucm.ead.editor.MockupApplicationListener;
+import es.eucm.ead.editor.platform.MockupPlatform;
 
 public class EditorActivity extends AndroidApplication {
 
@@ -63,7 +65,24 @@ public class EditorActivity extends AndroidApplication {
 		config.useCompass = false;
 
 		this.listeners = new HashMap<Integer, ActivityResultListener>();
-		initialize(new MockupApplicationListener(new AndroidPlatform()), config);
+		initialize(
+				new MockupApplicationListener(handleIntent(getIntent(),
+						new AndroidPlatform())), config);
+	}
+
+	private MockupPlatform handleIntent(Intent intent, MockupPlatform platform) {
+
+		if (intent != null) {
+			String action = intent.getAction();
+			if (Intent.ACTION_VIEW.equals(action)) {
+				Uri data = intent.getData();
+				if (data != null) {
+					String path = data.getPath();
+					platform.setImportProjectPath(path);
+				}
+			}
+		}
+		return platform;
 	}
 
 	public void startActivityForResult(Intent intent, int requestCode,

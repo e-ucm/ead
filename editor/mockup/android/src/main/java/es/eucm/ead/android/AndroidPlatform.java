@@ -51,6 +51,7 @@ import android.app.ProgressDialog;
 import android.content.ComponentName;
 import android.content.Context;
 import android.content.DialogInterface;
+import android.content.DialogInterface.OnCancelListener;
 import android.content.DialogInterface.OnClickListener;
 import android.content.Intent;
 import android.content.pm.ActivityInfo;
@@ -64,8 +65,12 @@ import android.graphics.BitmapFactory;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.provider.MediaStore;
+import android.text.InputType;
+import android.widget.EditText;
 
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.Input.TextInputListener;
+import com.badlogic.gdx.files.FileHandle;
 
 import es.eucm.ead.android.EditorActivity.ActivityResultListener;
 import es.eucm.ead.editor.platform.MockupPlatform;
@@ -81,6 +86,7 @@ public class AndroidPlatform extends MockupPlatform {
 	private static final int PICK_FILE = 0;
 	private static final int EDIT_FILE = 1;
 	private static final int CAPTURE_PHOTO = 2;
+	private static final int SEND_PROJECT = 3;
 
 	private enum Editor {
 
@@ -596,4 +602,82 @@ public class AndroidPlatform extends MockupPlatform {
 		}
 	};
 
+	@Override
+	public void getMultilineTextInput(final TextInputListener listener,
+			final String title, final String text, final I18N i18n) {
+		final EditorActivity activity = (EditorActivity) Gdx.app;
+		activity.post(new Runnable() {
+			public void run() {
+				AlertDialog.Builder alert = new AlertDialog.Builder(activity);
+				alert.setTitle(title);
+				final EditText input = new EditText(activity);
+				input.setText(text);
+				input.setSingleLine(false);
+				input.setHorizontalScrollBarEnabled(false);
+				input.setVerticalScrollBarEnabled(true);
+				input.setInputType(InputType.TYPE_TEXT_FLAG_CAP_SENTENCES
+						| InputType.TYPE_TEXT_FLAG_MULTI_LINE
+						| InputType.TYPE_CLASS_TEXT);
+				alert.setView(input);
+				alert.setPositiveButton(i18n.m("accept"),
+						new DialogInterface.OnClickListener() {
+							public void onClick(DialogInterface dialog,
+									int whichButton) {
+								Gdx.app.postRunnable(new Runnable() {
+									@Override
+									public void run() {
+										listener.input(input.getText()
+												.toString());
+									}
+								});
+							}
+						});
+				alert.setOnCancelListener(new OnCancelListener() {
+					@Override
+					public void onCancel(DialogInterface arg0) {
+						Gdx.app.postRunnable(new Runnable() {
+							@Override
+							public void run() {
+								listener.canceled();
+							}
+						});
+					}
+				});
+				alert.show();
+			}
+		});
+
+	}
+
+	public void sendProject(FileHandle projectHandle, I18N i18n,
+			final ProjectSentListener listener) {
+		Intent shareIntent = new Intent(Intent.ACTION_SEND);
+		shareIntent.setType("*/*");
+		shareIntent.putExtra(android.content.Intent.EXTRA_SUBJECT,
+				i18n.m("send.subject"));
+		shareIntent.putExtra(android.content.Intent.EXTRA_TEXT,
+				i18n.m("send.message"));
+		shareIntent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
+		shareIntent.putExtra(Intent.EXTRA_STREAM,
+				Uri.fromFile(projectHandle.file()));
+
+		final EditorActivity activity = (EditorActivity) Gdx.app;
+		if (shareIntent.resolveActivity(activity.getPackageManager()) != null) {
+			activity.startActivityForResult(
+					Intent.createChooser(shareIntent, i18n.m("send.share")),
+					SEND_PROJECT, new ActivityResultListener() {
+
+						@Override
+						public void result(int resultCode, final Intent data) {
+							if (resultCode != EditorActivity.RESULT_OK) {
+								listener.projectSent(false);
+							} else {
+								listener.projectSent(true);
+							}
+						}
+					});
+		} else {
+			listener.projectSent(false);
+		}
+	}
 }

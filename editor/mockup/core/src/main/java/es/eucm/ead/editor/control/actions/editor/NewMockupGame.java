@@ -34,38 +34,13 @@
  *      You should have received a copy of the GNU Lesser General Public License
  *      along with eAdventure.  If not, see <http://www.gnu.org/licenses/>.
  */
-package es.eucm.ead.editor.view.widgets.editionview.prefabs;
+package es.eucm.ead.editor.control.actions.editor;
 
-import com.badlogic.gdx.scenes.scene2d.Actor;
-
-import es.eucm.ead.editor.control.ComponentId;
-import es.eucm.ead.editor.control.Controller;
-import es.eucm.ead.editor.control.actions.irreversibles.scene.AddTouchabilityCondition;
-import es.eucm.ead.editor.control.actions.irreversibles.scene.ChangeTouchabilityCondition;
-import es.eucm.ead.schema.components.Touchability;
-
-public class TouchabilityPanel extends ConditionalPanel {
-
-	public TouchabilityPanel(float iconPad, float size, Controller controller,
-			Actor touchable) {
-		super("lock80x80", iconPad, "edition.touchable",
-				ComponentId.PREFAB_TOUCHABILITY, size, controller, touchable,
-				Touchability.class);
-	}
+public class NewMockupGame extends NewGame {
 
 	@Override
-	protected void updateCondition() {
-		if (varTextDown != null && varTextDown.getSelectedVariableDef() != null) {
-			if (component == null) {
-				component = new Touchability();
-				component.setId(componentId);
-				((Touchability) component).setCondition(createCondition());
-				controller.action(AddTouchabilityCondition.class, component);
-			} else {
-				controller.action(ChangeTouchabilityCondition.class,
-						componentId, createCondition());
-			}
-			setUsed(true);
-		}
+	protected Class getOpenGameAction() {
+		return OpenMockupGame.class;
 	}
+
 }

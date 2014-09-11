@@ -39,17 +39,13 @@ package es.eucm.ead.editor;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.scenes.scene2d.Stage;
+import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.utils.viewport.ExtendViewport;
 
 import es.eucm.ead.editor.control.Controller;
 import es.eucm.ead.editor.control.MockupController;
-import es.eucm.ead.editor.control.Preferences;
-import es.eucm.ead.editor.control.actions.EditorActionException;
-import es.eucm.ead.editor.control.actions.editor.ChangeMockupView;
-import es.eucm.ead.editor.control.actions.editor.OpenMockupGame;
+import es.eucm.ead.editor.control.actions.editor.OpenApplication;
 import es.eucm.ead.editor.platform.Platform;
-import es.eucm.ead.editor.view.builders.gallery.ProjectsView;
-import es.eucm.ead.editor.view.builders.gallery.ScenesView;
 
 public class MockupApplicationListener extends EditorApplicationListener {
 
@@ -70,25 +66,7 @@ public class MockupApplicationListener extends EditorApplicationListener {
 
 	@Override
 	protected void initialize() {
-		String projectToOpenPath = controller.getPreferences().getString(
-				Preferences.LAST_OPENED_GAME);
-
-		if (projectToOpenPath != null && !"".equals(projectToOpenPath)) {
-			try {
-				controller.action(OpenMockupGame.class, projectToOpenPath,
-						stage);
-				if (controller.getViews().getCurrentView() == null) {
-					controller.action(ChangeMockupView.class, ScenesView.class);
-				}
-			} catch (EditorActionException eae) {
-				// the project is probably corrupt; complain but continue
-				Gdx.app.log("OpenLastProject", "Error opening '"
-						+ projectToOpenPath + "'; Request ignored");
-				controller.action(ChangeMockupView.class, ProjectsView.class);
-			}
-		} else {
-			controller.action(ChangeMockupView.class, ProjectsView.class);
-		}
+		controller.action(OpenApplication.class);
 	}
 
 	@Override

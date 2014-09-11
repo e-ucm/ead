@@ -40,6 +40,7 @@ import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 
+import es.eucm.ead.editor.control.MockupController;
 import es.eucm.ead.editor.control.actions.EditorAction;
 import es.eucm.ead.editor.control.actions.model.AddSceneElement;
 import es.eucm.ead.editor.control.background.BackgroundExecutor;
@@ -58,8 +59,7 @@ import es.eucm.ead.schemax.GameStructure;
  * </p>
  * <dl>
  * <dt><strong>Arguments</strong></dt>
- * <dd><strong>args[0]</strong> <em>Stage</em> The Stage used to display the
- * notification while importing the picture.</dd>
+ * <dd><strong>None</strong></dd>
  * </dl>
  */
 public class TakePicture extends EditorAction {
@@ -73,12 +73,12 @@ public class TakePicture extends EditorAction {
 	private Stage stage;
 
 	public TakePicture() {
-		super(true, false, Stage.class);
+		super(true, false);
 	}
 
 	@Override
 	public void perform(Object... args) {
-		stage = (Stage) args[0];
+		stage = ((MockupController) controller).getRootComponent().getStage();
 
 		if (importingNotif == null) {
 			Skin skin = controller.getApplicationAssets().getSkin();

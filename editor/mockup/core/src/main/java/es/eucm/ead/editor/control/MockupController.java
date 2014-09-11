@@ -53,6 +53,8 @@ import es.eucm.ead.editor.platform.Platform;
 
 public class MockupController extends Controller {
 
+	public static final String EXPORT_EXTENSION = ".zip";
+
 	private Group rootComponent;
 	private RepositoryManager repositoryManager;
 

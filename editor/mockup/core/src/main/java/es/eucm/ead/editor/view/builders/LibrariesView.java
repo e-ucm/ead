@@ -52,7 +52,6 @@ import es.eucm.ead.editor.control.Controller;
 import es.eucm.ead.editor.control.MockupController;
 import es.eucm.ead.editor.control.RepositoryManager.ProgressListener;
 import es.eucm.ead.editor.control.actions.editor.ChangeMockupView;
-import es.eucm.ead.editor.control.actions.editor.ChangeView;
 import es.eucm.ead.editor.control.actions.editor.repository.UpdateLibraries;
 import es.eucm.ead.editor.view.builders.gallery.BaseGallery;
 import es.eucm.ead.editor.view.builders.gallery.RepositoryView;
@@ -66,6 +65,7 @@ public class LibrariesView implements ViewBuilder, ProgressListener {
 
 	private static final int COLS = 2;
 
+	private static final float ERROR_NOTIF_TIMEOUR = 2F;
 	private static final String IC_GO_BACK = "back80x80";
 
 	private Controller controller;
@@ -112,12 +112,11 @@ public class LibrariesView implements ViewBuilder, ProgressListener {
 		final float toolbarSize = controller.getPlatform().getSize().y
 				* BaseGallery.TOOLBAR_SIZE;
 		topWidgets = new Toolbar(skin, "white_top");
-		topWidgets.add(backButton).left().padLeft(BaseGallery.SMALL_PAD);
+		topWidgets.add(backButton).left().expandY().fill().size(toolbarSize);
 		topWidgets.add(i18n.m("repository.selectLibrary")).expandX();
 
 		libsGrid = new GridPanel<TextButton>(COLS,
 				BaseGallery.DEFAULT_ENTYTY_SPACING);
-		libsGrid.debug();
 		libsGrid.addCaptureListener(new ClickListener() {
 
 			@Override
@@ -140,7 +139,7 @@ public class LibrariesView implements ViewBuilder, ProgressListener {
 		ScrollPane galleryTableScroll = new ScrollPane(libsGrid);
 		galleryTableScroll.setScrollingDisabled(true, false);
 
-		view = new Table().debug();
+		view = new Table();
 		view.setFillParent(true);
 		view.add(topWidgets).expandX().fill().height(toolbarSize);
 		view.row();
@@ -171,7 +170,7 @@ public class LibrariesView implements ViewBuilder, ProgressListener {
 				libsGrid.addItem(lib).minHeight(BaseGallery.MIN_ITEM_HEIGHT);
 			}
 		} else {
-			errorReftreshing.show(view.getStage(), 2);
+			errorReftreshing.show(view.getStage(), ERROR_NOTIF_TIMEOUR);
 		}
 	}
 }

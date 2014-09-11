@@ -117,7 +117,7 @@ public class NavigationButton extends IconWithScalePanel implements
 		});
 
 		panel.align(Align.top);
-		panel.add(goGallery).pad(PAD, PAD, PAD, PAD).top();
+		panel.add(goGallery).pad(PAD).top();
 		panel.row();
 		panel.add(list).top();
 

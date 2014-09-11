@@ -34,13 +34,14 @@
  *      You should have received a copy of the GNU Lesser General Public License
  *      along with eAdventure.  If not, see <http://www.gnu.org/licenses/>.
  */
-package es.eucm.ead.editor.control.actions;
+package es.eucm.ead.editor.control.actions.model;
 
 import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.graphics.Texture;
 
 import es.eucm.ead.editor.control.ComponentId;
 import es.eucm.ead.editor.control.Selection;
+import es.eucm.ead.editor.control.actions.ModelAction;
 import es.eucm.ead.editor.control.actions.model.SetSelection;
 import es.eucm.ead.editor.control.actions.model.scene.NewScene;
 import es.eucm.ead.editor.control.commands.Command;
@@ -113,7 +114,7 @@ public class AddGatewayDefaultElement extends ModelAction {
 				.getChildren(), exit));
 		command.addCommand(controller.getActions()
 				.getAction(SetSelection.class)
-				.perform(Selection.SCENE, Selection.SCENE_ELEMENT, exit));
+				.perform(Selection.EDITED_GROUP, Selection.SCENE_ELEMENT, exit));
 
 		// Adds to old scene a new element
 		FileHandle internal2 = controller.getApplicationAssets().resolve(

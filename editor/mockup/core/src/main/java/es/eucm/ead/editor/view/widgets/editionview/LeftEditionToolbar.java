@@ -55,7 +55,8 @@ public class LeftEditionToolbar extends Toolbar {
 	private float width;
 
 	public LeftEditionToolbar(Controller controller, String style, float width,
-			float iconSize, float PAD, Actor... touchableActors) {
+			float iconSize, float bottomPad, float iconPad,
+			Actor... touchableActors) {
 		super(controller.getApplicationAssets().getSkin(), style);
 
 		Skin skin = controller.getApplicationAssets().getSkin();
@@ -63,30 +64,32 @@ public class LeftEditionToolbar extends Toolbar {
 		this.width = width;
 
 		align(Align.center);
-		DeparturePanel departurePanel = new DeparturePanel(iconSize,
+		DeparturePanel departurePanel = new DeparturePanel(iconPad, iconSize,
 				controller, this);
 		ChangeVariablePanel changeVariablePanel = new ChangeVariablePanel(
+				iconPad, iconSize, controller, this);
+		VisibilityPanel visibilityPanel = new VisibilityPanel(iconPad,
 				iconSize, controller, this);
-		VisibilityPanel visibilityPanel = new VisibilityPanel(iconSize,
+		TweensPanel tweensPanel = new TweensPanel(iconPad, iconSize,
 				controller, this);
-		TweensPanel tweensPanel = new TweensPanel(iconSize, controller, this);
-		TouchabilityPanel touchabilityPanel = new TouchabilityPanel(iconSize,
-				controller, this);
-		SoundPanel sound = new SoundPanel(iconSize, controller, this);
+		TouchabilityPanel touchabilityPanel = new TouchabilityPanel(iconPad,
+				iconSize, controller, this);
+		SoundPanel sound = new SoundPanel(iconPad, iconSize, controller, this);
 
-		addInNewRow(departurePanel).padBottom(PAD);
-		addInNewRow(changeVariablePanel).padBottom(PAD);
-		addInNewRow(sound).size(iconSize).padBottom(PAD);
+		defaults().padBottom(bottomPad);
+
+		addInNewRow(departurePanel);
+		addInNewRow(changeVariablePanel);
+		addInNewRow(sound);
 
 		// TODO change
-		IconButton conversations = new IconButton("conversation80x80", 0, skin);
-		addInNewRow(conversations).size(iconSize).padBottom(PAD);
+		IconButton conversations = new IconButton("conversation80x80", iconPad,
+				skin);
+		addInNewRow(conversations).size(iconSize);
 
-		addInNewRow(visibilityPanel).padBottom(PAD);
-
-		addInNewRow(touchabilityPanel).padBottom(PAD);
-
-		addInNewRow(tweensPanel).padBottom(PAD);
+		addInNewRow(visibilityPanel);
+		addInNewRow(touchabilityPanel);
+		addInNewRow(tweensPanel);
 
 		for (int i = 0; i < touchableActors.length; ++i) {
 			Actor actor = touchableActors[i];

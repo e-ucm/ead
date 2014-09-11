@@ -39,10 +39,10 @@ package es.eucm.ead.editor.view.builders;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
-import com.badlogic.gdx.scenes.scene2d.utils.Align;
 
 import es.eucm.ead.editor.control.Controller;
 import es.eucm.ead.editor.control.MockupViews;
+import es.eucm.ead.editor.view.builders.gallery.BaseGallery;
 import es.eucm.ead.editor.view.widgets.Toolbar;
 import es.eucm.ead.editor.view.widgets.editionview.LeftEditionToolbar;
 import es.eucm.ead.editor.view.widgets.editionview.MockupSceneEditor;
@@ -50,11 +50,11 @@ import es.eucm.ead.editor.view.widgets.editionview.NavigationButton;
 import es.eucm.ead.editor.view.widgets.editionview.TopEditionToolbar;
 import es.eucm.ead.editor.view.widgets.editionview.draw.PaintToolbar;
 import es.eucm.ead.editor.view.widgets.helpmessage.sequence.EditionViewHelp;
-import es.eucm.ead.editor.view.widgets.layouts.LinearLayout;
 
 public class EditionView implements ViewBuilder {
 
-	private static final float PAD = 40, HEIGHT = 0.065f, ICON_SIZE = 0.04f;
+	private static final float PAD = 40, HEIGHT = BaseGallery.TOOLBAR_SIZE,
+			ICON_SIZE = BaseGallery.ICON_SIZE, ICON_PAD = BaseGallery.ICON_PAD;
 	private static final String TOP_STYLE = "white_top",
 			LEFT_STYLE = "white_left";
 
@@ -64,20 +64,17 @@ public class EditionView implements ViewBuilder {
 
 	private PaintToolbar paintToolbar;
 
-	private Controller controller;
-
 	@Override
 	public void initialize(Controller controller) {
-		this.controller = controller;
-
-		float toolbarSize = controller.getPlatform().getSize().y * HEIGHT;
-		float iconSize = controller.getPlatform().getSize().y * ICON_SIZE;
+		float viewportY = controller.getPlatform().getSize().y;
+		float toolbarSize = viewportY * HEIGHT;
+		float iconSize = viewportY * ICON_SIZE;
+		float iconPad = viewportY * ICON_PAD;
 
 		Skin skin = controller.getApplicationAssets().getSkin();
 
 		view = new Table();
 		view.setFillParent(true);
-		view.align(Align.top);
 
 		sceneEditor = new MockupSceneEditor(controller, LEFT_STYLE, TOP_STYLE);
 
@@ -87,27 +84,19 @@ public class EditionView implements ViewBuilder {
 				toolbarSize);
 
 		final TopEditionToolbar topBar = new TopEditionToolbar(controller,
-				TOP_STYLE, toolbarSize, iconSize, PAD, paintToolbar);
+				TOP_STYLE, toolbarSize, iconSize, iconPad, paintToolbar);
 		final Toolbar leftBar = new LeftEditionToolbar(controller, LEFT_STYLE,
-				toolbarSize, iconSize, PAD, union, topBar);
+				toolbarSize, iconSize, PAD, iconPad, union, topBar);
 
 		union.getPanel().addTouchableActor(topBar);
 		topBar.addTouchableActors(union, leftBar);
 
-		LinearLayout top = new LinearLayout(true);
-		top.add(union);
-		top.add(topBar).expandX();
-
-		Table center = new Table();
-		center.align(Align.left);
-		center.add(leftBar).expandY().fill();
-		center.add(sceneEditor).expand().fill();
-
-		view.add(top).expandX().fill();
+		view.add(union);
+		view.add(topBar).expandX().fill();
 		view.row();
-		view.add(center).expand().fill();
+		view.add(leftBar).left().expandY().fill();
+		view.add(sceneEditor).expand().fill();
 		sceneEditor.toBack();
-		top.toFront();
 
 		((MockupViews) controller.getViews())
 				.registerHelpMessage(new EditionViewHelp(controller, this,

@@ -39,15 +39,15 @@ package es.eucm.ead.editor.view.builders.gallery;
 import java.util.Collection;
 
 import com.badlogic.gdx.scenes.scene2d.Actor;
-import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.ui.Button;
 import com.badlogic.gdx.scenes.scene2d.ui.TextField;
-import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
+import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
 import com.badlogic.gdx.utils.Array;
 
 import es.eucm.ead.editor.control.Controller;
 import es.eucm.ead.editor.control.actions.editor.ChangeMockupView;
 import es.eucm.ead.editor.control.actions.editor.CloseMockupGame;
+import es.eucm.ead.editor.control.actions.editor.ExportMockupProject;
 import es.eucm.ead.editor.control.actions.model.ChangeProjectName;
 import es.eucm.ead.editor.control.actions.model.EditScene;
 import es.eucm.ead.editor.control.actions.model.scene.NewScene;
@@ -70,6 +70,7 @@ import es.eucm.ead.schemax.entities.ResourceCategory;
 
 public class ScenesView extends BaseGallery {
 
+	private static final int ROWS = 4;
 	private static final float UNIQUE_SCENE_NOTIF_TIMEOUT = 2F;
 
 	private Notification uniqueSceneNotif;
@@ -96,8 +97,22 @@ public class ScenesView extends BaseGallery {
 	};
 
 	protected int getColumns() {
-		return 4;
+		return ROWS;
 	};
+
+	@Override
+	protected Actor createShareButton() {
+		Button share = new ToolbarIcon("play80x80", iconPad, iconSize, skin,
+				"inverted");
+		share.addListener(new ChangeListener() {
+
+			@Override
+			public void changed(ChangeEvent event, Actor actor) {
+				controller.action(ExportMockupProject.class);
+			}
+		});
+		return share;
+	}
 
 	@Override
 	public void initialize(Controller controller) {
@@ -108,11 +123,12 @@ public class ScenesView extends BaseGallery {
 
 	@Override
 	protected Actor createPlayButton() {
-		Button play = new ToolbarIcon("play80x80", ICON_PAD, iconSize, skin,
+		Button play = new ToolbarIcon("play80x80", iconPad, iconSize, skin,
 				"inverted");
-		play.addListener(new ClickListener() {
+		play.addListener(new ChangeListener() {
+
 			@Override
-			public void clicked(InputEvent event, float x, float y) {
+			public void changed(ChangeEvent event, Actor actor) {
 				controller.action(ChangeMockupView.class, PlayView.class);
 			}
 		});
@@ -121,10 +137,11 @@ public class ScenesView extends BaseGallery {
 
 	@Override
 	protected Actor createBackButton() {
-		Button back = new ToolbarIcon("back80x80", ICON_PAD, iconSize, skin);
-		back.addListener(new ClickListener() {
+		Button back = new ToolbarIcon("back80x80", iconPad, iconSize, skin);
+		back.addListener(new ChangeListener() {
+
 			@Override
-			public void clicked(InputEvent event, float x, float y) {
+			public void changed(ChangeEvent event, Actor actor) {
 				controller.action(CloseMockupGame.class);
 			}
 		});
