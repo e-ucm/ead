@@ -37,14 +37,13 @@
 package es.eucm.ead.editor.view.widgets.editionview;
 
 import com.badlogic.gdx.scenes.scene2d.Actor;
-import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.utils.Align;
 
 import es.eucm.ead.editor.control.Controller;
-import es.eucm.ead.editor.view.widgets.IconButton;
 import es.eucm.ead.editor.view.widgets.Toolbar;
 import es.eucm.ead.editor.view.widgets.editionview.prefabs.ChangeVariablePanel;
 import es.eucm.ead.editor.view.widgets.editionview.prefabs.DeparturePanel;
+import es.eucm.ead.editor.view.widgets.editionview.prefabs.ShowTextPanel;
 import es.eucm.ead.editor.view.widgets.editionview.prefabs.SoundPanel;
 import es.eucm.ead.editor.view.widgets.editionview.prefabs.TouchabilityPanel;
 import es.eucm.ead.editor.view.widgets.editionview.prefabs.TweensPanel;
@@ -58,8 +57,6 @@ public class LeftEditionToolbar extends Toolbar {
 			float iconSize, float bottomPad, float iconPad,
 			Actor... touchableActors) {
 		super(controller.getApplicationAssets().getSkin(), style);
-
-		Skin skin = controller.getApplicationAssets().getSkin();
 
 		this.width = width;
 
@@ -75,18 +72,15 @@ public class LeftEditionToolbar extends Toolbar {
 		TouchabilityPanel touchabilityPanel = new TouchabilityPanel(iconPad,
 				iconSize, controller, this);
 		SoundPanel sound = new SoundPanel(iconPad, iconSize, controller, this);
+		ShowTextPanel conversations = new ShowTextPanel(iconPad, iconSize,
+				controller, this);
 
 		defaults().padBottom(bottomPad);
 
 		addInNewRow(departurePanel);
 		addInNewRow(changeVariablePanel);
 		addInNewRow(sound);
-
-		// TODO change
-		IconButton conversations = new IconButton("conversation80x80", iconPad,
-				skin);
-		addInNewRow(conversations).size(iconSize);
-
+		addInNewRow(conversations);
 		addInNewRow(visibilityPanel);
 		addInNewRow(touchabilityPanel);
 		addInNewRow(tweensPanel);
@@ -99,6 +93,7 @@ public class LeftEditionToolbar extends Toolbar {
 			tweensPanel.getPanel().addTouchableActor(actor);
 			touchabilityPanel.getPanel().addTouchableActor(actor);
 			sound.getPanel().addTouchableActor(actor);
+			conversations.getPanel().addTouchableActor(actor);
 		}
 	}
 

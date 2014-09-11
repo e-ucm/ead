@@ -77,6 +77,10 @@ public class PositionedHiddenPanel extends HiddenPanel {
 		this.position = position;
 	}
 
+	public void show() {
+		show((Action) null);
+	}
+
 	public void show(Action action) {
 		show(reference.getStage(), action);
 	}

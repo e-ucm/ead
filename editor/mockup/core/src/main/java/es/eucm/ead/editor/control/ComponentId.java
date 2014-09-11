@@ -41,25 +41,31 @@ package es.eucm.ead.editor.control;
  */
 public class ComponentId {
 
-	public static final String PREFAB_SOUND = "predefinedSound";
+	public static final String PREFAB_SOUND = "prefabSound";
 
-	public static final String PREFAB_EXIT = "predefinedExit";
+	public static final String PREFAB_EXIT = "prefabExit";
 
-	public static final String PREFAB_CHANGE_VAR = "predefinedChangeVar";
+	public static final String PREFAB_CHANGE_VAR = "prefabChangeVar";
 
-	public static final String PREFAB_VISIBILITY = "predefinedVisibility";
+	public static final String PREFAB_VISIBILITY = "prefabVisibility";
 
-	public static final String PREFAB_TOUCHABILITY = "predefinedTouchability";
+	public static final String PREFAB_TOUCHABILITY = "prefabTouchability";
 
-	public static final String PREFAB_BLINK = "predefinedBlinkTween";
+	public static final String PREFAB_BLINK = "prefabBlinkTween";
 
-	public static final String PREFAB_HORIZONTAL = "predefinedHorizontalTween";
+	public static final String PREFAB_HORIZONTAL = "prefabHorizontalTween";
 
-	public static final String PREFAB_VERTICAL = "predefinedVerticalTween";
+	public static final String PREFAB_VERTICAL = "prefabVerticalTween";
 
-	public static final String PREFAB_INCREASE = "predefinedIncreaseTween";
+	public static final String PREFAB_INCREASE = "prefabIncreaseTween";
 
-	public static final String PREFAB_DECREASE = "predefinedDecreaseTween";
+	public static final String PREFAB_DECREASE = "prefabDecreaseTween";
 
-	public static final String PREFAB_ROTATE360 = "predefinedRotate360Tween";
+	public static final String PREFAB_ROTATE360 = "prefabRotate360Tween";
+
+	public static final String PREFAB_SHOW_TEXT = "prefabShowText";
+
+	public static final String PREFAB_CONVERSATION = "prefabConversation";
+
+	public static final String PREFAB_CONVERSATION_ID = "showTextConversation_ID";
 }
