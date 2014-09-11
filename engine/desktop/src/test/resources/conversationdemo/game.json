@@ -26,7 +26,7 @@
     }, {
        "class": "conversations",
        "conversations" : [{
-           "id": "talk to the bee",
+           "conversationId": "talk to the bee",
            "nodes": [
                {
                    id: 0,

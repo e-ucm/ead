@@ -56,7 +56,7 @@ public class ConversationsComponent extends Component implements Poolable {
 	}
 
 	public void add(Conversation conversation) {
-		conversations.put(conversation.getId(), conversation);
+		conversations.put(conversation.getConversationId(), conversation);
 	}
 
 	@Override
