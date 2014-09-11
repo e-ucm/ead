@@ -70,7 +70,7 @@ public abstract class BaseGallery implements ViewBuilder {
 	private static final int DEFAULT_COLUMNS = 5;
 
 	public static final float ICON_SIZE = 0.06f, TOOLBAR_SIZE = 0.075f,
-			ICON_PAD = 0.0075f, SMALL_PAD = 20f, DEFAULT_ENTYTY_SPACING = 20f,
+			ICON_PAD = 0.0075f, SMALL_PAD = 20f, DEFAULT_ENTITY_SPACING = 20f,
 			MIN_ITEM_HEIGHT = 165F, UNDO_POPUP_TIMEOUT = 5F, PLAY_PAD = 100F;
 
 	private static final ClickListener newButtonListener = new ClickListener() {
@@ -190,7 +190,7 @@ public abstract class BaseGallery implements ViewBuilder {
 
 		createnNewButton();
 
-		galleryGrid = new GridPanel<Actor>(getColumns(), DEFAULT_ENTYTY_SPACING);
+		galleryGrid = new GridPanel<Actor>(getColumns(), DEFAULT_ENTITY_SPACING);
 		ScrollPane galleryPane = new ScrollPane(galleryGrid);
 		galleryPane.setScrollingDisabled(true, false);
 

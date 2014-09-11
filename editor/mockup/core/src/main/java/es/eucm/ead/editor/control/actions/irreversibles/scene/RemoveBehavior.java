@@ -43,7 +43,7 @@ import es.eucm.ead.schemax.entities.ResourceCategory;
 
 /**
  * Removes a {@link Behavior} component to the current scene element selected
- * </p>
+ * 
  * <dl>
  * <dt><strong>Arguments</strong></dt>
  * <dd><strong>args[0]</strong> <em>{@link Behavior}</em> to add</dd>

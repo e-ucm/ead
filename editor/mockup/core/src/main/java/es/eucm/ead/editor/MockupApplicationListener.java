@@ -39,7 +39,6 @@ package es.eucm.ead.editor;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.scenes.scene2d.Stage;
-import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.utils.viewport.ExtendViewport;
 
 import es.eucm.ead.editor.control.Controller;
@@ -49,6 +48,14 @@ import es.eucm.ead.editor.platform.Platform;
 
 public class MockupApplicationListener extends EditorApplicationListener {
 
+	private final Runnable clearColor = new Runnable() {
+
+		@Override
+		public void run() {
+			Gdx.gl.glClearColor(1f, 1f, 1f, 1f);
+		}
+	};
+
 	public MockupApplicationListener(Platform platform) {
 		super(platform);
 	}
@@ -56,7 +63,7 @@ public class MockupApplicationListener extends EditorApplicationListener {
 	@Override
 	public void create() {
 		super.create();
-		Gdx.gl.glClearColor(1f, 1f, 1f, 1f);
+		Gdx.app.postRunnable(clearColor);
 	}
 
 	@Override
@@ -72,6 +79,12 @@ public class MockupApplicationListener extends EditorApplicationListener {
 	@Override
 	public void pause() {
 		((MockupController) controller).pause();
+	}
+
+	@Override
+	public void resume() {
+		super.resume();
+		Gdx.app.postRunnable(clearColor);
 	}
 
 	@Override
