@@ -65,7 +65,7 @@ public class LibrariesView implements ViewBuilder, ProgressListener {
 
 	private static final int COLS = 2;
 
-	private static final float ERROR_NOTIF_TIMEOUR = 2F;
+	private static final float ERROR_NOTIF_TIMEOUT = 3F;
 	private static final String IC_GO_BACK = "back80x80";
 
 	private Controller controller;
@@ -116,7 +116,7 @@ public class LibrariesView implements ViewBuilder, ProgressListener {
 		topWidgets.add(i18n.m("repository.selectLibrary")).expandX();
 
 		libsGrid = new GridPanel<TextButton>(COLS,
-				BaseGallery.DEFAULT_ENTYTY_SPACING);
+				BaseGallery.DEFAULT_ENTITY_SPACING);
 		libsGrid.addCaptureListener(new ClickListener() {
 
 			@Override
@@ -170,7 +170,7 @@ public class LibrariesView implements ViewBuilder, ProgressListener {
 				libsGrid.addItem(lib).minHeight(BaseGallery.MIN_ITEM_HEIGHT);
 			}
 		} else {
-			errorReftreshing.show(view.getStage(), ERROR_NOTIF_TIMEOUR);
+			errorReftreshing.show(view.getStage(), ERROR_NOTIF_TIMEOUT);
 		}
 	}
 }

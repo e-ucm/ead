@@ -5,7 +5,7 @@
         "$ref": "../component.json"
     },
     "properties": {
-        "id": {
+        "conversationId": {
             "type": "string",
             "description": "Descriptive name of conversation, used when launching it."
         },

@@ -61,16 +61,23 @@ public class TriggerConversationExecutor extends
 	public void execute(Entity target, TriggerConversation effect) {
 
 		Conversation conversation = null;
-		for (Entity entity : conversationsEntities.values()) {
-			ConversationsComponent conversations = entity
-					.getComponent(ConversationsComponent.class);
+		ConversationsComponent conversations = target
+				.getComponent(ConversationsComponent.class);
+		if (conversations == null) {
+			for (Entity entity : conversationsEntities.values()) {
+				conversations = entity
+						.getComponent(ConversationsComponent.class);
 
+				conversation = conversations.getConversations().get(
+						effect.getConversationId());
+
+				if (conversation != null) {
+					break;
+				}
+			}
+		} else {
 			conversation = conversations.getConversations().get(
 					effect.getConversationId());
-
-			if (conversation != null) {
-				break;
-			}
 		}
 
 		if (conversation != null) {

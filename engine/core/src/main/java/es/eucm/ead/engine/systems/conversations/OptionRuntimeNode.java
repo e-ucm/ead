@@ -53,6 +53,8 @@ public class OptionRuntimeNode extends RuntimeNode<OptionNode> {
 
 	private VariablesManager variablesManager;
 
+	private String optionSelectedVar;
+
 	@Override
 	public void setGameLoop(GameLoop gameLoop) {
 		super.setGameLoop(gameLoop);
@@ -63,8 +65,8 @@ public class OptionRuntimeNode extends RuntimeNode<OptionNode> {
 	@Override
 	public void setNode(OptionNode node) {
 		super.setNode(node);
-		variablesManager.setValue(getOptionSelectedVar(conversation),
-				NO_OPTION_SELECTED, true);
+		optionSelectedVar = getOptionSelectedVar(conversation);
+		variablesManager.setValue(optionSelectedVar, NO_OPTION_SELECTED, true);
 		OptionsComponent option = gameLoop
 				.createComponent(OptionsComponent.class);
 		option.setOptions(node.getOptions());
@@ -75,20 +77,19 @@ public class OptionRuntimeNode extends RuntimeNode<OptionNode> {
 	}
 
 	public static String getOptionSelectedVar(Conversation conversation) {
-		return VarsContext.RESERVED_VAR_PREFIX + conversation.getId()
-				+ OPTION_SELECTED_VAR_SUFFIX;
+		return VarsContext.RESERVED_VAR_PREFIX
+				+ conversation.getConversationId() + OPTION_SELECTED_VAR_SUFFIX;
 	}
 
 	@Override
 	public boolean update(float delta) {
-		return (Integer) (variablesManager
-				.getValue(getOptionSelectedVar(conversation))) != NO_OPTION_SELECTED;
+		return (Integer) (variablesManager.getValue(optionSelectedVar)) != NO_OPTION_SELECTED;
 	}
 
 	@Override
 	public int nextNode() {
 		int optionSelected = (Integer) (variablesManager
-				.getValue(getOptionSelectedVar(conversation)));
+				.getValue(optionSelectedVar));
 		if (optionSelected >= 0 && optionSelected < node.getNextNodeIds().size) {
 			return node.getNextNodeIds().get(optionSelected);
 		} else {

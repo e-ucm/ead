@@ -36,31 +36,63 @@
  */
 package es.eucm.ead.editor.control.actions.irreversibles.scene;
 
+import es.eucm.ead.editor.control.ComponentId;
+import es.eucm.ead.editor.control.Selection;
 import es.eucm.ead.editor.control.actions.irreversibles.IrreversibleAction;
 import es.eucm.ead.schema.components.behaviors.Behavior;
+import es.eucm.ead.schema.components.behaviors.events.Touch;
+import es.eucm.ead.schema.components.conversation.Conversation;
+import es.eucm.ead.schema.components.conversation.LineNode;
+import es.eucm.ead.schema.effects.TriggerConversation;
 import es.eucm.ead.schema.entities.ModelEntity;
 import es.eucm.ead.schemax.entities.ResourceCategory;
 
 /**
- * Removes a {@link Behavior} component to the current scene element selected
- * 
+ * Creates a {@link Conversation} component with
+ * {@link ComponentId#PREFAB_CONVERSATION_ID} as conversation id and an empty
+ * speaker and a {@link LineNode} with an empty line as the first node and adds
+ * it to the current {@link Selection#SCENE_ELEMENT}. Also adds to the current
+ * {@link Selection#SCENE_ELEMENT} a {@link TriggerConversation} effect executed
+ * on a {@link Touch} event.
  * <dl>
  * <dt><strong>Arguments</strong></dt>
- * <dd><strong>args[0]</strong> <em>{@link Behavior}</em> to add</dd>
+ * <dd><strong>args[0]</strong> <em>{@link Conversation}</em> the conversation
+ * component</dd>
  * </dl>
  */
-public class RemoveBehavior extends IrreversibleAction {
+public class CreateConversationOnTouch extends IrreversibleAction {
 
-	public RemoveBehavior() {
-		super(ResourceCategory.SCENE, true, false, Behavior.class);
+	public CreateConversationOnTouch() {
+		super(ResourceCategory.SCENE, true, false, Conversation.class);
+
 	}
 
 	@Override
 	protected void action(ModelEntity entity, Object[] args) {
-		Behavior behavior = (Behavior) args[0];
+		TriggerConversation triggerConversation = new TriggerConversation();
+		triggerConversation.setNodeId(0);
+		triggerConversation
+				.setConversationId(ComponentId.PREFAB_CONVERSATION_ID);
 
-		entity.getComponents().removeValue(behavior, true);
+		Behavior showTextBehavior = new Behavior();
+		showTextBehavior.setId(ComponentId.PREFAB_SHOW_TEXT);
+		showTextBehavior.setEvent(new Touch());
+		showTextBehavior.getEffects().add(triggerConversation);
 
+		Conversation conversation = (Conversation) args[0];
+		conversation.setId(ComponentId.PREFAB_CONVERSATION);
+		LineNode lineNode = new LineNode();
+		lineNode.setSpeaker(0);
+		lineNode.setLine("");
+
+		conversation.setConversationId(ComponentId.PREFAB_CONVERSATION_ID);
+		conversation.getNodes().add(lineNode);
+		conversation.getSpeakers().add("");
+
+		ModelEntity sel = (ModelEntity) controller.getModel().getSelection()
+				.getSingle(Selection.SCENE_ELEMENT);
+		sel.getComponents().add(conversation);
+		sel.getComponents().add(showTextBehavior);
 	}
 
 }

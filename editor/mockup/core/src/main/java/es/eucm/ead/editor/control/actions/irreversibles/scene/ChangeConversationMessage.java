@@ -34,52 +34,44 @@
  *      You should have received a copy of the GNU Lesser General Public License
  *      along with eAdventure.  If not, see <http://www.gnu.org/licenses/>.
  */
-package es.eucm.ead.engine.systems.conversations;
+package es.eucm.ead.editor.control.actions.irreversibles.scene;
 
-import es.eucm.ead.engine.GameLoop;
-import es.eucm.ead.engine.components.LineComponent;
-import es.eucm.ead.engine.systems.EffectsSystem;
-import es.eucm.ead.engine.systems.conversations.NodeSystem.SimpleRuntimeNode;
-import es.eucm.ead.engine.variables.VariablesManager;
-import es.eucm.ead.engine.variables.VarsContext;
+import es.eucm.ead.editor.control.actions.irreversibles.IrreversibleAction;
 import es.eucm.ead.schema.components.conversation.Conversation;
 import es.eucm.ead.schema.components.conversation.LineNode;
+import es.eucm.ead.schema.entities.ModelEntity;
+import es.eucm.ead.schemax.entities.ResourceCategory;
 
-public class LineRuntimeNode extends SimpleRuntimeNode<LineNode> {
+/**
+ * Changes the {@link Conversation} speaker or the first node's line.
+ * <dl>
+ * <dt><strong>Arguments</strong></dt>
+ * <dd><strong>args[0]</strong> <em>{@link Boolean}</em> if true the speaker
+ * will be changed otherwise the line</dd>
+ * <dd><strong>args[1]</strong> <em>{@link Conversation}</em> whose line/speaker
+ * will be changed</dd>
+ * <dd><strong>args[2]</strong> <em>{@link String}</em> new value</dd>
+ * </dl>
+ */
+public class ChangeConversationMessage extends IrreversibleAction {
 
-	public static final String LINE_ENDED_VAR_SUFFIX = "_line_ended";
+	public ChangeConversationMessage() {
+		super(ResourceCategory.SCENE, true, false, Boolean.class,
+				Conversation.class, String.class);
 
-	private VariablesManager variablesManager;
-	private String lineEndedVar;
-
-	@Override
-	public void setGameLoop(GameLoop gameLoop) {
-		super.setGameLoop(gameLoop);
-		this.variablesManager = gameLoop.getSystem(EffectsSystem.class)
-				.getVariablesManager();
 	}
 
 	@Override
-	public void setNode(LineNode node) {
-		super.setNode(node);
-		lineEndedVar = getLineEndedVar(conversation);
-		variablesManager.setValue(lineEndedVar, false, true);
-		LineComponent line = gameLoop.createComponent(LineComponent.class);
-		line.setSpeaker(conversation.getSpeakers().get(node.getSpeaker()));
-		line.setLine(node.getLine());
-		line.setConversation(conversation);
-		line.setNode(node);
-
-		entity.add(line);
-	}
-
-	public static String getLineEndedVar(Conversation conversation) {
-		return VarsContext.RESERVED_VAR_PREFIX
-				+ conversation.getConversationId() + LINE_ENDED_VAR_SUFFIX;
-	}
-
-	@Override
-	public boolean update(float delta) {
-		return (Boolean) variablesManager.getValue(lineEndedVar);
+	protected void action(ModelEntity entity, Object[] args) {
+		Boolean speaker = (Boolean) args[0];
+		Conversation conversation = (Conversation) args[1];
+		String newValue = args[2].toString();
+		if (speaker) {
+			conversation.getSpeakers().clear();
+			conversation.getSpeakers().add(newValue);
+		} else {
+			LineNode line = (LineNode) conversation.getNodes().first();
+			line.setLine(newValue);
+		}
 	}
 }

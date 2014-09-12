@@ -43,7 +43,7 @@ import es.eucm.ead.schemax.entities.ResourceCategory;
 
 /**
  * Adds a {@link Touchability} component to the current scene element selected
- * </p>
+ * 
  * <dl>
  * <dt><strong>Arguments</strong></dt>
  * <dd><strong>args[0]</strong> <em>{@link Touchability}</em> to add</dd>
