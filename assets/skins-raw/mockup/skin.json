@@ -102,6 +102,15 @@
 			disabledFontColor: gray,
             font: default-font,
             fontColor: black
+		},
+		white_press: {
+			up: button_normal, 
+			down: button_pressed,  
+			checked: button_pressed,
+			disabled: button_disabled,
+			disabledFontColor: gray,
+            font: default-font,
+            fontColor: black
 		}
 	},
 	com.badlogic.gdx.scenes.scene2d.ui.CheckBox$CheckBoxStyle: {
