@@ -41,7 +41,6 @@ import com.badlogic.gdx.scenes.scene2d.Actor;
 import es.eucm.ead.editor.control.Controller;
 import es.eucm.ead.editor.control.Selection;
 import es.eucm.ead.editor.control.actions.irreversibles.scene.RemoveComponents;
-import es.eucm.ead.editor.model.events.SelectionEvent;
 import es.eucm.ead.schema.components.ModelComponent;
 import es.eucm.ead.schema.entities.ModelEntity;
 
@@ -73,25 +72,17 @@ public abstract class PrefabComponentPanel extends PrefabPanel {
 	protected abstract void actualizePanel();
 
 	@Override
-	public void modelChanged(SelectionEvent event) {
-		if (selection.get(Selection.SCENE_ELEMENT).length == 1) {
-			this.setDisabled(false);
-			this.component = null;
-
-			ModelEntity modelEntity = (ModelEntity) selection
-					.getSingle(Selection.SCENE_ELEMENT);
-			for (ModelComponent component : modelEntity.getComponents()) {
-				String id = component.getId();
-				if (id != null && id.equals(componentId)) {
-					this.component = component;
-					setUsed(true);
-					return;
-				}
+	protected void selectionChanged() {
+		ModelEntity modelEntity = (ModelEntity) selection
+				.getSingle(Selection.SCENE_ELEMENT);
+		component = null;
+		for (ModelComponent component : modelEntity.getComponents()) {
+			String id = component.getId();
+			if (id != null && id.equals(componentId)) {
+				this.component = component;
+				setUsed(true);
+				return;
 			}
-			setUsed(false);
-		} else {
-			this.setDisabled(true);
-			setUsed(false);
 		}
 	}
 

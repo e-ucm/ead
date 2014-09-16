@@ -58,7 +58,6 @@ import es.eucm.ead.editor.platform.MockupPlatform;
 import es.eucm.ead.editor.platform.Platform;
 import es.eucm.ead.editor.platform.Platform.FileChooserListener;
 import es.eucm.ead.schema.components.behaviors.Behavior;
-import es.eucm.ead.schema.components.behaviors.events.Touch;
 import es.eucm.ead.schema.effects.PlaySound;
 
 public class SoundPanel extends PrefabComponentPanel implements
@@ -197,9 +196,8 @@ public class SoundPanel extends PrefabComponentPanel implements
 
 			if (component == null) {
 				component = new Behavior();
-				component.setId(componentId);
-				((Behavior) component).setEvent(new Touch());
-				controller.action(AddBehaviorPrefab.class, component);
+				controller.action(AddBehaviorPrefab.class, component,
+						componentId);
 			}
 
 			if (((Behavior) component).getEffects().size > 0) {
