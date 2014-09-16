@@ -40,8 +40,6 @@ import static com.badlogic.gdx.scenes.scene2d.actions.Actions.delay;
 import static com.badlogic.gdx.scenes.scene2d.actions.Actions.forever;
 import static com.badlogic.gdx.scenes.scene2d.actions.Actions.run;
 
-import java.io.File;
-
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.scenes.scene2d.Group;
 import com.badlogic.gdx.utils.reflect.ClassReflection;
@@ -54,7 +52,6 @@ import es.eucm.ead.editor.control.background.BackgroundExecutor.BackgroundTaskLi
 import es.eucm.ead.editor.control.background.BackgroundTask;
 import es.eucm.ead.editor.model.Model;
 import es.eucm.ead.editor.model.Q;
-import es.eucm.ead.editor.view.builders.gallery.ProjectsView;
 import es.eucm.ead.schema.editor.components.EditState;
 import es.eucm.ead.schema.entities.ModelEntity;
 
@@ -71,8 +68,8 @@ public class OpenMockupGame extends OpenGame {
 	@Override
 	public void perform(Object... args) {
 		String path = args[0].toString();
-		if (!path.endsWith(File.separator)) {
-			path += File.separator;
+		if (!path.endsWith("/")) {
+			path += "/";
 		}
 		fileChosen(path);
 		if (!path.equals(controller.getEditorGameAssets().getLoadingPath())) {
