@@ -63,7 +63,7 @@ public class MultiStateButton extends TextButton {
 	public MultiStateButton(Skin skin, Array<String> statesArray,
 			Array<Color> colorsArray, float margin) {
 
-		super(statesArray.first(), skin, "white");
+		super(statesArray.first(), skin, "to_color");
 		setColor(colorsArray.first());
 
 		this.width = 0;
