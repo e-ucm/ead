@@ -54,18 +54,17 @@ public class TouchabilityPanel extends ConditionalPanel {
 	}
 
 	@Override
-	protected void updateCondition() {
-		if (varTextDown != null && varTextDown.getSelectedVariableDef() != null) {
-			if (component == null) {
-				component = new Touchability();
-				component.setId(componentId);
-				((Touchability) component).setCondition(createCondition());
-				controller.action(AddTouchabilityCondition.class, component);
-			} else {
-				controller.action(ChangeTouchabilityCondition.class,
-						componentId, createCondition());
-			}
-			setUsed(true);
+	protected void updateComponent() {
+		if (component == null) {
+			component = new Touchability();
+			component.setId(componentId);
+			((Touchability) component).setCondition(generateCondition());
+			controller.action(AddTouchabilityCondition.class, component);
+		} else {
+			controller.action(ChangeTouchabilityCondition.class, componentId,
+					generateCondition());
 		}
+		setUsed(true);
 	}
+
 }

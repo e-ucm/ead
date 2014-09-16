@@ -39,35 +39,36 @@ package es.eucm.ead.editor.view.widgets.editionview.prefabs;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
-import com.badlogic.gdx.scenes.scene2d.ui.Label;
+import com.badlogic.gdx.scenes.scene2d.ui.ScrollPane;
+import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.utils.Array;
 
 import es.eucm.ead.editor.control.Controller;
 import es.eucm.ead.editor.view.widgets.MultiStateButton;
-import es.eucm.ead.editor.view.widgets.VarTextDown;
-import es.eucm.ead.editor.view.widgets.layouts.LinearLayout;
+import es.eucm.ead.editor.view.widgets.PositionedHiddenPanel.Position;
+import es.eucm.ead.editor.view.widgets.editionview.variables.VariablesAndGroup;
+import es.eucm.ead.editor.view.widgets.editionview.variables.VariablesOrGroup;
+import es.eucm.ead.editor.view.widgets.editionview.variables.VariablesTable;
 import es.eucm.ead.schema.components.ModelConditionedComponent;
 
 public abstract class ConditionalPanel extends PrefabComponentPanel {
 
-	private static final float PAD = 20, BUTTON_MARGIN = 75;
-
-	protected VarTextDown varTextDown;
+	private static final float BUTTON_MARGIN = 75;
 
 	private MultiStateButton stateButton;
+
+	private VariablesTable variablesPanel;
+
+	private VariablesOrGroup varOp;
 
 	public ConditionalPanel(String icon, float iconPad, String namei18n,
 			final String componentId, float size, final Controller controller,
 			Actor touchable, Class<? extends ModelConditionedComponent> myClass) {
 		super(icon, iconPad, size, namei18n, componentId, controller, touchable);
 
-		varTextDown = new VarTextDown(skin, controller) {
-			@Override
-			protected void doAction() {
-				updateCondition();
-			}
-		};
+		variablesPanel = new VariablesTable(skin, Position.RIGHT, this,
+				controller);
 
 		Array<String> states = new Array<String>();
 		states.add(i18n.m("edition.true"));
@@ -80,66 +81,100 @@ public abstract class ConditionalPanel extends PrefabComponentPanel {
 		stateButton.addListener(new ClickListener() {
 			@Override
 			public void clicked(InputEvent event, float x, float y) {
-				updateCondition();
+				updateComponent();
 			}
 		});
 
-		LinearLayout top = new LinearLayout(true);
-		top.add(new Label(i18n.m("edition.ifVariable"), skin)).margin(0, 0,
-				PAD, 0);
-		top.add(varTextDown);
-
-		LinearLayout bot = new LinearLayout(true);
-		bot.add(new Label(i18n.m("edition.is"), skin)).margin(0, 0, PAD, 0);
-		bot.add(stateButton);
-
-		panel.add(top).pad(PAD).center().expand();
-		panel.row();
-		panel.add(bot).pad(PAD).center().expand();
-	}
-
-	protected abstract void updateCondition();
-
-	protected String createCondition() {
-		return "(eq $" + varTextDown.getSelectedVariableDef().getName() + " "
-				+ getState() + ")";
-	}
-
-	private String getState() {
-		if (stateButton.getText().toString().equals(i18n.m("edition.true"))) {
-			return "btrue";
-		} else {
-			return "bfalse";
-		}
+		ChangeListener varChanged = new ChangeListener() {
+			@Override
+			public void changed(ChangeEvent event, Actor actor) {
+				updateComponent();
+			}
+		};
+		varOp = new VariablesOrGroup(controller, variablesPanel, varChanged);
+		ScrollPane sp = new ScrollPane(varOp);
+		panel.add(sp).expand().fill();
 	}
 
 	@Override
-	public void actualizePanel() {
-		String var = null;
-		String expression = null;
+	protected void showPanel() {
+		super.showPanel();
+		variablesPanel.updatePanel();
+	}
 
+	@Override
+	protected void hidePanel() {
+		super.hidePanel();
+		variablesPanel.hide();
+	}
+
+	@Override
+	protected void actualizePanel() {
 		if (component != null) {
-			// expression of the "(eq $var bvalor)" form
-			String aux = ((ModelConditionedComponent) component).getCondition();
-			aux = aux.replace("(", "");
-			aux = aux.replace(")", "");
-			aux = aux.replace("$", "");
-
-			String[] sep = aux.split(" ");
-
-			var = sep[1];
-			expression = sep[2];
-		}
-		varTextDown.reloadPanel(var);
-		stateButton.selectText(booleanToString(expression));
-
-	}
-
-	private String booleanToString(String string) {
-		if (string != null && string.equals("btrue")) {
-			return i18n.m("edition.true");
+			varOp.reset();
+			evaluateExpression(((ModelConditionedComponent) component)
+					.getCondition());
 		} else {
-			return i18n.m("edition.false");
+			varOp.emptyWidget();
 		}
 	}
+
+	protected abstract void updateComponent();
+
+	protected void evaluateExpression(String expression) {
+		String[] fields = expression.split(" ");
+
+		VariablesAndGroup andGroup = (VariablesAndGroup) varOp.variableWidget();
+
+		evaluateExpression(andGroup, fields, 0);
+	}
+
+	protected int evaluateExpression(VariablesAndGroup andGroup,
+			String[] fields, int init) {
+		int i = init;
+
+		while (i >= 0 && i < fields.length) {
+			String aux = fields[i];
+			if (aux.equals("eq")) {
+				String arg2 = fields[i + 2];
+				andGroup.addVariableWidget(evaluateEq(andGroup, fields[i + 1],
+						arg2));
+				String aux2 = fields[i];
+				while (!aux2.equals(")")) {
+					i++;
+					aux2 = fields[i];
+				}
+				return i;
+			} else if (aux.equals("and")) {
+				i = evaluateExpression(andGroup, fields, i + 1);
+				i = evaluateExpression(andGroup, fields, i + 1);
+			} else if (aux.equals("or")) {
+				i = evaluateExpression(andGroup, fields, i + 1);
+				andGroup = (VariablesAndGroup) varOp.variableWidget();
+				andGroup.reset();
+				varOp.addFirstVariableWidget(andGroup);
+				i = evaluateExpression(andGroup, fields, i + 1);
+			} else if (aux.equals(")")) {
+				return i;
+			} else if (aux.equals("btrue") || aux.equals("bfalse")) {
+				return i;
+			}
+			i++;
+		}
+		return -1;
+	}
+
+	private Actor evaluateEq(VariablesAndGroup andGroup, String arg0,
+			String arg1) {
+		if (arg0.contains("$") && !arg0.contains(" ")) {
+			return andGroup.variableWidget(arg0.replace("$", ""), arg1);
+		} else {
+			return andGroup.variableWidget(arg1.replace("$", ""), arg0);
+		}
+	}
+
+	protected String generateCondition() {
+		return varOp.getExpression();
+	}
+
 }

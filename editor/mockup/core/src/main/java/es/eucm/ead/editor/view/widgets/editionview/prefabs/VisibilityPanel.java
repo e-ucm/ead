@@ -54,19 +54,17 @@ public class VisibilityPanel extends ConditionalPanel {
 	}
 
 	@Override
-	protected void updateCondition() {
-		if (varTextDown != null && varTextDown.getSelectedVariableDef() != null) {
-			if (component == null) {
-				component = new Visibility();
-				component.setId(componentId);
-				((Visibility) component).setCondition(createCondition());
-				controller.action(AddVisibilityCondition.class, component);
-			} else {
-				controller.action(ChangeVisibilityCondition.class, componentId,
-						createCondition());
-			}
-			setUsed(true);
+	protected void updateComponent() {
+		if (component == null) {
+			component = new Visibility();
+			component.setId(componentId);
+			((Visibility) component).setCondition(generateCondition());
+			controller.action(AddVisibilityCondition.class, component);
+		} else {
+			controller.action(ChangeVisibilityCondition.class, componentId,
+					generateCondition());
 		}
+		setUsed(true);
 	}
 
 }
