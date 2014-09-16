@@ -36,37 +36,31 @@
  */
 package es.eucm.ead.editor.control.actions.irreversibles.scene;
 
-import es.eucm.ead.editor.control.ComponentId;
 import es.eucm.ead.editor.control.actions.irreversibles.IrreversibleAction;
 import es.eucm.ead.schema.components.behaviors.Behavior;
-import es.eucm.ead.schema.components.behaviors.events.Touch;
+import es.eucm.ead.schema.effects.Effect;
 import es.eucm.ead.schema.entities.ModelEntity;
 import es.eucm.ead.schemax.entities.ResourceCategory;
 
 /**
- * 
- * Adds a {@link Behavior}
+ * Adds a {@link Effect} in a {@link Behavior} </p>
  * <dl>
  * <dt><strong>Arguments</strong></dt>
- * <dd><strong>args[0]</strong> <em>{@link Behavior}</em> to add</dd>
- * <dd><strong>args[1]</strong> <em>{@link ComponentId}</em> of the
- * {@link Behavior}</dd>
+ * <dd><strong>args[0]</strong> <em>{@link Behavior}</em></dd>
+ * <dd><strong>args[1]</strong> <em>{@link Effect}</em> to add</dd>
  * </dl>
  */
-public class AddBehaviorPrefab extends IrreversibleAction {
+public class AddBehaviorEffect extends IrreversibleAction {
 
-	public AddBehaviorPrefab() {
-		super(ResourceCategory.SCENE, true, false, Behavior.class, String.class);
+	public AddBehaviorEffect() {
+		super(ResourceCategory.SCENE, true, false, Behavior.class, Effect.class);
 	}
 
 	@Override
 	protected void action(ModelEntity entity, Object[] args) {
-
 		Behavior behavior = (Behavior) args[0];
-		behavior.setEvent(new Touch());
-		behavior.setId((String) args[1]);
+		Effect effect = (Effect) args[1];
 
-		entity.getComponents().add((Behavior) args[0]);
+		behavior.getEffects().add(effect);
 	}
-
 }
