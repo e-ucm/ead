@@ -119,7 +119,7 @@ public abstract class IconWithPanel extends ToolbarIcon {
 		panel.hide(getHideAction());
 	}
 
-	public HiddenPanel getPanel() {
+	public PositionedHiddenPanel getPanel() {
 		return panel;
 	}
 
@@ -132,7 +132,7 @@ public abstract class IconWithPanel extends ToolbarIcon {
 
 		@Override
 		public void hide() {
-			hide(getHideAction());
+			hidePanel();
 		}
 
 		@Override

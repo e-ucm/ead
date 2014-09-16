@@ -52,7 +52,7 @@ public class PositionedHiddenPanel extends HiddenPanel {
 	private static final Vector2 TEMP = new Vector2();
 
 	protected float space;
-	private Actor reference;
+	protected Actor reference;
 	private Position position;
 
 	public static enum Position {
@@ -88,14 +88,18 @@ public class PositionedHiddenPanel extends HiddenPanel {
 	@Override
 	public void show(Stage stage, Action action) {
 		if (stage != null) {
-			reference.localToStageCoordinates(TEMP.set(0f, 0f));
-			positionPanel(TEMP.x, TEMP.y);
+			updatePositionPanel();
 			super.show(stage, action);
 		}
 	}
 
 	public void setSpace(float space) {
 		this.space = space;
+	}
+
+	public void updatePositionPanel() {
+		reference.localToStageCoordinates(TEMP.set(0f, 0f));
+		positionPanel(TEMP.x, TEMP.y);
 	}
 
 	/**
@@ -110,12 +114,27 @@ public class PositionedHiddenPanel extends HiddenPanel {
 	protected void positionPanel(float x, float y) {
 		float panelPrefHeight = getPrefHeight();
 		if (position == Position.RIGHT) {
-			float coordinateY = Math.min(y
-					+ (reference.getHeight() - panelPrefHeight) * .5f,
-					reference.getParent().getHeight() - panelPrefHeight);
+			float coordinateY = 0;
+			if (reference.getParent() != null
+					&& reference.getParent().getHeight() == 0) {
+				coordinateY = reference.getY() + reference.getHeight()
+						- getPrefHeight();
+				if (coordinateY < 0) {
+					coordinateY = 0;
+				}
+				if (getPrefHeight() > reference.getY() + reference.getHeight()) {
+					panelPrefHeight = reference.getY() + reference.getHeight();
+				} else {
+					panelPrefHeight = getPrefHeight();
+				}
+			} else if (reference.getParent() != null) {
+				coordinateY = Math.min(y
+						+ (reference.getHeight() - panelPrefHeight) * .5f,
+						reference.getParent().getHeight() - panelPrefHeight);
+				panelPrefHeight = Math.min(getPrefHeight(), reference
+						.getParent().getHeight());
+			}
 			float panelPrefY = Math.max(0f, coordinateY);
-			panelPrefHeight = Math.min(getPrefHeight(), reference.getParent()
-					.getHeight());
 			setPanelBounds(x + space + reference.getWidth(), panelPrefY,
 					getPrefWidth(), panelPrefHeight);
 		} else if (position == Position.BOTTOM) {
