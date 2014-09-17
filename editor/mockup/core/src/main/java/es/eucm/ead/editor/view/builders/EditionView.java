@@ -39,11 +39,13 @@ package es.eucm.ead.editor.view.builders;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
+import com.esotericsoftware.tablelayout.Cell;
 
 import es.eucm.ead.editor.control.Controller;
 import es.eucm.ead.editor.control.MockupViews;
 import es.eucm.ead.editor.view.builders.gallery.BaseGallery;
 import es.eucm.ead.editor.view.widgets.Toolbar;
+import es.eucm.ead.editor.view.widgets.editionview.InfoEdtionPanel;
 import es.eucm.ead.editor.view.widgets.editionview.LeftEditionToolbar;
 import es.eucm.ead.editor.view.widgets.editionview.MockupSceneEditor;
 import es.eucm.ead.editor.view.widgets.editionview.NavigationButton;
@@ -63,6 +65,7 @@ public class EditionView implements ViewBuilder {
 	private MockupSceneEditor sceneEditor;
 
 	private PaintToolbar paintToolbar;
+	private InfoEdtionPanel infoPanel;
 
 	@Override
 	public void initialize(Controller controller) {
@@ -95,8 +98,11 @@ public class EditionView implements ViewBuilder {
 		view.add(topBar).expandX().fill();
 		view.row();
 		view.add(leftBar).left().expandY().fill();
-		view.add(sceneEditor).expand().fill();
+		Cell sceneEditorCell = view.add(sceneEditor).expand().fill();
 		sceneEditor.toBack();
+
+		infoPanel = new InfoEdtionPanel(controller, skin, sceneEditorCell,
+				paintToolbar);
 
 		((MockupViews) controller.getViews())
 				.registerHelpMessage(new EditionViewHelp(controller, this,
@@ -111,6 +117,7 @@ public class EditionView implements ViewBuilder {
 
 	@Override
 	public Actor getView(Object... args) {
+		infoPanel.show();
 		sceneEditor.prepare();
 		return view;
 	}
