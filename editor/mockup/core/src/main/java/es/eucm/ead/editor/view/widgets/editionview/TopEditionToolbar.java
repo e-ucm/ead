@@ -200,7 +200,6 @@ public class TopEditionToolbar extends Toolbar {
 		text.addListener(buttonsListener);
 		zones.addListener(buttonsListener);
 		gate.addListener(buttonsListener);
-		zones.addListener(buttonsListener);
 
 		ActionListener undoRedo = new ActionListener() {
 

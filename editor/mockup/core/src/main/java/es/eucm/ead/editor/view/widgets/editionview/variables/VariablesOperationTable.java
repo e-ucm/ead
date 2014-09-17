@@ -50,7 +50,7 @@ import es.eucm.ead.engine.I18N;
 
 public abstract class VariablesOperationTable extends LinearLayout {
 
-	private static final float PAD = 10, LATERAL_PAD = 15;
+	private static final float PAD = 20;
 
 	protected Skin skin;
 
@@ -105,7 +105,6 @@ public abstract class VariablesOperationTable extends LinearLayout {
 
 	private void initialize(Controller controller,
 			VariablesTable variablesToSelect, ChangeListener variableChanged) {
-		setFillParent(true);
 
 		this.controller = controller;
 		this.skin = controller.getApplicationAssets().getSkin();
@@ -118,7 +117,7 @@ public abstract class VariablesOperationTable extends LinearLayout {
 		addButton.setUserObject(variablesToSelect);
 		addButton.addListener(addClicked);
 
-		add(addButton).margin(LATERAL_PAD, PAD, LATERAL_PAD, PAD);
+		add(addButton).margin(PAD, PAD, PAD, PAD);
 		addVariableWidget();
 	}
 
@@ -131,12 +130,11 @@ public abstract class VariablesOperationTable extends LinearLayout {
 	}
 
 	public void addVariableWidget(Actor actor) {
-		add(getChildren().size - 1, actor).left().margin(LATERAL_PAD, PAD,
-				LATERAL_PAD, PAD);
+		add(getChildren().size - 1, actor).margin(PAD, PAD, PAD, 0).expandX();
 	}
 
 	public void addFirstVariableWidget(Actor actor) {
-		add(0, actor).left().margin(LATERAL_PAD, PAD, LATERAL_PAD, PAD);
+		add(0, actor).margin(PAD, PAD, PAD, 0).expandX();
 	}
 
 	public abstract String getExpression();
@@ -146,7 +144,7 @@ public abstract class VariablesOperationTable extends LinearLayout {
 		addButton = buttonThatAdd();
 		addButton.setUserObject(variablesToSelect);
 		addButton.addListener(addClicked);
-		add(addButton).margin(LATERAL_PAD, PAD, LATERAL_PAD, PAD);
+		add(addButton).margin(PAD, PAD, PAD, PAD);
 	}
 
 	public void emptyWidget() {

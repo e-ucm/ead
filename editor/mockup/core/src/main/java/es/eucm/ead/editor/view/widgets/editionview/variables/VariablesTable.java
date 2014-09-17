@@ -115,7 +115,8 @@ public class VariablesTable extends PositionedHiddenPanel implements
 	}
 
 	private void initialize() {
-		TextButton newVar = new TextButton(i18n.m("general.newVariable"), skin);
+		TextButton newVar = new TextButton(i18n.m("general.newVariable"), skin,
+				"white");
 		newVar.addListener(new ClickListener() {
 			@Override
 			public void clicked(InputEvent event, float x, float y) {
@@ -123,7 +124,7 @@ public class VariablesTable extends PositionedHiddenPanel implements
 			}
 		});
 
-		varTable.add(newVar).pad(LATERAL_PAD).expandX().left();
+		varTable.add(newVar).pad(LATERAL_PAD).expandX().fill().left();
 		varTable.row();
 	}
 
@@ -169,7 +170,7 @@ public class VariablesTable extends PositionedHiddenPanel implements
 	}
 
 	private void addVariableButton(String name) {
-		TextButton variable = new TextButton(name, skin);
+		TextButton variable = new TextButton(name, skin, "white");
 		variable.addListener(varPressed);
 		variable.setUserObject(this);
 		varTable.add(variable).pad(PAD, LATERAL_PAD, PAD, LATERAL_PAD)
