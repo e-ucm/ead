@@ -82,7 +82,11 @@ public class VariablesAndGroup extends VariablesOperationTable {
 
 	@Override
 	protected TextButton buttonThatAdd() {
-		return new TextButton(i18n.m("edition.addAndCondition"), skin, "white");
+		return new TextButton(i18n.m(getI18NKeyAddButton()), skin, "white");
+	}
+
+	protected String getI18NKeyAddButton() {
+		return "edition.addAndCondition";
 	}
 
 	public Actor variableWidget(String name, String state) {

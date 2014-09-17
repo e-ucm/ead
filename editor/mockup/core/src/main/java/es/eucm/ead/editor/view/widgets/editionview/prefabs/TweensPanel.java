@@ -111,8 +111,8 @@ public class TweensPanel extends PrefabPanel {
 
 		table.row();
 
-		DecreaseTween decrease = new DecreaseTween("vertical_move80x80",
-				i18n.m("edition.vertical"), controller, skin);
+		DecreaseTween decrease = new DecreaseTween("decrease80x80",
+				i18n.m("edition.decrease"), controller, skin);
 		decrease.addListener(tweenListener);
 		decrease.setUserObject(this);
 		table.add(decrease).pad(SPACE).fill();

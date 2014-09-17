@@ -82,7 +82,12 @@ public class ChangeVariablePanel extends PrefabComponentPanel {
 			}
 		};
 		varOp = new VariablesAndGroup(controller, true, variablesPanel,
-				varChanged);
+				varChanged) {
+			@Override
+			protected String getI18NKeyAddButton() {
+				return "general.add";
+			}
+		};
 
 		ScrollPane sp = new ScrollPane(varOp);
 		panel.add(sp);

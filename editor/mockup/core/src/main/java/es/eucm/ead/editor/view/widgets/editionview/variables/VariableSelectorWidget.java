@@ -44,6 +44,7 @@ import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
 import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener.ChangeEvent;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.Pools;
+import com.esotericsoftware.tablelayout.Cell;
 
 import es.eucm.ead.editor.control.Controller;
 import es.eucm.ead.editor.view.widgets.MultiStateButton;
@@ -51,7 +52,7 @@ import es.eucm.ead.engine.I18N;
 
 public class VariableSelectorWidget extends Table {
 
-	private static final float BUTTON_MARGIN = 75, PAD = 10;
+	private static final float BUTTON_MARGIN = 75, PAD = 30;
 
 	private static final String NOT_VAR = "edition.withoutVariable";
 
@@ -66,6 +67,10 @@ public class VariableSelectorWidget extends Table {
 	private I18N i18n;
 
 	private Label labelTo;
+
+	private Cell labelToCell;
+
+	private Cell stateButtonCell;
 
 	public VariableSelectorWidget(Controller controller, boolean allowOpossite) {
 		this(controller, allowOpossite, "", "");
@@ -89,18 +94,16 @@ public class VariableSelectorWidget extends Table {
 			colors.add(Color.YELLOW);
 		}
 
-		labelTo = new Label(i18n.m("general.to"), skin);
+		labelTo = new Label("=", skin);
 		stateButton = new MultiStateButton(skin, states, colors, BUTTON_MARGIN);
 
 		String name = "";
+		boolean visible = false;
 		if (varName.equals("")) {
-			name = i18n.m(NOT_VAR).toUpperCase();
-			stateButton.setVisible(false);
-			labelTo.setVisible(false);
+			name = i18n.m(NOT_VAR);
 		} else {
 			name = varName;
-			stateButton.setVisible(true);
-			labelTo.setVisible(true);
+			visible = true;
 		}
 
 		nameButton = new TextButton(name, skin, "white_press");
@@ -109,20 +112,21 @@ public class VariableSelectorWidget extends Table {
 			setState(state);
 		}
 
-		add(nameButton);
-		add(labelTo).pad(0, PAD, 0, PAD);
-		add(stateButton);
+		add(nameButton).left();
+		labelToCell = add().right();
+		stateButtonCell = add().right();
+
+		selectedVariable(visible);
 	}
 
 	public void selectedVariable(boolean selected) {
 		if (selected
-				&& !i18n.m(NOT_VAR).equalsIgnoreCase(
-						nameButton.getText().toString())) {
-			stateButton.setVisible(true);
-			labelTo.setVisible(true);
+				&& !i18n.m(NOT_VAR).equals(nameButton.getText().toString())) {
+			stateButtonCell.setWidget(stateButton);
+			labelToCell.setWidget(labelTo).pad(0, PAD, 0, PAD).expandX();
 		} else {
-			stateButton.setVisible(false);
-			labelTo.setVisible(false);
+			stateButtonCell.setWidget(null);
+			labelToCell.setWidget(null);
 		}
 	}
 
@@ -153,7 +157,7 @@ public class VariableSelectorWidget extends Table {
 
 	public String getExpression() {
 		String variable = getSelectedVariableName();
-		if (variable != null && !variable.equalsIgnoreCase(i18n.m(NOT_VAR))) {
+		if (variable != null && !variable.equals(i18n.m(NOT_VAR))) {
 			return "( eq $" + variable + " " + getState() + " )";
 		} else {
 			return null;

@@ -66,7 +66,7 @@ public class AddBehaviorPrefab extends IrreversibleAction {
 		behavior.setEvent(new Touch());
 		behavior.setId((String) args[1]);
 
-		entity.getComponents().add((Behavior) args[0]);
+		entity.getComponents().add(behavior);
 	}
 
 }
