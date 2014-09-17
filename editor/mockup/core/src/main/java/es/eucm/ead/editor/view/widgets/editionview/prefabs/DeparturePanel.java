@@ -52,7 +52,6 @@ import es.eucm.ead.editor.control.actions.model.SelectionGoToNewScene;
 import es.eucm.ead.editor.view.widgets.editionview.SceneButton;
 import es.eucm.ead.editor.view.widgets.editionview.ScenesTableList;
 import es.eucm.ead.schema.components.behaviors.Behavior;
-import es.eucm.ead.schema.components.behaviors.events.Touch;
 import es.eucm.ead.schema.effects.GoScene;
 
 public class DeparturePanel extends PrefabComponentPanel {
@@ -74,9 +73,8 @@ public class DeparturePanel extends PrefabComponentPanel {
 
 				if (component == null) {
 					component = new Behavior();
-					component.setId(componentId);
-					((Behavior) component).setEvent(new Touch());
-					controller.action(AddBehaviorPrefab.class, component);
+					controller.action(AddBehaviorPrefab.class, component,
+							componentId);
 				}
 				GoScene goScene;
 				if (((Behavior) component).getEffects().size > 0) {

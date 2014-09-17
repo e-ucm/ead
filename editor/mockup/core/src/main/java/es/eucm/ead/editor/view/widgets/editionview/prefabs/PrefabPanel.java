@@ -119,7 +119,18 @@ public abstract class PrefabPanel extends IconWithFadePanel implements
 	}
 
 	@Override
-	public abstract void modelChanged(SelectionEvent event);
+	public void modelChanged(SelectionEvent event) {
+		setUsed(false);
+		if (selection.get(Selection.SCENE_ELEMENT).length == 1) {
+			this.setDisabled(false);
+			selectionChanged();
+		} else {
+			hidePanel();
+			this.setDisabled(true);
+		}
+	}
+
+	protected abstract void selectionChanged();
 
 	@Override
 	protected void showPanel() {

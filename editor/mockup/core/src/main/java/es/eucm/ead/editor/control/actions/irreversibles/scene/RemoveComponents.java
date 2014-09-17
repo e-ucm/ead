@@ -38,6 +38,7 @@ package es.eucm.ead.editor.control.actions.irreversibles.scene;
 
 import com.badlogic.gdx.utils.Array;
 
+import es.eucm.ead.editor.control.ComponentId;
 import es.eucm.ead.editor.control.actions.irreversibles.IrreversibleAction;
 import es.eucm.ead.schema.components.ModelComponent;
 import es.eucm.ead.schema.entities.ModelEntity;
@@ -46,6 +47,11 @@ import es.eucm.ead.schemax.entities.ResourceCategory;
 /**
  * 
  * Removes a {@link ModelComponent} of current selected scene element.
+ * <dl>
+ * <dt><strong>Arguments</strong></dt>
+ * <dd><strong>args[0]</strong> <em>{@link ComponentId}</em> of the elements to
+ * remove</dd>
+ * </dl>
  */
 public class RemoveComponents extends IrreversibleAction {
 

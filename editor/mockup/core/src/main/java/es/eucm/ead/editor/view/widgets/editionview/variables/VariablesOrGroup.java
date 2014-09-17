@@ -34,62 +34,73 @@
  *      You should have received a copy of the GNU Lesser General Public License
  *      along with eAdventure.  If not, see <http://www.gnu.org/licenses/>.
  */
-package es.eucm.ead.editor.view.widgets.editionview.prefabs;
+package es.eucm.ead.editor.view.widgets.editionview.variables;
 
 import com.badlogic.gdx.scenes.scene2d.Actor;
+import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
+import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
 
 import es.eucm.ead.editor.control.Controller;
-import es.eucm.ead.editor.control.Selection;
-import es.eucm.ead.editor.control.actions.irreversibles.scene.RemoveComponents;
-import es.eucm.ead.schema.components.ModelComponent;
-import es.eucm.ead.schema.entities.ModelEntity;
 
-public abstract class PrefabComponentPanel extends PrefabPanel {
+public class VariablesOrGroup extends VariablesOperationTable {
 
-	protected ModelComponent component;
+	private static final String OPERATION = "( or";
 
-	protected String componentId;
+	public VariablesOrGroup(Controller controller,
+			VariablesTable variablesToSelect) {
+		this(controller, variablesToSelect, null);
+	}
 
-	public PrefabComponentPanel(String icon, float iconPad, float size,
-			String panelName, String componentId, Controller controller,
-			Actor touchable) {
-		super(icon, iconPad, size, panelName, controller, touchable);
-		this.componentId = componentId;
+	public VariablesOrGroup(Controller controller,
+			VariablesTable variablesToSelect, ChangeListener variableChanged) {
+		super(controller, variablesToSelect, variableChanged);
 	}
 
 	@Override
-	protected void trashClicked() {
-		if (component != null) {
-			controller.action(RemoveComponents.class, componentId);
-			component = null;
-			setUsed(false);
-		}
-
-		actualizePanel();
+	protected TextButton buttonThatAdd() {
+		return new TextButton(i18n.m("edition.addOrCondition"), skin, "white");
 	}
 
 	@Override
-	protected abstract void actualizePanel();
+	public Actor variableWidget() {
+		return new VariablesAndGroup(controller, false, variablesToSelect,
+				variableChanged, "panel");
+	}
 
 	@Override
-	protected void selectionChanged() {
-		ModelEntity modelEntity = (ModelEntity) selection
-				.getSingle(Selection.SCENE_ELEMENT);
-		component = null;
-		for (ModelComponent component : modelEntity.getComponents()) {
-			String id = component.getId();
-			if (id != null && id.equals(componentId)) {
-				this.component = component;
-				setUsed(true);
-				return;
+	public String getExpression() {
+		String expression = "bfalse";
+		for (Actor actor : getChildren()) {
+			if (actor instanceof VariablesAndGroup) {
+				VariablesAndGroup var = (VariablesAndGroup) actor;
+				String variable = var.getExpression();
+				if (variable != null) {
+					expression = OPERATION + " " + expression + " " + variable
+							+ " )";
+				}
 			}
 		}
+		return expression;
 	}
 
 	@Override
-	protected void showPanel() {
-		actualizePanel();
-		super.showPanel();
+	public void reset() {
+		super.reset();
 	}
 
+	@Override
+	public boolean isEmpty() {
+		boolean empty = true;
+		for (Actor actor : getChildren()) {
+			if (actor instanceof VariablesAndGroup) {
+				VariablesAndGroup var = (VariablesAndGroup) actor;
+				if (!var.isEmpty()) {
+					empty = false;
+					break;
+				}
+			}
+		}
+
+		return empty;
+	}
 }

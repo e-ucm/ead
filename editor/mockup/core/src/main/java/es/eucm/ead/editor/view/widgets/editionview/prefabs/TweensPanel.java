@@ -43,7 +43,6 @@ import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 
 import es.eucm.ead.editor.control.Controller;
 import es.eucm.ead.editor.control.Selection;
-import es.eucm.ead.editor.model.events.SelectionEvent;
 import es.eucm.ead.editor.view.widgets.editionview.prefabs.prefabtweens.BlinkTween;
 import es.eucm.ead.editor.view.widgets.editionview.prefabs.prefabtweens.DecreaseTween;
 import es.eucm.ead.editor.view.widgets.editionview.prefabs.prefabtweens.HorizontalMoveTween;
@@ -63,7 +62,7 @@ public class TweensPanel extends PrefabPanel {
 
 	private static int count = 0;
 
-	private static ClickListener tweenListener = new ClickListener() {
+	private static final ClickListener tweenListener = new ClickListener() {
 		@Override
 		public void clicked(InputEvent event, float x, float y) {
 			PrefabTween listenerActor = (PrefabTween) event.getListenerActor();
@@ -138,34 +137,26 @@ public class TweensPanel extends PrefabPanel {
 	}
 
 	@Override
-	public void modelChanged(SelectionEvent event) {
-		if (selection.get(Selection.SCENE_ELEMENT).length == 1) {
-			this.setDisabled(false);
-
-			ModelEntity modelEntity = (ModelEntity) selection
-					.getSingle(Selection.SCENE_ELEMENT);
-			setUsed(false);
-			for (Actor actor : table.getChildren()) {
-				if (actor instanceof PrefabTween) {
-					PrefabTween button = (PrefabTween) actor;
-					button.setState(false);
-					for (ModelComponent component : modelEntity.getComponents())
-						if (component instanceof Tween) {
-							String id = component.getId();
-							if (id != null
-									&& button.getTween().getId().equals(id)) {
-								button.setTween((Tween) component);
-								button.setState(true);
-								setUsed(true);
-								break;
-							}
+	protected void selectionChanged() {
+		ModelEntity modelEntity = (ModelEntity) selection
+				.getSingle(Selection.SCENE_ELEMENT);
+		for (Actor actor : table.getChildren()) {
+			if (actor instanceof PrefabTween) {
+				PrefabTween button = (PrefabTween) actor;
+				button.setState(false);
+				for (ModelComponent component : modelEntity.getComponents())
+					if (component instanceof Tween) {
+						String id = component.getId();
+						if (id != null && button.getTween().getId().equals(id)) {
+							button.setTween((Tween) component);
+							button.setState(true);
+							setUsed(true);
+							break;
 						}
-				}
+					}
 			}
-		} else {
-			this.setDisabled(true);
-			setUsed(false);
 		}
+
 	}
 
 	@Override

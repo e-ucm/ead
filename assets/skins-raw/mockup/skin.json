@@ -24,9 +24,9 @@
 			a: 1 
 		},
 		gray: {
-            r: 0.5,
-            g: 0.5,
-            b: 0.5,
+            r: 0.7,
+            g: 0.7,
+            b: 0.7,
             a: 1
         }
 	},
@@ -98,6 +98,23 @@
 		white: {
 			up: button_normal, 
 			down: button_pressed,  
+			disabled: button_disabled,
+			disabledFontColor: gray,
+            font: default-font,
+            fontColor: black
+		},
+		to_color: {
+			up: button_to_color, 
+			down: button_to_color_pressed, 
+			disabled: button_disabled,
+			disabledFontColor: gray,
+           	font: default-font,
+       		fontColor: black
+		},
+		white_press: {
+			up: button_normal, 
+			down: button_pressed,  
+			checked: button_pressed,
 			disabled: button_disabled,
 			disabledFontColor: gray,
             font: default-font,

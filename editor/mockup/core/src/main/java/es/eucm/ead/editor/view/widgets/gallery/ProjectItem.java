@@ -64,6 +64,8 @@ public class ProjectItem extends GalleryItem implements
 		super(new Image(), "", 0f, 0f, true, controller.getApplicationAssets()
 				.getSkin(), "project", false, gallery);
 		this.controller = controller;
+		projectPath = controller.getEditorGameAssets().toCanonicalPath(
+				projectPath);
 		alternativeName = gallery.getI18n().m("project") + " "
 				+ projectPath.substring(projectPath.lastIndexOf("/") + 1);
 		if (!projectPath.endsWith("/")) {

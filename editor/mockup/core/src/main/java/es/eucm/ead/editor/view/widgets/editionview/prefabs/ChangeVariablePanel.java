@@ -36,40 +36,32 @@
  */
 package es.eucm.ead.editor.view.widgets.editionview.prefabs;
 
-import com.badlogic.gdx.graphics.Color;
+import static com.badlogic.gdx.scenes.scene2d.actions.Actions.fadeOut;
+
+import com.badlogic.gdx.math.Interpolation;
 import com.badlogic.gdx.scenes.scene2d.Actor;
-import com.badlogic.gdx.scenes.scene2d.InputEvent;
-import com.badlogic.gdx.scenes.scene2d.InputListener;
-import com.badlogic.gdx.scenes.scene2d.ui.Label;
-import com.badlogic.gdx.scenes.scene2d.ui.TextArea;
-import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
+import com.badlogic.gdx.scenes.scene2d.ui.ScrollPane;
+import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
 import com.badlogic.gdx.utils.Array;
 
 import es.eucm.ead.editor.control.ComponentId;
 import es.eucm.ead.editor.control.Controller;
-import es.eucm.ead.editor.control.Selection;
+import es.eucm.ead.editor.control.actions.irreversibles.scene.AddBehaviorEffect;
 import es.eucm.ead.editor.control.actions.irreversibles.scene.AddBehaviorPrefab;
-import es.eucm.ead.editor.control.actions.irreversibles.scene.ChangeBehaviorEffect;
-import es.eucm.ead.editor.view.widgets.MultiStateButton;
-import es.eucm.ead.editor.view.widgets.VarTextDown;
-import es.eucm.ead.editor.view.widgets.layouts.LinearLayout;
+import es.eucm.ead.editor.control.actions.irreversibles.scene.ClearBehaviorEffects;
+import es.eucm.ead.editor.view.widgets.PositionedHiddenPanel.Position;
+import es.eucm.ead.editor.view.widgets.editionview.variables.VariablesAndGroup;
+import es.eucm.ead.editor.view.widgets.editionview.variables.VariablesTable;
 import es.eucm.ead.schema.components.behaviors.Behavior;
-import es.eucm.ead.schema.components.behaviors.events.Touch;
-import es.eucm.ead.schema.components.conversation.Conversation;
-import es.eucm.ead.schema.components.conversation.LineNode;
 import es.eucm.ead.schema.effects.ChangeVar;
 import es.eucm.ead.schema.effects.ChangeVar.Context;
-import es.eucm.ead.schema.effects.TriggerConversation;
-import es.eucm.ead.schema.entities.ModelEntity;
+import es.eucm.ead.schema.effects.Effect;
 
 public class ChangeVariablePanel extends PrefabComponentPanel {
 
-	private static final int PREFS_TEXT_ROWS = 3;
-	private static final float PAD = 20, BUTTON_MARGIN = 75;
+	private VariablesTable variablesPanel;
 
-	private VarTextDown varTextDown;
-	private TextArea textArea;
-	private MultiStateButton stateButton;
+	private VariablesAndGroup varOp;
 
 	private ChangeVar changeVar;
 
@@ -78,110 +70,122 @@ public class ChangeVariablePanel extends PrefabComponentPanel {
 		super("variable80x80", iconPad, size, "edition.changeVariable",
 				ComponentId.PREFAB_CHANGE_VAR, controller, touchable);
 
-		Array<String> states = new Array<String>();
-		states.add(i18n.m("edition.true"));
-		states.add(i18n.m("edition.false"));
-		states.add(i18n.m("edition.opposite"));
-		Array<Color> colors = new Array<Color>();
-		colors.add(Color.GREEN);
-		colors.add(Color.RED);
-		colors.add(Color.YELLOW);
-
+		variablesPanel = new VariablesTable(skin, Position.RIGHT, this,
+				controller);
 		changeVar = new ChangeVar();
 		changeVar.setContext(Context.GLOBAL);
 
-		stateButton = new MultiStateButton(skin, states, colors, BUTTON_MARGIN);
-		stateButton.addListener(new ClickListener() {
+		ChangeListener varChanged = new ChangeListener() {
 			@Override
-			public void clicked(InputEvent event, float x, float y) {
-				updateChangeVar();
-			}
-		});
-
-		textArea = new TextArea("", skin);
-		textArea.setPrefRows(PREFS_TEXT_ROWS);
-		textArea.setMessageText(i18n.m("edition.optionalMessage"));
-
-		varTextDown = new VarTextDown(skin, controller) {
-			@Override
-			protected void doAction() {
-				updateChangeVar();
+			public void changed(ChangeEvent event, Actor actor) {
+				updateComponent();
 			}
 		};
+		varOp = new VariablesAndGroup(controller, true, variablesPanel,
+				varChanged);
 
-		panel.add(varTextDown).padTop(PAD).center().expand();
-		panel.row();
+		ScrollPane sp = new ScrollPane(varOp);
+		panel.add(sp);
 
-		LinearLayout stateValue = new LinearLayout(true);
-		stateValue.add(new Label(i18n.m("edition.newValue") + ": ", skin))
-				.margin(0, 0, PAD, 0);
-		stateValue.add(stateButton).expandX();
-
-		panel.add(stateValue).pad(PAD);
-		panel.row();
-		panel.add(i18n.m("edition.changeVar.text") + ": ").expandX().left()
-				.padLeft(PAD);
-		panel.row();
-		panel.add(textArea).expand().fill().pad(PAD);
-		panel.row();
 	}
 
-	private void updateChangeVar() {
-		if (varTextDown != null && varTextDown.getSelectedVariableDef() != null) {
-			if (component == null) {
-				component = new Behavior();
-				((Behavior) component).setEvent(new Touch());
-				component.setId(componentId);
-				controller.action(AddBehaviorPrefab.class, component);
-			}
-			String nameVar = varTextDown.getSelectedVariableDef().getName();
-			String expression = getState();
-			changeVar.setVariable(nameVar);
-			changeVar.setExpression(expression);
+	@Override
+	protected void showPanel() {
+		super.showPanel();
+		variablesPanel.updatePanel();
+	}
 
-			controller.action(ChangeBehaviorEffect.class, component, changeVar);
-			if (nameVar != null) {
-				setUsed(true);
-			}
+	@Override
+	protected void hidePanel() {
+		if (variablesPanel != null) {
+			variablesPanel.hide(fadeOut(OUT_DURATION, Interpolation.fade));
 		}
+		super.hidePanel();
 	}
 
 	@Override
 	protected void actualizePanel() {
-		String var = null;
-		String expression = null;
-		String text = "";
-		if (component != null && ((Behavior) component).getEffects().size > 0) {
-			changeVar = (ChangeVar) ((Behavior) component).getEffects().first();
-			var = changeVar.getVariable();
-			expression = changeVar.getExpression();
-			// initialize text
-		}
-		stateButton.selectText(booleanToString(expression));
-		varTextDown.reloadPanel(var);
-		textArea.setText(text);
-
-	}
-
-	private String booleanToString(String string) {
-		if (string != null && string == "btrue") {
-			return i18n.m("edition.true");
-		} else if (string != null && string == "bfalse") {
-			return i18n.m("edition.false");
+		if (component != null) {
+			varOp.reset();
+			Array<Effect> effects = ((Behavior) component).getEffects();
+			for (Effect effect : effects) {
+				if (effect instanceof ChangeVar) {
+					ChangeVar changeVar = (ChangeVar) effect;
+					varOp.addVariableWidget(varOp.variableWidget(
+							changeVar.getVariable(), changeVar.getExpression()));
+				}
+			}
 		} else {
-			return i18n.m("edition.opposite");
+			varOp.emptyWidget();
 		}
 	}
 
-	private String getState() {
-		if (stateButton.getText().toString().equals(i18n.m("edition.true"))) {
-			return "btrue";
-		} else if (stateButton.getText().toString()
-				.equals(i18n.m("edition.false"))) {
-			return "bfalse";
-		} else {
-			return "( not $" + varTextDown.getSelectedVariableDef().getName()
-					+ " )";
+	public void updateComponent() {
+		if (component != null) {
+			controller.action(ClearBehaviorEffects.class, component);
+		}
+		String expression = varOp.getExpression();
+		String[] fields = expression.split(" ");
+
+		Array<String> stack = new Array<String>();
+
+		for (int i = 0; i < fields.length; i++) {
+			String aux = fields[i];
+			if (!aux.equals(")")) {
+				stack.add(aux);
+			} else {
+				evaluate(stack);
+			}
+		}
+	}
+
+	private void evaluate(Array<String> stack) {
+		Array<String> args = new Array<String>();
+
+		String toAdd = "";
+
+		String aux = stack.pop();
+		while (!aux.equals("(")) {
+			if (aux.equals("eq")) {
+				addChangeEffect(args);
+			} else if (aux.equals("not")) {
+				String expression = "";
+				for (int i = args.size - 1; i >= 0; i--) {
+					expression += (args.get(i) + " ");
+				}
+				toAdd = "( not " + expression + ")";
+			} else if (aux.equals("and")) {
+				// Do nothing
+			} else {
+				args.add(aux);
+			}
+			aux = stack.pop();
+		}
+		if (!toAdd.equals("")) {
+			stack.add(toAdd);
+		}
+	}
+
+	private void addChangeEffect(Array<String> args) {
+		if (args.size == 2) {
+			String var0 = args.get(0);
+			String var1 = args.get(1);
+			changeVar = new ChangeVar();
+			changeVar.setContext(Context.GLOBAL);
+			if (var0.contains("$") && !var0.contains(" ")) {
+				changeVar.setVariable(var0.replace("$", ""));
+				changeVar.setExpression(var1);
+			} else {
+				changeVar.setVariable(var1.replace("$", ""));
+				changeVar.setExpression(var0);
+			}
+			if (component == null) {
+				component = new Behavior();
+				controller.action(AddBehaviorPrefab.class, component,
+						componentId);
+			}
+			controller.action(AddBehaviorEffect.class, component, changeVar);
+			setUsed(true);
 		}
 	}
 }
