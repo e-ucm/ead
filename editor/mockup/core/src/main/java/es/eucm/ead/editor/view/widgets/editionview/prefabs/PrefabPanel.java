@@ -79,7 +79,7 @@ public abstract class PrefabPanel extends IconWithFadePanel implements
 	};
 
 	public PrefabPanel(String icon, float iconPad, float size,
-			String panelName, Controller controller, Actor touchable) {
+			String panelName, Controller controller) {
 		super(icon, iconPad, SEPARATION, size, controller
 				.getApplicationAssets().getSkin(), Position.RIGHT);
 
@@ -91,8 +91,6 @@ public abstract class PrefabPanel extends IconWithFadePanel implements
 		setStyle(skin.get(PrefabPanelStyle.class));
 
 		selection = controller.getModel().getSelection();
-
-		panel.addTouchableActor(touchable);
 
 		IconButton trash = new IconButton("recycle", 0, skin);
 		trash.addListener(trashListener);
@@ -133,7 +131,7 @@ public abstract class PrefabPanel extends IconWithFadePanel implements
 	protected abstract void selectionChanged();
 
 	@Override
-	protected void showPanel() {
+	public void showPanel() {
 		actualizePanel();
 		super.showPanel();
 	}

@@ -36,8 +36,6 @@
  */
 package es.eucm.ead.editor.view.widgets.editionview.prefabs;
 
-import com.badlogic.gdx.scenes.scene2d.Actor;
-
 import es.eucm.ead.editor.control.ComponentId;
 import es.eucm.ead.editor.control.Controller;
 import es.eucm.ead.editor.control.actions.irreversibles.scene.AddVisibilityCondition;
@@ -46,10 +44,9 @@ import es.eucm.ead.schema.components.Visibility;
 
 public class VisibilityPanel extends ConditionalPanel {
 
-	public VisibilityPanel(float iconPad, float size, Controller controller,
-			Actor touchable) {
+	public VisibilityPanel(float iconPad, float size, Controller controller) {
 		super("visibility80x80", iconPad, "edition.visible",
-				ComponentId.PREFAB_VISIBILITY, size, controller, touchable,
+				ComponentId.PREFAB_VISIBILITY, size, controller,
 				Visibility.class);
 	}
 

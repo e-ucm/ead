@@ -36,8 +36,6 @@
  */
 package es.eucm.ead.editor.view.widgets.editionview.prefabs;
 
-import com.badlogic.gdx.scenes.scene2d.Actor;
-
 import es.eucm.ead.editor.control.Controller;
 import es.eucm.ead.editor.control.Selection;
 import es.eucm.ead.editor.control.actions.irreversibles.scene.RemoveComponents;
@@ -51,9 +49,8 @@ public abstract class PrefabComponentPanel extends PrefabPanel {
 	protected String componentId;
 
 	public PrefabComponentPanel(String icon, float iconPad, float size,
-			String panelName, String componentId, Controller controller,
-			Actor touchable) {
-		super(icon, iconPad, size, panelName, controller, touchable);
+			String panelName, String componentId, Controller controller) {
+		super(icon, iconPad, size, panelName, controller);
 		this.componentId = componentId;
 	}
 
@@ -87,7 +84,7 @@ public abstract class PrefabComponentPanel extends PrefabPanel {
 	}
 
 	@Override
-	protected void showPanel() {
+	public void showPanel() {
 		actualizePanel();
 		super.showPanel();
 	}
