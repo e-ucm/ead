@@ -34,53 +34,61 @@
  *      You should have received a copy of the GNU Lesser General Public License
  *      along with eAdventure.  If not, see <http://www.gnu.org/licenses/>.
  */
-package es.eucm.ead.editor.control.actions.editor;
+package es.eucm.ead.editor.control.actions.editor.asynk;
+
+import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.scenes.scene2d.Group;
 
 import es.eucm.ead.editor.control.MockupController;
+import es.eucm.ead.editor.control.MockupViews;
 import es.eucm.ead.editor.control.Preferences;
-import es.eucm.ead.editor.control.actions.EditorAction;
-import es.eucm.ead.editor.control.actions.editor.asynk.ImportMockupProject;
-import es.eucm.ead.editor.control.actions.editor.asynk.OpenMockupGameAsynk;
-import es.eucm.ead.editor.platform.MockupPlatform;
+import es.eucm.ead.editor.control.actions.editor.ChangeMockupView;
+import es.eucm.ead.editor.control.actions.editor.ForceSave;
 import es.eucm.ead.editor.view.builders.gallery.ProjectsView;
 
 /**
- * <p>
- * Tries to open the last opened game or
- * {@link MockupPlatform#getImportProjectPath()} if any.
- * </p>
- * <dl>
- * <dt><strong>Arguments</strong></dt>
- * <dd><strong>None</strong></dd>
- * </dl>
+ * Close the current edited game. It receives no arguments.
  */
-public class OpenApplication extends EditorAction {
+public class CloseMockupGame extends BackgroundExecutorAction<Boolean> {
 
-	public OpenApplication() {
-		super(true, false);
+	public CloseMockupGame() {
+		super(new Class[] { String.class }, new Class[] {});
 	}
 
 	@Override
-	public void perform(Object... args) {
+	protected String getProcessingI18N() {
+		return "closing gameee";
+	}
 
-		MockupPlatform platform = (MockupPlatform) controller.getPlatform();
-		String importProjectPath = platform.getImportProjectPath();
+	@Override
+	protected String getErrorProcessingI18N() {
+		return "something went wrong closing game";
+	}
 
-		if (importProjectPath != null
-				&& !importProjectPath.isEmpty()
-				&& importProjectPath
-						.endsWith(MockupController.EXPORT_EXTENSION)) {
-			controller.action(ImportMockupProject.class);
-		} else {
+	@Override
+	protected Boolean doInBackground() {
+		Group rootComponent = ((MockupController) controller)
+				.getRootComponent();
+		rootComponent.clearActions();
+		controller.getPreferences().putString(Preferences.LAST_OPENED_GAME, "");
+		controller.getPreferences().flush();
+		try {
+			controller.action(ForceSave.class);
+		} catch (Exception ex) {
+			Gdx.app.error("CloseMockupGame",
+					"Error saving game before closing", ex);
+		}
+		return true;
+	}
 
-			String projectToOpenPath = controller.getPreferences().getString(
-					Preferences.LAST_OPENED_GAME);
-
-			if (projectToOpenPath != null && !"".equals(projectToOpenPath)) {
-				controller.action(OpenMockupGameAsynk.class, projectToOpenPath);
-			} else {
-				controller.action(ChangeMockupView.class, ProjectsView.class);
-			}
+	@Override
+	protected void onPostExecute(Boolean result) {
+		controller.getEditorGameAssets().setLoadingPath("");
+		controller.action(ChangeMockupView.class, ProjectsView.class);
+		if (args.length > 0) {
+			System.out.println("showing norification::: " + args[0].toString());
+			((MockupViews) controller.getViews()).getToasts().showNotification(
+					args[0].toString(), ERROR_TIMEOUT);
 		}
 	}
 }

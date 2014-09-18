@@ -34,30 +34,54 @@
  *      You should have received a copy of the GNU Lesser General Public License
  *      along with eAdventure.  If not, see <http://www.gnu.org/licenses/>.
  */
-package es.eucm.ead.editor.control.actions.editor;
+package es.eucm.ead.editor.control.actions.editor.asynk;
 
-import com.badlogic.gdx.scenes.scene2d.Group;
-
-import es.eucm.ead.editor.control.MockupController;
-import es.eucm.ead.editor.control.Preferences;
-import es.eucm.ead.editor.control.actions.EditorAction;
-import es.eucm.ead.editor.view.builders.gallery.ProjectsView;
+import es.eucm.ead.editor.control.Controller;
+import es.eucm.ead.editor.control.actions.editor.ChangeMockupView;
+import es.eucm.ead.editor.control.actions.editor.NewMockupGame;
+import es.eucm.ead.editor.view.builders.gallery.ScenesView;
+import es.eucm.ead.schema.entities.ModelEntity;
 
 /**
- * Close the current edited game. It receives no arguments.
+ * Creates a new eAdventure Mockup game asynchronously.
+ * 
+ * @see NewMockupGame
  */
-public class CloseMockupGame extends EditorAction {
+public class NewMockupGameAsynk extends BackgroundExecutorAction<String> {
+
+	private NewMockupGame newGame;
+
+	public NewMockupGameAsynk() {
+		super(new Class[] { String.class, ModelEntity.class });
+	}
 
 	@Override
-	public void perform(Object... args) {
-		Group rootComponent = ((MockupController) controller)
-				.getRootComponent();
-		rootComponent.clearActions();
-		controller.getPreferences().putString(Preferences.LAST_OPENED_GAME, "");
-		controller.getPreferences().flush();
-		controller.action(ForceSave.class);
-		controller.getEditorGameAssets().clear();
-		controller.getEditorGameAssets().setLoadingPath("");
-		controller.action(ChangeMockupView.class, ProjectsView.class);
+	public void initialize(Controller controller) {
+		super.initialize(controller);
+		newGame = controller.getActions().getAction(NewMockupGame.class);
 	}
+
+	@Override
+	protected String getProcessingI18N() {
+		return "creating new gamee";
+	}
+
+	@Override
+	protected String getErrorProcessingI18N() {
+		return "error creating new game";
+	}
+
+	@Override
+	protected String doInBackground() {
+		return newGame.createNewGame(args);
+	}
+
+	@Override
+	protected void onPostExecute(String result) {
+		if (result != null) {
+			newGame.openNewGame(result);
+			controller.action(ChangeMockupView.class, ScenesView.class);
+		}
+	}
+
 }

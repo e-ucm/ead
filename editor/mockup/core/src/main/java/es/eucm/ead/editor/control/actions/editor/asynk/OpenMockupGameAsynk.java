@@ -34,53 +34,64 @@
  *      You should have received a copy of the GNU Lesser General Public License
  *      along with eAdventure.  If not, see <http://www.gnu.org/licenses/>.
  */
-package es.eucm.ead.editor.control.actions.editor;
+package es.eucm.ead.editor.control.actions.editor.asynk;
+
+import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.scenes.scene2d.Actor;
 
 import es.eucm.ead.editor.control.MockupController;
-import es.eucm.ead.editor.control.Preferences;
-import es.eucm.ead.editor.control.actions.EditorAction;
-import es.eucm.ead.editor.control.actions.editor.asynk.ImportMockupProject;
-import es.eucm.ead.editor.control.actions.editor.asynk.OpenMockupGameAsynk;
-import es.eucm.ead.editor.platform.MockupPlatform;
-import es.eucm.ead.editor.view.builders.gallery.ProjectsView;
+import es.eucm.ead.editor.control.MockupViews;
+import es.eucm.ead.editor.control.Toasts;
+import es.eucm.ead.editor.control.actions.editor.OpenMockupGame;
 
 /**
- * <p>
- * Tries to open the last opened game or
- * {@link MockupPlatform#getImportProjectPath()} if any.
- * </p>
- * <dl>
- * <dt><strong>Arguments</strong></dt>
- * <dd><strong>None</strong></dd>
- * </dl>
+ * Opens the MockupGame asynchronously without blocking the main thread.
+ * 
+ * @see OpenMockupGame
  */
-public class OpenApplication extends EditorAction {
+public class OpenMockupGameAsynk extends OpenMockupGame {
 
-	public OpenApplication() {
-		super(true, false);
-	}
+	private String path;
+	private boolean done = true;
+
+	private Toasts toasts;
 
 	@Override
 	public void perform(Object... args) {
+		if (!done) {
+			return;
+		}
+		done = false;
 
-		MockupPlatform platform = (MockupPlatform) controller.getPlatform();
-		String importProjectPath = platform.getImportProjectPath();
+		toasts = ((MockupViews) controller.getViews()).getToasts();
+		toasts.showNotification(controller.getApplicationAssets().getI18N()
+				.m("opening gameeee"));
 
-		if (importProjectPath != null
-				&& !importProjectPath.isEmpty()
-				&& importProjectPath
-						.endsWith(MockupController.EXPORT_EXTENSION)) {
-			controller.action(ImportMockupProject.class);
-		} else {
+		path = args[0].toString();
+		Gdx.app.postRunnable(save);
+	}
 
-			String projectToOpenPath = controller.getPreferences().getString(
-					Preferences.LAST_OPENED_GAME);
+	private Runnable save = new Runnable() {
 
-			if (projectToOpenPath != null && !"".equals(projectToOpenPath)) {
-				controller.action(OpenMockupGameAsynk.class, projectToOpenPath);
-			} else {
-				controller.action(ChangeMockupView.class, ProjectsView.class);
+		@Override
+		public void run() {
+			load(path);
+			MockupController mockupController = ((MockupController) controller);
+			mockupController.getRootComponent().addActor(asynkAction);
+		}
+	};
+
+	private Actor asynkAction = new Actor() {
+
+		@Override
+		public void act(float delta) {
+			if (controller.getEditorGameAssets().isDoneLoading()) {
+				toasts.hideNotification();
+				finishLoading(path);
+				remove();
+				done = true;
 			}
 		}
-	}
+	};
+
 }

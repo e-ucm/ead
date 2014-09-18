@@ -34,13 +34,14 @@
  *      You should have received a copy of the GNU Lesser General Public License
  *      along with eAdventure.  If not, see <http://www.gnu.org/licenses/>.
  */
-package es.eucm.ead.editor.control.actions.editor;
+package es.eucm.ead.editor.control.actions.editor.asynk;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.files.FileHandle;
 
 import es.eucm.ead.editor.assets.EditorGameAssets;
 import es.eucm.ead.editor.control.MockupController;
+import es.eucm.ead.editor.control.actions.editor.ForceSave;
 import es.eucm.ead.editor.model.Q;
 import es.eucm.ead.editor.platform.MockupPlatform;
 import es.eucm.ead.editor.platform.MockupPlatform.ProjectSentListener;
@@ -156,21 +157,19 @@ public class ExportMockupProject extends BackgroundExecutorAction<FileHandle> {
 	}
 
 	@Override
-	protected void onPostExecute(final FileHandle result) {
+	protected void onPostExecute(FileHandle result) {
 		if (result != null) {
 			MockupPlatform platform = (MockupPlatform) controller.getPlatform();
 			platform.sendProject(result, controller.getApplicationAssets()
-					.getI18N(), new ProjectSentListener() {
-
-				@Override
-				public void projectSent(boolean success) {
-					if (!success) {
-						if (result.exists()) {
-							// result.delete();
-						}
-					}
-				}
-			});
+					.getI18N(), projectSent);
 		}
 	}
+
+	private ProjectSentListener projectSent = new ProjectSentListener() {
+
+		@Override
+		public void projectSent(boolean success) {
+
+		}
+	};
 }

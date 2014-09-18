@@ -34,17 +34,17 @@
  *      You should have received a copy of the GNU Lesser General Public License
  *      along with eAdventure.  If not, see <http://www.gnu.org/licenses/>.
  */
-package es.eucm.ead.editor.control.actions.editor;
+package es.eucm.ead.editor.control.actions.editor.asynk;
 
 import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 
 import es.eucm.ead.editor.control.MockupController;
+import es.eucm.ead.editor.control.MockupViews;
+import es.eucm.ead.editor.control.Toasts;
 import es.eucm.ead.editor.control.actions.EditorAction;
 import es.eucm.ead.editor.control.background.BackgroundExecutor;
 import es.eucm.ead.editor.control.background.BackgroundExecutor.BackgroundTaskListener;
 import es.eucm.ead.editor.control.background.BackgroundTask;
-import es.eucm.ead.editor.view.widgets.Notification;
 
 /**
  * <p>
@@ -62,31 +62,27 @@ public abstract class BackgroundExecutorAction<T> extends EditorAction {
 
 	protected static final float ERROR_TIMEOUT = 3F;
 
-	protected Notification processingNotif, errorProcessing;
+	private Toasts toasts;
+
+	private boolean showing;
+
+	protected Object[] args;
 
 	public BackgroundExecutorAction() {
-		super(true, false);
+		super(true, false, new Class[] {});
+	}
+
+	public BackgroundExecutorAction(Class[]... args) {
+		super(true, false, args);
 	}
 
 	@Override
 	public void perform(Object... args) {
-
-		if (processingNotif == null) {
-			Skin skin = controller.getApplicationAssets().getSkin();
-			processingNotif = new Notification(skin);
-			errorProcessing = new Notification(skin);
-		}
-
-		if (processingNotif.isShowing()) {
+		if (showing) {
 			return;
 		}
-
-		processingNotif.clearChildren();
-		processingNotif.text(
-				controller.getApplicationAssets().getI18N()
-						.m(getProcessingI18N())).show(
-				((MockupController) controller).getRootComponent().getStage());
-
+		start();
+		this.args = args;
 		Gdx.app.postRunnable(doProcess);
 	}
 
@@ -122,22 +118,38 @@ public abstract class BackgroundExecutorAction<T> extends EditorAction {
 
 		@Override
 		public void done(BackgroundExecutor backgroundExecutor, T result) {
-			processingNotif.hide();
+			toasts.hideNotification();
 			onPostExecute(result);
+			end(false);
 		}
 
 		@Override
 		public void error(Throwable e) {
-			processingNotif.hide();
-			errorProcessing.clearChildren();
-			errorProcessing.text(
-					controller.getApplicationAssets().getI18N()
-							.m(getErrorProcessingI18N())).show(
-					((MockupController) controller).getRootComponent()
-							.getStage(), ERROR_TIMEOUT);
+			Gdx.app.error(getClass().toString(),
+					"Error in background executor action", e);
 			onPostExecute(null);
+			end(true);
 		}
 	};
+
+	private void start() {
+		showing = true;
+		Gdx.input.setInputProcessor(null);
+
+		toasts = ((MockupViews) controller.getViews()).getToasts();
+		toasts.showNotification(controller.getApplicationAssets().getI18N()
+				.m(getProcessingI18N()));
+	}
+
+	private void end(boolean error) {
+		if (error) {
+			toasts.showNotification(controller.getApplicationAssets().getI18N()
+					.m(getErrorProcessingI18N()), ERROR_TIMEOUT);
+		}
+		Gdx.input.setInputProcessor(((MockupController) controller)
+				.getRootComponent().getStage());
+		showing = false;
+	}
 
 	private final BackgroundTask<T> processTask = new BackgroundTask<T>() {
 		@Override

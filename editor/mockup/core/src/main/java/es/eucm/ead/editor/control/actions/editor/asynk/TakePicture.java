@@ -34,13 +34,11 @@
  *      You should have received a copy of the GNU Lesser General Public License
  *      along with eAdventure.  If not, see <http://www.gnu.org/licenses/>.
  */
-package es.eucm.ead.editor.control.actions.editor;
+package es.eucm.ead.editor.control.actions.editor.asynk;
 
 import com.badlogic.gdx.files.FileHandle;
-import com.badlogic.gdx.scenes.scene2d.Stage;
-import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 
-import es.eucm.ead.editor.control.MockupController;
+import es.eucm.ead.editor.control.MockupViews;
 import es.eucm.ead.editor.control.actions.EditorAction;
 import es.eucm.ead.editor.control.actions.model.AddSceneElement;
 import es.eucm.ead.editor.control.background.BackgroundExecutor;
@@ -48,7 +46,6 @@ import es.eucm.ead.editor.control.background.BackgroundExecutor.BackgroundTaskLi
 import es.eucm.ead.editor.control.background.BackgroundTask;
 import es.eucm.ead.editor.platform.MockupPlatform;
 import es.eucm.ead.editor.platform.MockupPlatform.ImageCapturedListener;
-import es.eucm.ead.editor.view.widgets.Notification;
 import es.eucm.ead.engine.assets.Assets;
 import es.eucm.ead.schema.entities.ModelEntity;
 import es.eucm.ead.schemax.GameStructure;
@@ -64,13 +61,9 @@ import es.eucm.ead.schemax.GameStructure;
  */
 public class TakePicture extends EditorAction {
 
-	private Notification importingNotif, errorImporting;
-
 	private FileHandle pictureFile;
 
 	private ModelEntity sceneElement;
-
-	private Stage stage;
 
 	public TakePicture() {
 		super(true, false);
@@ -78,13 +71,6 @@ public class TakePicture extends EditorAction {
 
 	@Override
 	public void perform(Object... args) {
-		stage = ((MockupController) controller).getRootComponent().getStage();
-
-		if (importingNotif == null) {
-			Skin skin = controller.getApplicationAssets().getSkin();
-			importingNotif = new Notification(skin);
-			errorImporting = new Notification(skin);
-		}
 
 		MockupPlatform platform = (MockupPlatform) controller.getPlatform();
 
@@ -109,10 +95,10 @@ public class TakePicture extends EditorAction {
 		@Override
 		public void imageCaptured(boolean success) {
 			if (success) {
-				importingNotif.clearChildren();
-				importingNotif.text(
-						controller.getApplicationAssets().getI18N()
-								.m("repository.importing")).show(stage);
+				((MockupViews) controller.getViews()).getToasts()
+						.showNotification(
+								controller.getApplicationAssets().getI18N()
+										.m("repository.importing"));
 
 				sceneElement = controller.getTemplates().createSceneElement(
 						pictureFile.path());
@@ -140,16 +126,15 @@ public class TakePicture extends EditorAction {
 
 		@Override
 		public void done(BackgroundExecutor backgroundExecutor, Boolean result) {
-			importingNotif.hide();
+			((MockupViews) controller.getViews()).getToasts()
+					.hideNotification();
 		}
 
 		@Override
 		public void error(Throwable e) {
-			importingNotif.hide();
-			errorImporting.clearChildren();
-			errorImporting.text(
+			((MockupViews) controller.getViews()).getToasts().showNotification(
 					controller.getApplicationAssets().getI18N()
-							.m("repository.importingError")).show(stage, 3F);
+							.m("repository.importingError"), 3F);
 		}
 
 	};

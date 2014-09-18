@@ -46,12 +46,15 @@ import com.badlogic.gdx.utils.reflect.ClassReflection;
 
 import es.eucm.ead.editor.control.MockupController;
 import es.eucm.ead.editor.control.actions.EditorActionException;
+import es.eucm.ead.editor.control.actions.editor.asynk.CloseMockupGame;
 import es.eucm.ead.editor.control.actions.model.EditScene;
 import es.eucm.ead.editor.control.background.BackgroundExecutor;
 import es.eucm.ead.editor.control.background.BackgroundExecutor.BackgroundTaskListener;
 import es.eucm.ead.editor.control.background.BackgroundTask;
 import es.eucm.ead.editor.model.Model;
 import es.eucm.ead.editor.model.Q;
+import es.eucm.ead.editor.view.builders.ViewBuilder;
+import es.eucm.ead.editor.view.builders.gallery.ScenesView;
 import es.eucm.ead.schema.editor.components.EditState;
 import es.eucm.ead.schema.entities.ModelEntity;
 
@@ -64,24 +67,64 @@ public class OpenMockupGame extends OpenGame {
 	 * Saving interval in seconds.
 	 */
 	private static final float SAVE_DELAY = 20f;
+	protected static final float ERROR_TIMEOUT = 3F;
 
 	@Override
 	public void perform(Object... args) {
-		String path = args[0].toString();
-		if (!path.endsWith("/")) {
-			path += "/";
-		}
-		fileChosen(path);
-		if (!path.equals(controller.getEditorGameAssets().getLoadingPath())) {
-			throw new EditorActionException("Failed opening: " + path
-					+ ", probably deleted.");
-		}
-		Group rootComponent = ((MockupController) controller)
-				.getRootComponent();
-		rootComponent.clearActions();
-		rootComponent.addAction(forever(delay(SAVE_DELAY, run(saveGame))));
-		controller.getPreferences().flush();
+		fileChosen(args[0].toString());
 	}
+
+	@Override
+	protected boolean load(String gamePath) {
+		if (!gamePath.endsWith("/")) {
+			gamePath += "/";
+		}
+		if (super.load(gamePath)) {
+			controller.getPreferences().flush();
+			return true;
+		}
+		handleError();
+		return false;
+	}
+
+	@Override
+	protected void finishLoading(String path) {
+		try {
+			ViewBuilder currentView = controller.getViews().getCurrentView();
+			super.finishLoading(path);
+			if (!path.equals(controller.getEditorGameAssets().getLoadingPath())) {
+				throw new EditorActionException("Failed opening: " + path
+						+ ", probably deleted.");
+			}
+
+			if (controller.getViews().getCurrentView() == currentView) {
+				controller.action(ChangeMockupView.class, ScenesView.class);
+			}
+			Group rootComponent = ((MockupController) controller)
+					.getRootComponent();
+			rootComponent.clearActions();
+			rootComponent.addAction(forever(delay(SAVE_DELAY, run(saveGame))));
+		} catch (Exception eae) {
+			// the project is probably corrupt; complain but continue
+			Gdx.app.log("OpenLastProject", "Error opening '" + path
+					+ "'; Request ignored", eae);
+			handleError();
+		}
+	}
+
+	private void handleError() {
+		Gdx.app.postRunnable(closeGame);
+	}
+
+	private Runnable closeGame = new Runnable() {
+		@Override
+		public void run() {
+			controller
+					.action(CloseMockupGame.class,
+							controller.getApplicationAssets().getI18N()
+									.m("project.errorOpening"));
+		}
+	};
 
 	private final Runnable saveGame = new Runnable() {
 		@Override
@@ -135,8 +178,8 @@ public class OpenMockupGame extends OpenGame {
 				controller.action(ChangeMockupView.class, args);
 			} catch (Exception e) {
 				Gdx.app.error("OpenGame",
-						"Impossible to set view " + editState.getView());
-				controller.action(CloseMockupGame.class);
+						"Impossible to set view " + editState.getView(), e);
+				handleError();
 			}
 		}
 	}

@@ -34,16 +34,14 @@
  *      You should have received a copy of the GNU Lesser General Public License
  *      along with eAdventure.  If not, see <http://www.gnu.org/licenses/>.
  */
-package es.eucm.ead.editor.control.actions.editor;
+package es.eucm.ead.editor.control.actions.editor.asynk;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.files.FileHandle;
 
-import es.eucm.ead.editor.control.MockupController;
 import es.eucm.ead.editor.platform.MockupPlatform;
 import es.eucm.ead.editor.utils.ZipUtils;
 import es.eucm.ead.editor.view.builders.gallery.ProjectsView;
-import es.eucm.ead.editor.view.builders.gallery.ScenesView;
 
 /**
  * <p>
@@ -100,24 +98,8 @@ public class ImportMockupProject extends BackgroundExecutorAction<FileHandle> {
 	@Override
 	protected void onPostExecute(FileHandle result) {
 		if (result != null) {
-			try {
-				controller.action(OpenMockupGame.class, result.file()
-						.getAbsolutePath());
-				if (controller.getViews().getCurrentView() == null) {
-					controller.action(ChangeMockupView.class, ScenesView.class);
-				}
-			} catch (Exception ex) {
-				// the project is probably corrupt; complain but continue
-				Gdx.app.log(IMPORT_TAG, "Error opening '" + result.path()
-						+ "'; Request ignored");
-				controller.action(CloseMockupGame.class);
-				errorProcessing.clearChildren();
-				errorProcessing.text(
-						controller.getApplicationAssets().getI18N()
-								.m("project.errorOpening")).show(
-						((MockupController) controller).getRootComponent()
-								.getStage(), ERROR_TIMEOUT);
-			}
+			controller.action(OpenMockupGameAsynk.class, result.file()
+					.getAbsolutePath());
 		}
 	}
 }

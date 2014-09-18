@@ -36,11 +36,18 @@
  */
 package es.eucm.ead.editor.control.actions.editor;
 
+import es.eucm.ead.editor.control.actions.editor.asynk.OpenMockupGameAsynk;
+
+/**
+ * 
+ * @see NewGame
+ * 
+ */
 public class NewMockupGame extends NewGame {
 
 	@Override
 	protected Class getOpenGameAction() {
-		return OpenMockupGame.class;
+		return OpenMockupGameAsynk.class;
 	}
 
 }
