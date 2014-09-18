@@ -223,6 +223,13 @@
             enabledImageColor: black,
             checked: button_pressed
 		},
+		white: {
+			up: button_normal, 
+			down: button_pressed,  
+			disabled: button_disabled, 
+			disabledImageColor: gray,
+            enabledImageColor: white
+		},
 		white_union: { 
 			up: nav_button_up, 
 			down: nav_button_down, 

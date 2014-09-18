@@ -51,7 +51,7 @@ public class VisibilityPanel extends ConditionalPanel {
 	}
 
 	@Override
-	protected void updateComponent() {
+	protected void updateTheComponent() {
 		if (component == null) {
 			component = new Visibility();
 			component.setId(componentId);
