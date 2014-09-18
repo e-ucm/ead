@@ -7,6 +7,9 @@
         "$ref": "control.json"
     },
     "properties": {
+    	"color": {
+            "$ref": "../../data/color.json"
+        },
         "text": {
             "type": "string",
             "description": "the text to be displayed"
