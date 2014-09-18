@@ -36,11 +36,12 @@
  */
 package es.eucm.ead.editor.view.widgets.editionview.elementcontext;
 
-import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input.TextInputListener;
 import com.badlogic.gdx.graphics.Color;
+import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.scenes.scene2d.Actor;
+import com.badlogic.gdx.scenes.scene2d.Group;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
@@ -49,20 +50,21 @@ import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
 
 import es.eucm.ead.editor.assets.ApplicationAssets;
 import es.eucm.ead.editor.control.Controller;
+import es.eucm.ead.editor.control.MockupViews;
 import es.eucm.ead.editor.control.Selection;
+import es.eucm.ead.editor.control.actions.editor.Copy;
 import es.eucm.ead.editor.control.actions.editor.LaunchExternalEditor;
-import es.eucm.ead.editor.control.actions.model.Clone;
+import es.eucm.ead.editor.control.actions.model.ChangeSelectionText;
 import es.eucm.ead.editor.control.actions.model.RemoveSceneElementSelection;
-import es.eucm.ead.editor.control.actions.model.ReplaceEntity;
-import es.eucm.ead.editor.control.actions.model.SetSelection;
 import es.eucm.ead.editor.control.actions.model.scene.ReorderSelection;
 import es.eucm.ead.editor.model.Q;
+import es.eucm.ead.editor.platform.MockupPlatform;
+import es.eucm.ead.editor.view.builders.gallery.BaseGallery;
 import es.eucm.ead.editor.view.widgets.IconButton;
 import es.eucm.ead.editor.view.widgets.ToolbarIcon;
 import es.eucm.ead.editor.view.widgets.editionview.MockupSceneEditor;
 import es.eucm.ead.engine.I18N;
 import es.eucm.ead.schema.components.controls.Label;
-import es.eucm.ead.schema.editor.components.Parent;
 import es.eucm.ead.schema.entities.ModelEntity;
 import es.eucm.ead.schema.renderers.Image;
 
@@ -73,11 +75,12 @@ public class ElementContext extends Table {
 			IC_TOBACK = "toback80x80", IC_IAMGEEFFECTS = "effects80x80",
 			IC_CHANGETEXT = "pencil80x80";
 
+	private static final float COPY_NOTIFICATION_TIME = 2f;
 	private static final float ROTATION_HANDLE_SPACE = 50f;
 	private static final float X_SPACE = 10f;
 	private static final Vector2 TEMP = new Vector2();
-	private static final float ICON_SIZE = .065F;
-	private static final float PAD_SIZE = .01F;
+	private static final float ICON_SIZE = BaseGallery.TOOLBAR_SIZE;
+	private static final float PAD_SIZE = (BaseGallery.TOOLBAR_SIZE - BaseGallery.ICON_SIZE);
 
 	private Table commonContext;
 
@@ -86,6 +89,8 @@ public class ElementContext extends Table {
 	private Table imageContext;
 
 	private MockupSceneEditor sceneEditor;
+
+	private LabelColorPicker colorPicker;
 
 	public ElementContext(final Controller controller,
 			MockupSceneEditor sceneEditor) {
@@ -101,13 +106,13 @@ public class ElementContext extends Table {
 				skin, "white_left");
 		final IconButton toBack = new ToolbarIcon(IC_TOBACK, pad, iconSize,
 				skin, "white_center");
-		final IconButton duplicate = new ToolbarIcon(IC_DUPLICATE, pad,
-				iconSize, skin, "white_center");
+		final IconButton copy = new ToolbarIcon(IC_DUPLICATE, pad, iconSize,
+				skin, "white_center");
 		final ToolbarIcon delete = new ToolbarIcon(IC_DELETE, pad, iconSize,
 				skin, "white_right");
 		delete.getIcon().setColor(Color.WHITE);
 
-		commonContext = new ContextBar(skin, toFront, toBack, duplicate, delete);
+		commonContext = new ContextBar(skin, toFront, toBack, copy, delete);
 
 		// Image context
 		final IconButton imageEffects = new ToolbarIcon(IC_IAMGEEFFECTS, pad,
@@ -118,32 +123,17 @@ public class ElementContext extends Table {
 		// Label context
 		final IconButton changeText = new ToolbarIcon(IC_CHANGETEXT, pad,
 				iconSize, skin, "white_single");
+		colorPicker = new LabelColorPicker(controller, true, pad, iconSize,
+				skin);
 
-		labelContext = new ContextBar(skin, changeText);
+		labelContext = new ContextBar(skin, changeText, colorPicker);
 
 		final TextInputListener changeTextListener = new TextInputListener() {
 
 			@Override
 			public void input(String text) {
 				if (text != null && !text.isEmpty() && !text.trim().isEmpty()) {
-					Object elemObj = controller.getModel().getSelection()
-							.getSingle(Selection.SCENE_ELEMENT);
-					if (elemObj instanceof ModelEntity) {
-						ModelEntity element = (ModelEntity) elemObj;
-						ModelEntity copy = controller.getEditorGameAssets()
-								.copy(element);
-
-						Q.getComponent(copy, Parent.class).setParent(
-								Q.getComponent(element, Parent.class)
-										.getParent());
-						Label labelComponent = Q
-								.getComponent(copy, Label.class);
-						labelComponent.setText(text);
-						controller.action(ReplaceEntity.class, element, copy);
-						controller.action(SetSelection.class,
-								Selection.EDITED_GROUP,
-								Selection.SCENE_ELEMENT, copy);
-					}
+					controller.action(ChangeSelectionText.class, text);
 				}
 			}
 
@@ -168,8 +158,11 @@ public class ElementContext extends Table {
 							ReorderSelection.Type.TO_BACK);
 				} else if (listener == delete) {
 					controller.action(RemoveSceneElementSelection.class);
-				} else if (listener == duplicate) {
-					controller.action(Clone.class);
+				} else if (listener == copy) {
+					controller.action(Copy.class);
+					((MockupViews) controller.getViews()).getToasts()
+							.showNotification(i18n.m("edition.copied"),
+									COPY_NOTIFICATION_TIME);
 				} else if (listener == changeText) {
 					Object elemObj = controller.getModel().getSelection()
 							.getSingle(Selection.SCENE_ELEMENT);
@@ -177,11 +170,13 @@ public class ElementContext extends Table {
 
 						ModelEntity elem = (ModelEntity) elemObj;
 						if (Q.hasComponent(elem, Label.class)) {
-							Gdx.input
-									.getTextInput(changeTextListener, i18n
-											.m("edition.newText"), Q
-											.getComponent(elem, Label.class)
-											.getText());
+							MockupPlatform platform = (MockupPlatform) controller
+									.getPlatform();
+							platform.getMultilineTextInput(
+									changeTextListener,
+									i18n.m("edition.newText"),
+									Q.getComponent(elem, Label.class).getText(),
+									i18n);
 						}
 					}
 				}
@@ -191,7 +186,7 @@ public class ElementContext extends Table {
 		toFront.addListener(listener);
 		toBack.addListener(listener);
 		delete.addListener(listener);
-		duplicate.addListener(listener);
+		copy.addListener(listener);
 		changeText.addListener(listener);
 
 	}
@@ -200,12 +195,8 @@ public class ElementContext extends Table {
 		if (entity == null && actor == null && !hasParent()) {
 			return;
 		}
-		remove();
-		clear();
-		labelContext.remove();
-		imageContext.remove();
-		add(commonContext).left();
 		if (actor != null) {
+			add(commonContext).left();
 			Stage stage = actor.getStage();
 			if (stage != null) {
 
@@ -213,6 +204,21 @@ public class ElementContext extends Table {
 				if (secondContext != null) {
 					row();
 					add(secondContext).left();
+					if (secondContext == labelContext) {
+						boolean hasText = false;
+						for (Actor child : ((Group) actor).getChildren()) {
+							if (child instanceof com.badlogic.gdx.scenes.scene2d.ui.Label) {
+								colorPicker.setVisible(true);
+								colorPicker
+										.setLabel(((com.badlogic.gdx.scenes.scene2d.ui.Label) child));
+								hasText = true;
+								break;
+							}
+						}
+						if (!hasText) {
+							colorPicker.setVisible(false);
+						}
+					}
 				}
 
 				float prefW = getPrefWidth();
@@ -281,10 +287,32 @@ public class ElementContext extends Table {
 					x = Math.min(sceneX + sceneW, actorX + actorW);
 					x = x - X_SPACE - prefW;
 				}
-				setBounds(x, y, prefW, prefH);
-				stage.addActor(this);
+
+				float currX = getX(), currY = getY(), currH = getHeight();
+
+				if (!MathUtils.isEqual(currX, x)
+						|| !MathUtils.isEqual(currY, y)
+						|| !MathUtils.isEqual(currH, prefH)) {
+
+					clearContext();
+					setBounds(x, y, prefW, prefH);
+					add(commonContext).left();
+					row();
+					add(secondContext).left();
+					stage.addActor(this);
+				}
 			}
+		} else if (entity == null) {
+			clearContext();
 		}
+	}
+
+	private void clearContext() {
+		remove();
+		clear();
+		labelContext.remove();
+		imageContext.remove();
+		setPosition(-1f, -1f);
 	}
 
 	private WidgetGroup getContext(ModelEntity entity) {
