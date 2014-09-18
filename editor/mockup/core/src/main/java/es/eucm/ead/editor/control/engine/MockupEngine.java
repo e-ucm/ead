@@ -57,7 +57,7 @@ public class MockupEngine extends Engine {
 		componentLoader.registerComponentProcessor(
 				Image.class,
 				new MockupImageProcessor(getGameLoop(), controller
-						.getEditorGameAssets(), controller.getShapeRenderer()));
+						.getEditorGameAssets()));
 		componentLoader.registerComponentProcessor(
 				EmptyRenderer.class,
 				new MockupEmptyRendererProcessor(getGameLoop(), controller

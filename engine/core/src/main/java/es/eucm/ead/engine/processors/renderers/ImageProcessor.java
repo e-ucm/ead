@@ -63,7 +63,11 @@ public class ImageProcessor extends RendererProcessor<Image> {
 						imageComponent.setTexture(asset);
 					}
 				});
+		createCollider(image, imageComponent);
+		return imageComponent;
+	}
 
+	protected void createCollider(Image image, ImageComponent component) {
 		if (image.getCollider() != null && image.getCollider().size > 0) {
 			Array<Polygon> collider = new Array<Polygon>();
 			for (es.eucm.ead.schema.data.shape.Polygon polygon : image
@@ -75,10 +79,8 @@ public class ImageProcessor extends RendererProcessor<Image> {
 				Polygon contour = new Polygon(points);
 				collider.add(contour);
 			}
-			imageComponent.setCollider(collider);
+			component.setCollider(collider);
 		}
-
-		return imageComponent;
 	}
 
 	protected ImageComponent createComponent() {

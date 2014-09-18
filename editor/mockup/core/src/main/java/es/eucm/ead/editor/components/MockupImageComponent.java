@@ -36,24 +36,9 @@
  */
 package es.eucm.ead.editor.components;
 
-import com.badlogic.gdx.graphics.g2d.Batch;
+import es.eucm.ead.engine.components.renderers.ImageComponent;
 
-import es.eucm.ead.engine.GameLoop;
-
-public class MockupImageComponent extends EditorImageComponent {
-
-	private GameLoop gameLoop;
-
-	public void setGameLoop(GameLoop gameLoop) {
-		this.gameLoop = gameLoop;
-	}
-
-	@Override
-	protected void drawCollider(Batch batch) {
-		if (!gameLoop.isPlaying()) {
-			super.drawCollider(batch);
-		}
-	}
+public class MockupImageComponent extends ImageComponent {
 
 	@Override
 	public boolean hit(float x, float y) {
