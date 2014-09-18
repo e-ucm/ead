@@ -44,6 +44,7 @@ import com.badlogic.gdx.scenes.scene2d.Group;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.InputListener;
 import com.badlogic.gdx.scenes.scene2d.Stage;
+import com.badlogic.gdx.scenes.scene2d.ui.TextArea;
 import com.badlogic.gdx.scenes.scene2d.ui.TextField;
 
 import es.eucm.ead.editor.assets.ApplicationAssets;
@@ -76,9 +77,7 @@ public class MockupController extends Controller {
 				// touch down anywhere else but the text field.
 				Stage stage = rootComponent.getStage();
 				if (!(event.getTarget() instanceof TextField)) {
-					Gdx.input.setOnscreenKeyboardVisible(false);
-					stage.setKeyboardFocus(null);
-					stage.unfocusAll();
+					hideOnscreenKeyboard(stage);
 				}
 				return false;
 			}
@@ -88,8 +87,22 @@ public class MockupController extends Controller {
 				if (keycode == Keys.BACK
 						|| (Gdx.app.getType() == Application.ApplicationType.Desktop && keycode == Keys.ALT_LEFT)) {
 					((MockupViews) MockupController.this.views).onBackPressed();
+					return true;
+				} else if (keycode == Keys.ENTER
+						&& !(event.getTarget() instanceof TextArea)) {
+					Stage stage = event.getTarget().getStage();
+					if (stage != null) {
+						hideOnscreenKeyboard(stage);
+						return true;
+					}
 				}
-				return true;
+				return false;
+			}
+
+			private void hideOnscreenKeyboard(Stage stage) {
+				Gdx.input.setOnscreenKeyboardVisible(false);
+				stage.setKeyboardFocus(null);
+				stage.unfocusAll();
 			}
 		});
 	}
