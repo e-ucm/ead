@@ -40,7 +40,9 @@ import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.graphics.Texture;
 
 import es.eucm.ead.editor.control.ComponentId;
+import es.eucm.ead.editor.control.MockupViews;
 import es.eucm.ead.editor.control.Selection;
+import es.eucm.ead.editor.control.Toasts;
 import es.eucm.ead.editor.control.actions.ModelAction;
 import es.eucm.ead.editor.control.actions.model.SetSelection;
 import es.eucm.ead.editor.control.actions.model.scene.NewScene;
@@ -72,6 +74,8 @@ import es.eucm.ead.schemax.entities.ResourceCategory;
  * </dl>
  */
 public class AddGatewayDefaultElement extends ModelAction {
+
+	private Toasts toasts;
 
 	public AddGatewayDefaultElement() {
 		super(true, false, ModelEntity.class);
@@ -179,6 +183,11 @@ public class AddGatewayDefaultElement extends ModelAction {
 		behavior_in.getEffects().add(go_in);
 		command.addCommand(new AddToListCommand(entry, entry.getComponents(),
 				behavior_in));
+
+		toasts = ((MockupViews) controller.getViews()).getToasts();
+		toasts.showNotification(
+				controller.getApplicationAssets().getI18N()
+						.m("edition.selectionToNewScene"), 2.5f);
 
 		return command;
 	}
