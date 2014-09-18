@@ -44,7 +44,6 @@ import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable;
 import com.badlogic.gdx.utils.Scaling;
-import com.esotericsoftware.tablelayout.Cell;
 
 import es.eucm.ead.editor.control.Controller;
 import es.eucm.ead.editor.model.Q;
@@ -55,12 +54,14 @@ import es.eucm.ead.schema.entities.ModelEntity;
 
 public class SceneButton extends Button implements AssetLoadedCallback<Texture> {
 
-	private Image image;
+	private TextureRegionDrawable drawable;
+	private TextureRegion region;
 	private Label label;
 
 	private ModelEntity scene;
 
 	private Controller controller;
+	private Image image;
 
 	public SceneButton(Controller controller, Skin skin, String style) {
 		this(null, controller, 0, skin, style);
@@ -107,40 +108,40 @@ public class SceneButton extends Button implements AssetLoadedCallback<Texture> 
 		this.scene = scene;
 
 		image = new Image();
+		drawable = new TextureRegionDrawable(region = new TextureRegion());
 		image.setScaling(Scaling.fit);
 
-		Cell temp = add(image).pad(pad, pad, pad / 2, pad);
+		add(image).pad(pad, pad, pad / 2, pad).fill();
 		row();
 
 		label = new Label(" ", skin);
 		add(label).expand().center().pad(0, pad, pad, pad);
-
-		changeScene(scene);
 	}
 
 	@Override
 	public void loaded(String fileName, Texture asset) {
-		image.setDrawable(new TextureRegionDrawable(new TextureRegion(asset)));
+		region.setRegion(asset);
+		drawable.setRegion(region);
+		image.setDrawable(drawable);
+		image.invalidateHierarchy();
 	}
 
 	public ModelEntity getScene() {
 		return scene;
 	}
 
-	public void changeScene(ModelEntity scene) {
-		if (scene != null) {
-			Documentation documentation = Q.getComponent(scene,
-					Documentation.class);
-			if (documentation != null && documentation.getName() != null) {
-				label.setText(documentation.getName());
-			} else {
-				label.setText(" ");
-			}
-
-			Thumbnail thumbnail = Q.getThumbnail(controller, scene);
-			controller.getEditorGameAssets().get(thumbnail.getThumbnail(),
-					Texture.class, this);
+	public void updateScene() {
+		Documentation documentation = Q
+				.getComponent(scene, Documentation.class);
+		if (documentation != null && documentation.getName() != null) {
+			label.setText(documentation.getName());
+		} else {
+			label.setText(" ");
 		}
+
+		Thumbnail thumbnail = Q.getThumbnail(controller, scene);
+		controller.getEditorGameAssets().get(thumbnail.getThumbnail(),
+				Texture.class, this);
 	}
 
 	public void actualizeName() {
