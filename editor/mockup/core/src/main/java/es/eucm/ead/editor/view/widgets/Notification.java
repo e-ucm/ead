@@ -41,6 +41,7 @@ import com.badlogic.gdx.scenes.scene2d.Action;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.actions.Actions;
+import com.badlogic.gdx.scenes.scene2d.ui.Image;
 import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.utils.Drawable;
@@ -56,25 +57,25 @@ public class Notification extends HiddenPanel {
 
 	private Runnable hide;
 
+	private Drawable progressBarDrawable;
+
+	private Image progressBar;
+
+	private Cell progressBarCell;
+
 	public Notification(Skin skin) {
 		this(skin, skin.get(NotificationStyle.class));
 	}
 
 	public Notification(Skin skin, NotificationStyle style) {
-		super(skin);
-		setStageBackground(style.stageBackground);
-		modal(false);
+		super(skin, style.stageBackground);
+		progressBarDrawable = style.undefinedProgressBar;
 		setBackground(style.background);
 		padBottom(getPadBottom() + DEFAULT_SPACING);
 		padRight(getPadRight() + DEFAULT_SPACING);
 		padTop(getPadTop() + DEFAULT_SPACING);
 		padLeft(getPadLeft() + DEFAULT_SPACING);
 		defaults().space(DEFAULT_SPACING);
-	}
-
-	public Notification modal(boolean isModal) {
-		super.setModal(isModal);
-		return this;
 	}
 
 	/**
@@ -109,6 +110,19 @@ public class Notification extends HiddenPanel {
 			return this;
 		}
 
+		Action action = null;
+		getColor().a = 0f;
+		if (timeout != -1 && timeout > 0) {
+			removeProgressBar();
+			action = Actions.sequence(
+					Actions.fadeIn(FADE_IN, Interpolation.fade),
+					Actions.delay(timeout - FADE_IN,
+							Actions.run(hideRunnable())));
+		} else {
+			setUpProgressBar();
+			action = Actions.fadeIn(FADE_IN, Interpolation.fade);
+		}
+
 		previousKeyboardFocus = null;
 		Actor actor = stage.getKeyboardFocus();
 		if (actor != null && !actor.isDescendantOf(this))
@@ -124,18 +138,27 @@ public class Notification extends HiddenPanel {
 				getHeight() * .1f);
 		stage.setKeyboardFocus(this);
 		stage.setScrollFocus(this);
-		Action action = null;
-		getColor().a = 0f;
-		if (timeout != -1 && timeout > 0) {
-			action = Actions.sequence(
-					Actions.fadeIn(FADE_IN, Interpolation.fade),
-					Actions.delay(timeout - FADE_IN,
-							Actions.run(hideRunnable())));
-		} else {
-			action = Actions.fadeIn(FADE_IN, Interpolation.fade);
-		}
+
 		super.show(stage, action);
 		return this;
+	}
+
+	private void removeProgressBar() {
+		if (progressBarCell != null) {
+			progressBarCell.setWidget(null);
+		}
+	}
+
+	private void setUpProgressBar() {
+		if (progressBar == null) {
+			progressBar = new Image(progressBarDrawable);
+			progressBar.setOrigin(progressBar.getPrefWidth() * .5f,
+					progressBar.getPrefHeight() * .5f);
+			progressBar
+					.addAction(Actions.forever(Actions.rotateBy(-360f, 1.5f)));
+			progressBarCell = add();
+		}
+		progressBarCell.setWidget(progressBar);
 	}
 
 	@Override
@@ -177,7 +200,7 @@ public class Notification extends HiddenPanel {
 	public static class NotificationStyle {
 
 		/** Optional **/
-		private Drawable background, stageBackground;
+		private Drawable background, stageBackground, undefinedProgressBar;
 
 		public NotificationStyle() {
 		}

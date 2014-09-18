@@ -50,11 +50,13 @@ import es.eucm.ead.editor.view.widgets.helpmessage.sequence.HelpSequence;
 
 public class MockupViews extends Views implements BackListener {
 
+	private Toasts toasts;
 	private ObjectMap<ViewBuilder, HelpSequence> helpMessages;
 
 	public MockupViews(Controller controller, Group viewsContainer) {
 		super(controller, viewsContainer, viewsContainer);
 		helpMessages = new ObjectMap<ViewBuilder, HelpSequence>(8);
+		toasts = new Toasts(controller);
 	}
 
 	@Override
@@ -108,6 +110,10 @@ public class MockupViews extends Views implements BackListener {
 		if (currentView.getClass() != ProjectsView.class) {
 			controller.action(ForceSave.class);
 		}
+	}
+
+	public Toasts getToasts() {
+		return toasts;
 	}
 
 }
