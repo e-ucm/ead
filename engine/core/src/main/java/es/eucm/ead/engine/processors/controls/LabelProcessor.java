@@ -49,6 +49,7 @@ import es.eucm.ead.engine.components.controls.LabelComponent;
 import es.eucm.ead.engine.processors.ComponentProcessor;
 import es.eucm.ead.engine.variables.VariablesManager;
 import es.eucm.ead.schema.components.controls.Label;
+import es.eucm.ead.schema.data.Color;
 
 public class LabelProcessor extends ComponentProcessor<Label> {
 
@@ -71,6 +72,11 @@ public class LabelProcessor extends ComponentProcessor<Label> {
 
 		LabelStyle style = skin.get(component.getStyle(), LabelStyle.class);
 		LabelStyle styleCopy = new LabelStyle(style);
+		Color color = component.getColor();
+		if (color != null) {
+			styleCopy.fontColor.set(color.getR(), color.getG(), color.getB(),
+					color.getA());
+		}
 		button.setStyle(styleCopy);
 		button.setText(gameAssets.getI18N().m(component.getText()));
 

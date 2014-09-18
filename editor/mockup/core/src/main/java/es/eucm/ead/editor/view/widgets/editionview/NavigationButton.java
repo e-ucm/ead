@@ -119,13 +119,13 @@ public class NavigationButton extends IconWithScalePanel implements
 		panel.align(Align.top);
 		panel.add(goGallery).pad(PAD).top();
 		panel.row();
-		panel.add(list).top();
+		panel.add(list).top().expandX().fill();
 
 		controller.getModel().addSelectionListener(this);
 	}
 
 	@Override
-	protected void showPanel() {
+	public void showPanel() {
 		sceneList.selectScene(model.getIdFor(model.getSelection().getSingle(
 				Selection.SCENE)));
 		super.showPanel();

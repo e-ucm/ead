@@ -63,6 +63,12 @@ public class IconWithFadePanel extends IconWithPanel {
 
 	}
 
+	public IconWithFadePanel(String icon, float padding, float separation,
+			float size, Skin skin, Position position, String styleName) {
+		super(icon, padding, separation, size, skin, position, styleName);
+
+	}
+
 	@Override
 	protected void init(Drawable icon, float padding, Skin skin) {
 		super.init(icon, padding, skin);

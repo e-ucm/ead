@@ -36,16 +36,13 @@
  */
 package es.eucm.ead.editor.control.actions.editor;
 
-import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.scenes.scene2d.ui.Skin;
-
 import es.eucm.ead.editor.control.MockupController;
 import es.eucm.ead.editor.control.Preferences;
 import es.eucm.ead.editor.control.actions.EditorAction;
+import es.eucm.ead.editor.control.actions.editor.asynk.ImportMockupProject;
+import es.eucm.ead.editor.control.actions.editor.asynk.OpenMockupGameAsynk;
 import es.eucm.ead.editor.platform.MockupPlatform;
 import es.eucm.ead.editor.view.builders.gallery.ProjectsView;
-import es.eucm.ead.editor.view.builders.gallery.ScenesView;
-import es.eucm.ead.editor.view.widgets.Notification;
 
 /**
  * <p>
@@ -58,10 +55,6 @@ import es.eucm.ead.editor.view.widgets.Notification;
  * </dl>
  */
 public class OpenApplication extends EditorAction {
-
-	protected static final float ERROR_TIMEOUT = 3F;
-
-	private Notification errorOpening;
 
 	public OpenApplication() {
 		super(true, false);
@@ -84,28 +77,7 @@ public class OpenApplication extends EditorAction {
 					Preferences.LAST_OPENED_GAME);
 
 			if (projectToOpenPath != null && !"".equals(projectToOpenPath)) {
-				try {
-					controller.action(OpenMockupGame.class, projectToOpenPath);
-					if (controller.getViews().getCurrentView() == null) {
-						controller.action(ChangeMockupView.class,
-								ScenesView.class);
-					}
-				} catch (Exception eae) {
-					// the project is probably corrupt; complain but continue
-					Gdx.app.log("OpenLastProject", "Error opening '"
-							+ projectToOpenPath + "'; Request ignored");
-					if (errorOpening == null) {
-						Skin skin = controller.getApplicationAssets().getSkin();
-						errorOpening = new Notification(skin);
-					}
-					controller.action(CloseMockupGame.class);
-					errorOpening.clearChildren();
-					errorOpening.text(
-							controller.getApplicationAssets().getI18N()
-									.m("project.errorOpening")).show(
-							((MockupController) controller).getRootComponent()
-									.getStage(), ERROR_TIMEOUT);
-				}
+				controller.action(OpenMockupGameAsynk.class, projectToOpenPath);
 			} else {
 				controller.action(ChangeMockupView.class, ProjectsView.class);
 			}

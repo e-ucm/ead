@@ -55,7 +55,8 @@ import es.eucm.ead.editor.view.widgets.helpmessage.sequence.EditionViewHelp;
 
 public class EditionView implements ViewBuilder {
 
-	private static final float PAD = 40, HEIGHT = BaseGallery.TOOLBAR_SIZE,
+	private static final float SMALL_PAD = BaseGallery.SMALL_PAD * .6f,
+			NORMAL_PAD = SMALL_PAD * 4F, HEIGHT = BaseGallery.TOOLBAR_SIZE,
 			ICON_SIZE = BaseGallery.ICON_SIZE, ICON_PAD = BaseGallery.ICON_PAD;
 	private static final String TOP_STYLE = "white_top",
 			LEFT_STYLE = "white_left";
@@ -81,18 +82,17 @@ public class EditionView implements ViewBuilder {
 
 		sceneEditor = new MockupSceneEditor(controller, LEFT_STYLE, TOP_STYLE);
 
-		paintToolbar = new PaintToolbar(sceneEditor, controller);
+		paintToolbar = new PaintToolbar(iconSize, iconPad, sceneEditor,
+				controller);
 
 		final NavigationButton union = new NavigationButton(skin, controller,
 				toolbarSize);
 
 		final TopEditionToolbar topBar = new TopEditionToolbar(controller,
-				TOP_STYLE, toolbarSize, iconSize, iconPad, paintToolbar);
+				TOP_STYLE, toolbarSize, iconSize, iconPad, paintToolbar,
+				SMALL_PAD, NORMAL_PAD);
 		final Toolbar leftBar = new LeftEditionToolbar(controller, LEFT_STYLE,
-				toolbarSize, iconSize, PAD, iconPad, union, topBar);
-
-		union.getPanel().addTouchableActor(topBar);
-		topBar.addTouchableActors(union, leftBar);
+				toolbarSize, iconSize, iconPad, SMALL_PAD, NORMAL_PAD);
 
 		view.add(union);
 		view.add(topBar).expandX().fill();

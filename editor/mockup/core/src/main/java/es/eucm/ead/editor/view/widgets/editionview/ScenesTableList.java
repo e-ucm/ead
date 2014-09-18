@@ -199,6 +199,13 @@ public class ScenesTableList extends Table implements
 		return null;
 	}
 
+	private void show() {
+		for (Actor actor : getChildren()) {
+			SceneButton button = (SceneButton) actor;
+			button.updateScene();
+		}
+	}
+
 	public void selectScene(String id) {
 		for (Actor actor : getChildren()) {
 			SceneButton button = (SceneButton) actor;
@@ -209,11 +216,12 @@ public class ScenesTableList extends Table implements
 				break;
 			}
 		}
-
+		show();
 	}
 
 	public void deselectAll() {
 		group.uncheckAll();
+		show();
 	}
 
 	@Override

@@ -99,7 +99,6 @@ public class VariablesTable extends PositionedHiddenPanel implements
 		this.skin = controller.getApplicationAssets().getSkin();
 
 		setBackground(skin.getDrawable("panel"));
-		addTouchableActor(reference.getPanel());
 
 		Label title = new Label(i18n.m("general.variablesList"), skin);
 		add(title).center().pad(LATERAL_PAD);

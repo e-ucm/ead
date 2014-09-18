@@ -36,14 +36,16 @@
  */
 package es.eucm.ead.editor.control;
 
+import java.util.HashMap;
+import java.util.Map;
+
+import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.utils.Array;
+
 import es.eucm.ead.editor.control.Selection.Context;
 import es.eucm.ead.editor.control.actions.model.SetSelection;
 import es.eucm.ead.editor.model.Model;
 import es.eucm.ead.engine.assets.Assets;
-
-import java.util.HashMap;
-import java.util.Map;
 
 /**
  * Editor clipboard. Wraps the system clipboard.
@@ -138,7 +140,10 @@ public class Clipboard {
 	 * Executes a paste operation
 	 */
 	public void paste() {
-		paste(clipboard.getContents());
+		String contents = getContents();
+		if (contents != null) {
+			paste(contents);
+		}
 	}
 
 	private void paste(String content) {
@@ -155,7 +160,12 @@ public class Clipboard {
 	 * @return clipboard contents
 	 */
 	public String getContents() {
-		return clipboard.getContents();
+		try {
+			return clipboard.getContents();
+		} catch (Exception ex) {
+			Gdx.app.error("Clipboard", "", ex);
+		}
+		return null;
 	}
 
 	public interface CopyListener<T> {

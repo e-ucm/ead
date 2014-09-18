@@ -66,9 +66,9 @@ public class ChangeVariablePanel extends PrefabComponentPanel {
 	private ChangeVar changeVar;
 
 	public ChangeVariablePanel(float iconPad, float size,
-			final Controller controller, Actor touchable) {
+			final Controller controller) {
 		super("variable80x80", iconPad, size, "edition.changeVariable",
-				ComponentId.PREFAB_CHANGE_VAR, controller, touchable);
+				ComponentId.PREFAB_CHANGE_VAR, controller);
 
 		variablesPanel = new VariablesTable(skin, Position.RIGHT, this,
 				controller);
@@ -95,13 +95,13 @@ public class ChangeVariablePanel extends PrefabComponentPanel {
 	}
 
 	@Override
-	protected void showPanel() {
+	public void showPanel() {
 		super.showPanel();
 		variablesPanel.updatePanel();
 	}
 
 	@Override
-	protected void hidePanel() {
+	public void hidePanel() {
 		if (variablesPanel != null) {
 			variablesPanel.hide(fadeOut(OUT_DURATION, Interpolation.fade));
 		}

@@ -63,10 +63,9 @@ public class ShowTextPanel extends PrefabComponentPanel implements
 	private TextButton speaker;
 	private TextButton text;
 
-	public ShowTextPanel(float iconPad, float size,
-			final Controller controller, Actor touchable) {
+	public ShowTextPanel(float iconPad, float size, final Controller controller) {
 		super("conversation80x80", iconPad, size, "edition.showText",
-				ComponentId.PREFAB_CONVERSATION, controller, touchable);
+				ComponentId.PREFAB_CONVERSATION, controller);
 
 		speaker = new TextButton("", skin, "white");
 		speaker.pad(PAD);

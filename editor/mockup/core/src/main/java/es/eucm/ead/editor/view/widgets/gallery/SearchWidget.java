@@ -70,6 +70,7 @@ public class SearchWidget extends IconWithFadePanel {
 				GalleryItem.class);
 		searchTextField = new TextField("", skin);
 		searchTextField.setMessageText(i18n.m("gallery.search"));
+		searchTextField.setFocusTraversal(false);
 		searchTextField.addListener(new TextFieldListener(searchTextField) {
 
 			@Override

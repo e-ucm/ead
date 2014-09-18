@@ -195,7 +195,7 @@ public class SceneMapWidget extends DraggableGridLayout {
 		if (controller.getModel().getSelection().getSingle(Selection.SCENE) == null) {
 			controller
 					.action(SetSelection.class, Selection.SCENE_MAP,
-							Selection.SCENE, model.getResource(
+							Selection.SCENE, model.getResourceObject(
 									Q.getComponent(model.getGame(),
 											GameData.class).getInitialScene(),
 									ResourceCategory.SCENE));

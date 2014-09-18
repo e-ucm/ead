@@ -156,8 +156,7 @@ public class Templates {
 				sceneElement.setOriginX(texture.getWidth() * .5f);
 				sceneElement.setOriginY(texture.getHeight() * .5f);
 			}
-		});
-		assets.finishLoading();
+		}, true);
 		sceneElement.setX(x - sceneElement.getOriginX());
 		sceneElement.setY(y - sceneElement.getOriginY());
 

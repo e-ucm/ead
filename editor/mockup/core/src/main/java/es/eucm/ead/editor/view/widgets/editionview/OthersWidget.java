@@ -103,12 +103,14 @@ public class OthersWidget extends IconWithScalePanel implements FieldListener {
 		i18N = assets.getI18N();
 
 		Label sceneData = new Label(i18N.m("scene.data"), skin);
-		Label sceneName = new Label(i18N.m("name") + ": ", skin);
+		Label sceneName = new Label(i18N.m("name") + ":", skin);
 		name = new TextField("", skin);
 		name.setMessageText(i18N.m("gallery.enterAName"));
-		Label sceneDescription = new Label(i18N.m("description") + ": ", skin);
+		name.setFocusTraversal(false);
+		Label sceneDescription = new Label(i18N.m("description") + ":", skin);
 		description = new TextArea("", skin);
 		description.setMessageText(i18N.m("scene.writeADescription"));
+		description.setFocusTraversal(false);
 		description.setPrefRows(PREF_DOCUMENTATION_ROWS);
 		InputListener nameDocInput = new InputListener() {
 			@Override

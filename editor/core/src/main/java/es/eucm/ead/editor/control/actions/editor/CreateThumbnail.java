@@ -159,6 +159,7 @@ public class CreateThumbnail extends EditorAction {
 
 			Vector2 scl = scaling.apply(currentWidth, currentHeight, width,
 					height);
+
 			w = scl.x;
 			h = scl.y;
 			x = Math.max((width - w) * .5f, 0f);
@@ -168,13 +169,13 @@ public class CreateThumbnail extends EditorAction {
 		}
 
 		Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
+		Gdx.gl.glClearColor(1f, 1f, 1f, 1f);
 		batch.begin();
 		group.draw(batch, 1.0f);
 		batch.end();
 
 		Pixmap pixmap = ScreenUtils.getFrameBufferPixmap(MathUtils.round(x),
 				MathUtils.round(y), MathUtils.round(w), MathUtils.round(h));
-
 		// We must convert the OpenGL ES coordinates of the pixels (y-down)
 		// to an y-up coordinate system before saving.
 		int pixW = pixmap.getWidth();

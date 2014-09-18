@@ -121,7 +121,6 @@ public class MockupGallerySkinTest extends MockupUITest {
 				.padRight(NORMAL_PAD);
 
 		Settings settings = new Settings(controller, 0f, icon_size);
-		settings.getPanel().addTouchableActor(topBar);
 
 		topBar.add(settings).size(icon_size).padRight(SMALL_PAD);
 

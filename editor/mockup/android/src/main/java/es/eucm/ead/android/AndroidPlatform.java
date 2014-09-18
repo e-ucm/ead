@@ -74,6 +74,7 @@ import com.badlogic.gdx.files.FileHandle;
 
 import es.eucm.ead.android.EditorActivity.ActivityResultListener;
 import es.eucm.ead.editor.platform.MockupPlatform;
+import es.eucm.ead.editor.platform.Platform.FileChooserListener;
 import es.eucm.ead.engine.I18N;
 import es.eucm.ead.schema.data.Dimension;
 import es.eucm.network.requests.RequestHelper;

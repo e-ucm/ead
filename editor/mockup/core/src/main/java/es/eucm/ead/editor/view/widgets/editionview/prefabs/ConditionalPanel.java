@@ -64,8 +64,8 @@ public abstract class ConditionalPanel extends PrefabComponentPanel {
 
 	public ConditionalPanel(String icon, float iconPad, String namei18n,
 			final String componentId, float size, final Controller controller,
-			Actor touchable, Class<? extends ModelConditionedComponent> myClass) {
-		super(icon, iconPad, size, namei18n, componentId, controller, touchable);
+			Class<? extends ModelConditionedComponent> myClass) {
+		super(icon, iconPad, size, namei18n, componentId, controller);
 
 		variablesPanel = new VariablesTable(skin, Position.RIGHT, this,
 				controller);
@@ -97,13 +97,13 @@ public abstract class ConditionalPanel extends PrefabComponentPanel {
 	}
 
 	@Override
-	protected void showPanel() {
+	public void showPanel() {
 		super.showPanel();
 		variablesPanel.updatePanel();
 	}
 
 	@Override
-	protected void hidePanel() {
+	public void hidePanel() {
 		super.hidePanel();
 		variablesPanel.hide();
 	}

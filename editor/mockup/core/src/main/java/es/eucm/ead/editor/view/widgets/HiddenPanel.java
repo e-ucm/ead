@@ -38,8 +38,6 @@ package es.eucm.ead.editor.view.widgets;
 
 import static com.badlogic.gdx.scenes.scene2d.actions.Actions.sequence;
 
-import com.badlogic.gdx.graphics.Color;
-import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.scenes.scene2d.Action;
 import com.badlogic.gdx.scenes.scene2d.Actor;
@@ -51,7 +49,6 @@ import com.badlogic.gdx.scenes.scene2d.actions.Actions;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.scenes.scene2d.utils.Drawable;
-import com.badlogic.gdx.utils.Array;
 
 /**
  * Panel is a generic lightweight container with {@link #show()} and
@@ -61,105 +58,54 @@ public class HiddenPanel extends Table {
 
 	private static final Vector2 temp = new Vector2();
 
-	private boolean isModal;
+	private static final InputListener handleHit = new InputListener() {
 
-	protected Drawable stageBackground;
+		@Override
+		public boolean touchDown(InputEvent event, float x, float y,
+				int pointer, int button) {
+			HiddenPanel listenerActor = (HiddenPanel) event.getListenerActor();
 
-	private boolean hideOnExternalTouch;
+			Stage stage = listenerActor.getStage();
+			if (stage == null) {
+				return false;
+			}
 
-	/**
-	 * {@link Array} of {@link Actor} that can be touched although {@link is
-	 * modal}
-	 */
-	private Array<Actor> touchableActors;
+			listenerActor.defaultHit = true;
+			Actor hit = listenerActor.getStage().hit(event.getStageX(),
+					event.getStageY(), true);
+			listenerActor.defaultHit = false;
+			boolean resendTouch = hit == null
+					|| !hit.isDescendantOf(listenerActor);
+			if (resendTouch) {
+				listenerActor.hide();
+				stage.stageToScreenCoordinates(temp.set(event.getStageX(),
+						event.getStageY()));
+				stage.touchDown((int) temp.x, (int) temp.y, event.getPointer(),
+						event.getButton());
+			}
+			return false;
+		}
+	};
+
+	private boolean defaultHit;
 
 	public HiddenPanel(Skin skin) {
-		super(skin);
-		initialize(skin, new Array<Actor>(2));
+		this(skin, (Drawable) null);
 	}
 
-	public HiddenPanel(Skin skin, String drawableBackground, String colorStage) {
-		super(skin);
-		this.stageBackground = skin.getDrawable(colorStage);
-		setBackground(drawableBackground);
-		initialize(skin, new Array<Actor>(2));
-
+	public HiddenPanel(Skin skin, String drawable) {
+		this(skin, skin.getDrawable(drawable));
 	}
 
-	public void addTouchableActor(Actor actor) {
-		touchableActors.add(actor);
-	}
-
-	public HiddenPanel(Skin skin, String drawableBackground) {
+	public HiddenPanel(Skin skin, Drawable drawableBackground) {
 		super(skin);
 		setBackground(drawableBackground);
-		initialize(skin, new Array<Actor>(2));
+		initialize(skin);
 	}
 
-	public HiddenPanel(Skin skin, Array<Actor> actors) {
-		super(skin);
-		initialize(skin, actors);
-	}
-
-	public HiddenPanel(Skin skin, String drawableBackground, String colorStage,
-			Array<Actor> actors) {
-		super(skin);
-		this.stageBackground = skin.getDrawable(colorStage);
-		setBackground(drawableBackground);
-		initialize(skin, actors);
-
-	}
-
-	public HiddenPanel(Skin skin, String drawableBackground, Array<Actor> actors) {
-		super(skin);
-		setBackground(drawableBackground);
-		initialize(skin, actors);
-	}
-
-	protected void initialize(Skin skin, Array<Actor> actors) {
-		this.touchableActors = actors;
-
-		this.hideOnExternalTouch = true;
-		this.isModal = true;
-
-		addListener(new InputListener() {
-
-			@Override
-			public boolean touchDown(InputEvent event, float x, float y,
-					int pointer, int button) {
-				if (hideOnExternalTouch
-						&& HiddenPanel.super.hit(x, y, isTouchable()) == null) {
-					hide();
-				}
-				return isModal;
-			}
-
-			@Override
-			public boolean mouseMoved(InputEvent event, float x, float y) {
-				return isModal;
-			}
-
-			@Override
-			public boolean scrolled(InputEvent event, float x, float y,
-					int amount) {
-				return isModal;
-			}
-
-			@Override
-			public boolean keyDown(InputEvent event, int keycode) {
-				return isModal;
-			}
-
-			@Override
-			public boolean keyUp(InputEvent event, int keycode) {
-				return isModal;
-			}
-
-			@Override
-			public boolean keyTyped(InputEvent event, char character) {
-				return isModal;
-			}
-		});
+	protected void initialize(Skin skin) {
+		this.defaultHit = false;
+		addCaptureListener(handleHit);
 	}
 
 	public void show(Stage stage) {
@@ -167,6 +113,7 @@ public class HiddenPanel extends Table {
 	}
 
 	public void show(Stage stage, Action action) {
+		defaultHit = false;
 		stage.addActor(this);
 		setTouchable(Touchable.enabled);
 		clearActions();
@@ -181,7 +128,9 @@ public class HiddenPanel extends Table {
 	}
 
 	public void hide(Action action) {
+		defaultHit = true;
 		setTouchable(Touchable.disabled);
+
 		if (action != null) {
 			addAction(sequence(action, Actions.removeActor()));
 		} else {
@@ -190,49 +139,15 @@ public class HiddenPanel extends Table {
 	}
 
 	@Override
-	protected void drawBackground(Batch batch, float parentAlpha, float x,
-			float y) {
-		if (this.stageBackground != null) {
-			final Color color = getColor();
-			batch.setColor(color.r, color.g, color.b, color.a * parentAlpha);
-			final Stage stage = getStage();
-			this.stageBackground.draw(batch, 0, 0, stage.getWidth(),
-					stage.getHeight());
-
-		}
-		super.drawBackground(batch, parentAlpha, x, y);
-	}
-
-	@Override
 	public Actor hit(float x, float y, boolean touchable) {
-		final Actor hit = super.hit(x, y, touchable);
-		if (!isModal || hit != null) {
-			return hit;
-		}
-
-		for (Actor a : touchableActors) {
-			localToStageCoordinates(temp.set(x, y));
-			a.stageToLocalCoordinates(temp);
-			if (a.hit(temp.x, temp.y, a.isTouchable()) != null) {
-				return null;
+		if (!defaultHit) {
+			final Actor hit = super.hit(x, y, touchable);
+			if (hit == null && isTouchable()) {
+				return this;
 			}
+			return hit;
+		} else {
+			return super.hit(x, y, touchable);
 		}
-		return this;
-	}
-
-	public void setModal(boolean isModal) {
-		this.isModal = isModal;
-	}
-
-	public boolean isModal() {
-		return this.isModal;
-	}
-
-	public void setHideOnExternalTouch(boolean hideOnExternalTouch) {
-		this.hideOnExternalTouch = hideOnExternalTouch;
-	}
-
-	public void setStageBackground(Drawable stageBackground) {
-		this.stageBackground = stageBackground;
 	}
 }

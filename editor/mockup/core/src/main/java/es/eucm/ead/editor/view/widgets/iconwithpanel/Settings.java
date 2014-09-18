@@ -115,7 +115,7 @@ public class Settings extends IconWithScalePanel {
 	}
 
 	@Override
-	protected void showPanel() {
+	public void showPanel() {
 		helpMessages.setChecked(controller.getPreferences().getBoolean(
 				Preferences.ENABLE_HELP_MSGS, true));
 		super.showPanel();

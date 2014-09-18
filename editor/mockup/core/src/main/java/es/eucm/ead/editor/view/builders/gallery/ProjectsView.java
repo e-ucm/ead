@@ -45,12 +45,10 @@ import com.badlogic.gdx.utils.Scaling;
 
 import es.eucm.ead.editor.control.Controller;
 import es.eucm.ead.editor.control.MockupController.BackListener;
-import es.eucm.ead.editor.control.actions.EditorActionException;
 import es.eucm.ead.editor.control.actions.editor.ChangeMockupView;
-import es.eucm.ead.editor.control.actions.editor.CloseMockupGame;
 import es.eucm.ead.editor.control.actions.editor.ExitMockup;
-import es.eucm.ead.editor.control.actions.editor.NewMockupGame;
-import es.eucm.ead.editor.control.actions.editor.OpenMockupGame;
+import es.eucm.ead.editor.control.actions.editor.asynk.NewMockupGameAsynk;
+import es.eucm.ead.editor.control.actions.editor.asynk.OpenMockupGameAsynk;
 import es.eucm.ead.editor.view.widgets.gallery.GalleryItem;
 import es.eucm.ead.editor.view.widgets.gallery.ProjectItem;
 import es.eucm.ead.editor.view.widgets.helpmessage.sequence.HelpSequence;
@@ -97,9 +95,8 @@ public class ProjectsView extends BaseGallery implements BackListener {
 
 		} while (file.exists());
 
-		controller.action(NewMockupGame.class, file.file().getAbsolutePath(),
-				defaultGame);
-		controller.action(ChangeMockupView.class, ScenesView.class);
+		controller.action(NewMockupGameAsynk.class, file.file()
+				.getAbsolutePath(), defaultGame);
 	}
 
 	@Override
@@ -117,16 +114,8 @@ public class ProjectsView extends BaseGallery implements BackListener {
 
 	@Override
 	public void itemClicked(GalleryItem item) {
-		try {
-			controller.action(OpenMockupGame.class,
-					((ProjectItem) item).getProjectPath());
-		} catch (EditorActionException eae) {
-			controller.action(CloseMockupGame.class);
-			return;
-		}
-		if (controller.getViews().getCurrentView() == this) {
-			controller.action(ChangeMockupView.class, ScenesView.class);
-		}
+		controller.action(OpenMockupGameAsynk.class,
+				((ProjectItem) item).getProjectPath());
 	}
 
 	@Override

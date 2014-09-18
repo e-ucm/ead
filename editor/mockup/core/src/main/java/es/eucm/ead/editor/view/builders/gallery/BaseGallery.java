@@ -140,7 +140,7 @@ public abstract class BaseGallery implements ViewBuilder {
 				super.hide();
 				discardUndo();
 			};
-		}.modal(false);
+		};
 		undo = new TextButton(i18n.m("undo"), skin, "white");
 		undo.setUserObject(this);
 		undo.addListener(undoListener);
@@ -161,7 +161,7 @@ public abstract class BaseGallery implements ViewBuilder {
 
 		Actor backButton = createBackButton();
 		if (backButton != null) {
-			topBar.add(backButton).left().fill().size(toolbarSize);
+			topBar.add(backButton).left().fill();
 		}
 
 		Actor play = createPlayButton();
@@ -181,7 +181,7 @@ public abstract class BaseGallery implements ViewBuilder {
 		topBar.add(searchWidget).padRight(SMALL_PAD).fill();
 
 		sortWidget = addReorderWidget();
-		topBar.add(sortWidget).padRight(SMALL_PAD).fill();
+		topBar.add(sortWidget).padRight(SMALL_PAD).fill().expandY();
 
 		Actor settings = createSettings(controller);
 		if (settings != null) {
@@ -284,7 +284,6 @@ public abstract class BaseGallery implements ViewBuilder {
 	protected SearchWidget createSearchWidget() {
 		SearchWidget searchWidget = new SearchWidget(iconPad, iconSize, skin,
 				i18n, items, this);
-		searchWidget.getPanel().addTouchableActor(topBar);
 		return searchWidget;
 	}
 
@@ -294,7 +293,6 @@ public abstract class BaseGallery implements ViewBuilder {
 
 	protected Actor createSettings(Controller controller) {
 		Settings settings = new Settings(controller, iconPad, iconSize);
-		settings.getPanel().addTouchableActor(topBar);
 		return settings;
 	}
 

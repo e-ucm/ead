@@ -48,7 +48,8 @@
             <classifier>natives-desktop</classifier>
             <scope>test</scope>
         </dependency>
-        <!-- Commons-lang: added to use class EqualsBuilder for executing equals on two objects by reflection -->
+        <!-- Commons-lang: added to use class EqualsBuilder for executing equals 
+			on two objects by reflection -->
         <dependency>
             <groupId>commons-lang</groupId>
             <artifactId>commons-lang</artifactId>
@@ -57,11 +58,14 @@
         </dependency>
     </dependencies>
     <build>
-        <resources>
-            <resource>
+        <testResources>
+            <testResource>
                 <directory>../../assets</directory>
-            </resource>
-        </resources>
+            </testResource>
+            <testResource>
+                <directory>src/test/resources</directory>
+            </testResource>
+        </testResources>
         <plugins>
             <plugin>
                 <artifactId>maven-source-plugin</artifactId>

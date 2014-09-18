@@ -36,7 +36,6 @@
  */
 package es.eucm.ead.editor.view.widgets.editionview.prefabs;
 
-import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.InputListener;
 import com.badlogic.gdx.scenes.scene2d.ui.ScrollPane;
@@ -60,10 +59,9 @@ public class DeparturePanel extends PrefabComponentPanel {
 
 	private ScenesTableList table;
 
-	public DeparturePanel(float iconPad, float size,
-			final Controller controller, Actor touchable) {
+	public DeparturePanel(float iconPad, float size, final Controller controller) {
 		super("gateway_reverse80x80", iconPad, size, "edition.exits",
-				ComponentId.PREFAB_EXIT, controller, touchable);
+				ComponentId.PREFAB_EXIT, controller);
 
 		InputListener makeExit = new ClickListener() {
 			public void clicked(InputEvent event, float x, float y) {

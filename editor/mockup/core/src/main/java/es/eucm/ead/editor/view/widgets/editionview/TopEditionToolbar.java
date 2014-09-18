@@ -41,14 +41,16 @@ import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
 
 import es.eucm.ead.editor.control.Actions;
+import es.eucm.ead.editor.control.Clipboard.ClipboardListener;
 import es.eucm.ead.editor.control.Controller;
 import es.eucm.ead.editor.control.Selection;
 import es.eucm.ead.editor.control.actions.editor.AddSceneElementFromResource;
 import es.eucm.ead.editor.control.actions.editor.ChangeMockupView;
-import es.eucm.ead.editor.control.actions.editor.ExportMockupProject;
+import es.eucm.ead.editor.control.actions.editor.MockupPaste;
 import es.eucm.ead.editor.control.actions.editor.Redo;
-import es.eucm.ead.editor.control.actions.editor.TakePicture;
 import es.eucm.ead.editor.control.actions.editor.Undo;
+import es.eucm.ead.editor.control.actions.editor.asynk.ExportMockupProject;
+import es.eucm.ead.editor.control.actions.editor.asynk.TakePicture;
 import es.eucm.ead.editor.control.actions.model.AddGatewayDefaultElement;
 import es.eucm.ead.editor.control.actions.model.AddInteractiveZone;
 import es.eucm.ead.editor.control.actions.model.AddLabelToScene;
@@ -57,7 +59,6 @@ import es.eucm.ead.editor.view.builders.LibrariesView;
 import es.eucm.ead.editor.view.builders.gallery.BaseGallery;
 import es.eucm.ead.editor.view.builders.gallery.PlayView;
 import es.eucm.ead.editor.view.listeners.ActionListener;
-import es.eucm.ead.editor.view.widgets.HiddenPanel;
 import es.eucm.ead.editor.view.widgets.IconButton;
 import es.eucm.ead.editor.view.widgets.Toolbar;
 import es.eucm.ead.editor.view.widgets.ToolbarIcon;
@@ -67,8 +68,7 @@ import es.eucm.ead.schema.entities.ModelEntity;
 
 public class TopEditionToolbar extends Toolbar {
 
-	private static final float BIG_PAD = 160, NORMAL_PAD = 40,
-			SMALL_PAD = BaseGallery.SMALL_PAD;
+	private static final float BIG_PAD = 160;
 
 	private float height;
 
@@ -79,6 +79,8 @@ public class TopEditionToolbar extends Toolbar {
 	private IconButton undo;
 
 	private IconButton redo;
+
+	private IconButton paste;
 
 	private IconButton camera;
 
@@ -98,20 +100,20 @@ public class TopEditionToolbar extends Toolbar {
 
 	public TopEditionToolbar(final Controller controller, String style,
 			float height, float iconSize, float iconPad,
-			final PaintToolbar paintToolbar) {
+			final PaintToolbar paintToolbar, float smallPad, float normalPad) {
 		super(controller.getApplicationAssets().getSkin(), style);
-
 		Skin skin = controller.getApplicationAssets().getSkin();
 
 		this.height = height;
 
 		play = new ToolbarIcon("play80x80", iconPad, iconSize, skin, "inverted");
-		share = new ToolbarIcon("play80x80", iconPad, iconSize, skin,
+		share = new ToolbarIcon("share80x80", iconPad, iconSize, skin,
 				"inverted");
 
 		undo = new ToolbarIcon("undo80x80", iconPad, iconSize, skin);
 		redo = new ToolbarIcon("redo80x80", iconPad, iconSize, skin);
 
+		paste = new ToolbarIcon("paste80x80", iconPad, iconSize, skin);
 		camera = new ToolbarIcon("camera80x80", iconPad, iconSize, skin);
 		repository = new ToolbarIcon("repository80x80", iconPad, iconSize, skin);
 		android = new ToolbarIcon("android_gallery80x80", iconPad, iconSize,
@@ -124,8 +126,6 @@ public class TopEditionToolbar extends Toolbar {
 		gate = new ToolbarIcon("gateway80x80", iconPad, iconSize, skin);
 
 		others = new OthersWidget(controller, iconPad, iconSize);
-		HiddenPanel panel = others.getPanel();
-		panel.addTouchableActor(this);
 
 		paintToolbar.addListener(new DrawListener() {
 
@@ -139,12 +139,12 @@ public class TopEditionToolbar extends Toolbar {
 					controller.action(SetSelection.class, Selection.SCENE,
 							Selection.SCENE_ELEMENT);
 				}
-				setDisabled(true);
+				setDisabled(true, controller);
 			}
 
 			@Override
 			public void drawEnded(boolean saved) {
-				setDisabled(false);
+				setDisabled(false, controller);
 				if (!saved && selection != null) {
 					controller.action(SetSelection.class, Selection.SCENE,
 							Selection.SCENE_ELEMENT, selection);
@@ -168,6 +168,8 @@ public class TopEditionToolbar extends Toolbar {
 					controller.action(Redo.class);
 				} else if (listenerActor == camera) {
 					controller.action(TakePicture.class);
+				} else if (listenerActor == paste) {
+					controller.action(MockupPaste.class);
 				} else if (listenerActor == repository) {
 					controller.action(ChangeMockupView.class,
 							LibrariesView.class);
@@ -189,11 +191,13 @@ public class TopEditionToolbar extends Toolbar {
 				}
 			}
 		};
+
 		play.addListener(buttonsListener);
 		share.addListener(buttonsListener);
 		undo.addListener(buttonsListener);
 		redo.addListener(buttonsListener);
 		camera.addListener(buttonsListener);
+		paste.addListener(buttonsListener);
 		repository.addListener(buttonsListener);
 		android.addListener(buttonsListener);
 		paint.addListener(buttonsListener);
@@ -207,43 +211,47 @@ public class TopEditionToolbar extends Toolbar {
 			public void enableChanged(Class actionClass, boolean enable) {
 				if (actionClass == Undo.class) {
 					undo.setDisabled(!enable);
-				} else {
+				} else if (actionClass == Redo.class) {
 					redo.setDisabled(!enable);
 				}
 			}
 		};
+		undo.setDisabled(true);
+		redo.setDisabled(true);
 		Actions actions = controller.getActions();
 		actions.addActionListener(Undo.class, undoRedo);
 		actions.addActionListener(Redo.class, undoRedo);
-		undo.setDisabled(true);
-		redo.setDisabled(true);
+
+		paste.setDisabled(controller.getClipboard().getContents() == null);
+		controller.getClipboard().addClipboardListener(new ClipboardListener() {
+
+			@Override
+			public void clipboardChanged(String clibpoardContent) {
+				paste.setDisabled(false);
+
+			}
+		});
 
 		defaults().expandY().fill();
 		add(play).padLeft(BaseGallery.PLAY_PAD);
-		add(share).padLeft(SMALL_PAD);
+		add(share).padLeft(BaseGallery.SMALL_PAD);
 
-		add(undo).padRight(SMALL_PAD).padLeft(BaseGallery.PLAY_PAD * 2F);
+		add(undo).padRight(smallPad).padLeft(BaseGallery.PLAY_PAD * 1.5F);
 		add(redo).padRight(BIG_PAD);
 
 		add().expandX();
-		add(camera).padRight(SMALL_PAD).right();
-		add(repository).padRight(SMALL_PAD);
-		add(android).padRight(NORMAL_PAD);
+		add(paste).padRight(smallPad).right();
+		add(camera).padRight(smallPad);
+		add(repository).padRight(smallPad);
+		add(android).padRight(normalPad);
 
-		add(paint).padRight(SMALL_PAD);
-		add(text).padRight(NORMAL_PAD);
+		add(paint).padRight(smallPad);
+		add(text).padRight(normalPad);
 
-		add(zones).padRight(SMALL_PAD);
-		add(gate).padRight(NORMAL_PAD);
+		add(zones).padRight(smallPad);
+		add(gate).padRight(normalPad);
 
-		add(others).padRight(SMALL_PAD);
-	}
-
-	public void addTouchableActors(Actor... actors) {
-		HiddenPanel panel = others.getPanel();
-		for (int i = 0; i < actors.length; ++i) {
-			panel.addTouchableActor(actors[i]);
-		}
+		add(others).padRight(smallPad);
 	}
 
 	@Override
@@ -251,11 +259,16 @@ public class TopEditionToolbar extends Toolbar {
 		return height;
 	}
 
-	private void setDisabled(boolean disabled) {
+	private void setDisabled(boolean disabled, Controller controller) {
 		play.setDisabled(disabled);
 		share.setDisabled(disabled);
 		undo.setDisabled(disabled);
 		redo.setDisabled(disabled);
+		if (disabled) {
+			paste.setDisabled(disabled);
+		} else {
+			paste.setDisabled(controller.getClipboard().getContents() == null);
+		}
 		camera.setDisabled(disabled);
 		repository.setDisabled(disabled);
 		android.setDisabled(disabled);

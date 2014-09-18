@@ -44,8 +44,8 @@ import es.eucm.ead.engine.I18N;
 
 public class TextHelpMessage extends HelpMessage {
 
-	private static final float WIDTH = 200;
-	private static final float HEIGHT = 100;
+	private static final float WIDTH = 250;
+	private static final float HEIGHT = 120;
 
 	public TextHelpMessage(Skin skin, I18N i18n, Position position,
 			final Actor reference, String i18nKey) {
