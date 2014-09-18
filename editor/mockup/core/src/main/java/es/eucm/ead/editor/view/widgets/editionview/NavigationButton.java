@@ -107,8 +107,8 @@ public class NavigationButton extends IconWithScalePanel implements
 		};
 		list.setScrollingDisabled(true, false);
 
-		IconButton goGallery = new IconButton("home", skin);
-		goGallery.add(i18n.m("general.scenes")).padLeft(PAD);
+		IconButton goGallery = new IconButton("home", 5, skin, "white");
+		goGallery.add(i18n.m("general.scenes")).pad(0, PAD, 0, PAD * 0.5f);
 		goGallery.addListener(new ClickListener() {
 			@Override
 			public void clicked(InputEvent event, float x, float y) {
