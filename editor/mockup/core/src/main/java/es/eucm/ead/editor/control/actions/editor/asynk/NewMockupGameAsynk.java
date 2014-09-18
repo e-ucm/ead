@@ -63,12 +63,12 @@ public class NewMockupGameAsynk extends BackgroundExecutorAction<String> {
 
 	@Override
 	protected String getProcessingI18N() {
-		return "creating new gamee";
+		return "newGame";
 	}
 
 	@Override
 	protected String getErrorProcessingI18N() {
-		return "error creating new game";
+		return "newGame.error";
 	}
 
 	@Override

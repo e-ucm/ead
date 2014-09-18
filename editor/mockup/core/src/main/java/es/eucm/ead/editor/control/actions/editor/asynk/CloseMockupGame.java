@@ -57,12 +57,12 @@ public class CloseMockupGame extends BackgroundExecutorAction<Boolean> {
 
 	@Override
 	protected String getProcessingI18N() {
-		return "closing gameee";
+		return "closeGame";
 	}
 
 	@Override
 	protected String getErrorProcessingI18N() {
-		return "something went wrong closing game";
+		return "closeGame.error";
 	}
 
 	@Override
@@ -86,7 +86,6 @@ public class CloseMockupGame extends BackgroundExecutorAction<Boolean> {
 		controller.getEditorGameAssets().setLoadingPath("");
 		controller.action(ChangeMockupView.class, ProjectsView.class);
 		if (args.length > 0) {
-			System.out.println("showing norification::: " + args[0].toString());
 			((MockupViews) controller.getViews()).getToasts().showNotification(
 					args[0].toString(), ERROR_TIMEOUT);
 		}

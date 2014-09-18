@@ -284,7 +284,7 @@ public class Controller {
 					e);
 		} catch (ArgumentsValidationException e) {
 			Gdx.app.error("Controller", "Invalid arguments exception for "
-					+ actionClass);
+					+ actionClass, e);
 		}
 	}
 

@@ -94,7 +94,9 @@ public class OpenGame extends EditorAction implements FileChooserListener,
 
 	@Override
 	public void fileChosen(String path) {
-		load(path);
+		if (load(path)) {
+			finishLoading(path);
+		}
 	}
 
 	/**
@@ -107,16 +109,18 @@ public class OpenGame extends EditorAction implements FileChooserListener,
 	 *            The full path of the project folder (e.g. /Users/a
 	 *            User/eadgames/a game/)
 	 */
-	private void load(String gamePath) {
+	protected boolean load(String gamePath) {
 		if (gamePath != null) {
 			FileHandle fileHandle = controller.getEditorGameAssets().absolute(
 					gamePath);
 			if (fileHandle.exists()) {
 				doLoad(gamePath, fileHandle);
+				return true;
 			} else {
 				Gdx.app.error("OpenGame", "Invalid project folder: " + gamePath);
 			}
 		}
+		return false;
 	}
 
 	/**
@@ -135,11 +139,21 @@ public class OpenGame extends EditorAction implements FileChooserListener,
 		controller.getModel().reset();
 		controller.getModel().notify(
 				new LoadEvent(LoadEvent.Type.UNLOADED, controller.getModel()));
-		EditorGameAssets assets = controller.getEditorGameAssets();
-		assets.setLoadingPath(path);
 		controller.getPreferences().putString(Preferences.LAST_OPENED_GAME,
 				path);
+		EditorGameAssets assets = controller.getEditorGameAssets();
+		assets.setLoadingPath(path);
 		loadAllJsonResources(fileHandle);
+	}
+
+	/**
+	 * Invokes {@link EditorGameAssets#finishLoading()} and performs the final
+	 * checks needed before completion.
+	 * 
+	 * @param path
+	 */
+	protected void finishLoading(String path) {
+		EditorGameAssets assets = controller.getEditorGameAssets();
 		assets.finishLoading();
 
 		// Delete current command history

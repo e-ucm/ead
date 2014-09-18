@@ -93,7 +93,7 @@ public class BackgroundExecutor {
 					Object result = e.result.get();
 					e.listener.done(this, result);
 				} catch (GdxRuntimeException ex) {
-					e.listener.error(ex.getCause());
+					e.listener.error(ex);
 				} finally {
 					tasks.removeValue(e, true);
 				}

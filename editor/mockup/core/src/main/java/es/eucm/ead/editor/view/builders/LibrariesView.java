@@ -50,13 +50,14 @@ import com.badlogic.gdx.utils.Array;
 
 import es.eucm.ead.editor.control.Controller;
 import es.eucm.ead.editor.control.MockupController;
+import es.eucm.ead.editor.control.MockupViews;
 import es.eucm.ead.editor.control.RepositoryManager.ProgressListener;
+import es.eucm.ead.editor.control.Toasts;
 import es.eucm.ead.editor.control.actions.editor.ChangeMockupView;
 import es.eucm.ead.editor.control.actions.editor.repository.UpdateLibraries;
 import es.eucm.ead.editor.view.builders.gallery.BaseGallery;
 import es.eucm.ead.editor.view.builders.gallery.RepositoryView;
 import es.eucm.ead.editor.view.widgets.GridPanel;
-import es.eucm.ead.editor.view.widgets.Notification;
 import es.eucm.ead.editor.view.widgets.Toolbar;
 import es.eucm.ead.editor.view.widgets.ToolbarIcon;
 import es.eucm.ead.engine.I18N;
@@ -68,14 +69,15 @@ public class LibrariesView implements ViewBuilder, ProgressListener {
 	private static final float ERROR_NOTIF_TIMEOUT = 3F;
 	private static final String IC_GO_BACK = "back80x80";
 
+	private I18N i18n;
 	private Controller controller;
 	private Table view, topWidgets;
-	private Notification refreshingNotif, errorReftreshing;
+	private Toasts toasts;
 	private GridPanel<TextButton> libsGrid;
 	private Runnable updateLibraries = new Runnable() {
 		@Override
 		public void run() {
-			refreshingNotif.show(view.getStage());
+			toasts.showNotification(i18n.m("repository.refreshing"));
 			controller.action(UpdateLibraries.class, LibrariesView.this);
 		}
 	};
@@ -91,17 +93,14 @@ public class LibrariesView implements ViewBuilder, ProgressListener {
 	public void initialize(Controller control) {
 		this.controller = control;
 
+		toasts = ((MockupViews) controller.getViews()).getToasts();
 		final Skin skin = controller.getApplicationAssets().getSkin();
-		I18N i18n = controller.getApplicationAssets().getI18N();
+		i18n = controller.getApplicationAssets().getI18N();
 		Vector2 viewport = controller.getPlatform().getSize();
 
-		this.refreshingNotif = new Notification(skin).text(i18n
-				.m("repository.refreshing"));
-		this.errorReftreshing = new Notification(skin).text(i18n
-				.m("repository.refreshingError"));
-
-		Button backButton = new ToolbarIcon(IC_GO_BACK, BaseGallery.ICON_PAD,
-				viewport.y * BaseGallery.ICON_SIZE, skin);
+		Button backButton = new ToolbarIcon(IC_GO_BACK, viewport.y
+				* BaseGallery.ICON_PAD, viewport.y * BaseGallery.ICON_SIZE,
+				skin);
 		backButton.addListener(new ClickListener() {
 			@Override
 			public void clicked(InputEvent event, float x, float y) {
@@ -112,7 +111,7 @@ public class LibrariesView implements ViewBuilder, ProgressListener {
 		final float toolbarSize = controller.getPlatform().getSize().y
 				* BaseGallery.TOOLBAR_SIZE;
 		topWidgets = new Toolbar(skin, "white_top");
-		topWidgets.add(backButton).left().expandY().fill().size(toolbarSize);
+		topWidgets.add(backButton).left().expandY().fill();
 		topWidgets.add(i18n.m("repository.selectLibrary")).expandX();
 
 		libsGrid = new GridPanel<TextButton>(COLS,
@@ -149,13 +148,13 @@ public class LibrariesView implements ViewBuilder, ProgressListener {
 
 	@Override
 	public void release(Controller controller) {
-		refreshingNotif.hide();
+		toasts.hideNotification();
 	}
 
 	@Override
 	public void finished(boolean succeeded, Controller controller) {
-		refreshingNotif.hide();
 		if (succeeded) {
+			toasts.hideNotification();
 			Array<String> libs = ((MockupController) controller)
 					.getRepositoryManager().getLibraries();
 
@@ -170,7 +169,8 @@ public class LibrariesView implements ViewBuilder, ProgressListener {
 				libsGrid.addItem(lib).minHeight(BaseGallery.MIN_ITEM_HEIGHT);
 			}
 		} else {
-			errorReftreshing.show(view.getStage(), ERROR_NOTIF_TIMEOUT);
+			toasts.showNotification(i18n.m("repository.refreshingError"),
+					ERROR_NOTIF_TIMEOUT);
 		}
 	}
 }

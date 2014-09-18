@@ -92,7 +92,7 @@ public class RepositoryView extends BaseGallery implements ProgressListener,
 
 	@Override
 	protected Actor createBackButton() {
-		Button back = new ToolbarIcon("back80x80", ICON_PAD, iconSize, skin);
+		Button back = new ToolbarIcon("back80x80", iconPad, iconSize, skin);
 		back.addListener(new ClickListener() {
 			@Override
 			public void clicked(InputEvent event, float x, float y) {

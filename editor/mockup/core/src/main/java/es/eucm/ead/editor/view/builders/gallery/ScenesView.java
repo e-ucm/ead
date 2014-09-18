@@ -46,8 +46,8 @@ import com.badlogic.gdx.utils.Array;
 
 import es.eucm.ead.editor.control.Controller;
 import es.eucm.ead.editor.control.actions.editor.ChangeMockupView;
-import es.eucm.ead.editor.control.actions.editor.CloseMockupGame;
-import es.eucm.ead.editor.control.actions.editor.ExportMockupProject;
+import es.eucm.ead.editor.control.actions.editor.asynk.CloseMockupGame;
+import es.eucm.ead.editor.control.actions.editor.asynk.ExportMockupProject;
 import es.eucm.ead.editor.control.actions.model.ChangeProjectName;
 import es.eucm.ead.editor.control.actions.model.EditScene;
 import es.eucm.ead.editor.control.actions.model.scene.NewScene;
@@ -102,7 +102,7 @@ public class ScenesView extends BaseGallery {
 
 	@Override
 	protected Actor createShareButton() {
-		Button share = new ToolbarIcon("play80x80", iconPad, iconSize, skin,
+		Button share = new ToolbarIcon("share80x80", iconPad, iconSize, skin,
 				"inverted");
 		share.addListener(new ChangeListener() {
 

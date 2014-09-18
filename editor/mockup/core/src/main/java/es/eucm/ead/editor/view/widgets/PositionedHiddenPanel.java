@@ -56,7 +56,7 @@ public class PositionedHiddenPanel extends HiddenPanel {
 	private Position position;
 
 	public static enum Position {
-		BOTTOM, RIGHT, CENTER
+		BOTTOM, RIGHT, CENTER, TOP
 	}
 
 	public PositionedHiddenPanel(Skin skin) {
@@ -147,6 +147,12 @@ public class PositionedHiddenPanel extends HiddenPanel {
 			float panelPrefWidth = getPrefWidth();
 			setPanelBounds(x + (reference.getWidth() - panelPrefWidth) * .5f, y
 					+ (reference.getHeight() - panelPrefHeight) * .5f,
+					panelPrefWidth, panelPrefHeight);
+		} else if (position == Position.TOP) {
+			float panelPrefWidth = getPrefWidth();
+			setPanelBounds(
+					Math.max(0f, x + (reference.getWidth() - panelPrefWidth)
+							* .5f), y + getPrefHeight() + space,
 					panelPrefWidth, panelPrefHeight);
 		}
 	}

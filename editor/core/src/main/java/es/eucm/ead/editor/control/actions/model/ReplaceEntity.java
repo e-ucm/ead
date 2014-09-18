@@ -70,10 +70,11 @@ public class ReplaceEntity extends ModelAction {
 
 		ModelEntity parent = Q.getComponent(current, Parent.class).getParent();
 		Array<ModelEntity> children = parent.getChildren();
+		int indexOf = children.indexOf(current, true);
 		compositeCommand.addCommand(new RemoveFromListCommand(parent, children,
 				current));
 		compositeCommand.addCommand(new AddToListCommand(parent, children,
-				newEntity));
+				newEntity, indexOf));
 
 		return compositeCommand;
 	}

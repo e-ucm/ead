@@ -39,6 +39,7 @@ package es.eucm.ead.editor.view.widgets.helpmessage;
 import static com.badlogic.gdx.scenes.scene2d.actions.Actions.fadeIn;
 import static com.badlogic.gdx.scenes.scene2d.actions.Actions.fadeOut;
 
+import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.math.Interpolation;
 import com.badlogic.gdx.scenes.scene2d.Action;
 import com.badlogic.gdx.scenes.scene2d.Actor;
@@ -65,7 +66,6 @@ public abstract class HelpMessage extends PositionedHiddenPanel {
 		padTop(getPadTop() + DEFAULT_SPACING);
 		padLeft(getPadLeft() + DEFAULT_SPACING);
 		defaults().space(DEFAULT_SPACING);
-		setModal(true);
 	}
 
 	public void show() {
@@ -85,7 +85,7 @@ public abstract class HelpMessage extends PositionedHiddenPanel {
 	@Override
 	public void hide(Action action) {
 		if (nextMessage != null) {
-			nextMessage.show();
+			Gdx.app.postRunnable(showNextMessage);
 		}
 		super.hide(action);
 	}
@@ -93,4 +93,12 @@ public abstract class HelpMessage extends PositionedHiddenPanel {
 	public void setNextMessage(HelpMessage nextMessage) {
 		this.nextMessage = nextMessage;
 	}
+
+	private Runnable showNextMessage = new Runnable() {
+
+		@Override
+		public void run() {
+			nextMessage.show();
+		}
+	};
 }

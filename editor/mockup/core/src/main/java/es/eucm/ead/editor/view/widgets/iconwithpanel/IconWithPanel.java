@@ -77,7 +77,12 @@ public abstract class IconWithPanel extends ToolbarIcon {
 
 	public IconWithPanel(String icon, float padding, float separation,
 			float size, Skin skin, Position position) {
-		super(icon, padding, size, skin);
+		this(icon, padding, separation, size, skin, position, "default");
+	}
+
+	public IconWithPanel(String icon, float padding, float separation,
+			float size, Skin skin, Position position, String styleName) {
+		super(icon, padding, size, skin, styleName);
 		panel.setPosition(position);
 		panel.setSpace(separation);
 	}
@@ -106,7 +111,7 @@ public abstract class IconWithPanel extends ToolbarIcon {
 	 */
 	protected abstract Action getHideAction();
 
-	protected void showPanel() {
+	public void showPanel() {
 		if (openPanel != panel && openPanel != null) {
 			openPanel.hide();
 		}
@@ -115,7 +120,7 @@ public abstract class IconWithPanel extends ToolbarIcon {
 		openPanel = panel;
 	}
 
-	protected void hidePanel() {
+	public void hidePanel() {
 		panel.hide(getHideAction());
 	}
 

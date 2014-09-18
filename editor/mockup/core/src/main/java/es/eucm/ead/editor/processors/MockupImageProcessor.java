@@ -36,21 +36,17 @@
  */
 package es.eucm.ead.editor.processors;
 
-import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
-
 import es.eucm.ead.editor.components.MockupImageComponent;
 import es.eucm.ead.engine.GameLoop;
 import es.eucm.ead.engine.assets.GameAssets;
 import es.eucm.ead.engine.components.renderers.ImageComponent;
+import es.eucm.ead.engine.processors.renderers.ImageProcessor;
+import es.eucm.ead.schema.renderers.Image;
 
-public class MockupImageProcessor extends EditorImageProcessor {
+public class MockupImageProcessor extends ImageProcessor {
 
-	private static final double THRESHOLD = .3D;
-	private static final double DISTANCE_TOLERANCE = 6D;
-
-	public MockupImageProcessor(GameLoop engine, GameAssets gameAssets,
-			ShapeRenderer shapeRenderer) {
-		super(engine, gameAssets, shapeRenderer, THRESHOLD, DISTANCE_TOLERANCE);
+	public MockupImageProcessor(GameLoop engine, GameAssets gameAssets) {
+		super(engine, gameAssets);
 
 	}
 
@@ -58,9 +54,11 @@ public class MockupImageProcessor extends EditorImageProcessor {
 	protected ImageComponent createComponent() {
 		MockupImageComponent component = gameLoop
 				.createComponent(MockupImageComponent.class);
-		component.setShapeRenderer(shapeRenderer);
-		component.setGameLoop(gameLoop);
 		return component;
+	}
+
+	@Override
+	protected void createCollider(Image image, ImageComponent component) {
 	}
 
 }

@@ -65,7 +65,7 @@ public class OpenMockupGameAsynk extends OpenMockupGame {
 
 		toasts = ((MockupViews) controller.getViews()).getToasts();
 		toasts.showNotification(controller.getApplicationAssets().getI18N()
-				.m("opening gameeee"));
+				.m("openGame"));
 
 		path = args[0].toString();
 		Gdx.app.postRunnable(save);

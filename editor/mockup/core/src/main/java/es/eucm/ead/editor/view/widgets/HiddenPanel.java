@@ -90,7 +90,11 @@ public class HiddenPanel extends Table {
 	private boolean defaultHit;
 
 	public HiddenPanel(Skin skin) {
-		this(skin, null);
+		this(skin, (Drawable) null);
+	}
+
+	public HiddenPanel(Skin skin, String drawable) {
+		this(skin, skin.getDrawable(drawable));
 	}
 
 	public HiddenPanel(Skin skin, Drawable drawableBackground) {

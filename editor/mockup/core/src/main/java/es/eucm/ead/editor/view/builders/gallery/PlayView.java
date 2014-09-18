@@ -36,11 +36,9 @@
  */
 package es.eucm.ead.editor.view.builders.gallery;
 
-import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.ui.Button;
-import com.badlogic.gdx.scenes.scene2d.ui.Container;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.ui.Stack;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
@@ -73,24 +71,29 @@ public class PlayView implements ViewBuilder {
 		enginePlayer.setFillParent(true);
 
 		Skin skin = controller.getApplicationAssets().getSkin();
-		Vector2 viewport = controller.getPlatform().getSize();
-
-		Button back = new ToolbarIcon(IC_GO_BACK, 0f, viewport.y * .07f, skin,
-				"inverted");
+		float viewportHeight = controller.getPlatform().getSize().y;
+		float iconSize = viewportHeight * BaseGallery.ICON_SIZE;
+		float iconPad = viewportHeight * BaseGallery.ICON_PAD;
+		Button back = new ToolbarIcon(IC_GO_BACK, iconPad, iconSize, skin,
+				"inverted") {
+			@Override
+			public void layout() {
+				super.layout();
+				setBounds(0f, getParent().getHeight() - getPrefHeight(),
+						getPrefWidth(), getPrefHeight());
+			}
+		};
 		back.addListener(new ClickListener() {
 			@Override
 			public void clicked(InputEvent event, float x, float y) {
 				((MockupViews) controller.getViews()).onBackPressed();
 			}
 		});
-		Container container = new Container(back);
-		container.setFillParent(true);
-		container.top().left();
 
 		window = new Stack();
 		window.setFillParent(true);
 		window.add(enginePlayer);
-		window.add(container);
+		window.add(back);
 	}
 
 	@Override

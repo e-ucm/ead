@@ -36,7 +36,6 @@
  */
 package es.eucm.ead.editor.view.widgets.editionview;
 
-import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.utils.Align;
 
 import es.eucm.ead.editor.control.Controller;
@@ -54,47 +53,34 @@ public class LeftEditionToolbar extends Toolbar {
 	private float width;
 
 	public LeftEditionToolbar(Controller controller, String style, float width,
-			float iconSize, float bottomPad, float iconPad,
-			Actor... touchableActors) {
+			float iconSize, float iconPad, float smallPad, float normalPad) {
 		super(controller.getApplicationAssets().getSkin(), style);
 
 		this.width = width;
 
 		align(Align.center);
 		DeparturePanel departurePanel = new DeparturePanel(iconPad, iconSize,
-				controller, this);
+				controller);
 		ChangeVariablePanel changeVariablePanel = new ChangeVariablePanel(
-				iconPad, iconSize, controller, this);
+				iconPad, iconSize, controller);
 		VisibilityPanel visibilityPanel = new VisibilityPanel(iconPad,
-				iconSize, controller, this);
-		TweensPanel tweensPanel = new TweensPanel(iconPad, iconSize,
-				controller, this);
+				iconSize, controller);
+		TweensPanel tweensPanel = new TweensPanel(iconPad, iconSize, controller);
 		TouchabilityPanel touchabilityPanel = new TouchabilityPanel(iconPad,
-				iconSize, controller, this);
-		SoundPanel sound = new SoundPanel(iconPad, iconSize, controller, this);
+				iconSize, controller);
+		SoundPanel sound = new SoundPanel(iconPad, iconSize, controller);
 		ShowTextPanel conversations = new ShowTextPanel(iconPad, iconSize,
-				controller, this);
+				controller);
 
-		defaults().padBottom(bottomPad);
+		defaults().padBottom(smallPad).fill().expandX();
 
 		addInNewRow(departurePanel);
 		addInNewRow(changeVariablePanel);
 		addInNewRow(sound);
-		addInNewRow(conversations);
+		addInNewRow(conversations).padBottom(normalPad);
 		addInNewRow(visibilityPanel);
 		addInNewRow(touchabilityPanel);
 		addInNewRow(tweensPanel);
-
-		for (int i = 0; i < touchableActors.length; ++i) {
-			Actor actor = touchableActors[i];
-			departurePanel.getPanel().addTouchableActor(actor);
-			changeVariablePanel.getPanel().addTouchableActor(actor);
-			visibilityPanel.getPanel().addTouchableActor(actor);
-			tweensPanel.getPanel().addTouchableActor(actor);
-			touchabilityPanel.getPanel().addTouchableActor(actor);
-			sound.getPanel().addTouchableActor(actor);
-			conversations.getPanel().addTouchableActor(actor);
-		}
 	}
 
 	@Override

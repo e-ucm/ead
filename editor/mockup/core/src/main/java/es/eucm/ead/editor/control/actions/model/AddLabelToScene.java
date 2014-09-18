@@ -93,7 +93,7 @@ public class AddLabelToScene extends ModelAction {
 
 		Skin skin = controller.getEditorGameAssets().getSkin();
 		LabelStyle labelStyle = skin.get(label.getStyle(), LabelStyle.class);
-		TextBounds bounds = labelStyle.font.getBounds(label.getText());
+		TextBounds bounds = labelStyle.font.getMultiLineBounds(label.getText());
 		textLabel.setX((gameData.getWidth() - bounds.width) * 0.5f);
 		textLabel.setY((gameData.getHeight() - bounds.height) * 0.5f);
 		textLabel.setOriginX(bounds.width * 0.5f);
