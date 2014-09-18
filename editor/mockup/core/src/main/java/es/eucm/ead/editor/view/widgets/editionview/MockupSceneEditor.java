@@ -61,11 +61,11 @@ import es.eucm.ead.schema.entities.ModelEntity;
 
 public class MockupSceneEditor extends SceneEditor {
 
-	private static final int HANDLE_CIRCLE_SIZE = 12;
+	private static final int HANDLE_CIRCLE_SIZE = 15;
 
-	private static final int HANDLE_SQUARE_SIZE = 14;
+	private static final int HANDLE_SQUARE_SIZE = 15;
 
-	private static final int ROTATION_HANDLE_OFFSET = 44;
+	private static final int ROTATION_HANDLE_OFFSET = 45;
 
 	private static final boolean MULTIPLE_SELECTION = false;
 
@@ -79,6 +79,32 @@ public class MockupSceneEditor extends SceneEditor {
 	private final float leftPad;
 	private final float topPad;
 	private boolean hasSelection;
+
+	private Runnable updateSelection = new Runnable() {
+
+		@Override
+		public void run() {
+			Object[] selection = controller.getModel().getSelection()
+					.get(Selection.SCENE_ELEMENT);
+			if (selection.length > 0) {
+				Object object = selection[0];
+				if (object instanceof ModelEntity) {
+					ModelEntity entity = (ModelEntity) object;
+					Actor actor = findActor(entity);
+					if (actor != null) {
+						hasSelection = true;
+						context.show(entity, actor);
+					} else {
+						hasSelection = false;
+						context.show(null, null);
+					}
+				} else {
+					hasSelection = false;
+					context.show(null, null);
+				}
+			}
+		}
+	};
 
 	public MockupSceneEditor(final Controller controller, String leftStyle,
 			String topStyle) {
@@ -98,21 +124,9 @@ public class MockupSceneEditor extends SceneEditor {
 			@Override
 			public void modelChanged(SelectionEvent event) {
 				if (event.getType() == SelectionEvent.Type.FOCUSED) {
-					Object[] selection = event.getSelection();
-					if (selection.length > 0) {
-						Object object = event.getSelection()[0];
-						if (object instanceof ModelEntity) {
-							ModelEntity entity = (ModelEntity) object;
-							Actor actor = findActor(entity);
-							if (actor != null) {
-								hasSelection = true;
-								context.show(entity, actor);
-							}
-						}
-					}
+					Gdx.app.postRunnable(updateSelection);
 				} else if (event.getType() == SelectionEvent.Type.REMOVED) {
 					hasSelection = false;
-					context.show(null, null);
 				}
 			}
 
@@ -123,17 +137,12 @@ public class MockupSceneEditor extends SceneEditor {
 		};
 
 		groupEditor.addListener(new InputListener() {
-			private Vector2 aux_pointer1 = new Vector2();
-			private Vector2 aux_pointer2 = new Vector2();
-			private Vector2 aux_initialPointer1 = new Vector2();
-			private Vector2 aux_initialPointer2 = new Vector2();
 			private Vector2 pointer1 = new Vector2();
 			private Vector2 pointer2 = new Vector2();
 			private Vector2 initialPointer1 = new Vector2();
 			private Vector2 initialPointer2 = new Vector2();
 
 			private float rotation, scaleX, scaleY;
-			private boolean rotationStarted, scaleStarted;
 			private Handles handles = groupEditor.getGroupEditorDragListener()
 					.getModifier().getHandles();
 			private boolean pinching;
@@ -144,8 +153,15 @@ public class MockupSceneEditor extends SceneEditor {
 				if (!hasSelection) {
 					return false;
 				}
+				Actor influencedActor = handles.getInfluencedActor();
+				if (influencedActor == null) {
+					return false;
+				}
+				context.show(null, null);
+				scaleX = influencedActor.getScaleX();
+				scaleY = influencedActor.getScaleY();
+				rotation = influencedActor.getRotation();
 				if (pointer < 2) {
-
 					if (pointer == 0) {
 						initialPointer1.set(x, y);
 						pointer1.set(initialPointer1);
@@ -156,7 +172,6 @@ public class MockupSceneEditor extends SceneEditor {
 						pinching = true;
 					}
 				}
-				context.show(null, null);
 				return true;
 			}
 
@@ -166,73 +181,55 @@ public class MockupSceneEditor extends SceneEditor {
 
 				if (pointer == 1) {
 					pointer2.set(x, y);
+				} else {
+					pointer1.set(Gdx.input.getX(0), Gdx.input.getY(0));
+					getStage().screenToStageCoordinates(pointer1);
+					groupEditor.stageToLocalCoordinates(pointer1);
 				}
-				pointer1.set(Gdx.input.getX(0), Gdx.input.getY(0));
-				getStage().screenToStageCoordinates(pointer1);
-				groupEditor.stageToLocalCoordinates(pointer1);
 				// handle pinch zoom
 				if (pinching) {
-					aux_initialPointer1.set(initialPointer1);
-					aux_initialPointer2.set(initialPointer2);
-					aux_pointer1.set(pointer1);
-					aux_pointer2.set(pointer2);
-					pinch(aux_initialPointer1, aux_initialPointer2,
-							aux_pointer1, aux_pointer2);
-					zoom(initialPointer1.dst(initialPointer2),
-							pointer1.dst(pointer2));
+					Actor influencedActor = handles.getInfluencedActor();
+					if (influencedActor == null) {
+						return;
+					}
+
+					float intialDistance = initialPointer1.dst(initialPointer2);
+					float distance = pointer1.dst(pointer2);
+
+					pinch(influencedActor, initialPointer1, initialPointer2,
+							pointer1, pointer2);
+					zoom(influencedActor, intialDistance, distance);
 				}
 			}
 
-			public void pinch(Vector2 initialPointer1, Vector2 initialPointer2,
-					Vector2 pointer1, Vector2 pointer2) {
-				Actor influencedActor = handles.getInfluencedActor();
-				if (influencedActor == null) {
-					return;
-				} else if (!rotationStarted) {
-					rotationStarted = true;
-					rotation = influencedActor.getRotation();
-				}
+			public void pinch(Actor actor, Vector2 initialPointer1,
+					Vector2 initialPointer2, Vector2 pointer1, Vector2 pointer2) {
 
-				Vector2 a = initialPointer2.sub(initialPointer1);
-				Vector2 b = pointer2.sub(pointer1);
+				float x1 = initialPointer2.x - initialPointer1.x;
+				float y1 = initialPointer2.y - initialPointer1.y;
+				float x2 = pointer2.x - pointer1.x;
+				float y2 = pointer2.y - pointer1.y;
 
-				float deltaRot = MathUtils.atan2(b.y, b.x)
-						- MathUtils.atan2(a.y, a.x);
+				float deltaRot = MathUtils.atan2(y2, x2)
+						- MathUtils.atan2(y1, x1);
 				float deltaRotDeg = (deltaRot * MathUtils.radiansToDegrees + 360);
 
-				influencedActor.setRotation((deltaRotDeg + rotation) % 360);
+				actor.setRotation((deltaRotDeg + rotation) % 360);
 			}
 
-			public void zoom(float initialDistance, float distance) {
-				Actor influencedActor = handles.getInfluencedActor();
-				if (influencedActor == null) {
-					return;
-				} else if (!scaleStarted) {
-					scaleStarted = true;
-					scaleX = influencedActor.getScaleX();
-					scaleY = influencedActor.getScaleY();
-				}
+			public void zoom(Actor actor, float initialDistance, float distance) {
 
 				float ratio = distance / initialDistance;
-				influencedActor.setScaleX(ratio * scaleX);
-				influencedActor.setScaleY(ratio * scaleY);
+				actor.setScaleX(ratio * scaleX);
+				actor.setScaleY(ratio * scaleY);
 			}
 
 			@Override
 			public void touchUp(InputEvent event, float x, float y,
 					int pointer, int button) {
-				pinching = false;
-				Object object = controller.getModel().getSelection()
-						.getSingle(Selection.SCENE_ELEMENT);
-				if (object instanceof ModelEntity) {
-					ModelEntity entity = (ModelEntity) object;
-					Actor actor = findActor(entity);
-					if (actor != null) {
-						context.show(entity, actor);
-					}
-				}
-				if (rotationStarted || scaleStarted) {
-					rotationStarted = scaleStarted = false;
+				Gdx.app.postRunnable(updateSelection);
+				if (pinching) {
+					pinching = false;
 
 					// Notify the controller that something has changed so the
 					// model gets updated
