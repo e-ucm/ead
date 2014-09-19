@@ -105,3 +105,6 @@ closeGame.error = Something went wrong while closing the project
 newGame = Creating a new project
 newGame.error = Something went wrong while creating a new project
 openGame = Opening the project
+error.unknown = Something went wrong.
+error.noCamera = Not found camera. 
+error.noApp = Not found a compatible application.

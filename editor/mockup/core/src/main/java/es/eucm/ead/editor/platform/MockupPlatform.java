@@ -124,7 +124,26 @@ public abstract class MockupPlatform extends AbstractPlatform {
 
 	public interface ImageCapturedListener {
 
-		void imageCaptured(boolean success);
+		public static enum Result {
+			SUCCES, UNKOWN("error.unknown"), NO_CAMERA("error.noCamera"), NO_APP(
+					"error.noApp");
+
+			private String i18nKey;
+
+			private Result() {
+				this(null);
+			}
+
+			private Result(String i18nKey) {
+				this.i18nKey = i18nKey;
+			}
+
+			public String getI18nKey() {
+				return i18nKey;
+			}
+		}
+
+		void imageCaptured(Result result);
 	}
 
 	public interface ProjectSentListener {
