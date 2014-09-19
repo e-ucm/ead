@@ -41,7 +41,10 @@ import java.util.Map.Entry;
 
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.InputListener;
+import com.badlogic.gdx.scenes.scene2d.Touchable;
 import com.badlogic.gdx.scenes.scene2d.ui.ButtonGroup;
+import com.badlogic.gdx.scenes.scene2d.ui.Container;
+import com.badlogic.gdx.scenes.scene2d.ui.Image;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.esotericsoftware.tablelayout.Cell;
@@ -49,10 +52,12 @@ import com.esotericsoftware.tablelayout.Cell;
 import es.eucm.ead.editor.control.Controller;
 import es.eucm.ead.editor.control.Selection;
 import es.eucm.ead.editor.model.Model;
+import es.eucm.ead.editor.model.Model.FieldListener;
 import es.eucm.ead.editor.model.Model.ModelListener;
 import es.eucm.ead.editor.model.Model.Resource;
 import es.eucm.ead.editor.model.Model.SelectionListener;
 import es.eucm.ead.editor.model.Q;
+import es.eucm.ead.editor.model.events.FieldEvent;
 import es.eucm.ead.editor.model.events.LoadEvent;
 import es.eucm.ead.editor.model.events.ResourceEvent;
 import es.eucm.ead.editor.model.events.SelectionEvent;
@@ -60,6 +65,7 @@ import es.eucm.ead.editor.view.listeners.SceneDocumentationListener;
 import es.eucm.ead.editor.view.listeners.SceneDocumentationListener.DefaultName;
 import es.eucm.ead.schema.editor.components.GameData;
 import es.eucm.ead.schema.entities.ModelEntity;
+import es.eucm.ead.schemax.FieldName;
 import es.eucm.ead.schemax.entities.ResourceCategory;
 
 public class ScenesTableList extends Table implements
@@ -83,6 +89,10 @@ public class ScenesTableList extends Table implements
 
 	private ButtonGroup group;
 
+	private Container containerFirst;
+
+	private FieldListener fieldListener;
+
 	public ScenesTableList(Controller controller, InputListener listener) {
 		this(controller, listener, "default");
 	}
@@ -93,6 +103,30 @@ public class ScenesTableList extends Table implements
 		this.listener = listener;
 		this.controller = controller;
 		this.styleButton = styleButton;
+
+		containerFirst = new Container(new Image(skin.getDrawable("first")));
+		containerFirst.setFillParent(true);
+		containerFirst.setTouchable(Touchable.disabled);
+		containerFirst.top().left();
+
+		final GameData gameData = Q.getComponent(controller.getModel()
+				.getGame(), GameData.class);
+
+		fieldListener = new FieldListener() {
+			@Override
+			public void modelChanged(FieldEvent event) {
+				initialize();
+			}
+
+			@Override
+			public boolean listenToField(String fieldName) {
+				if (fieldName.equals(FieldName.INITIAL_SCENE)) {
+					return true;
+				}
+				return false;
+			}
+		};
+		controller.getModel().addFieldListener(gameData, fieldListener);
 
 		loadListener = new ModelListener<LoadEvent>() {
 			@Override
@@ -107,6 +141,7 @@ public class ScenesTableList extends Table implements
 
 		controller.getModel().addResourceListener(this);
 		controller.getModel().addLoadListener(loadListener);
+
 		initialize();
 
 		final Model model = controller.getModel();
@@ -172,6 +207,7 @@ public class ScenesTableList extends Table implements
 			sceneButton.addListener(listener);
 			if (value.getKey().equals(initialName)) {
 				initial.setWidget(sceneButton);
+				sceneButton.addActor(containerFirst);
 			} else {
 				row();
 				add(sceneButton).expandX().fill().pad(PAD);

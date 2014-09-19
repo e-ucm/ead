@@ -37,16 +37,20 @@
 package es.eucm.ead.editor.view.widgets.editionview.variables;
 
 import com.badlogic.gdx.graphics.Color;
+import com.badlogic.gdx.scenes.scene2d.Actor;
+import com.badlogic.gdx.scenes.scene2d.Group;
 import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
+import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
 import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener.ChangeEvent;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.Pools;
 import com.esotericsoftware.tablelayout.Cell;
 
 import es.eucm.ead.editor.control.Controller;
+import es.eucm.ead.editor.view.widgets.IconButton;
 import es.eucm.ead.editor.view.widgets.MultiStateButton;
 import es.eucm.ead.engine.I18N;
 
@@ -112,9 +116,27 @@ public class VariableSelectorWidget extends Table {
 			setState(state);
 		}
 
+		IconButton removeButton = new IconButton("remove80x80", 0, skin,
+				"white");
+		removeButton.addListener(new ChangeListener() {
+			@Override
+			public void changed(ChangeEvent event, Actor actor) {
+				Group parent = VariableSelectorWidget.this.getParent();
+				if (parent != null && parent.getChildren().size > 2) {
+					VariableSelectorWidget.this.getParent().removeActor(
+							VariableSelectorWidget.this);
+				} else {
+					selectedVariable(false);
+				}
+			}
+
+		});
+
 		add(nameButton).left();
 		labelToCell = add().right();
 		stateButtonCell = add().right();
+		add(removeButton).size(nameButton.getHeight()).left()
+				.pad(0, PAD, 0, PAD);
 
 		selectedVariable(visible);
 	}
@@ -125,8 +147,9 @@ public class VariableSelectorWidget extends Table {
 			stateButtonCell.setWidget(stateButton);
 			labelToCell.setWidget(labelTo).pad(0, PAD, 0, PAD).expandX();
 		} else {
+			nameButton.setText(i18n.m(NOT_VAR));
 			stateButtonCell.setWidget(null);
-			labelToCell.setWidget(null);
+			labelToCell.setWidget(null).pad(0, 0, 0, 0).expand(false, false);
 		}
 	}
 

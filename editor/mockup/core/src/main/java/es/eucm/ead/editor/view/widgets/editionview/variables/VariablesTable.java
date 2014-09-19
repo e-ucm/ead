@@ -68,6 +68,8 @@ public class VariablesTable extends PositionedHiddenPanel implements
 
 	protected static final float IN_DURATION = .3F, OUT_DURATION = .2F;;
 
+	private static final int MAX_CHAR = 15;
+
 	private static final float LATERAL_PAD = 20, PAD = 10;
 
 	private static ClickListener varPressed = new ClickListener() {
@@ -139,6 +141,10 @@ public class VariablesTable extends PositionedHiddenPanel implements
 			if (variables == null) {
 				variables = new Variables();
 				controller.action(AddVariables.class, variables);
+			}
+
+			if (text.length() > MAX_CHAR) {
+				text = text.substring(0, MAX_CHAR - 1);
 			}
 
 			if (!existVariableWithName(text)) {

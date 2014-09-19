@@ -36,7 +36,9 @@
  */
 package es.eucm.ead.editor.control.actions.model;
 
+import es.eucm.ead.editor.control.MockupViews;
 import es.eucm.ead.editor.control.Selection;
+import es.eucm.ead.editor.control.Toasts;
 import es.eucm.ead.editor.control.actions.ModelAction;
 import es.eucm.ead.editor.control.actions.model.scene.NewScene;
 import es.eucm.ead.editor.control.commands.Command;
@@ -64,6 +66,8 @@ import es.eucm.ead.schemax.entities.ResourceCategory;
  * </dl>
  */
 public class SelectionGoToNewScene extends ModelAction {
+
+	private Toasts toasts;
 
 	public SelectionGoToNewScene() {
 		super(true, true, Behavior.class, String.class);
@@ -100,6 +104,11 @@ public class SelectionGoToNewScene extends ModelAction {
 
 		command.addCommand(new AddToListCommand(sceneElement, sceneElement
 				.getComponents(), behavior));
+
+		toasts = ((MockupViews) controller.getViews()).getToasts();
+		toasts.showNotification(
+				controller.getApplicationAssets().getI18N()
+						.m("edition.selectionToNewScene"), 2.5f);
 
 		return command;
 	}

@@ -171,7 +171,7 @@ public class PaintToolbar extends Toolbar {
 					hide();
 				} else if (listener == save) {
 
-					toasts.showNotification(i18n.m("repository.importing"));
+					toasts.showNotification(i18n.m("edition.creatingImage"));
 					controller.getBackgroundExecutor().submit(saveTask,
 							saveListener);
 					hide(false, true);

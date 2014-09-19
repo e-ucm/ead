@@ -74,7 +74,7 @@ import com.badlogic.gdx.files.FileHandle;
 
 import es.eucm.ead.android.EditorActivity.ActivityResultListener;
 import es.eucm.ead.editor.platform.MockupPlatform;
-import es.eucm.ead.editor.platform.Platform.FileChooserListener;
+import es.eucm.ead.editor.platform.MockupPlatform.ImageCapturedListener.Result;
 import es.eucm.ead.engine.I18N;
 import es.eucm.ead.schema.data.Dimension;
 import es.eucm.network.requests.RequestHelper;
@@ -394,7 +394,7 @@ public class AndroidPlatform extends MockupPlatform {
 					try {
 						photoFile.createNewFile();
 					} catch (IOException ioex) {
-						listener.imageCaptured(false);
+						listener.imageCaptured(Result.UNKOWN);
 						Gdx.app.error(PLATFORM_TAG,
 								"Failed to create an empty photo file:  "
 										+ ioex);
@@ -417,10 +417,10 @@ public class AndroidPlatform extends MockupPlatform {
 							}
 						});
 			} else {
-				listener.imageCaptured(false);
+				listener.imageCaptured(Result.NO_APP);
 			}
 		} else {
-			listener.imageCaptured(false);
+			listener.imageCaptured(Result.NO_CAMERA);
 		}
 	}
 
@@ -479,7 +479,11 @@ public class AndroidPlatform extends MockupPlatform {
 			@Override
 			public void run() {
 				if (captureListener != null) {
-					captureListener.imageCaptured(success);
+					Result result = Result.SUCCES;
+					if (!success) {
+						result = Result.UNKOWN;
+					}
+					captureListener.imageCaptured(result);
 				} else if (fileListener != null) {
 					fileListener.fileChosen(file.getAbsolutePath());
 				}

@@ -49,6 +49,7 @@ import es.eucm.ead.editor.control.Controller;
 import es.eucm.ead.editor.control.actions.irreversibles.scene.AddBehaviorEffect;
 import es.eucm.ead.editor.control.actions.irreversibles.scene.AddBehaviorPrefab;
 import es.eucm.ead.editor.control.actions.irreversibles.scene.ClearBehaviorEffects;
+import es.eucm.ead.editor.control.actions.irreversibles.scene.RemoveBehavior;
 import es.eucm.ead.editor.view.widgets.PositionedHiddenPanel.Position;
 import es.eucm.ead.editor.view.widgets.editionview.variables.VariablesAndGroup;
 import es.eucm.ead.editor.view.widgets.editionview.variables.VariablesTable;
@@ -79,6 +80,7 @@ public class ChangeVariablePanel extends PrefabComponentPanel {
 			@Override
 			public void changed(ChangeEvent event, Actor actor) {
 				updateComponent();
+				panel.updatePositionPanel();
 			}
 		};
 		varOp = new VariablesAndGroup(controller, true, variablesPanel,
@@ -92,6 +94,12 @@ public class ChangeVariablePanel extends PrefabComponentPanel {
 		ScrollPane sp = new ScrollPane(varOp);
 		panel.add(sp);
 
+	}
+
+	@Override
+	protected void trashClicked() {
+		super.trashClicked();
+		panel.updatePositionPanel();
 	}
 
 	@Override
@@ -129,18 +137,23 @@ public class ChangeVariablePanel extends PrefabComponentPanel {
 		if (component != null) {
 			controller.action(ClearBehaviorEffects.class, component);
 		}
-		String expression = varOp.getExpression();
-		String[] fields = expression.split(" ");
+		if (!varOp.isEmpty()) {
+			String expression = varOp.getExpression();
+			String[] fields = expression.split(" ");
 
-		Array<String> stack = new Array<String>();
+			Array<String> stack = new Array<String>();
 
-		for (int i = 0; i < fields.length; i++) {
-			String aux = fields[i];
-			if (!aux.equals(")")) {
-				stack.add(aux);
-			} else {
-				evaluate(stack);
+			for (int i = 0; i < fields.length; i++) {
+				String aux = fields[i];
+				if (!aux.equals(")")) {
+					stack.add(aux);
+				} else {
+					evaluate(stack);
+				}
 			}
+		} else if (component != null) {
+			controller.action(RemoveBehavior.class, component);
+			setUsed(false);
 		}
 	}
 

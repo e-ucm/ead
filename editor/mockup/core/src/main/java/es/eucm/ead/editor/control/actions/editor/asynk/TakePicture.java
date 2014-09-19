@@ -39,6 +39,7 @@ package es.eucm.ead.editor.control.actions.editor.asynk;
 import com.badlogic.gdx.files.FileHandle;
 
 import es.eucm.ead.editor.control.MockupViews;
+import es.eucm.ead.editor.control.Toasts;
 import es.eucm.ead.editor.control.actions.EditorAction;
 import es.eucm.ead.editor.control.actions.model.AddSceneElement;
 import es.eucm.ead.editor.control.background.BackgroundExecutor;
@@ -64,6 +65,8 @@ public class TakePicture extends EditorAction {
 	private FileHandle pictureFile;
 
 	private ModelEntity sceneElement;
+
+	private Toasts toasts;
 
 	public TakePicture() {
 		super(true, false);
@@ -93,8 +96,8 @@ public class TakePicture extends EditorAction {
 	private final ImageCapturedListener importListener = new ImageCapturedListener() {
 
 		@Override
-		public void imageCaptured(boolean success) {
-			if (success) {
+		public void imageCaptured(Result result) {
+			if (result.equals(Result.SUCCES)) {
 				((MockupViews) controller.getViews()).getToasts()
 						.showNotification(
 								controller.getApplicationAssets().getI18N()
@@ -104,6 +107,10 @@ public class TakePicture extends EditorAction {
 						pictureFile.path());
 				controller.getBackgroundExecutor().submit(importElemTask,
 						dummyListener);
+			} else {
+				toasts = ((MockupViews) controller.getViews()).getToasts();
+				toasts.showNotification(controller.getApplicationAssets()
+						.getI18N().m(result.getI18nKey()), 2.5f);
 			}
 		}
 	};

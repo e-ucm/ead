@@ -38,14 +38,12 @@ package es.eucm.ead.editor.view.widgets.editionview.prefabs;
 
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.scenes.scene2d.Actor;
-import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.ui.ScrollPane;
 import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
-import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.utils.Array;
 
 import es.eucm.ead.editor.control.Controller;
-import es.eucm.ead.editor.view.widgets.MultiStateButton;
+import es.eucm.ead.editor.control.actions.irreversibles.scene.RemoveComponents;
 import es.eucm.ead.editor.view.widgets.PositionedHiddenPanel.Position;
 import es.eucm.ead.editor.view.widgets.editionview.variables.VariablesAndGroup;
 import es.eucm.ead.editor.view.widgets.editionview.variables.VariablesOrGroup;
@@ -53,10 +51,6 @@ import es.eucm.ead.editor.view.widgets.editionview.variables.VariablesTable;
 import es.eucm.ead.schema.components.ModelConditionedComponent;
 
 public abstract class ConditionalPanel extends PrefabComponentPanel {
-
-	private static final float BUTTON_MARGIN = 75;
-
-	private MultiStateButton stateButton;
 
 	private VariablesTable variablesPanel;
 
@@ -77,23 +71,23 @@ public abstract class ConditionalPanel extends PrefabComponentPanel {
 		colors.add(Color.GREEN);
 		colors.add(Color.RED);
 
-		stateButton = new MultiStateButton(skin, states, colors, BUTTON_MARGIN);
-		stateButton.addListener(new ClickListener() {
-			@Override
-			public void clicked(InputEvent event, float x, float y) {
-				updateComponent();
-			}
-		});
-
 		ChangeListener varChanged = new ChangeListener() {
 			@Override
 			public void changed(ChangeEvent event, Actor actor) {
 				updateComponent();
+				panel.updatePositionPanel();
+
 			}
 		};
 		varOp = new VariablesOrGroup(controller, variablesPanel, varChanged);
 		ScrollPane sp = new ScrollPane(varOp);
 		panel.add(sp).expand().fill();
+	}
+
+	@Override
+	protected void trashClicked() {
+		super.trashClicked();
+		panel.updatePositionPanel();
 	}
 
 	@Override
@@ -119,7 +113,16 @@ public abstract class ConditionalPanel extends PrefabComponentPanel {
 		}
 	}
 
-	protected abstract void updateComponent();
+	protected abstract void updateTheComponent();
+
+	protected void updateComponent() {
+		if (!varOp.isEmpty()) {
+			updateTheComponent();
+		} else if (component != null) {
+			controller.action(RemoveComponents.class, componentId);
+			setUsed(false);
+		}
+	}
 
 	protected void evaluateExpression(String expression) {
 		String[] fields = expression.split(" ");

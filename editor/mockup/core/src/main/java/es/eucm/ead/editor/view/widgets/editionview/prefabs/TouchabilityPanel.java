@@ -51,7 +51,7 @@ public class TouchabilityPanel extends ConditionalPanel {
 	}
 
 	@Override
-	protected void updateComponent() {
+	protected void updateTheComponent() {
 		if (component == null) {
 			component = new Touchability();
 			component.setId(componentId);

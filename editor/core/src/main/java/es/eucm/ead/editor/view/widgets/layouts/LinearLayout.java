@@ -249,9 +249,11 @@ public class LinearLayout extends AbstractWidget {
 	@Override
 	protected void drawChildren(Batch batch, float parentAlpha) {
 		if (background != null) {
-			batch.setColor(backgroundColor);
+			Color color = batch.getColor();
+			batch.setColor(backgroundColor.r, backgroundColor.g,
+					backgroundColor.b, backgroundColor.a * parentAlpha);
 			background.draw(batch, 0, 0, getWidth(), getHeight());
-			batch.setColor(Color.WHITE);
+			batch.setColor(color);
 		}
 		super.drawChildren(batch, parentAlpha);
 	}
