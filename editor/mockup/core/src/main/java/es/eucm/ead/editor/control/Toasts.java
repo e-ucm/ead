@@ -39,6 +39,7 @@ package es.eucm.ead.editor.control;
 import java.util.List;
 
 import com.badlogic.gdx.scenes.scene2d.ui.Label;
+import com.badlogic.gdx.scenes.scene2d.utils.Align;
 import com.esotericsoftware.tablelayout.Cell;
 
 import es.eucm.ead.editor.view.widgets.Notification;
@@ -78,6 +79,8 @@ public class Toasts {
 		List<Cell> cells = notification.getCells();
 		if (cells.isEmpty()) {
 			notification.add(newText);
+			Label label = (Label) cells.get(0).getWidget();
+			label.setAlignment(Align.center);
 		} else {
 			Object widget = cells.get(0).getWidget();
 			if (widget instanceof Label) {

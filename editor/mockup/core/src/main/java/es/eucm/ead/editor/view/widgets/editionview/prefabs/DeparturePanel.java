@@ -117,6 +117,12 @@ public class DeparturePanel extends PrefabComponentPanel {
 	}
 
 	@Override
+	public void showPanel() {
+		table.updateButtons();
+		super.showPanel();
+	}
+
+	@Override
 	protected void actualizePanel() {
 		if (component != null) {
 			table.selectScene(((GoScene) ((Behavior) component).getEffects()

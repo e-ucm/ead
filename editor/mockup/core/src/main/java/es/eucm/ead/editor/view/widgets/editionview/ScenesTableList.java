@@ -235,7 +235,7 @@ public class ScenesTableList extends Table implements
 		return null;
 	}
 
-	private void show() {
+	public void updateButtons() {
 		for (Actor actor : getChildren()) {
 			SceneButton button = (SceneButton) actor;
 			button.updateScene();
@@ -252,12 +252,10 @@ public class ScenesTableList extends Table implements
 				break;
 			}
 		}
-		show();
 	}
 
 	public void deselectAll() {
 		group.uncheckAll();
-		show();
 	}
 
 	@Override

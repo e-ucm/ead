@@ -141,6 +141,7 @@ public abstract class BaseGallery implements ViewBuilder {
 				discardUndo();
 			};
 		};
+		undoNotification.defaults().space(DEFAULT_ENTITY_SPACING);
 		undo = new TextButton(i18n.m("undo"), skin, "white");
 		undo.setUserObject(this);
 		undo.addListener(undoListener);
@@ -375,9 +376,11 @@ public abstract class BaseGallery implements ViewBuilder {
 				msg = i18n.m("gallery.deletedElement") + ": " + title;
 			}
 		}
+
 		undoNotification.clearChildren();
 		undoNotification.text(msg);
 		undoNotification.add(undo);
+
 	}
 
 	public I18N getI18n() {

@@ -63,8 +63,8 @@ import es.eucm.ead.schema.entities.ModelEntity;
  */
 public class Q {
 
-	private static final float THUMBNAIL_HEIGHT = .1F;
-	private static final float THUMBNAIL_WIDTH = .1F;
+	private static final float THUMBNAIL_HEIGHT = .05F;
+	private static final float THUMBNAIL_WIDTH = .05F;
 
 	/**
 	 * Returns the component for the class. If the element has no component of

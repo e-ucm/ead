@@ -36,6 +36,7 @@
  */
 package es.eucm.ead.editor.view.widgets;
 
+import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.math.Interpolation;
 import com.badlogic.gdx.scenes.scene2d.Action;
 import com.badlogic.gdx.scenes.scene2d.Actor;
@@ -44,6 +45,7 @@ import com.badlogic.gdx.scenes.scene2d.actions.Actions;
 import com.badlogic.gdx.scenes.scene2d.ui.Image;
 import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
+import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.scenes.scene2d.utils.Drawable;
 import com.esotericsoftware.tablelayout.Cell;
 
@@ -75,7 +77,6 @@ public class Notification extends HiddenPanel {
 		padRight(getPadRight() + DEFAULT_SPACING);
 		padTop(getPadTop() + DEFAULT_SPACING);
 		padLeft(getPadLeft() + DEFAULT_SPACING);
-		defaults().space(DEFAULT_SPACING);
 	}
 
 	/**
@@ -99,20 +100,10 @@ public class Notification extends HiddenPanel {
 	 * bottom-center position. Duration equal to timeout seconds.
 	 */
 	public Notification show(Stage stage, float timeout) {
-		if (hasParent()) {
-
-			pack();
-			setPosition(Math.round((stage.getWidth() - getPrefWidth()) / 2),
-					getHeight() * .1f);
-			clearActions();
-			addAction(Actions.delay(timeout - FADE_IN,
-					Actions.run(hideRunnable())));
-			return this;
-		}
 
 		Action action = null;
 		getColor().a = 0f;
-		if (timeout != -1 && timeout > 0) {
+		if (timeout > 0) {
 			removeProgressBar();
 			action = Actions.sequence(
 					Actions.fadeIn(FADE_IN, Interpolation.fade),
@@ -134,7 +125,7 @@ public class Notification extends HiddenPanel {
 			previousScrollFocus = actor;
 
 		pack();
-		setPosition(Math.round((stage.getWidth() - getPrefWidth()) / 2),
+		setPosition(Math.round((stage.getWidth() - getWidth()) / 2),
 				getHeight() * .1f);
 		stage.setKeyboardFocus(this);
 		stage.setScrollFocus(this);
@@ -145,7 +136,7 @@ public class Notification extends HiddenPanel {
 
 	private void removeProgressBar() {
 		if (progressBarCell != null) {
-			progressBarCell.setWidget(null);
+			progressBarCell.setWidget(null).padLeft(0f);
 		}
 	}
 
@@ -158,7 +149,7 @@ public class Notification extends HiddenPanel {
 					.addAction(Actions.forever(Actions.rotateBy(-360f, 1.5f)));
 			progressBarCell = add();
 		}
-		progressBarCell.setWidget(progressBar);
+		progressBarCell.setWidget(progressBar).padLeft(DEFAULT_SPACING);
 	}
 
 	@Override
@@ -219,6 +210,6 @@ public class Notification extends HiddenPanel {
 	}
 
 	public boolean isShowing() {
-		return hasParent() || isTouchable();
+		return hasParent() && isTouchable();
 	}
 }

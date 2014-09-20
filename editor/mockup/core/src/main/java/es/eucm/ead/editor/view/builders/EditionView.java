@@ -45,7 +45,7 @@ import es.eucm.ead.editor.control.Controller;
 import es.eucm.ead.editor.control.MockupViews;
 import es.eucm.ead.editor.view.builders.gallery.BaseGallery;
 import es.eucm.ead.editor.view.widgets.Toolbar;
-import es.eucm.ead.editor.view.widgets.editionview.InfoEdtionPanel;
+import es.eucm.ead.editor.view.widgets.editionview.InfoEditionPanel;
 import es.eucm.ead.editor.view.widgets.editionview.LeftEditionToolbar;
 import es.eucm.ead.editor.view.widgets.editionview.MockupSceneEditor;
 import es.eucm.ead.editor.view.widgets.editionview.NavigationButton;
@@ -66,7 +66,7 @@ public class EditionView implements ViewBuilder {
 	private MockupSceneEditor sceneEditor;
 
 	private PaintToolbar paintToolbar;
-	private InfoEdtionPanel infoPanel;
+	private InfoEditionPanel infoPanel;
 
 	@Override
 	public void initialize(Controller controller) {
@@ -101,7 +101,7 @@ public class EditionView implements ViewBuilder {
 		Cell sceneEditorCell = view.add(sceneEditor).expand().fill();
 		sceneEditor.toBack();
 
-		infoPanel = new InfoEdtionPanel(controller, skin, sceneEditorCell,
+		infoPanel = new InfoEditionPanel(controller, skin, sceneEditorCell,
 				paintToolbar);
 
 		((MockupViews) controller.getViews())
