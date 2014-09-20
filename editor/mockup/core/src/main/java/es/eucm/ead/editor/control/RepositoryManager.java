@@ -59,6 +59,7 @@ import es.eucm.ead.editor.control.actions.editor.ImportEntityResources;
 import es.eucm.ead.editor.control.actions.model.AddSceneElement;
 import es.eucm.ead.editor.model.Q;
 import es.eucm.ead.editor.view.builders.gallery.ProjectsView;
+import es.eucm.ead.schema.editor.components.GameData;
 import es.eucm.ead.schema.editor.components.RepoElement;
 import es.eucm.ead.schema.entities.ModelEntity;
 import es.eucm.ead.schemax.GameStructure;
@@ -193,8 +194,10 @@ public class RepositoryManager {
 	 */
 	private Array<String> libraries;
 
-	public RepositoryManager() {
+	private boolean copyThumbnailToProject;
 
+	public RepositoryManager() {
+		copyThumbnailToProject = false;
 	}
 
 	public Array<ModelEntity> getElements() {
@@ -254,6 +257,10 @@ public class RepositoryManager {
 		// We must create a deep memory copy of the element, and import that to
 		// the model.
 		ModelEntity elem = gameAssets.copy(target);
+		GameData gameData = Q.getComponent(controller.getModel().getGame(),
+				GameData.class);
+		elem.setX(gameData.getWidth() * .5f - elem.getOriginX());
+		elem.setY(gameData.getHeight() * .5f - elem.getOriginY());
 		try {
 			importRenderers(elem, controller);
 		} catch (Exception unexpectedException) {
@@ -264,7 +271,7 @@ public class RepositoryManager {
 			// OnEntityImportedListener#entityImported(...) java documentation.
 			elem = null;
 		}
-		if (elem != null) {
+		if (elem != null && copyThumbnailToProject) {
 			RepoElement repoElem = Q.getComponent(elem, RepoElement.class);
 			String thumbnailName = repoElem.getThumbnail();
 			if (thumbnailName != null && !thumbnailName.isEmpty()) {
