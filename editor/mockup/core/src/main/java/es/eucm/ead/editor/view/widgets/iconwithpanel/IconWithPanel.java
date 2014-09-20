@@ -65,9 +65,7 @@ public abstract class IconWithPanel extends ToolbarIcon {
 		public void changed(ChangeEvent event,
 				com.badlogic.gdx.scenes.scene2d.Actor actor) {
 			IconWithPanel icon = (IconWithPanel) event.getListenerActor();
-			if (icon.panel.hasParent()) {
-				icon.hidePanel();
-			} else {
+			if (!icon.panel.hasParent()) {
 				icon.showPanel();
 			}
 		};

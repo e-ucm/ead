@@ -38,9 +38,7 @@ package es.eucm.ead.editor.view.widgets;
 
 import static com.badlogic.gdx.scenes.scene2d.actions.Actions.sequence;
 
-import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.scenes.scene2d.Action;
-import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.InputListener;
 import com.badlogic.gdx.scenes.scene2d.Stage;
@@ -49,6 +47,9 @@ import com.badlogic.gdx.scenes.scene2d.actions.Actions;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.scenes.scene2d.utils.Drawable;
+import com.badlogic.gdx.utils.Array;
+
+import es.eucm.ead.editor.control.MockupViews;
 
 /**
  * Panel is a generic lightweight container with {@link #show()} and
@@ -56,38 +57,7 @@ import com.badlogic.gdx.scenes.scene2d.utils.Drawable;
  */
 public class HiddenPanel extends Table {
 
-	private static final Vector2 temp = new Vector2();
-
-	private static final InputListener handleHit = new InputListener() {
-
-		@Override
-		public boolean touchDown(InputEvent event, float x, float y,
-				int pointer, int button) {
-			HiddenPanel listenerActor = (HiddenPanel) event.getListenerActor();
-
-			Stage stage = listenerActor.getStage();
-			if (stage == null) {
-				return false;
-			}
-
-			listenerActor.defaultHit = true;
-			Actor hit = listenerActor.getStage().hit(event.getStageX(),
-					event.getStageY(), true);
-			listenerActor.defaultHit = false;
-			boolean resendTouch = hit == null
-					|| !hit.isDescendantOf(listenerActor);
-			if (resendTouch) {
-				listenerActor.hide();
-				stage.stageToScreenCoordinates(temp.set(event.getStageX(),
-						event.getStageY()));
-				stage.touchDown((int) temp.x, (int) temp.y, event.getPointer(),
-						event.getButton());
-			}
-			return false;
-		}
-	};
-
-	private boolean defaultHit;
+	private boolean modal = false;
 
 	public HiddenPanel(Skin skin) {
 		this(skin, (Drawable) null);
@@ -100,12 +70,6 @@ public class HiddenPanel extends Table {
 	public HiddenPanel(Skin skin, Drawable drawableBackground) {
 		super(skin);
 		setBackground(drawableBackground);
-		initialize(skin);
-	}
-
-	protected void initialize(Skin skin) {
-		this.defaultHit = false;
-		addCaptureListener(handleHit);
 	}
 
 	public void show(Stage stage) {
@@ -113,7 +77,7 @@ public class HiddenPanel extends Table {
 	}
 
 	public void show(Stage stage, Action action) {
-		defaultHit = false;
+		MockupViews.setUpHiddenPanel(this, stage);
 		stage.addActor(this);
 		setTouchable(Touchable.enabled);
 		clearActions();
@@ -127,10 +91,17 @@ public class HiddenPanel extends Table {
 		hide(null);
 	}
 
-	public void hide(Action action) {
-		defaultHit = true;
-		setTouchable(Touchable.disabled);
+	public void setModal(boolean modal) {
+		this.modal = modal;
+	}
 
+	public void hide(Action action) {
+		Stage stage = getStage();
+		if (!isTouchable() || stage == null) {
+			return;
+		}
+		setTouchable(Touchable.disabled);
+		MockupViews.removeHitListener(this, stage);
 		if (action != null) {
 			addAction(sequence(action, Actions.removeActor()));
 		} else {
@@ -138,16 +109,8 @@ public class HiddenPanel extends Table {
 		}
 	}
 
-	@Override
-	public Actor hit(float x, float y, boolean touchable) {
-		if (!defaultHit) {
-			final Actor hit = super.hit(x, y, touchable);
-			if (hit == null && isTouchable()) {
-				return this;
-			}
-			return hit;
-		} else {
-			return super.hit(x, y, touchable);
-		}
+	public boolean isModal() {
+		return modal;
 	}
+
 }
