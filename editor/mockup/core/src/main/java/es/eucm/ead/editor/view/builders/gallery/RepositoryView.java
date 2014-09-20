@@ -61,6 +61,7 @@ import es.eucm.ead.editor.view.widgets.Notification;
 import es.eucm.ead.editor.view.widgets.ToolbarIcon;
 import es.eucm.ead.editor.view.widgets.gallery.GalleryItem;
 import es.eucm.ead.editor.view.widgets.gallery.RepositoryItem;
+import es.eucm.ead.editor.view.widgets.gallery.RepositoryItem.ItemInfo;
 import es.eucm.ead.editor.view.widgets.helpmessage.sequence.HelpSequence;
 import es.eucm.ead.schema.entities.ModelEntity;
 
@@ -68,9 +69,11 @@ public class RepositoryView extends BaseGallery implements ProgressListener,
 		OnEntityImportedListener {
 
 	private static final float DEFAULT_NOTIF_TIMEOUT = 2.5F;
+	private static final int COLUMNS = 3;
 
 	private Notification importingNotif, updatingNotif, errorUpdating,
 			errorImporting;
+	private ItemInfo info;
 
 	@Override
 	public void initialize(Controller controller) {
@@ -83,6 +86,7 @@ public class RepositoryView extends BaseGallery implements ProgressListener,
 				.m("repository.refreshingError"));
 		this.errorImporting = new Notification(skin).text(i18n
 				.m("repository.importingError"));
+		info = new ItemInfo(controller, view);
 	}
 
 	@Override
@@ -104,7 +108,7 @@ public class RepositoryView extends BaseGallery implements ProgressListener,
 
 	@Override
 	protected int getColumns() {
-		return 3;
+		return COLUMNS;
 	}
 
 	@Override
@@ -150,7 +154,7 @@ public class RepositoryView extends BaseGallery implements ProgressListener,
 		Array<ModelEntity> libElems = ((MockupController) controller)
 				.getRepositoryManager().getElements();
 		for (ModelEntity repoEntity : libElems) {
-			items.add(new RepositoryItem(controller, repoEntity, this));
+			items.add(new RepositoryItem(info, controller, repoEntity, this));
 		}
 	}
 

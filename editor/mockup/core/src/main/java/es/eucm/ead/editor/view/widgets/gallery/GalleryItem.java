@@ -78,7 +78,7 @@ public abstract class GalleryItem extends Button {
 
 	protected Image image;
 
-	private BaseGallery gallery;
+	protected BaseGallery gallery;
 
 	protected Skin skin;
 
