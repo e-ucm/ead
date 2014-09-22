@@ -47,6 +47,7 @@ import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.Event;
 import com.badlogic.gdx.scenes.scene2d.EventListener;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
+import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.Touchable;
 import com.badlogic.gdx.scenes.scene2d.actions.Actions;
 import com.badlogic.gdx.scenes.scene2d.ui.ButtonGroup;
@@ -238,9 +239,13 @@ public class PaintToolbar extends Toolbar {
 	}
 
 	public void show() {
+		Stage stage = parent.getStage();
+		if (stage == null) {
+			return;
+		}
 		clearActions();
 		setTouchable(Touchable.enabled);
-		parent.getStage().addActor(this);
+		stage.addActor(this);
 		parent.localToStageCoordinates(TEMP.set(0f, 0f));
 		brushStrokes.show();
 

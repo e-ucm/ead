@@ -37,6 +37,7 @@
 package es.eucm.ead.editor.view.widgets.editionview.draw;
 
 import com.badlogic.gdx.graphics.Color;
+import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 
 import es.eucm.ead.editor.view.widgets.PositionedHiddenPanel.Position;
@@ -58,6 +59,12 @@ public class ColorPicker extends IconWithFadePanel {
 				getIcon().setColor(newColor);
 				panel.setColor(newColor);
 				ColorPicker.this.colorChanged(newColor);
+			}
+
+			@Override
+			public void draw(Batch batch, float parentAlpha) {
+				super.draw(batch, parentAlpha);
+				batch.setColor(Color.WHITE);
 			}
 		};
 
