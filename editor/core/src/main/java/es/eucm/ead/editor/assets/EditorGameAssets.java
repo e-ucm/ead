@@ -82,6 +82,7 @@ public class EditorGameAssets extends GameAssets {
 	private void setIgnores() {
 		IgnoreSerializer ignoreSerializer = new IgnoreSerializer();
 		setSerializer(Parent.class, ignoreSerializer);
+		setIgnoreUnknownFields(true);
 	}
 
 	@Override
@@ -100,7 +101,7 @@ public class EditorGameAssets extends GameAssets {
 			return super.resolve(path);
 		}
 		FileHandle internal = files.internal(path);
-		if (internal.exists()) {
+		if (checkFileExistence(internal)) {
 			return internal;
 		}
 		return files.absolute((getLoadingPath() == null
@@ -119,31 +120,31 @@ public class EditorGameAssets extends GameAssets {
 	 */
 	private String copyToProject(String path, Class<?> type) {
 		FileHandle fh = files.absolute(path);
-		return copyToProject(fh, type);
+		return copyToProject(fh, type, true);
 	}
 
-	private String copyToProject(FileHandle path, Class<?> type) {
-		if (path.exists()) {
-			String folderPath = getFolder(type);
-			FileHandle folder = absolute(getLoadingPath() + folderPath);
-			String extension = path.extension();
-			if (!"".equals(extension)) {
-				extension = "." + extension;
-			}
-			String name = path.nameWithoutExtension();
-			String fileName = name + extension;
-			int count = 1;
-			FileHandle dst;
-			while ((dst = folder.child(fileName)).exists()) {
-				fileName = name + count++ + extension;
-			}
-
-			path.copyTo(dst);
-
-			return folderPath + fileName;
-		} else {
+	private String copyToProject(FileHandle path, Class<?> type,
+			boolean checkExistance) {
+		if (checkExistance && !checkFileExistence(path)) {
 			return null;
 		}
+		String folderPath = getFolder(type);
+		FileHandle folder = absolute(getLoadingPath() + folderPath);
+		String extension = path.extension();
+		if (!"".equals(extension)) {
+			extension = "." + extension;
+		}
+		String name = path.nameWithoutExtension();
+		String fileName = name + extension;
+		int count = 1;
+		FileHandle dst;
+		while (checkFileExistence(dst = folder.child(fileName))) {
+			fileName = name + count++ + extension;
+		}
+
+		path.copyTo(dst);
+
+		return folderPath + fileName;
 	}
 
 	/**
@@ -166,8 +167,10 @@ public class EditorGameAssets extends GameAssets {
 	}
 
 	/**
-	 * Copies and loads the asset in the given path to the project folder only
-	 * if they weren't already loaded.
+	 * Copies and loads the asset in the given path to the project folder
+	 * assuming that the file exists and everything it's correct. This is needed
+	 * in order to avoid checkping {@link FileHandle#exists()} in Android which
+	 * is very slow for Internal files.
 	 * 
 	 * @param path
 	 *            the path
@@ -176,8 +179,8 @@ public class EditorGameAssets extends GameAssets {
 	 * @return the path of the project in which the file was copied, may be null
 	 *         if the path doesn't exist
 	 */
-	public String copyToProjectIfNeeded(FileHandle path, Class<?> type) {
-		return copyToProject(path, type);
+	public String copyToProjectDirectly(FileHandle path, Class<?> type) {
+		return copyToProject(path, type, false);
 	}
 
 	private String getFolder(Class<?> clazz) {

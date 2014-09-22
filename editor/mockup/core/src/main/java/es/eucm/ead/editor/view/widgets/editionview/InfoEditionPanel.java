@@ -46,6 +46,8 @@ import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
 import com.esotericsoftware.tablelayout.Cell;
 
 import es.eucm.ead.editor.control.Controller;
+import es.eucm.ead.editor.control.MockupController;
+import es.eucm.ead.editor.control.MockupViews;
 import es.eucm.ead.editor.control.Selection;
 import es.eucm.ead.editor.control.actions.editor.AddSceneElementFromResource;
 import es.eucm.ead.editor.control.actions.editor.ChangeMockupView;
@@ -57,7 +59,7 @@ import es.eucm.ead.editor.view.widgets.editionview.draw.PaintToolbar;
 import es.eucm.ead.engine.I18N;
 import es.eucm.ead.schema.entities.ModelEntity;
 
-public class InfoEdtionPanel extends HiddenPanel {
+public class InfoEditionPanel extends HiddenPanel {
 
 	private static final float PAD = 30, LITTLE_PAD = 10;
 
@@ -69,7 +71,7 @@ public class InfoEdtionPanel extends HiddenPanel {
 
 	private Runnable paintRunnable;
 
-	public InfoEdtionPanel(final Controller controller, Skin skin,
+	public InfoEditionPanel(final Controller controller, Skin skin,
 			Cell sceneEditorCell, final PaintToolbar paintToolbar) {
 		super(skin, "dialog");
 		I18N i18n = controller.getApplicationAssets().getI18N();
@@ -167,6 +169,8 @@ public class InfoEdtionPanel extends HiddenPanel {
 		ModelEntity scene = (ModelEntity) controller.getModel().getSelection()
 				.getSingle(Selection.SCENE);
 		if (scene.getChildren().size == 0) {
+			MockupViews.setUpHiddenPanel(this, ((MockupController) controller)
+					.getRootComponent().getStage());
 			cell.setWidget(null);
 			cell.setWidget(this);
 		}
@@ -174,8 +178,11 @@ public class InfoEdtionPanel extends HiddenPanel {
 
 	@Override
 	public void hide() {
+		MockupViews.removeHitListener(this, ((MockupController) controller)
+				.getRootComponent().getStage());
 		cell.setWidget(null);
 		cell.setWidget(sceneEditor);
+		sceneEditor.toBack();
 	}
 
 }

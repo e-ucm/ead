@@ -37,7 +37,11 @@
 package es.eucm.ead.editor.control;
 
 import com.badlogic.gdx.scenes.scene2d.Group;
+import com.badlogic.gdx.scenes.scene2d.InputEvent;
+import com.badlogic.gdx.scenes.scene2d.InputListener;
+import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.actions.Actions;
+import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.ObjectMap;
 
 import es.eucm.ead.editor.control.MockupController.BackListener;
@@ -46,12 +50,50 @@ import es.eucm.ead.editor.control.actions.editor.ForceSave;
 import es.eucm.ead.editor.view.builders.ViewBuilder;
 import es.eucm.ead.editor.view.builders.gallery.ProjectsView;
 import es.eucm.ead.editor.view.builders.gallery.ScenesView;
+import es.eucm.ead.editor.view.widgets.HiddenPanel;
+import es.eucm.ead.editor.view.widgets.Notification;
 import es.eucm.ead.editor.view.widgets.helpmessage.sequence.HelpSequence;
 
 public class MockupViews extends Views implements BackListener {
 
 	private Toasts toasts;
 	private ObjectMap<ViewBuilder, HelpSequence> helpMessages;
+	private static final Array<HiddenPanel> showingPanels = new Array<HiddenPanel>(
+			3);
+	private static final InputListener handleHit = new InputListener() {
+
+		@Override
+		public boolean touchDown(InputEvent event, float x, float y,
+				int pointer, int button) {
+			if (showingPanels.size > 0) {
+				HiddenPanel showingPanel = showingPanels.peek();
+				boolean hide = !showingPanel.isAscendantOf(event.getTarget());
+				if (hide) {
+					if (showingPanel.isModal()) {
+						event.cancel();
+					}
+					showingPanel.hide();
+				}
+			}
+			return false;
+		}
+	};
+
+	public static void setUpHiddenPanel(HiddenPanel panel, Stage stage) {
+		if (!(panel instanceof Notification)) {
+			showingPanels.add(panel);
+			stage.addCaptureListener(handleHit);
+		}
+	}
+
+	public static void removeHitListener(HiddenPanel panel, Stage stage) {
+		if (!(panel instanceof Notification)) {
+			showingPanels.removeValue(panel, true);
+			if (showingPanels.size == 0) {
+				stage.removeCaptureListener(handleHit);
+			}
+		}
+	}
 
 	public MockupViews(Controller controller, Group viewsContainer) {
 		super(controller, viewsContainer, viewsContainer);
@@ -61,13 +103,17 @@ public class MockupViews extends Views implements BackListener {
 
 	@Override
 	public void onBackPressed() {
-		if (currentView instanceof BackListener) {
-			((BackListener) currentView).onBackPressed();
+		if (showingPanels.size > 0) {
+			showingPanels.pop().hide();
 		} else {
-			ViewBuilder nextView = currentView;
-			back();
-			if (nextView == currentView) {
-				controller.action(ChangeMockupView.class, ScenesView.class);
+			if (currentView instanceof BackListener) {
+				((BackListener) currentView).onBackPressed();
+			} else {
+				ViewBuilder nextView = currentView;
+				back();
+				if (nextView == currentView) {
+					controller.action(ChangeMockupView.class, ScenesView.class);
+				}
 			}
 		}
 	}
@@ -79,11 +125,15 @@ public class MockupViews extends Views implements BackListener {
 	@Override
 	public <T extends ViewBuilder> void setView(Class<T> viewClass,
 			Object... args) {
+		while (showingPanels.size > 0) {
+			showingPanels.pop().hide();
+		}
+
 		super.setView(viewClass, args);
 
 		modalsContainer
 				.addAction(com.badlogic.gdx.scenes.scene2d.actions.Actions
-						.delay(0.1f, Actions.run(showHelpMessage)));
+						.delay(0.3f, Actions.run(showHelpMessage)));
 	}
 
 	private final Runnable showHelpMessage = new Runnable() {

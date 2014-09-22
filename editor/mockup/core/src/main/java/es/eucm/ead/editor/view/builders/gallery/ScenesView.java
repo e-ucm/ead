@@ -71,7 +71,7 @@ import es.eucm.ead.schemax.entities.ResourceCategory;
 public class ScenesView extends BaseGallery {
 
 	private static final int ROWS = 4;
-	private static final float UNIQUE_SCENE_NOTIF_TIMEOUT = 2F;
+	private static final float UNIQUE_SCENE_NOTIF_TIMEOUT = 4F;
 
 	private Notification uniqueSceneNotif;
 	private TextField projectName;

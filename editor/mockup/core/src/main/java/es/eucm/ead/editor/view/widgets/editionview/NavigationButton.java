@@ -126,6 +126,7 @@ public class NavigationButton extends IconWithScalePanel implements
 
 	@Override
 	public void showPanel() {
+		sceneList.updateButtons();
 		sceneList.selectScene(model.getIdFor(model.getSelection().getSingle(
 				Selection.SCENE)));
 		super.showPanel();

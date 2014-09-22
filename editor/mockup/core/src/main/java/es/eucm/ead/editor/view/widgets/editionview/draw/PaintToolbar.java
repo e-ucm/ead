@@ -147,7 +147,6 @@ public class PaintToolbar extends Toolbar {
 
 		final TextButton cancel = new TextButton(i18n.m("cancel"), skin,
 				"white");
-		cancel.setColor(Color.ORANGE);
 
 		float topBottomPad = iconPad;
 		defaults().expand().fill();
