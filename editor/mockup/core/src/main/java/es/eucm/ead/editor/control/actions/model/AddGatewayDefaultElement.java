@@ -39,6 +39,7 @@ package es.eucm.ead.editor.control.actions.model;
 import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.graphics.Texture;
 
+import es.eucm.ead.editor.assets.EditorGameAssets;
 import es.eucm.ead.editor.control.ComponentId;
 import es.eucm.ead.editor.control.MockupViews;
 import es.eucm.ead.editor.control.Selection;
@@ -104,14 +105,11 @@ public class AddGatewayDefaultElement extends ModelAction {
 		FileHandle internal = controller.getApplicationAssets().resolve(
 				"predefined/door_in.png");
 		ModelEntity exit = null;
-		if (internal.exists()) {
-			String path = controller.getEditorGameAssets()
-					.copyToProjectIfNeeded(internal, Texture.class);
-			exit = controller.getTemplates().createSceneElement(
-					controller.getEditorGameAssets().getLoadingPath() + path);
-		} else {
-			return null;
-		}
+		EditorGameAssets editorGameAssets = controller.getEditorGameAssets();
+		String path = editorGameAssets.copyToProjectDirectly(internal,
+				Texture.class);
+		exit = controller.getTemplates().createSceneElement(
+				editorGameAssets.getLoadingPath() + path);
 		command.addCommand(new FieldCommand(Q.getComponent(exit, Parent.class),
 				FieldName.PARENT, new_scene));
 		command.addCommand(new AddToListCommand(new_scene, new_scene
@@ -124,12 +122,11 @@ public class AddGatewayDefaultElement extends ModelAction {
 		FileHandle internal2 = controller.getApplicationAssets().resolve(
 				"predefined/door_out.png");
 
-		String path = controller.getEditorGameAssets().copyToProjectIfNeeded(
-				internal2, Texture.class);
+		path = editorGameAssets.copyToProjectDirectly(internal2, Texture.class);
 		final ModelEntity entry = controller.getTemplates().createSceneElement(
-				controller.getEditorGameAssets().getLoadingPath() + path, 0, 0);
+				editorGameAssets.getLoadingPath() + path, 0, 0);
 
-		controller.getEditorGameAssets().get(path, Texture.class,
+		editorGameAssets.get(path, Texture.class,
 				new AssetLoadedCallback<Texture>() {
 					@Override
 					public void loaded(String fileName, Texture asset) {

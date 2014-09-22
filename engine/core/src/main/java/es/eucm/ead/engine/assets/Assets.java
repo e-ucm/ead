@@ -132,9 +132,9 @@ public abstract class Assets extends Json implements FileHandleResolver {
 	 */
 	public void loadSkin(String pathWithoutExtension) {
 		String skinJson = pathWithoutExtension + ".json";
-		SkinParameter skinParameter = new SkinParameter(pathWithoutExtension
-				+ ".atlas");
-		if (!isLoaded(skinJson, Skin.class))
+		if (!isLoaded(skinJson, Skin.class)) {
+			SkinParameter skinParameter = new SkinParameter(
+					pathWithoutExtension + ".atlas");
 			get(skinJson, Skin.class, skinParameter,
 					new AssetLoadedCallback<Skin>() {
 						@Override
@@ -142,6 +142,20 @@ public abstract class Assets extends Json implements FileHandleResolver {
 							skin = asset;
 						}
 					}, true);
+		}
+	}
+
+	/**
+	 * On Android this is much faster than fh.exists() for Internal files, see
+	 * https://github.com/libgdx/libgdx/issues/2342
+	 */
+	protected boolean checkFileExistence(FileHandle fh) {
+		try {
+			fh.read().close();
+			return true;
+		} catch (Exception e) {
+			return false;
+		}
 	}
 
 	/**

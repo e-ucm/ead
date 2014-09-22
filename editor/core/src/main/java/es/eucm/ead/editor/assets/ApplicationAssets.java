@@ -118,11 +118,11 @@ public class ApplicationAssets extends Assets {
 
 	@Override
 	public FileHandle resolve(String path) {
-		FileHandle internal = files.internal(path);
-		if (internal.exists()) {
-			return internal;
+		FileHandle absolute = files.absolute(path);
+		if (absolute.exists()) {
+			return absolute;
 		}
-		return absolute(path);
+		return files.internal(path);
 	}
 
 	/**
@@ -200,7 +200,7 @@ public class ApplicationAssets extends Assets {
 	public ReleaseInfo loadReleaseInfo() {
 		ReleaseInfo releaseInfo = null;
 		FileHandle releaseFH = this.resolve(releaseFile);
-		if (releaseFH.exists()) {
+		if (checkFileExistence(releaseFH)) {
 			releaseInfo = this.fromJson(ReleaseInfo.class, releaseFH);
 		} else {
 			Gdx.app.debug(this.getClass().getCanonicalName(),
