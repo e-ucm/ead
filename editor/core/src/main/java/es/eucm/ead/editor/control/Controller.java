@@ -192,8 +192,9 @@ public class Controller {
 	 * Process preferences concerning the controller
 	 */
 	protected void loadPreferences() {
-		getApplicationAssets().getI18N().setLang(
-				preferences.getString(Preferences.EDITOR_LANGUAGE));
+		String language = preferences.getString(Preferences.EDITOR_LANGUAGE);
+		setLanguage("".equals(language) || language == null ? platform
+				.getLocale() : language);
 	}
 
 	public ShapeRenderer getShapeRenderer() {
@@ -320,6 +321,7 @@ public class Controller {
 
 	public void setLanguage(String language) {
 		getApplicationAssets().getI18N().setLang(language);
+		getEditorGameAssets().getI18N().setLang(language);
 		views.reinitializeAllViews();
 		preferences.putString(Preferences.EDITOR_LANGUAGE, language);
 	}
