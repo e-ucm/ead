@@ -132,7 +132,7 @@ public class BackgroundExecutorTest {
 
 			@Override
 			public void error(Throwable e) {
-				assertEquals(e.getMessage(), "ñor");
+				assertEquals(e.getCause().getMessage(), "ñor");
 				done = true;
 			}
 		});

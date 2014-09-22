@@ -102,8 +102,7 @@ public class IconButton extends Button implements Tooltip {
 	 *            the skin
 	 */
 	public IconButton(Drawable icon, float padding, Skin skin) {
-		super(skin);
-		init(icon, padding, skin);
+		this(icon, padding, skin, "default");
 	}
 
 	/**
@@ -117,19 +116,19 @@ public class IconButton extends Button implements Tooltip {
 	 *            the button style name
 	 */
 	public IconButton(Drawable icon, float padding, Skin skin, String styleName) {
-		super(skin.get(styleName, IconButtonStyle.class));
+		super(skin);
+		setStyle(skin.get(styleName, IconButtonStyle.class));
 		init(icon, padding, skin);
 
 	}
 
-	private void init(Drawable icon, float padding, Skin skin) {
-
-		setStyle(skin.get(IconButtonStyle.class));
+	protected void init(Drawable icon, float padding, Skin skin) {
 
 		iconImage = new Image(icon);
 		iconImage.setScaling(Scaling.fit);
 		iconImage.setTouchable(Touchable.disabled);
 		add(iconImage).pad(padding);
+		setDisabled(false);
 	}
 
 	/**
@@ -144,9 +143,15 @@ public class IconButton extends Button implements Tooltip {
 	public void setDisabled(boolean isDisabled) {
 		super.setDisabled(isDisabled);
 		if (isDisabled) {
-			iconImage.setColor(style.disabledImageColor);
+			Color disabledImageColor = style.disabledImageColor;
+			if (disabledImageColor != null) {
+				iconImage.setColor(disabledImageColor);
+			}
 		} else {
-			iconImage.setColor(style.enabledImageColor);
+			Color enabledImageColor = style.enabledImageColor;
+			if (enabledImageColor != null) {
+				iconImage.setColor(enabledImageColor);
+			}
 		}
 	}
 

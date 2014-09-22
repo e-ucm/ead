@@ -49,6 +49,8 @@ public interface GameStructure {
 
 	public static final String VIDEOS_FOLDER = "videos/";
 
+	public static final String SOUNDS_FOLDER = "sounds/";
+
 	public static final String GAME_FILE = "game.json";
 
 	public static final String SCENES_PATH = "scenes/";

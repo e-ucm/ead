@@ -38,9 +38,8 @@ package es.eucm.ead.engine.entities.actors;
 
 import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.scenes.scene2d.Actor;
-import com.badlogic.gdx.scenes.scene2d.Group;
 import com.badlogic.gdx.utils.Pool.Poolable;
-import es.eucm.ead.engine.GameLoop;
+
 import es.eucm.ead.engine.components.renderers.RendererComponent;
 
 public class RendererActor extends EntityGroup implements Poolable {
@@ -94,7 +93,7 @@ public class RendererActor extends EntityGroup implements Poolable {
 	@Override
 	public Actor hit(float x, float y, boolean touchable) {
 		Actor actor = super.hit(x, y, touchable);
-		if (actor == null) {
+		if (actor == null && isTouchable()) {
 			return renderer != null && renderer.hit(x, y) ? this : null;
 		} else {
 			return actor;

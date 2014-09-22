@@ -196,6 +196,23 @@ public class Model {
 	}
 
 	/**
+	 * Returns the resource object with the given object.
+	 * 
+	 * @return the Resource or {@code null} if it wasn't found.
+	 */
+	public Resource getResourceFromObject(Object object,
+			ResourceCategory resourceCategory) {
+		Map<String, Resource> resources = getResources(resourceCategory);
+		for (Resource resource : resources.values()) {
+			if (resource.getObject() == object) {
+				return resource;
+			}
+		}
+		Gdx.app.error("Model", "No resource with object " + object);
+		return null;
+	}
+
+	/**
 	 * Returns the {@link Resource#getObject()} with the given id and in the
 	 * given category.
 	 * 
@@ -226,6 +243,7 @@ public class Model {
 		clearListeners();
 		index.clear();
 		selection.clear();
+		viewListeners.clear();
 		removedResources.clear();
 	}
 
@@ -543,6 +561,15 @@ public class Model {
 		if (listeners != null) {
 			listeners.removeValue(listener, true);
 		}
+	}
+
+	/**
+	 * Removes a listener from the {@link #selectionListeners}.
+	 * 
+	 * @param listener
+	 */
+	public void removeSelectionListener(SelectionListener listener) {
+		selectionListeners.removeValue(listener, true);
 	}
 
 	/**

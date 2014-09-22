@@ -285,7 +285,7 @@ public abstract class DemoBuilder {
 	public ConversationBuilder conversation(ModelEntity entity, String id) {
 		Conversation conversation = new Conversation();
 		entity.getComponents().add(conversation);
-		conversation.setId(id);
+		conversation.setConversationId(id);
 		return new ConversationBuilder(conversation);
 	}
 

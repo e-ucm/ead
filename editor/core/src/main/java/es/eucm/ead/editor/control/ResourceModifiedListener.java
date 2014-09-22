@@ -58,6 +58,20 @@ public class ResourceModifiedListener implements CommandListener {
 
 	@Override
 	public void doCommand(Commands commands, Command command) {
+		updateModified(command);
+	}
+
+	@Override
+	public void undoCommand(Commands commands, Command command) {
+		updateModified(command);
+	}
+
+	@Override
+	public void redoCommand(Commands commands, Command command) {
+		updateModified(command);
+	}
+
+	private void updateModified(Command command) {
 		if (!command.isTransparent()) {
 			Object res = model.getSelection().getSingle(Selection.RESOURCE);
 			if (res != null) {
@@ -66,16 +80,6 @@ public class ResourceModifiedListener implements CommandListener {
 				resource.setModified(true);
 			}
 		}
-	}
-
-	@Override
-	public void undoCommand(Commands commands, Command command) {
-
-	}
-
-	@Override
-	public void redoCommand(Commands commands, Command command) {
-
 	}
 
 	@Override

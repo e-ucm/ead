@@ -66,6 +66,10 @@ public class EditorImageComponent extends ImageComponent {
 	@Override
 	public void draw(Batch batch) {
 		super.draw(batch);
+		drawCollider(batch);
+	}
+
+	protected void drawCollider(Batch batch) {
 		if (getCollider() != null) {
 			batch.end();
 			Gdx.gl.glEnable(GL20.GL_BLEND);
@@ -77,17 +81,7 @@ public class EditorImageComponent extends ImageComponent {
 			shapeRenderer.setColor(Color.WHITE);
 			for (Polygon polygon : getCollider()) {
 				float[] vertices = polygon.getVertices();
-				for (int i = 0, length = vertices.length - 2; i < length; i += 2) {
-					float x1 = vertices[i];
-					float y1 = vertices[i + 1];
-					float x2 = vertices[i + 2];
-					float y2 = vertices[i + 3];
-					shapeRenderer.line(x1, y1, x2, y2);
-				}
-				shapeRenderer
-						.line(vertices[vertices.length - 2],
-								vertices[vertices.length - 1], vertices[0],
-								vertices[1]);
+				shapeRenderer.polygon(vertices);
 			}
 			shapeRenderer.end();
 			Gdx.gl.glBlendEquation(GL20.GL_FUNC_ADD);

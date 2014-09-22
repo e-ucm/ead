@@ -110,4 +110,33 @@ public class MoveTweenTest extends TweenTest {
 
 	}
 
+	@Test
+	public void testAbsuleVerticalTween() {
+		MoveTween moveTween = new MoveTween();
+		moveTween.setDuration(1);
+		moveTween.setX(Float.NaN);
+		moveTween.setY(20);
+
+		EngineEntity entity = addEntityWithTweens(moveTween);
+		float x = entity.getGroup().getX();
+
+		gameLoop.update(0.5f);
+
+		assertTrue("Entity x position is " + entity.getGroup().getX()
+				+ ". Should be " + x, entity.getGroup().getX() == x);
+
+		assertTrue("Entity y position is " + entity.getGroup().getY()
+				+ ". Should be 10.0",
+				Math.abs(entity.getGroup().getY() - 10.0f) < 0.0001f);
+		gameLoop.update(1.0f);
+
+		assertTrue("Entity x position is " + entity.getGroup().getX()
+				+ ". Should be " + x, entity.getGroup().getX() == x);
+
+		assertTrue("Entity y position is " + entity.getGroup().getY()
+				+ ". Should be 20.0",
+				Math.abs(entity.getGroup().getY() - 20.0f) < 0.0001f);
+
+	}
+
 }

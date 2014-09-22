@@ -132,7 +132,7 @@ public interface Platform {
 	 */
 	Tracker createTracker(Controller controller);
 
-	interface FileChooserListener {
+	public interface FileChooserListener {
 		/**
 		 * 
 		 * @param path
@@ -142,20 +142,6 @@ public interface Platform {
 		void fileChosen(String path);
 
 	}
-
-	/**
-	 * 
-	 * @return the default implementation of the {@link DevicePictureControl} of
-	 *         the specific platform.
-	 */
-	DevicePictureControl getPicture();
-
-	/**
-	 * 
-	 * @return the default implementation of the {@link DeviceVideoControl} of
-	 *         the specific platform.
-	 */
-	DeviceVideoControl getVideo();
 
 	/**
 	 * @return the application batch

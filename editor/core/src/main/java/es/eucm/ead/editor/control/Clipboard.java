@@ -36,14 +36,16 @@
  */
 package es.eucm.ead.editor.control;
 
+import java.util.HashMap;
+import java.util.Map;
+
+import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.utils.Array;
+
 import es.eucm.ead.editor.control.Selection.Context;
 import es.eucm.ead.editor.control.actions.model.SetSelection;
 import es.eucm.ead.editor.model.Model;
 import es.eucm.ead.engine.assets.Assets;
-
-import java.util.HashMap;
-import java.util.Map;
 
 /**
  * Editor clipboard. Wraps the system clipboard.
@@ -128,9 +130,14 @@ public class Clipboard {
 				controller.action(SetSelection.class,
 						currentContext.getParentId(), currentContext.getId());
 			}
-			for (ClipboardListener listener : clipboardListeners) {
-				listener.clipboardChanged(getContents());
-			}
+			fireChanged();
+		}
+	}
+
+	private void fireChanged() {
+		String contents = getContents();
+		for (ClipboardListener listener : clipboardListeners) {
+			listener.clipboardChanged(contents);
 		}
 	}
 
@@ -138,7 +145,18 @@ public class Clipboard {
 	 * Executes a paste operation
 	 */
 	public void paste() {
-		paste(clipboard.getContents());
+		String contents = getContents();
+		if (contents != null) {
+			paste(contents);
+		}
+	}
+
+	/**
+	 * Sets the contents of this clipboard to null.
+	 */
+	public void reset() {
+		clipboard.setContents(null);
+		fireChanged();
 	}
 
 	private void paste(String content) {
@@ -155,7 +173,12 @@ public class Clipboard {
 	 * @return clipboard contents
 	 */
 	public String getContents() {
-		return clipboard.getContents();
+		try {
+			return clipboard.getContents();
+		} catch (Exception ex) {
+			Gdx.app.error("Clipboard", "", ex);
+		}
+		return null;
 	}
 
 	public interface CopyListener<T> {

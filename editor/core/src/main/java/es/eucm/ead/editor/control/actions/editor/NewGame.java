@@ -40,6 +40,7 @@ import java.io.FileNotFoundException;
 
 import com.badlogic.gdx.files.FileHandle;
 
+import es.eucm.ead.editor.assets.ApplicationAssets;
 import es.eucm.ead.editor.assets.EditorGameAssets;
 import es.eucm.ead.editor.control.actions.EditorAction;
 import es.eucm.ead.editor.control.actions.EditorActionException;
@@ -65,44 +66,55 @@ public class NewGame extends EditorAction {
 
 	@Override
 	public void perform(Object... args) {
+		openNewGame(createNewGame(args));
+	}
+
+	public String createNewGame(Object... args) {
 		String path = args[0] != null ? (String) args[0] : "";
 		// Check all the slashes are /
 		path = controller.getEditorGameAssets().toCanonicalPath(path);
 		ModelEntity game = (ModelEntity) args[1];
 
-		EditorGameAssets editorGameAssets = controller.getEditorGameAssets();
-		FileHandle projectFolder = editorGameAssets.absolute(path);
+		ApplicationAssets applicationAssets = controller.getApplicationAssets();
+		FileHandle projectFolder = applicationAssets.absolute(path);
 
 		if (!projectFolder.exists()) {
 			projectFolder.mkdirs();
 		}
 
-		if (projectFolder.exists()) {
-			editorGameAssets.setLoadingPath(path);
-			Model model = controller.getModel();
-			model.reset();
-
-			model.putResource(GameStructure.GAME_FILE, ResourceCategory.GAME,
-					game);
-			String initialScene = model.createId(ResourceCategory.SCENE);
-			ModelEntity scene = controller.getTemplates().createScene(
-					controller.getApplicationAssets().getI18N().m("initial"));
-			model.putResource(initialScene, ResourceCategory.SCENE, scene);
-			GameData gameData = Q.getComponent(game, GameData.class);
-			gameData.setInitialScene(initialScene);
-			SceneMap sceneMap = Q.getComponent(game, SceneMap.class);
-			Cell cell = new Cell();
-			cell.setRow(0);
-			cell.setColumn(0);
-			cell.setSceneId(initialScene);
-			sceneMap.getCells().add(cell);
-
-			controller.action(ForceSave.class);
-			controller
-					.action(OpenGame.class, editorGameAssets.getLoadingPath());
-		} else {
+		if (!projectFolder.exists()) {
 			throw new EditorActionException("Impossible to create project",
 					new FileNotFoundException(path));
 		}
+		Model model = controller.getModel();
+		model.reset();
+
+		model.putResource(GameStructure.GAME_FILE, ResourceCategory.GAME, game);
+		String initialScene = model.createId(ResourceCategory.SCENE);
+		ModelEntity scene = controller.getTemplates().createScene(
+				applicationAssets.getI18N().m("initial"));
+		model.putResource(initialScene, ResourceCategory.SCENE, scene);
+		GameData gameData = Q.getComponent(game, GameData.class);
+		gameData.setInitialScene(initialScene);
+		SceneMap sceneMap = Q.getComponent(game, SceneMap.class);
+		Cell cell = new Cell();
+		cell.setRow(0);
+		cell.setColumn(0);
+		cell.setSceneId(initialScene);
+		sceneMap.getCells().add(cell);
+
+		return path;
+	}
+
+	public void openNewGame(String path) {
+		EditorGameAssets editorGameAssets = controller.getEditorGameAssets();
+		editorGameAssets.setLoadingPath(path);
+		controller.action(ForceSave.class);
+		controller.action(getOpenGameAction(),
+				editorGameAssets.getLoadingPath());
+	}
+
+	protected Class getOpenGameAction() {
+		return OpenGame.class;
 	}
 }

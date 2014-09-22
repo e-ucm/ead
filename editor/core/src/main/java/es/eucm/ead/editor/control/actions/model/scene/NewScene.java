@@ -46,6 +46,7 @@ import es.eucm.ead.editor.control.commands.ListCommand.AddToListCommand;
 import es.eucm.ead.editor.control.commands.ResourceCommand.AddResourceCommand;
 import es.eucm.ead.editor.model.Model;
 import es.eucm.ead.editor.model.Q;
+import es.eucm.ead.schema.editor.components.Documentation;
 import es.eucm.ead.schema.editor.components.EditState;
 import es.eucm.ead.schema.editor.components.SceneMap;
 import es.eucm.ead.schema.editor.data.Cell;
@@ -58,6 +59,11 @@ import es.eucm.ead.schemax.entities.ResourceCategory;
  * <dl>
  * <dt><strong>Arguments</strong></dt>
  * <dd><strong>args[0]</strong> <em>String</em> the scene name</dd>
+ * <dd>You can pass the following optional arguments:</dd>
+ * <dd><strong>args[1]</strong> <em>String</em> Optional: the scene id</dd>
+ * <dd><strong>args[2]</strong> <em>ModelEntity</em> Optional: the entity that
+ * will be the scene</dd>
+ * <dd>or</dd>
  * <dd><strong>args[1]</strong> <em>Integer</em> Optional: the row of the new
  * scene in the {@link SceneMap}</dd>
  * <dd><strong>args[2]</strong> <em>Integer</em> Optional: the column of the new
@@ -70,6 +76,7 @@ public class NewScene extends ModelAction {
 
 	public NewScene() {
 		super(true, false, new Class[] { String.class }, new Class[] {
+				String.class, String.class, ModelEntity.class }, new Class[] {
 				String.class, Integer.class, Integer.class });
 	}
 
@@ -83,9 +90,17 @@ public class NewScene extends ModelAction {
 	public CompositeCommand perform(Object... args) {
 		Model model = controller.getModel();
 
-		String id = model.createId(ResourceCategory.SCENE);
-		ModelEntity scene = controller.getTemplates().createScene(
-				(String) args[0]);
+		String id;
+		ModelEntity scene;
+		String name = (String) args[0];
+		if (args.length == 3 && args[1] instanceof String) {
+			id = (String) args[1];
+			scene = (ModelEntity) args[2];
+			Q.getComponent(scene, Documentation.class).setName(name);
+		} else {
+			id = model.createId(ResourceCategory.SCENE);
+			scene = controller.getTemplates().createScene(name);
+		}
 
 		ModelEntity game = model.getGame();
 		EditState editState = Q.getComponent(game, EditState.class);
@@ -94,7 +109,7 @@ public class NewScene extends ModelAction {
 		CompositeCommand compositeCommand = new CompositeCommand();
 		compositeCommand.addCommand(new AddResourceCommand(model, id, scene,
 				ResourceCategory.SCENE));
-		if (args.length == 1) {
+		if (args.length < 3 || args[1] instanceof String) {
 			createCell(id, sceneMap, compositeCommand);
 		} else {
 			createCellAt(id, (Integer) args[1], (Integer) args[2], sceneMap,

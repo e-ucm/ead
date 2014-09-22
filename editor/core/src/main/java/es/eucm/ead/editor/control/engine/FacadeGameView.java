@@ -43,14 +43,22 @@ import es.eucm.ead.schemax.Layer;
 public class FacadeGameView implements GameView {
 
 	private GameView gameView;
+	private Layer[] layers;
 
 	public void setGameView(GameView gameView) {
 		this.gameView = gameView;
+		layers = Layer.values();
 	}
 
 	@Override
 	public void clearLayer(Layer layer, boolean clearChildrenLayers) {
 		gameView.clearLayer(layer, clearChildrenLayers);
+	}
+
+	public void clearAllLayers() {
+		for (int i = 0, length = layers.length; i < length; ++i) {
+			gameView.clearLayer(layers[i], true);
+		}
 	}
 
 	@Override

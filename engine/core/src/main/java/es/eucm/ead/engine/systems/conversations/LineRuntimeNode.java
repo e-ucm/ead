@@ -50,6 +50,7 @@ public class LineRuntimeNode extends SimpleRuntimeNode<LineNode> {
 	public static final String LINE_ENDED_VAR_SUFFIX = "_line_ended";
 
 	private VariablesManager variablesManager;
+	private String lineEndedVar;
 
 	@Override
 	public void setGameLoop(GameLoop gameLoop) {
@@ -61,7 +62,8 @@ public class LineRuntimeNode extends SimpleRuntimeNode<LineNode> {
 	@Override
 	public void setNode(LineNode node) {
 		super.setNode(node);
-		variablesManager.setValue(getLineEndedVar(conversation), false, true);
+		lineEndedVar = getLineEndedVar(conversation);
+		variablesManager.setValue(lineEndedVar, false, true);
 		LineComponent line = gameLoop.createComponent(LineComponent.class);
 		line.setSpeaker(conversation.getSpeakers().get(node.getSpeaker()));
 		line.setLine(node.getLine());
@@ -72,13 +74,12 @@ public class LineRuntimeNode extends SimpleRuntimeNode<LineNode> {
 	}
 
 	public static String getLineEndedVar(Conversation conversation) {
-		return VarsContext.RESERVED_VAR_PREFIX + conversation.getId()
-				+ LINE_ENDED_VAR_SUFFIX;
+		return VarsContext.RESERVED_VAR_PREFIX
+				+ conversation.getConversationId() + LINE_ENDED_VAR_SUFFIX;
 	}
 
 	@Override
 	public boolean update(float delta) {
-		return (Boolean) variablesManager
-				.getValue(getLineEndedVar(conversation));
+		return (Boolean) variablesManager.getValue(lineEndedVar);
 	}
 }

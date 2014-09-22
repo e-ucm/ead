@@ -136,7 +136,7 @@ public class GameAssets extends Assets implements GameStructure {
 			// Relative file
 			FileHandle fh = gamePathInternal ? files.internal(loadingPath
 					+ path) : files.absolute(loadingPath + path);
-			if (fh.exists()) {
+			if (checkFileExistence(fh)) {
 				return fh;
 			} else {
 				// Fallback: use internal file
@@ -157,7 +157,7 @@ public class GameAssets extends Assets implements GameStructure {
 	@SuppressWarnings("all")
 	public void loadBindings() {
 		for (FileHandle bindingsFile : resolveBindings()) {
-			if (bindingsFile.exists()) {
+			if (checkFileExistence(bindingsFile)) {
 				Array<String> bindings = fromJson(Array.class, bindingsFile);
 				read(bindings);
 			}

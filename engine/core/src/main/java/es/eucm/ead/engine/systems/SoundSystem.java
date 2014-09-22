@@ -82,13 +82,15 @@ public class SoundSystem extends IteratingSystem {
 		final EngineEntity actor = (EngineEntity) entity;
 		SoundComponent soundComponent = actor
 				.getComponent(SoundComponent.class);
-		Sound config = soundComponent.getConfig();
-		if (!soundComponent.isStarted()) {
-			soundComponent.play(calculateVolume(config));
-		} else if (!soundComponent.isFinished()) {
-			soundComponent.changeVolume(calculateVolume(config));
-		} else {
-			actor.remove(SoundComponent.class);
+		if (soundComponent.isLoaded()) {
+			Sound config = soundComponent.getConfig();
+			if (!soundComponent.isStarted()) {
+				soundComponent.play(calculateVolume(config));
+			} else if (!soundComponent.isFinished()) {
+				soundComponent.changeVolume(calculateVolume(config));
+			} else {
+				actor.remove(SoundComponent.class);
+			}
 		}
 	}
 }

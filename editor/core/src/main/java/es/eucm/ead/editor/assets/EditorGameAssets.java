@@ -38,6 +38,7 @@ package es.eucm.ead.editor.assets;
 
 import com.badlogic.gdx.Files;
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.audio.Music;
 import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.graphics.Pixmap;
 import com.badlogic.gdx.graphics.Texture;
@@ -45,6 +46,7 @@ import com.badlogic.gdx.utils.GdxRuntimeException;
 import com.badlogic.gdx.utils.Json;
 import com.badlogic.gdx.utils.JsonValue;
 import com.badlogic.gdx.utils.JsonWriter.OutputType;
+
 import es.eucm.ead.engine.assets.GameAssets;
 import es.eucm.ead.schema.editor.components.Parent;
 
@@ -80,6 +82,7 @@ public class EditorGameAssets extends GameAssets {
 	private void setIgnores() {
 		IgnoreSerializer ignoreSerializer = new IgnoreSerializer();
 		setSerializer(Parent.class, ignoreSerializer);
+		setIgnoreUnknownFields(true);
 	}
 
 	@Override
@@ -98,7 +101,7 @@ public class EditorGameAssets extends GameAssets {
 			return super.resolve(path);
 		}
 		FileHandle internal = files.internal(path);
-		if (internal.exists()) {
+		if (checkFileExistence(internal)) {
 			return internal;
 		}
 		return files.absolute((getLoadingPath() == null
@@ -117,27 +120,31 @@ public class EditorGameAssets extends GameAssets {
 	 */
 	private String copyToProject(String path, Class<?> type) {
 		FileHandle fh = files.absolute(path);
-		if (fh.exists()) {
-			String folderPath = getFolder(type);
-			FileHandle folder = absolute(getLoadingPath() + folderPath);
-			String extension = fh.extension();
-			if (!"".equals(extension)) {
-				extension = "." + extension;
-			}
-			String name = fh.nameWithoutExtension();
-			String fileName = name + extension;
-			int count = 1;
-			FileHandle dst;
-			while ((dst = folder.child(fileName)).exists()) {
-				fileName = name + count++ + extension;
-			}
+		return copyToProject(fh, type, true);
+	}
 
-			fh.copyTo(dst);
-
-			return folderPath + fileName;
-		} else {
+	private String copyToProject(FileHandle path, Class<?> type,
+			boolean checkExistance) {
+		if (checkExistance && !checkFileExistence(path)) {
 			return null;
 		}
+		String folderPath = getFolder(type);
+		FileHandle folder = absolute(getLoadingPath() + folderPath);
+		String extension = path.extension();
+		if (!"".equals(extension)) {
+			extension = "." + extension;
+		}
+		String name = path.nameWithoutExtension();
+		String fileName = name + extension;
+		int count = 1;
+		FileHandle dst;
+		while (checkFileExistence(dst = folder.child(fileName))) {
+			fileName = name + count++ + extension;
+		}
+
+		path.copyTo(dst);
+
+		return folderPath + fileName;
 	}
 
 	/**
@@ -159,9 +166,29 @@ public class EditorGameAssets extends GameAssets {
 		return path;
 	}
 
+	/**
+	 * Copies and loads the asset in the given path to the project folder
+	 * assuming that the file exists and everything it's correct. This is needed
+	 * in order to avoid checkping {@link FileHandle#exists()} in Android which
+	 * is very slow for Internal files.
+	 * 
+	 * @param path
+	 *            the path
+	 * @param type
+	 *            the asset type associated to the file
+	 * @return the path of the project in which the file was copied, may be null
+	 *         if the path doesn't exist
+	 */
+	public String copyToProjectDirectly(FileHandle path, Class<?> type) {
+		return copyToProject(path, type, false);
+	}
+
 	private String getFolder(Class<?> clazz) {
 		if (clazz == Texture.class) {
 			return IMAGES_FOLDER;
+		} else if (clazz == Music.class
+				|| clazz == com.badlogic.gdx.audio.Sound.class) {
+			return SOUNDS_FOLDER;
 		} else {
 			return null;
 		}

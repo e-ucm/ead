@@ -49,7 +49,7 @@ import es.eucm.ead.schema.renderers.EmptyRenderer;
  */
 public class EmptyRendererProcessor extends RendererProcessor<EmptyRenderer> {
 
-	private static final int N_SIDES_FOR_CIRCLE = 30;
+	protected static final int N_SIDES_FOR_CIRCLE = 30;
 
 	public EmptyRendererProcessor(GameLoop engine) {
 		super(engine, null);

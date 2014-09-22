@@ -36,6 +36,9 @@
  */
 package es.eucm.ead.editor.control;
 
+import java.util.HashMap;
+import java.util.Map;
+
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.scenes.scene2d.Actor;
@@ -43,8 +46,10 @@ import com.badlogic.gdx.scenes.scene2d.Group;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.InputListener;
 import com.badlogic.gdx.scenes.scene2d.ui.WidgetGroup;
+import com.badlogic.gdx.scenes.scene2d.utils.Layout;
 import com.badlogic.gdx.utils.reflect.ClassReflection;
 import com.badlogic.gdx.utils.reflect.ReflectionException;
+
 import es.eucm.ead.editor.control.ViewsHistory.ViewUpdate;
 import es.eucm.ead.editor.control.actions.editor.ChangeView;
 import es.eucm.ead.editor.model.Model.ModelListener;
@@ -54,9 +59,6 @@ import es.eucm.ead.editor.view.builders.Builder;
 import es.eucm.ead.editor.view.builders.DialogBuilder;
 import es.eucm.ead.editor.view.builders.ViewBuilder;
 import es.eucm.ead.editor.view.widgets.Dialog;
-
-import java.util.HashMap;
-import java.util.Map;
 
 /**
  * Controls all the views
@@ -69,7 +71,7 @@ public class Views implements ModelListener<LoadEvent> {
 
 	private Group viewsContainer;
 
-	private Group modalsContainer;
+	protected Group modalsContainer;
 
 	private Map<Class, ViewBuilder> viewsBuilders;
 
@@ -187,8 +189,8 @@ public class Views implements ModelListener<LoadEvent> {
 			if (view != null) {
 				viewsContainer.clearChildren();
 				viewsContainer.addActor(view);
-				if (view instanceof WidgetGroup) {
-					((WidgetGroup) view).invalidateHierarchy();
+				if (view instanceof Layout) {
+					((Layout) view).invalidateHierarchy();
 				}
 			}
 			this.currentArgs = args;
@@ -274,7 +276,11 @@ public class Views implements ModelListener<LoadEvent> {
 		args[0] = viewUpdate.getViewClass();
 		System.arraycopy(viewUpdate.getArgs(), 0, args, 1,
 				viewUpdate.getArgs().length);
-		controller.action(ChangeView.class, args);
+		controller.action(getChangeViewClass(), args);
+	}
+
+	protected Class getChangeViewClass() {
+		return ChangeView.class;
 	}
 
 	@Override

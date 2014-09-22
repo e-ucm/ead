@@ -1,0 +1,22 @@
+{
+    "additionalProperties": false,
+    "extends": {
+        "$ref": "effect.json"
+    },
+    "javaType": "es.eucm.ead.schema.effects.PlaySound",
+    "type": "object",
+    "properties": {
+        "volume": {
+            "type": "number",
+            "description": "The volume of the sound. [0..1]"
+        },
+        "loop":{
+        	"type": "boolean",
+        	"description": "If the sound should be an infinite loop"
+        },
+        "uri": {
+            "description": "Uri of the sound relative to the game assets.",
+            "type": "string"
+        }
+    }
+}

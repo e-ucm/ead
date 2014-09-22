@@ -155,11 +155,15 @@ public class Controller {
 		// Get the release info from editor assets
 		this.releaseInfo = applicationAssets.loadReleaseInfo();
 		this.shortcutsMap = new ShortcutsMap(this);
-		this.engine = new Engine(this);
+		this.engine = createEngine();
 		setTracker();
 		setClipboard();
 		loadPreferences();
 		indexes = new HashMap<Class, ControllerIndex>();
+	}
+
+	protected Engine createEngine() {
+		return new Engine(this);
 	}
 
 	protected ApplicationAssets createApplicationAssets(Files files) {
@@ -187,7 +191,7 @@ public class Controller {
 	/**
 	 * Process preferences concerning the controller
 	 */
-	private void loadPreferences() {
+	protected void loadPreferences() {
 		getApplicationAssets().getI18N().setLang(
 				preferences.getString(Preferences.EDITOR_LANGUAGE));
 	}
@@ -280,7 +284,7 @@ public class Controller {
 					e);
 		} catch (ArgumentsValidationException e) {
 			Gdx.app.error("Controller", "Invalid arguments exception for "
-					+ actionClass);
+					+ actionClass, e);
 		}
 	}
 
@@ -290,7 +294,7 @@ public class Controller {
 
 		for (int i = 0; i < args.length; i++) {
 			Object object = args[i];
-			message += " \n\t" + object.toString();
+			message += " \n\t" + (object == null ? "null" : object.toString());
 			if (i < args.length - 1) {
 				message += ", ";
 			}
@@ -392,12 +396,5 @@ public class Controller {
 		applicationAssets.update();
 		backgroundExecutor.act();
 		engine.update(delta);
-	}
-
-	public static interface BackListener {
-		/**
-		 * Called when the Back key was pressed in Android.
-		 */
-		void onBackPressed();
 	}
 }

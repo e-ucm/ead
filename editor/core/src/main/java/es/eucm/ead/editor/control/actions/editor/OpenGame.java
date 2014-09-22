@@ -46,7 +46,9 @@ import com.badlogic.gdx.utils.reflect.ClassReflection;
 import com.badlogic.gdx.utils.reflect.ReflectionException;
 
 import es.eucm.ead.editor.assets.EditorGameAssets;
+import es.eucm.ead.editor.control.Commands;
 import es.eucm.ead.editor.control.Preferences;
+import es.eucm.ead.editor.control.Selection;
 import es.eucm.ead.editor.control.actions.EditorAction;
 import es.eucm.ead.editor.control.actions.EditorActionException;
 import es.eucm.ead.editor.model.Model;
@@ -93,7 +95,9 @@ public class OpenGame extends EditorAction implements FileChooserListener,
 
 	@Override
 	public void fileChosen(String path) {
-		load(path);
+		if (load(path)) {
+			finishLoading(path);
+		}
 	}
 
 	/**
@@ -106,16 +110,18 @@ public class OpenGame extends EditorAction implements FileChooserListener,
 	 *            The full path of the project folder (e.g. /Users/a
 	 *            User/eadgames/a game/)
 	 */
-	private void load(String gamePath) {
+	protected boolean load(String gamePath) {
 		if (gamePath != null) {
 			FileHandle fileHandle = controller.getEditorGameAssets().absolute(
 					gamePath);
 			if (fileHandle.exists()) {
 				doLoad(gamePath, fileHandle);
+				return true;
 			} else {
 				Gdx.app.error("OpenGame", "Invalid project folder: " + gamePath);
 			}
 		}
+		return false;
 	}
 
 	/**
@@ -134,18 +140,31 @@ public class OpenGame extends EditorAction implements FileChooserListener,
 		controller.getModel().reset();
 		controller.getModel().notify(
 				new LoadEvent(LoadEvent.Type.UNLOADED, controller.getModel()));
-		EditorGameAssets assets = controller.getEditorGameAssets();
-		assets.setLoadingPath(path);
 		controller.getPreferences().putString(Preferences.LAST_OPENED_GAME,
 				path);
+		EditorGameAssets assets = controller.getEditorGameAssets();
+		assets.setLoadingPath(path);
 		loadAllJsonResources(fileHandle);
+	}
+
+	/**
+	 * Invokes {@link EditorGameAssets#finishLoading()} and performs the final
+	 * checks needed before completion.
+	 * 
+	 * @param path
+	 */
+	protected void finishLoading(String path) {
+		EditorGameAssets assets = controller.getEditorGameAssets();
 		assets.finishLoading();
 
 		// Delete current command history
-		if (!controller.getCommands().getCommandsStack().isEmpty()) {
-			controller.getCommands().popStack(false);
+		Commands commands = controller.getCommands();
+		if (!commands.getCommandsStack().isEmpty()) {
+			commands.popStack(false);
 		}
-		controller.getCommands().pushStack();
+		commands.pushStack();
+
+		controller.getClipboard().reset();
 
 		// Some checks before start editing
 		checks(controller.getModel());
@@ -181,7 +200,7 @@ public class OpenGame extends EditorAction implements FileChooserListener,
 	 * 
 	 * @param model
 	 */
-	private void checks(Model model) {
+	protected void checks(Model model) {
 		addParents(model);
 		setEditionState(model);
 		checkSceneMap(model);
@@ -202,11 +221,13 @@ public class OpenGame extends EditorAction implements FileChooserListener,
 		}
 	}
 
-	private void setEditionState(Model model) {
-		final EditState editState = Q.getComponent(model.getGame(),
-				EditState.class);
+	protected void setEditionState(Model model) {
+		ModelEntity game = model.getGame();
+		final EditState editState = Q.getComponent(game, EditState.class);
+		final String gameId = model.getIdFor(game);
 		if (editState.getView() != null) {
 			try {
+
 				Class viewClass = ClassReflection.forName(editState.getView());
 
 				int i = 0;
@@ -215,7 +236,6 @@ public class OpenGame extends EditorAction implements FileChooserListener,
 				for (Object arg : editState.getArguments()) {
 					args[i++] = arg;
 				}
-
 				controller.action(ChangeView.class, args);
 			} catch (ReflectionException e) {
 				Gdx.app.error("OpenGame",
@@ -225,9 +245,16 @@ public class OpenGame extends EditorAction implements FileChooserListener,
 		controller.getModel().addViewListener(new ModelListener<ViewEvent>() {
 			@Override
 			public void modelChanged(ViewEvent event) {
+				Model model = controller.getModel();
+				model.getResource(gameId).setModified(true);
 				editState.setView(event.getViewClass().getName());
 				editState.getArguments().clear();
 				editState.getArguments().addAll(event.getArgs());
+				Object object = model.getSelection().getSingle(Selection.SCENE);
+				if (object instanceof ModelEntity) {
+					String id = model.getIdFor(object);
+					editState.setEditScene(id);
+				}
 			}
 		});
 	}

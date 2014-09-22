@@ -74,6 +74,11 @@ public class Preferences {
 	 */
 	public static final String UPDATE_DISABLED = "updateDisabled";
 
+	/**
+	 * Allows the user to enable help messages
+	 */
+	public static final String ENABLE_HELP_MSGS = "enableHelpMsg";
+
 	private com.badlogic.gdx.Preferences innerPreferences;
 
 	private Map<String, Array<PreferenceListener>> preferenceListeners;

@@ -228,6 +228,9 @@ public class Commands {
 	}
 
 	public void clear() {
+		if (currentCommandsStack != null) {
+			currentCommandsStack = null;
+		}
 		commandsStacks.clear();
 		for (CommandListener listener : commandListeners) {
 			listener.cleared(this);

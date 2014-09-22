@@ -56,10 +56,12 @@ import com.badlogic.gdx.graphics.Pixmap;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
+import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.utils.Json;
 import com.badlogic.gdx.utils.JsonValue;
 import com.badlogic.gdx.utils.SerializationException;
+
 import es.eucm.ead.engine.I18N;
 
 /**
@@ -83,7 +85,8 @@ public abstract class Assets extends Json implements FileHandleResolver {
 	/**
 	 * Default time slot for loading assets.
 	 */
-	private static final int LOAD_TIME_SLOT_DURATION = 1000;
+	private static final int LOAD_TIME_SLOT_DURATION = MathUtils
+			.round(1000F / 60F);
 
 	/**
 	 * LibGDX asset manager.
@@ -129,9 +132,9 @@ public abstract class Assets extends Json implements FileHandleResolver {
 	 */
 	public void loadSkin(String pathWithoutExtension) {
 		String skinJson = pathWithoutExtension + ".json";
-		SkinParameter skinParameter = new SkinParameter(pathWithoutExtension
-				+ ".atlas");
-		if (!isLoaded(skinJson, Skin.class))
+		if (!isLoaded(skinJson, Skin.class)) {
+			SkinParameter skinParameter = new SkinParameter(
+					pathWithoutExtension + ".atlas");
 			get(skinJson, Skin.class, skinParameter,
 					new AssetLoadedCallback<Skin>() {
 						@Override
@@ -139,6 +142,20 @@ public abstract class Assets extends Json implements FileHandleResolver {
 							skin = asset;
 						}
 					}, true);
+		}
+	}
+
+	/**
+	 * On Android this is much faster than fh.exists() for Internal files, see
+	 * https://github.com/libgdx/libgdx/issues/2342
+	 */
+	protected boolean checkFileExistence(FileHandle fh) {
+		try {
+			fh.read().close();
+			return true;
+		} catch (Exception e) {
+			return false;
+		}
 	}
 
 	/**

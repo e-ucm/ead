@@ -80,14 +80,4 @@ public abstract class AbstractPlatform implements Platform {
 	public Batch getBatch() {
 		return batch;
 	}
-
-	@Override
-	public DeviceVideoControl getVideo() {
-		return null;
-	}
-
-	@Override
-	public DevicePictureControl getPicture() {
-		return null;
-	}
 }

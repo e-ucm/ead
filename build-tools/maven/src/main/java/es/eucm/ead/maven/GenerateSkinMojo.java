@@ -72,7 +72,7 @@ public class GenerateSkinMojo extends AbstractMojo {
 	/**
 	 * Skin source folder.
 	 */
-	@Parameter(property = "skins.sourceDir", defaultValue = "${basedir}/assets/skins-raw")
+	@Parameter(property = "skins.sourceDir", defaultValue = "${basedir}/assets-raw/skins-raw")
 	private File sourceDir;
 
 	/**
@@ -98,7 +98,7 @@ public class GenerateSkinMojo extends AbstractMojo {
 		}
 
 		Settings settings = new Settings();
-
+		
 		LwjglFiles files = new LwjglFiles();
 		FileHandle rawRoot = files.internal(sourceDir.getAbsolutePath());
 		FileHandle skinsRoot = new FileHandle(files.internal(
@@ -146,8 +146,8 @@ public class GenerateSkinMojo extends AbstractMojo {
 			set.pot = true;
 			set.maxHeight = 1024;
 			set.maxWidth = 1024;
-			set.paddingX = 2;
-			set.paddingY = 2;
+			set.paddingX = 4;
+			set.paddingY = 4;
 			set.limitMemory = false;
 			return set;
 		}

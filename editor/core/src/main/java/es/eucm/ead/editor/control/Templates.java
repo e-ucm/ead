@@ -46,7 +46,6 @@ import es.eucm.ead.editor.model.Q;
 import es.eucm.ead.engine.assets.Assets.AssetLoadedCallback;
 import es.eucm.ead.schema.editor.components.Documentation;
 import es.eucm.ead.schema.editor.components.GameData;
-import es.eucm.ead.schema.editor.components.Note;
 import es.eucm.ead.schema.effects.GoScene;
 import es.eucm.ead.schema.entities.ModelEntity;
 import es.eucm.ead.schema.renderers.Image;
@@ -81,8 +80,8 @@ public class Templates {
 	public ModelEntity createGame(String title, String description, int width,
 			int height) {
 		ModelEntity game = new ModelEntity();
-		Note note = Q.getComponent(game, Note.class);
-		note.setTitle(title);
+		Documentation note = Q.getComponent(game, Documentation.class);
+		note.setName(title);
 		note.setDescription(description);
 		GameData gameData = Q.getComponent(game, GameData.class);
 		gameData.setWidth(width);
@@ -117,8 +116,17 @@ public class Templates {
 		return scene;
 	}
 
+	/**
+	 * Creates an element in the center of the screen.
+	 * 
+	 * @param imagePath
+	 * @return
+	 */
 	public ModelEntity createSceneElement(String imagePath) {
-		return createSceneElement(imagePath, 0, 0);
+		GameData data = Q.getComponent(controller.getModel().getGame(),
+				GameData.class);
+		return createSceneElement(imagePath, data.getWidth() * .5f,
+				data.getHeight() * .5f);
 	}
 
 	/**
@@ -134,7 +142,8 @@ public class Templates {
 	 *            the center y coordinate of the scene element
 	 * @return the scene element created
 	 */
-	public ModelEntity createSceneElement(String imagePath, float x, float y) {
+	public ModelEntity createSceneElement(String imagePath, final float x,
+			final float y) {
 		EditorGameAssets assets = controller.getEditorGameAssets();
 
 		String newPath = assets.copyToProjectIfNeeded(imagePath, Texture.class);
@@ -144,14 +153,13 @@ public class Templates {
 			@Override
 			public void loaded(String fileName, Texture texture) {
 				// Center the origin
-				sceneElement.setOriginX(texture.getWidth() / 2.0f);
-				sceneElement.setOriginY(texture.getHeight() / 2.0f);
+				sceneElement.setOriginX(texture.getWidth() * .5f);
+				sceneElement.setOriginY(texture.getHeight() * .5f);
 			}
-		});
-		assets.finishLoading();
-
+		}, true);
 		sceneElement.setX(x - sceneElement.getOriginX());
 		sceneElement.setY(y - sceneElement.getOriginY());
+
 		Image renderer = new Image();
 		renderer.setUri(newPath);
 

@@ -46,6 +46,7 @@ import es.eucm.ead.engine.processors.ConversationProcessor;
 import es.eucm.ead.engine.processors.PathProcessor;
 import es.eucm.ead.engine.processors.RefProcessor;
 import es.eucm.ead.engine.processors.TagsProcessor;
+import es.eucm.ead.engine.processors.TouchabilityProcessor;
 import es.eucm.ead.engine.processors.VisibilityProcessor;
 import es.eucm.ead.engine.processors.assets.SoundProcessor;
 import es.eucm.ead.engine.processors.behaviors.BehaviorsProcessor;
@@ -69,6 +70,7 @@ import es.eucm.ead.engine.systems.KeyPressedSystem;
 import es.eucm.ead.engine.systems.PathSystem;
 import es.eucm.ead.engine.systems.RemoveEntitiesSystem;
 import es.eucm.ead.engine.systems.SoundSystem;
+import es.eucm.ead.engine.systems.TouchabilitySystem;
 import es.eucm.ead.engine.systems.TouchedSystem;
 import es.eucm.ead.engine.systems.VelocitySystem;
 import es.eucm.ead.engine.systems.VisibilitySystem;
@@ -90,6 +92,7 @@ import es.eucm.ead.engine.systems.effects.ChangeVarExecutor;
 import es.eucm.ead.engine.systems.effects.EndGameExecutor;
 import es.eucm.ead.engine.systems.effects.GoSceneExecutor;
 import es.eucm.ead.engine.systems.effects.GoToExecutor;
+import es.eucm.ead.engine.systems.effects.PlaySoundExecutor;
 import es.eucm.ead.engine.systems.effects.RemoveComponentExecutor;
 import es.eucm.ead.engine.systems.effects.RemoveEntityExecutor;
 import es.eucm.ead.engine.systems.effects.SetCameraExecutor;
@@ -123,6 +126,7 @@ import es.eucm.ead.schema.components.Animation;
 import es.eucm.ead.schema.components.PathBoundary;
 import es.eucm.ead.schema.components.RefComponent;
 import es.eucm.ead.schema.components.Tags;
+import es.eucm.ead.schema.components.Touchability;
 import es.eucm.ead.schema.components.Visibility;
 import es.eucm.ead.schema.components.behaviors.Behavior;
 import es.eucm.ead.schema.components.cameras.Cameras;
@@ -158,6 +162,7 @@ import es.eucm.ead.schema.effects.EndGame;
 import es.eucm.ead.schema.effects.GoScene;
 import es.eucm.ead.schema.effects.GoTo;
 import es.eucm.ead.schema.effects.MoveEffect;
+import es.eucm.ead.schema.effects.PlaySound;
 import es.eucm.ead.schema.effects.RemoveComponent;
 import es.eucm.ead.schema.effects.RemoveEntity;
 import es.eucm.ead.schema.effects.RotateEffect;
@@ -210,6 +215,7 @@ public class DefaultEngineInitializer implements EngineInitializer {
 		gameLoop.addSystem(new VelocitySystem());
 		gameLoop.addSystem(tweenSystem);
 		gameLoop.addSystem(new VisibilitySystem(gameLoop, variablesManager));
+		gameLoop.addSystem(new TouchabilitySystem(gameLoop, variablesManager));
 		gameLoop.addSystem(new PathSystem());
 		gameLoop.addSystem(new RemoveEntitiesSystem(gameLoop, variablesManager));
 		gameLoop.addSystem(new TouchedSystem());
@@ -258,6 +264,8 @@ public class DefaultEngineInitializer implements EngineInitializer {
 				new AddEntityExecutor(entitiesLoader, variablesManager));
 		effectsSystem.registerEffectExecutor(SetCamera.class,
 				new SetCameraExecutor(gameView, variablesManager));
+		effectsSystem.registerEffectExecutor(PlaySound.class,
+				new PlaySoundExecutor(effectsSystem));
 
 		TrackEffectExecutor timelineExecutor = new TrackEffectExecutor(
 				effectsSystem);
@@ -368,6 +376,8 @@ public class DefaultEngineInitializer implements EngineInitializer {
 
 		componentLoader.registerComponentProcessor(Visibility.class,
 				new VisibilityProcessor(gameLoop));
+		componentLoader.registerComponentProcessor(Touchability.class,
+				new TouchabilityProcessor(gameLoop));
 		componentLoader.registerComponentProcessor(PathBoundary.class,
 				new PathProcessor(gameLoop));
 		componentLoader.registerComponentProcessor(Cameras.class,
