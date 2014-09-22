@@ -46,6 +46,7 @@ import com.badlogic.gdx.utils.reflect.ClassReflection;
 import com.badlogic.gdx.utils.reflect.ReflectionException;
 
 import es.eucm.ead.editor.assets.EditorGameAssets;
+import es.eucm.ead.editor.control.Commands;
 import es.eucm.ead.editor.control.Preferences;
 import es.eucm.ead.editor.control.Selection;
 import es.eucm.ead.editor.control.actions.EditorAction;
@@ -157,10 +158,13 @@ public class OpenGame extends EditorAction implements FileChooserListener,
 		assets.finishLoading();
 
 		// Delete current command history
-		if (!controller.getCommands().getCommandsStack().isEmpty()) {
-			controller.getCommands().popStack(false);
+		Commands commands = controller.getCommands();
+		if (!commands.getCommandsStack().isEmpty()) {
+			commands.popStack(false);
 		}
-		controller.getCommands().pushStack();
+		commands.pushStack();
+
+		controller.getClipboard().reset();
 
 		// Some checks before start editing
 		checks(controller.getModel());

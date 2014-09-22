@@ -53,6 +53,7 @@ import com.badlogic.gdx.Net.HttpResponseListener;
 import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.net.HttpStatus;
 import com.badlogic.gdx.utils.Array;
+import com.badlogic.gdx.utils.SerializationException;
 
 import es.eucm.ead.editor.assets.EditorGameAssets;
 import es.eucm.ead.editor.control.actions.editor.ImportEntityResources;
@@ -383,9 +384,13 @@ public class RepositoryManager {
 		FileHandle libFile = gameAssets.absolute(REPOSITORY_FOLDER_PATH
 				+ currentLibrary);
 		if (libFile.exists()) {
-			createFromString(libFile.child(ENTITIES_FILE_NAME).readString(),
-					gameAssets);
-			return true;
+			FileHandle child = libFile.child(ENTITIES_FILE_NAME);
+			if (child.exists()) {
+				return createFromString(child.readString(), gameAssets);
+			} else {
+				libFile.deleteDirectory();
+				return false;
+			}
 		}
 		return false;
 	}
@@ -564,8 +569,16 @@ public class RepositoryManager {
 	 * @param controller
 	 */
 	@SuppressWarnings("unchecked")
-	private void createFromString(String jsonString, EditorGameAssets gameAssets) {
-		this.onlineElements = gameAssets.fromJson(Array.class, jsonString);
+	private boolean createFromString(String jsonString,
+			EditorGameAssets gameAssets) {
+		try {
+			this.onlineElements = gameAssets.fromJson(Array.class, jsonString);
+			return true;
+		} catch (SerializationException se) {
+			Gdx.app.log(ONLINE_REPO_TAG, "Error parsing " + ENTITIES_FILE_NAME
+					+ " file", se);
+			return false;
+		}
 	}
 
 	public String getCurrentLibraryPath() {
@@ -679,8 +692,7 @@ public class RepositoryManager {
 			if (!updatedJson.isEmpty() && !localJson.equals(updatedJson)) {
 				return false;
 			}
-			createLibrariesFromString(localJson, gameAssets);
-			return true;
+			return createLibrariesFromString(localJson, gameAssets);
 		}
 		return false;
 	}
@@ -693,8 +705,15 @@ public class RepositoryManager {
 	 *            must be correctly formated as a {@link Array list of Strings}.
 	 */
 	@SuppressWarnings("unchecked")
-	private void createLibrariesFromString(String jsonString,
+	private boolean createLibrariesFromString(String jsonString,
 			EditorGameAssets gameAssets) {
-		this.libraries = gameAssets.fromJson(Array.class, jsonString);
+		try {
+			this.libraries = gameAssets.fromJson(Array.class, jsonString);
+			return true;
+		} catch (SerializationException se) {
+			Gdx.app.log(ONLINE_REPO_TAG, "Error parsing " + LIBRARIES_FILE_PATH
+					+ " file", se);
+			return false;
+		}
 	}
 }

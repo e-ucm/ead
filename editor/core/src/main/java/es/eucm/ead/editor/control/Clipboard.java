@@ -130,9 +130,14 @@ public class Clipboard {
 				controller.action(SetSelection.class,
 						currentContext.getParentId(), currentContext.getId());
 			}
-			for (ClipboardListener listener : clipboardListeners) {
-				listener.clipboardChanged(getContents());
-			}
+			fireChanged();
+		}
+	}
+
+	private void fireChanged() {
+		String contents = getContents();
+		for (ClipboardListener listener : clipboardListeners) {
+			listener.clipboardChanged(contents);
 		}
 	}
 
@@ -144,6 +149,14 @@ public class Clipboard {
 		if (contents != null) {
 			paste(contents);
 		}
+	}
+
+	/**
+	 * Sets the contents of this clipboard to null.
+	 */
+	public void reset() {
+		clipboard.setContents(null);
+		fireChanged();
 	}
 
 	private void paste(String content) {
