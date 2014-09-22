@@ -83,6 +83,12 @@ public class AddEntityExecutor extends EffectExecutor<AddEntity> {
 								EngineEntity engineEntity) {
 							addEngineEntity(target, engineEntity, effect);
 						}
+
+						@Override
+						public void pathNotFound(String path) {
+							Gdx.app.error("AddEntityExecutor",
+									"Entity not found in " + path);
+						}
 					});
 			entitiesLoader.finishLoading();
 		} else {

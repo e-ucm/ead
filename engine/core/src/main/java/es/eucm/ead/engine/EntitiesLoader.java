@@ -92,8 +92,12 @@ public class EntitiesLoader implements AssetLoadedCallback<Object> {
 	 *            The callback that is notified when the process is complete
 	 */
 	public void loadEntity(String path, EntityLoadedCallback callback) {
-		loading.put(path, callback);
-		gameAssets.get(path, Object.class, this);
+		if (gameAssets.resolve(path).exists()) {
+			loading.put(path, callback);
+			gameAssets.get(path, Object.class, this);
+		} else {
+			callback.pathNotFound(path);
+		}
 	}
 
 	/**
@@ -163,6 +167,11 @@ public class EntitiesLoader implements AssetLoadedCallback<Object> {
 		 *            The runtime entity created.
 		 */
 		public void loaded(String path, EngineEntity engineEntity);
+
+		/**
+		 * Called when the path for the entity is not found
+		 */
+		public void pathNotFound(String path);
 	}
 
 }

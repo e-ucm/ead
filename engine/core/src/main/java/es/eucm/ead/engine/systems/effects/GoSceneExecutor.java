@@ -37,10 +37,8 @@
 package es.eucm.ead.engine.systems.effects;
 
 import ashley.core.Entity;
-
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.scenes.scene2d.Group;
-
 import es.eucm.ead.engine.EntitiesLoader;
 import es.eucm.ead.engine.GameView;
 import es.eucm.ead.engine.components.RemoveEntityComponent;
@@ -80,6 +78,15 @@ public class GoSceneExecutor extends EffectExecutor<GoScene> {
 						gameView.addEntityToLayer(Layer.SCENE_CONTENT,
 								engineEntity);
 					}
+
+					@Override
+					public void pathNotFound(String path) {
+						sceneNotFound(path);
+					}
 				});
+	}
+
+	protected void sceneNotFound(String path) {
+		Gdx.app.error("GoSceneExecutor", "No scene found in " + path);
 	}
 }
