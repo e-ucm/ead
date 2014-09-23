@@ -41,11 +41,11 @@ import com.badlogic.gdx.graphics.Texture;
 
 import es.eucm.ead.editor.assets.EditorGameAssets;
 import es.eucm.ead.editor.control.ComponentId;
+import es.eucm.ead.editor.control.MockupController;
 import es.eucm.ead.editor.control.MockupViews;
 import es.eucm.ead.editor.control.Selection;
 import es.eucm.ead.editor.control.Toasts;
 import es.eucm.ead.editor.control.actions.ModelAction;
-import es.eucm.ead.editor.control.actions.model.SetSelection;
 import es.eucm.ead.editor.control.actions.model.scene.NewScene;
 import es.eucm.ead.editor.control.commands.Command;
 import es.eucm.ead.editor.control.commands.CompositeCommand;
@@ -102,8 +102,10 @@ public class AddGatewayDefaultElement extends ModelAction {
 		CompositeCommand command = controller.getActions()
 				.getAction(NewScene.class).perform("", id, new_scene);
 
+		String mockupDpiPath = ((MockupController) controller)
+				.getMockupDpiPath() + "other/";
 		FileHandle internal = controller.getApplicationAssets().resolve(
-				"predefined/door_in.png");
+				mockupDpiPath + "door_in.png");
 		ModelEntity exit = null;
 		EditorGameAssets editorGameAssets = controller.getEditorGameAssets();
 		String path = editorGameAssets.copyToProjectDirectly(internal,
@@ -120,7 +122,7 @@ public class AddGatewayDefaultElement extends ModelAction {
 
 		// Adds to old scene a new element
 		FileHandle internal2 = controller.getApplicationAssets().resolve(
-				"predefined/door_out.png");
+				mockupDpiPath + "door_out.png");
 
 		path = editorGameAssets.copyToProjectDirectly(internal2, Texture.class);
 		final ModelEntity entry = controller.getTemplates().createSceneElement(

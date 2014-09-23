@@ -56,8 +56,40 @@ public class MockupController extends Controller {
 
 	public static final String EXPORT_EXTENSION = ".zip";
 
+	public static enum Dpi {
+		LDPI(150), MDPI(190), HDPI(270), XHDPI(Float.MAX_VALUE);
+
+		private String dpi;
+		/**
+		 * The max dpi supported by this skin quality.
+		 */
+		private float maxDpi;
+
+		private Dpi(float maxDpi) {
+			this.dpi = name().toLowerCase();
+			this.maxDpi = maxDpi;
+		}
+
+		public float getMaxDpi() {
+			return maxDpi;
+		}
+
+		private static String getDpi() {
+			float screenDpi = Gdx.graphics.getDensity() * 160F;
+			Dpi[] values = Dpi.values();
+			for (int i = 0; i < values.length; ++i) {
+				Dpi dpi = values[i];
+				if (screenDpi <= dpi.maxDpi) {
+					return dpi.dpi;
+				}
+			}
+			return XHDPI.dpi;
+		}
+	}
+
 	private Group rootComponent;
 	private RepositoryManager repositoryManager;
+	private String mockupDpiPath;
 
 	public MockupController(Platform platform, Files files,
 			final Group rootComponent) {
@@ -120,6 +152,15 @@ public class MockupController extends Controller {
 		return repositoryManager;
 	}
 
+	/**
+	 * The path pointing to the Mockup folder, e.g. "skins/mockup-hdpi/"
+	 * 
+	 * @return
+	 */
+	public String getMockupDpiPath() {
+		return mockupDpiPath;
+	}
+
 	@Override
 	protected void loadPreferences() {
 		getApplicationAssets().getI18N().setI18nPath("i18n-mockup");
@@ -133,7 +174,9 @@ public class MockupController extends Controller {
 
 	@Override
 	protected ApplicationAssets createApplicationAssets(Files files) {
-		return new ApplicationAssets(files, "skins/mockup/skin");
+		String dpi = Dpi.getDpi();
+		mockupDpiPath = "skins/mockup-" + dpi + "/";
+		return new ApplicationAssets(files, mockupDpiPath + "skin");
 	}
 
 	@Override
