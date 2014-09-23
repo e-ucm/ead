@@ -78,7 +78,6 @@ public class MockupSceneEditor extends SceneEditor {
 	private final Rectangle scissorBounds;
 	private final float leftPad;
 	private final float topPad;
-	private boolean hasSelection;
 
 	private Runnable updateSelection = new Runnable() {
 
@@ -92,14 +91,11 @@ public class MockupSceneEditor extends SceneEditor {
 					ModelEntity entity = (ModelEntity) object;
 					Actor actor = findActor(entity);
 					if (actor != null) {
-						hasSelection = true;
 						context.show(entity, actor);
 					} else {
-						hasSelection = false;
 						context.show(null, null);
 					}
 				} else {
-					hasSelection = false;
 					context.show(null, null);
 				}
 			}
@@ -118,21 +114,24 @@ public class MockupSceneEditor extends SceneEditor {
 
 		scissorBounds = new Rectangle();
 		context = new ElementContext(controller, this);
-		hasSelection = false;
 		elementSelected = new SelectionListener() {
+			private boolean isElement;
 
 			@Override
 			public void modelChanged(SelectionEvent event) {
-				if (event.getType() == SelectionEvent.Type.FOCUSED) {
-					Gdx.app.postRunnable(updateSelection);
-				} else if (event.getType() == SelectionEvent.Type.REMOVED) {
-					hasSelection = false;
+				if (isElement) {
+					if (event.getType() == SelectionEvent.Type.FOCUSED) {
+						Gdx.app.postRunnable(updateSelection);
+					}
+				} else {
+					context.show(null, null);
 				}
 			}
 
 			@Override
 			public boolean listenToContext(String contextId) {
-				return Selection.SCENE_ELEMENT.equals(contextId);
+				isElement = Selection.SCENE_ELEMENT.equals(contextId);
+				return isElement || Selection.SCENE.equals(contextId);
 			}
 		};
 
@@ -150,14 +149,11 @@ public class MockupSceneEditor extends SceneEditor {
 			@Override
 			public boolean touchDown(InputEvent event, float x, float y,
 					int pointer, int button) {
-				if (!hasSelection) {
-					return false;
-				}
+				context.show(null, null);
 				Actor influencedActor = handles.getInfluencedActor();
 				if (influencedActor == null) {
 					return false;
 				}
-				context.show(null, null);
 				scaleX = influencedActor.getScaleX();
 				scaleY = influencedActor.getScaleY();
 				rotation = influencedActor.getRotation();
