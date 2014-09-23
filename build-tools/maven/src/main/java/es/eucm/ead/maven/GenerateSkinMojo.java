@@ -36,17 +36,17 @@
  */
 package es.eucm.ead.maven;
 
-import com.badlogic.gdx.backends.lwjgl.LwjglFiles;
-import com.badlogic.gdx.files.FileHandle;
-import com.badlogic.gdx.graphics.Texture.TextureFilter;
-import com.badlogic.gdx.tools.texturepacker.TexturePacker;
-import com.badlogic.gdx.tools.texturepacker.TexturePacker.Settings;
+import java.io.File;
+
 import org.apache.maven.plugin.AbstractMojo;
 import org.apache.maven.plugin.MojoExecutionException;
 import org.apache.maven.plugins.annotations.Mojo;
 import org.apache.maven.plugins.annotations.Parameter;
 
-import java.io.File;
+import com.badlogic.gdx.backends.lwjgl.LwjglFiles;
+import com.badlogic.gdx.files.FileHandle;
+import com.badlogic.gdx.tools.texturepacker.TexturePacker;
+import com.badlogic.gdx.tools.texturepacker.TexturePacker.Settings;
 
 /**
  * The plugin generate a libgdx atlas for the project skins.
@@ -98,7 +98,7 @@ public class GenerateSkinMojo extends AbstractMojo {
 		}
 
 		Settings settings = new Settings();
-		
+
 		LwjglFiles files = new LwjglFiles();
 		FileHandle rawRoot = files.internal(sourceDir.getAbsolutePath());
 		FileHandle skinsRoot = new FileHandle(files.internal(
@@ -116,15 +116,17 @@ public class GenerateSkinMojo extends AbstractMojo {
 					getLog().info(
 							"[generate-skins] Generating: " + folder.name());
 					skinFolder.mkdirs();
-					Settings set = transformTtf2FntIfNeeded(folder, skinFolder,
-							settings);
-					TexturePacker.process(set, folder.child("images").file()
-							.getAbsolutePath(), skinFolder.file()
+					TexturePacker.process(settings, folder.child("images")
+							.file().getAbsolutePath(), skinFolder.file()
 							.getAbsolutePath(), "skin");
 					FileHandle fonts = folder.child("fonts");
 					if (fonts.exists())
 						fonts.copyTo(skinFolder);
 					folder.child("skin.json").copyTo(skinFolder);
+					FileHandle other = folder.child("other");
+					if (other.exists()) {
+						other.copyTo(skinFolder.child("other"));
+					}
 				} else {
 					getLog().info(
 							"[generate-skins] skin already exists, skipping: "
@@ -132,25 +134,5 @@ public class GenerateSkinMojo extends AbstractMojo {
 				}
 			}
 		}
-	}
-
-	private Settings transformTtf2FntIfNeeded(FileHandle srcFolder,
-			FileHandle skinFolder, Settings settings) {
-		FileHandle font = srcFolder.child("font.fnt");
-		if (font.exists()) {
-			font.copyTo(skinFolder);
-
-			Settings set = new TexturePacker.Settings();
-			set.filterMag = TextureFilter.Linear;
-			set.filterMin = TextureFilter.MipMapLinearNearest;
-			set.pot = true;
-			set.maxHeight = 1024;
-			set.maxWidth = 1024;
-			set.paddingX = 4;
-			set.paddingY = 4;
-			set.limitMemory = false;
-			return set;
-		}
-		return settings;
 	}
 }
