@@ -1,0 +1,53 @@
+{
+    "additionalProperties": false,
+    "javaType": "es.eucm.ead.schema.editor.components.RepoLibrary",
+    "extends": {
+        "$ref": "../../engine/components/component.json"
+    },
+    "properties": {
+        "path": {
+            "type": "string",
+            "description": "Relative path of the zip file in the server that contains the library"
+        },
+        "thumbnail": {
+            "type": "string",
+            "description": "Relative url where the thumbnail for this resource library is placed"
+        },
+        "author": {
+            "$ref":"repoauthor.json",
+            "description": "Information for the author (or authors) that created the resources of the library"
+        },
+        "licenses": {
+            "type": "array",
+            "items": {
+                "$ref": "repolicense.json",
+                "description": "Information associated to the licenses of the resources contained in the library"
+            }
+        },
+        "numberOfElements":{
+            "type": "number",
+            "description": "The number of resources (objects, characters, etc.) the library contains"
+        },
+        "size":{
+            "type": "number",
+            "description": "The downloadable amount of mega bytes of the zip file associated to the library. If -1, the size is unknown"
+        },
+        "description": {
+            "type": "string",
+            "description": "A brief description of the library"
+        },
+        "name":{
+            "type": "string",
+            "description": "A name for the library"
+        },
+        "tags":{
+            "type": "array",
+            "items":{
+                "type":"string"
+            },
+            "description": "A list of tags - useful for searching and grouping resources"
+        }
+    },
+    "type": "object",
+    "description": "A simple editor component to describe libraries of elements that are meant to be shared together and reused through the repository."
+}
