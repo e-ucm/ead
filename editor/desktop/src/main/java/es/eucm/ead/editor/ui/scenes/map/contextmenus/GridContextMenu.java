@@ -90,7 +90,7 @@ public class GridContextMenu extends DisplayableContextMenu<GridLayout> {
 		Cell cell = widget.getCellAt(x, y);
 		if (cell != null) {
 			this.cell = cell;
-			addScene.setDisabled(cell.getWidget() != null);
+			addScene.setDisabled(cell.getActor() != null);
 			controller.action(ShowContextMenu.class, widget, this, x, y);
 		}
 	}

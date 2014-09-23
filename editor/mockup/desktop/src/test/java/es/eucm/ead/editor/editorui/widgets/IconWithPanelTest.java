@@ -58,12 +58,12 @@ public class IconWithPanelTest extends MockupUITest {
 		Container container = new Container();
 		Table table = new Table(skin);
 
-		IconWithPanel fade = new IconWithFadePanel("conversation80x80", 0f, 5f,
+		IconWithPanel fade = new IconWithFadePanel("conversation80x80", 5f,
 				skin);
 		fade.getPanel().add(new Image(skin.getDrawable("conversation80x80")));
 
 		IconWithPanel fadeBottom = new IconWithFadePanel("conversation80x80",
-				0f, 5f, -1f, skin, Position.BOTTOM);
+				5f, skin, Position.BOTTOM);
 		fadeBottom.getPanel().add(
 				new Image(skin.getDrawable("conversation80x80")));
 
@@ -102,7 +102,7 @@ public class IconWithPanelTest extends MockupUITest {
 		table.row();
 		table.add(fadeBottom);
 
-		container.setWidget(table);
+		container.setActor(table);
 		container.setFillParent(true);
 
 		return container;

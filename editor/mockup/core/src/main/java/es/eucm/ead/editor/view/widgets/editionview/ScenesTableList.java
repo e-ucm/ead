@@ -43,11 +43,11 @@ import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.InputListener;
 import com.badlogic.gdx.scenes.scene2d.Touchable;
 import com.badlogic.gdx.scenes.scene2d.ui.ButtonGroup;
+import com.badlogic.gdx.scenes.scene2d.ui.Cell;
 import com.badlogic.gdx.scenes.scene2d.ui.Container;
 import com.badlogic.gdx.scenes.scene2d.ui.Image;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
-import com.esotericsoftware.tablelayout.Cell;
 
 import es.eucm.ead.editor.control.Controller;
 import es.eucm.ead.editor.control.Selection;
@@ -206,7 +206,7 @@ public class ScenesTableList extends Table implements
 					skin, styleButton);
 			sceneButton.addListener(listener);
 			if (value.getKey().equals(initialName)) {
-				initial.setWidget(sceneButton);
+				initial.setActor(sceneButton);
 				sceneButton.addActor(containerFirst);
 			} else {
 				row();

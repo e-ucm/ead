@@ -102,7 +102,7 @@ public abstract class MockupUITest implements ApplicationListener {
 		controller = new MockupController(platform = new MockPlatform(),
 				Gdx.files, stage.getRoot());
 		controller.getCommands().pushStack();
-		platform.setBatch(stage.getSpriteBatch());
+		platform.setBatch(stage.getBatch());
 		Gdx.input.setInputProcessor(stage);
 		ApplicationAssets assets = controller.getApplicationAssets();
 		stage.getRoot().addActor(builUI(assets.getSkin(), assets.getI18N()));

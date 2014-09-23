@@ -823,4 +823,9 @@ public class MockGraphics implements Graphics {
 		public void glViewport(int x, int y, int width, int height) {
 		}
 	}
+
+	@Override
+	public long getFrameId() {
+		return 0;
+	}
 }

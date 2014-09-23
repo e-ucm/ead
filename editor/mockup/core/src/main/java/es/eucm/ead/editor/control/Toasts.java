@@ -36,11 +36,10 @@
  */
 package es.eucm.ead.editor.control;
 
-import java.util.List;
-
+import com.badlogic.gdx.scenes.scene2d.ui.Cell;
 import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.scenes.scene2d.utils.Align;
-import com.esotericsoftware.tablelayout.Cell;
+import com.badlogic.gdx.utils.Array;
 
 import es.eucm.ead.editor.view.widgets.Notification;
 
@@ -76,13 +75,13 @@ public class Toasts {
 	 * Changes the text of the notification.
 	 */
 	private void changeText(String newText) {
-		List<Cell> cells = notification.getCells();
-		if (cells.isEmpty()) {
+		Array<Cell> cells = notification.getCells();
+		if (cells.size == 0) {
 			notification.add(newText);
-			Label label = (Label) cells.get(0).getWidget();
+			Label label = (Label) cells.get(0).getActor();
 			label.setAlignment(Align.center);
 		} else {
-			Object widget = cells.get(0).getWidget();
+			Object widget = cells.get(0).getActor();
 			if (widget instanceof Label) {
 				Label label = (Label) widget;
 				label.setText(newText);

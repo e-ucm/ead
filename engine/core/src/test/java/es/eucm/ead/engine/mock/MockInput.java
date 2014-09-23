@@ -230,4 +230,14 @@ public class MockInput implements Input {
 	@Override
 	public void setCursorImage(Pixmap pixmap, int xHotspot, int yHotspot) {
 	}
+
+	@Override
+	public boolean isKeyJustPressed(int arg0) {
+		return false;
+	}
+
+	@Override
+	public boolean isCatchBackKey() {
+		return false;
+	}
 }

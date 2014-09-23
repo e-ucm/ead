@@ -134,7 +134,7 @@ public class DraggableGridLayout extends DraggableScrollPane {
 				setCancelTouchFocus(true);
 				if (target == null) {
 					Cell sourceCell = (Cell) payload.getObject();
-					sourceCell.setWidget(getActor());
+					sourceCell.setActor(getActor());
 				}
 			}
 		};
@@ -154,18 +154,18 @@ public class DraggableGridLayout extends DraggableScrollPane {
 					int pointer) {
 				Cell sourceCell = (Cell) payload.getObject();
 				for (Cell newCell : gridLayout.getCells()) {
-					Actor actor = newCell.getWidget();
+					Actor actor = newCell.getActor();
 					if (actor == null && newCell != sourceCell
 							&& newCell.contains(x, y)) {
 						Actor sourceActor = source.getActor();
-						newCell.setWidget(sourceActor);
+						newCell.setActor(sourceActor);
 						fireDrop(sourceActor, sourceCell.getRow(),
 								sourceCell.getColumn(), newCell.getRow(),
 								newCell.getColumn());
 						return;
 					}
 				}
-				sourceCell.setWidget(source.getActor());
+				sourceCell.setActor(source.getActor());
 			}
 
 			/**

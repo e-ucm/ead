@@ -260,7 +260,7 @@ public class SceneMapWidget extends DraggableGridLayout {
 
 		private void removeSceneWidgetAt(int row, int column) {
 			SceneWidget oldWidget = (SceneWidget) getCellAt(row, column)
-					.getWidget();
+					.getActor();
 			if (oldWidget != null) {
 				buttonGroup.remove(oldWidget);
 				oldWidget.remove();
@@ -307,7 +307,7 @@ public class SceneMapWidget extends DraggableGridLayout {
 								cell.getRow(), cell.getColumn());
 						if (gridCell != null) {
 							SceneWidget sceneWidget = (SceneWidget) gridCell
-									.getWidget();
+									.getActor();
 							if (sceneWidget != null) {
 								sceneWidget.setChecked(true);
 							}
@@ -354,7 +354,7 @@ public class SceneMapWidget extends DraggableGridLayout {
 		public void nameChanged(String name) {
 			Cell cellFromId = Q.getCellFromId(sceneId, sceneMap.getCells());
 			SceneWidget widget = (SceneWidget) getCellAt(cellFromId.getRow(),
-					cellFromId.getColumn()).getWidget();
+					cellFromId.getColumn()).getActor();
 			widget.setName(name);
 		}
 	}

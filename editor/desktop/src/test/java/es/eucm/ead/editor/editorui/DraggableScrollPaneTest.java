@@ -42,6 +42,7 @@ import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.Group;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
+import com.badlogic.gdx.scenes.scene2d.ui.Cell;
 import com.badlogic.gdx.scenes.scene2d.ui.Container;
 import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
@@ -49,7 +50,6 @@ import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.scenes.scene2d.utils.DragAndDrop.Payload;
 import com.badlogic.gdx.scenes.scene2d.utils.DragAndDrop.Source;
 import com.badlogic.gdx.scenes.scene2d.utils.DragAndDrop.Target;
-import com.esotericsoftware.tablelayout.Cell;
 
 import es.eucm.ead.editor.view.widgets.dragndrop.DraggableScrollPane;
 
@@ -93,7 +93,7 @@ public class DraggableScrollPaneTest extends EditorUITest {
 								float y, int pointer, Payload payload,
 								Target target) {
 							Cell sourceCell = (Cell) payload.getObject();
-							sourceCell.setWidget(getActor());
+							sourceCell.setActor(getActor());
 						}
 					});
 				}

@@ -138,6 +138,5 @@ public class CreateThumbnailTest extends EditorUITest {
 	@Override
 	public void render() {
 		super.render();
-		Table.drawDebug(stage);
 	}
 }

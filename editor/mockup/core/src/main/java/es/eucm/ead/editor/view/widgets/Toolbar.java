@@ -37,10 +37,10 @@
 package es.eucm.ead.editor.view.widgets;
 
 import com.badlogic.gdx.scenes.scene2d.Actor;
+import com.badlogic.gdx.scenes.scene2d.ui.Cell;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.scenes.scene2d.utils.Drawable;
-import com.esotericsoftware.tablelayout.Cell;
 
 public class Toolbar extends Table {
 
