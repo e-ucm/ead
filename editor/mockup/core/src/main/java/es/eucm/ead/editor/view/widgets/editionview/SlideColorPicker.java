@@ -36,6 +36,7 @@
  */
 package es.eucm.ead.editor.view.widgets.editionview;
 
+import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.Pixmap;
 import com.badlogic.gdx.graphics.Pixmap.Format;
@@ -52,8 +53,8 @@ public class SlideColorPicker extends Slider {
 	private static final int MIN_COLOR = 0;
 	private static final int MAX_COLOR = 359;
 
-	private static final float PREF_HEIGHT = 50F;
-	private static final float PREF_WIDTH = MAX_COLOR;
+	private static final float PREF_HEIGHT = .07f;
+	private static final float PREF_WIDTH = .29f;
 
 	private static final ChangeListener listener = new ChangeListener() {
 
@@ -103,19 +104,20 @@ public class SlideColorPicker extends Slider {
 	 * Generate the slider background.
 	 */
 	private void initialize() {
-		pixmap = new Pixmap(MAX_COLOR, (int) PREF_HEIGHT, Format.RGBA8888);
+		pixmap = new Pixmap((int) getPrefWidth(), (int) getPrefHeight(),
+				Format.RGBA8888);
 		int _colorMin = MIN_COLOR;
 		int _colorMax = MAX_COLOR;
 		int _colorCount = (_colorMax - _colorMin);
 		float _scaleRatio = (float) _colorCount / pixmap.getWidth();
 
 		for (int i = 0; i <= pixmap.getWidth(); i++) {
-			int hsBtoRGB = (0xff000000 | HSBtoRGB((i * _scaleRatio + _colorMin)
+			int hsbToRGB = (0xff000000 | HSBtoRGB((i * _scaleRatio + _colorMin)
 					/ ((float) _colorMax)));
 
-			pixmap.setColor(((hsBtoRGB >> 16) & 0xFF) / 256f,
-					((hsBtoRGB >> 8) & 0xFF) / 256f,
-					((hsBtoRGB >> 0) & 0xFF) / 256f, 1f);
+			pixmap.setColor(((hsbToRGB >> 16) & 0xFF) / 256f,
+					((hsbToRGB >> 8) & 0xFF) / 256f,
+					((hsbToRGB >> 0) & 0xFF) / 256f, 1f);
 			pixmap.drawLine(i, 0, i, pixmap.getHeight());
 		}
 
@@ -138,7 +140,7 @@ public class SlideColorPicker extends Slider {
 	}
 
 	public void updatePosition(Color color) {
-		int threshold = 10000;
+		int threshold = 10000000;
 		int rgba8888 = Color.rgba8888(color);
 		int minColor = rgba8888 - threshold;
 		int maxColor = rgba8888 + threshold;
@@ -178,12 +180,12 @@ public class SlideColorPicker extends Slider {
 
 	@Override
 	public float getPrefHeight() {
-		return PREF_HEIGHT;
+		return PREF_HEIGHT * Gdx.graphics.getHeight();
 	}
 
 	@Override
 	public float getPrefWidth() {
-		return PREF_WIDTH;
+		return PREF_WIDTH * Gdx.graphics.getWidth();
 	}
 
 	@Override

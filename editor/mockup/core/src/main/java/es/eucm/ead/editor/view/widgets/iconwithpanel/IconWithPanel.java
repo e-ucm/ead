@@ -36,6 +36,7 @@
  */
 package es.eucm.ead.editor.view.widgets.iconwithpanel;
 
+import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.scenes.scene2d.Action;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
@@ -46,7 +47,6 @@ import es.eucm.ead.editor.view.widgets.HiddenPanel;
 import es.eucm.ead.editor.view.widgets.IconButton;
 import es.eucm.ead.editor.view.widgets.PositionedHiddenPanel;
 import es.eucm.ead.editor.view.widgets.PositionedHiddenPanel.Position;
-import es.eucm.ead.editor.view.widgets.ToolbarIcon;
 
 /**
  * An {@link IconButton} with a {@link HiddenPanel} as attribute, when clicked
@@ -54,7 +54,7 @@ import es.eucm.ead.editor.view.widgets.ToolbarIcon;
  * when clicked again. The panel is drawn in {@link Stage} coordinates.
  * 
  */
-public abstract class IconWithPanel extends ToolbarIcon {
+public abstract class IconWithPanel extends IconButton {
 
 	protected static HiddenPanel openPanel;
 	protected static final float IN_DURATION = .3F;
@@ -73,14 +73,14 @@ public abstract class IconWithPanel extends ToolbarIcon {
 
 	protected PositionedHiddenPanel panel;
 
-	public IconWithPanel(String icon, float padding, float separation,
-			float size, Skin skin, Position position) {
-		this(icon, padding, separation, size, skin, position, "default");
+	public IconWithPanel(String icon, float separation, Skin skin,
+			Position position) {
+		this(icon, separation, skin, position, "default");
 	}
 
-	public IconWithPanel(String icon, float padding, float separation,
-			float size, Skin skin, Position position, String styleName) {
-		super(icon, padding, size, skin, styleName);
+	public IconWithPanel(String icon, float separation, Skin skin,
+			Position position, String styleName) {
+		super(icon, 0f, skin, styleName);
 		panel.setPosition(position);
 		panel.setSpace(separation);
 	}

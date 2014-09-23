@@ -51,8 +51,10 @@ import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.Touchable;
 import com.badlogic.gdx.scenes.scene2d.actions.Actions;
 import com.badlogic.gdx.scenes.scene2d.ui.ButtonGroup;
+import com.badlogic.gdx.scenes.scene2d.ui.ScrollPane;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.ui.Slider;
+import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
 import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
@@ -65,8 +67,8 @@ import es.eucm.ead.editor.control.Toasts;
 import es.eucm.ead.editor.control.background.BackgroundExecutor;
 import es.eucm.ead.editor.control.background.BackgroundExecutor.BackgroundTaskListener;
 import es.eucm.ead.editor.control.background.BackgroundTask;
+import es.eucm.ead.editor.view.widgets.IconButton;
 import es.eucm.ead.editor.view.widgets.Toolbar;
-import es.eucm.ead.editor.view.widgets.ToolbarIcon;
 import es.eucm.ead.editor.view.widgets.editionview.MockupSceneEditor;
 import es.eucm.ead.editor.view.widgets.editionview.draw.BrushStrokes.Mode;
 import es.eucm.ead.engine.I18N;
@@ -77,7 +79,8 @@ public class PaintToolbar extends Toolbar {
 
 	private static final Vector2 TEMP = new Vector2();
 
-	private static final float NORMAL_PAD = 40F;
+	private static final float NORMAL_PAD = .02F;
+	private static final float SLIDER_WIDTH = .1F;
 	private static final float IN_DURATION = .3F;
 	private static final float OUT_DURATION = .2F;
 
@@ -85,8 +88,7 @@ public class PaintToolbar extends Toolbar {
 
 	private BrushStrokes brushStrokes;
 
-	public PaintToolbar(float iconSize, float iconPad,
-			MockupSceneEditor parent, final Controller controller) {
+	public PaintToolbar(MockupSceneEditor parent, final Controller controller) {
 		super(controller.getApplicationAssets().getSkin(), "white_bottom");
 		this.parent = parent;
 		brushStrokes = new BrushStrokes(parent, controller);
@@ -95,28 +97,27 @@ public class PaintToolbar extends Toolbar {
 		final I18N i18n = assets.getI18N();
 		final Toasts toasts = ((MockupViews) controller.getViews()).getToasts();
 		String styleName = "checkable";
-		final ToolbarIcon erase = new ToolbarIcon("rubber80x80", 0f,
-				iconSize * 2f, iconSize, skin, styleName);
+		final IconButton erase = new IconButton("rubber80x80", 0f, skin,
+				styleName);
 		erase.setColor(Color.PINK);
 
 		// Colors
-		ToolbarIcon color1 = new ToolbarIcon("rectangle", 0f, skin, styleName);
+		IconButton color1 = new IconButton("rectangle", 0f, skin, styleName);
 		color1.getIcon().setColor(Color.WHITE);
 
-		ToolbarIcon color3 = new ToolbarIcon("rectangle", 0f, skin, styleName);
+		IconButton color3 = new IconButton("rectangle", 0f, skin, styleName);
 		color3.getIcon().setColor(Color.RED);
 
-		ToolbarIcon color4 = new ToolbarIcon("rectangle", 0f, skin, styleName);
+		IconButton color4 = new IconButton("rectangle", 0f, skin, styleName);
 		color4.getIcon().setColor(Color.GREEN);
 
-		ToolbarIcon color5 = new ToolbarIcon("rectangle", 0f, skin, styleName);
+		IconButton color5 = new IconButton("rectangle", 0f, skin, styleName);
 		color5.getIcon().setColor(Color.BLUE);
 
-		ToolbarIcon color6 = new ToolbarIcon("rectangle", 0f, skin, styleName);
+		IconButton color6 = new IconButton("rectangle", 0f, skin, styleName);
 		color6.getIcon().setColor(Color.BLACK);
 
-		final ColorPicker picker = new ColorPicker(false, iconPad, iconSize,
-				skin) {
+		final ColorPicker picker = new ColorPicker(false, skin) {
 			@Override
 			protected void colorChanged(Color newColor) {
 				brushStrokes.setColor(newColor);
@@ -140,27 +141,34 @@ public class PaintToolbar extends Toolbar {
 
 		final Slider slider = new Slider(5, 40, 1, false, skin,
 				"white-horizontal");
+		slider.setValue(20);
 		brushStrokes.setMaxDrawRadius(40f);
 		brushStrokes.setRadius(slider.getValue());
 
-		final TextButton save = new TextButton(i18n.m("save"), skin, "white");
+		final TextButton save = new TextButton(i18n.m("save"), skin, "to_color");
 		save.setColor(Color.GREEN);
 
 		final TextButton cancel = new TextButton(i18n.m("cancel"), skin,
 				"white");
+		Table colors = new Table();
+		colors.add(color1);
+		colors.add(color3);
+		colors.add(color4);
+		colors.add(color5);
+		colors.add(color6);
+		ScrollPane pane = new ScrollPane(colors);
+		pane.setScrollingDisabled(false, true);
 
-		float topBottomPad = iconPad;
+		float topBottomPad = 0f;
+		float normalPad = Gdx.graphics.getWidth() * NORMAL_PAD;
 		defaults().expand().fill();
-		add(erase).padLeft(NORMAL_PAD).padRight(NORMAL_PAD);
-		add(color1);
-		add(color3);
-		add(color4);
-		add(color5);
-		add(color6);
-		add(picker).padLeft(NORMAL_PAD);
-		add(slider).padLeft(NORMAL_PAD);
-		add(save).pad(topBottomPad, NORMAL_PAD, topBottomPad, NORMAL_PAD);
-		add(cancel).pad(topBottomPad, 0f, topBottomPad, NORMAL_PAD);
+		add(erase).padLeft(normalPad).padRight(normalPad);
+		add(pane);
+		add(picker).padLeft(normalPad);
+		add(slider).padLeft(normalPad).width(
+				Gdx.graphics.getWidth() * SLIDER_WIDTH);
+		add(save).pad(topBottomPad, normalPad, topBottomPad, normalPad);
+		add(cancel).pad(topBottomPad, 0f, topBottomPad, normalPad);
 
 		ChangeListener listener = new ChangeListener() {
 			@Override
@@ -183,7 +191,7 @@ public class PaintToolbar extends Toolbar {
 						mode = Mode.ERASE;
 					} else {
 						mode = Mode.DRAW;
-						brushStrokes.setColor(((ToolbarIcon) event
+						brushStrokes.setColor(((IconButton) event
 								.getListenerActor()).getIcon().getColor());
 					}
 					brushStrokes.setMode(mode);
@@ -249,7 +257,8 @@ public class PaintToolbar extends Toolbar {
 		parent.localToStageCoordinates(TEMP.set(0f, 0f));
 		brushStrokes.show();
 
-		float prefW = MathUtils.round(getPrefWidth());
+		float prefW = MathUtils.round(Math.min(getPrefWidth(),
+				parent.getWidth()));
 		float prefH = MathUtils.round(getPrefHeight());
 		float x = MathUtils.round(TEMP.x + (parent.getWidth() - prefW) * .5f);
 		float y = -prefH;

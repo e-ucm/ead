@@ -6,6 +6,7 @@ import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.InputListener;
+import com.badlogic.gdx.scenes.scene2d.ui.Cell;
 import com.badlogic.gdx.scenes.scene2d.ui.Image;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
@@ -14,7 +15,6 @@ import com.badlogic.gdx.scenes.scene2d.ui.TextField.TextFieldFilter;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable;
 import com.badlogic.gdx.utils.Scaling;
-import com.esotericsoftware.tablelayout.Cell;
 
 import es.eucm.ead.editor.assets.ApplicationAssets;
 import es.eucm.ead.editor.assets.EditorGameAssets;
@@ -193,11 +193,11 @@ public class FrameWidget extends FocusButton {
 		isChecked = isChecked();
 		top.setVisible(isChecked);
 		if (!isChecked) {
-			if (topCell.hasWidget()) {
-				topCell.setWidget(null);
+			if (topCell.hasActor()) {
+				topCell.setActor(null);
 			}
 		} else {
-			topCell.setWidget(top);
+			topCell.setActor(top);
 			timeline.centerScrollAt(this);
 		}
 		top.invalidateHierarchy();

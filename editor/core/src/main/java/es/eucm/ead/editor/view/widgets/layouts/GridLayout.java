@@ -135,8 +135,8 @@ public class GridLayout extends AbstractWidget {
 			for (int j = 0; j < columns; ++j) {
 				int index = i * columns + j;
 				Cell cell = cells.get(index);
-				if (cell.getWidget() == null) {
-					cell.setWidget(actor);
+				if (cell.getActor() == null) {
+					cell.setActor(actor);
 					return cell;
 				}
 			}
@@ -152,7 +152,7 @@ public class GridLayout extends AbstractWidget {
 	public Cell addAt(int row, int column, Actor actor) {
 		int index = row * columns + column;
 		Cell cell = cells.get(index);
-		cell.setWidget(actor);
+		cell.setActor(actor);
 		return cell;
 	}
 
@@ -296,7 +296,7 @@ public class GridLayout extends AbstractWidget {
 
 	public Cell getCellFromActor(Actor act) {
 		for (Cell cell : cells) {
-			if (cell.getWidget() == act) {
+			if (cell.getActor() == act) {
 				return cell;
 			}
 		}
@@ -322,7 +322,7 @@ public class GridLayout extends AbstractWidget {
 		}
 
 		public Cell(Actor a, int row, int col, Skin skin) {
-			setWidget(a);
+			setActor(a);
 			this.column = col;
 			this.row = row;
 			if (skin != null) {
@@ -347,7 +347,7 @@ public class GridLayout extends AbstractWidget {
 		public void draw(Batch batch, float parentAlpha) {
 			validate();
 			drawBackground(batch, parentAlpha, 0, 0);
-			if (getWidget() != null) {
+			if (getActor() != null) {
 				drawChildren(batch, parentAlpha);
 			}
 		}
@@ -372,9 +372,9 @@ public class GridLayout extends AbstractWidget {
 		}
 
 		@Override
-		public void setWidget(Actor widget) {
+		public void setActor(Actor widget) {
 			setPrefSize(widget);
-			super.setWidget(widget);
+			super.setActor(widget);
 		}
 
 		private void setPrefSize(Actor actor) {
@@ -384,10 +384,10 @@ public class GridLayout extends AbstractWidget {
 						layout.getPrefHeight());
 			} else if (actor != null) {
 				prefWidth(actor.getWidth()).prefHeight(actor.getHeight());
-			} else if (getWidget() == null) {
+			} else if (getActor() == null) {
 				prefWidth(0f).prefHeight(0f);
 			} else {
-				setPrefSize(getWidget());
+				setPrefSize(getActor());
 			}
 		}
 

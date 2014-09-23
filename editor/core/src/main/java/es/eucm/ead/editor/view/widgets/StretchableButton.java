@@ -248,11 +248,11 @@ public class StretchableButton extends LinearLayout {
 	}
 
 	public void setWidget(Actor actor) {
-		this.container.setWidget(null);
-		this.container.setWidget(actor);
+		this.container.setActor(null);
+		this.container.setActor(actor);
 	}
 
 	public Actor getWidget() {
-		return container.getWidget();
+		return container.getActor();
 	}
 }

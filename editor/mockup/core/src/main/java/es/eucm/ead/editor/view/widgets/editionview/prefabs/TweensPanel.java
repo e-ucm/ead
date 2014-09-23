@@ -39,6 +39,7 @@ package es.eucm.ead.editor.view.widgets.editionview.prefabs;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
+import com.badlogic.gdx.scenes.scene2d.ui.Value;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 
 import es.eucm.ead.editor.control.Controller;
@@ -56,7 +57,7 @@ import es.eucm.ead.schema.entities.ModelEntity;
 
 public class TweensPanel extends PrefabPanel {
 
-	private static final float SPACE = 20;
+	private static final float SPACE = .2f;
 
 	private Table table;
 
@@ -81,32 +82,33 @@ public class TweensPanel extends PrefabPanel {
 		}
 	};
 
-	public TweensPanel(float iconPad, float size, Controller controller) {
-		super("tween80x80", iconPad, size, "edition.prefabAnimations",
-				controller);
+	public TweensPanel(Controller controller) {
+		super("tween80x80", "edition.prefabAnimations", controller);
 
 		table = new Table();
 		table.defaults().uniform();
 
 		Rotate360Tween rotate360 = new Rotate360Tween("rotate80x80",
 				i18n.m("edition.rotate360"), controller, skin);
+		Value space = Value.percentHeight(SPACE, rotate360);
+		table.pad(space).defaults().space(space);
 		rotate360.addListener(tweenListener);
 		rotate360.setUserObject(this);
-		table.add(rotate360).pad(SPACE).fill();
+		table.add(rotate360).fill();
 
 		HorizontalMoveTween horizontal = new HorizontalMoveTween(
 				"horizontal_move80x80", i18n.m("edition.horizontal"),
 				controller, skin);
 		horizontal.addListener(tweenListener);
 		horizontal.setUserObject(this);
-		table.add(horizontal).pad(SPACE).fill();
+		table.add(horizontal).fill();
 
 		VerticalMoveTween vertical = new VerticalMoveTween(
 				"vertical_move80x80", i18n.m("edition.vertical"), controller,
 				skin);
 		vertical.addListener(tweenListener);
 		vertical.setUserObject(this);
-		table.add(vertical).pad(SPACE).fill();
+		table.add(vertical).fill();
 
 		table.row();
 
@@ -114,19 +116,19 @@ public class TweensPanel extends PrefabPanel {
 				i18n.m("edition.decrease"), controller, skin);
 		decrease.addListener(tweenListener);
 		decrease.setUserObject(this);
-		table.add(decrease).pad(SPACE).fill();
+		table.add(decrease).fill();
 
 		IncreaseTween increase = new IncreaseTween("increase80x80",
 				i18n.m("edition.increase"), controller, skin);
 		increase.addListener(tweenListener);
 		increase.setUserObject(this);
-		table.add(increase).pad(SPACE).fill();
+		table.add(increase).fill();
 
 		BlinkTween blink = new BlinkTween("blink80x80",
 				i18n.m("edition.blink"), controller, skin);
 		blink.addListener(tweenListener);
 		blink.setUserObject(this);
-		table.add(blink).pad(SPACE).fill();
+		table.add(blink).fill();
 
 		panel.add(table);
 	}

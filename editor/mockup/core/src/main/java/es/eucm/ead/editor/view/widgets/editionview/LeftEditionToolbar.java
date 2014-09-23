@@ -36,6 +36,7 @@
  */
 package es.eucm.ead.editor.view.widgets.editionview;
 
+import com.badlogic.gdx.scenes.scene2d.ui.ScrollPane;
 import com.badlogic.gdx.scenes.scene2d.utils.Align;
 
 import es.eucm.ead.editor.control.Controller;
@@ -48,44 +49,43 @@ import es.eucm.ead.editor.view.widgets.editionview.prefabs.TouchabilityPanel;
 import es.eucm.ead.editor.view.widgets.editionview.prefabs.TweensPanel;
 import es.eucm.ead.editor.view.widgets.editionview.prefabs.VisibilityPanel;
 
-public class LeftEditionToolbar extends Toolbar {
+public class LeftEditionToolbar extends ScrollPane {
 
-	private float width;
+	public LeftEditionToolbar(Controller controller, String style,
+			float smallPad, float normalPad) {
+		super(null);
 
-	public LeftEditionToolbar(Controller controller, String style, float width,
-			float iconSize, float iconPad, float smallPad, float normalPad) {
-		super(controller.getApplicationAssets().getSkin(), style);
+		Toolbar toolbar = new Toolbar(controller.getApplicationAssets()
+				.getSkin(), style);
+		setWidget(toolbar);
+		setScrollingDisabled(true, false);
+		setOverscroll(false, false);
 
-		this.width = width;
-
-		align(Align.center);
-		DeparturePanel departurePanel = new DeparturePanel(iconPad, iconSize,
-				controller);
+		toolbar.align(Align.center);
+		DeparturePanel departurePanel = new DeparturePanel(controller);
 		ChangeVariablePanel changeVariablePanel = new ChangeVariablePanel(
-				iconPad, iconSize, controller);
-		VisibilityPanel visibilityPanel = new VisibilityPanel(iconPad,
-				iconSize, controller);
-		TweensPanel tweensPanel = new TweensPanel(iconPad, iconSize, controller);
-		TouchabilityPanel touchabilityPanel = new TouchabilityPanel(iconPad,
-				iconSize, controller);
-		SoundPanel sound = new SoundPanel(iconPad, iconSize, controller);
-		ShowTextPanel conversations = new ShowTextPanel(iconPad, iconSize,
 				controller);
+		VisibilityPanel visibilityPanel = new VisibilityPanel(controller);
+		TweensPanel tweensPanel = new TweensPanel(controller);
+		TouchabilityPanel touchabilityPanel = new TouchabilityPanel(controller);
+		SoundPanel sound = new SoundPanel(controller);
+		ShowTextPanel conversations = new ShowTextPanel(controller);
 
-		defaults().padBottom(smallPad).fill().expandX();
+		toolbar.defaults().padBottom(smallPad).fill().expandX();
 
-		addInNewRow(departurePanel);
-		addInNewRow(changeVariablePanel);
-		addInNewRow(sound);
-		addInNewRow(conversations).padBottom(normalPad);
-		addInNewRow(visibilityPanel);
-		addInNewRow(touchabilityPanel);
-		addInNewRow(tweensPanel);
-	}
-
-	@Override
-	public float getPrefWidth() {
-		return width;
+		toolbar.add(departurePanel);
+		toolbar.row();
+		toolbar.add(changeVariablePanel);
+		toolbar.row();
+		toolbar.add(sound);
+		toolbar.row();
+		toolbar.add(conversations).padBottom(normalPad);
+		toolbar.row();
+		toolbar.add(visibilityPanel);
+		toolbar.row();
+		toolbar.add(touchabilityPanel);
+		toolbar.row();
+		toolbar.add(tweensPanel);
 	}
 
 }

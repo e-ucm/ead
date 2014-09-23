@@ -37,9 +37,9 @@
 package es.eucm.ead.editor.view.widgets;
 
 import com.badlogic.gdx.scenes.scene2d.Actor;
+import com.badlogic.gdx.scenes.scene2d.ui.Cell;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.utils.Array;
-import com.esotericsoftware.tablelayout.Cell;
 
 /**
  * A panel with a defined number of rows and cols.
@@ -67,7 +67,7 @@ public class GridPanel<T extends Actor> extends Table {
 		this.lastRow = 0;
 		this.cols = cols;
 		this.cells = new Array<Array<Cell<T>>>(false, 8);
-		this.defaults().uniform().space(spacing).expand().fill();
+		this.defaults().space(spacing).expandX().fill();
 		addNewRowOfCells();
 	}
 
@@ -101,7 +101,7 @@ public class GridPanel<T extends Actor> extends Table {
 			}
 		}
 
-		return this.cells.get(this.lastRow).get(this.lastCol).setWidget(t);
+		return this.cells.get(this.lastRow).get(this.lastCol).setActor(t);
 	}
 
 	/**
@@ -114,29 +114,5 @@ public class GridPanel<T extends Actor> extends Table {
 		this.lastRow = 0;
 		this.lastCol = -1;
 		addNewRowOfCells();
-	}
-
-	@Override
-	public Cell<?> row() {
-		throw new IllegalStateException(
-				"Don't use this method, use GridPanel#addItem(Actor) instead!");
-	}
-
-	@Override
-	public Cell<Actor> add() {
-		throw new IllegalStateException(
-				"Don't use this method, use GridPanel#addItem(Actor) instead!");
-	}
-
-	@Override
-	public Cell<?> add(Actor actor) {
-		throw new IllegalStateException(
-				"Don't use this method, use GridPanel#addItem(Actor) instead!");
-	}
-
-	@Override
-	public void add(Actor... actors) {
-		throw new IllegalStateException(
-				"Don't use this method, use GridPanel#addItem(Actor) instead!");
 	}
 }

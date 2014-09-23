@@ -49,7 +49,7 @@ import es.eucm.ead.editor.view.widgets.PositionedHiddenPanel;
 
 public abstract class HelpMessage extends PositionedHiddenPanel {
 
-	private static final float DEFAULT_SPACING = 20F;
+	private static final float DEFAULT_SPACING = 15F;
 	protected static final float IN_DURATION = .3F;
 	protected static final float OUT_DURATION = .2F;
 

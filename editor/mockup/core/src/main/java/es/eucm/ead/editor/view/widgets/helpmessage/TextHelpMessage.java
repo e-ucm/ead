@@ -36,6 +36,7 @@
  */
 package es.eucm.ead.editor.view.widgets.helpmessage;
 
+import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
@@ -44,15 +45,16 @@ import es.eucm.ead.engine.I18N;
 
 public class TextHelpMessage extends HelpMessage {
 
-	private static final float WIDTH = 250;
-	private static final float HEIGHT = 120;
+	private static final float WIDTH = .14F;
+	private static final float HEIGHT = .1f;
 
 	public TextHelpMessage(Skin skin, I18N i18n, Position position,
 			final Actor reference, String i18nKey) {
 		super(skin, position, reference);
 		Label label = new Label(i18n.m(i18nKey), skin);
 		label.setWrap(true);
-		add(label).width(WIDTH).height(HEIGHT);
+		add(label).prefWidth(WIDTH * Gdx.graphics.getWidth()).prefHeight(
+				HEIGHT * Gdx.graphics.getHeight());
 	}
 
 }

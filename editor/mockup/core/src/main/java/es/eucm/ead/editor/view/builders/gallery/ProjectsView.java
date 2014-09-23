@@ -45,7 +45,6 @@ import com.badlogic.gdx.utils.Scaling;
 
 import es.eucm.ead.editor.control.Controller;
 import es.eucm.ead.editor.control.MockupController.BackListener;
-import es.eucm.ead.editor.control.actions.editor.ChangeMockupView;
 import es.eucm.ead.editor.control.actions.editor.ExitMockup;
 import es.eucm.ead.editor.control.actions.editor.asynk.NewMockupGameAsynk;
 import es.eucm.ead.editor.control.actions.editor.asynk.OpenMockupGameAsynk;
@@ -73,9 +72,7 @@ public class ProjectsView extends BaseGallery implements BackListener {
 
 	@Override
 	protected Actor createToolbarText() {
-		Image eAdventure = new Image(skin, "eAdventure");
-		eAdventure.setScaling(Scaling.fit);
-		return eAdventure;
+		return null;
 	}
 
 	@Override

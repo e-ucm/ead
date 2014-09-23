@@ -66,9 +66,8 @@ public class ChangeVariablePanel extends PrefabComponentPanel {
 
 	private ChangeVar changeVar;
 
-	public ChangeVariablePanel(float iconPad, float size,
-			final Controller controller) {
-		super("variable80x80", iconPad, size, "edition.changeVariable",
+	public ChangeVariablePanel(final Controller controller) {
+		super("variable80x80", "edition.changeVariable",
 				ComponentId.PREFAB_CHANGE_VAR, controller);
 
 		variablesPanel = new VariablesTable(skin, Position.RIGHT, this,

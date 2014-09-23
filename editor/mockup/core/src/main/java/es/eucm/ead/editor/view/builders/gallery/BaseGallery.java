@@ -40,16 +40,17 @@ import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.ui.Button;
 import com.badlogic.gdx.scenes.scene2d.ui.Button.ButtonStyle;
+import com.badlogic.gdx.scenes.scene2d.ui.Cell;
 import com.badlogic.gdx.scenes.scene2d.ui.Image;
 import com.badlogic.gdx.scenes.scene2d.ui.ScrollPane;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
+import com.badlogic.gdx.scenes.scene2d.ui.Value;
 import com.badlogic.gdx.scenes.scene2d.utils.Align;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.Scaling;
-import com.esotericsoftware.tablelayout.Cell;
 
 import es.eucm.ead.editor.assets.ApplicationAssets;
 import es.eucm.ead.editor.control.Controller;
@@ -69,9 +70,8 @@ public abstract class BaseGallery implements ViewBuilder {
 
 	private static final int DEFAULT_COLUMNS = 5;
 
-	public static final float ICON_SIZE = 0.06f, TOOLBAR_SIZE = 0.075f,
-			ICON_PAD = 0.0075f, SMALL_PAD = 20f, DEFAULT_ENTITY_SPACING = 20f,
-			MIN_ITEM_HEIGHT = 165F, UNDO_POPUP_TIMEOUT = 5F, PLAY_PAD = 100F;
+	public static final float DEFAULT_ENTITY_SPACING = 20f,
+			UNDO_POPUP_TIMEOUT = 5F;
 
 	private static final ClickListener newButtonListener = new ClickListener() {
 
@@ -121,8 +121,6 @@ public abstract class BaseGallery implements ViewBuilder {
 	private SortWidget sortWidget;
 	protected Button newButton;
 	protected Toolbar topBar;
-	protected float iconSize;
-	protected float iconPad;
 	private TextButton undo;
 	protected Table view;
 	protected Skin skin;
@@ -149,44 +147,45 @@ public abstract class BaseGallery implements ViewBuilder {
 		this.items = new Array<GalleryItem>(true, 8, GalleryItem.class);
 		undosPending = new Array<Undoable>(4);
 
-		float viewportHeight = controller.getPlatform().getSize().y;
-		iconSize = viewportHeight * ICON_SIZE;
-		iconPad = viewportHeight * ICON_PAD;
-		float toolbarSize = viewportHeight * TOOLBAR_SIZE;
-
 		view = new Table();
 		view.align(Align.top);
 		view.setFillParent(true);
 
 		topBar = new Toolbar(skin, "white_top");
 
+		topBar.defaults().expandY().fill();
+		Value smallPad = Value.percentHeight(.5f, topBar);
 		Actor backButton = createBackButton();
 		if (backButton != null) {
-			topBar.add(backButton).left().fill();
+			topBar.add(backButton);
 		}
 
 		Actor play = createPlayButton();
 		if (play != null) {
-			topBar.add(play).left().padLeft(PLAY_PAD).fill();
+			topBar.add(play).padLeft(smallPad);
 		}
 
 		Actor share = createShareButton();
 		if (share != null) {
-			topBar.add(share).left().padLeft(SMALL_PAD).fill();
+			topBar.add(share).padLeft(smallPad);
 		}
 
+		topBar.add().expandX();
 		Actor toolbarText = createToolbarText();
-		topBar.add(toolbarText).expand();
+		if (toolbarText != null) {
+			topBar.add(toolbarText);
+		}
 
+		topBar.add().expandX();
 		searchWidget = createSearchWidget();
-		topBar.add(searchWidget).padRight(SMALL_PAD).fill();
+		topBar.add(searchWidget).padRight(smallPad);
 
 		sortWidget = addReorderWidget();
-		topBar.add(sortWidget).padRight(SMALL_PAD).fill().expandY();
+		topBar.add(sortWidget).padRight(smallPad);
 
 		Actor settings = createSettings(controller);
 		if (settings != null) {
-			topBar.add(settings).padRight(SMALL_PAD).fill();
+			topBar.add(settings).padRight(smallPad);
 		}
 
 		createnNewButton();
@@ -195,9 +194,10 @@ public abstract class BaseGallery implements ViewBuilder {
 		ScrollPane galleryPane = new ScrollPane(galleryGrid);
 		galleryPane.setScrollingDisabled(true, false);
 
-		view.add(topBar).expandX().fill().height(toolbarSize);
+		view.top();
+		view.add(topBar).expandX().fillX().minHeight(Value.percentHeight(1f));
 		view.row();
-		view.add(galleryPane).expand().fillX().top();
+		view.add(galleryPane).expandX().fillX();
 
 		HelpSequence helpSequence = getHelpSequence(controller);
 		if (helpSequence != null) {
@@ -277,14 +277,12 @@ public abstract class BaseGallery implements ViewBuilder {
 	}
 
 	protected SortWidget addReorderWidget() {
-		SortWidget sortWidget = new SortWidget(skin, iconPad, iconSize, items,
-				this);
+		SortWidget sortWidget = new SortWidget(skin, items, this);
 		return sortWidget;
 	}
 
 	protected SearchWidget createSearchWidget() {
-		SearchWidget searchWidget = new SearchWidget(iconPad, iconSize, skin,
-				i18n, items, this);
+		SearchWidget searchWidget = new SearchWidget(skin, i18n, items, this);
 		return searchWidget;
 	}
 
@@ -293,7 +291,7 @@ public abstract class BaseGallery implements ViewBuilder {
 	}
 
 	protected Actor createSettings(Controller controller) {
-		Settings settings = new Settings(controller, iconPad, iconSize);
+		Settings settings = new Settings(controller);
 		return settings;
 	}
 
@@ -337,7 +335,7 @@ public abstract class BaseGallery implements ViewBuilder {
 	public void updateDisplayedElements() {
 		this.galleryGrid.clear();
 		if (this.newButton != null) {
-			this.galleryGrid.addItem(this.newButton).minHeight(MIN_ITEM_HEIGHT);
+			this.galleryGrid.addItem(this.newButton);
 		}
 		for (GalleryItem element : items) {
 			galleryGrid.addItem(element);

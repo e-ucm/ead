@@ -57,8 +57,8 @@ import es.eucm.ead.editor.model.Q;
 import es.eucm.ead.editor.model.events.FieldEvent;
 import es.eucm.ead.editor.view.builders.EditionView;
 import es.eucm.ead.editor.view.listeners.TextFieldListener;
+import es.eucm.ead.editor.view.widgets.IconButton;
 import es.eucm.ead.editor.view.widgets.Notification;
-import es.eucm.ead.editor.view.widgets.ToolbarIcon;
 import es.eucm.ead.editor.view.widgets.gallery.GalleryItem;
 import es.eucm.ead.editor.view.widgets.gallery.SceneItem;
 import es.eucm.ead.editor.view.widgets.helpmessage.sequence.HelpSequence;
@@ -102,8 +102,7 @@ public class ScenesView extends BaseGallery {
 
 	@Override
 	protected Actor createShareButton() {
-		Button share = new ToolbarIcon("share80x80", iconPad, iconSize, skin,
-				"inverted");
+		Button share = new IconButton("share80x80", 0f, skin, "inverted");
 		share.addListener(new ChangeListener() {
 
 			@Override
@@ -123,8 +122,7 @@ public class ScenesView extends BaseGallery {
 
 	@Override
 	protected Actor createPlayButton() {
-		Button play = new ToolbarIcon("play80x80", iconPad, iconSize, skin,
-				"inverted");
+		Button play = new IconButton("play80x80", 0f, skin, "inverted");
 		play.addListener(new ChangeListener() {
 
 			@Override
@@ -137,7 +135,7 @@ public class ScenesView extends BaseGallery {
 
 	@Override
 	protected Actor createBackButton() {
-		Button back = new ToolbarIcon("back80x80", iconPad, iconSize, skin);
+		Button back = new IconButton("back80x80", skin);
 		back.addListener(new ChangeListener() {
 
 			@Override
@@ -158,15 +156,10 @@ public class ScenesView extends BaseGallery {
 					return super.getPrefWidth();
 				}
 
-				return getStyle().font.getBounds(message).width * 1.5F;
-			}
-
-			@Override
-			public float getPrefHeight() {
-				return iconSize;
+				return getStyle().font.getBounds(message).width * 2.5F;
 			}
 		};
-		projectName.setMessageText(i18n.m("gallery.enterAName"));
+		projectName.setMessageText(i18n.m("name"));
 		projectName.addListener(new TextFieldListener(projectName) {
 
 			@Override

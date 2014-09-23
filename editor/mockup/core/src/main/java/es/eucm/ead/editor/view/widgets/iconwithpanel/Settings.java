@@ -40,7 +40,10 @@ import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.ui.ButtonGroup;
 import com.badlogic.gdx.scenes.scene2d.ui.CheckBox;
 import com.badlogic.gdx.scenes.scene2d.ui.Label;
+import com.badlogic.gdx.scenes.scene2d.ui.ScrollPane;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
+import com.badlogic.gdx.scenes.scene2d.ui.Table;
+import com.badlogic.gdx.scenes.scene2d.ui.Value;
 import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
 
 import es.eucm.ead.editor.control.Controller;
@@ -51,14 +54,11 @@ import es.eucm.ead.engine.I18N.Lang;
 
 public class Settings extends IconWithScalePanel {
 
-	private static final float NORMAL_PAD = 40;
-	private static final float SMALL_PAD = 20;
 	private CheckBox helpMessages;
 	private Controller controller;
 
-	public Settings(final Controller controller, float iconPad, float size) {
-		super("settings80x80", iconPad, 0, size, controller
-				.getApplicationAssets().getSkin());
+	public Settings(final Controller controller) {
+		super("settings80x80", 5f, controller.getApplicationAssets().getSkin());
 		this.controller = controller;
 		Skin skin = controller.getApplicationAssets().getSkin();
 		I18N i18n = controller.getApplicationAssets().getI18N();
@@ -70,9 +70,16 @@ public class Settings extends IconWithScalePanel {
 				skin);
 		Label more = new Label(i18n.m("settings.more").toUpperCase(), skin);
 
+		Value smallPad = Value.percentWidth(.5f, this);
+		Value normalPad = Value.percentWidth(1f, this);
+
+		Table panel = new Table();
+		ScrollPane pane = new ScrollPane(panel);
+		pane.setScrollingDisabled(true, false);
+		this.panel.add(pane).top().expand();
+
 		panel.top();
-		panel.add(languages).padTop(NORMAL_PAD + SMALL_PAD)
-				.padBottom(SMALL_PAD);
+		panel.add(languages).padTop(normalPad).padBottom(smallPad);
 		panel.row();
 
 		ChangeListener listener = new ChangeListener() {
@@ -105,13 +112,13 @@ public class Settings extends IconWithScalePanel {
 				lan.setChecked(true);
 			}
 			lan.addListener(listener);
-			panel.add(lan).left().padLeft(SMALL_PAD);
+			panel.add(lan).left().padLeft(smallPad);
 			panel.row();
 		}
 
-		panel.add(more).padTop(NORMAL_PAD + SMALL_PAD);
+		panel.add(more).padTop(normalPad);
 		panel.row();
-		panel.add(helpMessages).left().pad(SMALL_PAD);
+		panel.add(helpMessages).left().pad(smallPad);
 	}
 
 	@Override

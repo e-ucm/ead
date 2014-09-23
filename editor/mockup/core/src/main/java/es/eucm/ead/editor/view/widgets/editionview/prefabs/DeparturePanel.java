@@ -55,13 +55,13 @@ import es.eucm.ead.schema.effects.GoScene;
 
 public class DeparturePanel extends PrefabComponentPanel {
 
-	private static final float PAD = 20;
+	private static final float PAD = 15;
 
 	private ScenesTableList table;
 
-	public DeparturePanel(float iconPad, float size, final Controller controller) {
-		super("gateway_reverse80x80", iconPad, size, "edition.exits",
-				ComponentId.PREFAB_EXIT, controller);
+	public DeparturePanel(final Controller controller) {
+		super("gateway_reverse80x80", "edition.exits", ComponentId.PREFAB_EXIT,
+				controller);
 
 		InputListener makeExit = new ClickListener() {
 			public void clicked(InputEvent event, float x, float y) {
@@ -98,6 +98,8 @@ public class DeparturePanel extends PrefabComponentPanel {
 		table = new ScenesTableList(controller, makeExit, "scene");
 
 		ScrollPane scroll = new ScrollPane(table, skin, "white");
+		scroll.setScrollingDisabled(true, false);
+		scroll.setFadeScrollBars(true);
 		panel.add(scroll).expandY().fill();
 		panel.row();
 

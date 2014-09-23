@@ -427,11 +427,12 @@ public class MeshHelper implements Disposable {
 		}
 		if (this.frameBuffer == null) {
 			this.stageViewport = stage.getViewport();
-			Gdx.app.log(MESH_TAG,
-					"new viewport ~> " + stageViewport.getViewportX() + ", "
-							+ stageViewport.getViewportY() + ", "
-							+ stageViewport.getViewportWidth() + ", "
-							+ stageViewport.getViewportHeight());
+			Gdx.app.log(
+					MESH_TAG,
+					"new viewport ~> " + stageViewport.getScreenX() + ", "
+							+ stageViewport.getScreenY() + ", "
+							+ stageViewport.getScreenWidth() + ", "
+							+ stageViewport.getScreenHeight());
 			this.recalculateMatrix = true;
 			this.scaleX = 1 / this.scaledView.getScaleX();
 			this.scaleY = 1 / this.scaledView.getScaleY();
@@ -999,10 +1000,10 @@ public class MeshHelper implements Disposable {
 				drawMesh();
 				currModifiedPixmap = new PixmapRegion(takeScreenShot(pixX,
 						pixY, pixWidth, pixHeight), pixX, pixY);
-				frameBuffer.end(stageViewport.getViewportX(),
-						stageViewport.getViewportY(),
-						stageViewport.getViewportWidth(),
-						stageViewport.getViewportHeight());
+				frameBuffer.end(stageViewport.getScreenX(),
+						stageViewport.getScreenY(),
+						stageViewport.getScreenWidth(),
+						stageViewport.getScreenHeight());
 
 				resetMesh();
 			}

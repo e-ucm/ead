@@ -50,6 +50,7 @@ import com.badlogic.gdx.scenes.scene2d.InputListener;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.Touchable;
 import com.badlogic.gdx.scenes.scene2d.actions.Actions;
+import com.badlogic.gdx.scenes.scene2d.ui.Cell;
 import com.badlogic.gdx.scenes.scene2d.ui.Container;
 import com.badlogic.gdx.scenes.scene2d.ui.List.ListStyle;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
@@ -60,7 +61,6 @@ import com.badlogic.gdx.scenes.scene2d.utils.Disableable;
 import com.badlogic.gdx.scenes.scene2d.utils.Drawable;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.Pools;
-import com.esotericsoftware.tablelayout.Cell;
 
 /**
  * A drop down allows a user to choose one of a number of values from a list.
@@ -72,7 +72,7 @@ import com.esotericsoftware.tablelayout.Cell;
  * The preferred size of the select box is determined by the maximum bounds of
  * the items and the size of the {@link DropDownStyle#background}.
  */
-public class DropDown extends Container implements Disableable {
+public class DropDown extends Container<Actor> implements Disableable {
 	private static final Vector2 tmpCoords = new Vector2();
 
 	private ClickListener clickListener;
@@ -192,10 +192,10 @@ public class DropDown extends Container implements Disableable {
 	private void setSelected(Actor item) {
 		Cell cell = scroll.getCell(item);
 		if (selection != null) {
-			cell.setWidget(selection);
+			cell.setActor(selection);
 		}
 		selection = item;
-		setWidget(item);
+		setActor(item);
 		invalidateHierarchy();
 	}
 

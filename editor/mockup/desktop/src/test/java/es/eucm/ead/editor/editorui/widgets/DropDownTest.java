@@ -104,7 +104,7 @@ public class DropDownTest extends MockupUITest {
 		table.row();
 		table.add(dropDown2);
 
-		container.setWidget(table);
+		container.setActor(table);
 		container.setFillParent(true);
 
 		return container;

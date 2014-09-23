@@ -104,7 +104,7 @@ public abstract class AbstractWidgetTest extends EditorTest implements
 		stage.draw();
 		float x = 10;
 		float y = stage.getHeight();
-		SpriteBatch batch = (SpriteBatch) stage.getSpriteBatch();
+		SpriteBatch batch = (SpriteBatch) stage.getBatch();
 		batch.begin();
 		for (String s : statusMessages) {
 			statusFont.draw(batch, s, x, y);

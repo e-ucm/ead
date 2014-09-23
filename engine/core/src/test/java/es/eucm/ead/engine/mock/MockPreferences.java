@@ -36,12 +36,6 @@
  */
 package es.eucm.ead.engine.mock;
 
-import com.badlogic.gdx.Files.FileType;
-import com.badlogic.gdx.Preferences;
-import com.badlogic.gdx.files.FileHandle;
-import com.badlogic.gdx.utils.GdxRuntimeException;
-import com.badlogic.gdx.utils.StreamUtils;
-
 import java.io.BufferedInputStream;
 import java.io.BufferedOutputStream;
 import java.io.File;
@@ -51,6 +45,12 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Properties;
+
+import com.badlogic.gdx.Files.FileType;
+import com.badlogic.gdx.Preferences;
+import com.badlogic.gdx.files.FileHandle;
+import com.badlogic.gdx.utils.GdxRuntimeException;
+import com.badlogic.gdx.utils.StreamUtils;
 
 public class MockPreferences implements Preferences {
 	private final String name;
@@ -78,32 +78,37 @@ public class MockPreferences implements Preferences {
 	}
 
 	@Override
-	public void putBoolean(String key, boolean val) {
+	public Preferences putBoolean(String key, boolean val) {
 		properties.put(key, Boolean.toString(val));
+		return null;
 	}
 
 	@Override
-	public void putInteger(String key, int val) {
+	public Preferences putInteger(String key, int val) {
 		properties.put(key, Integer.toString(val));
+		return null;
 	}
 
 	@Override
-	public void putLong(String key, long val) {
+	public Preferences putLong(String key, long val) {
 		properties.put(key, Long.toString(val));
+		return null;
 	}
 
 	@Override
-	public void putFloat(String key, float val) {
+	public Preferences putFloat(String key, float val) {
 		properties.put(key, Float.toString(val));
+		return null;
 	}
 
 	@Override
-	public void putString(String key, String val) {
+	public Preferences putString(String key, String val) {
 		properties.put(key, val);
+		return null;
 	}
 
 	@Override
-	public void put(Map<String, ?> vals) {
+	public Preferences put(Map<String, ?> vals) {
 		for (Entry<String, ?> val : vals.entrySet()) {
 			if (val.getValue() instanceof Boolean)
 				putBoolean(val.getKey(), (Boolean) val.getValue());
@@ -116,6 +121,7 @@ public class MockPreferences implements Preferences {
 			if (val.getValue() instanceof Float)
 				putFloat(val.getKey(), (Float) val.getValue());
 		}
+		return null;
 	}
 
 	@Override

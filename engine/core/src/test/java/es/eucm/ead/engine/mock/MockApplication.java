@@ -36,6 +36,9 @@
  */
 package es.eucm.ead.engine.mock;
 
+import java.util.HashMap;
+import java.util.Map;
+
 import com.badlogic.gdx.Application;
 import com.badlogic.gdx.ApplicationListener;
 import com.badlogic.gdx.Audio;
@@ -49,10 +52,8 @@ import com.badlogic.gdx.Preferences;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.Clipboard;
 import com.badlogic.gdx.utils.GdxNativesLoader;
-import es.eucm.ead.engine.EngineApplicationListener;
 
-import java.util.HashMap;
-import java.util.Map;
+import es.eucm.ead.engine.EngineApplicationListener;
 
 /**
  * This class is a no-GUI wrapper for the engine, intended for testing

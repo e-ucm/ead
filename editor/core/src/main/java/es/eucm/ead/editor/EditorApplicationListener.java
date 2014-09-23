@@ -78,7 +78,7 @@ public class EditorApplicationListener implements ApplicationListener {
 				DEFAULT_BACKGROUND_COLOR.g, DEFAULT_BACKGROUND_COLOR.b,
 				DEFAULT_BACKGROUND_COLOR.a);
 		stage = createStage();
-		platform.setBatch(stage.getSpriteBatch());
+		platform.setBatch(stage.getBatch());
 		controller = createController();
 		Gdx.input.setInputProcessor(stage);
 		initialize();

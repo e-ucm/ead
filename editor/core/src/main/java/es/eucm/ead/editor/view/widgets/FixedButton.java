@@ -40,12 +40,12 @@ import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.InputListener;
 import com.badlogic.gdx.scenes.scene2d.ui.Button;
+import com.badlogic.gdx.scenes.scene2d.ui.Cell;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
 import com.badlogic.gdx.scenes.scene2d.utils.Align;
 import com.badlogic.gdx.scenes.scene2d.utils.Drawable;
-import com.esotericsoftware.tablelayout.Cell;
 
 /**
  * Button that when the mouse are on it change its appearance.
@@ -86,23 +86,23 @@ public class FixedButton extends Table {
 		deployButton = new IconButton(icon2, skin);
 		gatherButton = new GatherIconButton(icon1, deployButton, skin);
 
-		image.setWidget(gatherButton);
+		image.setActor(gatherButton);
 		image.bottom();
 
 		this.addListener(new InputListener() {
 			@Override
 			public void enter(InputEvent event, float x, float y, int pointer,
 					Actor fromActor) {
-				image.setWidget(null);
-				image.setWidget(deployButton);
+				image.setActor(null);
+				image.setActor(deployButton);
 				image.center();
 			}
 
 			@Override
 			public void exit(InputEvent event, float x, float y, int pointer,
 					Actor toActor) {
-				image.setWidget(null);
-				image.setWidget(gatherButton);
+				image.setActor(null);
+				image.setActor(gatherButton);
 				image.bottom();
 			}
 		});

@@ -36,6 +36,7 @@
  */
 package es.eucm.ead.editor.view.widgets;
 
+import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.scenes.scene2d.Action;
@@ -112,7 +113,9 @@ public class PositionedHiddenPanel extends HiddenPanel {
 	 *            position of the reference in {@link Stage} coordinates.
 	 */
 	protected void positionPanel(float x, float y) {
-		float panelPrefHeight = getPrefHeight();
+		pack();
+		float panelPrefHeight = Math.min(getHeight(), Gdx.graphics.getHeight());
+		float panelPrefWidth = Math.min(getWidth(), Gdx.graphics.getWidth());
 		if (position == Position.RIGHT) {
 			float coordinateY = 0;
 			if (reference.getParent() != null
@@ -128,31 +131,46 @@ public class PositionedHiddenPanel extends HiddenPanel {
 					panelPrefHeight = getPrefHeight();
 				}
 			} else if (reference.getParent() != null) {
-				coordinateY = Math.min(y
-						+ (reference.getHeight() - panelPrefHeight) * .5f,
-						reference.getParent().getHeight() - panelPrefHeight);
-				panelPrefHeight = Math.min(getPrefHeight(), reference
+				panelPrefHeight = Math.min(panelPrefHeight, reference
 						.getParent().getHeight());
+				coordinateY = y + (reference.getHeight() - panelPrefHeight)
+						* .5f;
+				if (coordinateY < 0) {
+					if (panelPrefHeight > reference.getParent().getParent()
+							.getHeight()) {
+						panelPrefHeight = reference.getParent().getParent()
+								.getHeight();
+					}
+					coordinateY = 0;
+				} else if (coordinateY + panelPrefHeight > reference
+						.getParent().getHeight()) {
+					coordinateY = reference.getParent().getParent().getHeight()
+							- panelPrefHeight;
+					if (coordinateY < 0) {
+						if (panelPrefHeight > reference.getParent().getParent()
+								.getHeight()) {
+							panelPrefHeight = reference.getParent().getParent()
+									.getHeight();
+						}
+						coordinateY = 0;
+					}
+				}
 			}
-			float panelPrefY = Math.max(0f, coordinateY);
-			setPanelBounds(x + space + reference.getWidth(), panelPrefY,
-					getPrefWidth(), panelPrefHeight);
+			setPanelBounds(x + space + reference.getWidth(), coordinateY,
+					panelPrefWidth, panelPrefHeight);
 		} else if (position == Position.BOTTOM) {
-			float panelPrefWidth = getPrefWidth();
 			setPanelBounds(
 					Math.max(0f, x + (reference.getWidth() - panelPrefWidth)
 							* .5f), y - space - panelPrefHeight,
 					panelPrefWidth, panelPrefHeight);
 		} else if (position == Position.CENTER) {
-			float panelPrefWidth = getPrefWidth();
 			setPanelBounds(x + (reference.getWidth() - panelPrefWidth) * .5f, y
 					+ (reference.getHeight() - panelPrefHeight) * .5f,
 					panelPrefWidth, panelPrefHeight);
 		} else if (position == Position.TOP) {
-			float panelPrefWidth = getPrefWidth();
 			setPanelBounds(
 					Math.max(0f, x + (reference.getWidth() - panelPrefWidth)
-							* .5f), y + getPrefHeight() + space,
+							* .5f), y + reference.getHeight() + space,
 					panelPrefWidth, panelPrefHeight);
 		}
 	}

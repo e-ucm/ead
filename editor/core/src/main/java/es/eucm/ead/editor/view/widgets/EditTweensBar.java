@@ -40,6 +40,7 @@ import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.InputListener;
 import com.badlogic.gdx.scenes.scene2d.ui.Button;
+import com.badlogic.gdx.scenes.scene2d.ui.Cell;
 import com.badlogic.gdx.scenes.scene2d.ui.ScrollPane;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
@@ -49,7 +50,6 @@ import com.badlogic.gdx.scenes.scene2d.utils.DragAndDrop.Payload;
 import com.badlogic.gdx.scenes.scene2d.utils.DragAndDrop.Source;
 import com.badlogic.gdx.scenes.scene2d.utils.DragAndDrop.Target;
 import com.badlogic.gdx.scenes.scene2d.utils.Drawable;
-import com.esotericsoftware.tablelayout.Cell;
 
 import es.eucm.ead.editor.control.Controller;
 import es.eucm.ead.editor.view.widgets.IconTextButton.Position;
@@ -270,8 +270,8 @@ public class EditTweensBar extends Table {
 	}
 
 	private void changeTweensBar(TypeTweensBar newBar) {
-		right.setWidget(null);
-		right.setWidget(newBar);
+		right.setActor(null);
+		right.setActor(newBar);
 	}
 
 	/**

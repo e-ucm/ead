@@ -57,8 +57,8 @@ import es.eucm.ead.editor.control.background.BackgroundExecutor.BackgroundTaskLi
 import es.eucm.ead.editor.control.background.BackgroundTask;
 import es.eucm.ead.editor.view.builders.EditionView;
 import es.eucm.ead.editor.view.builders.LibrariesView;
+import es.eucm.ead.editor.view.widgets.IconButton;
 import es.eucm.ead.editor.view.widgets.Notification;
-import es.eucm.ead.editor.view.widgets.ToolbarIcon;
 import es.eucm.ead.editor.view.widgets.gallery.GalleryItem;
 import es.eucm.ead.editor.view.widgets.gallery.RepositoryItem;
 import es.eucm.ead.editor.view.widgets.gallery.RepositoryItem.ItemInfo;
@@ -96,7 +96,7 @@ public class RepositoryView extends BaseGallery implements ProgressListener,
 
 	@Override
 	protected Actor createBackButton() {
-		Button back = new ToolbarIcon("back80x80", iconPad, iconSize, skin);
+		Button back = new IconButton("back80x80", skin);
 		back.addListener(new ClickListener() {
 			@Override
 			public void clicked(InputEvent event, float x, float y) {
@@ -223,6 +223,7 @@ public class RepositoryView extends BaseGallery implements ProgressListener,
 		public void error(Throwable e) {
 			updatingNotif.hide();
 			errorUpdating.show(getStage(), DEFAULT_NOTIF_TIMEOUT);
+			Gdx.app.error("RepositoryView", "Error updating elements", e);
 		}
 	};
 

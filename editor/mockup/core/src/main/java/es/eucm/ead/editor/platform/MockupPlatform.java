@@ -49,7 +49,6 @@ import es.eucm.network.requests.RequestHelper;
 
 public abstract class MockupPlatform extends AbstractPlatform {
 
-	private final Vector2 screenDimensions = new Vector2(1280f, 800f);
 	private String importProjectPath;
 
 	@Override
@@ -91,12 +90,11 @@ public abstract class MockupPlatform extends AbstractPlatform {
 
 	@Override
 	public void setSize(int width, int height) {
-
 	}
 
 	@Override
 	public Vector2 getSize() {
-		return screenDimensions;
+		return null;
 	}
 
 	public void getMultilineTextInput(TextInputListener listener,

@@ -40,7 +40,9 @@ import javax.swing.JFrame;
 
 import com.badlogic.gdx.backends.lwjgl.LwjglApplicationConfiguration;
 import com.badlogic.gdx.backends.lwjgl.LwjglFrame;
+import com.badlogic.gdx.math.MathUtils;
 
+import es.eucm.ead.editor.control.MockupController.Dpi;
 import es.eucm.ead.engine.utils.SwingEDTUtils;
 
 public class MockupMain {
@@ -48,9 +50,9 @@ public class MockupMain {
 	public static void main(String[] args) {
 
 		LwjglApplicationConfiguration config = new LwjglApplicationConfiguration();
-		config.width = 854;
-		config.height = 480;
-		config.forceExit = true;
+		config.width = 1280;
+		config.height = 720;
+		config.overrideDensity = MathUtils.round(Dpi.HDPI.getMaxDpi());
 		config.title = "eAdventure Mockup";
 
 		MockupDesktopPlatform platform = new MockupDesktopPlatform();

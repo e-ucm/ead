@@ -36,10 +36,12 @@
  */
 package es.eucm.ead.editor.view.widgets.gallery;
 
+import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
+import com.badlogic.gdx.scenes.scene2d.Touchable;
 import com.badlogic.gdx.scenes.scene2d.ui.Button;
 import com.badlogic.gdx.scenes.scene2d.ui.Container;
 import com.badlogic.gdx.scenes.scene2d.ui.Image;
@@ -58,13 +60,14 @@ import es.eucm.ead.editor.view.widgets.IconButton;
 
 public abstract class GalleryItem extends Button {
 
+	private static final float MAX_PERCENT_WIDTH = .3F;
 	private static final String DELETE_ICON = "recycle";
 
 	private static final ClickListener iconListener = new ClickListener() {
 		public void clicked(InputEvent event, float x, float y) {
 			Actor actor = event.getListenerActor();
 			GalleryItem item = ((GalleryItem) actor.getUserObject());
-			if (actor instanceof IconButton) {
+			if (actor.hit(x, y, true) instanceof IconButton) {
 				item.gallery.deleteItem(item);
 			} else {
 				item.gallery.itemClicked(item);
@@ -126,24 +129,20 @@ public abstract class GalleryItem extends Button {
 		IconButton iconButton = null;
 		if (canBeDeleted) {
 			iconButton = new IconButton(DELETE_ICON, skin);
-			iconButton.setUserObject(this);
-			iconButton.addListener(iconListener);
-			top.add(iconButton).expand().right();
+			top.add(iconButton).expandX().right();
 			top.row();
 		}
+		top.addCaptureListener(iconListener);
+		top.setTouchable(Touchable.enabled);
+		top.setUserObject(this);
 
 		this.image = image;
+		float prefSize = Gdx.graphics.getWidth() * MAX_PERCENT_WIDTH;
 		image.setScaling(Scaling.fit);
 		image.setUserObject(this);
 		image.addListener(iconListener);
 		image.setDrawable(skin.getDrawable("new_project80x80"));
-		top.add(image)
-				.pad(padImage)
-				.expand()
-				.center()
-				.fill()
-				.padBottom(
-						padImage + (canBeDeleted ? iconButton.getHeight() : 0));
+		top.add(image).pad(padImage).center().maxSize(prefSize);
 
 		Container bot = new Container(name).pad(padText);
 		bot.setBackground(style.textBackground);

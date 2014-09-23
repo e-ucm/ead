@@ -50,18 +50,7 @@ import es.eucm.ead.editor.view.widgets.PositionedHiddenPanel;
 public class IconWithScalePanel extends IconWithPanel {
 
 	public IconWithScalePanel(String icon, float space, Skin skin) {
-		this(icon, 0, space, -1, skin);
-
-	}
-
-	public IconWithScalePanel(String icon, float padding, float space, Skin skin) {
-		this(icon, padding, space, -1, skin);
-
-	}
-
-	public IconWithScalePanel(String icon, float padding, float space,
-			float size, Skin skin) {
-		super(icon, padding, space, size, skin, null);
+		super(icon, space, skin, null);
 
 	}
 
@@ -73,12 +62,12 @@ public class IconWithScalePanel extends IconWithPanel {
 				Stage stage = IconWithScalePanel.this.getStage();
 				boolean left = x < stage.getWidth() * .5f;
 				setTransform(true);
+				adjustBackground(left);
 				float panelPrefHeight = y - space;
 				float panelPrefY = 0f;
 				float prefX = left ? 0 : stage.getWidth() - getPrefWidth();
 				setPanelBounds(prefX, panelPrefY, getPrefWidth(),
 						panelPrefHeight);
-				adjustBackground(left);
 				setOrigin(left ? 0 : getWidth(), getHeight());
 			}
 

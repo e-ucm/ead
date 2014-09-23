@@ -65,7 +65,7 @@ public class SceneItem extends GalleryItem implements
 	private ModelEntity scene;
 	private Controller controller;
 	private Documentation documentation;
-	private Container container;
+	private Container<Actor> container;
 
 	public SceneItem(final Controller controller, ModelEntity scen,
 			BaseGallery gallery) {
@@ -80,7 +80,7 @@ public class SceneItem extends GalleryItem implements
 				Texture.class, this);
 		TextField nameTf = (TextField) name;
 		nameTf.setText(getDocumentationName());
-		nameTf.setMessageText(gallery.getI18n().m("gallery.enterAName"));
+		nameTf.setMessageText(gallery.getI18n().m("name"));
 		nameTf.addListener(new TextFieldListener(nameTf) {
 
 			@Override
@@ -101,7 +101,7 @@ public class SceneItem extends GalleryItem implements
 				}
 			}
 		});
-		container = new Container(new Image(skin.getDrawable("first")));
+		container = new Container<Actor>(new Image(skin.getDrawable("first")));
 		container.setFillParent(true);
 		container.setTouchable(Touchable.disabled);
 		container.top().left();

@@ -228,4 +228,8 @@ public class IconButton extends Button implements Tooltip {
 		}
 
 	}
+
+	public Image getIcon() {
+		return iconImage;
+	}
 }

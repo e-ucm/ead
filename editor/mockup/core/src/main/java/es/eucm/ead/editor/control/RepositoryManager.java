@@ -654,30 +654,31 @@ public class RepositoryManager {
 	 */
 	public void updateLibraries(final ProgressListener progressListener,
 			final Controller controller) {
-		HttpRequest httpRequest = new HttpRequest(Net.HttpMethods.GET);
-		httpRequest.setUrl(LIBRARIES_FILE_URL);
-		httpRequest.setContent(null);
-		httpRequest.setTimeOut(TIMEOUT);
-		Gdx.net.sendHttpRequest(httpRequest, new HttpResponseListener() {
+		if (!loadLibrariesFromLocal(progressListener, controller)) {
+			HttpRequest httpRequest = new HttpRequest(Net.HttpMethods.GET);
+			httpRequest.setUrl(LIBRARIES_FILE_URL);
+			httpRequest.setContent(null);
+			httpRequest.setTimeOut(TIMEOUT);
+			Gdx.net.sendHttpRequest(httpRequest, new HttpResponseListener() {
 
-			@Override
-			public void handleHttpResponse(final HttpResponse httpResponse) {
-				final int statusCode = httpResponse.getStatus().getStatusCode();
-				// We are not in main thread right now so we
-				// need to post to main thread for UI updates
+				@Override
+				public void handleHttpResponse(final HttpResponse httpResponse) {
+					final int statusCode = httpResponse.getStatus()
+							.getStatusCode();
+					// We are not in main thread right now so we
+					// need to post to main thread for UI updates
 
-				if (statusCode != HttpStatus.SC_OK) {
-					Gdx.app.log(ONLINE_REPO_TAG,
-							"An error ocurred since statusCode is not OK, "
-									+ httpResponse);
-					failed(null);
-					return;
-				}
+					if (statusCode != HttpStatus.SC_OK) {
+						Gdx.app.log(ONLINE_REPO_TAG,
+								"An error ocurred since statusCode is not OK, "
+										+ httpResponse);
+						failed(null);
+						return;
+					}
 
-				final String res = httpResponse.getResultAsString();
-				Gdx.app.log(ONLINE_REPO_TAG, "Success");
+					final String res = httpResponse.getResultAsString();
+					Gdx.app.log(ONLINE_REPO_TAG, "Success");
 
-				if (!loadLibrariesFromLocal(progressListener, controller, res)) {
 					EditorGameAssets gameAssets = controller
 							.getEditorGameAssets();
 					gameAssets.absolute(LIBRARIES_FILE_PATH).writeString(res,
@@ -685,26 +686,27 @@ public class RepositoryManager {
 					createLibrariesFromString(progressListener, controller,
 							res, gameAssets);
 				}
-			}
 
-			@Override
-			public void failed(Throwable t) {
-				if (t != null)
-					Gdx.app.log(ONLINE_REPO_TAG,
-							"Failed to perform the HTTP Request: ", t);
-				boolean succeeded = loadLibrariesFromLocal(progressListener,
-						controller, "");
-				progressListener.finished(succeeded, controller);
+				@Override
+				public void failed(Throwable t) {
+					if (t != null)
+						Gdx.app.log(ONLINE_REPO_TAG,
+								"Failed to perform the HTTP Request: ", t);
+					if (!loadLibrariesFromLocal(progressListener, controller)) {
+						progressListener.finished(false, controller);
+					}
 
-			}
+				}
 
-			@Override
-			public void cancelled() {
-				Gdx.app.log(ONLINE_REPO_TAG, "HTTP request cancelled");
-				progressListener.finished(false, controller);
-
-			}
-		});
+				@Override
+				public void cancelled() {
+					Gdx.app.log(ONLINE_REPO_TAG, "HTTP request cancelled");
+					if (!loadLibrariesFromLocal(progressListener, controller)) {
+						progressListener.finished(false, controller);
+					}
+				}
+			});
+		}
 	}
 
 	/**
@@ -718,13 +720,12 @@ public class RepositoryManager {
 	 * @return true if we could load the libraryPaths from local path.
 	 */
 	private boolean loadLibrariesFromLocal(
-			final ProgressListener progressListener, Controller controller,
-			String updatedJson) {
+			final ProgressListener progressListener, Controller controller) {
 		EditorGameAssets gameAssets = controller.getEditorGameAssets();
 		FileHandle librariesFile = gameAssets.absolute(LIBRARIES_FILE_PATH);
 		if (librariesFile.exists()) {
 			String localJson = librariesFile.readString();
-			if (!updatedJson.isEmpty() && !localJson.equals(updatedJson)) {
+			if (localJson.isEmpty()) {
 				return false;
 			}
 			return createLibrariesFromString(progressListener, controller,
