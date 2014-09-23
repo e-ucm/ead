@@ -1,0 +1,7 @@
+{
+    "additionalProperties": false,
+    "javaType": "es.eucm.ead.schema.editor.components.RepoLicense",
+    "type": "string",
+    "description": "Information associated to a license applicable to this resource or library. Only creative commons and public domain licenses supported.",
+    "enum": ["public-domain", "cc-by", "cc-by-nd", "cc-by-sa", "cc-by-nc", "cc-by-nd-nc", "cc-by-sa-nc", "link-author", "learning-only", "undefined"]
+}

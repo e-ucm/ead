@@ -61,6 +61,7 @@ import es.eucm.ead.editor.view.widgets.GridPanel;
 import es.eucm.ead.editor.view.widgets.Toolbar;
 import es.eucm.ead.editor.view.widgets.ToolbarIcon;
 import es.eucm.ead.engine.I18N;
+import es.eucm.ead.schema.editor.components.RepoLibrary;
 
 public class LibrariesView implements ViewBuilder, ProgressListener {
 
@@ -126,8 +127,9 @@ public class LibrariesView implements ViewBuilder, ProgressListener {
 					target = target.getParent();
 				}
 				if (target instanceof TextButton) {
-					String targetLib = ((TextButton) target).getText()
-							.toString();
+					RepoLibrary repoLibrary = (RepoLibrary) (((TextButton) target))
+							.getUserObject();
+					String targetLib = repoLibrary.getPath();
 					controller.action(ChangeMockupView.class,
 							RepositoryView.class, targetLib);
 				}
@@ -155,8 +157,8 @@ public class LibrariesView implements ViewBuilder, ProgressListener {
 	public void finished(boolean succeeded, Controller controller) {
 		if (succeeded) {
 			toasts.hideNotification();
-			Array<String> libs = ((MockupController) controller)
-					.getRepositoryManager().getLibraries();
+			Array<RepoLibrary> libs = ((MockupController) controller)
+					.getRepositoryManager().getRepoLibraries();
 
 			if (libs.size == 0)
 				return;
@@ -164,9 +166,12 @@ public class LibrariesView implements ViewBuilder, ProgressListener {
 			Skin skin = controller.getApplicationAssets().getSkin();
 
 			for (int i = 0; i < libs.size; ++i) {
-				TextButton lib = new TextButton(libs.get(i), skin, "white");
-				lib.getLabel().setWrap(true);
-				libsGrid.addItem(lib).minHeight(BaseGallery.MIN_ITEM_HEIGHT);
+				TextButton libButton = new TextButton(libs.get(i).getName(),
+						skin, "white");
+				libButton.setUserObject(libs.get(i));
+				libButton.getLabel().setWrap(true);
+				libsGrid.addItem(libButton).minHeight(
+						BaseGallery.MIN_ITEM_HEIGHT);
 			}
 		} else {
 			toasts.showNotification(i18n.m("repository.refreshingError"),

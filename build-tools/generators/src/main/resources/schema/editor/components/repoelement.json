@@ -10,23 +10,12 @@
             "description": "Relative url where the thumbnail for this element is placed"
         },
         "author": {
-            "type": "object",
-            "additionalProperties": false,
-            "properties":{
-                "name":{
-                    "type":"string",
-                    "description":"The name of the person or organization that created the resource"
-                },
-                "url":{
-                    "type":"string",
-                    "description":"URL associated to this resource. Can be used for author recognition."
-                }
-            }
+            "$ref":"repoauthor.json",
+            "description": "Information for the author that created the resource"
         },
         "license": {
-            "type": "string",
-            "description": "Information associated to the license of the resource, as provided by the author. Only creative commons and public domain licenses supported.",
-            "enum": ["public-domain", "cc-by", "cc-by-nd", "cc-by-sa", "cc-by-nc", "cc-by-nd-nc", "cc-by-sa-nc", "link-author", "learning-only", "undefined"]
+            "$ref": "repolicense.json",
+            "description": "Information associated to the license of the resource, as provided by the author. Only creative commons and public domain licenses supported."
         },
         "width":{
             "type": "number"

@@ -1,0 +1,16 @@
+{
+    "additionalProperties": false,
+    "javaType": "es.eucm.ead.schema.editor.components.RepoAuthor",
+    "type": "object",
+    "properties":{
+        "name":{
+            "type":"string",
+            "description":"The name or list of names of the people or organizations that created the resources"
+        },
+        "url":{
+            "type":"string",
+            "description":"URL associated to this resource. Can be used for author recognition."
+        }
+    },
+    "description": "Information related to an author"
+}
