@@ -65,7 +65,7 @@ import es.eucm.ead.editor.view.widgets.IconButton;
 import es.eucm.ead.editor.view.widgets.PositionedHiddenPanel;
 import es.eucm.ead.engine.I18N;
 import es.eucm.ead.engine.assets.Assets.AssetLoadedCallback;
-import es.eucm.ead.schema.editor.components.Author;
+import es.eucm.ead.schema.editor.components.RepoAuthor;
 import es.eucm.ead.schema.editor.components.RepoElement;
 import es.eucm.ead.schema.entities.ModelEntity;
 
@@ -241,7 +241,7 @@ public class RepositoryItem extends GalleryItem implements
 			RepoElement doc = item.documentation;
 			thumbnail.setDrawable(item.image.getDrawable());
 			description.setText(doc.getDescription());
-			Author author = doc.getAuthor();
+			RepoAuthor author = doc.getAuthor();
 			this.author.setText(author.getName());
 			url.setUserObject(author.getUrl());
 			license.setText(doc.getLicense().toString());
