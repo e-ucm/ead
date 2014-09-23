@@ -48,9 +48,9 @@ public abstract class PrefabComponentPanel extends PrefabPanel {
 
 	protected String componentId;
 
-	public PrefabComponentPanel(String icon, float iconPad, float size,
-			String panelName, String componentId, Controller controller) {
-		super(icon, iconPad, size, panelName, controller);
+	public PrefabComponentPanel(String icon, String panelName,
+			String componentId, Controller controller) {
+		super(icon, panelName, controller);
 		this.componentId = componentId;
 	}
 

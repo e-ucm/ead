@@ -71,21 +71,13 @@ public class NavigationButton extends IconWithScalePanel implements
 
 	private Model model;
 
-	public NavigationButton(Skin skin, Controller controller, float size) {
-		this(skin, controller, size, size);
-	}
-
-	public NavigationButton(Skin skin, final Controller controller,
-			float height, float width) {
+	public NavigationButton(Skin skin, final Controller controller) {
 		super("menu", SPACE, skin);
 		setStyle(skin.get("white_union", IconButtonStyle.class));
 
 		this.model = controller.getModel();
 
 		I18N i18n = controller.getApplicationAssets().getI18N();
-
-		this.height = height;
-		this.width = width;
 
 		InputListener changeView = new ClickListener() {
 			public void clicked(InputEvent event, float x, float y) {
@@ -130,16 +122,6 @@ public class NavigationButton extends IconWithScalePanel implements
 		sceneList.selectScene(model.getIdFor(model.getSelection().getSingle(
 				Selection.SCENE)));
 		super.showPanel();
-	}
-
-	@Override
-	public float getPrefHeight() {
-		return height;
-	}
-
-	@Override
-	public float getPrefWidth() {
-		return width;
 	}
 
 	@Override

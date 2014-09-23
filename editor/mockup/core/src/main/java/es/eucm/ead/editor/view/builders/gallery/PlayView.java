@@ -49,7 +49,7 @@ import es.eucm.ead.editor.control.actions.editor.ForceSave;
 import es.eucm.ead.editor.control.engine.Engine;
 import es.eucm.ead.editor.view.builders.ViewBuilder;
 import es.eucm.ead.editor.view.widgets.EnginePlayer;
-import es.eucm.ead.editor.view.widgets.ToolbarIcon;
+import es.eucm.ead.editor.view.widgets.IconButton;
 import es.eucm.ead.schemax.GameStructure;
 
 /**
@@ -71,11 +71,7 @@ public class PlayView implements ViewBuilder {
 		enginePlayer.setFillParent(true);
 
 		Skin skin = controller.getApplicationAssets().getSkin();
-		float viewportHeight = controller.getPlatform().getSize().y;
-		float iconSize = viewportHeight * BaseGallery.ICON_SIZE;
-		float iconPad = viewportHeight * BaseGallery.ICON_PAD;
-		Button back = new ToolbarIcon(IC_GO_BACK, iconPad, iconSize, skin,
-				"inverted") {
+		Button back = new IconButton(IC_GO_BACK, 0f, skin, "inverted") {
 			@Override
 			public void layout() {
 				super.layout();

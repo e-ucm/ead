@@ -38,12 +38,12 @@ package es.eucm.ead.editor.view.widgets.editionview;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.scenes.scene2d.Actor;
+import com.badlogic.gdx.scenes.scene2d.ui.Cell;
 import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
-import com.badlogic.gdx.scenes.scene2d.ui.Table;
+import com.badlogic.gdx.scenes.scene2d.ui.Value;
 import com.badlogic.gdx.scenes.scene2d.utils.Align;
 import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
-import com.esotericsoftware.tablelayout.Cell;
 
 import es.eucm.ead.editor.control.Controller;
 import es.eucm.ead.editor.control.MockupController;
@@ -61,8 +61,6 @@ import es.eucm.ead.schema.entities.ModelEntity;
 
 public class InfoEditionPanel extends HiddenPanel {
 
-	private static final float PAD = 30, LITTLE_PAD = 10;
-
 	private Cell cell;
 
 	private Actor sceneEditor;
@@ -79,53 +77,48 @@ public class InfoEditionPanel extends HiddenPanel {
 		this.controller = controller;
 
 		this.cell = sceneEditorCell;
-		this.sceneEditor = (Actor) cell.getWidget();
+		this.sceneEditor = (Actor) cell.getActor();
 
 		final IconButton camera = new IconButton("camera250x250", 0, skin,
 				"inverted");
-		Label cameraText = new Label(i18n.m("edition.info.camera_backgorund")
-				+ "\n" + i18n.m("edition.info.camera_picture"), skin);
+		Label cameraText = new Label(i18n.m("edition.info.camera_backgorund"),
+				skin);
 		cameraText.setAlignment(Align.center);
-		cameraText.setFontScale(2f);
-		camera.add(cameraText).padLeft(LITTLE_PAD);
+		cameraText.setWrap(true);
+		camera.add(cameraText).expandX().fillX();
 
 		final IconButton paint = new IconButton("paint150x150", 0, skin,
 				"inverted");
-		Label paintText = new Label(i18n.m("edition.info.paint_image") + "\n"
-				+ i18n.m("edition.info.paint_fingers"), skin);
+		Label paintText = new Label(i18n.m("edition.info.paint_image"), skin);
+		Value smallTextWidth = Value.percentWidth(.3f, this);
+		paintText.setWrap(true);
 		paintText.setAlignment(Align.center);
-		cameraText.setFontScale(1.5f);
 		paint.row();
-		paint.add(paintText);
+		paint.add(paintText).width(smallTextWidth);
 
 		final IconButton repository = new IconButton("repository150x150", 0,
 				skin, "inverted");
 		Label repositoryText = new Label(
-				i18n.m("edition.info.repository_ideas") + "\n"
-						+ i18n.m("edition.info.repository_items") + "\n"
-						+ i18n.m("edition.info.repository"), skin);
+				i18n.m("edition.info.repository_ideas"), skin);
 		repositoryText.setAlignment(Align.center);
-		cameraText.setFontScale(1.5f);
+		repositoryText.setWrap(true);
 		repository.row();
-		repository.add(repositoryText);
+		repository.add(repositoryText).width(smallTextWidth);
 
 		final IconButton gallery = new IconButton("android_gallery150x150", 0,
 				skin, "inverted");
-		Label galleryText = new Label(i18n.m("edition.info.gallery_image")
-				+ "\n" + i18n.m("edition.info.gallery_device"), skin);
+		Label galleryText = new Label(i18n.m("edition.info.gallery_image"),
+				skin);
 		galleryText.setAlignment(Align.center);
-		cameraText.setFontScale(1.5f);
+		galleryText.setWrap(true);
 		gallery.row();
-		gallery.add(galleryText);
+		gallery.add(galleryText).width(smallTextWidth);
 
-		Table bottom = new Table();
-		bottom.add(paint).pad(PAD);
-		bottom.add(repository).pad(PAD);
-		bottom.add(gallery).pad(PAD);
-
-		add(camera).pad(PAD);
+		add(camera).colspan(3).expandX().fillX();
 		row();
-		add(bottom);
+		add(paint).expandY().fillY();
+		add(repository).expandY().fillY();
+		add(gallery).expandY().fillY();
 
 		paintRunnable = new Runnable() {
 			@Override
@@ -171,8 +164,8 @@ public class InfoEditionPanel extends HiddenPanel {
 		if (scene.getChildren().size == 0) {
 			MockupViews.setUpHiddenPanel(this, ((MockupController) controller)
 					.getRootComponent().getStage());
-			cell.setWidget(null);
-			cell.setWidget(this);
+			cell.setActor(null);
+			cell.setActor(this);
 		}
 	}
 
@@ -180,8 +173,8 @@ public class InfoEditionPanel extends HiddenPanel {
 	public void hide() {
 		MockupViews.removeHitListener(this, ((MockupController) controller)
 				.getRootComponent().getStage());
-		cell.setWidget(null);
-		cell.setWidget(sceneEditor);
+		cell.setActor(null);
+		cell.setActor(sceneEditor);
 		sceneEditor.toBack();
 	}
 

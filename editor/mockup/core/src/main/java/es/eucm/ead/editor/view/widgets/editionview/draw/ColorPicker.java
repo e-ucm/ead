@@ -50,9 +50,9 @@ public class ColorPicker extends IconWithFadePanel {
 
 	protected SlideColorPicker picker;
 
-	public ColorPicker(boolean bottom, float padding, float size, Skin skin) {
-		super("colorpicker80x80", padding, 0f, size, skin,
-				bottom ? Position.BOTTOM : Position.TOP, "checkable");
+	public ColorPicker(boolean bottom, Skin skin) {
+		super("colorpicker80x80", 5f, skin, bottom ? Position.BOTTOM
+				: Position.TOP, "checkable");
 		picker = new SlideColorPicker(skin) {
 			@Override
 			protected void colorChanged(Color newColor) {

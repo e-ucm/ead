@@ -37,14 +37,12 @@
 package es.eucm.ead.editor.view.builders;
 
 import com.badlogic.gdx.scenes.scene2d.Actor;
+import com.badlogic.gdx.scenes.scene2d.ui.Cell;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
-import com.esotericsoftware.tablelayout.Cell;
 
 import es.eucm.ead.editor.control.Controller;
 import es.eucm.ead.editor.control.MockupViews;
-import es.eucm.ead.editor.view.builders.gallery.BaseGallery;
-import es.eucm.ead.editor.view.widgets.Toolbar;
 import es.eucm.ead.editor.view.widgets.editionview.InfoEditionPanel;
 import es.eucm.ead.editor.view.widgets.editionview.LeftEditionToolbar;
 import es.eucm.ead.editor.view.widgets.editionview.MockupSceneEditor;
@@ -55,9 +53,6 @@ import es.eucm.ead.editor.view.widgets.helpmessage.sequence.EditionViewHelp;
 
 public class EditionView implements ViewBuilder {
 
-	private static final float SMALL_PAD = BaseGallery.SMALL_PAD * .6f,
-			NORMAL_PAD = SMALL_PAD * 4F, HEIGHT = BaseGallery.TOOLBAR_SIZE,
-			ICON_SIZE = BaseGallery.ICON_SIZE, ICON_PAD = BaseGallery.ICON_PAD;
 	private static final String TOP_STYLE = "white_top",
 			LEFT_STYLE = "white_left";
 
@@ -70,10 +65,6 @@ public class EditionView implements ViewBuilder {
 
 	@Override
 	public void initialize(Controller controller) {
-		float viewportY = controller.getPlatform().getSize().y;
-		float toolbarSize = viewportY * HEIGHT;
-		float iconSize = viewportY * ICON_SIZE;
-		float iconPad = viewportY * ICON_PAD;
 
 		Skin skin = controller.getApplicationAssets().getSkin();
 
@@ -82,19 +73,16 @@ public class EditionView implements ViewBuilder {
 
 		sceneEditor = new MockupSceneEditor(controller, LEFT_STYLE, TOP_STYLE);
 
-		paintToolbar = new PaintToolbar(iconSize, iconPad, sceneEditor,
-				controller);
+		paintToolbar = new PaintToolbar(sceneEditor, controller);
 
-		final NavigationButton union = new NavigationButton(skin, controller,
-				toolbarSize);
+		final NavigationButton union = new NavigationButton(skin, controller);
 
 		final TopEditionToolbar topBar = new TopEditionToolbar(controller,
-				TOP_STYLE, toolbarSize, iconSize, iconPad, paintToolbar,
-				SMALL_PAD, NORMAL_PAD);
-		final Toolbar leftBar = new LeftEditionToolbar(controller, LEFT_STYLE,
-				toolbarSize, iconSize, iconPad, SMALL_PAD, NORMAL_PAD);
+				TOP_STYLE, paintToolbar, 0f, 0f);
+		final Actor leftBar = new LeftEditionToolbar(controller, LEFT_STYLE,
+				0f, 0f);
 
-		view.add(union);
+		view.add(union).fill();
 		view.add(topBar).expandX().fill();
 		view.row();
 		view.add(leftBar).left().expandY().fill();

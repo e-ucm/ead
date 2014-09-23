@@ -40,7 +40,9 @@ import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.InputListener;
 import com.badlogic.gdx.scenes.scene2d.ui.Label;
+import com.badlogic.gdx.scenes.scene2d.ui.ScrollPane;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
+import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.scenes.scene2d.ui.TextArea;
 import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
 import com.badlogic.gdx.scenes.scene2d.ui.TextField;
@@ -74,7 +76,7 @@ public class OthersWidget extends IconWithScalePanel implements FieldListener {
 
 	private static final int PREF_DOCUMENTATION_ROWS = 5;
 
-	private static final float DEFAULT_PAD = 10F;
+	private static final float DEFAULT_PAD = 8F;
 	private static final float DOUBLE_PAD = DEFAULT_PAD * 2F;
 
 	private Controller controller;
@@ -93,23 +95,21 @@ public class OthersWidget extends IconWithScalePanel implements FieldListener {
 
 	private Documentation documentation;
 
-	public OthersWidget(Controller controlle, float iconPad, float iconSize) {
-		super("others80x80", iconPad, 0f, iconSize, controlle
-				.getApplicationAssets().getSkin());
+	public OthersWidget(Controller controlle) {
+		super("others80x80", 5f, controlle.getApplicationAssets().getSkin());
 		this.controller = controlle;
 
 		Assets assets = controller.getApplicationAssets();
 		skin = assets.getSkin();
 		i18N = assets.getI18N();
 
-		Label sceneData = new Label(i18N.m("scene.data"), skin);
-		Label sceneName = new Label(i18N.m("name") + ":", skin);
+		Label sceneName = new Label(i18N.m("scene.name") + ":", skin);
 		name = new TextField("", skin);
-		name.setMessageText(i18N.m("gallery.enterAName"));
+		name.setMessageText(i18N.m("name"));
 		name.setFocusTraversal(false);
 		Label sceneDescription = new Label(i18N.m("description") + ":", skin);
 		description = new TextArea("", skin);
-		description.setMessageText(i18N.m("scene.writeADescription"));
+		description.setMessageText(i18N.m("description"));
 		description.setFocusTraversal(false);
 		description.setPrefRows(PREF_DOCUMENTATION_ROWS);
 		InputListener nameDocInput = new InputListener() {
@@ -197,12 +197,14 @@ public class OthersWidget extends IconWithScalePanel implements FieldListener {
 			}
 		});
 
+		Table panel = new Table();
+		ScrollPane pane = new ScrollPane(panel);
+		pane.setScrollingDisabled(true, false);
+		this.panel.add(pane).expand().top();
+
 		float prefW = name.getPrefWidth() * 2;
 		panel.defaults().pad(DEFAULT_PAD).space(DEFAULT_PAD);
-		panel.top();
-		panel.add(sceneData).padTop(DOUBLE_PAD);
-		panel.row();
-		panel.add(sceneName).left().padLeft(DOUBLE_PAD);
+		panel.add(sceneName).left().padLeft(DOUBLE_PAD).padTop(DOUBLE_PAD);
 		panel.row();
 		panel.add(name).prefWidth(prefW);
 		panel.row();

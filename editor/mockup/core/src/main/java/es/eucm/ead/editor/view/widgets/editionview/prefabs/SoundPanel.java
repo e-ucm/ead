@@ -72,9 +72,9 @@ public class SoundPanel extends PrefabComponentPanel implements
 	private Slider volume;
 	private CheckBox loop;
 
-	public SoundPanel(float iconPad, float size, final Controller controller) {
-		super("sound80x80", iconPad, size, "edition.sound",
-				ComponentId.PREFAB_SOUND, controller);
+	public SoundPanel(final Controller controller) {
+		super("sound80x80", "edition.sound", ComponentId.PREFAB_SOUND,
+				controller);
 
 		Table table = new Table();
 		table.pad(SPACE).defaults().space(SPACE);

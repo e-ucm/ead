@@ -37,7 +37,9 @@
 package es.eucm.ead.editor.view.widgets.editionview;
 
 import com.badlogic.gdx.scenes.scene2d.Actor;
+import com.badlogic.gdx.scenes.scene2d.ui.ScrollPane;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
+import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
 
 import es.eucm.ead.editor.control.Actions;
@@ -56,21 +58,15 @@ import es.eucm.ead.editor.control.actions.model.AddInteractiveZone;
 import es.eucm.ead.editor.control.actions.model.AddLabelToScene;
 import es.eucm.ead.editor.control.actions.model.SetSelection;
 import es.eucm.ead.editor.view.builders.LibrariesView;
-import es.eucm.ead.editor.view.builders.gallery.BaseGallery;
 import es.eucm.ead.editor.view.builders.gallery.PlayView;
 import es.eucm.ead.editor.view.listeners.ActionListener;
 import es.eucm.ead.editor.view.widgets.IconButton;
 import es.eucm.ead.editor.view.widgets.Toolbar;
-import es.eucm.ead.editor.view.widgets.ToolbarIcon;
 import es.eucm.ead.editor.view.widgets.editionview.draw.PaintToolbar;
 import es.eucm.ead.editor.view.widgets.editionview.draw.PaintToolbar.DrawListener;
 import es.eucm.ead.schema.entities.ModelEntity;
 
 public class TopEditionToolbar extends Toolbar {
-
-	private static final float BIG_PAD = 160;
-
-	private float height;
 
 	private OthersWidget others;
 
@@ -99,33 +95,29 @@ public class TopEditionToolbar extends Toolbar {
 	private IconButton share;
 
 	public TopEditionToolbar(final Controller controller, String style,
-			float height, float iconSize, float iconPad,
-			final PaintToolbar paintToolbar, float smallPad, float normalPad) {
+
+	final PaintToolbar paintToolbar, float smallPad, float normalPad) {
 		super(controller.getApplicationAssets().getSkin(), style);
 		Skin skin = controller.getApplicationAssets().getSkin();
 
-		this.height = height;
+		play = new IconButton("play80x80", 0f, skin, "inverted");
+		share = new IconButton("share80x80", 0f, skin, "inverted");
 
-		play = new ToolbarIcon("play80x80", iconPad, iconSize, skin, "inverted");
-		share = new ToolbarIcon("share80x80", iconPad, iconSize, skin,
-				"inverted");
+		undo = new IconButton("undo80x80", 0f, skin);
+		redo = new IconButton("redo80x80", 0f, skin);
 
-		undo = new ToolbarIcon("undo80x80", iconPad, iconSize, skin);
-		redo = new ToolbarIcon("redo80x80", iconPad, iconSize, skin);
+		paste = new IconButton("paste80x80", 0f, skin);
+		camera = new IconButton("camera80x80", 0f, skin);
+		repository = new IconButton("repository80x80", 0f, skin);
+		android = new IconButton("android_gallery80x80", 0f, skin);
 
-		paste = new ToolbarIcon("paste80x80", iconPad, iconSize, skin);
-		camera = new ToolbarIcon("camera80x80", iconPad, iconSize, skin);
-		repository = new ToolbarIcon("repository80x80", iconPad, iconSize, skin);
-		android = new ToolbarIcon("android_gallery80x80", iconPad, iconSize,
-				skin);
+		paint = new IconButton("paint80x80", 0f, skin);
+		text = new IconButton("text80x80", 0f, skin);
 
-		paint = new ToolbarIcon("paint80x80", iconPad, iconSize, skin);
-		text = new ToolbarIcon("text80x80", iconPad, iconSize, skin);
+		zones = new IconButton("interactive80x80", 0f, skin);
+		gate = new IconButton("gateway80x80", 0f, skin);
 
-		zones = new ToolbarIcon("interactive80x80", iconPad, iconSize, skin);
-		gate = new ToolbarIcon("gateway80x80", iconPad, iconSize, skin);
-
-		others = new OthersWidget(controller, iconPad, iconSize);
+		others = new OthersWidget(controller);
 
 		paintToolbar.addListener(new DrawListener() {
 
@@ -233,30 +225,31 @@ public class TopEditionToolbar extends Toolbar {
 		});
 
 		defaults().expandY().fill();
-		add(play).padLeft(BaseGallery.PLAY_PAD);
-		add(share).padLeft(BaseGallery.SMALL_PAD);
-
-		add(undo).padRight(smallPad).padLeft(BaseGallery.PLAY_PAD * 1.5F);
-		add(redo).padRight(BIG_PAD);
+		add(play);
+		add(share);
 
 		add().expandX();
-		add(paste).padRight(smallPad).right();
-		add(camera).padRight(smallPad);
-		add(repository).padRight(smallPad);
-		add(android).padRight(normalPad);
+		add(undo).fill();
+		add(redo).fill();
+		add().expandX();
 
-		add(paint).padRight(smallPad);
-		add(text).padRight(normalPad);
+		Table table = new Table();
+		table.defaults().expandY().fill();
+		ScrollPane scrollPane = new ScrollPane(table);
+		scrollPane.setScrollingDisabled(false, true);
+		table.add(paste).padRight(smallPad).right();
+		table.add(camera).padRight(smallPad);
+		table.add(repository).padRight(smallPad);
+		table.add(android).padRight(normalPad);
 
-		add(zones).padRight(smallPad);
-		add(gate).padRight(normalPad);
+		table.add(paint).padRight(smallPad);
+		table.add(text).padRight(normalPad);
 
+		table.add(zones).padRight(smallPad);
+		table.add(gate).padRight(normalPad);
+
+		add(scrollPane);
 		add(others).padRight(smallPad);
-	}
-
-	@Override
-	public float getPrefHeight() {
-		return height;
 	}
 
 	private void setDisabled(boolean disabled, Controller controller) {

@@ -51,21 +51,20 @@ import es.eucm.ead.editor.view.widgets.PositionedHiddenPanel.Position;
  */
 public class IconWithFadePanel extends IconWithPanel {
 
-	public IconWithFadePanel(String icon, float padding, float separation,
-			Skin skin) {
-		this(icon, padding, separation, -1f, skin, Position.RIGHT);
+	public IconWithFadePanel(String icon, float separation, Skin skin) {
+		this(icon, separation, skin, Position.RIGHT);
 
 	}
 
-	public IconWithFadePanel(String icon, float padding, float separation,
-			float size, Skin skin, Position position) {
-		super(icon, padding, separation, size, skin, position);
+	public IconWithFadePanel(String icon, float separation, Skin skin,
+			Position position) {
+		super(icon, separation, skin, position);
 
 	}
 
-	public IconWithFadePanel(String icon, float padding, float separation,
-			float size, Skin skin, Position position, String styleName) {
-		super(icon, padding, separation, size, skin, position, styleName);
+	public IconWithFadePanel(String icon, float separation, Skin skin,
+			Position position, String styleName) {
+		super(icon, separation, skin, position, styleName);
 
 	}
 

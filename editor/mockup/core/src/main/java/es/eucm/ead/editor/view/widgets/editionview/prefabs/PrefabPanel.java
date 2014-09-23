@@ -36,6 +36,7 @@
  */
 package es.eucm.ead.editor.view.widgets.editionview.prefabs;
 
+import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
@@ -57,7 +58,7 @@ import es.eucm.ead.engine.I18N;
 public abstract class PrefabPanel extends IconWithFadePanel implements
 		SelectionListener {
 
-	private static final float SEPARATION = 5, PAD_TITLE = 100, PAD = 20;
+	private static final float SEPARATION = 5, PAD_TITLE = .05f, PAD = 15;
 
 	protected Skin skin;
 	protected I18N i18n;
@@ -78,10 +79,9 @@ public abstract class PrefabPanel extends IconWithFadePanel implements
 		}
 	};
 
-	public PrefabPanel(String icon, float iconPad, float size,
-			String panelName, Controller controller) {
-		super(icon, iconPad, SEPARATION, size, controller
-				.getApplicationAssets().getSkin(), Position.RIGHT);
+	public PrefabPanel(String icon, String panelName, Controller controller) {
+		super(icon, SEPARATION, controller.getApplicationAssets().getSkin(),
+				Position.RIGHT);
 
 		this.controller = controller;
 		this.skin = controller.getApplicationAssets().getSkin();
@@ -99,7 +99,7 @@ public abstract class PrefabPanel extends IconWithFadePanel implements
 		LinearLayout top = new LinearLayout(true);
 
 		top.add(new Label(i18n.m(panelName), skin)).expand(true, true)
-				.margin(PAD, PAD, PAD_TITLE, PAD);
+				.margin(PAD, PAD, Gdx.graphics.getWidth() * PAD_TITLE, PAD);
 		top.add(trash).margin(PAD);
 		panel.add(top);
 		panel.row().padBottom(PAD);

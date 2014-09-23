@@ -46,7 +46,7 @@ import com.badlogic.gdx.utils.Array;
 
 import es.eucm.ead.editor.view.builders.gallery.BaseGallery;
 import es.eucm.ead.editor.view.widgets.DropDown;
-import es.eucm.ead.editor.view.widgets.ToolbarIcon;
+import es.eucm.ead.editor.view.widgets.IconButton;
 
 /**
  * Widget used to sort {@link GalleryItem} items in a {@link BaseGallery}.
@@ -55,7 +55,7 @@ import es.eucm.ead.editor.view.widgets.ToolbarIcon;
 public class SortWidget extends DropDown {
 
 	private Array<GalleryItem> items;
-	private ToolbarIcon az;
+	private IconButton az;
 
 	private Comparator<GalleryItem> comparatorAZ = new Comparator<GalleryItem>() {
 		@Override
@@ -70,12 +70,12 @@ public class SortWidget extends DropDown {
 		}
 	};
 
-	public SortWidget(Skin skin, float iconPad, float size,
-			Array<GalleryItem> items, final BaseGallery baseGallery) {
+	public SortWidget(Skin skin, Array<GalleryItem> items,
+			final BaseGallery baseGallery) {
 		super(skin);
 		this.items = items;
-		az = new ToolbarIcon("reorderAZ80x80", iconPad, size, skin);
-		ToolbarIcon za = new ToolbarIcon("reorderZA80x80", iconPad, size, skin);
+		az = new IconButton("reorderAZ80x80", skin);
+		IconButton za = new IconButton("reorderZA80x80", skin);
 		Array<Actor> array = new Array<Actor>();
 		array.add(az);
 		array.add(za);

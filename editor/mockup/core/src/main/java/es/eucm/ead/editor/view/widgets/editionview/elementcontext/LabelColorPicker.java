@@ -51,8 +51,8 @@ public class LabelColorPicker extends ColorPicker {
 	private Label label;
 
 	public LabelColorPicker(final Controller controller, boolean vertical,
-			float padding, float size, Skin skin) {
-		super(true, padding, size, skin);
+			Skin skin) {
+		super(true, skin);
 		picker.addListener(new InputListener() {
 
 			@Override

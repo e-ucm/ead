@@ -56,10 +56,10 @@ public abstract class ConditionalPanel extends PrefabComponentPanel {
 
 	private VariablesOrGroup varOp;
 
-	public ConditionalPanel(String icon, float iconPad, String namei18n,
-			final String componentId, float size, final Controller controller,
+	public ConditionalPanel(String icon, String namei18n,
+			final String componentId, final Controller controller,
 			Class<? extends ModelConditionedComponent> myClass) {
-		super(icon, iconPad, size, namei18n, componentId, controller);
+		super(icon, namei18n, componentId, controller);
 
 		variablesPanel = new VariablesTable(skin, Position.RIGHT, this,
 				controller);

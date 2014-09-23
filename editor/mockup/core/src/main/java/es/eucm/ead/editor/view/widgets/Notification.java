@@ -36,26 +36,21 @@
  */
 package es.eucm.ead.editor.view.widgets;
 
-import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.math.Interpolation;
 import com.badlogic.gdx.scenes.scene2d.Action;
-import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.actions.Actions;
+import com.badlogic.gdx.scenes.scene2d.ui.Cell;
 import com.badlogic.gdx.scenes.scene2d.ui.Image;
 import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
-import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.scenes.scene2d.utils.Drawable;
-import com.esotericsoftware.tablelayout.Cell;
 
 public class Notification extends HiddenPanel {
 
-	private static final float DEFAULT_SPACING = 30F;
+	private static final float DEFAULT_SPACING = 10F;
 	private static final float FADE_IN = .3F;
 	private static final float FADE_OUT = .2F;
-
-	private Actor previousKeyboardFocus, previousScrollFocus;
 
 	private Runnable hide;
 
@@ -114,19 +109,11 @@ public class Notification extends HiddenPanel {
 			action = Actions.fadeIn(FADE_IN, Interpolation.fade);
 		}
 
-		previousKeyboardFocus = null;
-		Actor actor = stage.getKeyboardFocus();
-		if (actor != null && !actor.isDescendantOf(this))
-			previousKeyboardFocus = actor;
-
-		previousScrollFocus = null;
-		actor = stage.getScrollFocus();
-		if (actor != null && !actor.isDescendantOf(this))
-			previousScrollFocus = actor;
-
-		pack();
-		setPosition(Math.round((stage.getWidth() - getWidth()) / 2),
-				getHeight() * .1f);
+		float prefWidth = Math.min(getPrefWidth(), stage.getWidth());
+		float prefHeight = getPrefHeight();
+		setBounds(Math.round((stage.getWidth() - prefWidth) / 2),
+				Math.round(prefHeight * .1f), Math.round(prefWidth),
+				Math.round(prefHeight));
 		stage.setKeyboardFocus(this);
 		stage.setScrollFocus(this);
 
@@ -136,7 +123,7 @@ public class Notification extends HiddenPanel {
 
 	private void removeProgressBar() {
 		if (progressBarCell != null) {
-			progressBarCell.setWidget(null).padLeft(0f);
+			progressBarCell.setActor(null).padLeft(0f);
 		}
 	}
 
@@ -149,7 +136,7 @@ public class Notification extends HiddenPanel {
 					.addAction(Actions.forever(Actions.rotateBy(-360f, 1.5f)));
 			progressBarCell = add();
 		}
-		progressBarCell.setWidget(progressBar).padLeft(DEFAULT_SPACING);
+		progressBarCell.setActor(progressBar).padLeft(DEFAULT_SPACING);
 	}
 
 	@Override
@@ -168,24 +155,7 @@ public class Notification extends HiddenPanel {
 		if (!isShowing()) {
 			return;
 		}
-		Stage stage = getStage();
-		if (stage != null) {
-			if (previousKeyboardFocus != null
-					&& previousKeyboardFocus.getStage() == null)
-				previousKeyboardFocus = null;
-			Actor actor = stage.getKeyboardFocus();
-			if (actor == null || actor.isDescendantOf(this))
-				stage.setKeyboardFocus(previousKeyboardFocus);
-
-			if (previousScrollFocus != null
-					&& previousScrollFocus.getStage() == null)
-				previousScrollFocus = null;
-			actor = stage.getScrollFocus();
-			if (actor == null || actor.isDescendantOf(this))
-				stage.setScrollFocus(previousScrollFocus);
-		}
 		super.hide(Actions.fadeOut(FADE_OUT, Interpolation.fade));
-
 	}
 
 	public static class NotificationStyle {

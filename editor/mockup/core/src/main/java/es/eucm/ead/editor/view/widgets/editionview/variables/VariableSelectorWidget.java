@@ -39,6 +39,7 @@ package es.eucm.ead.editor.view.widgets.editionview.variables;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.Group;
+import com.badlogic.gdx.scenes.scene2d.ui.Cell;
 import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
@@ -47,7 +48,6 @@ import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
 import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener.ChangeEvent;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.Pools;
-import com.esotericsoftware.tablelayout.Cell;
 
 import es.eucm.ead.editor.control.Controller;
 import es.eucm.ead.editor.view.widgets.IconButton;
@@ -144,12 +144,12 @@ public class VariableSelectorWidget extends Table {
 	public void selectedVariable(boolean selected) {
 		if (selected
 				&& !i18n.m(NOT_VAR).equals(nameButton.getText().toString())) {
-			stateButtonCell.setWidget(stateButton);
-			labelToCell.setWidget(labelTo).pad(0, PAD, 0, PAD).expandX();
+			stateButtonCell.setActor(stateButton);
+			labelToCell.setActor(labelTo).pad(0, PAD, 0, PAD).expandX();
 		} else {
 			nameButton.setText(i18n.m(NOT_VAR));
-			stateButtonCell.setWidget(null);
-			labelToCell.setWidget(null).pad(0, 0, 0, 0).expand(false, false);
+			stateButtonCell.setActor(null);
+			labelToCell.setActor(null).pad(0, 0, 0, 0).expand(false, false);
 		}
 	}
 

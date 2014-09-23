@@ -117,9 +117,9 @@ public class LeftToolbarPanelsTest extends MockupUITest {
 				Selection.SCENE_ELEMENT, sceneElement);
 
 		LeftEditionToolbar widget = new LeftEditionToolbar(controller,
-				"white_left", 80, 5, 70, 20, 30);
+				"white_left", 20, 30);
 
-		container.setWidget(widget);
+		container.setActor(widget);
 
 		return container;
 	}

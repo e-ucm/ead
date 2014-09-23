@@ -37,7 +37,6 @@
 package es.eucm.ead.editor.view.builders;
 
 import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.ui.Button;
@@ -58,8 +57,8 @@ import es.eucm.ead.editor.control.actions.editor.repository.UpdateLibraries;
 import es.eucm.ead.editor.view.builders.gallery.BaseGallery;
 import es.eucm.ead.editor.view.builders.gallery.RepositoryView;
 import es.eucm.ead.editor.view.widgets.GridPanel;
+import es.eucm.ead.editor.view.widgets.IconButton;
 import es.eucm.ead.editor.view.widgets.Toolbar;
-import es.eucm.ead.editor.view.widgets.ToolbarIcon;
 import es.eucm.ead.engine.I18N;
 import es.eucm.ead.schema.editor.components.RepoLibrary;
 
@@ -97,11 +96,8 @@ public class LibrariesView implements ViewBuilder, ProgressListener {
 		toasts = ((MockupViews) controller.getViews()).getToasts();
 		final Skin skin = controller.getApplicationAssets().getSkin();
 		i18n = controller.getApplicationAssets().getI18N();
-		Vector2 viewport = controller.getPlatform().getSize();
 
-		Button backButton = new ToolbarIcon(IC_GO_BACK, viewport.y
-				* BaseGallery.ICON_PAD, viewport.y * BaseGallery.ICON_SIZE,
-				skin);
+		Button backButton = new IconButton(IC_GO_BACK, 0f, skin);
 		backButton.addListener(new ClickListener() {
 			@Override
 			public void clicked(InputEvent event, float x, float y) {
@@ -109,8 +105,6 @@ public class LibrariesView implements ViewBuilder, ProgressListener {
 			}
 		});
 
-		final float toolbarSize = controller.getPlatform().getSize().y
-				* BaseGallery.TOOLBAR_SIZE;
 		topWidgets = new Toolbar(skin, "white_top");
 		topWidgets.add(backButton).left().expandY().fill();
 		topWidgets.add(i18n.m("repository.selectLibrary")).expandX();
@@ -142,7 +136,7 @@ public class LibrariesView implements ViewBuilder, ProgressListener {
 
 		view = new Table();
 		view.setFillParent(true);
-		view.add(topWidgets).expandX().fill().height(toolbarSize);
+		view.add(topWidgets).expandX().fill();
 		view.row();
 		view.add(galleryTableScroll).expand().fillX().top();
 
@@ -170,8 +164,7 @@ public class LibrariesView implements ViewBuilder, ProgressListener {
 						skin, "white");
 				libButton.setUserObject(libs.get(i));
 				libButton.getLabel().setWrap(true);
-				libsGrid.addItem(libButton).minHeight(
-						BaseGallery.MIN_ITEM_HEIGHT);
+				libsGrid.addItem(libButton);
 			}
 		} else {
 			toasts.showNotification(i18n.m("repository.refreshingError"),

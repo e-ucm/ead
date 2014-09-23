@@ -59,9 +59,7 @@ import es.eucm.ead.editor.control.actions.model.RemoveSceneElementSelection;
 import es.eucm.ead.editor.control.actions.model.scene.ReorderSelection;
 import es.eucm.ead.editor.model.Q;
 import es.eucm.ead.editor.platform.MockupPlatform;
-import es.eucm.ead.editor.view.builders.gallery.BaseGallery;
 import es.eucm.ead.editor.view.widgets.IconButton;
-import es.eucm.ead.editor.view.widgets.ToolbarIcon;
 import es.eucm.ead.editor.view.widgets.editionview.MockupSceneEditor;
 import es.eucm.ead.engine.I18N;
 import es.eucm.ead.schema.components.controls.Label;
@@ -79,8 +77,6 @@ public class ElementContext extends Table {
 	private static final float ROTATION_HANDLE_SPACE = 50f;
 	private static final float X_SPACE = 10f;
 	private static final Vector2 TEMP = new Vector2();
-	private static final float ICON_SIZE = BaseGallery.TOOLBAR_SIZE;
-	private static final float PAD_SIZE = (BaseGallery.TOOLBAR_SIZE - BaseGallery.ICON_SIZE);
 
 	private Table commonContext;
 
@@ -95,36 +91,32 @@ public class ElementContext extends Table {
 	public ElementContext(final Controller controller,
 			MockupSceneEditor sceneEditor) {
 		this.sceneEditor = sceneEditor;
-		float viewportHeight = controller.getPlatform().getSize().y;
-		float iconSize = viewportHeight * ICON_SIZE;
-		float pad = viewportHeight * PAD_SIZE;
 		ApplicationAssets assets = controller.getApplicationAssets();
 		Skin skin = assets.getSkin();
 
 		// Common context
-		final IconButton toFront = new ToolbarIcon(IC_TOFRONT, pad, iconSize,
-				skin, "white_left");
-		final IconButton toBack = new ToolbarIcon(IC_TOBACK, pad, iconSize,
-				skin, "white_center");
-		final IconButton copy = new ToolbarIcon(IC_DUPLICATE, pad, iconSize,
-				skin, "white_center");
-		final ToolbarIcon delete = new ToolbarIcon(IC_DELETE, pad, iconSize,
-				skin, "white_right");
+		final IconButton toFront = new IconButton(IC_TOFRONT, 0f, skin,
+				"white_left");
+		final IconButton toBack = new IconButton(IC_TOBACK, 0f, skin,
+				"white_center");
+		final IconButton copy = new IconButton(IC_DUPLICATE, 0f, skin,
+				"white_center");
+		final IconButton delete = new IconButton(IC_DELETE, 0f, skin,
+				"white_right");
 		delete.getIcon().setColor(Color.WHITE);
 
 		commonContext = new ContextBar(skin, toFront, toBack, copy, delete);
 
 		// Image context
-		final IconButton imageEffects = new ToolbarIcon(IC_IAMGEEFFECTS, pad,
-				iconSize, skin, "white_single");
+		final IconButton imageEffects = new IconButton(IC_IAMGEEFFECTS, 0f,
+				skin, "white_single");
 
 		imageContext = new ContextBar(skin, imageEffects);
 
 		// Label context
-		final IconButton changeText = new ToolbarIcon(IC_CHANGETEXT, pad,
-				iconSize, skin, "white_single");
-		colorPicker = new LabelColorPicker(controller, true, pad, iconSize,
-				skin);
+		final IconButton changeText = new IconButton(IC_CHANGETEXT, 0f, skin,
+				"white_single");
+		colorPicker = new LabelColorPicker(controller, true, skin);
 
 		labelContext = new ContextBar(skin, changeText, colorPicker);
 
@@ -288,6 +280,10 @@ public class ElementContext extends Table {
 					x = x - X_SPACE - prefW;
 				}
 
+				x = MathUtils.round(x);
+				y = MathUtils.round(y);
+				prefW = MathUtils.round(prefW);
+				prefH = MathUtils.round(prefH);
 				float currX = getX(), currY = getY(), currH = getHeight();
 
 				if (!MathUtils.isEqual(currX, x)

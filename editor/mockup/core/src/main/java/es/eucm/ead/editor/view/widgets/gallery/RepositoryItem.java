@@ -47,14 +47,15 @@ import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.actions.Actions;
 import com.badlogic.gdx.scenes.scene2d.ui.Image;
 import com.badlogic.gdx.scenes.scene2d.ui.Label;
+import com.badlogic.gdx.scenes.scene2d.ui.ScrollPane;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
+import com.badlogic.gdx.scenes.scene2d.ui.Value;
 import com.badlogic.gdx.scenes.scene2d.utils.Align;
 import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.utils.Scaling;
-import com.esotericsoftware.tablelayout.Value;
 
 import es.eucm.ead.editor.assets.ApplicationAssets;
 import es.eucm.ead.editor.control.Controller;
@@ -156,7 +157,7 @@ public class RepositoryItem extends GalleryItem implements
 	 */
 	public static class ItemInfo extends PositionedHiddenPanel {
 
-		private static final float PAD = 20F;
+		private static final float PAD = 10F;
 
 		private static final float DURATION = .2f;
 
@@ -205,8 +206,10 @@ public class RepositoryItem extends GalleryItem implements
 			url.addListener(listener);
 
 			Table table = new Table(skin);
-			table.defaults().space(PAD);
-			table.defaults().expand();
+			ScrollPane pane = new ScrollPane(table);
+			pane.setFadeScrollBars(true);
+			pane.setScrollingDisabled(true, false);
+			table.pad(PAD).defaults().space(PAD);
 			table.add(i18n.m("name") + ":").colspan(2).left();
 			table.row();
 			table.add(name = new Label("", skin)).colspan(2);
@@ -227,11 +230,11 @@ public class RepositoryItem extends GalleryItem implements
 			table.row();
 			table.add(license = new Label("", skin)).colspan(2);
 			table.row();
-			table.add(addToScene).left().expandY();
+			table.add(addToScene).left();
 			table.add(close).right();
 
-			add(thumbnail).expand().fill();
-			add(table).pad(PAD).expandY().fill();
+			add(thumbnail).maxWidth(Value.percentWidth(.5f, this)).left();
+			add(pane).expand().pad(PAD);
 			setModal(true);
 		}
 
