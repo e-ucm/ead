@@ -64,6 +64,7 @@ import es.eucm.ead.schema.editor.components.GameData;
 import es.eucm.ead.schema.editor.components.RepoElement;
 import es.eucm.ead.schema.entities.ModelEntity;
 import es.eucm.ead.schemax.GameStructure;
+import es.eucm.ead.schema.editor.components.RepoLibrary;
 
 /**
  * <p>
@@ -73,8 +74,10 @@ import es.eucm.ead.schemax.GameStructure;
  * <pre>
  * |libraries.json	<- A file listing the available libraries in the repository. This file is <strong>required</strong>.
  * |{library1}.zip	<- A file with all the resources in that library.
+ * |{library1}.png  <- A thumbnail for previewing the library (the actual path of the thumbnail is is specified in {@link RepoLibrary#thumbnail}).
+ * |{library1}.json <- A file with general metadata of the library for previewing (see {@link RepoLibrary}).
  * |{library2}.zip
- * |{library3}.zip
+ * ...
  * </pre>
  * 
  * <p>
@@ -191,9 +194,9 @@ public class RepositoryManager {
 	private Array<ModelEntity> onlineElements;
 
 	/**
-	 * Keeps track of the libraries.
+	 * Stores metadata associated to each library
 	 */
-	private Array<String> libraries;
+	private Array<RepoLibrary> libraries;
 
 	private boolean copyThumbnailToProject;
 
@@ -205,8 +208,41 @@ public class RepositoryManager {
 		return this.onlineElements;
 	}
 
-	public Array<String> getLibraries() {
+	/**
+	 * @return An Array with all the libraries available, ordered by
+	 *         {@link RepoLibrary#name}
+	 */
+	public Array<RepoLibrary> getRepoLibraries() {
+		// First, order them by name
+		sortRepoLibraries(0, libraries.size);
 		return libraries;
+	}
+
+	/*
+	 * Quicksort
+	 */
+	private void sortRepoLibraries(int initial, int end) {
+		int pivot = (initial + end) / 2;
+		for (int j = initial; j < end; j++) {
+			if (j == pivot) {
+				continue;
+			}
+			int comparison = libraries.get(j).getName()
+					.compareTo(libraries.get(pivot).getName());
+			if (comparison > 0 && j < pivot) {
+				libraries.add(libraries.removeIndex(j));
+				pivot--;
+			} else if (comparison < 0 && j > pivot) {
+				libraries.insert(0, libraries.removeIndex(j));
+				pivot++;
+			}
+		}
+		if (initial < pivot) {
+			sortRepoLibraries(initial, pivot);
+		}
+		if (pivot < end) {
+			sortRepoLibraries(pivot + 1, end);
+		}
 	}
 
 	// ///////////////////////////
@@ -240,10 +276,7 @@ public class RepositoryManager {
 	 * assumes that the file from the local path exists.
 	 * 
 	 * @param target
-	 *            the {@link ElementButton} that contains the
-	 *            {@link ModelEntity} that will be imported.
-	 * @param resourceElementPath
-	 *            local cached path.
+	 *            the {@link ModelEntity} that will be imported.
 	 * @param gameAssets
 	 * @param controller
 	 */
@@ -566,7 +599,7 @@ public class RepositoryManager {
 	 * @param jsonString
 	 *            must be correctly formated as a {@link Array list of
 	 *            ModelEntities}.
-	 * @param controller
+	 * @param gameAssets
 	 */
 	@SuppressWarnings("unchecked")
 	private boolean createFromString(String jsonString,
@@ -616,8 +649,8 @@ public class RepositoryManager {
 	}
 
 	/**
-	 * Fetches the {@value #LIBRARIES_FILE_NAME} file and adds it's contents to
-	 * {@link #libraries}.
+	 * Fetches the {@value #LIBRARIES_FILE_NAME} file, retrieves the libraries
+	 * and places its contents into {@link #libraries}.
 	 */
 	public void updateLibraries(final ProgressListener progressListener,
 			final Controller controller) {
@@ -644,14 +677,14 @@ public class RepositoryManager {
 				final String res = httpResponse.getResultAsString();
 				Gdx.app.log(ONLINE_REPO_TAG, "Success");
 
-				if (!loadLibrariesFromLocal(controller, res)) {
+				if (!loadLibrariesFromLocal(progressListener, controller, res)) {
 					EditorGameAssets gameAssets = controller
 							.getEditorGameAssets();
 					gameAssets.absolute(LIBRARIES_FILE_PATH).writeString(res,
 							false);
-					createLibrariesFromString(res, gameAssets);
+					createLibrariesFromString(progressListener, controller,
+							res, gameAssets);
 				}
-				progressListener.finished(true, controller);
 			}
 
 			@Override
@@ -659,7 +692,8 @@ public class RepositoryManager {
 				if (t != null)
 					Gdx.app.log(ONLINE_REPO_TAG,
 							"Failed to perform the HTTP Request: ", t);
-				boolean succeeded = loadLibrariesFromLocal(controller, "");
+				boolean succeeded = loadLibrariesFromLocal(progressListener,
+						controller, "");
 				progressListener.finished(succeeded, controller);
 
 			}
@@ -678,12 +712,13 @@ public class RepositoryManager {
 	 * 
 	 * @param controller
 	 * @param updatedJson
-	 *            the most updated {@link #LIBRARIES} info. Usually the most
-	 *            recently downloaded. If it's empty(e.g. no Internet
-	 *            connection) libraries will be created from local.
-	 * @return true if we could load the libraries from local path.
+	 *            the most updated {@link #LIBRARIES_FILE_NAME} info. Usually
+	 *            the most recently downloaded. If it's empty(e.g. no Internet
+	 *            connection) libraryPaths will be created from local.
+	 * @return true if we could load the libraryPaths from local path.
 	 */
-	private boolean loadLibrariesFromLocal(Controller controller,
+	private boolean loadLibrariesFromLocal(
+			final ProgressListener progressListener, Controller controller,
 			String updatedJson) {
 		EditorGameAssets gameAssets = controller.getEditorGameAssets();
 		FileHandle librariesFile = gameAssets.absolute(LIBRARIES_FILE_PATH);
@@ -692,28 +727,123 @@ public class RepositoryManager {
 			if (!updatedJson.isEmpty() && !localJson.equals(updatedJson)) {
 				return false;
 			}
-			return createLibrariesFromString(localJson, gameAssets);
+			return createLibrariesFromString(progressListener, controller,
+					localJson, gameAssets);
 		}
 		return false;
 	}
 
 	/**
-	 * Tries to fill the {@link #libraries} by creating a list of strings from
-	 * the jsonString.
+	 * Tries to retrieve the {@link #LIBRARIES_FILE_NAME} first, then use it to
+	 * download library metadata to populate {@link #libraries}
 	 * 
 	 * @param jsonString
-	 *            must be correctly formated as a {@link Array list of Strings}.
+	 *            must be correctly formatted as a {@link Array list of Strings}
+	 *            .
 	 */
 	@SuppressWarnings("unchecked")
-	private boolean createLibrariesFromString(String jsonString,
-			EditorGameAssets gameAssets) {
+	private boolean createLibrariesFromString(
+			final ProgressListener progressListener,
+			final Controller controller, String jsonString,
+			final EditorGameAssets gameAssets) {
 		try {
-			this.libraries = gameAssets.fromJson(Array.class, jsonString);
-			return true;
+			final Array<String> libraryPaths = gameAssets.fromJson(Array.class,
+					jsonString);
+			libraries = new Array<RepoLibrary>();
+			final boolean[] failed = { false };
+			final int[] nProcessed = { 0 };
+
+			for (int i = 0; i < libraryPaths.size; i++) {
+				final String libraryPath = libraryPaths.get(i);
+				String libraryJsonUrl = libraryPath.startsWith("/")
+						|| libraryPath.startsWith("\\") ? ROOT_URL
+						+ libraryPath : ROOT_URL + "/" + libraryPath;
+				if (!libraryJsonUrl.toLowerCase().endsWith(".json")) {
+					libraryJsonUrl += ".json";
+				}
+
+				HttpRequest httpRequest = new HttpRequest(Net.HttpMethods.GET);
+				httpRequest.setUrl(libraryJsonUrl);
+				httpRequest.setContent(null);
+				httpRequest.setTimeOut(TIMEOUT);
+				Gdx.net.sendHttpRequest(httpRequest,
+						new HttpResponseListener() {
+
+							@Override
+							public void handleHttpResponse(
+									final HttpResponse httpResponse) {
+								final int statusCode = httpResponse.getStatus()
+										.getStatusCode();
+								// We are not in main thread right now so we
+								// need to post to main thread for UI updates
+
+								if (statusCode != HttpStatus.SC_OK) {
+									Gdx.app.log(ONLINE_REPO_TAG,
+											"An error ocurred since statusCode is not OK, "
+													+ httpResponse);
+									failed(null);
+									return;
+								}
+
+								final String libraryMetadata = httpResponse
+										.getResultAsString();
+								try {
+									RepoLibrary repoLibrary = gameAssets
+											.fromJson(RepoLibrary.class,
+													libraryMetadata);
+									if (repoLibrary == null
+											|| repoLibrary.getPath() == null) {
+										failed(null);
+									}
+									libraries.add(repoLibrary);
+									nProcessed[0] = nProcessed[0] + 1;
+									if (nProcessed[0] >= libraryPaths.size) {
+										progressListener.finished(!failed[0],
+												controller);
+									}
+								} catch (SerializationException e) {
+									Gdx.app.log(ONLINE_REPO_TAG,
+											"Error parsing library from:"
+													+ libraryPath + " file", e);
+									failed(e);
+								}
+							}
+
+							@Override
+							public void failed(Throwable t) {
+								if (t != null)
+									Gdx.app.log(
+											ONLINE_REPO_TAG,
+											"Failed to perform the HTTP Request -library could not be retrieved ",
+											t);
+								failed[0] = true;
+								nProcessed[0] = nProcessed[0] + 1;
+								if (nProcessed[0] >= libraryPaths.size) {
+									progressListener.finished(!failed[0],
+											controller);
+								}
+
+							}
+
+							@Override
+							public void cancelled() {
+								Gdx.app.log(ONLINE_REPO_TAG,
+										"HTTP request cancelled-library not retrieved");
+								failed[0] = true;
+								nProcessed[0] = nProcessed[0] + 1;
+								if (nProcessed[0] >= libraryPaths.size) {
+									progressListener.finished(!failed[0],
+											controller);
+								}
+
+							}
+						});
+			}
 		} catch (SerializationException se) {
 			Gdx.app.log(ONLINE_REPO_TAG, "Error parsing " + LIBRARIES_FILE_PATH
 					+ " file", se);
 			return false;
 		}
+		return true;
 	}
 }
