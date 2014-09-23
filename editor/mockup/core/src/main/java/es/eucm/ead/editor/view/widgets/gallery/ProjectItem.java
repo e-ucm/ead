@@ -36,8 +36,11 @@
  */
 package es.eucm.ead.editor.view.widgets.gallery;
 
+import com.badlogic.gdx.graphics.Texture;
+import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.scenes.scene2d.ui.Image;
 import com.badlogic.gdx.scenes.scene2d.ui.Label;
+import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable;
 
 import es.eucm.ead.editor.control.Controller;
 import es.eucm.ead.editor.control.actions.editor.DeleteProject;
@@ -47,6 +50,7 @@ import es.eucm.ead.engine.assets.Assets;
 import es.eucm.ead.engine.assets.Assets.AssetLoadedCallback;
 import es.eucm.ead.schema.editor.components.Documentation;
 import es.eucm.ead.schema.editor.components.GameData;
+import es.eucm.ead.schema.editor.components.Thumbnail;
 import es.eucm.ead.schema.entities.ModelEntity;
 import es.eucm.ead.schemax.GameStructure;
 
@@ -58,6 +62,24 @@ public class ProjectItem extends GalleryItem implements
 	private Controller controller;
 	private Documentation documentation;
 	private String alternativeName;
+
+	private AssetLoadedCallback<Texture> iconLoaded = new AssetLoadedCallback<Texture>() {
+
+		private boolean loaded = false;
+
+		@Override
+		public void loaded(String fileName, Texture asset) {
+			if (!loaded) {
+				loaded = true;
+				image.setDrawable(new TextureRegionDrawable(new TextureRegion(
+						(Texture) asset)));
+			} else {
+				TextureRegionDrawable drawable = (TextureRegionDrawable) image
+						.getDrawable();
+				drawable.getRegion().setRegion(asset);
+			}
+		}
+	};
 
 	public ProjectItem(Controller controller, String projectPath,
 			BaseGallery gallery) {
@@ -74,7 +96,7 @@ public class ProjectItem extends GalleryItem implements
 		this.projectPath = projectPath;
 		Assets assets = controller.getEditorGameAssets();
 		assets.get(projectPath + GameStructure.GAME_FILE, Object.class, this,
-				true);
+				false);
 
 	}
 
@@ -100,7 +122,23 @@ public class ProjectItem extends GalleryItem implements
 			}
 		} else {
 			// The initial scene was loaded
-			// TODO load the initial scene thumbnail.
+			// The game.json file was loaded
+			if (asset instanceof ModelEntity) {
+				ModelEntity initialScene = (ModelEntity) asset;
+				if (initialScene.getChildren().size != 0
+						|| initialScene.getComponents().size != 0) {
+					Thumbnail thumbnail = Q.getComponent(initialScene,
+							Thumbnail.class);
+					if (thumbnail.getThumbnail() != null) {
+						controller.getEditorGameAssets().get(
+								projectPath + thumbnail.getThumbnail(),
+								Texture.class, iconLoaded);
+					}
+				}
+			} else {
+				clear();
+				remove();
+			}
 		}
 
 	}
