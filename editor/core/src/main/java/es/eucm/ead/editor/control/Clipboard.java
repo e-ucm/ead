@@ -156,7 +156,6 @@ public class Clipboard {
 	 */
 	public void reset() {
 		clipboard.setContents(null);
-		fireChanged();
 	}
 
 	private void paste(String content) {

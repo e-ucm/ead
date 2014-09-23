@@ -199,7 +199,6 @@ public class Views implements ModelListener<LoadEvent> {
 
 	public void reinitializeAllViews() {
 		for (ViewBuilder viewBuilder : viewsBuilders.values()) {
-			viewBuilder.release(controller);
 			viewBuilder.initialize(controller);
 		}
 		if (currentView != null) {
