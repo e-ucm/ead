@@ -38,10 +38,10 @@ package es.eucm.ead.editor.platform;
 
 import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.math.Vector2;
-
-import es.eucm.ead.engine.I18N;
 import es.eucm.ead.editor.control.Controller;
 import es.eucm.ead.editor.control.Tracker;
+import es.eucm.ead.engine.I18N;
+import es.eucm.ead.schema.data.Dimension;
 import es.eucm.network.requests.RequestHelper;
 
 import java.io.InputStream;
@@ -162,6 +162,10 @@ public interface Platform {
 	 *            The inputStream of the image to determine its dimensions
 	 * @return The Dimension with the width and height of the image.
 	 */
-	es.eucm.ead.schema.data.Dimension getImageDimension(
-			InputStream imageInputStream);
+	Dimension getImageDimension(InputStream imageInputStream);
+
+	/**
+	 * @return the default string locale in the device
+	 */
+	String getLocale();
 }

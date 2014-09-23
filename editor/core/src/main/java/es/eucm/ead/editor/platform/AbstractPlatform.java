@@ -41,6 +41,8 @@ import com.badlogic.gdx.graphics.g2d.Batch;
 import es.eucm.ead.editor.control.Controller;
 import es.eucm.ead.editor.control.Tracker;
 
+import java.util.Locale;
+
 public abstract class AbstractPlatform implements Platform {
 
 	private Batch batch;
@@ -79,5 +81,11 @@ public abstract class AbstractPlatform implements Platform {
 	@Override
 	public Batch getBatch() {
 		return batch;
+	}
+
+	@Override
+	public String getLocale() {
+		return Locale.getDefault().getLanguage() + "_"
+				+ Locale.getDefault().getCountry();
 	}
 }
