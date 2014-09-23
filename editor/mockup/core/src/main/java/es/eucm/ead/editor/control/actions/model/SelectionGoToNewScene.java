@@ -79,10 +79,9 @@ public class SelectionGoToNewScene extends ModelAction {
 		Model model = controller.getModel();
 
 		String id = model.createId(ResourceCategory.SCENE);
-		ModelEntity scene = new ModelEntity();
 
 		CompositeCommand command = controller.getActions()
-				.getAction(NewScene.class).perform("", id, scene);
+				.getAction(NewScene.class).perform("", id);
 
 		ModelEntity sceneElement = (ModelEntity) model.getSelection()
 				.getSingle(Selection.SCENE_ELEMENT);

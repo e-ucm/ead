@@ -38,7 +38,6 @@ package es.eucm.ead.editor.control.actions.model;
 
 import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.graphics.Texture;
-
 import es.eucm.ead.editor.assets.EditorGameAssets;
 import es.eucm.ead.editor.control.ComponentId;
 import es.eucm.ead.editor.control.MockupController;
@@ -78,10 +77,6 @@ public class AddGatewayDefaultElement extends ModelAction {
 
 	private Toasts toasts;
 
-	public AddGatewayDefaultElement() {
-		super(true, false, ModelEntity.class);
-	}
-
 	@Override
 	public Command perform(Object... args) {
 		final GameData gameData = Q.getComponent(controller.getModel()
@@ -95,12 +90,10 @@ public class AddGatewayDefaultElement extends ModelAction {
 		// Creates the new scene with a new element
 		String id = model.createId(ResourceCategory.SCENE);
 
-		ModelEntity new_scene;
-
-		new_scene = (ModelEntity) args[0];
+		ModelEntity newScene = controller.getTemplates().createScene("");
 
 		CompositeCommand command = controller.getActions()
-				.getAction(NewScene.class).perform("", id, new_scene);
+				.getAction(NewScene.class).perform("", id, newScene);
 
 		String mockupDpiPath = ((MockupController) controller)
 				.getMockupDpiPath() + "other/";
@@ -113,8 +106,8 @@ public class AddGatewayDefaultElement extends ModelAction {
 		exit = controller.getTemplates().createSceneElement(
 				editorGameAssets.getLoadingPath() + path);
 		command.addCommand(new FieldCommand(Q.getComponent(exit, Parent.class),
-				FieldName.PARENT, new_scene));
-		command.addCommand(new AddToListCommand(new_scene, new_scene
+				FieldName.PARENT, newScene));
+		command.addCommand(new AddToListCommand(newScene, newScene
 				.getChildren(), exit));
 		command.addCommand(controller.getActions()
 				.getAction(SetSelection.class)
