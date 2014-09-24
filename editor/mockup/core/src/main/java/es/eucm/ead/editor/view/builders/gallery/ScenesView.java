@@ -36,12 +36,16 @@
  */
 package es.eucm.ead.editor.view.builders.gallery;
 
+import java.util.Collection;
+
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.ui.Button;
 import com.badlogic.gdx.scenes.scene2d.ui.TextField;
 import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
 import com.badlogic.gdx.utils.Array;
+
 import es.eucm.ead.editor.control.Controller;
+import es.eucm.ead.editor.control.MockupController.BackListener;
 import es.eucm.ead.editor.control.actions.editor.ChangeMockupView;
 import es.eucm.ead.editor.control.actions.editor.asynk.CloseMockupGame;
 import es.eucm.ead.editor.control.actions.editor.asynk.ExportMockupProject;
@@ -66,9 +70,7 @@ import es.eucm.ead.schema.entities.ModelEntity;
 import es.eucm.ead.schemax.FieldName;
 import es.eucm.ead.schemax.entities.ResourceCategory;
 
-import java.util.Collection;
-
-public class ScenesView extends BaseGallery {
+public class ScenesView extends BaseGallery implements BackListener {
 
 	private static final int ROWS = 4;
 	private static final float UNIQUE_SCENE_NOTIF_TIMEOUT = 4F;
@@ -145,7 +147,7 @@ public class ScenesView extends BaseGallery {
 
 			@Override
 			public void changed(ChangeEvent event, Actor actor) {
-				controller.action(CloseMockupGame.class);
+				onBackPressed();
 			}
 		});
 		return back;
@@ -247,5 +249,10 @@ public class ScenesView extends BaseGallery {
 	@Override
 	protected HelpSequence getHelpSequence(Controller controller) {
 		return new ScenesViewHelp(controller, this, newButton);
+	}
+
+	@Override
+	public void onBackPressed() {
+		controller.action(CloseMockupGame.class);
 	}
 }
