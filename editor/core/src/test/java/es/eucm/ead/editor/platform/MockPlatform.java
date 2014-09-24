@@ -39,12 +39,10 @@ package es.eucm.ead.editor.platform;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.utils.Array;
 
+import es.eucm.ead.editor.control.Controller;
+import es.eucm.ead.editor.control.Tracker;
 import es.eucm.ead.engine.I18N;
 import es.eucm.ead.schema.data.Dimension;
-import es.eucm.network.requests.Request;
-import es.eucm.network.requests.RequestCallback;
-import es.eucm.network.requests.RequestHelper;
-import es.eucm.network.requests.ResourceCallback;
 
 import java.io.File;
 import java.io.IOException;
@@ -58,15 +56,10 @@ public class MockPlatform extends AbstractPlatform {
 
 	private Array<String> pathsStack;
 
-	protected RequestHelper requestHelper;
-
 	public MockPlatform() {
 		size = new Vector2();
 		tempFiles = new Array<File>();
 		pathsStack = new Array<String>();
-		// Instead of returning null, the mock platform returns an "empty"
-		// request helper to avoid NullPointerExceptions in testing
-		requestHelper = new MockRequestHelper();
 	}
 
 	@Override
@@ -104,13 +97,17 @@ public class MockPlatform extends AbstractPlatform {
 	}
 
 	@Override
-	public RequestHelper getRequestHelper() {
-		return requestHelper;
+	public boolean browseURL(String URL) {
+		return true;
 	}
 
 	@Override
-	public boolean browseURL(String URL) {
-		return true;
+	public Tracker createTracker(Controller controller) {
+		return new Tracker(controller) {
+			@Override
+			protected void loadClientId() {
+			}
+		};
 	}
 
 	public void removeTempFiles() {
@@ -142,36 +139,6 @@ public class MockPlatform extends AbstractPlatform {
 			return file;
 		} catch (IOException e) {
 			e.printStackTrace();
-			return null;
-		}
-	}
-
-	/**
-	 * "Empty" request helper returned by this platform so NullPointerExceptions
-	 * are not thrown in testing
-	 */
-	private class MockRequestHelper extends RequestHelper {
-
-		@Override
-		public void send(Request request, String uriWithParameters,
-				RequestCallback callback) {
-			// Do nothing
-		}
-
-		@Override
-		public <S, T> void get(Request request, String uriWithParameters,
-				ResourceCallback<T> callback, Class<S> clazz,
-				boolean isCollection) {
-			// Do nothing
-		}
-
-		@Override
-		public String encode(String string, String charset) {
-			return null;
-		}
-
-		@Override
-		public String getJsonData(Object element) {
 			return null;
 		}
 	}

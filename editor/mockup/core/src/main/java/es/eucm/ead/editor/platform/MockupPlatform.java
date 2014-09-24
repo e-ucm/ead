@@ -36,16 +36,16 @@
  */
 package es.eucm.ead.editor.platform;
 
-import java.io.File;
-import java.io.InputStream;
-
 import com.badlogic.gdx.Input.TextInputListener;
 import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.math.Vector2;
-
+import es.eucm.ead.editor.control.Controller;
+import es.eucm.ead.editor.control.Tracker;
 import es.eucm.ead.engine.I18N;
 import es.eucm.ead.schema.data.Dimension;
-import es.eucm.network.requests.RequestHelper;
+
+import java.io.File;
+import java.io.InputStream;
 
 public abstract class MockupPlatform extends AbstractPlatform {
 
@@ -116,8 +116,8 @@ public abstract class MockupPlatform extends AbstractPlatform {
 	}
 
 	@Override
-	public RequestHelper getRequestHelper() {
-		return null;
+	public Tracker createTracker(Controller controller) {
+		return new Tracker(controller);
 	}
 
 	@Override

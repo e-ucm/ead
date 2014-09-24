@@ -38,12 +38,6 @@
             <artifactId>vlcj</artifactId>
             <version>2.4.1</version>
         </dependency>
-        <!-- Network -->
-        <dependency>
-            <groupId>es.e-ucm.network-tools</groupId>
-            <artifactId>network-java</artifactId>
-            <version>${network.version}</version>
-        </dependency>
         <!-- TESTS -->
         <dependency>
             <groupId>junit</groupId>

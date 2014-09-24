@@ -365,15 +365,15 @@ public class AndroidPlatform extends MockupPlatform {
 	}
 
 	@Override
-	public RequestHelper getRequestHelper() {
+	public Dimension getImageDimension(InputStream imageInputStream) {
 		// Do nothing
 		return null;
 	}
 
 	@Override
-	public Dimension getImageDimension(InputStream imageInputStream) {
-		// Do nothing
-		return null;
+	public es.eucm.ead.editor.control.Tracker createTracker(
+			Controller controller) {
+		return new GATracker(context, controller, tracker);
 	}
 
 	@Override

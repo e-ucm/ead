@@ -58,7 +58,6 @@ import es.eucm.ead.editor.platform.Platform;
 import es.eucm.ead.editor.view.builders.ViewBuilder;
 import es.eucm.ead.schema.components.behaviors.Behavior;
 import es.eucm.ead.schema.entities.ModelEntity;
-import es.eucm.network.requests.RequestHelper;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -109,11 +108,6 @@ public class Controller {
 	private Commands commands;
 
 	/**
-	 * Object for dealing with http connections
-	 */
-	private RequestHelper requestHelper;
-
-	/**
 	 * Manage keyboard mappings to editor's functionality
 	 */
 	private ShortcutsMap shortcutsMap;
@@ -140,7 +134,6 @@ public class Controller {
 			Group modalsContainer) {
 		this.shapeRenderer = new ShapeRenderer();
 		this.platform = platform;
-		this.requestHelper = platform.getRequestHelper();
 		this.applicationAssets = createApplicationAssets(files);
 		this.editorGameAssets = new EditorGameAssets(files);
 		this.templates = new Templates(this);
@@ -243,10 +236,6 @@ public class Controller {
 
 	public Clipboard getClipboard() {
 		return clipboard;
-	}
-
-	public RequestHelper getRequestHelper() {
-		return requestHelper;
 	}
 
 	public Tracker getTracker() {

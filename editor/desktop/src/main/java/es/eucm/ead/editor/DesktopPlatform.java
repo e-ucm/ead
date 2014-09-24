@@ -50,13 +50,11 @@ import es.eucm.ead.editor.platform.AbstractPlatform;
 import es.eucm.ead.editor.platform.Platform.FileChooserListener;
 import es.eucm.ead.editor.view.widgets.dialogs.FileChooserDialog;
 import es.eucm.ead.engine.I18N;
-import es.eucm.network.JavaRequestHelper;
-import es.eucm.network.requests.RequestHelper;
 
 import javax.imageio.ImageIO;
 import javax.imageio.ImageReader;
 import javax.imageio.stream.ImageInputStream;
-import java.awt.*;
+import java.awt.Dimension;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.Iterator;
@@ -66,14 +64,12 @@ public class DesktopPlatform extends AbstractPlatform implements
 
 	private LwjglFrame frame;
 	private Vector2 screenDimensions;
-	private RequestHelper requestHelper;
 	private FileChooserDialog fileChooser;
 	private Controller controller;
 	private Stage stage;
 	private FileChooserListener fileChooserListener;
 
 	public DesktopPlatform() {
-		requestHelper = new JavaRequestHelper();
 		screenDimensions = new Vector2();
 	}
 
@@ -142,11 +138,6 @@ public class DesktopPlatform extends AbstractPlatform implements
 	@Override
 	public Tracker createTracker(Controller controller) {
 		return new GATracker(controller);
-	}
-
-	@Override
-	public RequestHelper getRequestHelper() {
-		return requestHelper;
 	}
 
 	public LwjglFrame getFrame() {

@@ -42,7 +42,6 @@ import es.eucm.ead.editor.control.Controller;
 import es.eucm.ead.editor.control.Tracker;
 import es.eucm.ead.engine.I18N;
 import es.eucm.ead.schema.data.Dimension;
-import es.eucm.network.requests.RequestHelper;
 
 import java.io.InputStream;
 
@@ -102,12 +101,6 @@ public interface Platform {
 	 *         Android, the screen size.
 	 */
 	Vector2 getSize();
-
-	/**
-	 * 
-	 * @return returns a platform dependant helper to generate network requests
-	 */
-	RequestHelper getRequestHelper();
 
 	/**
 	 * Opens the system's default browser with the given URL.
