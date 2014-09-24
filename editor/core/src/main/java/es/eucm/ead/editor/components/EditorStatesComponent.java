@@ -34,39 +34,32 @@
  *      You should have received a copy of the GNU Lesser General Public License
  *      along with eAdventure.  If not, see <http://www.gnu.org/licenses/>.
  */
-package es.eucm.ead.engine.processors.renderers;
+package es.eucm.ead.editor.components;
 
-import ashley.core.Component;
-import es.eucm.ead.engine.ComponentLoader;
-import es.eucm.ead.engine.GameLoop;
-import es.eucm.ead.engine.assets.GameAssets;
+import com.badlogic.gdx.utils.Array;
 import es.eucm.ead.engine.components.renderers.RendererComponent;
 import es.eucm.ead.engine.components.renderers.StatesComponent;
-import es.eucm.ead.schema.renderers.State;
 import es.eucm.ead.schema.renderers.States;
 
-public class StatesProcessor extends RendererProcessor<States> {
+/**
+ * Class for rendering {@link States} in the editor. Extends
+ * {@link StatesComponent engine component} to allow selecting a
+ * {@link #DEFAULT_STATE default state}.
+ * 
+ * Created by Javier Torrente on 24/09/14.
+ */
+public class EditorStatesComponent extends StatesComponent {
 
-	private ComponentLoader componentLoader;
+	/**
+	 * If any state has this tag, it is set for preview. If several states have
+	 * this tag, the last one added will be picked.
+	 */
+	public static final String DEFAULT_STATE = "default";
 
-	public StatesProcessor(GameLoop engine, GameAssets gameAssets,
-			ComponentLoader componentLoader) {
-		super(engine, gameAssets);
-		this.componentLoader = componentLoader;
-	}
-
-	@Override
-	public Component getComponent(States component) {
-		StatesComponent states = createStatesComponent();
-		for (State state : component.getStates()) {
-			states.addRenderer(state.getStates(),
-					(RendererComponent) componentLoader.toEngineComponent(state
-							.getRenderer()));
+	public void addRenderer(Array<String> state, RendererComponent renderer) {
+		super.addRenderer(state, renderer);
+		if (state.contains(DEFAULT_STATE, true)) {
+			currentRenderer = renderer;
 		}
-		return states;
-	}
-
-	protected StatesComponent createStatesComponent() {
-		return gameLoop.createComponent(StatesComponent.class);
 	}
 }
