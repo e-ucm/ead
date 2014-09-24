@@ -104,12 +104,4 @@ public class SendEmailPane extends PositionedHiddenPanel {
 		add(notAttach).padBottom(normalPad);
 		add(cancel).padBottom(normalPad);
 	}
-
-	public void show(boolean projectLoaded) {
-		if (projectLoaded) {
-			attach.setVisible(true);
-		} else {
-			attach.setVisible(false);
-		}
-	}
 }

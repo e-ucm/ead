@@ -304,7 +304,9 @@ public abstract class BaseGallery implements ViewBuilder {
 		return null;
 	}
 
-	protected abstract Actor createAboutWidget();
+	protected Actor createAboutWidget() {
+		return null;
+	}
 
 	protected abstract Actor createPlayButton();
 
