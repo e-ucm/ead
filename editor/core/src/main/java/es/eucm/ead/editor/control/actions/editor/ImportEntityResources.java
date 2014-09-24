@@ -47,6 +47,8 @@ import es.eucm.ead.schema.renderers.Frame;
 import es.eucm.ead.schema.renderers.Frames;
 import es.eucm.ead.schema.renderers.Image;
 import es.eucm.ead.schema.renderers.Renderer;
+import es.eucm.ead.schema.renderers.State;
+import es.eucm.ead.schema.renderers.States;
 
 /**
  * <p>
@@ -74,34 +76,41 @@ public class ImportEntityResources extends EditorAction {
 		EditorGameAssets gameAssets = controller.getEditorGameAssets();
 
 		if (Q.hasComponent(elem, Image.class)) {
-			Image renderer = Q.getComponent(elem, Image.class);
-			String elemURI = renderer.getUri();
-			String resElementPath = resourceElementPath + elemURI;
-
-			// Take special care in order to import correctly the
-			// elements
-			// from the
-			// "resourceElementPath"
-			// to the project directory.
-			copyToProject(renderer, resElementPath, gameAssets);
+			copyToProject(Q.getComponent(elem, Image.class),
+					resourceElementPath, gameAssets);
 		}
 		if (Q.hasComponent(elem, Frames.class)) {
-			Array<Frame> frames = Q.getComponent(elem, Frames.class)
-					.getFrames();
-			for (int i = 0; i < frames.size; ++i) {
-				Renderer renderer = frames.get(i).getRenderer();
-				if (renderer instanceof Image) {
-					copyToProject((Image) renderer, resourceElementPath
-							+ ((Image) renderer).getUri(), gameAssets);
-				}
-			}
+			copyToProject(Q.getComponent(elem, Frames.class),
+					resourceElementPath, gameAssets);
+		}
+		if (Q.hasComponent(elem, States.class)) {
+			copyToProject(Q.getComponent(elem, States.class),
+					resourceElementPath, gameAssets);
 		}
 	}
 
-	private void copyToProject(Image renderer, String resourceElementPath,
+	private void copyToProject(Renderer renderer, String resourceElementPath,
 			EditorGameAssets gameAssets) {
-		String newUri = gameAssets.copyToProjectIfNeeded(resourceElementPath,
-				Texture.class);
-		renderer.setUri(newUri == null ? resourceElementPath : newUri);
+		if (renderer instanceof Image) {
+			Image image = (Image) renderer;
+			String fullResourceElementPath = resourceElementPath
+					+ image.getUri();
+			String newUri = gameAssets.copyToProjectIfNeeded(
+					fullResourceElementPath, Texture.class);
+			image.setUri(newUri == null ? fullResourceElementPath : newUri);
+
+		} else if (renderer instanceof Frames) {
+			Frames frames = (Frames) renderer;
+			for (Frame frame : frames.getFrames()) {
+				copyToProject(frame.getRenderer(), resourceElementPath,
+						gameAssets);
+			}
+		} else if (renderer instanceof States) {
+			States states = (States) renderer;
+			for (State state : states.getStates()) {
+				copyToProject(state.getRenderer(), resourceElementPath,
+						gameAssets);
+			}
+		}
 	}
 }
