@@ -107,6 +107,14 @@ public abstract class MockupPlatform extends AbstractPlatform {
 
 	}
 
+	public void sendMail(FileHandle projectHandle, I18N i18n) {
+
+	}
+
+	public void sendMail(I18N i18n) {
+
+	}
+
 	@Override
 	public RequestHelper getRequestHelper() {
 		return null;
