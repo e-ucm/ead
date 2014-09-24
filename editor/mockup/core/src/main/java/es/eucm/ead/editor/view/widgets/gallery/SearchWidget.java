@@ -133,4 +133,8 @@ public class SearchWidget extends IconWithFadePanel {
 			}
 		}
 	}
+
+	public void clearText() {
+		searchTextField.setText("");
+	}
 }

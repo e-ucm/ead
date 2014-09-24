@@ -66,6 +66,11 @@
 	},
 	com.badlogic.gdx.scenes.scene2d.ui.Button$ButtonStyle: {
 		default: { 
+			up: button_up,
+			down: button_pressed
+		},
+		galleryItem: {
+			up: button_normal, 
 			down: button_pressed
 		},
 		white: {
@@ -345,6 +350,11 @@
 		repository: {
 			imageBackground: repository,
 			textBackground: repository_name,
+			textStyle: transparent
+		},
+		library: {
+			imageBackground: library,
+			textBackground: library_name,
 			textStyle: transparent
 		}
 	},

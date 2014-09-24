@@ -34,16 +34,13 @@
  *      You should have received a copy of the GNU Lesser General Public License
  *      along with eAdventure.  If not, see <http://www.gnu.org/licenses/>.
  */
-package es.eucm.ead.editor.view.builders;
+package es.eucm.ead.editor.view.builders.gallery.repository;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.ui.Button;
-import com.badlogic.gdx.scenes.scene2d.ui.ScrollPane;
-import com.badlogic.gdx.scenes.scene2d.ui.Skin;
-import com.badlogic.gdx.scenes.scene2d.ui.Table;
-import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
+import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.utils.Array;
 
@@ -54,26 +51,24 @@ import es.eucm.ead.editor.control.RepositoryManager.ProgressListener;
 import es.eucm.ead.editor.control.Toasts;
 import es.eucm.ead.editor.control.actions.editor.ChangeMockupView;
 import es.eucm.ead.editor.control.actions.editor.repository.UpdateLibraries;
+import es.eucm.ead.editor.view.builders.EditionView;
 import es.eucm.ead.editor.view.builders.gallery.BaseGallery;
-import es.eucm.ead.editor.view.builders.gallery.RepositoryView;
-import es.eucm.ead.editor.view.widgets.GridPanel;
+import es.eucm.ead.editor.view.builders.gallery.repository.info.ItemInfo;
+import es.eucm.ead.editor.view.builders.gallery.repository.info.LibraryInfo;
 import es.eucm.ead.editor.view.widgets.IconButton;
-import es.eucm.ead.editor.view.widgets.Toolbar;
-import es.eucm.ead.engine.I18N;
+import es.eucm.ead.editor.view.widgets.gallery.GalleryItem;
+import es.eucm.ead.editor.view.widgets.gallery.repository.LibraryItem;
+import es.eucm.ead.editor.view.widgets.helpmessage.sequence.HelpSequence;
 import es.eucm.ead.schema.editor.components.RepoLibrary;
 
-public class LibrariesView implements ViewBuilder, ProgressListener {
+public class LibrariesView extends BaseGallery implements ProgressListener {
 
 	private static final int COLS = 2;
 
 	private static final float ERROR_NOTIF_TIMEOUT = 3F;
 	private static final String IC_GO_BACK = "back80x80";
 
-	private I18N i18n;
-	private Controller controller;
-	private Table view, topWidgets;
 	private Toasts toasts;
-	private GridPanel<TextButton> libsGrid;
 	private Runnable updateLibraries = new Runnable() {
 		@Override
 		public void run() {
@@ -81,94 +76,93 @@ public class LibrariesView implements ViewBuilder, ProgressListener {
 			controller.action(UpdateLibraries.class, LibrariesView.this);
 		}
 	};
+	private ItemInfo<LibraryItem> info;
 
 	@Override
 	public Actor getView(Object... args) {
-		libsGrid.clear();
 		Gdx.app.postRunnable(updateLibraries);
 		return view;
 	}
 
 	@Override
 	public void initialize(Controller control) {
-		this.controller = control;
-
+		super.initialize(control);
 		toasts = ((MockupViews) controller.getViews()).getToasts();
-		final Skin skin = controller.getApplicationAssets().getSkin();
-		i18n = controller.getApplicationAssets().getI18N();
-
-		Button backButton = new IconButton(IC_GO_BACK, 0f, skin);
-		backButton.addListener(new ClickListener() {
-			@Override
-			public void clicked(InputEvent event, float x, float y) {
-				controller.action(ChangeMockupView.class, EditionView.class);
-			}
-		});
-
-		topWidgets = new Toolbar(skin, "white_top");
-		topWidgets.add(backButton).left().expandY().fill();
-		topWidgets.add(i18n.m("repository.selectLibrary")).expandX();
-
-		libsGrid = new GridPanel<TextButton>(COLS,
-				BaseGallery.DEFAULT_ENTITY_SPACING);
-		libsGrid.addCaptureListener(new ClickListener() {
-
-			@Override
-			public void clicked(InputEvent event, float x, float y) {
-				Actor target = event.getTarget();
-
-				while (!(target instanceof TextButton) && target != libsGrid) {
-					target = target.getParent();
-				}
-				if (target instanceof TextButton) {
-					RepoLibrary repoLibrary = (RepoLibrary) (((TextButton) target))
-							.getUserObject();
-					String targetLib = repoLibrary.getPath();
-					controller.action(ChangeMockupView.class,
-							RepositoryView.class, targetLib);
-				}
-			}
-
-		});
-
-		ScrollPane galleryTableScroll = new ScrollPane(libsGrid);
-		galleryTableScroll.setScrollingDisabled(true, false);
-
-		view = new Table();
-		view.setFillParent(true);
-		view.add(topWidgets).expandX().fill();
-		view.row();
-		view.add(galleryTableScroll).expand().fillX().top();
-
+		info = new LibraryInfo(control, view);
 	}
 
 	@Override
 	public void release(Controller controller) {
+		super.release(controller);
 		toasts.hideNotification();
+		galleryGrid.clear();
 	}
 
 	@Override
 	public void finished(boolean succeeded, Controller controller) {
 		if (succeeded) {
 			toasts.hideNotification();
-			Array<RepoLibrary> libs = ((MockupController) controller)
-					.getRepositoryManager().getRepoLibraries();
-
-			if (libs.size == 0)
-				return;
-
-			Skin skin = controller.getApplicationAssets().getSkin();
-
-			for (int i = 0; i < libs.size; ++i) {
-				TextButton libButton = new TextButton(libs.get(i).getName(),
-						skin, "white");
-				libButton.setUserObject(libs.get(i));
-				libButton.getLabel().setWrap(true);
-				libsGrid.addItem(libButton);
-			}
+			super.getView();
 		} else {
 			toasts.showNotification(i18n.m("repository.refreshingError"),
 					ERROR_NOTIF_TIMEOUT);
 		}
+	}
+
+	@Override
+	protected void loadItems(Array<GalleryItem> items) {
+		items.clear();
+		Array<RepoLibrary> libs = ((MockupController) controller)
+				.getRepositoryManager().getRepoLibraries();
+		for (RepoLibrary repoLibrary : libs) {
+			LibraryItem libraryItem = new LibraryItem(info, controller,
+					repoLibrary, this);
+			items.add(libraryItem);
+		}
+	}
+
+	@Override
+	protected Actor createPlayButton() {
+		return null;
+	}
+
+	@Override
+	protected Actor createBackButton() {
+		Button back = new IconButton(IC_GO_BACK, skin);
+		back.addListener(new ClickListener() {
+			@Override
+			public void clicked(InputEvent event, float x, float y) {
+				controller.action(ChangeMockupView.class, EditionView.class);
+			}
+		});
+		return back;
+	}
+
+	@Override
+	public void itemClicked(GalleryItem item) {
+		RepoLibrary repoLibrary = ((LibraryItem) item).getRepoLibrary();
+		String targetLib = repoLibrary.getPath();
+		controller.action(ChangeMockupView.class, RepositoryView.class,
+				targetLib);
+	}
+
+	@Override
+	protected int getColumns() {
+		return COLS;
+	}
+
+	@Override
+	protected Actor createToolbarText() {
+		return new Label(i18n.m("repository.selectLibrary"), skin);
+	}
+
+	@Override
+	protected String getNewButtonIcon() {
+		return null;
+	}
+
+	@Override
+	protected HelpSequence getHelpSequence(Controller controller) {
+		return null;
 	}
 }
