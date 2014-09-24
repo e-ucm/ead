@@ -69,7 +69,7 @@ public class SceneItem extends GalleryItem implements
 
 	public SceneItem(final Controller controller, ModelEntity scen,
 			BaseGallery gallery) {
-		super(new Image(), "", 0f, 0f, true, controller.getApplicationAssets()
+		super(new Image(), "", true, controller.getApplicationAssets()
 				.getSkin(), "scene", true, gallery);
 		this.scene = scen;
 
@@ -117,7 +117,7 @@ public class SceneItem extends GalleryItem implements
 					.getInitialScene();
 			if (!container.hasParent() && initialScene != null
 					&& sceneId.equals(initialScene)) {
-				addActor(container);
+				top.addActor(container);
 				model.getResource(model.getIdFor(game), ResourceCategory.GAME)
 						.setModified(true);
 			} else if (container.hasParent()) {

@@ -84,27 +84,22 @@ public abstract class GalleryItem extends Button {
 	protected BaseGallery gallery;
 
 	protected Skin skin;
-
-	public GalleryItem(Image image, String text, float pad,
-			boolean canBeDeleted, Skin skin, BaseGallery gallery) {
-		this(image, text, pad, pad, canBeDeleted, skin, null, true, gallery);
-	}
+	protected Table top;
 
 	public GalleryItem(Image image, String text, boolean canBeDeleted,
 			Skin skin, BaseGallery gallery) {
-		this(image, text, 0, 0, canBeDeleted, skin, null, true, gallery);
+		this(image, text, canBeDeleted, skin, null, true, gallery);
 	}
 
 	public GalleryItem(Image image, String text, float padImage, float padText,
 			boolean canBeDeleted, Skin skin, BaseGallery gallery) {
-		this(image, text, padImage, padText, canBeDeleted, skin, null, true,
-				gallery);
+		this(image, text, canBeDeleted, skin, null, true, gallery);
 	}
 
-	public GalleryItem(Image image, String text, float padImage, float padText,
-			boolean canBeDeleted, Skin skin, String nameStyle,
-			boolean editableName, BaseGallery gallery) {
-		super(skin.get(ButtonStyle.class));
+	public GalleryItem(Image image, String text, boolean canBeDeleted,
+			Skin skin, String nameStyle, boolean editableName,
+			BaseGallery gallery) {
+		super(skin.get("galleryItem", ButtonStyle.class));
 		this.skin = skin;
 		this.gallery = gallery;
 		if (nameStyle != null) {
@@ -123,28 +118,26 @@ public abstract class GalleryItem extends Button {
 			name = nameLabel;
 		}
 
-		Table top = new Table();
+		top = new Table();
 		top.setBackground(style.imageBackground);
 
-		IconButton iconButton = null;
 		if (canBeDeleted) {
-			iconButton = new IconButton(DELETE_ICON, skin);
-			top.add(iconButton).expandX().right();
-			top.row();
+			IconButton iconButton = new IconButton(DELETE_ICON, skin);
+			Container<Actor> icon = new Container<Actor>(iconButton).top()
+					.right();
+			icon.setFillParent(true);
+			top.addActor(icon);
 		}
 		top.addCaptureListener(iconListener);
 		top.setTouchable(Touchable.enabled);
 		top.setUserObject(this);
 
 		this.image = image;
-		float prefSize = Gdx.graphics.getWidth() * MAX_PERCENT_WIDTH;
 		image.setScaling(Scaling.fit);
-		image.setUserObject(this);
-		image.addListener(iconListener);
 		image.setDrawable(skin.getDrawable("new_project80x80"));
-		top.add(image).pad(padImage).center().maxSize(prefSize);
+		top.add(image).maxSize(Gdx.graphics.getWidth() * MAX_PERCENT_WIDTH);
 
-		Container bot = new Container(name).pad(padText);
+		Container<Actor> bot = new Container<Actor>(name);
 		bot.setBackground(style.textBackground);
 
 		add(top).expand().fill();

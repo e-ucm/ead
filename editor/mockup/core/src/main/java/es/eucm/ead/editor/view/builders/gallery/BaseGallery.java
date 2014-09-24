@@ -195,9 +195,9 @@ public abstract class BaseGallery implements ViewBuilder {
 		galleryPane.setScrollingDisabled(true, false);
 
 		view.top();
-		view.add(topBar).expandX().fillX().minHeight(Value.percentHeight(1f));
+		view.add(topBar).expandX().fillX();
 		view.row();
-		view.add(galleryPane).expandX().fillX();
+		view.add(galleryPane).expandX().fill();
 
 		HelpSequence helpSequence = getHelpSequence(controller);
 		if (helpSequence != null) {
@@ -313,6 +313,7 @@ public abstract class BaseGallery implements ViewBuilder {
 	public void release(Controller controller) {
 		discardUndo();
 		undoNotification.hide();
+		searchWidget.clearText();
 	}
 
 	@Override
