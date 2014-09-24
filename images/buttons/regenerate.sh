@@ -6,7 +6,7 @@
 #
 
 SRCDIR_PREFIX="../../assets-raw"
-SRCDIR="$SRCDIR_PREFIX/skins-raw/mockup-ldpi/images"
+SRCDIR="$SRCDIR_PREFIX/skins-raw/mockup-hdpi/images"
 NAMEPART='80x80'
 OUTDIR=.
 
