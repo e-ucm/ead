@@ -83,7 +83,7 @@ public class EditionView implements ViewBuilder, BackListener {
 		final NavigationButton union = new NavigationButton(skin, controller);
 
 		final TopEditionToolbar topBar = new TopEditionToolbar(controller,
-				TOP_STYLE, paintToolbar, 0f, 0f);
+				TOP_STYLE, paintToolbar, 0f, 0f, sceneEditor);
 		final Actor leftBar = new LeftEditionToolbar(controller, LEFT_STYLE,
 				0f, 0f);
 

@@ -654,6 +654,32 @@ public class AndroidPlatform extends MockupPlatform {
 
 	}
 
+	@Override
+	public void sendMail(FileHandle projectHandle, I18N i18n) {
+		Intent intent = new Intent(Intent.ACTION_SEND);
+		intent.setData(Uri.parse("mailto:"));
+		intent.setType("message/rfc822"); // e-mail MIME-type
+		intent.putExtra(Intent.EXTRA_EMAIL, new String[] { "android@e-ucm.es" });
+		intent.putExtra(Intent.EXTRA_SUBJECT, i18n.m("about.emailSubject"));
+		intent.setClassName("com.google.android.gm",
+				"com.google.android.gm.ComposeActivityGmail");
+		if (projectHandle != null) {
+			intent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
+			intent.putExtra(Intent.EXTRA_STREAM,
+					Uri.fromFile(projectHandle.file()));
+		}
+		final EditorActivity activity = (EditorActivity) Gdx.app;
+		if (intent.resolveActivity(activity.getPackageManager()) != null) {
+			activity.startActivity(intent);
+		}
+
+	}
+
+	@Override
+	public void sendMail(I18N i18n) {
+		sendMail(null, i18n);
+	}
+
 	public void sendProject(FileHandle projectHandle, I18N i18n,
 			final ProjectSentListener listener) {
 		Intent shareIntent = new Intent(Intent.ACTION_SEND);

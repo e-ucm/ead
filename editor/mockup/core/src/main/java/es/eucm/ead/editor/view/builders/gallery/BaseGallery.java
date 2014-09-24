@@ -160,6 +160,11 @@ public abstract class BaseGallery implements ViewBuilder {
 			topBar.add(backButton);
 		}
 
+		Actor about = createAboutWidget();
+		if (about != null) {
+			topBar.add(about).padLeft(smallPad);
+		}
+
 		Actor play = createPlayButton();
 		if (play != null) {
 			topBar.add(play).padLeft(smallPad);
@@ -296,6 +301,10 @@ public abstract class BaseGallery implements ViewBuilder {
 	}
 
 	protected Actor createShareButton() {
+		return null;
+	}
+
+	protected Actor createAboutWidget() {
 		return null;
 	}
 
