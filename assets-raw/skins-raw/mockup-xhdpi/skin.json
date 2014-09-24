@@ -28,6 +28,18 @@
             g: 0.7,
             b: 0.7,
             a: 1
+        },
+        dark_gray: {
+            r: 0.2,
+            g: 0.2,
+            b: 0.2,
+            a: 1
+        },
+       	blue_link: {
+        	r: 0,
+            g: 0.47,
+            b: 0.86,
+            a: 1
         }
 	},
 	com.badlogic.gdx.scenes.scene2d.ui.Skin$TintedDrawable: {
@@ -62,6 +74,14 @@
 		default: { 
 			font: default-font, 
 			fontColor: black
+		}, 
+		credits_link: {
+			font: default-font, 
+			fontColor: blue_link
+		},
+		credits: {
+			font: default-font, 
+			fontColor: dark_gray
 		}
 	},
 	com.badlogic.gdx.scenes.scene2d.ui.Button$ButtonStyle: {
