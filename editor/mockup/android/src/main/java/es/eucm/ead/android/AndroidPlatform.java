@@ -36,15 +36,6 @@
  */
 package es.eucm.ead.android;
 
-import java.io.Closeable;
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.io.InputStream;
-import java.util.List;
-
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.ProgressDialog;
@@ -67,17 +58,25 @@ import android.os.AsyncTask;
 import android.provider.MediaStore;
 import android.text.InputType;
 import android.widget.EditText;
-
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input.TextInputListener;
 import com.badlogic.gdx.files.FileHandle;
-
+import com.google.android.gms.analytics.Tracker;
 import es.eucm.ead.android.EditorActivity.ActivityResultListener;
+import es.eucm.ead.editor.control.Controller;
 import es.eucm.ead.editor.platform.MockupPlatform;
 import es.eucm.ead.editor.platform.MockupPlatform.ImageCapturedListener.Result;
 import es.eucm.ead.engine.I18N;
 import es.eucm.ead.schema.data.Dimension;
-import es.eucm.network.requests.RequestHelper;
+
+import java.io.Closeable;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.util.List;
 
 public class AndroidPlatform extends MockupPlatform {
 
@@ -113,9 +112,15 @@ public class AndroidPlatform extends MockupPlatform {
 		}
 	}
 
+	private Context context;
+
+	private Tracker tracker;
+
 	private final String[] names;
 
-	public AndroidPlatform() {
+	public AndroidPlatform(Context context, Tracker tracker) {
+		this.tracker = tracker;
+		this.context = context;
 
 		Editor[] values = Editor.values();
 		names = new String[values.length];

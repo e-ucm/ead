@@ -79,8 +79,17 @@ public class IconButton extends Button implements Tooltip {
 		this(skin.getDrawable(icon), padding, skin);
 	}
 
+	public IconButton(String name, String icon, float padding, Skin skin) {
+		this(name, skin.getDrawable(icon), padding, skin);
+	}
+
 	public IconButton(String icon, float padding, Skin skin, String styleName) {
-		this(skin.getDrawable(icon), padding, skin, styleName);
+		this(icon, skin.getDrawable(icon), padding, skin, styleName);
+	}
+
+	public IconButton(String name, String icon, float padding, Skin skin,
+			String styleName) {
+		this(name, skin.getDrawable(icon), padding, skin, styleName);
 	}
 
 	/**
@@ -102,7 +111,11 @@ public class IconButton extends Button implements Tooltip {
 	 *            the skin
 	 */
 	public IconButton(Drawable icon, float padding, Skin skin) {
-		this(icon, padding, skin, "default");
+		this(null, icon, padding, skin, "default");
+	}
+
+	public IconButton(String name, Drawable icon, float padding, Skin skin) {
+		this(name, icon, padding, skin, "default");
 	}
 
 	/**
@@ -115,15 +128,20 @@ public class IconButton extends Button implements Tooltip {
 	 * @param styleName
 	 *            the button style name
 	 */
-	public IconButton(Drawable icon, float padding, Skin skin, String styleName) {
+	public IconButton(String name, Drawable icon, float padding, Skin skin,
+			String styleName) {
 		super(skin);
 		setStyle(skin.get(styleName, IconButtonStyle.class));
 		init(icon, padding, skin);
+		setName(name);
+	}
 
+	public IconButton(Drawable drawable, float padding, Skin skin,
+			String styleName) {
+		this(null, drawable, padding, skin, styleName);
 	}
 
 	protected void init(Drawable icon, float padding, Skin skin) {
-
 		iconImage = new Image(icon);
 		iconImage.setScaling(Scaling.fit);
 		iconImage.setTouchable(Touchable.disabled);

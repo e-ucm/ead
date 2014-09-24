@@ -231,7 +231,23 @@ public class Tracker implements PreferenceListener {
 		Gdx.app.debug("Tracker", "Tracker disabled by user");
 	}
 
-    public void changeView(String simpleName) {
-        Gdx.app.debug("Tracker", "Change view " + simpleName);
-    }
+	public void changeView(String simpleName) {
+		Gdx.app.debug("Tracker", "Change view " + simpleName);
+	}
+
+	/**
+	 * A new scene was created
+	 */
+	public void newScene() {
+	}
+
+	/**
+	 * A button was pressed
+	 * 
+	 * @param label
+	 *            label of the button
+	 */
+	public void buttonPressed(String label) {
+
+	}
 }

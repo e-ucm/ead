@@ -40,6 +40,8 @@ import com.badlogic.gdx.Files;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.scenes.scene2d.Group;
+import com.badlogic.gdx.scenes.scene2d.InputEvent;
+import com.badlogic.gdx.scenes.scene2d.InputListener;
 import com.badlogic.gdx.utils.reflect.ClassReflection;
 import com.badlogic.gdx.utils.reflect.ReflectionException;
 import es.eucm.ead.editor.assets.ApplicationAssets;
@@ -149,7 +151,7 @@ public class Controller {
 		this.releaseInfo = applicationAssets.loadReleaseInfo();
 		this.shortcutsMap = new ShortcutsMap(this);
 		this.engine = createEngine();
-		setTracker();
+		setTracker(viewsContainer, modalsContainer);
 		setClipboard();
 		loadPreferences();
 		indexes = new HashMap<Class, ControllerIndex>();
@@ -174,11 +176,24 @@ public class Controller {
 				new BehaviorCopyListener(this));
 	}
 
-	private void setTracker() {
+	private void setTracker(Group viewsContainer, Group modalsContainer) {
 		this.tracker = platform.createTracker(this);
 		tracker.setEnabled(preferences.getBoolean(Preferences.TRACKING_ENABLED,
 				false));
 		tracker.startSession();
+		InputListener buttonsPressed = new InputListener() {
+			@Override
+			public boolean touchDown(InputEvent event, float x, float y,
+					int pointer, int button) {
+				if (event.getTarget().getName() != null) {
+					tracker.buttonPressed(event.getTarget().getName());
+				}
+				return super.touchDown(event, x, y, pointer, button);
+			}
+		};
+
+		viewsContainer.addCaptureListener(buttonsPressed);
+		modalsContainer.addCaptureListener(buttonsPressed);
 	}
 
 	/**

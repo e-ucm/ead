@@ -36,18 +36,18 @@
  */
 package es.eucm.ead.android;
 
-import java.util.HashMap;
-import java.util.Map;
-
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
-
 import com.badlogic.gdx.backends.android.AndroidApplication;
 import com.badlogic.gdx.backends.android.AndroidApplicationConfiguration;
-
+import com.google.android.gms.analytics.GoogleAnalytics;
+import com.google.android.gms.analytics.Tracker;
 import es.eucm.ead.editor.MockupApplicationListener;
 import es.eucm.ead.editor.platform.MockupPlatform;
+
+import java.util.HashMap;
+import java.util.Map;
 
 public class EditorActivity extends AndroidApplication {
 
@@ -65,9 +65,12 @@ public class EditorActivity extends AndroidApplication {
 		config.useCompass = false;
 
 		this.listeners = new HashMap<Integer, ActivityResultListener>();
+		GoogleAnalytics analytics = GoogleAnalytics.getInstance(this);
+		Tracker tracker = analytics.newTracker(R.xml.tracker);
+		analytics.reportActivityStart(this);
 		initialize(
 				new MockupApplicationListener(handleIntent(getIntent(),
-						new AndroidPlatform())), config);
+						new AndroidPlatform(getContext(), tracker))), config);
 	}
 
 	private MockupPlatform handleIntent(Intent intent, MockupPlatform platform) {
