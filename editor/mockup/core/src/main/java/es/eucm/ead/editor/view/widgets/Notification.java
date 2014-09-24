@@ -114,8 +114,6 @@ public class Notification extends HiddenPanel {
 		setBounds(Math.round((stage.getWidth() - prefWidth) / 2),
 				Math.round(prefHeight * .1f), Math.round(prefWidth),
 				Math.round(prefHeight));
-		stage.setKeyboardFocus(this);
-		stage.setScrollFocus(this);
 
 		super.show(stage, action);
 		return this;
