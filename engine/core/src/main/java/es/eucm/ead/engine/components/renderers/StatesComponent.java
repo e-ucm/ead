@@ -44,7 +44,7 @@ public class StatesComponent extends RendererComponent {
 
 	private Array<State> states;
 
-	private RendererComponent currentRenderer;
+	protected RendererComponent currentRenderer;
 
 	private Array<String> currentState;
 
