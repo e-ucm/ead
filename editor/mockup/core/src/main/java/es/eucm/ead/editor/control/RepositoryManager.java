@@ -60,11 +60,12 @@ import es.eucm.ead.editor.control.actions.editor.ImportEntityResources;
 import es.eucm.ead.editor.control.actions.model.AddSceneElement;
 import es.eucm.ead.editor.model.Q;
 import es.eucm.ead.editor.view.builders.gallery.ProjectsView;
+import es.eucm.ead.engine.assets.Assets;
 import es.eucm.ead.schema.editor.components.GameData;
 import es.eucm.ead.schema.editor.components.RepoElement;
+import es.eucm.ead.schema.editor.components.RepoLibrary;
 import es.eucm.ead.schema.entities.ModelEntity;
 import es.eucm.ead.schemax.GameStructure;
-import es.eucm.ead.schema.editor.components.RepoLibrary;
 
 /**
  * <p>
@@ -628,6 +629,54 @@ public class RepositoryManager {
 	}
 
 	/**
+	 * Invokes
+	 * {@link OnThumbnailAvailableListener#thumbnailAvailable(String, Controller)}
+	 * when the thumbnail is available locally.
+	 * 
+	 * @param listener
+	 * @param library
+	 */
+	public void getLibraryThumbnail(
+			final OnThumbnailAvailableListener listener, RepoLibrary library,
+			Controller controller) {
+		EditorGameAssets gameAssets = controller.getEditorGameAssets();
+
+		String libThumbnail = library.getThumbnail();
+
+		if (libThumbnail == null) {
+			listener.thumbnailAvailable(null, controller);
+			return;
+		}
+
+		final FileHandle thumbFile = gameAssets
+				.absolute(LIBRARIES_METADATA_FOLDER_PATH + "/" + libThumbnail);
+
+		if (!thumbFile.exists()) {
+			if (!libThumbnail.startsWith("/")) {
+				libThumbnail = "/" + libThumbnail;
+			}
+			String URL = ROOT_URL + libThumbnail;
+			sendDownloadRequest(URL, thumbFile, controller, data,
+					new ProgressListener() {
+
+						@Override
+						public void finished(boolean succeeded,
+								Controller controller) {
+							if (succeeded) {
+								listener.thumbnailAvailable(thumbFile.file()
+										.getAbsolutePath(), controller);
+							} else {
+								listener.thumbnailAvailable(null, controller);
+							}
+						}
+					});
+		} else {
+			listener.thumbnailAvailable(thumbFile.file().getAbsolutePath(),
+					controller);
+		}
+	}
+
+	/**
 	 * Listens to progress events, while downloading or updating.
 	 */
 	public interface ProgressListener {
@@ -655,6 +704,21 @@ public class RepositoryManager {
 		 * @param controller
 		 */
 		void entityImported(ModelEntity entity, Controller controller);
+	}
+
+	/**
+	 * Listens to library thumbnail events.
+	 */
+	public interface OnThumbnailAvailableListener {
+		/**
+		 * Invoked when the thumbnail is locally available.
+		 * 
+		 * @param thumbnailPath
+		 *            (absolute path to the thumbnail) may be null, if something
+		 *            went wrong.
+		 * @param controller
+		 */
+		void thumbnailAvailable(String thumbnailPath, Controller controller);
 	}
 
 	/**
@@ -865,6 +929,28 @@ public class RepositoryManager {
 
 	/**
 	 * 
+	 * @param library
+	 * @return
+	 */
+	public FileHandle getRepoLibraryFile(String libraryPath, Assets assets) {
+		FileHandle librariesFile = assets
+				.absolute(LIBRARIES_METADATA_FOLDER_PATH + "/" + libraryPath);
+		return librariesFile;
+	}
+
+	/**
+	 * 
+	 * @param lib
+	 * @param assets
+	 * @return true if the given {@link RepoLibrary} has been downloaded.
+	 */
+	public boolean isDownloaded(RepoLibrary lib, Assets assets) {
+		return assets.absolute(REPOSITORY_FOLDER_PATH + "/" + lib.getPath())
+				.exists();
+	}
+
+	/**
+	 * 
 	 * 
 	 * @param controller
 	 * @return true if we could load the libraryMetadataPaths from local path.
@@ -872,8 +958,7 @@ public class RepositoryManager {
 	private boolean loadLibraryMetadataFromLocal(Controller controller,
 			String libraryPath) {
 		EditorGameAssets gameAssets = controller.getEditorGameAssets();
-		FileHandle librariesFile = gameAssets
-				.absolute(LIBRARIES_METADATA_FOLDER_PATH + "/" + libraryPath);
+		FileHandle librariesFile = getRepoLibraryFile(libraryPath, gameAssets);
 		if (librariesFile.exists()) {
 			String localJson = librariesFile.readString();
 			if (localJson.isEmpty()) {

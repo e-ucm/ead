@@ -67,7 +67,7 @@ public class GridPanel<T extends Actor> extends Table {
 		this.lastRow = 0;
 		this.cols = cols;
 		this.cells = new Array<Array<Cell<T>>>(false, 8);
-		this.defaults().space(spacing).expandX().fill();
+		this.defaults().space(spacing).uniform().expandX().fill();
 		addNewRowOfCells();
 	}
 

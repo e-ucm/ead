@@ -98,6 +98,8 @@ public class MockupSceneEditor extends SceneEditor {
 				} else {
 					context.show(null, null);
 				}
+			} else {
+				context.show(null, null);
 			}
 		}
 	};

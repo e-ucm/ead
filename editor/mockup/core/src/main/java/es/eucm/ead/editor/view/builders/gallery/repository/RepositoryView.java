@@ -34,7 +34,7 @@
  *      You should have received a copy of the GNU Lesser General Public License
  *      along with eAdventure.  If not, see <http://www.gnu.org/licenses/>.
  */
-package es.eucm.ead.editor.view.builders.gallery;
+package es.eucm.ead.editor.view.builders.gallery.repository;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.scenes.scene2d.Actor;
@@ -56,12 +56,13 @@ import es.eucm.ead.editor.control.background.BackgroundExecutor;
 import es.eucm.ead.editor.control.background.BackgroundExecutor.BackgroundTaskListener;
 import es.eucm.ead.editor.control.background.BackgroundTask;
 import es.eucm.ead.editor.view.builders.EditionView;
-import es.eucm.ead.editor.view.builders.LibrariesView;
+import es.eucm.ead.editor.view.builders.gallery.BaseGallery;
+import es.eucm.ead.editor.view.builders.gallery.repository.info.ItemInfo;
+import es.eucm.ead.editor.view.builders.gallery.repository.info.RepositoryInfo;
 import es.eucm.ead.editor.view.widgets.IconButton;
 import es.eucm.ead.editor.view.widgets.Notification;
 import es.eucm.ead.editor.view.widgets.gallery.GalleryItem;
-import es.eucm.ead.editor.view.widgets.gallery.RepositoryItem;
-import es.eucm.ead.editor.view.widgets.gallery.RepositoryItem.ItemInfo;
+import es.eucm.ead.editor.view.widgets.gallery.repository.RepositoryItem;
 import es.eucm.ead.editor.view.widgets.helpmessage.sequence.HelpSequence;
 import es.eucm.ead.schema.entities.ModelEntity;
 
@@ -73,7 +74,7 @@ public class RepositoryView extends BaseGallery implements ProgressListener,
 
 	private Notification importingNotif, updatingNotif, errorUpdating,
 			errorImporting;
-	private ItemInfo info;
+	private ItemInfo<RepositoryItem> info;
 
 	@Override
 	public void initialize(Controller controller) {
@@ -86,7 +87,7 @@ public class RepositoryView extends BaseGallery implements ProgressListener,
 				.m("repository.refreshingError"));
 		this.errorImporting = new Notification(skin).text(i18n
 				.m("repository.importingError"));
-		info = new ItemInfo(controller, view);
+		info = new RepositoryInfo(controller, view);
 	}
 
 	@Override
@@ -173,6 +174,7 @@ public class RepositoryView extends BaseGallery implements ProgressListener,
 
 	@Override
 	public void release(Controller controller) {
+		super.release(controller);
 		galleryGrid.clear();
 		updatingNotif.hide();
 		importingNotif.hide();
