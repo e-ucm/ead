@@ -2,13 +2,11 @@
 
 #
 # This script reverses colors on all buttons in mockups' raw assets;
-# the resulting buttons are then available for inclusion in the project's wiki
-#
-# To temporarily check the images 
+# the resulting "reversed" buttons are then available for inclusion in the project's wiki
 #
 
 SRCDIR_PREFIX="../../assets-raw"
-SRCDIR="$SRCDIR_PREFIX/skins-raw/mockup/images"
+SRCDIR="$SRCDIR_PREFIX/skins-raw/mockup-ldpi/images"
 NAMEPART='80x80'
 OUTDIR=.
 
