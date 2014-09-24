@@ -42,7 +42,10 @@ import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
 
 import es.eucm.ead.editor.control.Controller;
+import es.eucm.ead.editor.control.MockupController.BackListener;
 import es.eucm.ead.editor.control.MockupViews;
+import es.eucm.ead.editor.control.actions.editor.ChangeMockupView;
+import es.eucm.ead.editor.view.builders.gallery.ScenesView;
 import es.eucm.ead.editor.view.widgets.editionview.InfoEditionPanel;
 import es.eucm.ead.editor.view.widgets.editionview.LeftEditionToolbar;
 import es.eucm.ead.editor.view.widgets.editionview.MockupSceneEditor;
@@ -51,7 +54,7 @@ import es.eucm.ead.editor.view.widgets.editionview.TopEditionToolbar;
 import es.eucm.ead.editor.view.widgets.editionview.draw.PaintToolbar;
 import es.eucm.ead.editor.view.widgets.helpmessage.sequence.EditionViewHelp;
 
-public class EditionView implements ViewBuilder {
+public class EditionView implements ViewBuilder, BackListener {
 
 	private static final String TOP_STYLE = "white_top",
 			LEFT_STYLE = "white_left";
@@ -62,9 +65,11 @@ public class EditionView implements ViewBuilder {
 
 	private PaintToolbar paintToolbar;
 	private InfoEditionPanel infoPanel;
+	private Controller controller;
 
 	@Override
 	public void initialize(Controller controller) {
+		this.controller = controller;
 
 		Skin skin = controller.getApplicationAssets().getSkin();
 
@@ -110,4 +115,8 @@ public class EditionView implements ViewBuilder {
 		return view;
 	}
 
+	@Override
+	public void onBackPressed() {
+		controller.action(ChangeMockupView.class, ScenesView.class);
+	}
 }
