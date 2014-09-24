@@ -179,6 +179,8 @@ public class Views implements ModelListener<LoadEvent> {
 	 */
 	public <T extends ViewBuilder> void setView(Class<T> viewClass,
 			Object... args) {
+
+		controller.getTracker().changeView(viewClass.getSimpleName());
 		if (currentView != null) {
 			currentView.release(controller);
 		}

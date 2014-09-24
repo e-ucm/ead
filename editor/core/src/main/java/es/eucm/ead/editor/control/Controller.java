@@ -40,6 +40,8 @@ import com.badlogic.gdx.Files;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.scenes.scene2d.Group;
+import com.badlogic.gdx.scenes.scene2d.InputEvent;
+import com.badlogic.gdx.scenes.scene2d.InputListener;
 import com.badlogic.gdx.utils.reflect.ClassReflection;
 import com.badlogic.gdx.utils.reflect.ReflectionException;
 import es.eucm.ead.editor.assets.ApplicationAssets;
@@ -58,7 +60,6 @@ import es.eucm.ead.editor.platform.Platform;
 import es.eucm.ead.editor.view.builders.ViewBuilder;
 import es.eucm.ead.schema.components.behaviors.Behavior;
 import es.eucm.ead.schema.entities.ModelEntity;
-import es.eucm.network.requests.RequestHelper;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -109,11 +110,6 @@ public class Controller {
 	private Commands commands;
 
 	/**
-	 * Object for dealing with http connections
-	 */
-	private RequestHelper requestHelper;
-
-	/**
 	 * Manage keyboard mappings to editor's functionality
 	 */
 	private ShortcutsMap shortcutsMap;
@@ -140,7 +136,6 @@ public class Controller {
 			Group modalsContainer) {
 		this.shapeRenderer = new ShapeRenderer();
 		this.platform = platform;
-		this.requestHelper = platform.getRequestHelper();
 		this.applicationAssets = createApplicationAssets(files);
 		this.editorGameAssets = new EditorGameAssets(files);
 		this.templates = new Templates(this);
@@ -156,7 +151,7 @@ public class Controller {
 		this.releaseInfo = applicationAssets.loadReleaseInfo();
 		this.shortcutsMap = new ShortcutsMap(this);
 		this.engine = createEngine();
-		setTracker();
+		setTracker(viewsContainer, modalsContainer);
 		setClipboard();
 		loadPreferences();
 		indexes = new HashMap<Class, ControllerIndex>();
@@ -181,11 +176,24 @@ public class Controller {
 				new BehaviorCopyListener(this));
 	}
 
-	private void setTracker() {
+	private void setTracker(Group viewsContainer, Group modalsContainer) {
 		this.tracker = platform.createTracker(this);
 		tracker.setEnabled(preferences.getBoolean(Preferences.TRACKING_ENABLED,
 				false));
 		tracker.startSession();
+		InputListener buttonsPressed = new InputListener() {
+			@Override
+			public boolean touchDown(InputEvent event, float x, float y,
+					int pointer, int button) {
+				if (event.getTarget().getName() != null) {
+					tracker.buttonPressed(event.getTarget().getName());
+				}
+				return super.touchDown(event, x, y, pointer, button);
+			}
+		};
+
+		viewsContainer.addCaptureListener(buttonsPressed);
+		modalsContainer.addCaptureListener(buttonsPressed);
 	}
 
 	/**
@@ -243,10 +251,6 @@ public class Controller {
 
 	public Clipboard getClipboard() {
 		return clipboard;
-	}
-
-	public RequestHelper getRequestHelper() {
-		return requestHelper;
 	}
 
 	public Tracker getTracker() {

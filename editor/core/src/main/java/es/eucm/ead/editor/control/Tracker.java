@@ -37,13 +37,10 @@
 package es.eucm.ead.editor.control;
 
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.Net.HttpRequest;
+import com.badlogic.gdx.Net.HttpResponse;
+import com.badlogic.gdx.Net.HttpResponseListener;
 import es.eucm.ead.editor.control.Preferences.PreferenceListener;
-import es.eucm.ead.editor.control.appdata.BugReport;
-import es.eucm.network.Method;
-import es.eucm.network.requests.Request;
-import es.eucm.network.requests.RequestCallback;
-import es.eucm.network.requests.RequestHelper;
-import es.eucm.network.requests.Response;
 
 /**
  * Tracks user interaction with the editor. Do not worry, we do not work for the
@@ -54,24 +51,11 @@ import es.eucm.network.requests.Response;
 public class Tracker implements PreferenceListener {
 
 	/**
-	 * The number of actions on top of the action log stack that will be sent
-	 * out along with an exception during bug reporting.
-	 */
-	private static final int ACTION_NUMBER_BUGREPORTING = 40;
-
-	/**
-	 * Path to send bugs to Bugr
-	 */
-	private static final String BUG_PATH = "/api/bug";
-
-	/**
 	 * Path to activate installations in Bugr
 	 */
 	private static final String ACTIVATE_PATH = "/api/activate";
 
 	private Controller controller;
-
-	protected RequestHelper requestHelper;
 
 	protected String cid;
 
@@ -84,7 +68,6 @@ public class Tracker implements PreferenceListener {
 
 	public Tracker(Controller controller) {
 		this.controller = controller;
-		requestHelper = controller.getRequestHelper();
 		// Read preferences
 		Preferences preferences = controller.getPreferences();
 		setEnabled(preferences.getBoolean(Preferences.TRACKING_ENABLED));
@@ -103,33 +86,43 @@ public class Tracker implements PreferenceListener {
 	 * Loads the client identifier from preferences. If it does not exists,
 	 * obtains one from bugr.
 	 */
-	private void loadClientId() {
+	protected void loadClientId() {
 		String clientId = controller.getPreferences().getString(
 				Preferences.CLIENT_ID);
+		HttpRequest request = new HttpRequest("POST");
+		request.setUrl(bugrURL + ACTIVATE_PATH);
 		// Obtain an unique id
 		if ("".equals(clientId) || clientId == null) {
-			requestHelper.url(bugrURL + ACTIVATE_PATH).method(Method.POST)
-					.send(new RequestCallback() {
-						@Override
-						public void error(Request request, Throwable throwable) {
-							Gdx.app.error(
-									"Tracker",
-									"Impossible to activate this installation.",
-									throwable);
-						}
+			Gdx.net.sendHttpRequest(request, new HttpResponseListener() {
+				@Override
+				public void handleHttpResponse(HttpResponse httpResponse) {
+					if (httpResponse.getStatus().getStatusCode() == 200) {
+						cid = httpResponse.getResultAsString();
+						controller.getPreferences().putString(
+								Preferences.CLIENT_ID, cid);
+						// Start session with recently acquired cid
+						startSession();
+					} else {
+						Gdx.app.error("Tracker",
+								"Impossible to activate this installation. Server said:\n"
+										+ httpResponse.getResultAsString());
+					}
+				}
 
-						@Override
-						public void success(Request request, Response response) {
-							cid = response.getContent();
-							controller.getPreferences().putString(
-									Preferences.CLIENT_ID, cid);
-							// Start session with recently acquired cid
-							startSession();
-						}
-					});
+				@Override
+				public void failed(Throwable throwable) {
+					Gdx.app.error("Tracker",
+							"Impossible to activate this installation.",
+							throwable);
+				}
+
+				@Override
+				public void cancelled() {
+
+				}
+			});
 		} else {
 			this.cid = clientId;
-			startSession();
 		}
 	}
 
@@ -208,42 +201,6 @@ public class Tracker implements PreferenceListener {
 	protected void actionPerformedImpl(String action) {
 	}
 
-	/**
-	 * Connects to our backend to notify a bug. In this context, a bug is
-	 * defined by an unhandled exception.
-	 * 
-	 * A bug report contains the exception and also the stack of actions the
-	 * user performed on this session.
-	 * 
-	 * @param e
-	 *            The unhandled exception.
-	 */
-	public void reportBug(Throwable e) {
-		// If there's no available url for bug reporting, do nothing
-		if (bugrURL != null) {
-			// Create bug report
-			BugReport bugReport = new BugReport();
-			bugReport.setActionsLog(controller.getActions().getLoggedActions(
-					ACTION_NUMBER_BUGREPORTING));
-			bugReport.setThrowable(e);
-
-			requestHelper.url(bugReport + BUG_PATH).post(bugReport,
-					new RequestCallback() {
-						@Override
-						public void error(Request request, Throwable throwable) {
-							Gdx.app.error("Tracker", "Error sending bug",
-									throwable);
-						}
-
-						@Override
-						public void success(Request request, Response response) {
-							Gdx.app.debug("Tracker", "Bug sent successfully");
-						}
-					});
-
-		}
-	}
-
 	@Override
 	public void preferenceChanged(String preferenceName, Object newValue) {
 		boolean newEnabled = (newValue instanceof Boolean)
@@ -274,4 +231,23 @@ public class Tracker implements PreferenceListener {
 		Gdx.app.debug("Tracker", "Tracker disabled by user");
 	}
 
+	public void changeView(String simpleName) {
+		Gdx.app.debug("Tracker", "Change view " + simpleName);
+	}
+
+	/**
+	 * A new scene was created
+	 */
+	public void newScene() {
+	}
+
+	/**
+	 * A button was pressed
+	 * 
+	 * @param label
+	 *            label of the button
+	 */
+	public void buttonPressed(String label) {
+
+	}
 }

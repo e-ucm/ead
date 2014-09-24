@@ -104,22 +104,22 @@ public class TopEditionToolbar extends Toolbar {
 		Skin skin = controller.getApplicationAssets().getSkin();
 
 		about = new AboutWidget(controller, reference);
-		play = new IconButton("play80x80", 0f, skin, "inverted");
-		share = new IconButton("share80x80", 0f, skin, "inverted");
+		play = new IconButton("play", "play80x80", 0f, skin, "inverted");
+		share = new IconButton("share", "share80x80", 0f, skin, "inverted");
 
-		undo = new IconButton("undo80x80", 0f, skin);
-		redo = new IconButton("redo80x80", 0f, skin);
+		undo = new IconButton("undo", "undo80x80", 0f, skin);
+		redo = new IconButton("redo", "redo80x80", 0f, skin);
 
-		paste = new IconButton("paste80x80", 0f, skin);
-		camera = new IconButton("camera80x80", 0f, skin);
-		repository = new IconButton("repository80x80", 0f, skin);
-		android = new IconButton("android_gallery80x80", 0f, skin);
+		paste = new IconButton("paste", "paste80x80", 0f, skin);
+		camera = new IconButton("camera", "camera80x80", 0f, skin);
+		repository = new IconButton("repository", "repository80x80", 0f, skin);
+		android = new IconButton("gallery", "android_gallery80x80", 0f, skin);
 
-		paint = new IconButton("paint80x80", 0f, skin);
-		text = new IconButton("text80x80", 0f, skin);
+		paint = new IconButton("paint", "paint80x80", 0f, skin);
+		text = new IconButton("text", "text80x80", 0f, skin);
 
-		zones = new IconButton("interactive80x80", 0f, skin);
-		gate = new IconButton("gateway80x80", 0f, skin);
+		zones = new IconButton("zone", "interactive80x80", 0f, skin);
+		gate = new IconButton("exit", "gateway80x80", 0f, skin);
 
 		others = new OthersWidget(controller);
 

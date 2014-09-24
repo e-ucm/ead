@@ -24,12 +24,6 @@
             <artifactId>ashley</artifactId>
             <version>0.1-SNAPSHOT</version>
         </dependency>
-        <!-- Network -->
-        <dependency>
-            <groupId>es.e-ucm.network-tools</groupId>
-            <artifactId>network</artifactId>
-            <version>${network.version}</version>
-        </dependency>
         <!-- Tween Engine -->
         <dependency>
             <groupId>aurelienribon</groupId>

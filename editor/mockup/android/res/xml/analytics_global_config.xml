@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<resources>
+    <string name="ga_appName">Mockup</string>
+    <string name="ga_appVersion">0.9.0-alpha</string>
+    <string name="ga_logLevel">verbose</string>
+    <integer name="ga_dispatchPeriod">1000</integer>
+    <bool name="ga_dryRun">false</bool>
+</resources>

@@ -37,18 +37,19 @@
 package es.eucm.ead.editor.control.updatesystem;
 
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.Net.HttpRequest;
+import com.badlogic.gdx.Net.HttpResponse;
+import com.badlogic.gdx.Net.HttpResponseListener;
 import com.badlogic.gdx.utils.SerializationException;
 import es.eucm.ead.editor.control.Controller;
 import es.eucm.ead.editor.control.Preferences;
 import es.eucm.ead.editor.control.appdata.ReleaseInfo;
-import es.eucm.ead.editor.control.appdata.UpdatePlatformInfo;
 import es.eucm.ead.editor.control.appdata.UpdateInfo;
+import es.eucm.ead.editor.control.appdata.UpdatePlatformInfo;
 import es.eucm.ead.editor.control.background.BackgroundExecutor;
 import es.eucm.ead.editor.control.background.BackgroundTask;
 import es.eucm.ead.editor.view.builders.classic.dialogs.ConfirmationDialogBuilder;
 import es.eucm.ead.engine.I18N;
-import es.eucm.network.requests.Request;
-import es.eucm.network.requests.ResourceCallback;
 
 /**
  * This system deals with auto-updates of the application.
@@ -63,16 +64,15 @@ import es.eucm.network.requests.ResourceCallback;
  * file with info about the latest release remotely. This actually generates a
  * network request, encapsulated as a
  * {@link es.eucm.ead.editor.control.background.BackgroundTask}. The update
- * process stops until response to the request is obtained from
- * {@link es.eucm.network.requests.RequestHelper}.</li>
+ * process stops until response to the request is obtained from http request</li>
  * <li><b>
  * {@link #checkUpdateNeeded(es.eucm.ead.editor.control.appdata.UpdateInfo)}
  * </b>If (1) succeeds, it invokes
  * {@link #checkUpdateNeeded(es.eucm.ead.editor.control.appdata.UpdateInfo)}
  * with the {@link es.eucm.ead.editor.control.appdata.UpdateInfo} object
- * retrieved by the {@link es.eucm.network.requests.RequestHelper}. This method
- * compares the remote app version read with the one stored in this application.
- * If local version < remote version, the process continues</li>
+ * retrieved by the http request. This method compares the remote app version
+ * read with the one stored in this application. If local version < remote
+ * version, the process continues</li>
  * <li><b>{@link #askUserConfirmation(String)}</b>If update is needed, asks the
  * user for a confirmation through a dialog. The process stops until the user
  * confirms or denies the update. If the user confirms the update, this method
@@ -217,49 +217,53 @@ public class Updater {
 			// Try to download update.json. If updateURL is not present, disable
 			// the update system
 			if (releaseInfo.getUpdateURL() != null) {
-				Request request = new Request();
-				request.setUri(releaseInfo.getUpdateURL());
-				request.setMethod("get");
+				HttpRequest request = new HttpRequest("GET");
+				request.setUrl(releaseInfo.getUpdateURL());
 				Gdx.app.debug(LOG_TAG,
 						"Trying to retrieve update.json from url:"
 								+ releaseInfo.getUpdateURL());
-				controller.getRequestHelper().get(request,
-						releaseInfo.getUpdateURL(),
-						new ResourceCallback<String>() {
-							@Override
-							public void error(Throwable e) {
-								Gdx.app.debug(
+				Gdx.net.sendHttpRequest(request, new HttpResponseListener() {
+					@Override
+					public void handleHttpResponse(HttpResponse httpResponse) {
+
+						if (httpResponse.getStatus().getStatusCode() == 200) {
+							String data = httpResponse.getResultAsString();
+							Gdx.app.debug(LOG_TAG,
+									"Update.json fetched and read: " + data);
+							try {
+								UpdateInfo updateInfo = controller
+										.getApplicationAssets().fromJson(
+												UpdateInfo.class, data);
+
+								if (updateInfo != null) {
+									checkUpdateNeeded(updateInfo);
+								}
+							} catch (SerializationException e) {
+								Gdx.app.error(
 										LOG_TAG,
-										"Error fetching update.json. Updater will be disabled",
+										"An error occurred while reading update.json from "
+												+ releaseInfo.getUpdateURL()
+												+ ". The update system will be disabled.",
 										e);
 								setDone();
 							}
+						}
+					}
 
-							@Override
-							public void success(String data) {
-								Gdx.app.debug(LOG_TAG,
-										"Update.json fetched and read: " + data);
-								try {
-									UpdateInfo updateInfo = controller
-											.getApplicationAssets().fromJson(
-													UpdateInfo.class, data);
+					@Override
+					public void failed(Throwable t) {
+						Gdx.app.debug(
+								LOG_TAG,
+								"Error fetching update.json. Updater will be disabled",
+								t);
+						setDone();
+					}
 
-									if (updateInfo != null) {
-										checkUpdateNeeded(updateInfo);
-									}
-								} catch (SerializationException e) {
-									Gdx.app.error(
-											LOG_TAG,
-											"An error occurred while reading update.json from "
-													+ releaseInfo
-															.getUpdateURL()
-													+ ". The update system will be disabled.",
-											e);
-									setDone();
-								}
+					@Override
+					public void cancelled() {
 
-							}
-						}, String.class, false);
+					}
+				});
 			} else {
 				Gdx.app.debug(LOG_TAG,
 						"The update.json url is null. The update system will be disabled.");
