@@ -152,7 +152,30 @@ public class CommandsTest extends CommandTest {
 		assertEquals(11, commands.getUndoHistory().size());
 	}
 
+	@Test
+	public void testMaxCommands() {
+		commands.pushStack(2);
+
+		for (int i = 0; i < 10; i++) {
+			commands.command(new MockCommand(i + ""));
+		}
+
+		assertEquals(commands.getUndoHistory().size(), 2);
+		assertEquals(((MockCommand) commands.getUndoHistory().pop()).id, "9");
+		assertEquals(((MockCommand) commands.getUndoHistory().pop()).id, "8");
+	}
+
 	private class MockCommand extends Command {
+
+		public String id;
+
+		private MockCommand() {
+
+		}
+
+		private MockCommand(String id) {
+			this.id = id;
+		}
 
 		@Override
 		public ModelEvent doCommand() {

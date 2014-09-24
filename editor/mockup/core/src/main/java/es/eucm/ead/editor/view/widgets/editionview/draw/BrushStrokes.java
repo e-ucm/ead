@@ -63,6 +63,8 @@ import es.eucm.ead.schemax.GameStructure;
  */
 public class BrushStrokes extends Widget implements Disposable {
 
+	public static final int MAX_COMMANDS = 50;
+
 	public enum Mode {
 		DRAW, ERASE
 	}
@@ -168,7 +170,7 @@ public class BrushStrokes extends Widget implements Disposable {
 		if (!hasParent()) {
 			sceneEditor.addActor(this);
 			Pixmap.setBlending(Blending.None);
-			controller.getCommands().pushStack();
+			controller.getCommands().pushStack(MAX_COMMANDS);
 			setBounds(0f, 0f, sceneEditor.getWidth(), sceneEditor.getHeight());
 		}
 	}

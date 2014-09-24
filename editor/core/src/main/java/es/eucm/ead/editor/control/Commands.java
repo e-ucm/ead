@@ -36,13 +36,12 @@
  */
 package es.eucm.ead.editor.control;
 
-import java.util.Stack;
-
 import com.badlogic.gdx.utils.Array;
-
 import es.eucm.ead.editor.control.commands.Command;
 import es.eucm.ead.editor.model.Model;
 import es.eucm.ead.editor.model.events.ModelEvent;
+
+import java.util.Stack;
 
 /**
  * Implements the commands stack
@@ -132,12 +131,24 @@ public class Commands {
 	}
 
 	/**
-	 * Creates a new context with an independent commands stack. Previous
-	 * commands received won't be able to undone until
+	 * Creates a new context with an independent commands stack with infinite
+	 * state. Previous commands received won't be able to undone until
 	 * {@link #popStack(boolean)} is called.
 	 */
 	public void pushStack() {
-		currentCommandsStack = new CommandsStack();
+		pushStack(-1);
+	}
+
+	/**
+	 * Creates a new context with an independent commands stack. Previous
+	 * commands received won't be able to undone until
+	 * {@link #popStack(boolean)} is called.
+	 * 
+	 * @param maxCommands
+	 *            maximum number of commands the stack can contain
+	 */
+	public void pushStack(int maxCommands) {
+		currentCommandsStack = new CommandsStack(maxCommands);
 		commandsStacks.push(currentCommandsStack);
 		for (CommandListener listener : commandListeners) {
 			listener.contextPushed(this);
@@ -239,11 +250,14 @@ public class Commands {
 
 	public class CommandsStack {
 
+		private int maxCommands;
+
 		private Stack<Command> undoHistory;
 
 		private Stack<Command> redoHistory;
 
-		public CommandsStack() {
+		public CommandsStack(int maxCommands) {
+			this.maxCommands = maxCommands;
 			undoHistory = new Stack<Command>();
 			redoHistory = new Stack<Command>();
 		}
@@ -269,6 +283,10 @@ public class Commands {
 					if ((undoHistory.isEmpty() && !command.isTransparent())
 							|| (!undoHistory.isEmpty() && !undoHistory.peek()
 									.combine(command))) {
+						if (maxCommands != -1 && !undoHistory.isEmpty()
+								&& undoHistory.size() >= maxCommands) {
+							undoHistory.remove(0);
+						}
 						undoHistory.add(command);
 					}
 				}
