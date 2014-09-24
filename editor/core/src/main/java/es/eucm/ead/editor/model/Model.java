@@ -36,21 +36,10 @@
  */
 package es.eucm.ead.editor.model;
 
-import java.util.AbstractMap;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.IdentityHashMap;
-import java.util.Iterator;
-import java.util.Map;
-import java.util.Map.Entry;
-
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.utils.Array;
-
 import es.eucm.ead.editor.assets.EditorGameAssets;
 import es.eucm.ead.editor.control.Selection;
-import es.eucm.ead.editor.indexes.Index;
-import es.eucm.ead.editor.indexes.Index.Match;
 import es.eucm.ead.editor.model.events.FieldEvent;
 import es.eucm.ead.editor.model.events.ListEvent;
 import es.eucm.ead.editor.model.events.LoadEvent;
@@ -60,10 +49,17 @@ import es.eucm.ead.editor.model.events.MultipleEvent;
 import es.eucm.ead.editor.model.events.ResourceEvent;
 import es.eucm.ead.editor.model.events.SelectionEvent;
 import es.eucm.ead.editor.model.events.ViewEvent;
-import es.eucm.ead.schema.editor.components.Parent;
 import es.eucm.ead.schema.entities.ModelEntity;
 import es.eucm.ead.schemax.GameStructure;
 import es.eucm.ead.schemax.entities.ResourceCategory;
+
+import java.util.AbstractMap;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.IdentityHashMap;
+import java.util.Iterator;
+import java.util.Map;
+import java.util.Map.Entry;
 
 /**
  * Editor model. Contains all the resources of the current game project.
@@ -71,8 +67,6 @@ import es.eucm.ead.schemax.entities.ResourceCategory;
 public class Model {
 
 	private EditorGameAssets gameAssets;
-
-	private Index index;
 
 	private Map<ResourceCategory, Map<String, Resource>> resourcesMap;
 
@@ -103,10 +97,6 @@ public class Model {
 		resourcesListeners = new Array<ModelListener<ResourceEvent>>();
 		selectionListeners = new Array<SelectionListener>();
 		viewListeners = new Array<ModelListener<ViewEvent>>();
-
-		index = new Index();
-		index.ignoreClass(Parent.class);
-
 		selection = new Selection();
 	}
 
@@ -241,7 +231,6 @@ public class Model {
 			resources.clear();
 		}
 		clearListeners();
-		index.clear();
 		selection.clear();
 		viewListeners.clear();
 		removedResources.clear();
@@ -360,24 +349,6 @@ public class Model {
 	}
 
 	/**
-	 * @return the index search
-	 */
-	public Index getIndex() {
-		return index;
-	}
-
-	/**
-	 * Search the index for a particular query text
-	 * 
-	 * @param queryText
-	 *            to search (in all fields of all indexed objects)
-	 * @return ranked results
-	 */
-	public Array<Match> search(String queryText) {
-		return index.search(queryText);
-	}
-
-	/**
 	 * Adds a listener to listen to resource events. Listeners are notified when
 	 * a resource is added/removed from the model
 	 */
@@ -490,7 +461,6 @@ public class Model {
 					notify(e);
 				}
 			} else {
-				index.updateIndex(event);
 				if (event instanceof LoadEvent) {
 					notify((LoadEvent) event, loadListeners);
 				} else if (event instanceof ResourceEvent) {

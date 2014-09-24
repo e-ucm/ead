@@ -350,7 +350,6 @@
                 <module>editor/schema</module>
                 <module>editor/core</module>
                 <module>editor/importer</module>
-                <module>editor/android</module>
                 <module>editor/desktop</module>
                 <module>editor/exporter</module>
                 <!-- mokcup -->
