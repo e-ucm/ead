@@ -34,39 +34,26 @@
  *      You should have received a copy of the GNU Lesser General Public License
  *      along with eAdventure.  If not, see <http://www.gnu.org/licenses/>.
  */
-package es.eucm.ead.engine.processors.renderers;
+package es.eucm.ead.editor.processors;
 
-import ashley.core.Component;
+import es.eucm.ead.editor.components.EditorStatesComponent;
 import es.eucm.ead.engine.ComponentLoader;
 import es.eucm.ead.engine.GameLoop;
 import es.eucm.ead.engine.assets.GameAssets;
-import es.eucm.ead.engine.components.renderers.RendererComponent;
 import es.eucm.ead.engine.components.renderers.StatesComponent;
-import es.eucm.ead.schema.renderers.State;
-import es.eucm.ead.schema.renderers.States;
+import es.eucm.ead.engine.processors.renderers.StatesProcessor;
 
-public class StatesProcessor extends RendererProcessor<States> {
-
-	private ComponentLoader componentLoader;
-
-	public StatesProcessor(GameLoop engine, GameAssets gameAssets,
+/**
+ * Created by Javier Torrente on 24/09/14.
+ */
+public class EditorStatesProcessor extends StatesProcessor {
+	public EditorStatesProcessor(GameLoop engine, GameAssets gameAssets,
 			ComponentLoader componentLoader) {
-		super(engine, gameAssets);
-		this.componentLoader = componentLoader;
+		super(engine, gameAssets, componentLoader);
 	}
 
 	@Override
-	public Component getComponent(States component) {
-		StatesComponent states = createStatesComponent();
-		for (State state : component.getStates()) {
-			states.addRenderer(state.getStates(),
-					(RendererComponent) componentLoader.toEngineComponent(state
-							.getRenderer()));
-		}
-		return states;
-	}
-
 	protected StatesComponent createStatesComponent() {
-		return gameLoop.createComponent(StatesComponent.class);
+		return gameLoop.createComponent(EditorStatesComponent.class);
 	}
 }
