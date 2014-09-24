@@ -163,6 +163,14 @@ public class RepositoryManager {
 			+ REPOSITORY_FOLDER_NAME;
 
 	/**
+	 * Name of the folder storing all the libraries metadata. Used to cache
+	 * locally the repository resources.
+	 */
+	public static final String LIBRARIES_METADATA_FOLDER_NAME = "/Libraries metadata";
+	private static final String LIBRARIES_METADATA_FOLDER_PATH = REPOSITORY_FOLDER_PATH
+			+ LIBRARIES_METADATA_FOLDER_NAME;
+
+	/**
 	 * Since {@value #LIBRARIES_FILE_NAME} is <strong>required</strong> and it's
 	 * located at the root of our repository, we know it's location.
 	 */
@@ -202,6 +210,7 @@ public class RepositoryManager {
 
 	public RepositoryManager() {
 		copyThumbnailToProject = false;
+		libraries = new Array<RepoLibrary>();
 	}
 
 	public Array<ModelEntity> getElements() {
@@ -750,95 +759,101 @@ public class RepositoryManager {
 		try {
 			final Array<String> libraryPaths = gameAssets.fromJson(Array.class,
 					jsonString);
-			libraries = new Array<RepoLibrary>();
+			libraries.clear();
 			final boolean[] failed = { false };
 			final int[] nProcessed = { 0 };
 
 			for (int i = 0; i < libraryPaths.size; i++) {
 				final String libraryPath = libraryPaths.get(i);
-				String libraryJsonUrl = libraryPath.startsWith("/")
-						|| libraryPath.startsWith("\\") ? ROOT_URL
-						+ libraryPath : ROOT_URL + "/" + libraryPath;
-				if (!libraryJsonUrl.toLowerCase().endsWith(".json")) {
-					libraryJsonUrl += ".json";
-				}
+				if (!loadLibraryMetadataFromLocal(controller, libraryPath)) {
+					String libraryJsonUrl = libraryPath.startsWith("/")
+							|| libraryPath.startsWith("\\") ? ROOT_URL
+							+ libraryPath : ROOT_URL + "/" + libraryPath;
+					if (!libraryJsonUrl.toLowerCase().endsWith(".json")) {
+						libraryJsonUrl += ".json";
+					}
 
-				HttpRequest httpRequest = new HttpRequest(Net.HttpMethods.GET);
-				httpRequest.setUrl(libraryJsonUrl);
-				httpRequest.setContent(null);
-				httpRequest.setTimeOut(TIMEOUT);
-				Gdx.net.sendHttpRequest(httpRequest,
-						new HttpResponseListener() {
+					HttpRequest httpRequest = new HttpRequest(
+							Net.HttpMethods.GET);
+					httpRequest.setUrl(libraryJsonUrl);
+					httpRequest.setContent(null);
+					httpRequest.setTimeOut(TIMEOUT);
+					Gdx.net.sendHttpRequest(httpRequest,
+							new HttpResponseListener() {
 
-							@Override
-							public void handleHttpResponse(
-									final HttpResponse httpResponse) {
-								final int statusCode = httpResponse.getStatus()
-										.getStatusCode();
-								// We are not in main thread right now so we
-								// need to post to main thread for UI updates
+								@Override
+								public void handleHttpResponse(
+										final HttpResponse httpResponse) {
+									final int statusCode = httpResponse
+											.getStatus().getStatusCode();
+									// We are not in main thread right now so we
+									// need to post to main thread for UI
+									// updates
 
-								if (statusCode != HttpStatus.SC_OK) {
-									Gdx.app.log(ONLINE_REPO_TAG,
-											"An error ocurred since statusCode is not OK, "
-													+ httpResponse);
-									failed(null);
-									return;
-								}
+									if (statusCode != HttpStatus.SC_OK) {
+										Gdx.app.log(ONLINE_REPO_TAG,
+												"An error ocurred since statusCode is not OK, "
+														+ httpResponse);
+										failed(null);
+										return;
+									}
 
-								final String libraryMetadata = httpResponse
-										.getResultAsString();
-								try {
-									RepoLibrary repoLibrary = gameAssets
-											.fromJson(RepoLibrary.class,
-													libraryMetadata);
-									if (repoLibrary == null
-											|| repoLibrary.getPath() == null) {
+									final String libraryMetadata = httpResponse
+											.getResultAsString();
+									gameAssets
+											.absolute(
+													LIBRARIES_METADATA_FOLDER_PATH
+															+ "/" + libraryPath)
+											.writeString(libraryMetadata, false);
+
+									if (createLibraryMetadataFromString(
+											libraryMetadata, libraryPath,
+											gameAssets)) {
+										nProcessed[0] = nProcessed[0] + 1;
+										if (nProcessed[0] >= libraryPaths.size) {
+											progressListener.finished(
+													!failed[0], controller);
+										}
+									} else {
 										failed(null);
 									}
-									libraries.add(repoLibrary);
+								}
+
+								@Override
+								public void failed(Throwable t) {
+									if (t != null)
+										Gdx.app.log(
+												ONLINE_REPO_TAG,
+												"Failed to perform the HTTP Request -library could not be retrieved ",
+												t);
+									failed[0] = true;
 									nProcessed[0] = nProcessed[0] + 1;
 									if (nProcessed[0] >= libraryPaths.size) {
 										progressListener.finished(!failed[0],
 												controller);
 									}
-								} catch (SerializationException e) {
+
+								}
+
+								@Override
+								public void cancelled() {
 									Gdx.app.log(ONLINE_REPO_TAG,
-											"Error parsing library from:"
-													+ libraryPath + " file", e);
-									failed(e);
+											"HTTP request cancelled-library not retrieved");
+									failed[0] = true;
+									nProcessed[0] = nProcessed[0] + 1;
+									if (nProcessed[0] >= libraryPaths.size) {
+										progressListener.finished(!failed[0],
+												controller);
+									}
+
 								}
-							}
-
-							@Override
-							public void failed(Throwable t) {
-								if (t != null)
-									Gdx.app.log(
-											ONLINE_REPO_TAG,
-											"Failed to perform the HTTP Request -library could not be retrieved ",
-											t);
-								failed[0] = true;
-								nProcessed[0] = nProcessed[0] + 1;
-								if (nProcessed[0] >= libraryPaths.size) {
-									progressListener.finished(!failed[0],
-											controller);
-								}
-
-							}
-
-							@Override
-							public void cancelled() {
-								Gdx.app.log(ONLINE_REPO_TAG,
-										"HTTP request cancelled-library not retrieved");
-								failed[0] = true;
-								nProcessed[0] = nProcessed[0] + 1;
-								if (nProcessed[0] >= libraryPaths.size) {
-									progressListener.finished(!failed[0],
-											controller);
-								}
-
-							}
-						});
+							});
+				} else {
+					nProcessed[0] = nProcessed[0] + 1;
+					if (nProcessed[0] >= libraryPaths.size) {
+						progressListener.finished(!failed[0], controller);
+					}
+				}
 			}
 		} catch (SerializationException se) {
 			Gdx.app.log(ONLINE_REPO_TAG, "Error parsing " + LIBRARIES_FILE_PATH
@@ -846,5 +861,54 @@ public class RepositoryManager {
 			return false;
 		}
 		return true;
+	}
+
+	/**
+	 * 
+	 * 
+	 * @param controller
+	 * @return true if we could load the libraryMetadataPaths from local path.
+	 */
+	private boolean loadLibraryMetadataFromLocal(Controller controller,
+			String libraryPath) {
+		EditorGameAssets gameAssets = controller.getEditorGameAssets();
+		FileHandle librariesFile = gameAssets
+				.absolute(LIBRARIES_METADATA_FOLDER_PATH + "/" + libraryPath);
+		if (librariesFile.exists()) {
+			String localJson = librariesFile.readString();
+			if (localJson.isEmpty()) {
+				return false;
+			}
+			return createLibraryMetadataFromString(localJson, libraryPath,
+					gameAssets);
+		}
+		return false;
+	}
+
+	/**
+	 * Tries to fill the {@link #libraries} by creating {@link RepoLibrary} from
+	 * the libraryMetadata.
+	 * 
+	 * @param libraryMetadata
+	 *            must be correctly formated as a {@link RepoLibrary}.
+	 * @param gameAssets
+	 */
+	private boolean createLibraryMetadataFromString(String libraryMetadata,
+			String libraryPath, EditorGameAssets gameAssets) {
+
+		try {
+			RepoLibrary repoLibrary = gameAssets.fromJson(RepoLibrary.class,
+					libraryMetadata);
+			if (repoLibrary == null || repoLibrary.getPath() == null) {
+				return false;
+			}
+			libraries.add(repoLibrary);
+			return true;
+		} catch (SerializationException e) {
+			Gdx.app.log(ONLINE_REPO_TAG,
+					"Error parsing library metadata from: " + libraryPath
+							+ " file", e);
+			return false;
+		}
 	}
 }
