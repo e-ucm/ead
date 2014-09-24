@@ -42,12 +42,13 @@ import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import es.eucm.ead.editor.assets.ApplicationAssets;
 import es.eucm.ead.editor.control.Controller;
 import es.eucm.ead.editor.control.MockupController;
+import es.eucm.ead.editor.control.RepositoryManager;
 import es.eucm.ead.editor.model.Q;
 import es.eucm.ead.editor.view.builders.gallery.BaseGallery;
 import es.eucm.ead.editor.view.builders.gallery.repository.info.ItemInfo;
 import es.eucm.ead.engine.assets.Assets.AssetLoadedCallback;
-import es.eucm.ead.schema.editor.components.RepoAuthor;
-import es.eucm.ead.schema.editor.components.RepoElement;
+import es.eucm.ead.schema.editor.components.repo.RepoAuthor;
+import es.eucm.ead.schema.editor.components.repo.RepoElement;
 import es.eucm.ead.schema.entities.ModelEntity;
 
 public class RepositoryItem extends InfoGalleryItem implements
@@ -58,8 +59,8 @@ public class RepositoryItem extends InfoGalleryItem implements
 
 	public RepositoryItem(ItemInfo<RepositoryItem> info, Controller controller,
 			ModelEntity element, BaseGallery gallery) {
-		super(info, controller.getApplicationAssets().getSkin(), "repository",
-				gallery);
+		super(controller.getApplicationAssets().getI18N(), info, controller
+				.getApplicationAssets().getSkin(), "repository", gallery);
 		this.element = element;
 
 		repoElement = Q.getComponent(element, RepoElement.class);
@@ -83,7 +84,7 @@ public class RepositoryItem extends InfoGalleryItem implements
 		if (repoElement == null) {
 			return " ";
 		}
-		String name = repoElement.getName();
+		String name = RepositoryManager.i18nString(repoElement.getName(), i18n);
 		return name == null ? " " : name;
 	}
 
@@ -98,7 +99,7 @@ public class RepositoryItem extends InfoGalleryItem implements
 
 	@Override
 	public String getDescription() {
-		return repoElement.getDescription();
+		return RepositoryManager.i18nString(repoElement.getDescription(), i18n);
 	}
 
 	@Override

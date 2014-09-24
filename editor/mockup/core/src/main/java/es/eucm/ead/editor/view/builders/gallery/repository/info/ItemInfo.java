@@ -60,9 +60,9 @@ import es.eucm.ead.editor.control.Controller;
 import es.eucm.ead.editor.view.widgets.PositionedHiddenPanel;
 import es.eucm.ead.editor.view.widgets.gallery.repository.InfoGalleryItem;
 import es.eucm.ead.engine.I18N;
-import es.eucm.ead.schema.editor.components.RepoAuthor;
-import es.eucm.ead.schema.editor.components.RepoElement;
-import es.eucm.ead.schema.editor.components.RepoLibrary;
+import es.eucm.ead.schema.editor.components.repo.RepoAuthor;
+import es.eucm.ead.schema.editor.components.repo.RepoElement;
+import es.eucm.ead.schema.editor.components.repo.RepoLibrary;
 
 /**
  * A panel displaying the information contained inside a {@link RepoElement} or

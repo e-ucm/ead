@@ -39,7 +39,7 @@ package es.eucm.ead.editor.control.actions.editor.repository;
 import es.eucm.ead.editor.control.MockupController;
 import es.eucm.ead.editor.control.RepositoryManager.OnThumbnailAvailableListener;
 import es.eucm.ead.editor.control.actions.EditorAction;
-import es.eucm.ead.schema.editor.components.RepoLibrary;
+import es.eucm.ead.schema.editor.components.repo.RepoLibrary;
 
 /**
  * <p>
