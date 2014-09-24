@@ -41,6 +41,7 @@ import com.badlogic.gdx.scenes.scene2d.ui.ScrollPane;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
+
 import es.eucm.ead.editor.control.Actions;
 import es.eucm.ead.editor.control.Clipboard.ClipboardListener;
 import es.eucm.ead.editor.control.Controller;
@@ -63,6 +64,8 @@ import es.eucm.ead.editor.view.widgets.IconButton;
 import es.eucm.ead.editor.view.widgets.Toolbar;
 import es.eucm.ead.editor.view.widgets.editionview.draw.PaintToolbar;
 import es.eucm.ead.editor.view.widgets.editionview.draw.PaintToolbar.DrawListener;
+import es.eucm.ead.editor.view.widgets.gallery.AboutWidget;
+import es.eucm.ead.editor.view.widgets.iconwithpanel.IconWithScalePanel;
 
 public class TopEditionToolbar extends Toolbar {
 
@@ -92,12 +95,15 @@ public class TopEditionToolbar extends Toolbar {
 
 	private IconButton share;
 
-	public TopEditionToolbar(final Controller controller, String style,
+	private IconWithScalePanel about;
 
-	final PaintToolbar paintToolbar, float smallPad, float normalPad) {
+	public TopEditionToolbar(final Controller controller, String style,
+			final PaintToolbar paintToolbar, float smallPad, float normalPad,
+			Actor reference) {
 		super(controller.getApplicationAssets().getSkin(), style);
 		Skin skin = controller.getApplicationAssets().getSkin();
 
+		about = new AboutWidget(controller, reference);
 		play = new IconButton("play80x80", 0f, skin, "inverted");
 		share = new IconButton("share80x80", 0f, skin, "inverted");
 
@@ -222,6 +228,7 @@ public class TopEditionToolbar extends Toolbar {
 		});
 
 		defaults().expandY().fill();
+		add(about);
 		add(play);
 		add(share);
 

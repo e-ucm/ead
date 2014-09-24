@@ -60,6 +60,7 @@ import es.eucm.ead.editor.view.builders.EditionView;
 import es.eucm.ead.editor.view.listeners.TextFieldListener;
 import es.eucm.ead.editor.view.widgets.IconButton;
 import es.eucm.ead.editor.view.widgets.Notification;
+import es.eucm.ead.editor.view.widgets.gallery.AboutWidget;
 import es.eucm.ead.editor.view.widgets.gallery.GalleryItem;
 import es.eucm.ead.editor.view.widgets.gallery.SceneItem;
 import es.eucm.ead.editor.view.widgets.gallery.SortWidget;
@@ -125,6 +126,11 @@ public class ScenesView extends BaseGallery implements BackListener {
 		super.initialize(controller);
 		uniqueSceneNotif = new Notification(skin).text(i18n
 				.m("scene.delete.error-message"));
+	}
+
+	@Override
+	protected Actor createAboutWidget() {
+		return new AboutWidget(controller, this.view);
 	}
 
 	@Override

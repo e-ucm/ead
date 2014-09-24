@@ -59,6 +59,11 @@ public class ProjectsView extends BaseGallery implements BackListener {
 			.external("/eAdventureMockup/");
 
 	@Override
+	protected Actor createAboutWidget() {
+		return null;
+	}
+
+	@Override
 	protected Actor createPlayButton() {
 		return null;
 	}

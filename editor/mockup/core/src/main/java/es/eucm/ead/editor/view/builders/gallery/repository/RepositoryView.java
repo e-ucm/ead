@@ -91,6 +91,11 @@ public class RepositoryView extends BaseGallery implements ProgressListener,
 	}
 
 	@Override
+	protected Actor createAboutWidget() {
+		return null;
+	}
+
+	@Override
 	protected Actor createPlayButton() {
 		return null;
 	}
