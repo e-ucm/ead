@@ -41,7 +41,6 @@ import com.badlogic.gdx.scenes.scene2d.ui.ScrollPane;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
-
 import es.eucm.ead.editor.control.Actions;
 import es.eucm.ead.editor.control.Clipboard.ClipboardListener;
 import es.eucm.ead.editor.control.Controller;
@@ -64,7 +63,6 @@ import es.eucm.ead.editor.view.widgets.IconButton;
 import es.eucm.ead.editor.view.widgets.Toolbar;
 import es.eucm.ead.editor.view.widgets.editionview.draw.PaintToolbar;
 import es.eucm.ead.editor.view.widgets.editionview.draw.PaintToolbar.DrawListener;
-import es.eucm.ead.schema.entities.ModelEntity;
 
 public class TopEditionToolbar extends Toolbar {
 
@@ -178,8 +176,7 @@ public class TopEditionToolbar extends Toolbar {
 				} else if (listenerActor == zones) {
 					controller.action(AddInteractiveZone.class);
 				} else if (listenerActor == gate) {
-					controller.action(AddGatewayDefaultElement.class,
-							new ModelEntity());
+					controller.action(AddGatewayDefaultElement.class);
 				}
 			}
 		};

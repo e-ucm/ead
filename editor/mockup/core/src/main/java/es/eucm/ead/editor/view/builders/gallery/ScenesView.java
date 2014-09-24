@@ -36,14 +36,11 @@
  */
 package es.eucm.ead.editor.view.builders.gallery;
 
-import java.util.Collection;
-
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.ui.Button;
 import com.badlogic.gdx.scenes.scene2d.ui.TextField;
 import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
 import com.badlogic.gdx.utils.Array;
-
 import es.eucm.ead.editor.control.Controller;
 import es.eucm.ead.editor.control.actions.editor.ChangeMockupView;
 import es.eucm.ead.editor.control.actions.editor.asynk.CloseMockupGame;
@@ -61,12 +58,15 @@ import es.eucm.ead.editor.view.widgets.IconButton;
 import es.eucm.ead.editor.view.widgets.Notification;
 import es.eucm.ead.editor.view.widgets.gallery.GalleryItem;
 import es.eucm.ead.editor.view.widgets.gallery.SceneItem;
+import es.eucm.ead.editor.view.widgets.gallery.SortWidget;
 import es.eucm.ead.editor.view.widgets.helpmessage.sequence.HelpSequence;
 import es.eucm.ead.editor.view.widgets.helpmessage.sequence.ScenesViewHelp;
 import es.eucm.ead.schema.editor.components.GameData;
 import es.eucm.ead.schema.entities.ModelEntity;
 import es.eucm.ead.schemax.FieldName;
 import es.eucm.ead.schemax.entities.ResourceCategory;
+
+import java.util.Collection;
 
 public class ScenesView extends BaseGallery {
 
@@ -111,6 +111,11 @@ public class ScenesView extends BaseGallery {
 			}
 		});
 		return share;
+	}
+
+	@Override
+	protected SortWidget addReorderWidget() {
+		return new SortWidget(skin, items, this, true);
 	}
 
 	@Override
@@ -202,10 +207,10 @@ public class ScenesView extends BaseGallery {
 	@Override
 	protected void loadItems(Array<GalleryItem> items) {
 		items.clear();
-		Collection<Resource> values = controller.getModel()
+		Collection<Resource> resources = controller.getModel()
 				.getResources(ResourceCategory.SCENE).values();
-		for (Resource value : values) {
-			ModelEntity scene = (ModelEntity) value.getObject();
+		for (Resource resource : resources) {
+			ModelEntity scene = (ModelEntity) resource.getObject();
 			SceneItem sceneItem = new SceneItem(controller, scene, this);
 			sceneItem.setUserObject(scene);
 			items.add(sceneItem);

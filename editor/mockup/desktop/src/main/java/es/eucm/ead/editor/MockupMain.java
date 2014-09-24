@@ -36,14 +36,16 @@
  */
 package es.eucm.ead.editor;
 
-import javax.swing.JFrame;
-
+import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.backends.lwjgl.LwjglApplicationConfiguration;
 import com.badlogic.gdx.backends.lwjgl.LwjglFrame;
 import com.badlogic.gdx.math.MathUtils;
-
 import es.eucm.ead.editor.control.MockupController.Dpi;
 import es.eucm.ead.engine.utils.SwingEDTUtils;
+
+import javax.swing.JFrame;
+import java.awt.event.ComponentAdapter;
+import java.awt.event.ComponentEvent;
 
 public class MockupMain {
 
@@ -59,6 +61,12 @@ public class MockupMain {
 		final LwjglFrame frame = new LwjglFrame(new MockupApplicationListener(
 				platform), config);
 		frame.setDefaultCloseOperation(JFrame.HIDE_ON_CLOSE);
+		frame.addComponentListener(new ComponentAdapter() {
+			@Override
+			public void componentHidden(ComponentEvent e) {
+				Gdx.app.exit();
+			}
+		});
 		platform.setFrame(frame);
 
 		// set visible calls create()

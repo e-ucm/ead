@@ -36,17 +36,18 @@
  */
 package es.eucm.ead.editor.view.widgets.gallery;
 
-import java.util.Arrays;
-import java.util.Comparator;
-
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
 import com.badlogic.gdx.utils.Array;
-
+import es.eucm.ead.editor.model.Q;
 import es.eucm.ead.editor.view.builders.gallery.BaseGallery;
 import es.eucm.ead.editor.view.widgets.DropDown;
 import es.eucm.ead.editor.view.widgets.IconButton;
+import es.eucm.ead.schema.editor.components.Date;
+import es.eucm.ead.schema.entities.ModelEntity;
+
+import java.util.Comparator;
 
 /**
  * Widget used to sort {@link GalleryItem} items in a {@link BaseGallery}.
@@ -55,31 +56,63 @@ import es.eucm.ead.editor.view.widgets.IconButton;
 public class SortWidget extends DropDown {
 
 	private Array<GalleryItem> items;
-	private IconButton az;
-
-	private Comparator<GalleryItem> comparatorAZ = new Comparator<GalleryItem>() {
-		@Override
-		public int compare(GalleryItem o1, GalleryItem o2) {
-			return o1.getName().compareTo(o2.getName());
-		}
-	};
-	private Comparator<GalleryItem> comparatorZA = new Comparator<GalleryItem>() {
-		@Override
-		public int compare(GalleryItem o1, GalleryItem o2) {
-			return o2.getName().compareTo(o1.getName());
-		}
-	};
 
 	public SortWidget(Skin skin, Array<GalleryItem> items,
 			final BaseGallery baseGallery) {
+		this(skin, items, baseGallery, false);
+	}
+
+	public SortWidget(Skin skin, Array<GalleryItem> items,
+			final BaseGallery baseGallery, boolean sortByDate) {
 		super(skin);
 		this.items = items;
-		az = new IconButton("reorderAZ80x80", skin);
-		IconButton za = new IconButton("reorderZA80x80", skin);
-		Array<Actor> array = new Array<Actor>();
-		array.add(az);
-		array.add(za);
-		setItems(array);
+		Array<Actor> sortButtons = new Array<Actor>();
+
+		IconButton azSort = new IconButton("reorderAZ80x80", skin);
+		azSort.setUserObject(new Comparator<GalleryItem>() {
+			@Override
+			public int compare(GalleryItem o1, GalleryItem o2) {
+				return o1.getName().compareTo(o2.getName());
+			}
+		});
+		sortButtons.add(azSort);
+
+		IconButton zaSort = new IconButton("reorderZA80x80", skin);
+		zaSort.setUserObject(new Comparator<GalleryItem>() {
+			@Override
+			public int compare(GalleryItem o1, GalleryItem o2) {
+				return o2.getName().compareTo(o1.getName());
+			}
+		});
+		sortButtons.add(zaSort);
+
+		if (sortByDate) {
+			IconButton dateSort = new IconButton("reorderDate", skin);
+			dateSort.setUserObject(new Comparator<GalleryItem>() {
+				@Override
+				public int compare(GalleryItem o1, GalleryItem o2) {
+					if (o1.getUserObject() instanceof ModelEntity
+							&& o2.getUserObject() instanceof ModelEntity) {
+						ModelEntity entity1 = (ModelEntity) o1.getUserObject();
+						ModelEntity entity2 = (ModelEntity) o2.getUserObject();
+						String date1 = Q.getComponent(entity1, Date.class)
+								.getDate();
+						String date2 = Q.getComponent(entity2, Date.class)
+								.getDate();
+						if (date1 != null && date2 != null) {
+							return date1.compareTo(date2);
+						} else {
+							return 0;
+						}
+					} else {
+						return 0;
+					}
+				}
+			});
+			sortButtons.add(dateSort);
+		}
+
+		setItems(sortButtons);
 		addListener(new ChangeListener() {
 
 			private Actor currentSelected;
@@ -97,8 +130,6 @@ public class SortWidget extends DropDown {
 	}
 
 	public void sort() {
-		Arrays.sort(items.items, 0, items.size,
-				az == getSelected() ? comparatorAZ : comparatorZA);
+		items.sort((Comparator<GalleryItem>) getSelected().getUserObject());
 	}
-
 }

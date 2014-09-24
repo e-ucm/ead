@@ -67,7 +67,7 @@ import es.eucm.ead.schemax.entities.ResourceCategory;
  * <dd><strong>args[1]</strong> <em>Integer</em> Optional: the row of the new
  * scene in the {@link SceneMap}</dd>
  * <dd><strong>args[2]</strong> <em>Integer</em> Optional: the column of the new
- * scene in the {@link SceneMap</dd>
+ * scene in the {@link SceneMap}</dd>
  * </dl>
  */
 public class NewScene extends ModelAction {
@@ -76,8 +76,9 @@ public class NewScene extends ModelAction {
 
 	public NewScene() {
 		super(true, false, new Class[] { String.class }, new Class[] {
-				String.class, String.class, ModelEntity.class }, new Class[] {
-				String.class, Integer.class, Integer.class });
+				String.class, String.class }, new Class[] { String.class,
+				String.class, ModelEntity.class }, new Class[] { String.class,
+				Integer.class, Integer.class });
 	}
 
 	@Override
@@ -98,7 +99,11 @@ public class NewScene extends ModelAction {
 			scene = (ModelEntity) args[2];
 			Q.getComponent(scene, Documentation.class).setName(name);
 		} else {
-			id = model.createId(ResourceCategory.SCENE);
+			if (args.length == 2 && args[1] instanceof String) {
+				id = (String) args[1];
+			} else {
+				id = model.createId(ResourceCategory.SCENE);
+			}
 			scene = controller.getTemplates().createScene(name);
 		}
 

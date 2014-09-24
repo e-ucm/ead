@@ -44,6 +44,7 @@ import com.badlogic.gdx.utils.reflect.ReflectionException;
 import es.eucm.ead.editor.assets.EditorGameAssets;
 import es.eucm.ead.editor.model.Q;
 import es.eucm.ead.engine.assets.Assets.AssetLoadedCallback;
+import es.eucm.ead.schema.editor.components.Date;
 import es.eucm.ead.schema.editor.components.Documentation;
 import es.eucm.ead.schema.editor.components.GameData;
 import es.eucm.ead.schema.effects.GoScene;
@@ -113,6 +114,8 @@ public class Templates {
 	public ModelEntity createScene(String name) {
 		ModelEntity scene = new ModelEntity();
 		Q.getComponent(scene, Documentation.class).setName(name);
+		Q.getComponent(scene, Date.class).setDate(
+				System.currentTimeMillis() + "");
 		return scene;
 	}
 
