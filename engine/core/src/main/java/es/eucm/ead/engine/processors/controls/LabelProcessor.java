@@ -67,8 +67,8 @@ public class LabelProcessor extends ComponentProcessor<Label> {
 	@Override
 	public Component getComponent(Label component) {
 		Skin skin = gameAssets.getSkin();
-		LabelComponent button = gameLoop.createComponent(LabelComponent.class);
-		button.setVariablesManager(variablesManager);
+		LabelComponent label = gameLoop.createComponent(LabelComponent.class);
+		label.setVariablesManager(variablesManager);
 
 		LabelStyle style = skin.get(component.getStyle(), LabelStyle.class);
 		LabelStyle styleCopy = new LabelStyle(style);
@@ -77,13 +77,13 @@ public class LabelProcessor extends ComponentProcessor<Label> {
 			styleCopy.fontColor.set(color.getR(), color.getG(), color.getB(),
 					color.getA());
 		}
-		button.setStyle(styleCopy);
-		button.setText(gameAssets.getI18N().m(component.getText()));
+		label.setStyle(styleCopy);
+		label.setText(gameAssets.getI18N().m(component.getText()));
 
 		I18nTextComponent textComponent = gameLoop
 				.createComponent(I18nTextComponent.class);
 		textComponent.setI18nKey(component.getText());
-		textComponent.setTextSetter(button);
-		return new MultiComponent(button, textComponent);
+		textComponent.setTextSetter(label);
+		return new MultiComponent(label, textComponent);
 	}
 }
