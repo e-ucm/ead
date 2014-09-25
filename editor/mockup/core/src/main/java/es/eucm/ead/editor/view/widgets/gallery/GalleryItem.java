@@ -148,6 +148,13 @@ public abstract class GalleryItem extends Button {
 	public void deleteItem() {
 	}
 
+	/**
+	 * @return A string appending localized tags and name. Useful for searching
+	 */
+	public String getSearchText() {
+		return getName();
+	}
+
 	public String getName() {
 		if (name instanceof TextField) {
 			return ((TextField) name).getText();

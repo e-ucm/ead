@@ -126,7 +126,7 @@ public class SearchWidget extends IconWithFadePanel {
 					Pattern.CASE_INSENSITIVE);
 			Matcher matcher = findPattern.matcher("");
 			for (GalleryItem entity : this.prevSearchItems) {
-				matcher.reset(entity.getName());
+				matcher.reset(entity.getSearchText());
 				if (matcher.find()) {
 					this.items.add(entity);
 				}
