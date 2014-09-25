@@ -20,7 +20,9 @@
     },
     com.badlogic.gdx.scenes.scene2d.ui.Label$LabelStyle: {
         welcome: { font: regular, fontColor: blue },
-        default: { font: regular, fontColor: white }
+        default: { font: regular, fontColor: white },
+        bubble: { font: regular, fontColor: white, background: speakbubble },
+        speaker: { font: regular, fontColor: black, background: speaker }
     },
     com.badlogic.gdx.scenes.scene2d.ui.TextField$TextFieldStyle: {
         welcome: { font: regular, fontColor: blue }

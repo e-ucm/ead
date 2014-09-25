@@ -37,16 +37,10 @@
 package es.eucm.ead.editor.processors;
 
 import ashley.core.Component;
-
-import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
-import com.badlogic.gdx.math.Polygon;
-import com.badlogic.gdx.utils.Array;
-
 import es.eucm.ead.editor.assets.ApplicationAssets;
 import es.eucm.ead.editor.components.MockupEmptyRendererComponent;
 import es.eucm.ead.engine.GameLoop;
 import es.eucm.ead.engine.processors.renderers.EmptyRendererProcessor;
-import es.eucm.ead.engine.utils.ShapeToCollider;
 import es.eucm.ead.schema.renderers.EmptyRenderer;
 
 public class MockupEmptyRendererProcessor extends EmptyRendererProcessor {
@@ -59,20 +53,13 @@ public class MockupEmptyRendererProcessor extends EmptyRendererProcessor {
 		this.applicationAssets = applicationAssets;
 	}
 
-	protected ShapeRenderer shapeRenderer;
-
 	@Override
 	public Component getComponent(EmptyRenderer component) {
 		MockupEmptyRendererComponent emptyRendererComponent = gameLoop
 				.createComponent(MockupEmptyRendererComponent.class);
 		emptyRendererComponent.setApplicationAssets(applicationAssets);
 		emptyRendererComponent.setGameLoop(gameLoop);
-
-		Array<Polygon> collider = new Array<Polygon>();
-		Polygon polygon = ShapeToCollider.buildShapeCollider(
-				component.getShape(), N_SIDES_FOR_CIRCLE);
-		collider.add(polygon);
-		emptyRendererComponent.setCollider(collider);
+		read(emptyRendererComponent, component);
 		return emptyRendererComponent;
 	}
 }

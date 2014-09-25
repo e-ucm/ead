@@ -1,0 +1,24 @@
+{
+    "additionalProperties": false,
+    "javaType": "es.eucm.ead.schema.components.controls.layouts.VerticalLayout",
+    "type": "object",
+    "description": "Vertical layour for controls",
+    "extends": {
+        "$ref": "../control.json"
+    },
+    "properties": {
+        "controls": {
+            "type": "array",
+            "items": {
+                "$ref": "../control.json"
+            },
+            "description": "List of controls"
+        },
+        "align": {
+            "type": "string",
+            "enum": ["left", "center", "right"],
+            "default": "left",
+            "description": "Align of the components"
+        }
+    }
+}

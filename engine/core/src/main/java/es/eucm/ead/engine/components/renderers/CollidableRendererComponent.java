@@ -38,6 +38,7 @@ package es.eucm.ead.engine.components.renderers;
 
 import com.badlogic.gdx.math.Polygon;
 import com.badlogic.gdx.utils.Array;
+import com.badlogic.gdx.utils.Pool.Poolable;
 
 /**
  * Abstract renderer that provides a convenient and simple implementation of
@@ -46,7 +47,8 @@ import com.badlogic.gdx.utils.Array;
  * 
  * Created by Javier Torrente on 4/06/14.
  */
-public abstract class CollidableRendererComponent extends RendererComponent {
+public abstract class CollidableRendererComponent extends RendererComponent
+		implements Poolable {
 
 	protected Array<Polygon> collider;
 
@@ -59,4 +61,8 @@ public abstract class CollidableRendererComponent extends RendererComponent {
 		return collider;
 	}
 
+	@Override
+	public void reset() {
+		collider = null;
+	}
 }

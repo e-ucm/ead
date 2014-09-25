@@ -36,6 +36,9 @@
  */
 package es.eucm.ead.engine.utils;
 
+import com.badlogic.gdx.graphics.g2d.BitmapFont;
+import com.badlogic.gdx.utils.Array;
+
 import es.eucm.ead.engine.assets.Assets;
 import es.eucm.ead.engine.variables.VariablesManager;
 import es.eucm.ead.schema.data.Parameter;
@@ -59,5 +62,57 @@ public class EngineUtils {
 		} else {
 			return parameters;
 		}
+	}
+
+	/**
+	 * Splits the text into lines fitting the preferred width, using the given
+	 * font
+	 */
+	public static Array<String> lines(String text, float preferredWidth,
+			BitmapFont font) {
+		Array<String> lines = new Array<String>();
+		String[] words = text.split(" ");
+		String line = "";
+		int contWord = 0;
+		float currentLineWidth = 0;
+		while (contWord < words.length) {
+			float nextWordWidth = font.getBounds(words[contWord] + " ").width;
+			if (currentLineWidth + nextWordWidth <= preferredWidth) {
+				currentLineWidth += nextWordWidth;
+				line += words[contWord++] + " ";
+			} else if (!"".equals(line)) {
+				lines.add(line);
+				currentLineWidth = 0;
+				line = "";
+			} else {
+				line = splitLongWord(font, lines, words[contWord++],
+						preferredWidth);
+				currentLineWidth = font.getBounds(line).width;
+			}
+		}
+		if (!"".equals(line)) {
+			lines.add(line);
+		}
+		return lines;
+	}
+
+	private static String splitLongWord(BitmapFont f, Array<String> lines,
+			String word, float lineWidth) {
+		boolean finished = false;
+		String currentLine = "";
+		int i = 0;
+		while (!finished) {
+			currentLine = "";
+			while (i < word.length()
+					&& f.getBounds(currentLine + word.charAt(i)).width < lineWidth) {
+				currentLine += word.charAt(i++);
+			}
+			if (i == word.length()) {
+				finished = true;
+			} else {
+				lines.add(currentLine);
+			}
+		}
+		return currentLine;
 	}
 }

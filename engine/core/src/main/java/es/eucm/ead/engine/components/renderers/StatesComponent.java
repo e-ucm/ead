@@ -42,6 +42,12 @@ import com.badlogic.gdx.utils.Array;
 
 public class StatesComponent extends RendererComponent {
 
+	/**
+	 * If any state has this tag, it is set for preview. If several states have
+	 * this tag, the last one added will be picked.
+	 */
+	public static final String DEFAULT_STATE = "default";
+
 	private Array<State> states;
 
 	protected RendererComponent currentRenderer;
@@ -56,6 +62,9 @@ public class StatesComponent extends RendererComponent {
 		states.add(new State(state, renderer));
 		currentState = new Array<String>();
 		if (currentRenderer == null) {
+			currentRenderer = renderer;
+		}
+		if (state.contains(DEFAULT_STATE, false)) {
 			currentRenderer = renderer;
 		}
 	}

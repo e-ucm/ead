@@ -50,6 +50,8 @@ public class EmptyRendererComponent extends CollidableRendererComponent {
 
 	private float height;
 
+	private boolean hitAll;
+
 	@Override
 	public void draw(Batch batch) {
 		// Do nothing
@@ -71,20 +73,31 @@ public class EmptyRendererComponent extends CollidableRendererComponent {
 		updateWidthAndHeight();
 	}
 
+	public void setHitAll(boolean hitAll) {
+		this.hitAll = hitAll;
+	}
+
 	private void updateWidthAndHeight() {
-		float minX = Float.MAX_VALUE, maxX = Float.MIN_VALUE, minY = Float.MAX_VALUE, maxY = Float.MIN_VALUE;
-		for (Polygon polygon : collider) {
-			for (int i = 0; i < polygon.getVertices().length; i++) {
-				if (i % 2 == 0) {
-					minX = Math.min(minX, polygon.getVertices()[i]);
-					maxX = Math.max(maxX, polygon.getVertices()[i]);
-				} else {
-					minY = Math.min(minY, polygon.getVertices()[i]);
-					maxY = Math.max(maxY, polygon.getVertices()[i]);
+		if (collider != null) {
+			float minX = Float.MAX_VALUE, maxX = Float.MIN_VALUE, minY = Float.MAX_VALUE, maxY = Float.MIN_VALUE;
+			for (Polygon polygon : collider) {
+				for (int i = 0; i < polygon.getVertices().length; i++) {
+					if (i % 2 == 0) {
+						minX = Math.min(minX, polygon.getVertices()[i]);
+						maxX = Math.max(maxX, polygon.getVertices()[i]);
+					} else {
+						minY = Math.min(minY, polygon.getVertices()[i]);
+						maxY = Math.max(maxY, polygon.getVertices()[i]);
+					}
 				}
 			}
+			width = maxX - minX;
+			height = maxY - minY;
 		}
-		width = maxX - minX;
-		height = maxY - minY;
+	}
+
+	@Override
+	public boolean hit(float x, float y) {
+		return hitAll || super.hit(x, y);
 	}
 }

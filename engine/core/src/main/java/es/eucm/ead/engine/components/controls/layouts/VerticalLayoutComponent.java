@@ -34,26 +34,29 @@
  *      You should have received a copy of the GNU Lesser General Public License
  *      along with eAdventure.  If not, see <http://www.gnu.org/licenses/>.
  */
-package es.eucm.ead.editor.processors;
+package es.eucm.ead.engine.components.controls.layouts;
 
-import es.eucm.ead.editor.components.EditorStatesComponent;
-import es.eucm.ead.engine.ComponentLoader;
-import es.eucm.ead.engine.GameLoop;
-import es.eucm.ead.engine.assets.GameAssets;
-import es.eucm.ead.engine.components.renderers.StatesComponent;
-import es.eucm.ead.engine.processors.renderers.StatesProcessor;
+import com.badlogic.gdx.scenes.scene2d.Actor;
+import com.badlogic.gdx.scenes.scene2d.ui.VerticalGroup;
+import com.badlogic.gdx.utils.Pool.Poolable;
+import es.eucm.ead.engine.components.controls.ControlComponent;
 
-/**
- * Created by Javier Torrente on 24/09/14.
- */
-public class EditorStatesProcessor extends StatesProcessor {
-	public EditorStatesProcessor(GameLoop engine, GameAssets gameAssets,
-			ComponentLoader componentLoader) {
-		super(engine, gameAssets, componentLoader);
+public class VerticalLayoutComponent extends ControlComponent<VerticalGroup>
+		implements Poolable {
+
+	private VerticalGroup verticalGroup = new VerticalGroup();
+
+	public void addControl(Actor actor) {
+		verticalGroup.addActor(actor);
 	}
 
 	@Override
-	protected StatesComponent createStatesComponent() {
-		return gameLoop.createComponent(EditorStatesComponent.class);
+	public VerticalGroup getControl() {
+		return verticalGroup;
+	}
+
+	@Override
+	public void reset() {
+		verticalGroup.clear();
 	}
 }

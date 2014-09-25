@@ -75,4 +75,14 @@ public class FacadeGameView implements GameView {
 	public void updateWorldSize(int width, int height) {
 		gameView.updateWorldSize(width, height);
 	}
+
+	@Override
+	public int getWorldWidth() {
+		return gameView.getWorldWidth();
+	}
+
+	@Override
+	public int getWorldHeight() {
+		return gameView.getWorldHeight();
+	}
 }

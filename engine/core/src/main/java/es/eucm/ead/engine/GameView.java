@@ -74,4 +74,8 @@ public interface GameView {
 	 * Updates the game view world size
 	 */
 	void updateWorldSize(int width, int height);
+
+	int getWorldWidth();
+
+	int getWorldHeight();
 }
