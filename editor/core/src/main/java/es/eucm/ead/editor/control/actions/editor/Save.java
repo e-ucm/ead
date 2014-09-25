@@ -36,10 +36,7 @@
  */
 package es.eucm.ead.editor.control.actions.editor;
 
-import java.util.Map;
-
 import com.badlogic.gdx.files.FileHandle;
-
 import es.eucm.ead.editor.assets.EditorGameAssets;
 import es.eucm.ead.editor.control.Commands;
 import es.eucm.ead.editor.control.Commands.CommandListener;
@@ -53,6 +50,8 @@ import es.eucm.ead.editor.model.Q;
 import es.eucm.ead.schema.editor.components.Versions;
 import es.eucm.ead.schema.entities.ModelEntity;
 import es.eucm.ead.schemax.JsonExtension;
+
+import java.util.Map;
 
 /**
  * <p>
@@ -71,7 +70,7 @@ public class Save extends EditorAction implements CommandListener {
 	 * correctly written to disk in case some unexpected error happens while
 	 * saving and we have to go back to the temporal backup file.
 	 */
-	private static final String TEMP_FILE_SUFFIX = ".backup";
+	public static final String BACKUP_SUFFIX = ".backup";
 
 	/**
 	 * To be updated when the Model API Changes (rarely)
@@ -122,10 +121,9 @@ public class Save extends EditorAction implements CommandListener {
 
 				FileHandle oldFile = gameAssets.resolve(nextEntry.getKey());
 				FileHandle tmpFile = null;
-				boolean exists = oldFile.exists();
-				if (exists) {
-					tmpFile = oldFile
-							.sibling(oldFile.name() + TEMP_FILE_SUFFIX);
+				boolean oldFileExists = oldFile.exists();
+				if (oldFileExists) {
+					tmpFile = oldFile.sibling(oldFile.name() + BACKUP_SUFFIX);
 					oldFile.moveTo(tmpFile);
 				}
 				if (resource.getObject() instanceof ModelEntity) {
@@ -134,7 +132,7 @@ public class Save extends EditorAction implements CommandListener {
 					Exporter.createInitComponent(currentEntity);
 				}
 				gameAssets.toJsonPath(resource.getObject(), nextEntry.getKey());
-				if (exists) {
+				if (oldFileExists) {
 					tmpFile.delete();
 				}
 			}

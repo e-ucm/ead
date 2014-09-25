@@ -39,7 +39,7 @@ package es.eucm.ead.editor.actions;
 import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.utils.GdxRuntimeException;
 import es.eucm.ead.editor.control.actions.editor.OpenGame;
-import es.eucm.ead.editor.model.Model;
+import es.eucm.ead.editor.control.actions.editor.Save;
 import es.eucm.ead.editor.model.Model.ModelListener;
 import es.eucm.ead.editor.model.events.LoadEvent;
 import es.eucm.ead.schemax.GameStructure;
@@ -47,6 +47,8 @@ import org.junit.Before;
 import org.junit.Test;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
 
 public class OpenGameTest extends ActionTest implements
 		ModelListener<LoadEvent> {
@@ -111,9 +113,25 @@ public class OpenGameTest extends ActionTest implements
 		invalidGame.deleteDirectory();
 	}
 
+	@Test
+	public void testRecoverBcakup() {
+		FileHandle gameJson = emptyGamePath.child(GameStructure.GAME_FILE);
+		FileHandle gameJsonBackup = emptyGamePath.child(GameStructure.GAME_FILE
+				+ Save.BACKUP_SUFFIX);
+		gameJson.moveTo(gameJsonBackup);
+		assertFalse(gameJson.exists());
+		assertTrue(gameJsonBackup.exists());
+		controller.action(OpenGame.class, emptyGamePath.file()
+				.getAbsolutePath());
+		assertEquals(emptyGamePath.file().getAbsolutePath() + "/",
+				controller.getLoadingPath());
+		assertEquals(count, 4);
+		assertFalse(gameJsonBackup.exists());
+		assertTrue(gameJson.exists());
+	}
+
 	@Override
 	public void modelChanged(LoadEvent event) {
-		Model model = event.getModel();
 		count++;
 	}
 }
