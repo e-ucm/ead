@@ -82,6 +82,12 @@ public class PositionedHiddenPanel extends HiddenPanel {
 		show((Action) null);
 	}
 
+	@Override
+	public void layout() {
+		super.layout();
+		updatePositionPanel();
+	}
+
 	public void show(Action action) {
 		show(reference.getStage(), action);
 	}

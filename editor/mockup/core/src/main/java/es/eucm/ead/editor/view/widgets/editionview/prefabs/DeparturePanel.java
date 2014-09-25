@@ -98,15 +98,13 @@ public class DeparturePanel extends PrefabComponentPanel {
 		table = new ScenesTableList(controller, makeExit, "scene");
 
 		ScrollPane scroll = new ScrollPane(table, skin, "white");
-		scroll.setScrollingDisabled(true, false);
-		scroll.setFadeScrollBars(true);
-		panel.add(scroll).expandY().fill();
+		panel.add(scroll);
 		panel.row();
 
 		TextButton newScene = new TextButton(i18n.m("edition.exits.newScene")
 				+ " \n(" + i18n.m("edition.exits.newSceneInfo") + ")", skin,
 				"white");
-		panel.add(newScene).expandX().fill().pad(0, PAD, PAD, PAD);
+		panel.add(newScene).pad(0, PAD, PAD, PAD);
 
 		newScene.addListener(new ClickListener() {
 			public void clicked(InputEvent event, float x, float y) {

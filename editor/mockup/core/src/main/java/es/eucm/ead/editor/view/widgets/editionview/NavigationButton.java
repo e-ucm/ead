@@ -42,7 +42,6 @@ import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.InputListener;
 import com.badlogic.gdx.scenes.scene2d.ui.ScrollPane;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
-import com.badlogic.gdx.scenes.scene2d.utils.Align;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 
 import es.eucm.ead.editor.control.Controller;
@@ -61,18 +60,16 @@ import es.eucm.ead.engine.I18N;
 public class NavigationButton extends IconWithScalePanel implements
 		SelectionListener {
 
-	private static final float SPACE = -10, PAD = 30;
-
-	private float height;
-
-	private float width;
+	private static final float SEPARATION = -10, PAD = 0.4f;
 
 	private ScenesTableList sceneList;
 
 	private Model model;
 
+	private ScrollPane list;
+
 	public NavigationButton(Skin skin, final Controller controller) {
-		super("menu", SPACE, skin);
+		super("menu", SEPARATION, skin);
 		setStyle(skin.get("white_union", IconButtonStyle.class));
 
 		this.model = controller.getModel();
@@ -90,7 +87,7 @@ public class NavigationButton extends IconWithScalePanel implements
 
 		sceneList = new ScenesTableList(controller, changeView, "scene");
 
-		ScrollPane list = new ScrollPane(sceneList) {
+		list = new ScrollPane(sceneList) {
 			@Override
 			public void draw(Batch batch, float parentAlpha) {
 				super.draw(batch, parentAlpha);
@@ -99,8 +96,9 @@ public class NavigationButton extends IconWithScalePanel implements
 		};
 		list.setScrollingDisabled(true, false);
 
-		IconButton goGallery = new IconButton("home", 5, skin, "white");
-		goGallery.add(i18n.m("general.scenes")).pad(0, PAD, 0, PAD * 0.5f);
+		IconButton goGallery = new IconButton("home", 0, skin, "white");
+		float pad = goGallery.getHeight() * PAD;
+		goGallery.add(i18n.m("general.scenes")).padLeft(pad).padRight(pad);
 		goGallery.addListener(new ClickListener() {
 			@Override
 			public void clicked(InputEvent event, float x, float y) {
@@ -108,10 +106,10 @@ public class NavigationButton extends IconWithScalePanel implements
 			}
 		});
 
-		panel.align(Align.top);
-		panel.add(goGallery).pad(PAD).top();
+		panel.top();
+		panel.add(goGallery).pad(pad);
 		panel.row();
-		panel.add(list).top().expandX().fill();
+		panel.add(list).expandX().fill();
 
 		controller.getModel().addSelectionListener(this);
 	}

@@ -36,15 +36,18 @@
  */
 package es.eucm.ead.editor.view.widgets.editionview;
 
+import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.scenes.scene2d.ui.Button;
 import com.badlogic.gdx.scenes.scene2d.ui.Image;
 import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
+import com.badlogic.gdx.scenes.scene2d.utils.Align;
 import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable;
 import com.badlogic.gdx.utils.Scaling;
 
+import es.eucm.ead.editor.assets.EditorGameAssets;
 import es.eucm.ead.editor.control.Controller;
 import es.eucm.ead.editor.model.Q;
 import es.eucm.ead.engine.assets.Assets.AssetLoadedCallback;
@@ -63,45 +66,8 @@ public class SceneButton extends Button implements AssetLoadedCallback<Texture> 
 	private Controller controller;
 	private Image image;
 
-	public SceneButton(Controller controller, Skin skin, String style) {
-		this(null, controller, 0, skin, style);
-
-	}
-
-	public SceneButton(Controller controller, float pad, Skin skin, String style) {
-		this(null, controller, pad, skin, style);
-
-	}
-
 	public SceneButton(ModelEntity scene, Controller controller, Skin skin,
 			String style) {
-		this(scene, controller, 0, skin, style);
-
-	}
-
-	public SceneButton(Controller controller, Skin skin) {
-		this(null, controller, 0, skin, "default");
-
-	}
-
-	public SceneButton(Controller controller, float pad, Skin skin) {
-		this(null, controller, pad, skin, "default");
-
-	}
-
-	public SceneButton(ModelEntity scene, Controller controller, Skin skin) {
-		this(scene, controller, 0, skin, "default");
-
-	}
-
-	public SceneButton(ModelEntity scene, Controller controller, float pad,
-			Skin skin) {
-		this(scene, controller, 0, skin, "default");
-
-	}
-
-	public SceneButton(ModelEntity scene, Controller controller, float pad,
-			Skin skin, String style) {
 		super(skin, style);
 
 		this.controller = controller;
@@ -111,11 +77,18 @@ public class SceneButton extends Button implements AssetLoadedCallback<Texture> 
 		drawable = new TextureRegionDrawable(region = new TextureRegion());
 		image.setScaling(Scaling.fit);
 
-		add(image).pad(pad, pad, pad / 2, pad).fill();
+		add(image).fill().expand();
 		row();
 
-		label = new Label(" ", skin);
-		add(label).expand().center().pad(0, pad, pad, pad);
+		label = new Label("", skin);
+		label.setAlignment(Align.center);
+		add(label).expand().fill();
+	}
+
+	@Override
+	public void setChecked(boolean isChecked) {
+		setColor(isChecked ? Color.GREEN : Color.WHITE);
+		super.setChecked(isChecked);
 	}
 
 	@Override
@@ -136,12 +109,16 @@ public class SceneButton extends Button implements AssetLoadedCallback<Texture> 
 		if (documentation != null && documentation.getName() != null) {
 			label.setText(documentation.getName());
 		} else {
-			label.setText(" ");
+			label.setText("");
 		}
 
 		Thumbnail thumbnail = Q.getThumbnail(controller, scene);
-		controller.getEditorGameAssets().get(thumbnail.getThumbnail(),
-				Texture.class, this);
+		String thumbnailPath = thumbnail.getThumbnail();
+		EditorGameAssets editorGameAssets = controller.getEditorGameAssets();
+		if (editorGameAssets.absolute(
+				editorGameAssets.getLoadingPath() + thumbnailPath).exists()) {
+			editorGameAssets.get(thumbnailPath, Texture.class, this);
+		}
 	}
 
 	public void actualizeName() {
@@ -150,7 +127,7 @@ public class SceneButton extends Button implements AssetLoadedCallback<Texture> 
 		if (documentation != null && documentation.getName() != null) {
 			label.setText(documentation.getName());
 		} else {
-			label.setText(" ");
+			label.setText("");
 		}
 	}
 }

@@ -42,6 +42,7 @@ import java.util.Map.Entry;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.InputListener;
 import com.badlogic.gdx.scenes.scene2d.Touchable;
+import com.badlogic.gdx.scenes.scene2d.ui.Button;
 import com.badlogic.gdx.scenes.scene2d.ui.ButtonGroup;
 import com.badlogic.gdx.scenes.scene2d.ui.Cell;
 import com.badlogic.gdx.scenes.scene2d.ui.Container;
@@ -195,22 +196,23 @@ public class ScenesTableList extends Table implements
 		group.setMaxCheckCount(1);
 		group.setMinCheckCount(0);
 
-		Cell initial = add().expandX().fill().pad(PAD);
+		Cell initial = add().expandY().fill();
+		defaults().space(PAD);
 
 		Collection<Entry<String, Resource>> values = controller.getModel()
 				.getResources(ResourceCategory.SCENE).entrySet();
 
 		for (Entry<String, Resource> value : values) {
 			ModelEntity scene = (ModelEntity) value.getValue().getObject();
-			SceneButton sceneButton = new SceneButton(scene, controller, PAD,
-					skin, styleButton);
+			SceneButton sceneButton = new SceneButton(scene, controller, skin,
+					styleButton);
 			sceneButton.addListener(listener);
 			if (value.getKey().equals(initialName)) {
 				initial.setActor(sceneButton);
 				sceneButton.addActor(containerFirst);
 			} else {
 				row();
-				add(sceneButton).expandX().fill().pad(PAD);
+				add(sceneButton).expandY().fill();
 			}
 
 			group.add(sceneButton);
@@ -242,16 +244,17 @@ public class ScenesTableList extends Table implements
 		}
 	}
 
-	public void selectScene(String id) {
+	public Button selectScene(String id) {
 		for (Actor actor : getChildren()) {
 			SceneButton button = (SceneButton) actor;
 			String id_button = controller.getModel()
 					.getIdFor(button.getScene());
 			if (id_button != null && id_button.equals(id)) {
 				button.setChecked(true);
-				break;
+				return button;
 			}
 		}
+		return null;
 	}
 
 	public void deselectAll() {
