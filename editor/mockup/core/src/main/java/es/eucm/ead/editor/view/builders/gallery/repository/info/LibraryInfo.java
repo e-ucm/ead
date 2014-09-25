@@ -46,7 +46,7 @@ import es.eucm.ead.editor.control.Controller;
 import es.eucm.ead.editor.control.MockupController;
 import es.eucm.ead.editor.view.widgets.gallery.repository.LibraryItem;
 import es.eucm.ead.engine.I18N;
-import es.eucm.ead.schema.editor.components.RepoLibrary;
+import es.eucm.ead.schema.editor.components.repo.RepoLibrary;
 
 public class LibraryInfo extends ItemInfo<LibraryItem> {
 

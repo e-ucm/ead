@@ -42,14 +42,15 @@ import com.badlogic.gdx.utils.Array;
 
 import es.eucm.ead.editor.assets.ApplicationAssets;
 import es.eucm.ead.editor.control.Controller;
+import es.eucm.ead.editor.control.RepositoryManager;
 import es.eucm.ead.editor.control.RepositoryManager.OnThumbnailAvailableListener;
 import es.eucm.ead.editor.control.actions.editor.repository.GetLibraryThumbnail;
 import es.eucm.ead.editor.view.builders.gallery.BaseGallery;
 import es.eucm.ead.editor.view.builders.gallery.repository.info.ItemInfo;
 import es.eucm.ead.engine.assets.Assets.AssetLoadedCallback;
-import es.eucm.ead.schema.editor.components.RepoAuthor;
-import es.eucm.ead.schema.editor.components.RepoLibrary;
-import es.eucm.ead.schema.editor.components.RepoLicense;
+import es.eucm.ead.schema.editor.components.repo.RepoAuthor;
+import es.eucm.ead.schema.editor.components.repo.RepoLibrary;
+import es.eucm.ead.schema.editor.components.repo.RepoLicense;
 
 public class LibraryItem extends InfoGalleryItem implements
 		AssetLoadedCallback<Texture>, OnThumbnailAvailableListener {
@@ -58,8 +59,8 @@ public class LibraryItem extends InfoGalleryItem implements
 
 	public LibraryItem(ItemInfo<LibraryItem> info, Controller controller,
 			RepoLibrary repoLibrary, BaseGallery gallery) {
-		super(info, controller.getApplicationAssets().getSkin(), "library",
-				gallery);
+		super(controller.getApplicationAssets().getI18N(), info, controller
+				.getApplicationAssets().getSkin(), "library", gallery);
 
 		this.repoLibrary = repoLibrary;
 		setTagsArray(repoLibrary.getTags());
@@ -77,7 +78,7 @@ public class LibraryItem extends InfoGalleryItem implements
 		if (repoLibrary == null) {
 			return " ";
 		}
-		String name = repoLibrary.getName();
+		String name = RepositoryManager.i18nString(repoLibrary.getName(), i18n);
 		return name == null ? " " : name;
 	}
 
@@ -88,7 +89,7 @@ public class LibraryItem extends InfoGalleryItem implements
 
 	@Override
 	public String getDescription() {
-		return repoLibrary.getDescription();
+		return RepositoryManager.i18nString(repoLibrary.getDescription(), i18n);
 	}
 
 	@Override

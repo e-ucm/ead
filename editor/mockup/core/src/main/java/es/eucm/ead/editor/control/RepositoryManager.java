@@ -61,9 +61,12 @@ import es.eucm.ead.editor.control.actions.model.AddSceneElement;
 import es.eucm.ead.editor.model.Q;
 import es.eucm.ead.editor.view.builders.gallery.ProjectsView;
 import es.eucm.ead.engine.assets.Assets;
+import es.eucm.ead.engine.I18N;
 import es.eucm.ead.schema.editor.components.GameData;
-import es.eucm.ead.schema.editor.components.RepoElement;
-import es.eucm.ead.schema.editor.components.RepoLibrary;
+import es.eucm.ead.schema.editor.components.repo.I18NString;
+import es.eucm.ead.schema.editor.components.repo.I18NStrings;
+import es.eucm.ead.schema.editor.components.repo.RepoElement;
+import es.eucm.ead.schema.editor.components.repo.RepoLibrary;
 import es.eucm.ead.schema.entities.ModelEntity;
 import es.eucm.ead.schemax.GameStructure;
 
@@ -188,6 +191,33 @@ public class RepositoryManager {
 	private static final String ENTITIES_FILE_NAME = "/entities.json";
 
 	/**
+	 * Convenience method that chooses the best String value in a
+	 * {@link I18NStrings object} passed as argument according to the current
+	 * language settings of the application. If there is no valid string for the
+	 * language selected, the first one is returned. If there are no strings,
+	 * blank string is returned
+	 * 
+	 * @param strings
+	 *            Object with the string values
+	 * @param i18N
+	 *            Object that determines current app settings
+	 * @return The value in the current language, or "" if nothing available
+	 */
+	public static final String i18nString(I18NStrings strings, I18N i18N) {
+		for (I18NString i18NString : strings.getStrings()) {
+			if (i18NString.getLang().equals(i18N.getLang())) {
+				return i18NString.getValue();
+			}
+		}
+
+		if (strings.getStrings().size > 0) {
+			return strings.getStrings().get(0).getValue();
+		}
+
+		return "";
+	}
+
+	/**
 	 * Used to know from which library we're fetching.
 	 */
 	private String currentLibrary = "";
@@ -237,8 +267,8 @@ public class RepositoryManager {
 			if (j == pivot) {
 				continue;
 			}
-			int comparison = libraries.get(j).getName()
-					.compareTo(libraries.get(pivot).getName());
+			int comparison = libraries.get(j).getPath()
+					.compareTo(libraries.get(pivot).getPath());
 			if (comparison > 0 && j < pivot) {
 				libraries.add(libraries.removeIndex(j));
 				pivot--;
@@ -782,16 +812,6 @@ public class RepositoryManager {
 		}
 	}
 
-	/**
-	 * 
-	 * 
-	 * @param controller
-	 * @param updatedJson
-	 *            the most updated {@link #LIBRARIES_FILE_NAME} info. Usually
-	 *            the most recently downloaded. If it's empty(e.g. no Internet
-	 *            connection) libraryPaths will be created from local.
-	 * @return true if we could load the libraryPaths from local path.
-	 */
 	private boolean loadLibrariesFromLocal(
 			final ProgressListener progressListener, Controller controller) {
 		EditorGameAssets gameAssets = controller.getEditorGameAssets();

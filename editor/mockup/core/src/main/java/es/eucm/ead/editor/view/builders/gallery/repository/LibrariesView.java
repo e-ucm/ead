@@ -47,6 +47,7 @@ import com.badlogic.gdx.utils.Array;
 import es.eucm.ead.editor.control.Controller;
 import es.eucm.ead.editor.control.MockupController;
 import es.eucm.ead.editor.control.MockupViews;
+import es.eucm.ead.editor.control.RepositoryManager;
 import es.eucm.ead.editor.control.RepositoryManager.ProgressListener;
 import es.eucm.ead.editor.control.Toasts;
 import es.eucm.ead.editor.control.actions.editor.ChangeMockupView;
@@ -59,7 +60,7 @@ import es.eucm.ead.editor.view.widgets.IconButton;
 import es.eucm.ead.editor.view.widgets.gallery.GalleryItem;
 import es.eucm.ead.editor.view.widgets.gallery.repository.LibraryItem;
 import es.eucm.ead.editor.view.widgets.helpmessage.sequence.HelpSequence;
-import es.eucm.ead.schema.editor.components.RepoLibrary;
+import es.eucm.ead.schema.editor.components.repo.RepoLibrary;
 
 public class LibrariesView extends BaseGallery implements ProgressListener {
 

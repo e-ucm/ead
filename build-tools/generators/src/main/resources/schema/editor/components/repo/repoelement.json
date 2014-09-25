@@ -1,8 +1,8 @@
 {
     "additionalProperties": false,
-    "javaType": "es.eucm.ead.schema.editor.components.RepoElement",
+    "javaType": "es.eucm.ead.schema.editor.components.repo.RepoElement",
     "extends": {
-        "$ref": "../../engine/components/component.json"
+        "$ref": "../../../engine/components/component.json"
     },
     "properties": {
         "thumbnail": {
@@ -24,17 +24,17 @@
             "type": "number"
         },
         "description": {
-            "type": "string",
+            "$ref":"i18nstrings.json",
             "description": "A brief description of the resource, including what kind of contents it has, and how many (e.g. number of animations, frames, etc.)"
         },
         "name":{
-            "type": "string",
+            "$ref":"i18nstrings.json",
             "description": "A name for the item, if necessary"
         },
         "tags":{
             "type": "array",
             "items":{
-                "type":"string"
+                "$ref":"i18nstrings.json"
             },
             "description": "A list of tags - useful for searching and grouping resources"
         }

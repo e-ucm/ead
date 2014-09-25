@@ -1,8 +1,8 @@
 {
     "additionalProperties": false,
-    "javaType": "es.eucm.ead.schema.editor.components.RepoLibrary",
+    "javaType": "es.eucm.ead.schema.editor.components.repo.RepoLibrary",
     "extends": {
-        "$ref": "../../engine/components/component.json"
+        "$ref": "../../../engine/components/component.json"
     },
     "properties": {
         "path": {
@@ -33,17 +33,17 @@
             "description": "The downloadable amount of mega bytes of the zip file associated to the library. If -1, the size is unknown"
         },
         "description": {
-            "type": "string",
+            "$ref":"i18nstrings.json",
             "description": "A brief description of the library"
         },
         "name":{
-            "type": "string",
+            "$ref":"i18nstrings.json",
             "description": "A name for the library"
         },
         "tags":{
             "type": "array",
             "items":{
-                "type":"string"
+                "$ref":"i18nstrings.json"
             },
             "description": "A list of tags - useful for searching and grouping resources"
         }

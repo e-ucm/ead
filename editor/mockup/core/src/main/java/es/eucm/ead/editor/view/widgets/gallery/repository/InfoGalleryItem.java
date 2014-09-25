@@ -40,16 +40,18 @@ import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.ui.Container;
 import com.badlogic.gdx.scenes.scene2d.ui.Image;
-import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
 import com.badlogic.gdx.utils.Array;
 
+import es.eucm.ead.editor.control.RepositoryManager;
 import es.eucm.ead.editor.view.builders.gallery.BaseGallery;
 import es.eucm.ead.editor.view.builders.gallery.repository.info.ItemInfo;
 import es.eucm.ead.editor.view.widgets.IconButton;
 import es.eucm.ead.editor.view.widgets.gallery.GalleryItem;
-import es.eucm.ead.schema.editor.components.RepoAuthor;
+import es.eucm.ead.engine.I18N;
+import es.eucm.ead.schema.editor.components.repo.I18NStrings;
+import es.eucm.ead.schema.editor.components.repo.RepoAuthor;
 
 public abstract class InfoGalleryItem extends GalleryItem {
 
@@ -64,17 +66,21 @@ public abstract class InfoGalleryItem extends GalleryItem {
 
 	};
 
+	protected I18N i18n;
+
 	private ItemInfo info;
 
 	private Container<Actor> infoContainer;
 
-	private Array<String> tagsArray;
+	private Array<I18NStrings> tagsArray;
 	private String tags;
 	private String searchText;
 
-	public InfoGalleryItem(ItemInfo info, Skin skin, String styleName,
-			BaseGallery gallery) {
+	public InfoGalleryItem(I18N i18n, ItemInfo info, Skin skin,
+			String styleName, BaseGallery gallery) {
 		super(new Image(), "", false, skin, styleName, false, gallery);
+		this.i18n = i18n;
+
 		this.info = info;
 		IconButton infoButton = new IconButton("info80x80", 0f, skin,
 				"inverted");
@@ -85,7 +91,7 @@ public abstract class InfoGalleryItem extends GalleryItem {
 		addActor(infoContainer);
 	}
 
-	protected void setTagsArray(Array<String> tagsArray) {
+	protected void setTagsArray(Array<I18NStrings> tagsArray) {
 		this.tagsArray = tagsArray;
 	}
 
@@ -133,7 +139,7 @@ public abstract class InfoGalleryItem extends GalleryItem {
 	protected String buildTags() {
 		String tags = "";
 		for (int i = 0; i < tagsArray.size; ++i) {
-			tags += tagsArray.get(i);
+			tags += RepositoryManager.i18nString(tagsArray.get(i), i18n);
 			if (i < tagsArray.size - 1) {
 				tags += ", ";
 			}
