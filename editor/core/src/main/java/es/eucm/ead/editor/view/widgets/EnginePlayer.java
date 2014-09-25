@@ -45,17 +45,13 @@ import es.eucm.ead.engine.GameLoop;
  */
 public class EnginePlayer extends DefaultGameView {
 
-	private float gameWidth;
-
-	private float gameHeight;
-
 	public EnginePlayer(GameLoop gameLoop) {
 		super(gameLoop);
 	}
 
 	@Override
 	public void drawChildren(Batch batch, float parentAlpha) {
-		if (clipBegin(0, 0, gameWidth, gameHeight)) {
+		if (clipBegin(0, 0, worldWidth, worldHeight)) {
 			super.drawChildren(batch, parentAlpha);
 			clipEnd();
 		}
@@ -63,28 +59,28 @@ public class EnginePlayer extends DefaultGameView {
 
 	@Override
 	public float getPrefWidth() {
-		return gameWidth;
+		return worldWidth;
 	}
 
 	@Override
 	public float getPrefHeight() {
-		return gameHeight;
+		return worldHeight;
 	}
 
 	@Override
 	public void updateWorldSize(int width, int height) {
-		this.gameWidth = width;
-		this.gameHeight = height;
+		this.worldWidth = width;
+		this.worldHeight = height;
 		invalidateHierarchy();
 	}
 
 	@Override
 	public void layout() {
-		float scaleX = getWidth() / gameWidth;
-		float scaleY = getHeight() / gameHeight;
+		float scaleX = getWidth() / worldWidth;
+		float scaleY = getHeight() / worldHeight;
 		float scale = Math.min(scaleX, scaleY);
-		float offsetX = (getWidth() - gameWidth * scale) / 2.0f;
-		float offsetY = (getHeight() - gameHeight * scale) / 2.0f;
+		float offsetX = (getWidth() - worldWidth * scale) / 2.0f;
+		float offsetY = (getHeight() - worldHeight * scale) / 2.0f;
 		setPosition(offsetX, offsetY);
 		setScale(scale);
 	}

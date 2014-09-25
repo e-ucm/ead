@@ -79,6 +79,10 @@ public class DefaultGameView extends WidgetGroup implements GameView {
 
 	private Map<Layer, EngineLayer> layers;
 
+	protected int worldWidth;
+
+	protected int worldHeight;
+
 	public DefaultGameView(GameLoop gameLoop) {
 		layers = new HashMap<Layer, EngineLayer>();
 		this.gameLoop = gameLoop;
@@ -176,11 +180,23 @@ public class DefaultGameView extends WidgetGroup implements GameView {
 
 	@Override
 	public void updateWorldSize(int width, int height) {
+		this.worldWidth = width;
+		this.worldHeight = height;
 		getStage().setViewport(
 				new FitViewport(width, height, getStage().getViewport()
 						.getCamera()));
 		getStage().getViewport().update(Gdx.graphics.getWidth(),
 				Gdx.graphics.getHeight(), true);
+	}
+
+	@Override
+	public int getWorldWidth() {
+		return worldWidth;
+	}
+
+	@Override
+	public int getWorldHeight() {
+		return worldHeight;
 	}
 
 	/**
