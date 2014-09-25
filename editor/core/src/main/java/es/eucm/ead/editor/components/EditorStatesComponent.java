@@ -58,7 +58,7 @@ public class EditorStatesComponent extends StatesComponent {
 
 	public void addRenderer(Array<String> state, RendererComponent renderer) {
 		super.addRenderer(state, renderer);
-		if (state.contains(DEFAULT_STATE, true)) {
+		if (state.contains(DEFAULT_STATE, false)) {
 			currentRenderer = renderer;
 		}
 	}
