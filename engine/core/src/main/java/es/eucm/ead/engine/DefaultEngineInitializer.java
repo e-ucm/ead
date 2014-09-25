@@ -54,6 +54,7 @@ import es.eucm.ead.engine.processors.controls.ButtonProcessor;
 import es.eucm.ead.engine.processors.controls.ImageButtonProcessor;
 import es.eucm.ead.engine.processors.controls.LabelProcessor;
 import es.eucm.ead.engine.processors.controls.TextButtonProcessor;
+import es.eucm.ead.engine.processors.controls.layouts.VerticalLayoutProcessor;
 import es.eucm.ead.engine.processors.physics.BoundingAreaProcessor;
 import es.eucm.ead.engine.processors.physics.VelocityProcessor;
 import es.eucm.ead.engine.processors.positiontracking.ChaseEntityProcessor;
@@ -134,6 +135,7 @@ import es.eucm.ead.schema.components.controls.Button;
 import es.eucm.ead.schema.components.controls.ImageButton;
 import es.eucm.ead.schema.components.controls.Label;
 import es.eucm.ead.schema.components.controls.TextButton;
+import es.eucm.ead.schema.components.controls.layouts.VerticalLayout;
 import es.eucm.ead.schema.components.conversation.ConditionedNode;
 import es.eucm.ead.schema.components.conversation.Conversation;
 import es.eucm.ead.schema.components.conversation.EffectsNode;
@@ -337,6 +339,8 @@ public class DefaultEngineInitializer implements EngineInitializer {
 				new VelocityProcessor(gameLoop));
 		componentLoader.registerComponentProcessor(Button.class,
 				new ButtonProcessor(gameLoop, gameAssets));
+		componentLoader.registerComponentProcessor(VerticalLayout.class,
+				new VerticalLayoutProcessor(gameLoop, componentLoader));
 		componentLoader
 				.registerComponentProcessor(TextButton.class,
 						new TextButtonProcessor(gameLoop, gameAssets,
