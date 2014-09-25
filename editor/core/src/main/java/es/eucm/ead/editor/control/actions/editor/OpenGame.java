@@ -36,15 +36,11 @@
  */
 package es.eucm.ead.editor.control.actions.editor;
 
-import java.util.Map.Entry;
-import java.util.Set;
-
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.reflect.ClassReflection;
 import com.badlogic.gdx.utils.reflect.ReflectionException;
-
 import es.eucm.ead.editor.assets.EditorGameAssets;
 import es.eucm.ead.editor.control.Commands;
 import es.eucm.ead.editor.control.Preferences;
@@ -66,6 +62,9 @@ import es.eucm.ead.schema.editor.data.Cell;
 import es.eucm.ead.schema.entities.ModelEntity;
 import es.eucm.ead.schemax.JsonExtension;
 import es.eucm.ead.schemax.entities.ResourceCategory;
+
+import java.util.Map.Entry;
+import java.util.Set;
 
 /**
  * Opens a game. Accepts one path (the path where the game is) as argument. If
@@ -144,14 +143,13 @@ public class OpenGame extends EditorAction implements FileChooserListener,
 				path);
 		EditorGameAssets assets = controller.getEditorGameAssets();
 		assets.setLoadingPath(path);
+		recoverBackups(fileHandle);
 		loadAllJsonResources(fileHandle);
 	}
 
 	/**
 	 * Invokes {@link EditorGameAssets#finishLoading()} and performs the final
 	 * checks needed before completion.
-	 * 
-	 * @param path
 	 */
 	protected void finishLoading(String path) {
 		EditorGameAssets assets = controller.getEditorGameAssets();
@@ -172,6 +170,19 @@ public class OpenGame extends EditorAction implements FileChooserListener,
 		controller.getModel().notify(
 				new LoadEvent(LoadEvent.Type.LOADED, controller.getModel()));
 		controller.action(AddRecentGame.class, path);
+	}
+
+	private void recoverBackups(FileHandle folder) {
+		for (FileHandle child : folder.list()) {
+			if (child.isDirectory()) {
+				recoverBackups(child);
+			} else if (child.name().endsWith(Save.BACKUP_SUFFIX)) {
+				Gdx.app.debug("OpenGame", "Found backup file. Recovering "
+						+ child.name());
+				FileHandle file = child.sibling(child.nameWithoutExtension());
+				child.moveTo(file);
+			}
+		}
 	}
 
 	private void loadAllJsonResources(FileHandle fileHandle) {
