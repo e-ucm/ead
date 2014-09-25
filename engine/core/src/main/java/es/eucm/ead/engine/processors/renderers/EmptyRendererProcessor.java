@@ -37,8 +37,10 @@
 package es.eucm.ead.engine.processors.renderers;
 
 import ashley.core.Component;
+
 import com.badlogic.gdx.math.Polygon;
 import com.badlogic.gdx.utils.Array;
+
 import es.eucm.ead.engine.GameLoop;
 import es.eucm.ead.engine.components.renderers.frames.EmptyRendererComponent;
 import es.eucm.ead.engine.utils.ShapeToCollider;
@@ -59,11 +61,20 @@ public class EmptyRendererProcessor extends RendererProcessor<EmptyRenderer> {
 	public Component getComponent(EmptyRenderer component) {
 		EmptyRendererComponent emptyRendererComponent = gameLoop
 				.createComponent(EmptyRendererComponent.class);
-		Array<Polygon> collider = new Array<Polygon>();
-		Polygon polygon = ShapeToCollider.buildShapeCollider(
-				component.getShape(), N_SIDES_FOR_CIRCLE);
-		collider.add(polygon);
-		emptyRendererComponent.setCollider(collider);
+		read(emptyRendererComponent, component);
 		return emptyRendererComponent;
+	}
+
+	protected void read(EmptyRendererComponent emptyRendererComponent,
+			EmptyRenderer component) {
+		if (component.getShape() != null) {
+			Array<Polygon> collider = new Array<Polygon>();
+			Polygon polygon = ShapeToCollider.buildShapeCollider(
+					component.getShape(), N_SIDES_FOR_CIRCLE);
+			collider.add(polygon);
+			emptyRendererComponent.setCollider(collider);
+		}
+
+		emptyRendererComponent.setHitAll(component.isHitAll());
 	}
 }
