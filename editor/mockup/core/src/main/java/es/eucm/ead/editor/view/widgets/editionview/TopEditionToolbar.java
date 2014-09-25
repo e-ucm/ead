@@ -44,6 +44,7 @@ import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
 
 import es.eucm.ead.editor.control.Actions;
 import es.eucm.ead.editor.control.Clipboard.ClipboardListener;
+import es.eucm.ead.editor.control.Commands;
 import es.eucm.ead.editor.control.Controller;
 import es.eucm.ead.editor.control.Selection;
 import es.eucm.ead.editor.control.actions.editor.AddSceneElementFromResource;
@@ -211,8 +212,9 @@ public class TopEditionToolbar extends Toolbar {
 				}
 			}
 		};
-		undo.setDisabled(true);
-		redo.setDisabled(true);
+		Commands commands = controller.getCommands();
+		undo.setDisabled(commands.getUndoHistory().isEmpty());
+		redo.setDisabled(commands.getRedoHistory().isEmpty());
 		Actions actions = controller.getActions();
 		actions.addActionListener(Undo.class, undoRedo);
 		actions.addActionListener(Redo.class, undoRedo);
