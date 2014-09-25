@@ -36,13 +36,12 @@
  */
 package es.eucm.ead.editor.control.actions.editor;
 
-import java.nio.ByteBuffer;
-
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.Pixmap;
 import com.badlogic.gdx.graphics.PixmapIO;
+import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Vector2;
@@ -114,19 +113,20 @@ public class CreateThumbnail extends EditorAction {
 		}
 
 		String thumbSavingPath = GameStructure.THUMBNAILS_PATH;
-		FileHandle thumbSavingDir = editorGameAssets.resolve(thumbSavingPath);
+		String loadingPath = editorGameAssets.getLoadingPath();
+		FileHandle thumbSavingDir = editorGameAssets.absolute(loadingPath
+				+ thumbSavingPath);
 		if (!thumbSavingDir.exists()) {
 			thumbSavingDir.mkdirs();
 		}
 		Model model = controller.getModel();
 		String id = model.getIdFor(modelEntity);
-		FileHandle temp = editorGameAssets.resolve(id);
-		thumbSavingPath += temp.nameWithoutExtension();
-		FileHandle thumbSavingImage = editorGameAssets.resolve(thumbSavingPath
-				+ ".png");
+		FileHandle temp = editorGameAssets.absolute(loadingPath + id);
+		thumbSavingPath += temp.nameWithoutExtension() + ".png";
+		FileHandle thumbSavingImage = editorGameAssets.absolute(loadingPath
+				+ thumbSavingPath);
 
 		EngineEntity engineEntity = entitiesLoader.toEngineEntity(modelEntity);
-		editorGameAssets.finishLoading();
 
 		// Prepare group transformations, so thumbnail is centered
 		Group group = engineEntity.getGroup();
@@ -164,10 +164,13 @@ public class CreateThumbnail extends EditorAction {
 			h = scl.y;
 			x = Math.max((width - w) * .5f, 0f);
 			y = Math.max((height - h) * .5f, 0f);
-			group.setScale(w / currentWidth, h / currentHeight);
-			group.setBounds(x, y, w, h);
+			// Note that the scale and the bounds are inverted so that we take
+			// the thumbnail correctly since Open GL uses an y-down system.
+			group.setScale(w / currentWidth, -h / currentHeight);
+			group.setBounds(x, h, w, h);
 		}
 
+		editorGameAssets.finishLoading();
 		Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
 		Gdx.gl.glClearColor(1f, 1f, 1f, 1f);
 		batch.begin();
@@ -176,19 +179,6 @@ public class CreateThumbnail extends EditorAction {
 
 		Pixmap pixmap = ScreenUtils.getFrameBufferPixmap(MathUtils.round(x),
 				MathUtils.round(y), MathUtils.round(w), MathUtils.round(h));
-		// We must convert the OpenGL ES coordinates of the pixels (y-down)
-		// to an y-up coordinate system before saving.
-		int pixW = pixmap.getWidth();
-		int pixH = pixmap.getHeight();
-		final ByteBuffer pixels = pixmap.getPixels();
-		int numBytesPerLine = pixW * 4, height_index = pixH - 1;
-		byte[] lines = new byte[numBytesPerLine * pixH];
-		for (int i = 0; i < pixH; ++i) {
-			pixels.position((height_index - i) * numBytesPerLine);
-			pixels.get(lines, i * numBytesPerLine, numBytesPerLine);
-		}
-		pixels.clear();
-		pixels.put(lines);
 
 		PixmapIO.writePNG(thumbSavingImage, pixmap);
 		pixmap.dispose();
@@ -196,8 +186,12 @@ public class CreateThumbnail extends EditorAction {
 		gameLoop.removeEntity(engineEntity);
 
 		Thumbnail thumbnail = Q.getComponent(modelEntity, Thumbnail.class);
-		thumbnail.setThumbnail(GameStructure.THUMBNAILS_PATH
-				+ thumbSavingImage.name());
+		thumbnail.setThumbnail(thumbSavingPath);
+
+		if (editorGameAssets.isLoaded(thumbSavingPath, Texture.class)) {
+			editorGameAssets.unload(thumbSavingPath);
+		}
+
 		Resource resource = model.getResource(id);
 		if (resource != null) {
 			resource.setModified(true);

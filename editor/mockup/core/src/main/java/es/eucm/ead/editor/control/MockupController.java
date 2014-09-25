@@ -43,7 +43,6 @@ import com.badlogic.gdx.Input.Keys;
 import com.badlogic.gdx.scenes.scene2d.Group;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.InputListener;
-import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.TextArea;
 import com.badlogic.gdx.scenes.scene2d.ui.TextField;
 
@@ -107,9 +106,9 @@ public class MockupController extends Controller {
 				// This hides the on screen keyboard
 				// if we're writing in a text field and
 				// touch down anywhere else but the text field.
-				Stage stage = rootComponent.getStage();
 				if (!(event.getTarget() instanceof TextField)) {
-					hideOnscreenKeyboard(stage);
+					((MockupViews) MockupController.this.views)
+							.hideOnscreenKeyboard();
 				}
 				return false;
 			}
@@ -122,20 +121,13 @@ public class MockupController extends Controller {
 					return true;
 				} else if (keycode == Keys.ENTER
 						&& !(event.getTarget() instanceof TextArea)) {
-					Stage stage = event.getTarget().getStage();
-					if (stage != null) {
-						hideOnscreenKeyboard(stage);
-						return true;
-					}
+					((MockupViews) MockupController.this.views)
+							.hideOnscreenKeyboard();
+					return true;
 				}
 				return false;
 			}
 
-			private void hideOnscreenKeyboard(Stage stage) {
-				Gdx.input.setOnscreenKeyboardVisible(false);
-				stage.setKeyboardFocus(null);
-				stage.unfocusAll();
-			}
 		});
 	}
 

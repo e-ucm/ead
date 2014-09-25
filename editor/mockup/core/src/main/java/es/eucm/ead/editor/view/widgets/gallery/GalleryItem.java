@@ -121,13 +121,6 @@ public abstract class GalleryItem extends Button {
 		top = new Table();
 		top.setBackground(style.imageBackground);
 
-		if (canBeDeleted) {
-			IconButton iconButton = new IconButton(DELETE_ICON, skin);
-			Container<Actor> icon = new Container<Actor>(iconButton).top()
-					.right();
-			icon.setFillParent(true);
-			top.addActor(icon);
-		}
 		top.addCaptureListener(iconListener);
 		top.setTouchable(Touchable.enabled);
 		top.setUserObject(this);
@@ -143,6 +136,13 @@ public abstract class GalleryItem extends Button {
 		add(top).expand().fill();
 		row();
 		add(bot).expandX().fill();
+		if (canBeDeleted) {
+			IconButton iconButton = new IconButton(DELETE_ICON, skin);
+			Container<Actor> icon = new Container<Actor>(iconButton).top()
+					.right();
+			icon.setFillParent(true);
+			top.addActor(icon);
+		}
 	}
 
 	public void deleteItem() {

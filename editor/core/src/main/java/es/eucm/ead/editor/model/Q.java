@@ -37,7 +37,6 @@
 package es.eucm.ead.editor.model;
 
 import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.utils.Array;
@@ -45,8 +44,8 @@ import com.badlogic.gdx.utils.Scaling;
 import com.badlogic.gdx.utils.reflect.ClassReflection;
 import com.badlogic.gdx.utils.reflect.ReflectionException;
 
-import es.eucm.ead.editor.assets.EditorGameAssets;
 import es.eucm.ead.editor.control.Controller;
+import es.eucm.ead.editor.control.actions.editor.CreateSceneThumbnailIfNeeded;
 import es.eucm.ead.editor.control.actions.editor.CreateThumbnail;
 import es.eucm.ead.engine.entities.EngineEntity;
 import es.eucm.ead.schema.components.ModelComponent;
@@ -63,8 +62,8 @@ import es.eucm.ead.schema.entities.ModelEntity;
  */
 public class Q {
 
-	private static final float THUMBNAIL_HEIGHT = .075F;
-	private static final float THUMBNAIL_WIDTH = .075F;
+	private static final float THUMBNAIL_HEIGHT = .2F;
+	private static final float THUMBNAIL_WIDTH = .2F;
 
 	/**
 	 * Returns the component for the class. If the element has no component of
@@ -280,18 +279,9 @@ public class Q {
 	 * @return
 	 */
 	public static Thumbnail getThumbnail(Controller controller, Object... args) {
-		Thumbnail thumbnail = getComponent((ModelEntity) args[0],
-				Thumbnail.class);
-		String thumbnailPath = thumbnail.getThumbnail();
-		if (thumbnailPath != null) {
-			EditorGameAssets editorGameAssets = controller
-					.getEditorGameAssets();
-			if (editorGameAssets.isLoaded(thumbnailPath, Texture.class)) {
-				editorGameAssets.unload(thumbnail.getThumbnail());
-			}
-		}
-		controller.action(CreateThumbnail.class, args);
 
-		return thumbnail;
+		controller.action(CreateSceneThumbnailIfNeeded.class, args);
+
+		return getComponent((ModelEntity) args[0], Thumbnail.class);
 	}
 }

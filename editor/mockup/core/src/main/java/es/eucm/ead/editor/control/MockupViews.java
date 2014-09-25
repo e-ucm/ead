@@ -36,6 +36,7 @@
  */
 package es.eucm.ead.editor.control;
 
+import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.scenes.scene2d.Group;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.InputListener;
@@ -129,11 +130,21 @@ public class MockupViews extends Views implements BackListener {
 			showingPanels.pop().hide();
 		}
 
+		hideOnscreenKeyboard();
 		super.setView(viewClass, args);
 
 		modalsContainer
 				.addAction(com.badlogic.gdx.scenes.scene2d.actions.Actions
 						.delay(0.3f, Actions.run(showHelpMessage)));
+	}
+
+	public void hideOnscreenKeyboard() {
+		Gdx.input.setOnscreenKeyboardVisible(false);
+		Stage stage = modalsContainer.getStage();
+		if (stage != null) {
+			stage.setKeyboardFocus(null);
+			stage.unfocusAll();
+		}
 	}
 
 	private final Runnable showHelpMessage = new Runnable() {

@@ -129,10 +129,15 @@ public class ProjectItem extends GalleryItem implements
 						|| initialScene.getComponents().size != 0) {
 					Thumbnail thumbnail = Q.getComponent(initialScene,
 							Thumbnail.class);
+
 					if (thumbnail.getThumbnail() != null) {
-						controller.getEditorGameAssets().get(
-								projectPath + thumbnail.getThumbnail(),
-								Texture.class, iconLoaded);
+						String thumbPath = projectPath
+								+ thumbnail.getThumbnail();
+						if (controller.getEditorGameAssets()
+								.absolute(thumbPath).exists()) {
+							controller.getEditorGameAssets().get(thumbPath,
+									Texture.class, iconLoaded);
+						}
 					}
 				}
 			} else {
