@@ -101,6 +101,11 @@ public abstract class InfoGalleryItem extends GalleryItem {
 
 	@Override
 	public String getName() {
+		return getSimpleName();
+	}
+
+	@Override
+	public String getSearchText() {
 		if (searchText == null) {
 			searchText = getSimpleName() + " " + getTags();
 		}

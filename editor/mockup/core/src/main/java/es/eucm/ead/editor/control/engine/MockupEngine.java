@@ -54,6 +54,8 @@ public class MockupEngine extends Engine {
 	protected void registerComponentsProcessors(
 			ComponentLoader componentLoader, Controller controller,
 			VariablesManager variablesManager) {
+		super.registerComponentsProcessors(componentLoader, controller,
+				variablesManager);
 		componentLoader.registerComponentProcessor(
 				Image.class,
 				new MockupImageProcessor(getGameLoop(), controller
