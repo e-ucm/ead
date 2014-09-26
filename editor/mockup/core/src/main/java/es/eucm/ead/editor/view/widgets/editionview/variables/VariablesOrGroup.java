@@ -36,6 +36,7 @@
  */
 package es.eucm.ead.editor.view.widgets.editionview.variables;
 
+import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
 import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
@@ -58,7 +59,10 @@ public class VariablesOrGroup extends VariablesOperationTable {
 
 	@Override
 	protected TextButton buttonThatAdd() {
-		return new TextButton(i18n.m("edition.addOrCondition"), skin, "white");
+		TextButton add = new TextButton(i18n.m("edition.addOrCondition"), skin,
+				"to_color");
+		add.setColor(Color.GREEN);
+		return add;
 	}
 
 	@Override

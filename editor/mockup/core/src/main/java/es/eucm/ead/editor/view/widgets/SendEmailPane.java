@@ -62,21 +62,24 @@ public class SendEmailPane extends PositionedHiddenPanel {
 
 		Value littlePad = Value.percentHeight(0.03f, reference);
 		Value normalPad = Value.percentHeight(0.1f, reference);
-		Value labelSize = Value.percentWidth(0.9f, reference);
+		// Value labelSize = Value.percentWidth(0.9f, reference);
 
 		Label mss = new Label(i18n.m("about.emailPane"), skin);
 
 		mss.setWrap(true);
-		add(mss).colspan(3).width(labelSize).pad(normalPad);
+		add(mss).colspan(2).pad(normalPad).center().expandX().fill();
 		row();
-		add(new Label(i18n.m("about.sendEmail"), skin)).center().colspan(3)
-				.padBottom(littlePad);
+		// add(new Label(i18n.m("about.sendEmail"), skin)).center().colspan(3)
+		// .padBottom(littlePad);
 
 		attach = new TextButton(i18n.m("about.emailAttach"), skin, "white");
-		final TextButton notAttach = new TextButton(
-				i18n.m("about.emailNotAttach"), skin, "white");
+		attach.pad(littlePad);
+		final TextButton notAttach = new TextButton(i18n.m("about.sendEmail"),
+				skin, "white");
+		notAttach.pad(littlePad);
 		final TextButton cancel = new TextButton(i18n.m("cancel"), skin,
 				"white");
+		cancel.pad(littlePad);
 
 		ClickListener listener = new ClickListener() {
 			@Override
@@ -87,8 +90,7 @@ public class SendEmailPane extends PositionedHiddenPanel {
 				} else if (listenerActor == notAttach) {
 					MockupPlatform platform = (MockupPlatform) controller
 							.getPlatform();
-					platform.sendMail(controller.getApplicationAssets()
-							.getI18N());
+					platform.sendMail(controller);
 				} else if (listenerActor == cancel) {
 					hide();
 				}
@@ -100,8 +102,9 @@ public class SendEmailPane extends PositionedHiddenPanel {
 		cancel.addListener(listener);
 
 		row();
-		add(attach).padBottom(normalPad);
-		add(notAttach).padBottom(normalPad);
-		add(cancel).padBottom(normalPad);
+		// by the moment can not attach the game
+		// add(attach).padBottom(normalPad);
+		add(notAttach).pad(normalPad);
+		add(cancel).pad(normalPad);
 	}
 }

@@ -40,7 +40,6 @@ import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.ui.ButtonGroup;
 import com.badlogic.gdx.scenes.scene2d.ui.CheckBox;
 import com.badlogic.gdx.scenes.scene2d.ui.Label;
-import com.badlogic.gdx.scenes.scene2d.ui.ScrollPane;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.scenes.scene2d.ui.Value;
@@ -49,6 +48,7 @@ import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
 import es.eucm.ead.editor.control.Controller;
 import es.eucm.ead.editor.control.Preferences;
 import es.eucm.ead.editor.control.actions.editor.ChangeLanguage;
+import es.eucm.ead.editor.view.widgets.ScrollPaneDif;
 import es.eucm.ead.engine.I18N;
 import es.eucm.ead.engine.I18N.Lang;
 
@@ -74,7 +74,7 @@ public class Settings extends IconWithScalePanel {
 		Value normalPad = Value.percentWidth(1f, this);
 
 		Table panel = new Table();
-		ScrollPane pane = new ScrollPane(panel);
+		ScrollPaneDif pane = new ScrollPaneDif(panel, skin, "fadeY");
 		pane.setScrollingDisabled(true, false);
 		this.panel.add(pane).top().expand();
 

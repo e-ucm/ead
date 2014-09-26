@@ -56,8 +56,7 @@ public class SendMockupProject extends ExportMockupProject {
 	protected void onPostExecute(FileHandle result) {
 		if (result != null) {
 			MockupPlatform platform = (MockupPlatform) controller.getPlatform();
-			platform.sendMail(result, controller.getApplicationAssets()
-					.getI18N());
+			platform.sendMail(result, controller);
 		}
 	}
 }

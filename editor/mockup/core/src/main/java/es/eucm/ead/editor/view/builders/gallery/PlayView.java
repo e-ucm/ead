@@ -45,19 +45,22 @@ import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 
 import es.eucm.ead.editor.control.Controller;
 import es.eucm.ead.editor.control.MockupViews;
+import es.eucm.ead.editor.control.Selection;
 import es.eucm.ead.editor.control.actions.editor.ForceSave;
 import es.eucm.ead.editor.control.engine.Engine;
+import es.eucm.ead.editor.exporter.Exporter;
 import es.eucm.ead.editor.view.builders.ViewBuilder;
 import es.eucm.ead.editor.view.widgets.EnginePlayer;
 import es.eucm.ead.editor.view.widgets.IconButton;
-import es.eucm.ead.schemax.GameStructure;
+import es.eucm.ead.engine.assets.GameAssets;
+import es.eucm.ead.schema.entities.ModelEntity;
 
 /**
  * View that shows the engine in debug mode
  */
 public class PlayView implements ViewBuilder {
 
-	private static final String IC_GO_BACK = "back80x80";
+	private static final String IC_GO_BACK = "backWhite";
 
 	private Controller controller;
 
@@ -95,8 +98,25 @@ public class PlayView implements ViewBuilder {
 	@Override
 	public Actor getView(Object... args) {
 		controller.action(ForceSave.class);
+		String gameString = GameAssets.GAME_FILE;
+
+		if (args.length == 1 && args[0] instanceof String) {
+			String play = (String) args[0];
+			if (play.equals(GameAssets.GAME_DEBUG)) {
+				ModelEntity currentScene = (ModelEntity) controller.getModel()
+						.getSelection().getSingle(Selection.SCENE);
+				String currentSceneId = controller.getModel().getIdFor(
+						currentScene);
+				ModelEntity game = controller.getModel().getGame();
+				Exporter.createInitComponent(game, currentSceneId);
+				controller.getEditorGameAssets().toJsonPath(game,
+						GameAssets.GAME_DEBUG);
+				gameString = GameAssets.GAME_DEBUG;
+			}
+		}
+
 		Engine engine = controller.getEngine();
-		engine.getGameLoader().loaded(GameStructure.GAME_FILE,
+		engine.getGameLoader().loaded(gameString,
 				controller.getModel().getGame());
 		engine.setGameView(enginePlayer);
 		engine.play();

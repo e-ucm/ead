@@ -141,6 +141,8 @@ public class TweensPanel extends PrefabPanel {
 	protected void selectionChanged() {
 		ModelEntity modelEntity = (ModelEntity) selection
 				.getSingle(Selection.SCENE_ELEMENT);
+		setUsed(false);
+		count = 0;
 		for (Actor actor : table.getChildren()) {
 			if (actor instanceof PrefabTween) {
 				PrefabTween button = (PrefabTween) actor;
@@ -151,7 +153,10 @@ public class TweensPanel extends PrefabPanel {
 						if (id != null && button.getTween().getId().equals(id)) {
 							button.setTween((Tween) component);
 							button.setState(true);
-							setUsed(true);
+							if (count == 0) {
+								setUsed(true);
+							}
+							count++;
 							break;
 						}
 					}

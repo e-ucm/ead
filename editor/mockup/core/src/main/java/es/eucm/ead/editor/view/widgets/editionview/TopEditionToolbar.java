@@ -37,10 +37,10 @@
 package es.eucm.ead.editor.view.widgets.editionview;
 
 import com.badlogic.gdx.scenes.scene2d.Actor;
-import com.badlogic.gdx.scenes.scene2d.ui.ScrollPane;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
+import com.badlogic.gdx.utils.Array;
 
 import es.eucm.ead.editor.control.Actions;
 import es.eucm.ead.editor.control.Clipboard.ClipboardListener;
@@ -60,18 +60,23 @@ import es.eucm.ead.editor.control.actions.model.SetSelection;
 import es.eucm.ead.editor.view.builders.gallery.PlayView;
 import es.eucm.ead.editor.view.builders.gallery.repository.LibrariesView;
 import es.eucm.ead.editor.view.listeners.ActionListener;
+import es.eucm.ead.editor.view.widgets.DropDown;
 import es.eucm.ead.editor.view.widgets.IconButton;
+import es.eucm.ead.editor.view.widgets.ScrollPaneDif;
 import es.eucm.ead.editor.view.widgets.Toolbar;
 import es.eucm.ead.editor.view.widgets.editionview.draw.PaintToolbar;
 import es.eucm.ead.editor.view.widgets.editionview.draw.PaintToolbar.DrawListener;
 import es.eucm.ead.editor.view.widgets.gallery.AboutWidget;
 import es.eucm.ead.editor.view.widgets.iconwithpanel.IconWithScalePanel;
+import es.eucm.ead.engine.assets.GameAssets;
 
 public class TopEditionToolbar extends Toolbar {
 
 	private OthersWidget others;
 
-	private IconButton play;
+	private IconButton normalPlay;
+
+	private IconButton debugPlay;
 
 	private IconButton undo;
 
@@ -104,7 +109,8 @@ public class TopEditionToolbar extends Toolbar {
 		Skin skin = controller.getApplicationAssets().getSkin();
 
 		about = new AboutWidget(controller, reference);
-		play = new IconButton("play", "play80x80", 0f, skin, "inverted");
+		normalPlay = new IconButton("play", "normalPlay", 0f, skin, "inverted");
+		debugPlay = new IconButton("play", "debugPlay", 0f, skin, "inverted");
 		share = new IconButton("share", "share80x80", 0f, skin, "inverted");
 
 		undo = new IconButton("undo", "undo80x80", 0f, skin);
@@ -154,8 +160,12 @@ public class TopEditionToolbar extends Toolbar {
 			@Override
 			public void changed(ChangeEvent event, Actor actor) {
 				Actor listenerActor = event.getListenerActor();
-				if (listenerActor == play) {
-					controller.action(ChangeMockupView.class, PlayView.class);
+				if (listenerActor == normalPlay) {
+					controller.action(ChangeMockupView.class, PlayView.class,
+							GameAssets.GAME_FILE);
+				} else if (listenerActor == debugPlay) {
+					controller.action(ChangeMockupView.class, PlayView.class,
+							GameAssets.GAME_DEBUG);
 				} else if (listenerActor == share) {
 					controller.action(ExportMockupProject.class);
 				} else if (listenerActor == undo) {
@@ -187,7 +197,8 @@ public class TopEditionToolbar extends Toolbar {
 			}
 		};
 
-		play.addListener(buttonsListener);
+		normalPlay.addListener(buttonsListener);
+		debugPlay.addListener(buttonsListener);
 		share.addListener(buttonsListener);
 		undo.addListener(buttonsListener);
 		redo.addListener(buttonsListener);
@@ -229,7 +240,14 @@ public class TopEditionToolbar extends Toolbar {
 
 		defaults().expandY().fill();
 		add(about);
-		add(play);
+
+		DropDown playDown = new DropDown(skin, false);
+		Array<Actor> items = new Array<Actor>();
+		items.add(new IconButton("play", "play80x80", 0f, skin, "inverted"));
+		items.add(normalPlay);
+		items.add(debugPlay);
+		playDown.setItems(items);
+		add(playDown);
 		add(share);
 
 		add().expandX();
@@ -239,7 +257,7 @@ public class TopEditionToolbar extends Toolbar {
 
 		Table table = new Table();
 		table.defaults().expandY().fill();
-		ScrollPane scrollPane = new ScrollPane(table);
+		ScrollPaneDif scrollPane = new ScrollPaneDif(table, skin, "fadeX");
 		scrollPane.setScrollingDisabled(false, true);
 		table.add(paste).padRight(smallPad).right();
 		table.add(camera).padRight(smallPad);
@@ -257,7 +275,7 @@ public class TopEditionToolbar extends Toolbar {
 	}
 
 	private void setDisabled(boolean disabled, Controller controller) {
-		play.setDisabled(disabled);
+		normalPlay.setDisabled(disabled);
 		share.setDisabled(disabled);
 		undo.setDisabled(disabled);
 		redo.setDisabled(disabled);

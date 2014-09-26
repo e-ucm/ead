@@ -77,10 +77,13 @@ public class AboutWidget extends IconWithScalePanel {
 		emailPane = new SendEmailPane(controller, skin, root);
 
 		web = new TextButton(i18n.m("about.web"), skin, "to_color");
+		web.pad(normalPad);
 		web.setColor(Color.ORANGE);
 		contact = new TextButton(i18n.m("about.contact"), skin, "to_color");
+		contact.pad(normalPad);
 		contact.setColor(Color.ORANGE);
 		credits = new TextButton(i18n.m("about.credits"), skin, "to_color");
+		credits.pad(normalPad);
 		credits.setColor(Color.ORANGE);
 
 		ClickListener listener = new ClickListener() {

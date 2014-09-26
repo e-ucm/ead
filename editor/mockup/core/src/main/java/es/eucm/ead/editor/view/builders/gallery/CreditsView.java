@@ -41,7 +41,6 @@ import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.ui.Image;
 import com.badlogic.gdx.scenes.scene2d.ui.Label;
-import com.badlogic.gdx.scenes.scene2d.ui.ScrollPane;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.ui.Stack;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
@@ -52,6 +51,7 @@ import es.eucm.ead.editor.control.Controller;
 import es.eucm.ead.editor.control.MockupViews;
 import es.eucm.ead.editor.view.builders.ViewBuilder;
 import es.eucm.ead.editor.view.widgets.IconButton;
+import es.eucm.ead.editor.view.widgets.ScrollPaneDif;
 import es.eucm.ead.engine.I18N;
 
 public class CreditsView implements ViewBuilder {
@@ -70,11 +70,20 @@ public class CreditsView implements ViewBuilder {
 	private Label gorco;
 	private Label anserran;
 	private Label jtorrente;
+	private Label jtorrente2;
 	private Label imartinezortiz;
 	private Label manuelfreire;
 	private Label angeldelblanco;
 	private Label balta;
 	private Label license;
+
+	private Label vectorcharacters;
+	private Label flaticon;
+	private Label freepik;
+
+	private Image eAdventure;
+	private Image eUCM;
+	private Image libGDX;
 
 	private Label github;
 
@@ -129,8 +138,13 @@ public class CreditsView implements ViewBuilder {
 		topTable.add(new Label(i18n.m("about.eAdventureProduct"), skin))
 				.padBottom(littlePad);
 		topTable.row();
-		topTable.add(new Image(skin.getDrawable("eAdventure"))).padBottom(
-				normalPad);
+
+		Table production = new Table();
+		production.add(eAdventure).padBottom(normalPad);
+		production.add(new Label(i18n.m("about.madeBy"), skin)).pad(normalPad);
+		production.add(eUCM).padBottom(normalPad);
+
+		topTable.add(production);
 
 		// Main developers
 		leftTable.add(new Label(i18n.m("about.developers") + ":", skin))
@@ -150,6 +164,12 @@ public class CreditsView implements ViewBuilder {
 		leftTable.add(jtorrente).padBottom(normalPad);
 		leftTable.row();
 
+		// Product manager
+		leftTable.add(new Label(i18n.m("about.productManager") + ":", skin))
+				.padBottom(littlePad);
+		leftTable.row();
+		leftTable.add(jtorrente2).padBottom(littlePad);
+
 		// Technical Manager
 		rightTable.add(new Label(i18n.m("about.technicalManager") + ":", skin))
 				.padBottom(littlePad);
@@ -157,11 +177,16 @@ public class CreditsView implements ViewBuilder {
 		rightTable.add(anserran).padBottom(normalPad);
 		rightTable.row();
 
+		// Technical advisor
+		rightTable.add(new Label(i18n.m("about.technicalAdvisor") + ":", skin))
+				.padBottom(littlePad);
+		rightTable.row();
+		rightTable.add(manuelfreire).padBottom(normalPad);
+		rightTable.row();
+
 		// Contributors
 		rightTable.add(new Label(i18n.m("about.contributors") + ":", skin))
 				.padBottom(littlePad);
-		rightTable.row();
-		rightTable.add(manuelfreire).padBottom(littlePad);
 		rightTable.row();
 		rightTable.add(imartinezortiz).padBottom(littlePad);
 		rightTable.row();
@@ -183,14 +208,25 @@ public class CreditsView implements ViewBuilder {
 		bottomTable.add(
 				new Label(
 						"Daniel Alejandro Nowndsztern, Frank Elvis Canchari. ",
-						skin, "credits")).padBottom(normalPad);
+						skin, "credits")).padBottom(littlePad);
+		bottomTable.row();
+		bottomTable.add(vectorcharacters).padBottom(littlePad);
+		bottomTable.row();
+		bottomTable.add(freepik).padBottom(littlePad);
+		bottomTable.row();
+		bottomTable.add(flaticon).padBottom(normalPad);
 		bottomTable.row();
 		bottomTable.add(license).padBottom(littlePad);
 		bottomTable.row();
 		bottomTable.add(new Label(i18n.m("about.github"), skin)).padBottom(
 				littlePad);
 		bottomTable.row();
-		bottomTable.add(github).padBottom(littlePad);
+		bottomTable.add(github).padBottom(normalPad);
+		bottomTable.row();
+		bottomTable.add(new Label(i18n.m("about.poweredBy"), skin)).padBottom(
+				littlePad);
+		bottomTable.row();
+		bottomTable.add(libGDX).top().padBottom(littlePad);
 
 		mainTable.add(topTable).expandX().fill().colspan(2);
 		mainTable.row();
@@ -201,10 +237,10 @@ public class CreditsView implements ViewBuilder {
 		mainTable.row();
 		mainTable.add(bottomTable).expandX().fill().colspan(2);
 
-		ScrollPane scroll = new ScrollPane(mainTable);
+		ScrollPaneDif scroll = new ScrollPaneDif(mainTable, skin, "fadeY");
 		Table aux = new Table();
 		aux.setFillParent(true);
-		aux.add(scroll);
+		aux.add(scroll).expand().fill();
 		window.add(aux);
 		window.add(back);
 	}
@@ -218,6 +254,8 @@ public class CreditsView implements ViewBuilder {
 
 		jtorrente = new Label("Javier Torrente", skin, "credits_link");
 
+		jtorrente2 = new Label("Javier Torrente", skin, "credits_link");
+
 		manuelfreire = new Label("Manuel Freire Morán", skin, "credits_link");
 
 		imartinezortiz = new Label("Iván Martínez Ortiz", skin, "credits_link");
@@ -228,8 +266,15 @@ public class CreditsView implements ViewBuilder {
 		balta = new Label("Baltasar Fernández Manjón", skin, "credits_link");
 
 		github = new Label(GITHUB, skin, "credits_link");
-
 		license = new Label(i18n.m("about.license"), skin);
+
+		vectorcharacters = new Label("Vectorcharacters", skin, "credits_link");
+		flaticon = new Label("Flaticon", skin, "credits_link");
+		freepik = new Label("Freepik", skin, "credits_link");
+
+		eAdventure = new Image(skin.getDrawable("eAdventure"));
+		eUCM = new Image(skin.getDrawable("eUCM"));
+		libGDX = new Image(skin.getDrawable("libGDX"));
 
 		ClickListener listener = new ClickListener() {
 			@Override
@@ -244,7 +289,8 @@ public class CreditsView implements ViewBuilder {
 				} else if (listenerActor == anserran) {
 					controller.getPlatform().browseURL(
 							"https://github.com/anserran");
-				} else if (listenerActor == jtorrente) {
+				} else if (listenerActor == jtorrente
+						|| listenerActor == jtorrente2) {
 					controller.getPlatform().browseURL(
 							"https://github.com/jtorrente");
 				} else if (listenerActor == manuelfreire) {
@@ -265,6 +311,24 @@ public class CreditsView implements ViewBuilder {
 				} else if (listenerActor == license) {
 					controller.getPlatform().browseURL(
 							"http://www.gnu.org/licenses/lgpl.html");
+				} else if (listenerActor == vectorcharacters) {
+					controller.getPlatform().browseURL(
+							"http://vectorcharacters.net/");
+				} else if (listenerActor == flaticon) {
+					controller.getPlatform().browseURL(
+							"http://www.flaticon.com/");
+				} else if (listenerActor == freepik) {
+					controller.getPlatform()
+							.browseURL("http://www.freepik.es/");
+				} else if (listenerActor == libGDX) {
+					controller.getPlatform().browseURL(
+							"http://libgdx.badlogicgames.com/");
+				} else if (listenerActor == eAdventure) {
+					controller.getPlatform().browseURL(
+							"http://e-adventure.e-ucm.es/");
+				} else if (listenerActor == eUCM) {
+					controller.getPlatform().browseURL(
+							"http://www.e-ucm.es/es/");
 				}
 			}
 		};
@@ -279,6 +343,12 @@ public class CreditsView implements ViewBuilder {
 		balta.addListener(listener);
 		github.addListener(listener);
 		license.addListener(listener);
+		vectorcharacters.addListener(listener);
+		flaticon.addListener(listener);
+		freepik.addListener(listener);
+		eAdventure.addListener(listener);
+		eUCM.addListener(listener);
+		libGDX.addListener(listener);
 	}
 
 	@Override

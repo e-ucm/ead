@@ -53,6 +53,8 @@ public interface GameStructure {
 
 	public static final String GAME_FILE = "game.json";
 
+	public static final String GAME_DEBUG = "game_debug.json";
+
 	public static final String SCENES_PATH = "scenes/";
 
 	public static final String HUDS_PATH = "huds/";

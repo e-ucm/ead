@@ -84,8 +84,8 @@ public class PositionedHiddenPanel extends HiddenPanel {
 
 	@Override
 	public void layout() {
-		super.layout();
 		updatePositionPanel();
+		super.layout();
 	}
 
 	public void show(Action action) {

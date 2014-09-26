@@ -81,18 +81,28 @@ public class DropDown extends Container<Actor> implements Disableable {
 	private ListScroll scroll;
 	private boolean disabled;
 	private Actor selection;
+	private boolean changeIcon;
 
 	public DropDown(Skin skin) {
-		this(skin.get(DropDownStyle.class));
+		this(skin.get(DropDownStyle.class), true);
+	}
+
+	public DropDown(Skin skin, boolean changeIcon) {
+		this(skin.get(DropDownStyle.class), changeIcon);
+	}
+
+	public DropDown(Skin skin, String styleName, boolean changeIcon) {
+		this(skin.get(styleName, DropDownStyle.class), changeIcon);
 	}
 
 	public DropDown(Skin skin, String styleName) {
-		this(skin.get(styleName, DropDownStyle.class));
+		this(skin.get(styleName, DropDownStyle.class), true);
 	}
 
-	public DropDown(DropDownStyle style) {
+	public DropDown(DropDownStyle style, boolean changeIcon) {
 		setStyle(style);
 		setBackground(style.background);
+		this.changeIcon = changeIcon;
 		scroll = new ListScroll();
 		scroll.setBackground(style.listBackgroundDown);
 
@@ -245,16 +255,18 @@ public class DropDown extends Container<Actor> implements Disableable {
 			addListener(new InputListener() {
 				public boolean touchDown(InputEvent event, float x, float y,
 						int pointer, int button) {
-					Actor target = event.getTarget();
-					if (target != null) {
-						Cell cell = getCell(target);
-						if (cell != null) {
-							setSelected(target);
-							ChangeEvent changeEvent = Pools
-									.obtain(ChangeEvent.class);
-							changeEvent.setListenerActor(DropDown.this);
-							DropDown.this.fire(changeEvent);
-							Pools.free(changeEvent);
+					if (changeIcon) {
+						Actor target = event.getTarget();
+						if (target != null) {
+							Cell cell = getCell(target);
+							if (cell != null) {
+								setSelected(target);
+								ChangeEvent changeEvent = Pools
+										.obtain(ChangeEvent.class);
+								changeEvent.setListenerActor(DropDown.this);
+								DropDown.this.fire(changeEvent);
+								Pools.free(changeEvent);
+							}
 						}
 					}
 					hideList();

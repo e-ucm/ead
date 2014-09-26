@@ -38,13 +38,13 @@ package es.eucm.ead.editor.view.widgets.editionview.prefabs;
 
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.scenes.scene2d.Actor;
-import com.badlogic.gdx.scenes.scene2d.ui.ScrollPane;
 import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
 import com.badlogic.gdx.utils.Array;
 
 import es.eucm.ead.editor.control.Controller;
 import es.eucm.ead.editor.control.actions.irreversibles.scene.RemoveComponents;
 import es.eucm.ead.editor.view.widgets.PositionedHiddenPanel.Position;
+import es.eucm.ead.editor.view.widgets.ScrollPaneDif;
 import es.eucm.ead.editor.view.widgets.editionview.variables.VariablesAndGroup;
 import es.eucm.ead.editor.view.widgets.editionview.variables.VariablesOrGroup;
 import es.eucm.ead.editor.view.widgets.editionview.variables.VariablesTable;
@@ -80,7 +80,7 @@ public abstract class ConditionalPanel extends PrefabComponentPanel {
 			}
 		};
 		varOp = new VariablesOrGroup(controller, variablesPanel, varChanged);
-		ScrollPane sp = new ScrollPane(varOp);
+		ScrollPaneDif sp = new ScrollPaneDif(varOp, skin, "fadeY");
 		panel.add(sp).expand().fill();
 	}
 

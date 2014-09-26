@@ -45,7 +45,6 @@ import com.badlogic.gdx.scenes.scene2d.actions.Actions;
 import com.badlogic.gdx.scenes.scene2d.ui.Button;
 import com.badlogic.gdx.scenes.scene2d.ui.Image;
 import com.badlogic.gdx.scenes.scene2d.ui.Label;
-import com.badlogic.gdx.scenes.scene2d.ui.ScrollPane;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
@@ -58,6 +57,7 @@ import com.badlogic.gdx.utils.Scaling;
 import es.eucm.ead.editor.assets.ApplicationAssets;
 import es.eucm.ead.editor.control.Controller;
 import es.eucm.ead.editor.view.widgets.PositionedHiddenPanel;
+import es.eucm.ead.editor.view.widgets.ScrollPaneDif;
 import es.eucm.ead.editor.view.widgets.gallery.repository.InfoGalleryItem;
 import es.eucm.ead.engine.I18N;
 import es.eucm.ead.schema.editor.components.repo.RepoAuthor;
@@ -95,12 +95,17 @@ public class ItemInfo<T extends InfoGalleryItem> extends PositionedHiddenPanel {
 		thumbnail = new Image();
 		thumbnail.setScaling(Scaling.fit);
 
+		Value littlePad = Value.percentHeight(0.02f, rootView);
+
 		final TextButton close = new TextButton(i18n.m("close"), skin, "white");
+		close.pad(littlePad);
 
 		actionButton = new TextButton(getActionButtonString(i18n), skin,
 				"to_color");
+		actionButton.pad(littlePad);
 		actionButton.setColor(Color.GREEN);
 		url = new TextButton(i18n.m("webPage"), skin, "white");
+		url.pad(littlePad);
 
 		ChangeListener listener = new ChangeListener() {
 
@@ -123,9 +128,10 @@ public class ItemInfo<T extends InfoGalleryItem> extends PositionedHiddenPanel {
 
 		Table table = new Table(skin);
 		Value wrapLabel = Value.percentWidth(.8f, table);
-		ScrollPane pane = new ScrollPane(table);
+		ScrollPaneDif pane = new ScrollPaneDif(table, skin, "fade");
+		pane.setOverscroll(false, false);
 		pane.setFadeScrollBars(true);
-		pane.setScrollingDisabled(true, false);
+
 		table.pad(PAD).defaults().space(PAD);
 		table.add(i18n.m("name") + ":").colspan(2).left();
 		table.row();
@@ -160,11 +166,12 @@ public class ItemInfo<T extends InfoGalleryItem> extends PositionedHiddenPanel {
 		tags.setAlignment(Align.center);
 		table.row();
 		buildWidgets(table, i18n, skin);
-		table.add(actionButton).left();
-		table.add(close).right();
 
 		add(thumbnail).maxWidth(Value.percentWidth(.5f, this)).left();
 		add(pane).expand().fill();
+		row();
+		add(actionButton).left();
+		add(close).right();
 		setModal(true);
 	}
 

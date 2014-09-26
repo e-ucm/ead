@@ -71,6 +71,7 @@ public class ShowTextPanel extends PrefabComponentPanel implements
 		speaker.pad(PAD);
 
 		text = new TextButton("", skin, "white");
+		text.getLabel().setWrap(true);
 		text.pad(PAD);
 
 		ChangeListener listener = new ChangeListener() {

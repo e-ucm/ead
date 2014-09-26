@@ -36,22 +36,26 @@
  */
 package es.eucm.ead.editor.view.widgets.editionview;
 
+import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.InputListener;
 import com.badlogic.gdx.scenes.scene2d.ui.Label;
-import com.badlogic.gdx.scenes.scene2d.ui.ScrollPane;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.scenes.scene2d.ui.TextArea;
 import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
 import com.badlogic.gdx.scenes.scene2d.ui.TextField;
 import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
+import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 
 import es.eucm.ead.editor.control.Controller;
+import es.eucm.ead.editor.control.MockupViews;
 import es.eucm.ead.editor.control.Selection;
+import es.eucm.ead.editor.control.Toasts;
 import es.eucm.ead.editor.control.actions.model.ChangeDocumentation;
 import es.eucm.ead.editor.control.actions.model.ChangeInitialScene;
+import es.eucm.ead.editor.control.actions.model.CloneScene;
 import es.eucm.ead.editor.model.Model;
 import es.eucm.ead.editor.model.Model.FieldListener;
 import es.eucm.ead.editor.model.Model.ModelListener;
@@ -61,6 +65,7 @@ import es.eucm.ead.editor.model.events.FieldEvent;
 import es.eucm.ead.editor.model.events.LoadEvent;
 import es.eucm.ead.editor.model.events.SelectionEvent;
 import es.eucm.ead.editor.view.listeners.SceneDocumentationListener;
+import es.eucm.ead.editor.view.widgets.ScrollPaneDif;
 import es.eucm.ead.editor.view.widgets.iconwithpanel.IconWithScalePanel;
 import es.eucm.ead.engine.I18N;
 import es.eucm.ead.engine.assets.Assets;
@@ -83,7 +88,7 @@ public class OthersWidget extends IconWithScalePanel implements FieldListener {
 
 	private Skin skin;
 
-	private I18N i18N;
+	private I18N i18n;
 
 	private TextField name;
 
@@ -101,15 +106,15 @@ public class OthersWidget extends IconWithScalePanel implements FieldListener {
 
 		Assets assets = controller.getApplicationAssets();
 		skin = assets.getSkin();
-		i18N = assets.getI18N();
+		i18n = assets.getI18N();
 
-		Label sceneName = new Label(i18N.m("scene.name") + ":", skin);
+		Label sceneName = new Label(i18n.m("scene.name") + ":", skin);
 		name = new TextField("", skin);
-		name.setMessageText(i18N.m("name"));
+		name.setMessageText(i18n.m("name"));
 		name.setFocusTraversal(false);
-		Label sceneDescription = new Label(i18N.m("description") + ":", skin);
+		Label sceneDescription = new Label(i18n.m("description") + ":", skin);
 		description = new TextArea("", skin);
-		description.setMessageText(i18N.m("description"));
+		description.setMessageText(i18n.m("description"));
 		description.setFocusTraversal(false);
 		description.setPrefRows(PREF_DOCUMENTATION_ROWS);
 		InputListener nameDocInput = new InputListener() {
@@ -153,7 +158,9 @@ public class OthersWidget extends IconWithScalePanel implements FieldListener {
 						newDescription.length()));
 			}
 		};
+		float littlePad = Gdx.graphics.getHeight() * .03f;
 		makeInitial = new TextButton("", skin, "white");
+		makeInitial.pad(littlePad);
 		makeInitial.addListener(new ChangeListener() {
 
 			@Override
@@ -198,7 +205,7 @@ public class OthersWidget extends IconWithScalePanel implements FieldListener {
 		});
 
 		Table panel = new Table();
-		ScrollPane pane = new ScrollPane(panel);
+		ScrollPaneDif pane = new ScrollPaneDif(panel, skin, "fadeY");
 		pane.setScrollingDisabled(true, false);
 		this.panel.add(pane).expand().top();
 
@@ -212,7 +219,23 @@ public class OthersWidget extends IconWithScalePanel implements FieldListener {
 		panel.row();
 		panel.add(description).prefWidth(prefW);
 		panel.row();
-		panel.add(makeInitial);
+		panel.add(makeInitial).expandX().fill();
+
+		final Toasts toasts = ((MockupViews) controller.getViews()).getToasts();
+		TextButton cloneScene = new TextButton(i18n.m("edition.cloneScene"),
+				skin, "white");
+		cloneScene.pad(littlePad);
+		cloneScene.addListener(new ClickListener() {
+			@Override
+			public void clicked(InputEvent event, float x, float y) {
+				hidePanel();
+				controller.action(CloneScene.class);
+				toasts.showNotification(controller.getApplicationAssets()
+						.getI18N().m("edition.sceneCloned"), 2.5f);
+			}
+		});
+		panel.row();
+		panel.add(cloneScene).expandX().fill();
 
 		prepareInitialSceneListener();
 		Object single = model.getSelection().getSingle(Selection.SCENE);
@@ -273,10 +296,10 @@ public class OthersWidget extends IconWithScalePanel implements FieldListener {
 	private void updateInitialSceneButton(ModelEntity scene) {
 		if (isInitial(scene)) {
 			makeInitial.setDisabled(true);
-			makeInitial.setText(i18N.m("scene.isInitial"));
+			makeInitial.setText(i18n.m("scene.isInitial"));
 		} else {
 			makeInitial.setDisabled(false);
-			makeInitial.setText(i18N.m("scene.makeInitial"));
+			makeInitial.setText(i18n.m("scene.makeInitial"));
 		}
 	}
 
