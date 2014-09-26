@@ -87,7 +87,8 @@ public class SoundPanel extends PrefabComponentPanel implements
 				Actor listenerActor = event.getListenerActor();
 				if (listenerActor == musicButton) {
 					Platform platform = controller.getPlatform();
-					((MockupPlatform) platform).askForAudio(SoundPanel.this);
+					((MockupPlatform) platform).askForAudio(controller,
+							SoundPanel.this);
 				} else if (listenerActor == volume) {
 					if (sound != null) {
 						updateVolume();
@@ -183,9 +184,7 @@ public class SoundPanel extends PrefabComponentPanel implements
 
 	@Override
 	public void fileChosen(String path) {
-		if (path == null) {
-			emptyPanel();
-		} else {
+		if (path != null) {
 			EditorGameAssets editorGameAssets = controller
 					.getEditorGameAssets();
 			if (!path.startsWith(editorGameAssets.getLoadingPath())) {

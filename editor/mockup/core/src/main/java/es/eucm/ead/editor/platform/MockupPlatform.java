@@ -84,7 +84,7 @@ public abstract class MockupPlatform extends AbstractPlatform {
 
 	}
 
-	public void askForAudio(FileChooserListener listener) {
+	public void askForAudio(Controller controller, FileChooserListener listener) {
 
 	}
 
@@ -107,11 +107,11 @@ public abstract class MockupPlatform extends AbstractPlatform {
 
 	}
 
-	public void sendMail(FileHandle projectHandle, I18N i18n) {
+	public void sendMail(FileHandle projectHandle, Controller controller) {
 
 	}
 
-	public void sendMail(I18N i18n) {
+	public void sendMail(Controller controller) {
 
 	}
 

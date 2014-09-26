@@ -36,6 +36,15 @@
  */
 package es.eucm.ead.android;
 
+import java.io.Closeable;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.util.List;
+
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.ProgressDialog;
@@ -58,25 +67,20 @@ import android.os.AsyncTask;
 import android.provider.MediaStore;
 import android.text.InputType;
 import android.widget.EditText;
+
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input.TextInputListener;
 import com.badlogic.gdx.files.FileHandle;
 import com.google.android.gms.analytics.Tracker;
+
 import es.eucm.ead.android.EditorActivity.ActivityResultListener;
 import es.eucm.ead.editor.control.Controller;
+import es.eucm.ead.editor.control.MockupViews;
+import es.eucm.ead.editor.control.Toasts;
 import es.eucm.ead.editor.platform.MockupPlatform;
 import es.eucm.ead.editor.platform.MockupPlatform.ImageCapturedListener.Result;
 import es.eucm.ead.engine.I18N;
 import es.eucm.ead.schema.data.Dimension;
-
-import java.io.Closeable;
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.io.InputStream;
-import java.util.List;
 
 public class AndroidPlatform extends MockupPlatform {
 
@@ -163,20 +167,28 @@ public class AndroidPlatform extends MockupPlatform {
 	}
 
 	@Override
-	public void askForAudio(final FileChooserListener listener) {
+	public void askForAudio(final Controller controller,
+			final FileChooserListener listener) {
+		I18N i18n = controller.getApplicationAssets().getI18N();
 		final EditorActivity activity = (EditorActivity) Gdx.app;
-		final Intent intent = new Intent(Intent.ACTION_PICK,
-				android.provider.MediaStore.Audio.Media.EXTERNAL_CONTENT_URI);
+		// final Intent intent = new Intent(Intent.ACTION_PICK,
+		// android.provider.MediaStore.Audio.Media.EXTERNAL_CONTENT_URI);
+		Intent intent = new Intent();
+		intent.setAction(Intent.ACTION_GET_CONTENT);
+		intent.setType("audio/*");
 		if (intent.resolveActivity(activity.getPackageManager()) != null) {
-			activity.startActivityForResult(intent, PICK_FILE,
+			activity.startActivityForResult(
+					Intent.createChooser(intent,
+							i18n.m("edition.selectionAudio")), PICK_FILE,
 					new ActivityResultListener() {
 
 						@Override
 						public void result(int resultCode, final Intent data) {
 							if (resultCode == EditorActivity.RESULT_OK) {
 								if (data != null) {
-									String path = getStringFromIntent(activity,
-											data, MediaStore.Audio.Media.DATA);
+									String path = getStringFromIntent(
+											controller, activity, data,
+											MediaStore.Audio.Media.DATA);
 									listener.fileChosen(path);
 								} else {
 									listener.fileChosen(null);
@@ -339,19 +351,38 @@ public class AndroidPlatform extends MockupPlatform {
 
 	private String getStringFromIntent(Context context, Intent data,
 			String pathColumn) {
-		Uri selectedImage = data.getData();
-		String[] filePathColumn = { pathColumn };
-		Cursor cursor = context.getContentResolver().query(selectedImage,
-				filePathColumn, null, null, null);
-		cursor.moveToFirst();
-		int columnIndex = cursor.getColumnIndex(filePathColumn[0]);
-		if (columnIndex == -1) {
+		return this.getStringFromIntent(null, context, data, pathColumn);
+	}
+
+	private String getStringFromIntent(Controller controller, Context context,
+			Intent data, String pathColumn) {
+		Toasts errorToast = null;
+		if (controller != null) {
+			errorToast = ((MockupViews) controller.getViews()).getToasts();
+		}
+		try {
+			Uri selectedImage = data.getData();
+			String[] filePathColumn = { pathColumn };
+			Cursor cursor = context.getContentResolver().query(selectedImage,
+					filePathColumn, null, null, null);
+			cursor.moveToFirst();
+			int columnIndex = cursor.getColumnIndex(filePathColumn[0]);
+			if (columnIndex == -1) {
+				cursor.close();
+				return null;
+			}
+			String picturePath = cursor.getString(columnIndex);
 			cursor.close();
+			return picturePath;
+		} catch (Exception e) {
+			Gdx.app.error(PLATFORM_TAG, "Path could not be resolved", e);
+			if (errorToast != null) {
+				errorToast.showNotification(controller.getApplicationAssets()
+						.getI18N().m("error.openArchive"), 2.5f);
+			}
 			return null;
 		}
-		String picturePath = cursor.getString(columnIndex);
-		cursor.close();
-		return picturePath;
+
 	}
 
 	@Override
@@ -660,7 +691,8 @@ public class AndroidPlatform extends MockupPlatform {
 	}
 
 	@Override
-	public void sendMail(FileHandle projectHandle, I18N i18n) {
+	public void sendMail(FileHandle projectHandle, Controller controller) {
+		I18N i18n = controller.getApplicationAssets().getI18N();
 		Intent intent = new Intent(Intent.ACTION_SEND);
 		intent.setData(Uri.parse("mailto:"));
 		intent.setType("message/rfc822"); // e-mail MIME-type
@@ -676,13 +708,17 @@ public class AndroidPlatform extends MockupPlatform {
 		final EditorActivity activity = (EditorActivity) Gdx.app;
 		if (intent.resolveActivity(activity.getPackageManager()) != null) {
 			activity.startActivity(intent);
+		} else {
+			Toasts toasts = ((MockupViews) controller.getViews()).getToasts();
+			toasts.showNotification(controller.getApplicationAssets().getI18N()
+					.m("error.noApp"), 2.5f);
 		}
 
 	}
 
 	@Override
-	public void sendMail(I18N i18n) {
-		sendMail(null, i18n);
+	public void sendMail(Controller controller) {
+		sendMail(null, controller);
 	}
 
 	public void sendProject(FileHandle projectHandle, I18N i18n,
