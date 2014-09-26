@@ -45,9 +45,12 @@ public class FacadeGameView implements GameView {
 	private GameView gameView;
 	private Layer[] layers;
 
+	public FacadeGameView() {
+		layers = Layer.values();
+	}
+
 	public void setGameView(GameView gameView) {
 		this.gameView = gameView;
-		layers = Layer.values();
 	}
 
 	@Override
