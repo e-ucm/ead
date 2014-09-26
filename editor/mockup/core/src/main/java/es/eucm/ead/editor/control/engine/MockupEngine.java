@@ -38,11 +38,9 @@ package es.eucm.ead.editor.control.engine;
 
 import es.eucm.ead.editor.control.Controller;
 import es.eucm.ead.editor.processors.MockupEmptyRendererProcessor;
-import es.eucm.ead.editor.processors.MockupImageProcessor;
 import es.eucm.ead.engine.ComponentLoader;
 import es.eucm.ead.engine.variables.VariablesManager;
 import es.eucm.ead.schema.renderers.EmptyRenderer;
-import es.eucm.ead.schema.renderers.Image;
 
 public class MockupEngine extends Engine {
 
@@ -54,10 +52,6 @@ public class MockupEngine extends Engine {
 	protected void registerComponentsProcessors(
 			ComponentLoader componentLoader, Controller controller,
 			VariablesManager variablesManager) {
-		componentLoader.registerComponentProcessor(
-				Image.class,
-				new MockupImageProcessor(getGameLoop(), controller
-						.getEditorGameAssets()));
 		componentLoader.registerComponentProcessor(
 				EmptyRenderer.class,
 				new MockupEmptyRendererProcessor(getGameLoop(), controller

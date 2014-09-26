@@ -61,7 +61,6 @@ public class MockupEmptyRendererComponent extends EmptyRendererComponent {
 
 	@Override
 	public void draw(Batch batch) {
-		super.draw(batch);
 		drawCollider(batch);
 	}
 

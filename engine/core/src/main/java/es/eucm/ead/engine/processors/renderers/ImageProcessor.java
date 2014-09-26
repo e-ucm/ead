@@ -68,13 +68,15 @@ public class ImageProcessor extends RendererProcessor<Image> {
 	}
 
 	protected void createCollider(Image image, ImageComponent component) {
-		if (image.getCollider() != null && image.getCollider().size > 0) {
-			Array<Polygon> collider = new Array<Polygon>();
-			for (es.eucm.ead.schema.data.shape.Polygon polygon : image
-					.getCollider()) {
-				float[] points = new float[polygon.getPoints().size];
-				for (int i = 0; i < polygon.getPoints().size; i++) {
-					points[i] = polygon.getPoints().get(i);
+		Array<es.eucm.ead.schema.data.shape.Polygon> schemaCollider = image
+				.getCollider();
+		if (schemaCollider != null && schemaCollider.size > 0) {
+			Array<Polygon> collider = new Array<Polygon>(schemaCollider.size);
+			for (es.eucm.ead.schema.data.shape.Polygon polygon : schemaCollider) {
+				Array<Float> pointsArray = polygon.getPoints();
+				float[] points = new float[pointsArray.size];
+				for (int i = 0; i < pointsArray.size; i++) {
+					points[i] = pointsArray.get(i);
 				}
 				Polygon contour = new Polygon(points);
 				collider.add(contour);
