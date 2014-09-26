@@ -66,7 +66,7 @@ public class OpenMockupGame extends OpenGame {
 	/**
 	 * Saving interval in seconds.
 	 */
-	private static final float SAVE_DELAY = 20f;
+	private static final float SAVE_DELAY = 30f;
 	protected static final float ERROR_TIMEOUT = 3F;
 
 	@Override
