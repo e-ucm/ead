@@ -34,67 +34,21 @@
  *      You should have received a copy of the GNU Lesser General Public License
  *      along with eAdventure.  If not, see <http://www.gnu.org/licenses/>.
  */
-package es.eucm.ead.editor;
+package es.eucm.ead.editor.nogui;
 
-import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.scenes.scene2d.Stage;
-import com.badlogic.gdx.utils.viewport.ScreenViewport;
+import com.badlogic.gdx.scenes.scene2d.Group;
 
-import es.eucm.ead.editor.control.Controller;
-import es.eucm.ead.editor.control.MockupController;
-import es.eucm.ead.editor.control.actions.editor.OpenApplication;
-import es.eucm.ead.editor.platform.Platform;
+public abstract class ViewGUITest extends EditorGUITest {
 
-public class MockupApplicationListener extends EditorApplicationListener {
-
-	private final Runnable clearColor = new Runnable() {
-
-		@Override
-		public void run() {
-			Gdx.gl.glClearColor(1f, 1f, 1f, 1f);
-		}
-	};
-
-	public MockupApplicationListener(Platform platform) {
-		super(platform);
-	}
+	protected abstract Group buildView();
 
 	@Override
-	public void create() {
-		super.create();
-		Gdx.app.postRunnable(clearColor);
-
-	}
-
-	@Override
-	public void resize(int width, int height) {
-		super.stage.getViewport().update(width, height, true);
-	}
-
-	@Override
-	protected void initialize() {
-		controller.action(OpenApplication.class);
-	}
-
-	@Override
-	public void pause() {
-		((MockupController) controller).pause();
-	}
-
-	@Override
-	public void resume() {
-		super.resume();
-		Gdx.app.postRunnable(clearColor);
-	}
-
-	@Override
-	protected Stage createStage() {
-		return new Stage(new ScreenViewport());
-	}
-
-	@Override
-	protected Controller buildController() {
-		return new MockupController(this.platform, Gdx.files,
-				super.stage.getRoot());
+	protected NoGUIEditorDesktop buildEditorDesktop() {
+		return new ViewEditorDesktop() {
+			@Override
+			protected Group buildView() {
+				return ViewGUITest.this.buildView();
+			}
+		};
 	}
 }

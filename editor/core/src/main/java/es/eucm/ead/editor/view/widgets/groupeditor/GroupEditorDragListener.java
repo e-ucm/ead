@@ -464,20 +464,25 @@ public class GroupEditorDragListener extends DragListener {
 
 	@Override
 	public void drag(InputEvent event, float x, float y, int pointer) {
-		if (panning) {
-			container.setPosition(container.getX() - getDeltaX(),
-					container.getY() - getDeltaY());
+		if (!event.isCancelled()) {
+			if (panning) {
+				container.setPosition(container.getX() - getDeltaX(),
+						container.getY() - getDeltaY());
+			} else if (dragging != null) {
+				/*
+				 * x and y are coordinates in the GroupEditor space. However,
+				 * all transformations are made relatively to the edited group,
+				 * so we need to convert them to its coordinates system.
+				 */
+				tmp1.set(x, y);
+				groupEditor.localToDescendantCoordinates(editedGroup, tmp1);
+				dragging.setPosition(tmp1.x - offsetX, tmp1.y - offsetY);
+			} else if (selecting) {
+				groupEditor.setSelectionEnd(x, y);
+			}
 		} else if (dragging != null) {
-			/*
-			 * x and y are coordinates in the GroupEditor space. However, all
-			 * transformations are made relatively to the edited group, so we
-			 * need to convert them to its coordinates system.
-			 */
-			tmp1.set(x, y);
-			groupEditor.localToDescendantCoordinates(editedGroup, tmp1);
-			dragging.setPosition(tmp1.x - offsetX, tmp1.y - offsetY);
-		} else if (selecting) {
-			groupEditor.setSelectionEnd(x, y);
+			recoverSelection(dragging);
+			dragging = null;
 		}
 	}
 
@@ -497,7 +502,7 @@ public class GroupEditorDragListener extends DragListener {
 		}
 
 		if (dragging != null) {
-			fireTransformed(modifier.getSelection());
+			fireTransformed();
 		}
 
 		dragging = null;
@@ -528,7 +533,7 @@ public class GroupEditorDragListener extends DragListener {
 				 * If nothing or group editor is touched, deselect all if not
 				 * panning or selecting
 				 */
-				if (!panningMode && !selecting) {
+				if (!event.isCancelled() && !panningMode && !selecting) {
 					modifier.deselectAll(true);
 				}
 			} else if (target != editedGroup && !(target instanceof Handle)) {
@@ -547,15 +552,19 @@ public class GroupEditorDragListener extends DragListener {
 				}
 
 				if (!isDragging()) {
-					if (isMultipleSelection()) {
-						modifier.addToSelection(selected, true);
-					} else {
-						modifier.setSelection(selected);
-					}
+					recoverSelection(selected);
 				}
 			}
 		}
 		super.touchUp(event, x, y, pointer, button);
+	}
+
+	private void recoverSelection(Actor selected) {
+		if (isMultipleSelection()) {
+			modifier.addToSelection(selected, true);
+		} else {
+			modifier.setSelection(selected);
+		}
 	}
 
 	@Override
@@ -624,22 +633,10 @@ public class GroupEditorDragListener extends DragListener {
 	/**
 	 * Fires some actors has been transformed
 	 */
-	private void fireTransformed(Array<Actor> transformed) {
+	public void fireTransformed() {
 		GroupEvent groupEvent = Pools.obtain(GroupEvent.class);
 		groupEvent.setType(Type.transformed);
-		groupEvent.setSelection(transformed);
-		groupEditor.fire(groupEvent);
-		Pools.free(groupEvent);
-	}
-
-	/**
-	 * Fires some actors has been transformed
-	 */
-	public void fireTransformed(Actor transformed) {
-		GroupEvent groupEvent = Pools.obtain(GroupEvent.class);
-		groupEvent.setType(Type.transformed);
-		groupEvent.setParent(editedGroup);
-		groupEvent.setSelection(transformed);
+		groupEvent.setSelection(modifier.getSelection());
 		groupEditor.fire(groupEvent);
 		Pools.free(groupEvent);
 	}

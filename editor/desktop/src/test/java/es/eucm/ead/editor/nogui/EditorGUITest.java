@@ -75,9 +75,13 @@ public abstract class EditorGUITest {
 
 	protected Templates templates;
 
+	protected NoGUIEditorDesktop buildEditorDesktop() {
+		return new NoGUIEditorDesktop();
+	}
+
 	@Before
 	public void setUp() {
-		editorDesktop = new NoGUIEditorDesktop();
+		editorDesktop = buildEditorDesktop();
 		app = new MockApplication(editorDesktop);
 		controller = editorDesktop.getController();
 		stage = editorDesktop.getStage();
@@ -115,6 +119,22 @@ public abstract class EditorGUITest {
 		release(parent, actorName);
 	}
 
+	protected void press(int screenX, int screenY, int pointer, int button) {
+		inputEvent(Type.touchDown, screenX, screenY, pointer, button);
+	}
+
+	protected void press(int screenX, int screenY, int pointer) {
+		press(screenX, screenY, pointer, Buttons.LEFT);
+	}
+
+	protected void pressButton(int screenX, int screenY, int button) {
+		press(screenX, screenY, 0, button);
+	}
+
+	protected void drag(int screenX, int screenY, int pointer) {
+		inputEvent(Type.touchDragged, screenX, screenY, pointer, 0);
+	}
+
 	public void setSelection(Object... selection) {
 		controller.action(SetSelection.class, selection);
 	}
@@ -144,14 +164,36 @@ public abstract class EditorGUITest {
 							+ type);
 			return;
 		}
-		InputEvent inputEvent = Pools.obtain(InputEvent.class);
-		inputEvent.setType(type);
-		inputEvent.setButton(Buttons.LEFT);
-		actor.fire(inputEvent);
-		Pools.free(inputEvent);
-
+		inputEvent(type, 0, 0, 0, Buttons.LEFT, actor);
 		Gdx.app.debug("EditorGUITest",
 				type + " fired in " + Arrays.toString(names));
+	}
+
+	private void inputEvent(Type type, float x, float y, int pointer, int button) {
+		switch (type) {
+		case touchDown:
+			editorDesktop.getStage().touchDown((int) x, (int) y, pointer,
+					button);
+			break;
+		case touchUp:
+			editorDesktop.getStage().touchUp((int) x, (int) y, pointer, button);
+			break;
+		case touchDragged:
+			editorDesktop.getStage().touchDragged((int) x, (int) y, pointer);
+			break;
+		}
+	}
+
+	private void inputEvent(Type type, float x, float y, int pointer,
+			int button, Actor target) {
+		InputEvent inputEvent = Pools.obtain(InputEvent.class);
+		inputEvent.setStageX(x);
+		inputEvent.setStageY(y);
+		inputEvent.setPointer(pointer);
+		inputEvent.setType(type);
+		inputEvent.setButton(button);
+		target.fire(inputEvent);
+		Pools.free(inputEvent);
 	}
 
 	protected void collectRunnables(Array<Runnable> runnables) {

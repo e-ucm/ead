@@ -34,67 +34,54 @@
  *      You should have received a copy of the GNU Lesser General Public License
  *      along with eAdventure.  If not, see <http://www.gnu.org/licenses/>.
  */
-package es.eucm.ead.editor;
+package es.eucm.ead.editor.test.gestures;
 
-import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.scenes.scene2d.Stage;
-import com.badlogic.gdx.utils.viewport.ScreenViewport;
+import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
+import com.badlogic.gdx.scenes.scene2d.Actor;
+import com.badlogic.gdx.scenes.scene2d.Group;
+import com.badlogic.gdx.utils.Array;
+import es.eucm.ead.editor.nogui.ViewGUITest;
+import es.eucm.ead.editor.view.widgets.groupeditor.GroupEditor;
+import es.eucm.ead.editor.view.widgets.groupeditor.GroupEditorConfiguration;
+import org.junit.Test;
 
-import es.eucm.ead.editor.control.Controller;
-import es.eucm.ead.editor.control.MockupController;
-import es.eucm.ead.editor.control.actions.editor.OpenApplication;
-import es.eucm.ead.editor.platform.Platform;
+import static org.junit.Assert.assertEquals;
 
-public class MockupApplicationListener extends EditorApplicationListener {
+public class GesturesTest extends ViewGUITest {
 
-	private final Runnable clearColor = new Runnable() {
+	private Group target;
 
-		@Override
-		public void run() {
-			Gdx.gl.glClearColor(1f, 1f, 1f, 1f);
-		}
-	};
-
-	public MockupApplicationListener(Platform platform) {
-		super(platform);
-	}
+	private GroupEditor groupEditor;
 
 	@Override
-	public void create() {
-		super.create();
-		Gdx.app.postRunnable(clearColor);
+	protected Group buildView() {
+		groupEditor = new GroupEditor(new ShapeRenderer(),
+				new GroupEditorConfiguration());
 
+		Group root = new Group();
+		target = new Group();
+
+		root.addActor(target);
+
+		groupEditor.setRootGroup(root);
+		groupEditor.setSize(800, 600);
+		groupEditor.setFillParent(true);
+		return groupEditor;
 	}
 
-	@Override
-	public void resize(int width, int height) {
-		super.stage.getViewport().update(width, height, true);
-	}
+	@Test
+	public void testRotation() {
+		Array<Actor> selection = new Array<Actor>();
+		selection.add(target);
+		groupEditor.getGroupEditorDragListener().setSelection(selection);
 
-	@Override
-	protected void initialize() {
-		controller.action(OpenApplication.class);
-	}
+		press(400, 300, 0);
+		press(500, 300, 1);
 
-	@Override
-	public void pause() {
-		((MockupController) controller).pause();
-	}
+		drag(500, 200, 0);
+		drag(500, 0, 1);
 
-	@Override
-	public void resume() {
-		super.resume();
-		Gdx.app.postRunnable(clearColor);
-	}
+		assertEquals(180.f, target.getRotation(), 0.1f);
 
-	@Override
-	protected Stage createStage() {
-		return new Stage(new ScreenViewport());
-	}
-
-	@Override
-	protected Controller buildController() {
-		return new MockupController(this.platform, Gdx.files,
-				super.stage.getRoot());
 	}
 }

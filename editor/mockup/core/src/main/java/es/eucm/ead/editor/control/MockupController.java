@@ -44,8 +44,6 @@ import com.badlogic.gdx.scenes.scene2d.Group;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.InputListener;
 import com.badlogic.gdx.scenes.scene2d.ui.TextArea;
-import com.badlogic.gdx.scenes.scene2d.ui.TextField;
-
 import es.eucm.ead.editor.assets.ApplicationAssets;
 import es.eucm.ead.editor.control.engine.Engine;
 import es.eucm.ead.editor.control.engine.MockupEngine;
@@ -100,19 +98,6 @@ public class MockupController extends Controller {
 		// the back key in Android.
 		Gdx.input.setCatchBackKey(true);
 		rootComponent.addCaptureListener(new InputListener() {
-			@Override
-			public boolean touchDown(InputEvent event, float x, float y,
-					int pointer, int button) {
-				// This hides the on screen keyboard
-				// if we're writing in a text field and
-				// touch down anywhere else but the text field.
-				if (!(event.getTarget() instanceof TextField)) {
-					((MockupViews) MockupController.this.views)
-							.hideOnscreenKeyboard();
-				}
-				return false;
-			}
-
 			@Override
 			public boolean keyUp(InputEvent event, int keycode) {
 				if (keycode == Keys.BACK

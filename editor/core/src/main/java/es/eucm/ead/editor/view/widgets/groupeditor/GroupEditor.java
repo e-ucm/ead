@@ -82,8 +82,13 @@ public class GroupEditor extends AbstractWidget {
 			GroupEditorConfiguration config) {
 		this.shapeRenderer = shapeRenderer;
 		setRequestKeyboardFocus(true);
-		addListener(groupEditorDragListener = new GroupEditorDragListener(this,
-				shapeRenderer, config));
+		groupEditorDragListener = new GroupEditorDragListener(this,
+				shapeRenderer, config);
+
+		// Order here matters. Gestures listener can cancel some events so drag
+		// listener doesn't process them
+		addListener(new GesturesListener(groupEditorDragListener));
+		addListener(groupEditorDragListener);
 	}
 
 	public GroupEditorDragListener getGroupEditorDragListener() {

@@ -34,67 +34,36 @@
  *      You should have received a copy of the GNU Lesser General Public License
  *      along with eAdventure.  If not, see <http://www.gnu.org/licenses/>.
  */
-package es.eucm.ead.editor;
+package es.eucm.ead.editor.nogui;
 
-import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.scenes.scene2d.Stage;
-import com.badlogic.gdx.utils.viewport.ScreenViewport;
+import com.badlogic.gdx.scenes.scene2d.Actor;
+import com.badlogic.gdx.scenes.scene2d.Group;
 
-import es.eucm.ead.editor.control.Controller;
-import es.eucm.ead.editor.control.MockupController;
-import es.eucm.ead.editor.control.actions.editor.OpenApplication;
-import es.eucm.ead.editor.platform.Platform;
+public abstract class ViewEditorDesktop extends NoGUIEditorDesktop {
 
-public class MockupApplicationListener extends EditorApplicationListener {
+	private Group view;
 
-	private final Runnable clearColor = new Runnable() {
+	protected abstract Group buildView();
 
-		@Override
-		public void run() {
-			Gdx.gl.glClearColor(1f, 1f, 1f, 1f);
+	private Group getView() {
+		if (view == null) {
+			view = buildView();
 		}
-	};
-
-	public MockupApplicationListener(Platform platform) {
-		super(platform);
+		return view;
 	}
 
 	@Override
-	public void create() {
-		super.create();
-		Gdx.app.postRunnable(clearColor);
-
+	protected Actor buildRootView() {
+		return getView();
 	}
 
 	@Override
-	public void resize(int width, int height) {
-		super.stage.getViewport().update(width, height, true);
+	protected Group buildModalsContainer() {
+		return getView();
 	}
 
 	@Override
-	protected void initialize() {
-		controller.action(OpenApplication.class);
-	}
-
-	@Override
-	public void pause() {
-		((MockupController) controller).pause();
-	}
-
-	@Override
-	public void resume() {
-		super.resume();
-		Gdx.app.postRunnable(clearColor);
-	}
-
-	@Override
-	protected Stage createStage() {
-		return new Stage(new ScreenViewport());
-	}
-
-	@Override
-	protected Controller buildController() {
-		return new MockupController(this.platform, Gdx.files,
-				super.stage.getRoot());
+	protected Group buildViewsRoot() {
+		return getView();
 	}
 }

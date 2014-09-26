@@ -128,10 +128,12 @@ public class Handles extends Group {
 			} else {
 				handles[i] = new Handle(shapeRenderer);
 			}
+			handles[i].setVisible(i == 2 || config.drawHandles);
 			addActor(handles[i]);
 		}
 
 		handles[ROTATION_HANDLE_INDEX] = new RotationHandle(shapeRenderer);
+		handles[ROTATION_HANDLE_INDEX].setVisible(config.drawHandles);
 		addActor(handles[ROTATION_HANDLE_INDEX]);
 
 		/*
