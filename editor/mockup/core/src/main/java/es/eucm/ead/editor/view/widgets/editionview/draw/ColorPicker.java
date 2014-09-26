@@ -38,6 +38,7 @@ package es.eucm.ead.editor.view.widgets.editionview.draw;
 
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.g2d.Batch;
+import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 
 import es.eucm.ead.editor.view.widgets.PositionedHiddenPanel.Position;
@@ -50,9 +51,17 @@ public class ColorPicker extends IconWithFadePanel {
 
 	protected SlideColorPicker picker;
 
+	private Actor reference;
+
 	public ColorPicker(boolean bottom, Skin skin) {
+		this(bottom, skin, null);
+	}
+
+	public ColorPicker(boolean bottom, Skin skin, Actor reference) {
 		super("colorpicker80x80", 5f, skin, bottom ? Position.BOTTOM
 				: Position.TOP, "checkable");
+		this.reference = reference == null ? this : reference;
+
 		picker = new SlideColorPicker(skin) {
 			@Override
 			protected void colorChanged(Color newColor) {
@@ -67,6 +76,7 @@ public class ColorPicker extends IconWithFadePanel {
 				batch.setColor(Color.WHITE);
 			}
 		};
+		panel.setReference(this.reference);
 
 		if (!bottom) {
 			panel.add(picker).padTop(TOP_PAD);
@@ -84,6 +94,11 @@ public class ColorPicker extends IconWithFadePanel {
 	}
 
 	public void showPanel() {
+		if (reference.getY() - panel.getPrefHeight() < 0) {
+			panel.setPosition(Position.TOP);
+		} else {
+			panel.setPosition(Position.BOTTOM);
+		}
 		picker.updateTexture();
 		super.showPanel();
 	}
