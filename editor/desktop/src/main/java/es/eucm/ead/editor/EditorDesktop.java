@@ -41,6 +41,7 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input.Keys;
 import com.badlogic.gdx.backends.lwjgl.LwjglApplicationConfiguration;
 import com.badlogic.gdx.backends.lwjgl.LwjglFrame;
+import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.Group;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.InputListener;
@@ -76,8 +77,9 @@ import es.eucm.ead.engine.utils.SwingEDTUtils;
 import es.eucm.ead.schema.editor.components.Documentation;
 import es.eucm.ead.schemax.FieldName;
 
-import javax.swing.*;
-import java.awt.*;
+import javax.swing.JFrame;
+import java.awt.Dimension;
+import java.awt.Toolkit;
 import java.awt.event.ComponentAdapter;
 import java.awt.event.ComponentEvent;
 import java.awt.event.WindowAdapter;
@@ -141,8 +143,7 @@ public class EditorDesktop extends EditorApplicationListener {
 		super.initialize();
 		Gdx.gl.glClearColor(1.0f, 1.0f, 1.0f, 1.0f);
 		i18N = controller.getApplicationAssets().getI18N();
-		EditorWindow editorWindow = new EditorWindow(viewsRoot, controller);
-		stage.addActor(editorWindow);
+		stage.addActor(buildRootView());
 		registerShortcuts();
 		initFrame();
 		addTitleListener();
@@ -152,6 +153,25 @@ public class EditorDesktop extends EditorApplicationListener {
 				.get("tooltip", LabelStyle.class));
 		controller.action(CheckUpdates.class, controller.getReleaseInfo(),
 				false);
+	}
+
+	@Override
+	protected Controller buildController() {
+		this.viewsRoot = buildViewsRoot();
+		return new Controller(platform, Gdx.files, viewsRoot,
+				buildModalsContainer());
+	}
+
+	protected Group buildViewsRoot() {
+		return new DesktopViewsRoot();
+	}
+
+	protected Group buildModalsContainer() {
+		return stage.getRoot();
+	}
+
+	protected Actor buildRootView() {
+		return new EditorWindow(viewsRoot, controller);
 	}
 
 	private void addTitleListener() {
@@ -267,11 +287,6 @@ public class EditorDesktop extends EditorApplicationListener {
 	public void render() {
 		super.render();
 		tooltipManager.update(Gdx.graphics.getDeltaTime());
-	}
-
-	protected Controller createController() {
-		this.viewsRoot = new DesktopViewsRoot();
-		return new Controller(platform, Gdx.files, viewsRoot, stage.getRoot());
 	}
 
 	private void registerShortcuts() {

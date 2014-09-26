@@ -79,7 +79,7 @@ public class EditorApplicationListener implements ApplicationListener {
 				DEFAULT_BACKGROUND_COLOR.a);
 		stage = createStage();
 		platform.setBatch(stage.getBatch());
-		controller = createController();
+		controller = buildController();
 		Gdx.input.setInputProcessor(stage);
 		initialize();
 	}
@@ -88,7 +88,7 @@ public class EditorApplicationListener implements ApplicationListener {
 		return new Stage(new ScreenViewport());
 	}
 
-	protected Controller createController() {
+	protected Controller buildController() {
 		return new Controller(platform, Gdx.files, stage.getRoot(),
 				stage.getRoot());
 	}
