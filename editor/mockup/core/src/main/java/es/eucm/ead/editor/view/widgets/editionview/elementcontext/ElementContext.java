@@ -116,7 +116,7 @@ public class ElementContext extends Table {
 		// Label context
 		final IconButton changeText = new IconButton(IC_CHANGETEXT, 0f, skin,
 				"white_single");
-		colorPicker = new LabelColorPicker(controller, true, skin);
+		colorPicker = new LabelColorPicker(controller, true, skin, this);
 
 		labelContext = new ContextBar(skin, changeText, colorPicker);
 

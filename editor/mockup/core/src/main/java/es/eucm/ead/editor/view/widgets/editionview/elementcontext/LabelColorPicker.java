@@ -37,6 +37,7 @@
 package es.eucm.ead.editor.view.widgets.editionview.elementcontext;
 
 import com.badlogic.gdx.graphics.Color;
+import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.InputListener;
 import com.badlogic.gdx.scenes.scene2d.ui.Label;
@@ -51,9 +52,9 @@ public class LabelColorPicker extends ColorPicker {
 	private Label label;
 
 	public LabelColorPicker(final Controller controller, boolean vertical,
-			Skin skin) {
-		super(true, skin);
-		picker.addListener(new InputListener() {
+			Skin skin, Actor elementContext) {
+		super(true, skin, elementContext);
+		InputListener changeColor = new InputListener() {
 
 			@Override
 			public boolean touchDown(InputEvent event, float x, float y,
@@ -67,7 +68,8 @@ public class LabelColorPicker extends ColorPicker {
 				controller.action(ChangeSelectionText.class, label.getText()
 						.toString(), picker.getPickedColor());
 			}
-		});
+		};
+		picker.addListener(changeColor);
 	}
 
 	@Override
