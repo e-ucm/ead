@@ -54,11 +54,12 @@ public class GroupEditorConfiguration {
 
 	private static final boolean NESTED_GROUP_EDITION = true;
 
-	int handleSquareSize = HANDLE_SQUARE_SIZE;
-	int handleCircleSize = HANDLE_CIRCLE_SIZE;
-	int rotationHandleOffset = ROTATION_HANDLE_OFFSET;
-	boolean multipleSelection = MULTIPLE_SELECTION;
-	boolean nestedGroupEdition = NESTED_GROUP_EDITION;
+	public int handleSquareSize = HANDLE_SQUARE_SIZE;
+	public int handleCircleSize = HANDLE_CIRCLE_SIZE;
+	public int rotationHandleOffset = ROTATION_HANDLE_OFFSET;
+	public boolean multipleSelection = MULTIPLE_SELECTION;
+	public boolean nestedGroupEdition = NESTED_GROUP_EDITION;
+	public boolean drawHandles = true;
 
 	/**
 	 * Changes the size of the square handles around the grouper. Default value

@@ -39,15 +39,12 @@ package es.eucm.ead.editor.view.widgets.editionview;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.g2d.Batch;
-import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Rectangle;
-import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.Group;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.InputListener;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
-
 import es.eucm.ead.editor.control.Controller;
 import es.eucm.ead.editor.control.Selection;
 import es.eucm.ead.editor.model.Model.SelectionListener;
@@ -55,7 +52,6 @@ import es.eucm.ead.editor.model.events.SelectionEvent;
 import es.eucm.ead.editor.view.widgets.Toolbar.ToolbarStyle;
 import es.eucm.ead.editor.view.widgets.editionview.elementcontext.ElementContext;
 import es.eucm.ead.editor.view.widgets.groupeditor.GroupEditorConfiguration;
-import es.eucm.ead.editor.view.widgets.groupeditor.Handles;
 import es.eucm.ead.editor.view.widgets.scenes.SceneEditor;
 import es.eucm.ead.schema.entities.ModelEntity;
 
@@ -136,108 +132,18 @@ public class MockupSceneEditor extends SceneEditor {
 				return isElement || Selection.SCENE.equals(contextId);
 			}
 		};
-
 		groupEditor.addListener(new InputListener() {
-			private Vector2 pointer1 = new Vector2();
-			private Vector2 pointer2 = new Vector2();
-			private Vector2 initialPointer1 = new Vector2();
-			private Vector2 initialPointer2 = new Vector2();
-
-			private float rotation, scaleX, scaleY;
-			private Handles handles = groupEditor.getGroupEditorDragListener()
-					.getModifier().getHandles();
-			private boolean pinching;
-
 			@Override
 			public boolean touchDown(InputEvent event, float x, float y,
 					int pointer, int button) {
 				context.show(null, null);
-				Actor influencedActor = handles.getInfluencedActor();
-				if (influencedActor == null) {
-					return false;
-				}
-				scaleX = influencedActor.getScaleX();
-				scaleY = influencedActor.getScaleY();
-				rotation = influencedActor.getRotation();
-				if (pointer < 2) {
-					if (pointer == 0) {
-						initialPointer1.set(x, y);
-						pointer1.set(initialPointer1);
-					} else {
-						// Start pinch.
-						initialPointer2.set(x, y);
-						pointer2.set(initialPointer2);
-						pinching = true;
-					}
-				}
 				return true;
-			}
-
-			@Override
-			public void touchDragged(InputEvent event, float x, float y,
-					int pointer) {
-
-				if (pointer == 1) {
-					pointer2.set(x, y);
-				} else {
-					pointer1.set(Gdx.input.getX(0), Gdx.input.getY(0));
-					getStage().screenToStageCoordinates(pointer1);
-					groupEditor.stageToLocalCoordinates(pointer1);
-				}
-				// handle pinch zoom
-				if (pinching) {
-					Actor influencedActor = handles.getInfluencedActor();
-					if (influencedActor == null) {
-						return;
-					}
-
-					float intialDistance = initialPointer1.dst(initialPointer2);
-					float distance = pointer1.dst(pointer2);
-
-					pinch(influencedActor, initialPointer1, initialPointer2,
-							pointer1, pointer2);
-					zoom(influencedActor, intialDistance, distance);
-				}
-			}
-
-			public void pinch(Actor actor, Vector2 initialPointer1,
-					Vector2 initialPointer2, Vector2 pointer1, Vector2 pointer2) {
-
-				float x1 = initialPointer2.x - initialPointer1.x;
-				float y1 = initialPointer2.y - initialPointer1.y;
-				float x2 = pointer2.x - pointer1.x;
-				float y2 = pointer2.y - pointer1.y;
-
-				float deltaRot = MathUtils.atan2(y2, x2)
-						- MathUtils.atan2(y1, x1);
-				float deltaRotDeg = (deltaRot * MathUtils.radiansToDegrees + 360);
-
-				actor.setRotation((deltaRotDeg + rotation) % 360);
-			}
-
-			public void zoom(Actor actor, float initialDistance, float distance) {
-
-				float ratio = distance / initialDistance;
-				actor.setScaleX(ratio * scaleX);
-				actor.setScaleY(ratio * scaleY);
 			}
 
 			@Override
 			public void touchUp(InputEvent event, float x, float y,
 					int pointer, int button) {
 				Gdx.app.postRunnable(updateSelection);
-				if (pinching) {
-					pinching = false;
-
-					// Notify the controller that something has changed so the
-					// model gets updated
-					Actor influencedActor = handles.getInfluencedActor();
-					if (influencedActor == null) {
-						return;
-					}
-					groupEditor.getGroupEditorDragListener().fireTransformed(
-							influencedActor);
-				}
 			}
 		});
 	}
@@ -310,6 +216,7 @@ public class MockupSceneEditor extends SceneEditor {
 		config.setMultipleSelection(MULTIPLE_SELECTION);
 		config.setHandleSquareSize(HANDLE_SQUARE_SIZE);
 		config.setHandleCircleSize(HANDLE_CIRCLE_SIZE);
+		config.drawHandles = false;
 
 		return config;
 	}
