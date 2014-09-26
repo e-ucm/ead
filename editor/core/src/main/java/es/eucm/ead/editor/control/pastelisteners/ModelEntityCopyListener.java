@@ -41,10 +41,13 @@ import es.eucm.ead.editor.control.Controller;
 import es.eucm.ead.editor.control.actions.model.AddSceneElement;
 import es.eucm.ead.editor.control.actions.model.scene.RemoveChildFromEntity;
 import es.eucm.ead.editor.model.Q;
+import es.eucm.ead.schema.editor.components.GameData;
 import es.eucm.ead.schema.editor.components.Parent;
 import es.eucm.ead.schema.entities.ModelEntity;
 
 public class ModelEntityCopyListener implements CopyListener<ModelEntity> {
+
+	private static final float OFFSET = .007f;
 
 	private Controller controller;
 
@@ -63,6 +66,26 @@ public class ModelEntityCopyListener implements CopyListener<ModelEntity> {
 
 	@Override
 	public void paste(ModelEntity object) {
+		GameData gameData = Q.getComponent(controller.getModel().getGame(),
+				GameData.class);
+
+		float offsetX = gameData.getWidth() * OFFSET;
+		float offsetY = gameData.getHeight() * OFFSET;
+
+		float nextX = object.getX() + offsetX;
+		if (nextX >= gameData.getWidth()) {
+			object.setX(gameData.getWidth() - offsetX);
+		} else {
+			object.setX(nextX);
+		}
+
+		float nextY = object.getY() + offsetY;
+		if (nextY >= gameData.getHeight()) {
+			object.setY(gameData.getHeight() - offsetY);
+		} else {
+			object.setY(nextY);
+		}
+
 		controller.action(AddSceneElement.class, object);
 	}
 }
