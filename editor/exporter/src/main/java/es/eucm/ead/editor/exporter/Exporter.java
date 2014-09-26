@@ -87,6 +87,23 @@ public class Exporter {
 	 *            The entity
 	 */
 	public static void createInitComponent(ModelEntity modelEntity) {
+		createInitComponent(modelEntity, null);
+	}
+
+	/**
+	 * Builds a {@link Behavior} component with just one {@link Init} behavior
+	 * to the entity from editors' {@link GameData} and {@link Variables} editor
+	 * components. This will make initializations (effects) when the entity is
+	 * loaded. If no gameData or variables component is found, no component is
+	 * added.
+	 * 
+	 * @param modelEntity
+	 *            The entity
+	 * @param initialScene
+	 *            Where will be started the game
+	 */
+	public static void createInitComponent(ModelEntity modelEntity,
+			String initialScene) {
 		GameData gameData = null;
 		Variables variables = null;
 
@@ -150,12 +167,15 @@ public class Exporter {
 		if (gameData != null) {
 			// Load initial scene
 			AddEntity loadSceneContent = new AddEntity();
-			loadSceneContent.setEntityUri(gameData.getInitialScene());
+			if (initialScene == null) {
+				initialScene = gameData.getInitialScene();
+			}
+			loadSceneContent.setEntityUri(initialScene);
 			loadSceneContent.setTarget("(layer s"
 					+ Layer.SCENE_CONTENT.toString() + ")");
 			initBehavior.getEffects().add(loadSceneContent);
 
-			// Load initial scene
+			// Load HUD
 			AddEntity loadHud = new AddEntity();
 			loadHud.setEntityUri(gameData.getHud());
 			loadHud.setTarget("(layer s" + Layer.HUD.toString() + ")");
