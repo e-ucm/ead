@@ -58,6 +58,11 @@
 			hScrollKnob: scroll_horizontal, 
 			vScrollKnob: scroll_vertical
 		},
+		fade: {
+			background: scroll_fade,
+			hScrollKnob: scroll_horizontal, 
+			vScrollKnob: scroll_vertical
+		},
 		white: { 
 			background: panel,
 			hScrollKnob: scroll_horizontal, 
@@ -383,5 +388,22 @@
 			background: dialog,
 			undefinedProgressBar: loading
 		}
-	}
+	},
+	es.eucm.ead.editor.view.widgets.ScrollPaneDif$ScrollPaneDifStyle: {
+		default: { 
+			background: transparent-bg,
+			topBackground : transparent-bg,
+			hScrollKnob: scroll_horizontal, 
+			vScrollKnob: scroll_vertical
+		},
+		fade: {
+			topBackground: scroll_fade
+		},
+		fadeX: {
+			topBackground: scroll_fadeX
+		},
+		fadeY: {
+			topBackground: scroll_fadeY
+		}
+	},
 }
