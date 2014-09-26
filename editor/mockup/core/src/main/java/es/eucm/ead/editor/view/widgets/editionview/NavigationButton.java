@@ -36,18 +36,23 @@
  */
 package es.eucm.ead.editor.view.widgets.editionview;
 
+import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.InputListener;
 import com.badlogic.gdx.scenes.scene2d.ui.ScrollPane;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
+import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 
 import es.eucm.ead.editor.control.Controller;
+import es.eucm.ead.editor.control.MockupViews;
 import es.eucm.ead.editor.control.Selection;
+import es.eucm.ead.editor.control.Toasts;
 import es.eucm.ead.editor.control.actions.editor.ChangeMockupView;
 import es.eucm.ead.editor.control.actions.model.EditScene;
+import es.eucm.ead.editor.control.actions.model.scene.NewScene;
 import es.eucm.ead.editor.model.Model;
 import es.eucm.ead.editor.model.Model.SelectionListener;
 import es.eucm.ead.editor.model.events.SelectionEvent;
@@ -68,6 +73,8 @@ public class NavigationButton extends IconWithScalePanel implements
 
 	private ScrollPane list;
 
+	private Toasts toasts;
+
 	public NavigationButton(Skin skin, final Controller controller) {
 		super("menu", SEPARATION, skin);
 		setStyle(skin.get("white_union", IconButtonStyle.class));
@@ -87,7 +94,7 @@ public class NavigationButton extends IconWithScalePanel implements
 
 		sceneList = new ScenesTableList(controller, changeView, "scene");
 
-		list = new ScrollPane(sceneList) {
+		list = new ScrollPane(sceneList, skin, "white") {
 			@Override
 			public void draw(Batch batch, float parentAlpha) {
 				super.draw(batch, parentAlpha);
@@ -110,7 +117,22 @@ public class NavigationButton extends IconWithScalePanel implements
 		panel.add(goGallery).pad(pad);
 		panel.row();
 		panel.add(list).expandX().fill();
-
+		panel.row();
+		float littlePad = Gdx.graphics.getHeight() * .03f;
+		TextButton addButton = new TextButton(i18n.m("edition.exits.newScene"),
+				skin, "white");
+		addButton.pad(littlePad);
+		toasts = ((MockupViews) controller.getViews()).getToasts();
+		addButton.addListener(new ClickListener() {
+			@Override
+			public void clicked(InputEvent event, float x, float y) {
+				hidePanel();
+				controller.action(NewScene.class, "");
+				toasts.showNotification(controller.getApplicationAssets()
+						.getI18N().m("edition.areNewScene"), 2f);
+			}
+		});
+		panel.add(addButton);
 		controller.getModel().addSelectionListener(this);
 	}
 

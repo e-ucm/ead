@@ -40,7 +40,6 @@ import static com.badlogic.gdx.scenes.scene2d.actions.Actions.fadeOut;
 
 import com.badlogic.gdx.math.Interpolation;
 import com.badlogic.gdx.scenes.scene2d.Actor;
-import com.badlogic.gdx.scenes.scene2d.ui.ScrollPane;
 import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
 import com.badlogic.gdx.utils.Array;
 
@@ -51,6 +50,7 @@ import es.eucm.ead.editor.control.actions.irreversibles.scene.AddBehaviorPrefab;
 import es.eucm.ead.editor.control.actions.irreversibles.scene.ClearBehaviorEffects;
 import es.eucm.ead.editor.control.actions.irreversibles.scene.RemoveBehavior;
 import es.eucm.ead.editor.view.widgets.PositionedHiddenPanel.Position;
+import es.eucm.ead.editor.view.widgets.ScrollPaneDif;
 import es.eucm.ead.editor.view.widgets.editionview.variables.VariablesAndGroup;
 import es.eucm.ead.editor.view.widgets.editionview.variables.VariablesTable;
 import es.eucm.ead.schema.components.behaviors.Behavior;
@@ -90,7 +90,7 @@ public class ChangeVariablePanel extends PrefabComponentPanel {
 			}
 		};
 
-		ScrollPane sp = new ScrollPane(varOp);
+		ScrollPaneDif sp = new ScrollPaneDif(varOp, skin, "fadeY");
 		panel.add(sp);
 
 	}

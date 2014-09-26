@@ -36,6 +36,7 @@
  */
 package es.eucm.ead.editor.view.builders.gallery;
 
+import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.ui.Button;
@@ -133,6 +134,8 @@ public abstract class BaseGallery implements ViewBuilder {
 		this.skin = applicationAssets.getSkin();
 		i18n = applicationAssets.getI18N();
 
+		float littlePad = Gdx.graphics.getHeight() * .02f;
+
 		undoNotification = new Notification(skin) {
 			public void hide() {
 				super.hide();
@@ -141,6 +144,7 @@ public abstract class BaseGallery implements ViewBuilder {
 		};
 		undoNotification.defaults().space(DEFAULT_ENTITY_SPACING);
 		undo = new TextButton(i18n.m("undo"), skin, "white");
+		undo.pad(littlePad);
 		undo.setUserObject(this);
 		undo.addListener(undoListener);
 		undoNotification.add(undo);
