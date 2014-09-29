@@ -34,70 +34,45 @@
  *      You should have received a copy of the GNU Lesser General Public License
  *      along with eAdventure.  If not, see <http://www.gnu.org/licenses/>.
  */
-package es.eucm.ead.engine.components.renderers.frames;
+package es.eucm.ead.editor.processors;
 
-import com.badlogic.gdx.graphics.g2d.Batch;
-import com.badlogic.gdx.math.Polygon;
-import com.badlogic.gdx.utils.Array;
-import es.eucm.ead.engine.components.renderers.CollidableRendererComponent;
+import ashley.core.Component;
 
-/**
- * Created by Javier Torrente on 4/06/14.
- */
-public class EmptyRendererComponent extends CollidableRendererComponent {
+import com.badlogic.gdx.graphics.Color;
+import com.badlogic.gdx.graphics.g2d.Sprite;
+import com.badlogic.gdx.scenes.scene2d.utils.SpriteDrawable;
+import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable;
 
-	protected float width;
+import es.eucm.ead.editor.assets.ApplicationAssets;
+import es.eucm.ead.editor.components.EditorEmptyRendererComponent;
+import es.eucm.ead.engine.GameLoop;
+import es.eucm.ead.engine.processors.renderers.EmptyRendererProcessor;
+import es.eucm.ead.schema.renderers.EmptyRenderer;
 
-	protected float height;
+public class EditorEmptyRendererProcessor extends EmptyRendererProcessor {
 
-	private boolean hitAll;
+	public static final Color INTERACTIVE_ZONE_COLOR = new Color(0.0f, 1.0f,
+			0.0f, 0.25f);
 
-	@Override
-	public void draw(Batch batch) {
-		// Do nothing
+	private SpriteDrawable drawable;
+
+	public EditorEmptyRendererProcessor(GameLoop engine,
+			ApplicationAssets applicationAssets) {
+		super(engine);
+		TextureRegionDrawable blank = (TextureRegionDrawable) applicationAssets
+				.getSkin().getDrawable("blank");
+		Sprite sprite = new Sprite(blank.getRegion());
+		sprite.setColor(INTERACTIVE_ZONE_COLOR);
+		drawable = new SpriteDrawable(sprite);
 	}
 
 	@Override
-	public float getWidth() {
-		return width;
-	}
-
-	@Override
-	public float getHeight() {
-		return height;
-	}
-
-	@Override
-	public void setCollider(Array<Polygon> collider) {
-		super.setCollider(collider);
-		updateWidthAndHeight();
-	}
-
-	public void setHitAll(boolean hitAll) {
-		this.hitAll = hitAll;
-	}
-
-	private void updateWidthAndHeight() {
-		if (collider != null) {
-			float minX = Float.MAX_VALUE, maxX = Float.MIN_VALUE, minY = Float.MAX_VALUE, maxY = Float.MIN_VALUE;
-			for (Polygon polygon : collider) {
-				for (int i = 0; i < polygon.getVertices().length; i++) {
-					if (i % 2 == 0) {
-						minX = Math.min(minX, polygon.getVertices()[i]);
-						maxX = Math.max(maxX, polygon.getVertices()[i]);
-					} else {
-						minY = Math.min(minY, polygon.getVertices()[i]);
-						maxY = Math.max(maxY, polygon.getVertices()[i]);
-					}
-				}
-			}
-			width = maxX - minX;
-			height = maxY - minY;
-		}
-	}
-
-	@Override
-	public boolean hit(float x, float y) {
-		return hitAll || super.hit(x, y);
+	public Component getComponent(EmptyRenderer component) {
+		EditorEmptyRendererComponent emptyRendererComponent = gameLoop
+				.createComponent(EditorEmptyRendererComponent.class);
+		emptyRendererComponent.setDrawable(drawable);
+		emptyRendererComponent.setGameLoop(gameLoop);
+		read(emptyRendererComponent, component);
+		return emptyRendererComponent;
 	}
 }

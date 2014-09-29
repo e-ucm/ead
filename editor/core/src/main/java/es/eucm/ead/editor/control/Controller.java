@@ -51,6 +51,7 @@ import es.eucm.ead.editor.control.actions.EditorActionException;
 import es.eucm.ead.editor.control.appdata.ReleaseInfo;
 import es.eucm.ead.editor.control.background.BackgroundExecutor;
 import es.eucm.ead.editor.control.commands.Command;
+import es.eucm.ead.editor.control.engine.EditorEngineInitializer;
 import es.eucm.ead.editor.control.engine.Engine;
 import es.eucm.ead.editor.control.pastelisteners.BehaviorCopyListener;
 import es.eucm.ead.editor.control.pastelisteners.ModelEntityCopyListener;
@@ -58,6 +59,7 @@ import es.eucm.ead.editor.indexes.ControllerIndex;
 import es.eucm.ead.editor.model.Model;
 import es.eucm.ead.editor.platform.Platform;
 import es.eucm.ead.editor.view.builders.ViewBuilder;
+import es.eucm.ead.engine.EngineInitializer;
 import es.eucm.ead.schema.components.behaviors.Behavior;
 import es.eucm.ead.schema.entities.ModelEntity;
 
@@ -150,15 +152,15 @@ public class Controller {
 		// Get the release info from editor assets
 		this.releaseInfo = applicationAssets.loadReleaseInfo();
 		this.shortcutsMap = new ShortcutsMap(this);
-		this.engine = createEngine();
+		this.engine = new Engine(this, buildEngineInitializer());
 		setTracker(viewsContainer, modalsContainer);
 		setClipboard();
 		loadPreferences();
 		indexes = new HashMap<Class, ControllerIndex>();
 	}
 
-	protected Engine createEngine() {
-		return new Engine(this);
+	protected EngineInitializer buildEngineInitializer() {
+		return new EditorEngineInitializer(this);
 	}
 
 	protected ApplicationAssets createApplicationAssets(Files files) {

@@ -34,32 +34,46 @@
  *      You should have received a copy of the GNU Lesser General Public License
  *      along with eAdventure.  If not, see <http://www.gnu.org/licenses/>.
  */
-package es.eucm.ead.editor.processors;
+package es.eucm.ead.editor.control.engine;
 
-import ashley.core.Component;
-import es.eucm.ead.editor.assets.ApplicationAssets;
-import es.eucm.ead.editor.components.MockupEmptyRendererComponent;
+import es.eucm.ead.editor.control.Controller;
+import es.eucm.ead.editor.processors.EditableLabelProccesor;
+import es.eucm.ead.editor.processors.EditorEmptyRendererProcessor;
+import es.eucm.ead.editor.processors.EditorImageProcessor;
+import es.eucm.ead.engine.ComponentLoader;
+import es.eucm.ead.engine.DefaultEngineInitializer;
 import es.eucm.ead.engine.GameLoop;
-import es.eucm.ead.engine.processors.renderers.EmptyRendererProcessor;
+import es.eucm.ead.engine.assets.GameAssets;
+import es.eucm.ead.engine.variables.VariablesManager;
+import es.eucm.ead.schema.components.controls.Label;
 import es.eucm.ead.schema.renderers.EmptyRenderer;
+import es.eucm.ead.schema.renderers.Image;
 
-public class MockupEmptyRendererProcessor extends EmptyRendererProcessor {
+public class EditorEngineInitializer extends DefaultEngineInitializer {
 
-	private ApplicationAssets applicationAssets;
+	private Controller controller;
 
-	public MockupEmptyRendererProcessor(GameLoop engine,
-			ApplicationAssets applicationAssets) {
-		super(engine);
-		this.applicationAssets = applicationAssets;
+	public EditorEngineInitializer(Controller controller) {
+		this.controller = controller;
 	}
 
-	@Override
-	public Component getComponent(EmptyRenderer component) {
-		MockupEmptyRendererComponent emptyRendererComponent = gameLoop
-				.createComponent(MockupEmptyRendererComponent.class);
-		emptyRendererComponent.setApplicationAssets(applicationAssets);
-		emptyRendererComponent.setGameLoop(gameLoop);
-		read(emptyRendererComponent, component);
-		return emptyRendererComponent;
+	protected void registerComponents(ComponentLoader componentLoader,
+			GameAssets gameAssets, GameLoop gameLoop,
+			VariablesManager variablesManager) {
+		super.registerComponents(componentLoader, gameAssets, gameLoop,
+				variablesManager);
+		componentLoader.registerComponentProcessor(
+				Image.class,
+				new EditorImageProcessor(gameLoop, controller
+						.getEditorGameAssets(), controller.getShapeRenderer()));
+		componentLoader.registerComponentProcessor(
+				Label.class,
+				new EditableLabelProccesor(gameLoop, controller
+						.getEditorGameAssets(), variablesManager, controller));
+		componentLoader.registerComponentProcessor(
+				EmptyRenderer.class,
+				new EditorEmptyRendererProcessor(gameLoop, controller
+						.getApplicationAssets()));
 	}
+
 }

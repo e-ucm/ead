@@ -37,24 +37,31 @@
 package es.eucm.ead.editor.control.engine;
 
 import es.eucm.ead.editor.control.Controller;
-import es.eucm.ead.editor.processors.MockupEmptyRendererProcessor;
+import es.eucm.ead.editor.processors.EditorEmptyRendererProcessor;
 import es.eucm.ead.engine.ComponentLoader;
+import es.eucm.ead.engine.DefaultEngineInitializer;
+import es.eucm.ead.engine.GameLoop;
+import es.eucm.ead.engine.assets.GameAssets;
 import es.eucm.ead.engine.variables.VariablesManager;
 import es.eucm.ead.schema.renderers.EmptyRenderer;
 
-public class MockupEngine extends Engine {
+public class MobileEngineInitializer extends DefaultEngineInitializer {
 
-	public MockupEngine(Controller controller) {
-		super(controller);
+	private Controller controller;
+
+	public MobileEngineInitializer(Controller controller) {
+		this.controller = controller;
 	}
 
-	@Override
-	protected void registerComponentsProcessors(
-			ComponentLoader componentLoader, Controller controller,
+	protected void registerComponents(ComponentLoader componentLoader,
+			GameAssets gameAssets, GameLoop gameLoop,
 			VariablesManager variablesManager) {
+		super.registerComponents(componentLoader, gameAssets, gameLoop,
+				variablesManager);
 		componentLoader.registerComponentProcessor(
 				EmptyRenderer.class,
-				new MockupEmptyRendererProcessor(getGameLoop(), controller
+				new EditorEmptyRendererProcessor(gameLoop, controller
 						.getApplicationAssets()));
 	}
+
 }
