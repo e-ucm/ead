@@ -37,27 +37,30 @@
 package es.eucm.ead.editor.processors;
 
 import ashley.core.Component;
+
+import com.badlogic.gdx.scenes.scene2d.utils.Drawable;
+
 import es.eucm.ead.editor.assets.ApplicationAssets;
-import es.eucm.ead.editor.components.MockupEmptyRendererComponent;
+import es.eucm.ead.editor.components.EditorEmptyRendererComponent;
 import es.eucm.ead.engine.GameLoop;
 import es.eucm.ead.engine.processors.renderers.EmptyRendererProcessor;
 import es.eucm.ead.schema.renderers.EmptyRenderer;
 
-public class MockupEmptyRendererProcessor extends EmptyRendererProcessor {
+public class EditorEmptyRendererProcessor extends EmptyRendererProcessor {
 
-	private ApplicationAssets applicationAssets;
+	private Drawable drawable;
 
-	public MockupEmptyRendererProcessor(GameLoop engine,
-			ApplicationAssets applicationAssets) {
+	public EditorEmptyRendererProcessor(GameLoop engine,
+                                        ApplicationAssets applicationAssets) {
 		super(engine);
-		this.applicationAssets = applicationAssets;
+		this.drawable = applicationAssets.getSkin().getDrawable("active_zone");
 	}
 
 	@Override
 	public Component getComponent(EmptyRenderer component) {
-		MockupEmptyRendererComponent emptyRendererComponent = gameLoop
-				.createComponent(MockupEmptyRendererComponent.class);
-		emptyRendererComponent.setApplicationAssets(applicationAssets);
+		EditorEmptyRendererComponent emptyRendererComponent = gameLoop
+				.createComponent(EditorEmptyRendererComponent.class);
+		emptyRendererComponent.setDrawable(drawable);
 		emptyRendererComponent.setGameLoop(gameLoop);
 		read(emptyRendererComponent, component);
 		return emptyRendererComponent;

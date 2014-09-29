@@ -43,13 +43,11 @@ import es.eucm.ead.editor.assets.ApplicationAssets;
 import es.eucm.ead.engine.GameLoop;
 import es.eucm.ead.engine.components.renderers.frames.EmptyRendererComponent;
 
-public class MockupEmptyRendererComponent extends EmptyRendererComponent {
+public class EditorEmptyRendererComponent extends EmptyRendererComponent {
 
 	private GameLoop gameLoop;
 
 	private Drawable drawable;
-
-	private float width, height;
 
 	public void setApplicationAssets(ApplicationAssets applicationAssets) {
 		drawable = applicationAssets.getSkin().getDrawable("active_zone");
@@ -66,11 +64,6 @@ public class MockupEmptyRendererComponent extends EmptyRendererComponent {
 
 	protected void drawCollider(Batch batch) {
 		if (!gameLoop.isPlaying() && getCollider() != null) {
-			if (width == 0) {
-				float[] vertices = collider.first().getVertices();
-				width = vertices[2] - vertices[0];
-				height = vertices[5] - vertices[3];
-			}
 			drawable.draw(batch, 0, 0, width, height);
 		}
 	}
