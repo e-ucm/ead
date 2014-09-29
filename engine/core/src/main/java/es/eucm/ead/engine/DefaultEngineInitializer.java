@@ -202,7 +202,7 @@ public class DefaultEngineInitializer implements EngineInitializer {
 				variablesManager);
 	}
 
-	private void registerSystems(final GameAssets gameAssets,
+	protected void registerSystems(final GameAssets gameAssets,
 			final GameLoop gameLoop, final EntitiesLoader entitiesLoader,
 			final GameView gameView, final VariablesManager variablesManager) {
 
@@ -321,7 +321,7 @@ public class DefaultEngineInitializer implements EngineInitializer {
 				gameAssets));
 	}
 
-	private void registerComponents(ComponentLoader componentLoader,
+	protected void registerComponents(ComponentLoader componentLoader,
 			GameAssets gameAssets, GameLoop gameLoop,
 			VariablesManager variablesManager) {
 		// Components

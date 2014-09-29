@@ -38,21 +38,15 @@ package es.eucm.ead.editor.control.engine;
 
 import es.eucm.ead.editor.assets.EditorGameAssets;
 import es.eucm.ead.editor.control.Controller;
-import es.eucm.ead.editor.processors.EditableLabelProccesor;
-import es.eucm.ead.editor.processors.EditorEmptyRendererProcessor;
-import es.eucm.ead.editor.processors.EditorImageProcessor;
 import es.eucm.ead.engine.Accessor;
 import es.eucm.ead.engine.ComponentLoader;
-import es.eucm.ead.engine.DefaultEngineInitializer;
+import es.eucm.ead.engine.EngineInitializer;
 import es.eucm.ead.engine.EntitiesLoader;
 import es.eucm.ead.engine.GameLoader;
 import es.eucm.ead.engine.GameLoop;
 import es.eucm.ead.engine.GameView;
 import es.eucm.ead.engine.expressions.operators.OperationsFactory;
 import es.eucm.ead.engine.variables.VariablesManager;
-import es.eucm.ead.schema.components.controls.Label;
-import es.eucm.ead.schema.renderers.EmptyRenderer;
-import es.eucm.ead.schema.renderers.Image;
 
 /**
  * Contains an instance of the engine
@@ -67,7 +61,7 @@ public class Engine {
 
 	private GameLoader gameLoader;
 
-	public Engine(Controller controller) {
+	public Engine(Controller controller, EngineInitializer engineInitializer) {
 		this.gameLoop = new GameLoop();
 		gameLoop.setPlaying(false);
 		this.gameView = new FacadeGameView();
@@ -87,29 +81,8 @@ public class Engine {
 				componentLoader);
 		gameLoader = new GameLoader(editorGameAssets, entitiesLoader);
 
-		DefaultEngineInitializer initializer = new DefaultEngineInitializer();
-		initializer.init(editorGameAssets, gameLoop, entitiesLoader, gameView,
-				variablesManager);
-
-		registerComponentsProcessors(componentLoader, controller,
-				variablesManager);
-	}
-
-	protected void registerComponentsProcessors(
-			ComponentLoader componentLoader, Controller controller,
-			VariablesManager variablesManager) {
-		componentLoader.registerComponentProcessor(
-				Image.class,
-				new EditorImageProcessor(gameLoop, controller
-						.getEditorGameAssets(), controller.getShapeRenderer()));
-		componentLoader.registerComponentProcessor(
-				Label.class,
-				new EditableLabelProccesor(gameLoop, controller
-						.getEditorGameAssets(), variablesManager, controller));
-		componentLoader.registerComponentProcessor(
-				EmptyRenderer.class,
-				new EditorEmptyRendererProcessor(getGameLoop(), controller
-						.getApplicationAssets()));
+		engineInitializer.init(editorGameAssets, gameLoop, entitiesLoader,
+				gameView, variablesManager);
 	}
 
 	public EntitiesLoader getEntitiesLoader() {

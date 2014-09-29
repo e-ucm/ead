@@ -45,7 +45,9 @@ import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.InputListener;
 import com.badlogic.gdx.scenes.scene2d.ui.TextArea;
 import es.eucm.ead.editor.assets.ApplicationAssets;
+import es.eucm.ead.editor.control.engine.MobileEngineInitializer;
 import es.eucm.ead.editor.platform.Platform;
+import es.eucm.ead.engine.EngineInitializer;
 
 public class MockupController extends Controller {
 
@@ -147,6 +149,11 @@ public class MockupController extends Controller {
 		String dpi = Dpi.getDpi();
 		mockupDpiPath = "skins/mockup-" + dpi + "/";
 		return new ApplicationAssets(files, mockupDpiPath + "skin");
+	}
+
+	@Override
+	protected EngineInitializer buildEngineInitializer() {
+		return new MobileEngineInitializer(this);
 	}
 
 	@Override
