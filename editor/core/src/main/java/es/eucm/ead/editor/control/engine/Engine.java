@@ -39,6 +39,7 @@ package es.eucm.ead.editor.control.engine;
 import es.eucm.ead.editor.assets.EditorGameAssets;
 import es.eucm.ead.editor.control.Controller;
 import es.eucm.ead.editor.processors.EditableLabelProccesor;
+import es.eucm.ead.editor.processors.EditorEmptyRendererProcessor;
 import es.eucm.ead.editor.processors.EditorImageProcessor;
 import es.eucm.ead.engine.Accessor;
 import es.eucm.ead.engine.ComponentLoader;
@@ -50,6 +51,7 @@ import es.eucm.ead.engine.GameView;
 import es.eucm.ead.engine.expressions.operators.OperationsFactory;
 import es.eucm.ead.engine.variables.VariablesManager;
 import es.eucm.ead.schema.components.controls.Label;
+import es.eucm.ead.schema.renderers.EmptyRenderer;
 import es.eucm.ead.schema.renderers.Image;
 
 /**
@@ -104,6 +106,10 @@ public class Engine {
 				Label.class,
 				new EditableLabelProccesor(gameLoop, controller
 						.getEditorGameAssets(), variablesManager, controller));
+		componentLoader.registerComponentProcessor(
+				EmptyRenderer.class,
+				new EditorEmptyRendererProcessor(getGameLoop(), controller
+						.getApplicationAssets()));
 	}
 
 	public EntitiesLoader getEntitiesLoader() {
