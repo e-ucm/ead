@@ -46,9 +46,9 @@ import es.eucm.ead.engine.components.renderers.CollidableRendererComponent;
  */
 public class EmptyRendererComponent extends CollidableRendererComponent {
 
-	private float width;
+	protected float width;
 
-	private float height;
+	protected float height;
 
 	private boolean hitAll;
 

@@ -38,7 +38,10 @@ package es.eucm.ead.editor.processors;
 
 import ashley.core.Component;
 
-import com.badlogic.gdx.scenes.scene2d.utils.Drawable;
+import com.badlogic.gdx.graphics.Color;
+import com.badlogic.gdx.graphics.g2d.Sprite;
+import com.badlogic.gdx.scenes.scene2d.utils.SpriteDrawable;
+import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable;
 
 import es.eucm.ead.editor.assets.ApplicationAssets;
 import es.eucm.ead.editor.components.EditorEmptyRendererComponent;
@@ -48,12 +51,19 @@ import es.eucm.ead.schema.renderers.EmptyRenderer;
 
 public class EditorEmptyRendererProcessor extends EmptyRendererProcessor {
 
-	private Drawable drawable;
+	public static final Color INTERACTIVE_ZONE_COLOR = new Color(0.0f, 1.0f,
+			0.0f, 0.25f);
+
+	private SpriteDrawable drawable;
 
 	public EditorEmptyRendererProcessor(GameLoop engine,
-                                        ApplicationAssets applicationAssets) {
+			ApplicationAssets applicationAssets) {
 		super(engine);
-		this.drawable = applicationAssets.getSkin().getDrawable("active_zone");
+		TextureRegionDrawable blank = (TextureRegionDrawable) applicationAssets
+				.getSkin().getDrawable("blank");
+		Sprite sprite = new Sprite(blank.getRegion());
+		sprite.setColor(INTERACTIVE_ZONE_COLOR);
+		drawable = new SpriteDrawable(sprite);
 	}
 
 	@Override

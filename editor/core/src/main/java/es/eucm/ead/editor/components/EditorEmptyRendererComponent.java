@@ -38,8 +38,6 @@ package es.eucm.ead.editor.components;
 
 import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.scenes.scene2d.utils.Drawable;
-
-import es.eucm.ead.editor.assets.ApplicationAssets;
 import es.eucm.ead.engine.GameLoop;
 import es.eucm.ead.engine.components.renderers.frames.EmptyRendererComponent;
 
@@ -49,20 +47,16 @@ public class EditorEmptyRendererComponent extends EmptyRendererComponent {
 
 	private Drawable drawable;
 
-	public void setApplicationAssets(ApplicationAssets applicationAssets) {
-		drawable = applicationAssets.getSkin().getDrawable("active_zone");
-	}
-
 	public void setGameLoop(GameLoop gameLoop) {
 		this.gameLoop = gameLoop;
 	}
 
-	@Override
-	public void draw(Batch batch) {
-		drawCollider(batch);
+	public void setDrawable(Drawable drawable) {
+		this.drawable = drawable;
 	}
 
-	protected void drawCollider(Batch batch) {
+	@Override
+	public void draw(Batch batch) {
 		if (!gameLoop.isPlaying() && getCollider() != null) {
 			drawable.draw(batch, 0, 0, width, height);
 		}
