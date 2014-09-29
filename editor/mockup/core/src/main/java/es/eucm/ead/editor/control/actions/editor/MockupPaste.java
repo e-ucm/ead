@@ -41,7 +41,6 @@ import com.badlogic.gdx.utils.SerializationException;
 
 import es.eucm.ead.editor.control.Clipboard;
 import es.eucm.ead.editor.control.actions.EditorAction;
-import es.eucm.ead.editor.control.actions.model.AddLabelToScene;
 import es.eucm.ead.schema.components.controls.Label;
 
 /**
