@@ -337,6 +337,7 @@ public class CreditsView implements ViewBuilder {
 		gorco.addListener(listener);
 		anserran.addListener(listener);
 		jtorrente.addListener(listener);
+		jtorrente2.addListener(listener);
 		manuelfreire.addListener(listener);
 		imartinezortiz.addListener(listener);
 		angeldelblanco.addListener(listener);
