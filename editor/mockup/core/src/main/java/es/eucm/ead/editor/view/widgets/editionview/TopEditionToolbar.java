@@ -56,7 +56,7 @@ import es.eucm.ead.editor.control.actions.editor.asynk.ExportMockupProject;
 import es.eucm.ead.editor.control.actions.editor.asynk.TakePicture;
 import es.eucm.ead.editor.control.actions.model.AddGatewayDefaultElement;
 import es.eucm.ead.editor.control.actions.model.AddInteractiveZone;
-import es.eucm.ead.editor.control.actions.model.AddLabelToScene;
+import es.eucm.ead.editor.control.actions.editor.AddLabelToScene;
 import es.eucm.ead.editor.control.actions.model.SetSelection;
 import es.eucm.ead.editor.view.builders.gallery.PlayView;
 import es.eucm.ead.editor.view.builders.gallery.repository.LibrariesView;

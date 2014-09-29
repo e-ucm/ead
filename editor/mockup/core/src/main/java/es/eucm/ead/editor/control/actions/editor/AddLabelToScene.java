@@ -34,17 +34,21 @@
  *      You should have received a copy of the GNU Lesser General Public License
  *      along with eAdventure.  If not, see <http://www.gnu.org/licenses/>.
  */
-package es.eucm.ead.editor.control.actions.model;
+package es.eucm.ead.editor.control.actions.editor;
 
+import com.badlogic.gdx.Input;
 import com.badlogic.gdx.graphics.g2d.BitmapFont.TextBounds;
 import com.badlogic.gdx.scenes.scene2d.ui.Label.LabelStyle;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 
+import es.eucm.ead.editor.control.actions.EditorAction;
 import es.eucm.ead.editor.control.actions.EditorActionException;
 import es.eucm.ead.editor.control.actions.ModelAction;
 import es.eucm.ead.editor.control.actions.model.AddSceneElement;
 import es.eucm.ead.editor.control.commands.Command;
 import es.eucm.ead.editor.model.Q;
+import es.eucm.ead.editor.platform.MockupPlatform;
+import es.eucm.ead.engine.I18N;
 import es.eucm.ead.schema.components.controls.Label;
 import es.eucm.ead.schema.editor.components.GameData;
 import es.eucm.ead.schema.entities.ModelEntity;
@@ -62,7 +66,8 @@ import es.eucm.ead.schema.entities.ModelEntity;
  * </dl>
  * 
  */
-public class AddLabelToScene extends ModelAction {
+public class AddLabelToScene extends EditorAction implements
+		Input.TextInputListener {
 
 	@Override
 	public boolean validate(Object... args) {
@@ -70,7 +75,19 @@ public class AddLabelToScene extends ModelAction {
 	}
 
 	@Override
-	public Command perform(Object... args) {
+	public void perform(Object... args) {
+		if (args.length == 0) {
+			I18N i18n = controller.getApplicationAssets().getI18N();
+			MockupPlatform platform;
+			platform = (MockupPlatform) controller.getPlatform();
+			platform.getMultilineTextInput(this, i18n.m("general.text"), "",
+					i18n);
+		} else {
+			addText(args);
+		}
+	}
+
+	private void addText(Object... args) {
 		ModelEntity textLabel = new ModelEntity();
 		GameData gameData = Q.getComponent(controller.getModel().getGame(),
 				GameData.class);
@@ -78,12 +95,6 @@ public class AddLabelToScene extends ModelAction {
 		Label label = null;
 		if (args.length == 1 && args[0] instanceof Label) {
 			label = (Label) args[0];
-			textLabel.getComponents().add(label);
-		} else if (args.length == 0) {
-			label = new Label();
-			label.setText(controller.getApplicationAssets().getI18N()
-					.m("general.text")); // default text
-			label.setStyle("welcome"); // default style
 			textLabel.getComponents().add(label);
 		} else {
 			throw new EditorActionException("Error in action "
@@ -99,8 +110,21 @@ public class AddLabelToScene extends ModelAction {
 		textLabel.setOriginX(bounds.width * 0.5f);
 		textLabel.setOriginY(bounds.height * 0.5f);
 
-		return controller.getActions().getAction(AddSceneElement.class)
-				.perform(textLabel);
+		controller.action(AddSceneElement.class, textLabel);
 	}
 
+	@Override
+	public void input(String text) {
+		if (text != null && !text.isEmpty()) {
+			Label label = new Label();
+			label.setText(text);
+			label.setStyle("welcome"); // default style
+			addText(label);
+		}
+	}
+
+	@Override
+	public void canceled() {
+
+	}
 }
