@@ -28,11 +28,6 @@
             <artifactId>editor-exporter</artifactId>
             <version>${project.version}</version>
         </dependency>
-        <dependency>
-            <groupId>com.badlogicgames.gdx</groupId>
-            <artifactId>gdx-freetype</artifactId>
-            <version>${gdx.version}</version>
-        </dependency>
         <!-- 2d geometry -->
         <dependency>
             <groupId>com.vividsolutions</groupId>
@@ -67,13 +62,6 @@
             <artifactId>engine-desktop</artifactId>
             <version>${project.version}</version>
             <type>test-jar</type>
-            <scope>test</scope>
-        </dependency>
-        <dependency>
-            <groupId>com.badlogicgames.gdx</groupId>
-            <artifactId>gdx-freetype-platform</artifactId>
-            <version>${gdx.version}</version>
-            <classifier>natives-desktop</classifier>
             <scope>test</scope>
         </dependency>
         <dependency>

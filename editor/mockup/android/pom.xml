@@ -51,6 +51,13 @@
             <version>19.0.0</version>
             <type>jar</type>
         </dependency>
+        <dependency>
+            <groupId>com.badlogicgames.gdx</groupId>
+            <artifactId>gdx-freetype-platform</artifactId>
+            <version>${gdx.version}</version>
+            <classifier>natives-armeabi-v7a</classifier>
+            <scope>provided</scope>
+        </dependency>
     </dependencies>
     <build>
         <!-- output APK doesn't contain version number, needed for Intellij Idea -->

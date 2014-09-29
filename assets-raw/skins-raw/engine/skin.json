@@ -1,6 +1,9 @@
 {
   com.badlogic.gdx.graphics.g2d.BitmapFont: {
-    regular: { file: roboto114regular.fnt }
+    regular: {
+        file: Roboto-Regular.ttf,
+        size: 200
+    }
   },
     com.badlogic.gdx.graphics.Color: {
       white: { a: 1, r: 1, g: 1, b: 1 },
