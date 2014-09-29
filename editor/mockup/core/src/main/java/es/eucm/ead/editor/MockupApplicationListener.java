@@ -37,8 +37,6 @@
 package es.eucm.ead.editor;
 
 import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.scenes.scene2d.Stage;
-import com.badlogic.gdx.utils.viewport.ScreenViewport;
 
 import es.eucm.ead.editor.control.Controller;
 import es.eucm.ead.editor.control.MockupController;
@@ -87,12 +85,6 @@ public class MockupApplicationListener extends EditorApplicationListener {
 		Gdx.app.postRunnable(clearColor);
 	}
 
-	@Override
-	protected Stage createStage() {
-		return new Stage(new ScreenViewport());
-	}
-
-	@Override
 	protected Controller buildController() {
 		return new MockupController(this.platform, Gdx.files,
 				super.stage.getRoot());

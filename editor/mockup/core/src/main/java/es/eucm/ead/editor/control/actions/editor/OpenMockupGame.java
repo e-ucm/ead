@@ -44,6 +44,7 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.scenes.scene2d.Group;
 import com.badlogic.gdx.utils.reflect.ClassReflection;
 
+import es.eucm.ead.editor.assets.EditorGameAssets;
 import es.eucm.ead.editor.control.MockupController;
 import es.eucm.ead.editor.control.actions.EditorActionException;
 import es.eucm.ead.editor.control.actions.editor.asynk.CloseMockupGame;
@@ -91,8 +92,14 @@ public class OpenMockupGame extends OpenGame {
 	protected void finishLoading(String path) {
 		try {
 			ViewBuilder currentView = controller.getViews().getCurrentView();
+			EditorGameAssets editorGameAssets = controller
+					.getEditorGameAssets();
+			path = editorGameAssets.toCanonicalPath(path);
+			if (!path.endsWith("/")) {
+				path += "/";
+			}
 			super.finishLoading(path);
-			if (!path.equals(controller.getEditorGameAssets().getLoadingPath())) {
+			if (!path.equals(editorGameAssets.getLoadingPath())) {
 				throw new EditorActionException("Failed opening: " + path
 						+ ", probably deleted.");
 			}
