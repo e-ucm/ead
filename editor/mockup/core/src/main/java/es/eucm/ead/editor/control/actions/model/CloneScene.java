@@ -40,6 +40,7 @@ import es.eucm.ead.editor.control.Selection;
 import es.eucm.ead.editor.control.actions.ModelAction;
 import es.eucm.ead.editor.control.actions.model.scene.NewScene;
 import es.eucm.ead.editor.control.commands.Command;
+import es.eucm.ead.editor.model.Model;
 import es.eucm.ead.editor.model.Q;
 import es.eucm.ead.engine.I18N;
 import es.eucm.ead.schema.editor.components.Documentation;
@@ -56,8 +57,31 @@ public class CloneScene extends ModelAction {
 
 		ModelEntity copy = controller.getEditorGameAssets().copy(scene);
 
-		String name = Q.getComponent(scene, Documentation.class).getName()
-				+ "-" + i18n.m("edition.copy").toLowerCase();
+		String sceneSuffix = "-" + i18n.m("edition.copy").toLowerCase();
+		String sceneName = Q.getComponent(scene, Documentation.class).getName();
+
+		String name = sceneName;
+		int index = name.indexOf(sceneSuffix);
+		if (index == -1) {
+			name += sceneSuffix;
+		} else {
+			name = name.substring(0, index) + sceneSuffix;
+		}
+
+		int cont = 0;
+		for (Model.Resource res : controller.getModel()
+				.getResources(ResourceCategory.SCENE).values()) {
+			String resName = Q.getComponent((ModelEntity) res.getObject(),
+					Documentation.class).getName();
+			if (resName != null && resName.startsWith(name)) {
+				++cont;
+			}
+		}
+
+		if (cont > 0) {
+			name += " " + (cont + 1);
+		}
+
 		String id = controller.getModel().createId(ResourceCategory.SCENE);
 
 		return controller.getActions().getAction(NewScene.class)
