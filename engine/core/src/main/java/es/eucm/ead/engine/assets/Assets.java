@@ -63,6 +63,7 @@ import com.badlogic.gdx.utils.JsonValue;
 import com.badlogic.gdx.utils.SerializationException;
 
 import es.eucm.ead.engine.I18N;
+import es.eucm.ead.engine.assets.loaders.ExtendedSkinLoader;
 
 /**
  * Abstract class for managing assets. In this context, any file required for
@@ -106,6 +107,7 @@ public abstract class Assets extends Json implements FileHandleResolver {
 		this.files = files;
 		assetManager = new AssetManager(this);
 		i18n = new I18N(this);
+		setLoader(Skin.class, new ExtendedSkinLoader(this));
 	}
 
 	/**

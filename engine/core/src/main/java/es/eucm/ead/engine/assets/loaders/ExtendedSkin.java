@@ -34,14 +34,13 @@
  *      You should have received a copy of the GNU Lesser General Public License
  *      along with eAdventure.  If not, see <http://www.gnu.org/licenses/>.
  */
-package es.eucm.ead.editor.assets.loaders;
+package es.eucm.ead.engine.assets.loaders;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.badlogic.gdx.graphics.g2d.freetype.FreeTypeFontGenerator;
-import com.badlogic.gdx.graphics.g2d.freetype.FreeTypeFontGenerator.FreeTypeFontParameter;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.utils.Json;
 import com.badlogic.gdx.utils.Json.ReadOnlySerializer;
@@ -100,10 +99,11 @@ public class ExtendedSkin extends Skin {
 				}
 				FreeTypeFontGenerator generator = new FreeTypeFontGenerator(
 						fontFile);
-				FreeTypeFontParameter parameter = new FreeTypeFontParameter();
+				FreeTypeFontGenerator.FreeTypeFontParameter parameter = new FreeTypeFontGenerator.FreeTypeFontParameter();
 				parameter.size = json.readValue("size", int.class, 12,
 						jsonValue);
 				BitmapFont font = generator.generateFont(parameter);
+				font.setOwnsTexture(true);
 				generator.dispose();
 				return font;
 			}
