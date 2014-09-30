@@ -39,10 +39,8 @@ package es.eucm.ead.editor.assets;
 import com.badlogic.gdx.Files;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.files.FileHandle;
-import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.utils.Json;
 import com.badlogic.gdx.utils.ObjectMap;
-import es.eucm.ead.editor.assets.loaders.ExtendedSkinLoader;
 import es.eucm.ead.editor.control.Preferences;
 import es.eucm.ead.editor.control.appdata.ReleaseInfo;
 import es.eucm.ead.engine.assets.Assets;
@@ -112,7 +110,6 @@ public class ApplicationAssets extends Assets {
 		super(files);
 		releaseFile = RELEASE_FILE;
 		// Set editor loaders
-		setLoader(Skin.class, new ExtendedSkinLoader(this));
 		loadSkin(skin);
 	}
 

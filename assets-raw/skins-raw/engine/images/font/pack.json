@@ -1,7 +1,0 @@
-{
-	paddingX: 0,
-	paddingY: 0,
-    filterMin: MipMapLinearNearest,
-    filterMag: Linear,
-    flattenPaths: true
-}
