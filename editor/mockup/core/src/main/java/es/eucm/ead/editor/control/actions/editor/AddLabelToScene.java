@@ -118,7 +118,7 @@ public class AddLabelToScene extends EditorAction implements
 		if (text != null && !text.isEmpty()) {
 			Label label = new Label();
 			label.setText(text);
-			label.setStyle("welcome"); // default style
+			label.setStyle("roboto-big"); // default style
 			addText(label);
 		}
 	}

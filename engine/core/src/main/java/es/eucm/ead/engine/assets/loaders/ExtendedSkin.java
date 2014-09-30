@@ -86,7 +86,8 @@ public class ExtendedSkin extends Skin {
 		@Override
 		public BitmapFont read(Json json, JsonValue jsonValue, Class aClass) {
 			String path = json.readValue("file", String.class, jsonValue);
-			if (path == null || !path.endsWith(".ttf")) {
+			if (path == null
+					|| !(path.endsWith(".ttf") || path.endsWith(".otf"))) {
 				return defaultSerializer.read(json, jsonValue, aClass);
 			} else {
 				FileHandle fontFile = skinFile.parent().child(path);
