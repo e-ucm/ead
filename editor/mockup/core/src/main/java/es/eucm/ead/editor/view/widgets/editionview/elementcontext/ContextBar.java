@@ -36,18 +36,19 @@
  */
 package es.eucm.ead.editor.view.widgets.editionview.elementcontext;
 
+import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
 
+import es.eucm.ead.editor.view.widgets.DropDown;
 import es.eucm.ead.editor.view.widgets.IconButton;
 import es.eucm.ead.editor.view.widgets.IconButton.IconButtonStyle;
 
 public class ContextBar extends Table {
 
-	public ContextBar(Skin skin, IconButton... actors) {
+	public ContextBar(Skin skin, Actor... actors) {
 		if (actors.length == 1) {
-			IconButton actor = actors[0];
-			setUpButtonStyle(skin, actor, "white_single");
+			setUpButtonStyle(skin, actors[0], "white_single");
 		} else if (actors.length > 1) {
 			setUpButtonStyle(skin, actors[0], "white_left");
 			for (int i = 1; i < actors.length - 1; ++i) {
@@ -57,11 +58,21 @@ public class ContextBar extends Table {
 		}
 	}
 
-	private void setUpButtonStyle(Skin skin, IconButton button, String style) {
-		IconButtonStyle panelStyle = skin.get(style, IconButtonStyle.class);
-		if (button.getStyle() != panelStyle) {
-			button.setStyle(panelStyle);
+	private void setUpButtonStyle(Skin skin, Actor actor, String style) {
+		if (actor instanceof IconButton) {
+			IconButton button = (IconButton) actor;
+			IconButtonStyle panelStyle = skin.get(style, IconButtonStyle.class);
+			if (button.getStyle() != panelStyle) {
+				button.setStyle(panelStyle);
+			}
+		} else if (actor instanceof DropDown) {
+			DropDown button = (DropDown) actor;
+			DropDown.DropDownStyle panelStyle = skin.get(style,
+					DropDown.DropDownStyle.class);
+			if (button.getStyle() != panelStyle) {
+				button.setStyle(panelStyle);
+			}
 		}
-		add(button);
+		add(actor);
 	}
 }

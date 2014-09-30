@@ -57,6 +57,7 @@ import es.eucm.ead.editor.control.actions.model.AddGatewayDefaultElement;
 import es.eucm.ead.editor.control.actions.model.AddInteractiveZone;
 import es.eucm.ead.editor.control.actions.editor.AddLabelToScene;
 import es.eucm.ead.editor.control.actions.model.SetSelection;
+import es.eucm.ead.editor.control.commands.Command;
 import es.eucm.ead.editor.view.builders.gallery.PlayView;
 import es.eucm.ead.editor.view.builders.gallery.repository.LibrariesView;
 import es.eucm.ead.editor.view.listeners.ActionListener;
@@ -68,6 +69,8 @@ import es.eucm.ead.editor.view.widgets.editionview.draw.PaintToolbar.DrawListene
 import es.eucm.ead.editor.view.widgets.gallery.AboutWidget;
 import es.eucm.ead.editor.view.widgets.iconwithpanel.IconWithScalePanel;
 import es.eucm.ead.engine.assets.GameAssets;
+
+import java.util.Stack;
 
 public class TopEditionToolbar extends Toolbar {
 
@@ -215,8 +218,10 @@ public class TopEditionToolbar extends Toolbar {
 			}
 		};
 		Commands commands = controller.getCommands();
-		undo.setDisabled(commands.getUndoHistory().isEmpty());
-		redo.setDisabled(commands.getRedoHistory().isEmpty());
+		Stack<Command> undoHistory = commands.getUndoHistory();
+		undo.setDisabled(undoHistory == null ? true : undoHistory.isEmpty());
+		Stack<Command> redoHistory = commands.getRedoHistory();
+		redo.setDisabled(redoHistory == null ? true : redoHistory.isEmpty());
 		Actions actions = controller.getActions();
 		actions.addActionListener(Undo.class, undoRedo);
 		actions.addActionListener(Redo.class, undoRedo);
