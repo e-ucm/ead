@@ -39,11 +39,14 @@ package es.eucm.ead.editor.view.widgets.editionview;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.g2d.Batch;
+import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.InputListener;
+import com.badlogic.gdx.scenes.scene2d.ui.Button;
 import com.badlogic.gdx.scenes.scene2d.ui.ScrollPane;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
+import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 
 import es.eucm.ead.editor.control.Controller;
@@ -57,6 +60,7 @@ import es.eucm.ead.editor.model.Model;
 import es.eucm.ead.editor.model.Model.SelectionListener;
 import es.eucm.ead.editor.model.events.SelectionEvent;
 import es.eucm.ead.editor.model.events.SelectionEvent.Type;
+import es.eucm.ead.editor.view.builders.gallery.PlayView;
 import es.eucm.ead.editor.view.builders.gallery.ScenesView;
 import es.eucm.ead.editor.view.widgets.IconButton;
 import es.eucm.ead.editor.view.widgets.iconwithpanel.IconWithScalePanel;
@@ -113,10 +117,20 @@ public class NavigationButton extends IconWithScalePanel implements
 			}
 		});
 
+		Button play = new IconButton("normalPlay", 0f, skin, "white");
+		play.addListener(new ChangeListener() {
+
+			@Override
+			public void changed(ChangeEvent event, Actor actor) {
+				controller.action(ChangeMockupView.class, PlayView.class);
+			}
+		});
+
 		panel.top();
+		panel.add(play).pad(pad);
 		panel.add(goGallery).pad(pad);
 		panel.row();
-		panel.add(list).expandX().fill();
+		panel.add(list).expandX().fill().colspan(2);
 		panel.row();
 		float littlePad = Gdx.graphics.getHeight() * .03f;
 		TextButton addButton = new TextButton(i18n.m("edition.exits.newScene"),
@@ -132,7 +146,7 @@ public class NavigationButton extends IconWithScalePanel implements
 						.getI18N().m("edition.areNewScene"), 2f);
 			}
 		});
-		panel.add(addButton);
+		panel.add(addButton).colspan(2);
 		controller.getModel().addSelectionListener(this);
 	}
 
