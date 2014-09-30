@@ -135,7 +135,7 @@ public class ScenesView extends BaseGallery implements BackListener {
 
 	@Override
 	protected Actor createPlayButton() {
-		Button play = new IconButton("play80x80", 0f, skin, "inverted");
+		Button play = new IconButton("normalPlay", 0f, skin, "inverted");
 		play.addListener(new ChangeListener() {
 
 			@Override
