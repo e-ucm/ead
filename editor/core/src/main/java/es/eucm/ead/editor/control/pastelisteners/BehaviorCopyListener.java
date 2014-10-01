@@ -36,6 +36,8 @@
  */
 package es.eucm.ead.editor.control.pastelisteners;
 
+import com.badlogic.gdx.utils.Array;
+
 import es.eucm.ead.editor.control.Clipboard.CopyListener;
 import es.eucm.ead.editor.control.Controller;
 import es.eucm.ead.editor.control.actions.model.scene.behaviors.AddBehavior;
@@ -56,5 +58,11 @@ public class BehaviorCopyListener implements CopyListener<Behavior> {
 	@Override
 	public void paste(Behavior object) {
 		controller.action(AddBehavior.class, object);
+	}
+
+	@Override
+	public void paste(Array<Behavior> object) {
+		controller.action(AddBehavior.class, object.toArray(Behavior.class));
+
 	}
 }
