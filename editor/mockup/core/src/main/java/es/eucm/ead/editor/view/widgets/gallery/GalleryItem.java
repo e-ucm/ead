@@ -42,25 +42,17 @@ import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.Touchable;
-import com.badlogic.gdx.scenes.scene2d.ui.Button;
-import com.badlogic.gdx.scenes.scene2d.ui.Container;
-import com.badlogic.gdx.scenes.scene2d.ui.Image;
-import com.badlogic.gdx.scenes.scene2d.ui.Label;
-import com.badlogic.gdx.scenes.scene2d.ui.Skin;
-import com.badlogic.gdx.scenes.scene2d.ui.Table;
-import com.badlogic.gdx.scenes.scene2d.ui.TextField;
+import com.badlogic.gdx.scenes.scene2d.ui.*;
 import com.badlogic.gdx.scenes.scene2d.ui.TextField.TextFieldStyle;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.scenes.scene2d.utils.Drawable;
 import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable;
 import com.badlogic.gdx.utils.Scaling;
-
 import es.eucm.ead.editor.view.builders.gallery.BaseGallery;
 import es.eucm.ead.editor.view.widgets.IconButton;
 
 public abstract class GalleryItem extends Button {
 
-	private static final float MAX_PERCENT_WIDTH = .3F;
 	private static final String DELETE_ICON = "recycle";
 
 	private static final ClickListener iconListener = new ClickListener() {
@@ -72,19 +64,17 @@ public abstract class GalleryItem extends Button {
 			} else {
 				item.gallery.itemClicked(item);
 			}
-		};
+		}
+
+		;
 	};
 
 	protected Actor name;
-
-	private GalleryItemStyle style;
-
 	protected Image image;
-
 	protected BaseGallery gallery;
-
 	protected Skin skin;
 	protected Table top;
+	private GalleryItemStyle style;
 
 	public GalleryItem(Image image, String text, boolean canBeDeleted,
 			Skin skin, BaseGallery gallery) {
@@ -128,7 +118,8 @@ public abstract class GalleryItem extends Button {
 		this.image = image;
 		image.setScaling(Scaling.fit);
 		image.setDrawable(skin.getDrawable("new_project80x80"));
-		top.add(image).maxSize(Gdx.graphics.getWidth() * MAX_PERCENT_WIDTH);
+		top.add(image).maxSize(
+				Gdx.graphics.getWidth() / (gallery.getColumns() + .5f));
 
 		Container<Actor> bot = new Container<Actor>(name);
 		bot.setBackground(style.textBackground);
@@ -163,6 +154,10 @@ public abstract class GalleryItem extends Button {
 		}
 	}
 
+	public void setThumbnail(Texture asset) {
+		image.setDrawable(new TextureRegionDrawable(new TextureRegion(asset)));
+	}
+
 	static public class GalleryItemStyle {
 
 		public Drawable imageBackground, textBackground;
@@ -184,9 +179,5 @@ public abstract class GalleryItem extends Button {
 			this.textBackground = style.textBackground;
 			this.textStyle = style.textStyle;
 		}
-	}
-
-	public void setThumbnail(Texture asset) {
-		image.setDrawable(new TextureRegionDrawable(new TextureRegion(asset)));
 	}
 }
