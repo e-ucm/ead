@@ -51,7 +51,6 @@ import java.util.Comparator;
 
 /**
  * Widget used to sort {@link GalleryItem} items in a {@link BaseGallery}.
- * 
  */
 public class SortWidget extends DropDown {
 
@@ -66,25 +65,7 @@ public class SortWidget extends DropDown {
 			final BaseGallery baseGallery, boolean sortByDate) {
 		super(skin);
 		this.items = items;
-		Array<Actor> sortButtons = new Array<Actor>();
-
-		IconButton azSort = new IconButton("reorderAZ80x80", skin);
-		azSort.setUserObject(new Comparator<GalleryItem>() {
-			@Override
-			public int compare(GalleryItem o1, GalleryItem o2) {
-				return o1.getName().compareTo(o2.getName());
-			}
-		});
-		sortButtons.add(azSort);
-
-		IconButton zaSort = new IconButton("reorderZA80x80", skin);
-		zaSort.setUserObject(new Comparator<GalleryItem>() {
-			@Override
-			public int compare(GalleryItem o1, GalleryItem o2) {
-				return o2.getName().compareTo(o1.getName());
-			}
-		});
-		sortButtons.add(zaSort);
+		Array<Actor> sortButtons = new Array<Actor>(3);
 
 		if (sortByDate) {
 			IconButton dateSort = new IconButton("reorderDate", skin);
@@ -111,6 +92,24 @@ public class SortWidget extends DropDown {
 			});
 			sortButtons.add(dateSort);
 		}
+
+		IconButton azSort = new IconButton("reorderAZ80x80", skin);
+		azSort.setUserObject(new Comparator<GalleryItem>() {
+			@Override
+			public int compare(GalleryItem o1, GalleryItem o2) {
+				return o1.getName().compareTo(o2.getName());
+			}
+		});
+		sortButtons.add(azSort);
+
+		IconButton zaSort = new IconButton("reorderZA80x80", skin);
+		zaSort.setUserObject(new Comparator<GalleryItem>() {
+			@Override
+			public int compare(GalleryItem o1, GalleryItem o2) {
+				return o2.getName().compareTo(o1.getName());
+			}
+		});
+		sortButtons.add(zaSort);
 
 		setItems(sortButtons);
 		addListener(new ChangeListener() {
