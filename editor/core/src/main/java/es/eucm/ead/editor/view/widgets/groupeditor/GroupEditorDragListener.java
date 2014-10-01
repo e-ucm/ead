@@ -343,7 +343,8 @@ public class GroupEditorDragListener extends DragListener {
 			a.localToAscendantCoordinates(groupEditor, n);
 			a.localToAscendantCoordinates(groupEditor, d);
 			if (selection.contains(o) && selection.contains(t)
-					&& selection.contains(n) && selection.contains(d)) {
+					&& selection.contains(n) && selection.contains(d)
+					&& a.isTouchable() && a.isVisible()) {
 				actors.add(a);
 			}
 		}
