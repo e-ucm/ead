@@ -39,6 +39,7 @@ package es.eucm.ead.editor.control.actions.model;
 import es.eucm.ead.editor.control.Selection;
 import es.eucm.ead.editor.control.actions.ModelAction;
 import es.eucm.ead.editor.control.commands.Command;
+import es.eucm.ead.editor.control.commands.CompositeCommand;
 import es.eucm.ead.schema.entities.ModelEntity;
 
 /**
@@ -54,15 +55,20 @@ public abstract class SceneElementSelection extends ModelAction {
 
 	@Override
 	public Command perform(Object... args) {
+		CompositeCommand compositeCommand = new CompositeCommand();
+
 		Selection selection = controller.getModel().getSelection();
 		Object sceneObject = selection.getSingle(Selection.SCENE);
 		if (sceneObject instanceof ModelEntity) {
 			ModelEntity scene = (ModelEntity) sceneObject;
-			Object elemObject = selection.getSingle(Selection.SCENE_ELEMENT);
-			if (elemObject instanceof ModelEntity) {
-				ModelEntity element = (ModelEntity) elemObject;
-				return getCommand(scene, element);
+			Object[] elements = selection.get(Selection.SCENE_ELEMENT);
+			for (Object elemObject : elements) {
+				if (elemObject instanceof ModelEntity) {
+					ModelEntity element = (ModelEntity) elemObject;
+					compositeCommand.addCommand(getCommand(scene, element));
+				}
 			}
+			return compositeCommand;
 		}
 		return null;
 	}
