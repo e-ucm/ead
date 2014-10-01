@@ -36,6 +36,8 @@
  */
 package es.eucm.ead.editor.control.actions.model;
 
+import com.badlogic.gdx.utils.Array;
+
 import es.eucm.ead.editor.control.Controller;
 import es.eucm.ead.editor.control.Selection;
 import es.eucm.ead.editor.control.actions.ModelAction;
@@ -54,8 +56,8 @@ import es.eucm.ead.schemax.FieldName;
  * </p>
  * <dl>
  * <dt><strong>Arguments</strong></dt>
- * <dd><strong>args[0]</strong> <em>SceneElement</em> the scene element to add
- * list</dd>
+ * <dd><strong>args[0]</strong> <em>SceneElement</em> or <em>Array</em> the
+ * scene elements to add list</dd>
  * </dl>
  */
 public class AddSceneElement extends ModelAction {
@@ -63,7 +65,8 @@ public class AddSceneElement extends ModelAction {
 	private SetSelection setSelection;
 
 	public AddSceneElement() {
-		super(true, false, ModelEntity.class);
+		super(true, false, new Class[] { ModelEntity.class },
+				new Class[] { Array.class });
 	}
 
 	@Override
@@ -74,25 +77,34 @@ public class AddSceneElement extends ModelAction {
 
 	@Override
 	public CompositeCommand perform(Object... args) {
-		ModelEntity sceneElement = (ModelEntity) args[0];
+		Array sceneElements;
+		if (args[0] instanceof Array) {
+			sceneElements = (Array) args[0];
+		} else {
+			sceneElements = new Array();
+			sceneElements.add(args[0]);
+		}
 		Object context = controller.getModel().getSelection()
 				.getSingle(Selection.EDITED_GROUP);
 
 		if (context instanceof ModelEntity) {
-
 			ModelEntity root = (ModelEntity) context;
 
 			CompositeCommand compositeCommand = new CompositeCommand();
-			compositeCommand.addCommand(new AddToListCommand(root, root
-					.getChildren(), sceneElement));
+			for (Object object : sceneElements) {
+				if (object instanceof ModelEntity) {
+					ModelEntity sceneElement = (ModelEntity) object;
+					compositeCommand.addCommand(new AddToListCommand(root, root
+							.getChildren(), sceneElement));
 
+					Parent parent = Q.getComponent(sceneElement, Parent.class);
+					compositeCommand.addCommand(new FieldCommand(parent,
+							FieldName.PARENT, root));
+				}
+			}
 			compositeCommand.addCommand(setSelection.perform(
 					Selection.EDITED_GROUP, Selection.SCENE_ELEMENT,
-					sceneElement));
-
-			Parent parent = Q.getComponent(sceneElement, Parent.class);
-			compositeCommand.addCommand(new FieldCommand(parent,
-					FieldName.PARENT, root));
+					sceneElements));
 
 			return compositeCommand;
 		} else {
