@@ -86,6 +86,7 @@ accept = Accept
 cancel = Cancel
 save = Save
 sound.loop = Loop
+sound.supportedExtensions = Supported extensions
 project.exporting = Exporting project
 project.importing = Importing project
 project.exportingError = Something went wrong while exporting, try again
