@@ -54,6 +54,8 @@ import es.eucm.ead.editor.control.MockupViews;
 import es.eucm.ead.editor.control.Selection;
 import es.eucm.ead.editor.control.actions.editor.Copy;
 import es.eucm.ead.editor.control.actions.editor.LaunchExternalEditor;
+import es.eucm.ead.editor.control.actions.editor.LockSelection;
+import es.eucm.ead.editor.control.actions.editor.SetInvisibleSelection;
 import es.eucm.ead.editor.control.actions.model.ChangeSelectionText;
 import es.eucm.ead.editor.control.actions.model.RemoveSceneElementSelection;
 import es.eucm.ead.editor.control.actions.model.scene.ReorderSelection;
@@ -71,7 +73,8 @@ public class ElementContext extends Table {
 	private static final String IC_DELETE = "remove80x80",
 			IC_DUPLICATE = "clone80x80", IC_TOFRONT = "tofront80x80",
 			IC_TOBACK = "toback80x80", IC_IAMGEEFFECTS = "effects80x80",
-			IC_CHANGETEXT = "pencil80x80";
+			IC_CHANGETEXT = "pencil80x80", IC_LOCK = "lock80x80",
+			IC_VISIBLE = "visibility80x80";
 
 	private static final float COPY_NOTIFICATION_TIME = 2f;
 	private static final float ROTATION_HANDLE_SPACE = 50f;
@@ -89,33 +92,31 @@ public class ElementContext extends Table {
 	private LabelColorPicker colorPicker;
 
 	public ElementContext(final Controller controller,
-			MockupSceneEditor sceneEditor) {
+			final MockupSceneEditor sceneEditor) {
 		this.sceneEditor = sceneEditor;
 		ApplicationAssets assets = controller.getApplicationAssets();
 		Skin skin = assets.getSkin();
 
 		// Common context
-		final IconButton toFront = new IconButton(IC_TOFRONT, 0f, skin,
-				"white_left");
-		final IconButton toBack = new IconButton(IC_TOBACK, 0f, skin,
-				"white_center");
-		final IconButton copy = new IconButton(IC_DUPLICATE, 0f, skin,
-				"white_center");
-		final IconButton delete = new IconButton(IC_DELETE, 0f, skin,
-				"white_right");
+		final IconButton toFront = new IconButton(IC_TOFRONT, 0f, skin);
+		final IconButton toBack = new IconButton(IC_TOBACK, 0f, skin);
+		final IconButton copy = new IconButton(IC_DUPLICATE, 0f, skin);
+		final IconButton lock = new IconButton(IC_LOCK, 0f, skin);
+		final IconButton invisible = new IconButton(IC_VISIBLE, 0f, skin);
+		final IconButton delete = new IconButton(IC_DELETE, 0f, skin);
 		delete.getIcon().setColor(Color.WHITE);
 
-		commonContext = new ContextBar(skin, toFront, toBack, copy, delete);
+		commonContext = new ContextBar(skin, toFront, toBack, copy, invisible,
+				lock, delete);
 
 		// Image context
 		final IconButton imageEffects = new IconButton(IC_IAMGEEFFECTS, 0f,
-				skin, "white_single");
+				skin);
 
 		imageContext = new ContextBar(skin, imageEffects);
 
 		// Label context
-		final IconButton changeText = new IconButton(IC_CHANGETEXT, 0f, skin,
-				"white_single");
+		final IconButton changeText = new IconButton(IC_CHANGETEXT, 0f, skin);
 		colorPicker = new LabelColorPicker(controller, true, skin, this);
 
 		labelContext = new ContextBar(skin, changeText, colorPicker);
@@ -142,6 +143,10 @@ public class ElementContext extends Table {
 				Actor listener = event.getListenerActor();
 				if (listener == imageEffects) {
 					controller.action(LaunchExternalEditor.class);
+				} else if (listener == lock) {
+					controller.action(LockSelection.class, sceneEditor);
+				} else if (listener == invisible) {
+					controller.action(SetInvisibleSelection.class, sceneEditor);
 				} else if (listener == toFront) {
 					controller.action(ReorderSelection.class,
 							ReorderSelection.Type.TO_FRONT);
@@ -180,6 +185,8 @@ public class ElementContext extends Table {
 		delete.addListener(listener);
 		copy.addListener(listener);
 		changeText.addListener(listener);
+		lock.addListener(listener);
+		invisible.addListener(listener);
 
 	}
 

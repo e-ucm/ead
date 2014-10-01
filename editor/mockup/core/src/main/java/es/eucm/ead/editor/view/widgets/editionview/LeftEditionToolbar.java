@@ -36,10 +36,16 @@
  */
 package es.eucm.ead.editor.view.widgets.editionview;
 
+import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.ui.ScrollPane;
+import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.utils.Align;
+import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 
 import es.eucm.ead.editor.control.Controller;
+import es.eucm.ead.editor.control.actions.editor.SetAllUnlocked;
+import es.eucm.ead.editor.control.actions.editor.SetAllVisible;
+import es.eucm.ead.editor.view.widgets.IconButton;
 import es.eucm.ead.editor.view.widgets.Toolbar;
 import es.eucm.ead.editor.view.widgets.editionview.prefabs.ChangeVariablePanel;
 import es.eucm.ead.editor.view.widgets.editionview.prefabs.DeparturePanel;
@@ -51,7 +57,7 @@ import es.eucm.ead.editor.view.widgets.editionview.prefabs.VisibilityPanel;
 
 public class LeftEditionToolbar extends ScrollPane {
 
-	public LeftEditionToolbar(Controller controller, String style,
+	public LeftEditionToolbar(final Controller controller, String style,
 			float smallPad, float normalPad) {
 		super(null);
 
@@ -86,6 +92,32 @@ public class LeftEditionToolbar extends ScrollPane {
 		toolbar.add(touchabilityPanel);
 		toolbar.row();
 		toolbar.add(tweensPanel);
+
+		// By the moment the unlock and set visible all actors buttons are in
+		// leftEditionToolbar
+		Skin skin = controller.getApplicationAssets().getSkin();
+		final IconButton invisible = new IconButton("visibility80x80", 0f, skin);
+		final IconButton lock = new IconButton("lock80x80", 0f, skin);
+		toolbar.row();
+		toolbar.add(invisible).padTop(normalPad);
+		toolbar.row();
+		toolbar.add(lock);
+
+		ClickListener listener = new ClickListener() {
+			public void clicked(
+					com.badlogic.gdx.scenes.scene2d.InputEvent event, float x,
+					float y) {
+				Actor listener = event.getListenerActor();
+				if (listener == invisible) {
+					controller.action(SetAllVisible.class);
+				} else if (listener == lock) {
+					controller.action(SetAllUnlocked.class);
+				}
+			};
+		};
+
+		lock.addListener(listener);
+		invisible.addListener(listener);
 	}
 
 }
