@@ -64,9 +64,9 @@ public class ScrollPaneDif extends ScrollPane {
 	@Override
 	public void draw(Batch batch, float parentAlpha) {
 		super.draw(batch, parentAlpha);
-		batch.setColor(Color.WHITE);
 		style.topBackground
 				.draw(batch, getX(), getY(), getWidth(), getHeight());
+		batch.setColor(Color.WHITE);
 	}
 
 	public void setStyle(ScrollPaneDifStyle style) {
