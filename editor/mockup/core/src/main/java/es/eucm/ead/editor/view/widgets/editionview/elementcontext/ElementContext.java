@@ -47,7 +47,6 @@ import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.scenes.scene2d.ui.WidgetGroup;
 import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
-
 import es.eucm.ead.editor.assets.ApplicationAssets;
 import es.eucm.ead.editor.control.Controller;
 import es.eucm.ead.editor.control.MockupViews;
@@ -74,7 +73,6 @@ public class ElementContext extends Table {
 			IC_CHANGETEXT = "pencil80x80";
 
 	private static final float COPY_NOTIFICATION_TIME = 2f;
-	private static final float ROTATION_HANDLE_SPACE = 50f;
 	private static final float X_SPACE = 10f;
 	private static final Vector2 TEMP = new Vector2();
 
@@ -188,6 +186,7 @@ public class ElementContext extends Table {
 			return;
 		}
 		if (actor != null) {
+			clearContext();
 			add(commonContext).left();
 			Stage stage = actor.getStage();
 			if (stage != null) {
@@ -257,19 +256,10 @@ public class ElementContext extends Table {
 								+ (actorH - prefH) * .5f));
 				float rightSpace = X_SPACE;
 				float leftSpace = X_SPACE;
-				float degrees = actor.getRotation() % 360;
-				if (degrees < 0) {
-					degrees += 360;
-				}
-				if (degrees > 240 && degrees < 300) {
-					rightSpace += ROTATION_HANDLE_SPACE;
-				} else if (degrees > 60 && degrees < 120) {
-					leftSpace += ROTATION_HANDLE_SPACE;
-				}
+
 				float x;
 				if (actorX + actorW + prefW + rightSpace < sceneX + sceneW) {
 					// Positioning to the right
-
 					x = actorX + actorW + rightSpace;
 				} else if (actorX - prefW - leftSpace > sceneX) {
 					// Positioning to the left
@@ -284,6 +274,7 @@ public class ElementContext extends Table {
 				y = MathUtils.round(y);
 				prefW = MathUtils.round(prefW);
 				prefH = MathUtils.round(prefH);
+
 				float currX = getX(), currY = getY(), currH = getHeight();
 
 				if (!MathUtils.isEqual(currX, x)
@@ -308,7 +299,7 @@ public class ElementContext extends Table {
 		clear();
 		labelContext.remove();
 		imageContext.remove();
-		setPosition(-1f, -1f);
+		setPosition(-1000f, -1000f);
 	}
 
 	private WidgetGroup getContext(ModelEntity entity) {
