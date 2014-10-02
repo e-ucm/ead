@@ -138,3 +138,4 @@ about.madeBy = made by
 about.poweredBy = Powered by
 about.technicalAdvisor = Technical advisor
 error.openArchive = Unable to load file.
+error.variables.invalidText = You can not create unnamed variables or with spaces.
