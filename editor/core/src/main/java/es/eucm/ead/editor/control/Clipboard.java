@@ -160,10 +160,25 @@ public class Clipboard {
 
 	private void paste(String content) {
 		Array contents = assets.fromJson(Array.class, content);
+		Class clazz = contents.first().getClass();
+		boolean oneClass = true;
 		for (Object o : contents) {
-			CopyListener copyListener = copyListeners.get(o.getClass());
+			if (!o.getClass().equals(clazz)) {
+				oneClass = false;
+				break;
+			}
+		}
+		if (oneClass && contents.size > 1) {
+			CopyListener copyListener = copyListeners.get(clazz);
 			if (copyListener != null) {
-				copyListener.paste(o);
+				copyListener.paste(contents);
+			}
+		} else {
+			for (Object o : contents) {
+				CopyListener copyListener = copyListeners.get(o.getClass());
+				if (copyListener != null) {
+					copyListener.paste(o);
+				}
 			}
 		}
 	}
@@ -191,6 +206,11 @@ public class Clipboard {
 		 * The given object has been pasted
 		 */
 		void paste(T object);
+
+		/**
+		 * The given objects list has been pasted
+		 */
+		void paste(Array<T> object);
 	}
 
 	public interface ClipboardListener {

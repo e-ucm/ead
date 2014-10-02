@@ -36,6 +36,8 @@
  */
 package es.eucm.ead.editor.control.actions.model;
 
+import com.badlogic.gdx.utils.Array;
+
 import es.eucm.ead.editor.control.actions.ModelAction;
 import es.eucm.ead.editor.control.commands.Command;
 import es.eucm.ead.editor.control.commands.SelectionCommand;
@@ -44,6 +46,11 @@ import es.eucm.ead.editor.control.commands.SelectionCommand;
  * Sets the current selection
  * <dl>
  * <dt><strong>Arguments</strong></dt>
+ * <dd><strong>args[0]</strong> <em>{@link String}</em> parent context id</dd>
+ * <dd><strong>args[1]</strong> <em>{@link String}</em> context id</dd>
+ * <dd><strong>args[2]</strong> <em>{@link Array}</em> list with the objects for
+ * the selection.
+ * <dd>or</dd>
  * <dd><strong>args[0]</strong> <em>{@link String}</em> parent context id</dd>
  * <dd><strong>args[1]</strong> <em>{@link String}</em> context id</dd>
  * <dd><strong>args[2..n]</strong> <em>{@link Object}</em> objects for the
@@ -68,9 +75,15 @@ public class SetSelection extends ModelAction {
 
 	@Override
 	public Command perform(Object... args) {
-		Object[] selection = new Object[args.length - 2];
-		System.arraycopy(args, 2, selection, 0, selection.length);
-		return new SelectionCommand(controller.getModel(), (String) args[0],
-				(String) args[1], selection);
+		if (args.length == 3 && args[2] instanceof Array) {
+			return new SelectionCommand(controller.getModel(),
+					(String) args[0], (String) args[1],
+					((Array) args[2]).toArray());
+		} else {
+			Object[] selection = new Object[args.length - 2];
+			System.arraycopy(args, 2, selection, 0, selection.length);
+			return new SelectionCommand(controller.getModel(),
+					(String) args[0], (String) args[1], selection);
+		}
 	}
 }
