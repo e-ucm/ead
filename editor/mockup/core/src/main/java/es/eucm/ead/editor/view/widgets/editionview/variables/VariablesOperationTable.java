@@ -64,25 +64,7 @@ public abstract class VariablesOperationTable extends LinearLayout {
 
 	protected ChangeListener variableChanged;
 
-	private static final ClickListener addClicked = new ClickListener() {
-		public void clicked(InputEvent event, float x, float y) {
-			Actor actor = event.getListenerActor();
-			VariablesOperationTable table = (VariablesOperationTable) actor
-					.getParent();
-			VariablesTable varTable = (VariablesTable) actor.getUserObject();
-			varTable.hide();
-
-			table.addVariableWidget();
-			Actor parent = table.getParent();
-			while (parent != null) {
-				if (parent instanceof PositionedHiddenPanel) {
-					((PositionedHiddenPanel) parent).updatePositionPanel();
-					break;
-				}
-				parent = parent.getParent();
-			}
-		}
-	};
+	private ClickListener addClicked;
 
 	public VariablesOperationTable(Controller controller,
 			VariablesTable variablesToSelect) {
@@ -113,6 +95,28 @@ public abstract class VariablesOperationTable extends LinearLayout {
 		this.variablesToSelect = variablesToSelect;
 		this.variableChanged = variableChanged;
 
+		addClicked = new ClickListener() {
+			public void clicked(InputEvent event, float x, float y) {
+				Actor actor = event.getListenerActor();
+				VariablesOperationTable table = (VariablesOperationTable) actor
+						.getParent();
+				VariablesTable varTable = (VariablesTable) actor
+						.getUserObject();
+				varTable.hide();
+
+				Actor newActor = table.addVariableWidget();
+				Actor parent = table.getParent();
+				while (parent != null) {
+					if (parent instanceof PositionedHiddenPanel) {
+						((PositionedHiddenPanel) parent).updatePositionPanel();
+						break;
+					}
+					parent = parent.getParent();
+				}
+				addClicked(newActor);
+			}
+		};
+
 		addButton = buttonThatAdd();
 		addButton.setUserObject(variablesToSelect);
 		addButton.addListener(addClicked);
@@ -121,12 +125,16 @@ public abstract class VariablesOperationTable extends LinearLayout {
 		addVariableWidget();
 	}
 
+	protected abstract void addClicked(Actor newActor);
+
 	protected abstract TextButton buttonThatAdd();
 
 	public abstract Actor variableWidget();
 
-	public void addVariableWidget() {
-		addVariableWidget(variableWidget());
+	public Actor addVariableWidget() {
+		Actor actor = variableWidget();
+		addVariableWidget(actor);
+		return actor;
 	}
 
 	public void addVariableWidget(Actor actor) {

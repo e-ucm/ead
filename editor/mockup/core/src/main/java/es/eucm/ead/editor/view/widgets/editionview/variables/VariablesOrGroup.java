@@ -107,4 +107,9 @@ public class VariablesOrGroup extends VariablesOperationTable {
 
 		return empty;
 	}
+
+	@Override
+	protected void addClicked(Actor newActor) {
+
+	}
 }

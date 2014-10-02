@@ -129,4 +129,16 @@ public class VariablesAndGroup extends VariablesOperationTable {
 	public boolean isEmpty() {
 		return getExpression().equals("btrue");
 	}
+
+	@Override
+	protected void addClicked(Actor newActor) {
+		TextButton button = ((VariableSelectorWidget) newActor)
+				.getVarNameButton();
+		button.setChecked(true);
+
+		VariablesTable varTable = (VariablesTable) button.getUserObject();
+		varTable.setObjetive((VariableSelectorWidget) button.getParent());
+		button.setChecked(true);
+		varTable.show();
+	}
 }
