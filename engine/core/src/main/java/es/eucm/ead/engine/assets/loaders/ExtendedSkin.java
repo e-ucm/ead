@@ -38,8 +38,10 @@ package es.eucm.ead.engine.assets.loaders;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.files.FileHandle;
+import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
+import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.graphics.g2d.freetype.FreeTypeFontGenerator;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.utils.Json;
@@ -47,14 +49,18 @@ import com.badlogic.gdx.utils.Json.ReadOnlySerializer;
 import com.badlogic.gdx.utils.Json.Serializer;
 import com.badlogic.gdx.utils.JsonValue;
 import com.badlogic.gdx.utils.SerializationException;
+import es.eucm.ead.engine.assets.Assets;
 
 /**
  * Extension of skin to load some custom resources
  */
 public class ExtendedSkin extends Skin {
 
-	public ExtendedSkin(TextureAtlas atlas) {
+	private final Assets assets;
+
+	public ExtendedSkin(Assets assets, TextureAtlas atlas) {
 		super(atlas);
+		this.assets = assets;
 	}
 
 	@Override
@@ -63,7 +69,7 @@ public class ExtendedSkin extends Skin {
 		Serializer<BitmapFont> defaultSerializer = json
 				.getSerializer(BitmapFont.class);
 		json.setSerializer(BitmapFont.class, new TTFBitmapFontSerializer(
-				defaultSerializer, skinFile));
+				assets, defaultSerializer, skinFile));
 		return json;
 	}
 
@@ -73,14 +79,16 @@ public class ExtendedSkin extends Skin {
 	private static class TTFBitmapFontSerializer extends
 			ReadOnlySerializer<BitmapFont> {
 
+		private final Assets assets;
 		private Serializer<BitmapFont> defaultSerializer;
 
 		private FileHandle skinFile;
 
-		private TTFBitmapFontSerializer(
+		private TTFBitmapFontSerializer(Assets assets,
 				Serializer<BitmapFont> defaultSerializer, FileHandle skinFile) {
 			this.defaultSerializer = defaultSerializer;
 			this.skinFile = skinFile;
+			this.assets = assets;
 		}
 
 		@Override
@@ -94,7 +102,7 @@ public class ExtendedSkin extends Skin {
 				if (!fontFile.exists()) {
 					fontFile = Gdx.files.internal(path);
 				}
-				if (!fontFile.exists()) {
+				if (!assets.checkFileExistence(fontFile)) {
 					throw new SerializationException("Font file not found: "
 							+ fontFile);
 				}
