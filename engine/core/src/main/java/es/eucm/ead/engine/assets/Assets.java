@@ -151,7 +151,7 @@ public abstract class Assets extends Json implements FileHandleResolver {
 	 * On Android this is much faster than fh.exists() for Internal files, see
 	 * https://github.com/libgdx/libgdx/issues/2342
 	 */
-	protected boolean checkFileExistence(FileHandle fh) {
+	public boolean checkFileExistence(FileHandle fh) {
 		try {
 			fh.read().close();
 			return true;

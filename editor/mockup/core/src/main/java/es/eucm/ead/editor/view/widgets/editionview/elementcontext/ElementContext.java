@@ -47,6 +47,7 @@ import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.scenes.scene2d.ui.WidgetGroup;
 import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
+import com.badlogic.gdx.utils.Array;
 import es.eucm.ead.editor.assets.ApplicationAssets;
 import es.eucm.ead.editor.control.Controller;
 import es.eucm.ead.editor.control.MockupViews;
@@ -58,6 +59,7 @@ import es.eucm.ead.editor.control.actions.model.RemoveSceneElementSelection;
 import es.eucm.ead.editor.control.actions.model.scene.ReorderSelection;
 import es.eucm.ead.editor.model.Q;
 import es.eucm.ead.editor.platform.MockupPlatform;
+import es.eucm.ead.editor.view.widgets.DropDown;
 import es.eucm.ead.editor.view.widgets.IconButton;
 import es.eucm.ead.editor.view.widgets.editionview.MockupSceneEditor;
 import es.eucm.ead.engine.I18N;
@@ -85,6 +87,9 @@ public class ElementContext extends Table {
 	private MockupSceneEditor sceneEditor;
 
 	private LabelColorPicker colorPicker;
+
+	private Array<Actor> fontTypeActors, fontSizeActors;
+	private final DropDown fontType, fontSize;
 
 	public ElementContext(final Controller controller,
 			MockupSceneEditor sceneEditor) {
@@ -116,7 +121,50 @@ public class ElementContext extends Table {
 				"white_single");
 		colorPicker = new LabelColorPicker(controller, true, skin, this);
 
-		labelContext = new ContextBar(skin, changeText, colorPicker);
+		fontType = new DropDown(skin);
+		Actor roboto = new com.badlogic.gdx.scenes.scene2d.ui.Label("Ro", skin);
+		roboto.setUserObject("roboto-");
+		Actor comfortaa = new com.badlogic.gdx.scenes.scene2d.ui.Label("Co",
+				skin);
+		comfortaa.setUserObject("comfortaa-");
+		Actor mockup = new com.badlogic.gdx.scenes.scene2d.ui.Label("Ra", skin);
+		mockup.setUserObject("rabanera-");
+		fontTypeActors = new Array<Actor>(3);
+		fontTypeActors.add(roboto);
+		fontTypeActors.add(comfortaa);
+		fontTypeActors.add(mockup);
+		fontType.setItems(fontTypeActors);
+
+		fontSize = new DropDown(skin);
+		Actor big = new com.badlogic.gdx.scenes.scene2d.ui.Label("Big", skin);
+		big.setUserObject("big");
+		Actor small = new com.badlogic.gdx.scenes.scene2d.ui.Label("Small",
+				skin);
+		small.setUserObject("small");
+		fontSizeActors = new Array<Actor>(2);
+		fontSizeActors.add(big);
+		fontSizeActors.add(small);
+		fontSize.setItems(fontSizeActors);
+
+		ChangeListener dropdownChangeListener = new DropDown.DropdownChangeListener() {
+			@Override
+			public void changed(Actor selected, DropDown listener) {
+				String newStyle = null;
+				if (listener == fontType) {
+					newStyle = getSelectedStyle(selected,
+							fontSize.getSelected());
+				} else {
+					newStyle = getSelectedStyle(fontType.getSelected(),
+							selected);
+				}
+				controller.action(ChangeSelectionText.class, newStyle, false);
+			}
+		};
+		fontType.addListener(dropdownChangeListener);
+		fontSize.addListener(dropdownChangeListener);
+
+		labelContext = new ContextBar(skin, changeText, colorPicker, fontType,
+				fontSize);
 
 		final TextInputListener changeTextListener = new TextInputListener() {
 
@@ -181,6 +229,29 @@ public class ElementContext extends Table {
 
 	}
 
+	private String getSelectedStyle(Actor fontType, Actor fontSize) {
+		return fontType.getUserObject().toString()
+				+ fontSize.getUserObject().toString();
+	}
+
+	private void initFontSizeWidget(String styleName) {
+		for (Actor actor : fontSizeActors) {
+			if (styleName.endsWith(actor.getUserObject().toString())) {
+				fontSize.setSelected(actor);
+				break;
+			}
+		}
+	}
+
+	private void initFontTypeWidget(String styleName) {
+		for (Actor actor : fontTypeActors) {
+			if (styleName.startsWith(actor.getUserObject().toString())) {
+				fontType.setSelected(actor);
+				break;
+			}
+		}
+	}
+
 	public void show(ModelEntity entity, Actor actor) {
 		if (entity == null && actor == null && !hasParent()) {
 			return;
@@ -209,6 +280,11 @@ public class ElementContext extends Table {
 						if (!hasText) {
 							colorPicker.setVisible(false);
 						}
+
+						String styleName = Q.getComponent(entity, Label.class)
+								.getStyle();
+						initFontTypeWidget(styleName);
+						initFontSizeWidget(styleName);
 					}
 				}
 

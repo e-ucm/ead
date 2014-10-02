@@ -57,6 +57,9 @@ import es.eucm.ead.schema.entities.ModelEntity;
  * <dl>
  * <dt><strong>Arguments</strong></dt>
  * <dd><strong>args[0]</strong> <em>{@link String}</em> new text</dd>
+ * <dd><strong>args[1]</strong> <em>Optional {@link Boolean}</em> whether
+ * args[0] is the new Text (true) or the new Style (false). If no args[1] is
+ * provided the changed value will be the text.
  * <dd><strong>args[1]</strong> <em>Optional {@link Color}</em> the font color
  * of the text</dd>
  * </dl>
@@ -68,7 +71,8 @@ public class ChangeSelectionText extends ModelAction {
 
 	public ChangeSelectionText() {
 		super(true, false, new Class[] { String.class }, new Class[] {
-				String.class, Color.class });
+				String.class, Boolean.class }, new Class[] { String.class,
+				Color.class });
 	}
 
 	@Override
@@ -89,16 +93,25 @@ public class ChangeSelectionText extends ModelAction {
 		Q.getComponent(copy, Parent.class).setParent(
 				Q.getComponent(element, Parent.class).getParent());
 		Label labelComponent = Q.getComponent(copy, Label.class);
-		labelComponent.setText(args[0].toString());
 
 		if (args.length == 2) {
-			Color color = (Color) args[1];
-			es.eucm.ead.schema.data.Color schemaColor = new es.eucm.ead.schema.data.Color();
-			schemaColor.setR(color.r);
-			schemaColor.setG(color.g);
-			schemaColor.setB(color.b);
-			schemaColor.setA(color.a);
-			labelComponent.setColor(schemaColor);
+			if (args[1] instanceof Color) {
+				Color color = (Color) args[1];
+				es.eucm.ead.schema.data.Color schemaColor = new es.eucm.ead.schema.data.Color();
+				schemaColor.setR(color.r);
+				schemaColor.setG(color.g);
+				schemaColor.setB(color.b);
+				schemaColor.setA(color.a);
+				labelComponent.setColor(schemaColor);
+			} else {
+				if ((Boolean) args[1]) {
+					labelComponent.setText(args[0].toString());
+				} else {
+					labelComponent.setStyle(args[0].toString());
+				}
+			}
+		} else {
+			labelComponent.setText(args[0].toString());
 		}
 
 		Skin skin = controller.getEditorGameAssets().getSkin();

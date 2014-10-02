@@ -55,6 +55,7 @@ import com.badlogic.gdx.scenes.scene2d.ui.Container;
 import com.badlogic.gdx.scenes.scene2d.ui.List.ListStyle;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
+import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
 import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener.ChangeEvent;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.scenes.scene2d.utils.Disableable;
@@ -199,7 +200,10 @@ public class DropDown extends Container<Actor> implements Disableable {
 	/**
 	 * Sets the selection
 	 */
-	private void setSelected(Actor item) {
+	public void setSelected(Actor item) {
+		if (selection == item) {
+			return;
+		}
 		Cell cell = scroll.getCell(item);
 		if (selection != null) {
 			cell.setActor(selection);
@@ -367,6 +371,25 @@ public class DropDown extends Container<Actor> implements Disableable {
 			this.backgroundDisabled = style.backgroundDisabled;
 			this.listBackgroundUp = style.listBackgroundUp;
 			this.listBackgroundDown = style.listBackgroundDown;
+		}
+	}
+
+	public static class DropdownChangeListener extends ChangeListener {
+
+		private Actor currentSelected;
+
+		@Override
+		public void changed(ChangeEvent changeEvent, Actor actor) {
+			DropDown listenerActor = (DropDown) changeEvent.getListenerActor();
+			Actor selected = listenerActor.getSelected();
+			if (currentSelected != selected) {
+				currentSelected = selected;
+				changed(selected, listenerActor);
+			}
+		}
+
+		public void changed(Actor selected, DropDown listenerActor) {
+
 		}
 	}
 }

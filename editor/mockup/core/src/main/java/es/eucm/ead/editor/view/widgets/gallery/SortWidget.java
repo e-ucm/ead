@@ -112,18 +112,12 @@ public class SortWidget extends DropDown {
 		sortButtons.add(zaSort);
 
 		setItems(sortButtons);
-		addListener(new ChangeListener() {
-
-			private Actor currentSelected;
+		addListener(new DropdownChangeListener() {
 
 			@Override
-			public void changed(ChangeEvent event, Actor actor) {
-				Actor selected = getSelected();
-				if (currentSelected != selected) {
-					currentSelected = selected;
-					sort();
-					baseGallery.updateDisplayedElements();
-				}
+			public void changed(Actor selected, DropDown listener) {
+				sort();
+				baseGallery.updateDisplayedElements();
 			}
 		});
 	}

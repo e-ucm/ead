@@ -44,11 +44,15 @@ import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.utils.ObjectMap;
 import com.badlogic.gdx.utils.ObjectMap.Entry;
+import es.eucm.ead.engine.assets.Assets;
 
 public class ExtendedSkinLoader extends SkinLoader {
 
-	public ExtendedSkinLoader(FileHandleResolver resolver) {
+	private final Assets assets;
+
+	public ExtendedSkinLoader(Assets resolver) {
 		super(resolver);
+		this.assets = resolver;
 	}
 
 	@Override
@@ -64,7 +68,7 @@ public class ExtendedSkinLoader extends SkinLoader {
 			resources = parameter.resources;
 		}
 		TextureAtlas atlas = manager.get(textureAtlasPath, TextureAtlas.class);
-		Skin skin = new ExtendedSkin(atlas);
+		Skin skin = new ExtendedSkin(assets, atlas);
 		if (resources != null) {
 			for (Entry<String, Object> entry : resources.entries()) {
 				skin.add(entry.key, entry.value);
