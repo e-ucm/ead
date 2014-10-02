@@ -119,9 +119,11 @@ public class PositionedHiddenPanel extends HiddenPanel {
 	 *            position of the reference in {@link Stage} coordinates.
 	 */
 	protected void positionPanel(float x, float y) {
-		pack();
-		float panelPrefHeight = Math.min(getHeight(), Gdx.graphics.getHeight());
-		float panelPrefWidth = Math.min(getWidth(), Gdx.graphics.getWidth());
+
+		float panelPrefHeight = Math.min(getPrefHeight(),
+				Gdx.graphics.getHeight());
+		float panelPrefWidth = Math
+				.min(getPrefWidth(), Gdx.graphics.getWidth());
 		if (position == Position.RIGHT) {
 			float coordinateY = 0;
 			if (reference.getParent() != null

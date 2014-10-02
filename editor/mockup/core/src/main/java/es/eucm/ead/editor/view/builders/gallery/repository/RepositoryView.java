@@ -108,7 +108,7 @@ public class RepositoryView extends BaseGallery implements ProgressListener,
 	}
 
 	@Override
-	protected int getColumns() {
+	public int getColumns() {
 		return COLUMNS;
 	}
 

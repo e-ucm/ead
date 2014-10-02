@@ -39,18 +39,13 @@ package es.eucm.ead.editor.view.widgets.editionview.prefabs;
 import com.badlogic.gdx.audio.Music;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.scenes.scene2d.Actor;
-import com.badlogic.gdx.scenes.scene2d.ui.Button;
-import com.badlogic.gdx.scenes.scene2d.ui.CheckBox;
-import com.badlogic.gdx.scenes.scene2d.ui.Image;
-import com.badlogic.gdx.scenes.scene2d.ui.Label;
-import com.badlogic.gdx.scenes.scene2d.ui.Slider;
-import com.badlogic.gdx.scenes.scene2d.ui.Table;
+import com.badlogic.gdx.scenes.scene2d.ui.*;
 import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
 import com.badlogic.gdx.utils.Scaling;
-
 import es.eucm.ead.editor.assets.EditorGameAssets;
 import es.eucm.ead.editor.control.ComponentId;
 import es.eucm.ead.editor.control.Controller;
+import es.eucm.ead.editor.control.MockupViews;
 import es.eucm.ead.editor.control.actions.irreversibles.scene.AddBehaviorPrefab;
 import es.eucm.ead.editor.control.actions.irreversibles.scene.ChangeBehaviorEffect;
 import es.eucm.ead.editor.control.actions.irreversibles.scene.sound.ChangeSound;
@@ -62,6 +57,10 @@ import es.eucm.ead.schema.effects.PlaySound;
 
 public class SoundPanel extends PrefabComponentPanel implements
 		FileChooserListener {
+
+	private static final String[] supportedExtensions = { ".mp3", ".ogg",
+			".wav" };
+	private static final float SUPPORTED_EXTENSIONS_TIMEOUT = 3f;
 
 	private static final boolean DEFAULT_LOOP = false;
 	private static final float DEFAULT_VOLUME = .5F;
@@ -154,6 +153,9 @@ public class SoundPanel extends PrefabComponentPanel implements
 		}
 
 		String uri = sound.getUri();
+		if (uri == null) {
+			return;
+		}
 		int lastIndexOf = uri.lastIndexOf("/");
 		musicLabel
 				.setText(lastIndexOf == -1 ? uri : uri.substring(lastIndexOf));
@@ -185,35 +187,64 @@ public class SoundPanel extends PrefabComponentPanel implements
 	@Override
 	public void fileChosen(String path) {
 		if (path != null) {
-			EditorGameAssets editorGameAssets = controller
-					.getEditorGameAssets();
-			if (!path.startsWith(editorGameAssets.getLoadingPath())) {
-				path = editorGameAssets
-						.copyToProjectIfNeeded(path, Music.class);
+			if (hasSupportedExtension(path)) {
+				EditorGameAssets editorGameAssets = controller
+						.getEditorGameAssets();
+				if (!path.startsWith(editorGameAssets.getLoadingPath())) {
+					path = editorGameAssets.copyToProjectIfNeeded(path,
+							Music.class);
+				}
+
+				if (component == null) {
+					component = new Behavior();
+					controller.action(AddBehaviorPrefab.class, component,
+							componentId);
+				}
+
+				if (((Behavior) component).getEffects().size > 0) {
+					sound = (PlaySound) ((Behavior) component).getEffects()
+							.first();
+				} else {
+					sound = new PlaySound();
+					sound.setVolume(DEFAULT_VOLUME);
+					sound.setLoop(false);
+				}
+
+				controller.action(ChangeBehaviorEffect.class, component, sound);
+
+				setUsed(true);
+				updatePath(path);
+				updateVolume();
+				updateLoop();
+				actualizePanel();
+			} else if (!path.isEmpty()) {
+				((MockupViews) controller.getViews()).getToasts()
+						.showNotification(
+								i18n.m("sound.supportedExtensions") + ": "
+										+ getSupportedExtensions(),
+								SUPPORTED_EXTENSIONS_TIMEOUT);
 			}
-
-			if (component == null) {
-				component = new Behavior();
-				controller.action(AddBehaviorPrefab.class, component,
-						componentId);
-			}
-
-			if (((Behavior) component).getEffects().size > 0) {
-				sound = (PlaySound) ((Behavior) component).getEffects().first();
-			} else {
-				sound = new PlaySound();
-				sound.setVolume(DEFAULT_VOLUME);
-				sound.setLoop(false);
-			}
-
-			controller.action(ChangeBehaviorEffect.class, component, sound);
-
-			setUsed(true);
-			updatePath(path);
-			updateVolume();
-			updateLoop();
-			actualizePanel();
 		}
+	}
+
+	private boolean hasSupportedExtension(String path) {
+		for (int i = 0, n = supportedExtensions.length; i < n; ++i) {
+			if (path.endsWith(supportedExtensions[i])) {
+				return true;
+			}
+		}
+		return false;
+	}
+
+	private String getSupportedExtensions() {
+		String ret = "";
+		for (int i = 0, n = supportedExtensions.length; i < n; ++i) {
+			ret += supportedExtensions[i];
+			if (i < n - 1) {
+				ret += ", ";
+			}
+		}
+		return ret;
 	}
 
 }

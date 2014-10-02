@@ -147,7 +147,7 @@ public class LibrariesView extends BaseGallery implements ProgressListener {
 	}
 
 	@Override
-	protected int getColumns() {
+	public int getColumns() {
 		return COLS;
 	}
 

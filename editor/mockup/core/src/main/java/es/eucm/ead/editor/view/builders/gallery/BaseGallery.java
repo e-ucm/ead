@@ -84,7 +84,7 @@ public abstract class BaseGallery implements ViewBuilder {
 		};
 	};
 
-	protected int getColumns() {
+	public int getColumns() {
 		return DEFAULT_COLUMNS;
 	}
 

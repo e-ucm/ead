@@ -99,7 +99,7 @@ public class ScenesView extends BaseGallery implements BackListener {
 		}
 	};
 
-	protected int getColumns() {
+	public int getColumns() {
 		return ROWS;
 	};
 

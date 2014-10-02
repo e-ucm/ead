@@ -85,6 +85,7 @@ accept = Aceptar
 cancel = Cancelar
 save = Guardar
 sound.loop = Bucle
+sound.supportedExtensions = Extensiones soportadas
 project.exporting = Exportando proyecto
 project.importing = Importando proyecto
 project.exportingError = Ocurrió un error al exportar, intentalo otra vez
