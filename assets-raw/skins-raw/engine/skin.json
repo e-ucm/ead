@@ -1,28 +1,22 @@
 {
   com.badlogic.gdx.graphics.g2d.BitmapFont: {
     roboto-regular-big: {
-        file: Roboto-Regular.ttf,
-        size: 110
+        file: Roboto-Regular-110.fnt
     },
     roboto-regular-small: {
-            file: Roboto-Regular.ttf,
-            size: 40
+            file: Roboto-Regular-40.fnt
     },
     comfortaa-regular-big: {
-            file: Comfortaa-Regular.ttf,
-            size: 110
+            file: Comfortaa-Regular-95.fnt
     },
     comfortaa-regular-small: {
-            file: Comfortaa-Regular.ttf,
-            size: 40
+            file: Comfortaa-Regular-40.fnt
     },
     rabanera-big: {
-            file: Rabanera-outline-shadow.ttf,
-            size: 110
+            file: Rabanera-outline-shadow-95.fnt
     },
     rabanera-small: {
-            file: Rabanera-outline-shadow.ttf,
-            size: 50
+            file: Rabanera-outline-shadow-60.fnt
     }
   },
     com.badlogic.gdx.graphics.Color: {
