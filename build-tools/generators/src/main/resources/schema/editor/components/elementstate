@@ -1,0 +1,17 @@
+{
+    "additionalProperties": false,
+    "javaType": "es.eucm.ead.schema.editor.components.ElementState",
+    "extends": {
+        "$ref": "../../engine/components/component.json"
+    },
+    "properties": {
+        "lock": {
+            "type": "boolean",
+            "description": "If the entity is locked"
+        },
+        "invisible": {
+            "type": "boolean",
+            "description": "If the entity is visible"
+        }
+    }
+}

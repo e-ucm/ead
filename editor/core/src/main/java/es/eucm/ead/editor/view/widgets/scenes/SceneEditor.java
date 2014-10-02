@@ -39,6 +39,7 @@ package es.eucm.ead.editor.view.widgets.scenes;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.Group;
+import com.badlogic.gdx.scenes.scene2d.Touchable;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.Pools;
@@ -62,6 +63,7 @@ import es.eucm.ead.editor.view.widgets.groupeditor.GroupEditorConfiguration;
 import es.eucm.ead.engine.EntitiesLoader;
 import es.eucm.ead.engine.entities.EngineEntity;
 import es.eucm.ead.schema.editor.components.GameData;
+import es.eucm.ead.schema.editor.components.ElementState;
 import es.eucm.ead.schema.editor.components.SceneEditState;
 import es.eucm.ead.schema.entities.ModelEntity;
 import es.eucm.ead.schemax.FieldName;
@@ -171,6 +173,8 @@ public abstract class SceneEditor extends AbstractWidget {
 
 			addListeners(scene.getGroup());
 
+			setTouchableAndVisible(scene.getGroup());
+
 			if (Q.hasComponent(sceneEntity, SceneEditState.class)) {
 				SceneEditState state = Q.getComponent(sceneEntity,
 						SceneEditState.class);
@@ -184,6 +188,26 @@ public abstract class SceneEditor extends AbstractWidget {
 		} else {
 			groupEditor.setRootGroup(null);
 		}
+	}
+
+	private void setTouchableAndVisible(Actor actor) {
+		ModelEntity entity = Q.getModelEntity(actor);
+		if (entity != null) {
+			ElementState elementState = Q.getComponent(entity,
+					ElementState.class);
+			if (elementState.isLock()) {
+				actor.setTouchable(Touchable.disabled);
+			} else {
+				actor.setTouchable(Touchable.enabled);
+			}
+			actor.setVisible(!elementState.isInvisible());
+			if (actor instanceof Group) {
+				for (Actor child : ((Group) actor).getChildren()) {
+					setTouchableAndVisible(child);
+				}
+			}
+		}
+
 	}
 
 	private void readEditedGroup() {
@@ -230,7 +254,7 @@ public abstract class SceneEditor extends AbstractWidget {
 		}
 	}
 
-	protected Actor findActor(ModelEntity entity) {
+	public Actor findActor(ModelEntity entity) {
 		// Check if this model entity is inside the current scene
 		entityPredicate.setEntity(entity);
 		return findActor(scene.getGroup(), entityPredicate);
