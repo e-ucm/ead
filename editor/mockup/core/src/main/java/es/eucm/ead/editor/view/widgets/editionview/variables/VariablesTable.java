@@ -51,6 +51,8 @@ import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 
 import es.eucm.ead.editor.control.Controller;
+import es.eucm.ead.editor.control.MockupViews;
+import es.eucm.ead.editor.control.Toasts;
 import es.eucm.ead.editor.control.actions.irreversibles.game.AddNewVariableDef;
 import es.eucm.ead.editor.control.actions.irreversibles.game.AddVariables;
 import es.eucm.ead.editor.model.Model.ModelListener;
@@ -91,6 +93,8 @@ public class VariablesTable extends PositionedHiddenPanel implements
 	private Skin skin;
 
 	private VariableSelectorWidget objetive;
+
+	private Toasts toasts;
 
 	public VariablesTable(Skin skin, Position position,
 			final PrefabComponentPanel reference, Controller controller) {
@@ -156,6 +160,10 @@ public class VariablesTable extends PositionedHiddenPanel implements
 			}
 
 			variablePressedAndSelected(text);
+		} else {
+			toasts = ((MockupViews) controller.getViews()).getToasts();
+			toasts.showNotification(controller.getApplicationAssets().getI18N()
+					.m("error.variables.invalidText"), 3f);
 		}
 
 	}
