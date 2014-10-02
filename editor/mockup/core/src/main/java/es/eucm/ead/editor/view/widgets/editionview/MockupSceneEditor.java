@@ -63,9 +63,9 @@ public class MockupSceneEditor extends SceneEditor {
 
 	private static final int ROTATION_HANDLE_OFFSET = 45;
 
-	private static final boolean MULTIPLE_SELECTION = false;
+	private static final boolean MULTIPLE_SELECTION = true;
 
-	private static final boolean NESTED_GROUP_EDITION = false;
+	private static final boolean NESTED_GROUP_EDITION = true;
 
 	private SelectionListener elementSelected;
 

@@ -163,6 +163,17 @@ public class FieldName {
 	/**
 	 * Refers to {@link es.eucm.ead.schema.effects.AnimationEffect#duration}
 	 */
-	DURATION = "duration";
+	DURATION = "duration",
+
+	/**
+	 * Refers to {@link es.eucm.ead.schema.editor.components.LockProperty#lock}
+	 */
+	LOCK = "lock",
+
+	/**
+	 * Refers to
+	 * {@link es.eucm.ead.schema.editor.components.InvisibilityProperty#invisible}
+	 */
+	INVISIBLE = "invisible";
 
 }
