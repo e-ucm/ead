@@ -39,6 +39,7 @@ package es.eucm.ead.editor.view.widgets.scenes;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.Group;
+import com.badlogic.gdx.scenes.scene2d.Touchable;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.Pools;
@@ -61,6 +62,8 @@ import es.eucm.ead.editor.view.widgets.groupeditor.GroupEditor.GroupListener;
 import es.eucm.ead.editor.view.widgets.groupeditor.GroupEditorConfiguration;
 import es.eucm.ead.engine.EntitiesLoader;
 import es.eucm.ead.engine.entities.EngineEntity;
+import es.eucm.ead.schema.components.ModelComponent;
+import es.eucm.ead.schema.editor.components.ElementEditState;
 import es.eucm.ead.schema.editor.components.GameData;
 import es.eucm.ead.schema.editor.components.SceneEditState;
 import es.eucm.ead.schema.entities.ModelEntity;
@@ -87,9 +90,13 @@ public abstract class SceneEditor extends AbstractWidget {
 
 	private TransformationFieldListener transformationListener = new TransformationFieldListener();
 
+	private ElementStateFieldListener elementStateListener = new ElementStateFieldListener();
+
 	private ChildrenListListener childrenListListener = new ChildrenListListener();
 
 	private ModelEntityPredicate entityPredicate = new ModelEntityPredicate();
+
+	private ComponentPredicate componentPredicate = new ComponentPredicate();
 
 	private SceneSelectionListener sceneSelectionListener = new SceneSelectionListener();
 
@@ -171,6 +178,8 @@ public abstract class SceneEditor extends AbstractWidget {
 
 			addListeners(scene.getGroup());
 
+			setTouchableAndVisible(scene.getGroup());
+
 			if (Q.hasComponent(sceneEntity, SceneEditState.class)) {
 				SceneEditState state = Q.getComponent(sceneEntity,
 						SceneEditState.class);
@@ -184,6 +193,26 @@ public abstract class SceneEditor extends AbstractWidget {
 		} else {
 			groupEditor.setRootGroup(null);
 		}
+	}
+
+	private void setTouchableAndVisible(Actor actor) {
+		ModelEntity entity = Q.getModelEntity(actor);
+		if (entity != null) {
+			ElementEditState elementState = Q.getComponent(entity,
+					ElementEditState.class);
+			if (elementState.isLock()) {
+				actor.setTouchable(Touchable.disabled);
+			} else {
+				actor.setTouchable(Touchable.enabled);
+			}
+			actor.setVisible(!elementState.isInvisible());
+			if (actor instanceof Group) {
+				for (Actor child : ((Group) actor).getChildren()) {
+					setTouchableAndVisible(child);
+				}
+			}
+		}
+
 	}
 
 	private void readEditedGroup() {
@@ -230,7 +259,7 @@ public abstract class SceneEditor extends AbstractWidget {
 		}
 	}
 
-	protected Actor findActor(ModelEntity entity) {
+	public Actor findActor(ModelEntity entity) {
 		// Check if this model entity is inside the current scene
 		entityPredicate.setEntity(entity);
 		return findActor(scene.getGroup(), entityPredicate);
@@ -244,6 +273,9 @@ public abstract class SceneEditor extends AbstractWidget {
 		ModelEntity entity = Q.getModelEntity(actor);
 		if (entity != null) {
 			model.addFieldListener(entity, transformationListener);
+			model.addFieldListener(
+					Q.getComponent(entity, ElementEditState.class),
+					elementStateListener);
 			model.addListListener(entity.getChildren(), childrenListListener);
 
 			if (actor instanceof Group) {
@@ -347,7 +379,39 @@ public abstract class SceneEditor extends AbstractWidget {
 				actor.setScaleX(value);
 			else if (FieldName.SCALE_Y.equals(event.getField()))
 				actor.setScaleY(value);
+			else if (FieldName.SCALE_Y.equals(event.getField()))
+				actor.setScaleY(value);
+			else if (FieldName.SCALE_Y.equals(event.getField()))
+				actor.setScaleY(value);
 			groupEditor.refresh();
+		}
+	}
+
+	/**
+	 * Handles transformation in children
+	 */
+	public class ElementStateFieldListener implements FieldListener {
+
+		private boolean isLock;
+
+		@Override
+		public boolean listenToField(String fieldName) {
+			isLock = FieldName.LOCK.equals(fieldName);
+			return isLock || FieldName.INVISIBLE.equals(fieldName);
+		}
+
+		@Override
+		public void modelChanged(FieldEvent event) {
+			componentPredicate.setComponent((ElementEditState) event
+					.getTarget());
+			Actor actor = findActor(scene.getGroup(), componentPredicate);
+
+			boolean value = (Boolean) event.getValue();
+			if (isLock)
+				actor.setTouchable(value ? Touchable.disabled
+						: Touchable.enabled);
+			else
+				actor.setVisible(!value);
 		}
 	}
 
@@ -386,6 +450,21 @@ public abstract class SceneEditor extends AbstractWidget {
 		@Override
 		public boolean evaluate(Actor actor) {
 			return Q.getModelEntity(actor) == modelEntity;
+		}
+	}
+
+	public class ComponentPredicate implements Predicate<Actor> {
+
+		private ModelComponent component;
+
+		public void setComponent(ModelComponent component) {
+			this.component = component;
+		}
+
+		@Override
+		public boolean evaluate(Actor actor) {
+			return Q.getModelEntity(actor).getComponents()
+					.contains(component, true);
 		}
 	}
 }
