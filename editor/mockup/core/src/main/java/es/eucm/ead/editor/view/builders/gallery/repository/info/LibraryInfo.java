@@ -90,7 +90,8 @@ public class LibraryInfo extends ItemInfo<LibraryItem> {
 		}
 		actionButton.setText(actionString);
 		size.setText(String.valueOf(repoLibrary.getSize()));
-		numberOfelements.setText(repoLibrary.getNumberOfElements() + "");
+		numberOfelements.setText(String.valueOf((int) repoLibrary
+				.getNumberOfElements()));
 
 		super.show(item);
 	}
