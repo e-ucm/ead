@@ -45,13 +45,14 @@ import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.scenes.scene2d.Group;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.InputListener;
-import com.badlogic.gdx.scenes.scene2d.ui.Widget;
+import com.badlogic.gdx.scenes.scene2d.ui.WidgetGroup;
 import com.badlogic.gdx.utils.Disposable;
 
 import es.eucm.ead.editor.assets.EditorGameAssets;
 import es.eucm.ead.editor.control.Controller;
 import es.eucm.ead.editor.control.actions.model.AddSceneElement;
 import es.eucm.ead.editor.view.widgets.editionview.MockupSceneEditor;
+import es.eucm.ead.editor.view.widgets.editionview.draw.MeshHelper.PixmapRegion;
 import es.eucm.ead.engine.I18N;
 import es.eucm.ead.schema.entities.ModelEntity;
 import es.eucm.ead.schemax.GameStructure;
@@ -61,9 +62,10 @@ import es.eucm.ead.schemax.GameStructure;
  * a texture and manages the necessary {@link Pixmap pixmaps} to perform
  * undo/redo actions, erase and save it as a {@link ModelEntity}
  */
-public class BrushStrokes extends Widget implements Disposable {
+public class BrushStrokes extends WidgetGroup implements Disposable {
 
 	public static final int MAX_COMMANDS = 50;
+	private static final Vector2 TEMP = new Vector2();
 
 	public enum Mode {
 		DRAW, ERASE
@@ -74,6 +76,7 @@ public class BrushStrokes extends Widget implements Disposable {
 	private final MeshHelper mesh;
 	private MockupSceneEditor sceneEditor;
 	private Mode mode;
+	private float targetX, targetY, scaleX, scaleY;
 
 	/**
 	 * Wrapper around {@link MeshHelper}. A widget that draws lines renders them
@@ -111,8 +114,7 @@ public class BrushStrokes extends Widget implements Disposable {
 	}
 
 	@Override
-	public void draw(Batch batch, float parentAlpha) {
-		validate();
+	public void drawChildren(Batch batch, float parentAlpha) {
 		this.mesh.draw(batch, parentAlpha);
 	}
 
@@ -142,7 +144,18 @@ public class BrushStrokes extends Widget implements Disposable {
 			savingImage = gameAssets.resolve(savingPath + (++i) + ".png");
 		} while (savingImage.exists());
 
-		this.mesh.save(this.savePath = savingImage);
+		PixmapRegion currentPixmap = mesh.save(this.savePath = savingImage);
+		Pixmap pixmap = currentPixmap.pixmap;
+		Group container = sceneEditor.getContainer();
+
+		sceneEditor.localToDescendantCoordinates(container,
+				TEMP.set(currentPixmap.x, currentPixmap.y));
+		scaleX = container.getScaleX();
+		scaleY = container.getScaleY();
+		targetX = TEMP.x + pixmap.getWidth() * .5f / scaleX;
+		targetY = TEMP.y + pixmap.getHeight() * .5f / scaleY;
+		scaleX = 1 / scaleX;
+		scaleY = 1 / scaleY;
 
 		return true;
 	}
@@ -152,17 +165,10 @@ public class BrushStrokes extends Widget implements Disposable {
 	 * return value of the {@link #save()} method was true.
 	 */
 	public void createSceneElement() {
-		Vector2 pos = mesh.getPosition();
 		ModelEntity savedElement = controller.getTemplates()
-				.createSceneElement(savePath.path(), pos.x, pos.y);
-		Group container = sceneEditor.getContainer();
-		sceneEditor.localToDescendantCoordinates(container, pos);
-		savedElement.setX(pos.x);
-		savedElement.setY(pos.y);
-		savedElement.setOriginX(0f);
-		savedElement.setOriginY(0f);
-		savedElement.setScaleX(mesh.getScaleX() / container.getScaleX());
-		savedElement.setScaleY(mesh.getScaleY() / container.getScaleY());
+				.createSceneElement(savePath.path(), targetX, targetY);
+		savedElement.setScaleX(scaleX);
+		savedElement.setScaleY(scaleX);
 		controller.action(AddSceneElement.class, savedElement);
 	}
 
@@ -247,7 +253,7 @@ public class BrushStrokes extends Widget implements Disposable {
 		public boolean touchDown(InputEvent event, float x, float y,
 				int pointer, int button) {
 			if (pointer == 0) {
-				mesh.drawTouchDown(event.getStageX(), event.getStageY());
+				mesh.drawTouchDown(x, y);
 			}
 			return true;
 		}
@@ -255,7 +261,7 @@ public class BrushStrokes extends Widget implements Disposable {
 		@Override
 		public void touchDragged(InputEvent event, float x, float y, int pointer) {
 			if (pointer == 0) {
-				mesh.drawTouchDragged(event.getStageX(), event.getStageY());
+				mesh.drawTouchDragged(x, y);
 			}
 		}
 
@@ -263,7 +269,7 @@ public class BrushStrokes extends Widget implements Disposable {
 		public void touchUp(InputEvent event, float x, float y, int pointer,
 				int button) {
 			if (pointer == 0) {
-				mesh.drawTouchUp(event.getStageX(), event.getStageY());
+				mesh.drawTouchUp(x, y);
 			}
 		}
 	};
@@ -274,7 +280,7 @@ public class BrushStrokes extends Widget implements Disposable {
 		public boolean touchDown(InputEvent event, float x, float y,
 				int pointer, int button) {
 			if (pointer == 0) {
-				mesh.eraseTouchDown(event.getStageX(), event.getStageY());
+				mesh.eraseTouchDown(x, y);
 			}
 			return true;
 		}
@@ -282,7 +288,7 @@ public class BrushStrokes extends Widget implements Disposable {
 		@Override
 		public void touchDragged(InputEvent event, float x, float y, int pointer) {
 			if (pointer == 0) {
-				mesh.eraseTouchDragged(event.getStageX(), event.getStageY());
+				mesh.eraseTouchDragged(x, y);
 			}
 		}
 
@@ -290,7 +296,7 @@ public class BrushStrokes extends Widget implements Disposable {
 		public void touchUp(InputEvent event, float x, float y, int pointer,
 				int button) {
 			if (pointer == 0) {
-				mesh.eraseTouchUp(event.getStageX(), event.getStageY());
+				mesh.eraseTouchUp(x, y);
 			}
 		}
 	};
