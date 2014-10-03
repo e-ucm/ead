@@ -171,8 +171,8 @@ public class CreateThumbnail extends EditorAction {
 		}
 
 		editorGameAssets.finishLoading();
-		Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
 		Gdx.gl.glClearColor(1f, 1f, 1f, 1f);
+		Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
 		batch.begin();
 		group.draw(batch, 1.0f);
 		batch.end();

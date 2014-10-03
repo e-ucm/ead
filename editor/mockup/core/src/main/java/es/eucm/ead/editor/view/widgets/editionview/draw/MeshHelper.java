@@ -54,7 +54,6 @@ import com.badlogic.gdx.graphics.VertexAttributes.Usage;
 import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
-import com.badlogic.gdx.graphics.glutils.FrameBuffer;
 import com.badlogic.gdx.graphics.glutils.ShaderProgram;
 import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Matrix4;
@@ -63,7 +62,6 @@ import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.Disposable;
-import com.badlogic.gdx.utils.viewport.Viewport;
 
 import es.eucm.ead.editor.control.Actions;
 import es.eucm.ead.editor.control.Controller;
@@ -164,10 +162,6 @@ public class MeshHelper implements Disposable {
 	 */
 	private int primitiveType;
 	private int cachedErasingInput, cachedErasingInputs;
-	/**
-	 * Used to perform the coordinate translation when the window is resized.
-	 */
-	private int prevParentX, prevParentY;
 	private int eraseRadius;
 	private float drawRadius = 20f, maxDrawRadius = drawRadius * 2f;
 	/**
@@ -184,11 +178,6 @@ public class MeshHelper implements Disposable {
 	 */
 	private float clampMinX, clampMinY, clampMaxX, clampMaxY;
 	/**
-	 * Defines the scale with which the {@link #showingTexRegion} should be
-	 * drawn.
-	 */
-	private float scaleX, scaleY;
-	/**
 	 * Last input position, used to calculate distance-based optimizations.
 	 */
 	private float lastX, lastY;
@@ -197,15 +186,6 @@ public class MeshHelper implements Disposable {
 	 * needed.
 	 */
 	private boolean recalculateMatrix;
-	/**
-	 * If true, the resources will be recalculated after a resize event;
-	 */
-	private boolean resizable = false;
-
-	/**
-	 * Used to know the previous view port of the default frame buffer.
-	 */
-	private Viewport stageViewport;
 
 	/**
 	 * Used to know which {@link PixmapRegion} is the most recent. Useful to
@@ -231,7 +211,6 @@ public class MeshHelper implements Disposable {
 	 */
 	private TextureRegion showingTexRegion;
 	private ShaderProgram meshShader;
-	private FrameBuffer frameBuffer;
 	private Mesh mesh;
 
 	/**
@@ -341,11 +320,11 @@ public class MeshHelper implements Disposable {
 
 	/**
 	 * Saves the minimum amount of pixels that encapsulates the drawn image.
+	 * 
+	 * @return
 	 */
-	void save(FileHandle file) {
+	PixmapRegion save(FileHandle file) {
 		final Pixmap savedPixmap = this.currModifiedPixmap.pixmap;
-		scaledView.stageToLocalCoordinates(temp.set(currModifiedPixmap.x,
-				currModifiedPixmap.y));
 		// We must convert the OpenGL ES coordinates of the pixels (y-down)
 		// to an y-up coordinate system before saving.
 		final int w = savedPixmap.getWidth();
@@ -361,6 +340,7 @@ public class MeshHelper implements Disposable {
 		pixels.put(lines);
 
 		PixmapIO.writePNG(file, savedPixmap);
+		return currModifiedPixmap;
 	}
 
 	/**
@@ -394,147 +374,37 @@ public class MeshHelper implements Disposable {
 	 * {@link #translateResources(Actor)}.
 	 */
 	private void reinitializeRenderingResources() {
-		Stage stage = this.scaledView.getStage();
-		int stageWidth = MathUtils.round(stage.getWidth());
-		int stageHeight = MathUtils.round(stage.getHeight());
-
-		if (this.resizable && this.frameBuffer != null) {
-			// If the new size is different from the old size
-			// we must recalculate our Matrix4 and recreate our rendering
-			// resources.
-			if (!MathUtils.isEqual(stageWidth, this.frameBuffer.getWidth(),
-					1.0f)
-					|| !MathUtils.isEqual(stageHeight,
-							this.frameBuffer.getHeight(), 1.0f)) {
-				Gdx.app.log(
-						MESH_TAG,
-						"new stage width: "
-								+ stageWidth
-								+ ", height: "
-								+ stageHeight
-								+ " ~> old ("
-								+ this.frameBuffer.getWidth()
-								+ ", "
-								+ this.frameBuffer.getHeight()
-								+ ") proceeding to recreate the rendering resources.");
-				this.frameBuffer.dispose();
-				this.frameBuffer = null;
-				if (this.flusher.pixmap != null) {
-					this.flusher.pixmap.dispose();
-					this.flusher.pixmap = null;
-				}
-			}
+		if (showingTexRegion != null) {
+			return;
 		}
-		if (this.frameBuffer == null) {
-			this.stageViewport = stage.getViewport();
-			Gdx.app.log(
-					MESH_TAG,
-					"new viewport ~> " + stageViewport.getScreenX() + ", "
-							+ stageViewport.getScreenY() + ", "
-							+ stageViewport.getScreenWidth() + ", "
-							+ stageViewport.getScreenHeight());
-			this.recalculateMatrix = true;
-			this.scaleX = 1 / this.scaledView.getScaleX();
-			this.scaleY = 1 / this.scaledView.getScaleY();
 
-			this.frameBuffer = new FrameBuffer(Format.RGBA8888, stageWidth,
-					stageHeight, false);
+		this.recalculateMatrix = true;
 
-			if (this.showingTexRegion == null) {
-				this.showingTexRegion = new TextureRegion();
-			}
-			final Texture colorTexture = this.frameBuffer
-					.getColorBufferTexture();
-			this.showingTexRegion.setTexture(colorTexture);
-			translateResources(this.scaledView);
-
-			float w = scaledView.getWidth(), h = scaledView.getHeight();
-
-			scaledView.localToStageCoordinates(temp.set(0f, 0f));
-			clampMinX = temp.x;
-			clampMinY = temp.y;
-
-			scaledView.localToStageCoordinates(temp.set(w, h));
-			clampMaxX = temp.x;
-			clampMaxY = temp.y;
-
-			Gdx.app.log(MESH_TAG, "(Stage coords) clamp bounds ~> " + clampMinX
-					+ ", " + clampMinY + ", " + (clampMaxX - clampMinX) + ", "
-					+ (clampMaxY - clampMinY));
-
-			Gdx.app.log(MESH_TAG, "(Local coords) texture region ~> "
-					+ clampMinX + ", " + clampMinY + ", " + w + ", " + h);
-
-			this.showingTexRegion.setRegion(MathUtils.round(clampMinX),
-					MathUtils.round(clampMinY), MathUtils.round(w),
-					MathUtils.round(h));
-			this.showingTexRegion.flip(false, true);
-
-			if (this.flusher.pixmap == null) {
-				this.flusher.pixmap = new Pixmap(
-						MathUtils.round(this.frameBuffer.getWidth()),
-						MathUtils.round(this.frameBuffer.getHeight()),
-						Format.RGBA8888);
-			}
+		if (this.showingTexRegion == null) {
+			this.showingTexRegion = new TextureRegion();
 		}
-	}
 
-	/**
-	 * Converts the current {@link PixmapRegion}s to the new {@link Stage} size.
-	 * A conversion from the {@link #scaledView} position must be done in order
-	 * to calculate the new position. This translation simply positions the
-	 * {@link PixmapRegion}s to the new {@link #scaledView} position. If a more
-	 * complex translation is required (e.g. scaling) this method should be
-	 * extended overridden.
-	 * 
-	 * @param parent
-	 */
-	private void translateResources(Actor parent) {
-		scaledView.localToStageCoordinates(temp.set(parent.getX(),
-				parent.getY()));
-
-		int newx = MathUtils.round(temp.x);
-		int newy = MathUtils.round(temp.y);
-		int offsetX = newx - this.prevParentX;
-		int offsetY = newy - this.prevParentY;
-		if (this.currModifiedPixmap != null) {
-			this.currModifiedPixmap.x += offsetX;
-			this.currModifiedPixmap.y += offsetY;
-
-			if (this.currModifiedPixmap.pixmap != null) {
-				final Texture colorTexture = this.showingTexRegion.getTexture();
-				colorTexture.draw(this.currModifiedPixmap.pixmap,
-						this.currModifiedPixmap.x, this.currModifiedPixmap.y);
-			}
+		float w = scaledView.getWidth(), h = scaledView.getHeight();
+		if (this.flusher.pixmap == null) {
+			this.flusher.pixmap = new Pixmap(MathUtils.round(w),
+					MathUtils.round(h), Format.RGBA8888);
 		}
-		translate(eraseLine.redoPixmaps, offsetX, offsetY);
-		translate(eraseLine.undoPixmaps, offsetX, offsetY);
-		translate(drawLine.redoPixmaps, offsetX, offsetY);
-		translate(drawLine.undoPixmaps, offsetX, offsetY);
-		this.flusher.x = 0;
-		this.flusher.y = 0;
-		minX += offsetX;
-		maxX += offsetX;
-		minY += offsetY;
-		maxY += offsetY;
-		this.prevParentX = newx;
-		this.prevParentY = newy;
-	}
+		final Texture colorTexture = new Texture(flusher.pixmap);
+		this.showingTexRegion.setTexture(colorTexture);
 
-	/**
-	 * Converts the {@link PixmapRegion}s from the {@link Array} to the new
-	 * {@link Stage} size. The new position is determined by offsetX and
-	 * offsetY.
-	 */
-	private void translate(Array<PixmapRegion> stack, int offsetX, int offsetY) {
-		if (stack.size != 0) {
-			for (PixmapRegion redoPixReg : stack) {
-				if (currModifiedPixmap != redoPixReg) {
-					redoPixReg.x += offsetX;
-					redoPixReg.y += offsetY;
-				}
-			}
-		}
+		clampMinX = 0f;
+		clampMinY = 0f;
+
+		clampMaxX = w;
+		clampMaxY = h;
+
+		Gdx.app.log(MESH_TAG, "(Local coords) texture region ~> " + clampMinX
+				+ ", " + clampMinY + ", " + w + ", " + h);
+
+		this.showingTexRegion.setRegion(MathUtils.round(clampMinX),
+				MathUtils.round(clampMinY), MathUtils.round(w),
+				MathUtils.round(h));
+		this.showingTexRegion.flip(false, true);
 	}
 
 	/**
@@ -544,7 +414,6 @@ public class MeshHelper implements Disposable {
 	 */
 	private void resetMesh() {
 		this.vertexIndex = 0;
-		this.mesh.setVertices(this.lineVertices, 0, this.vertexIndex);
 	}
 
 	/**
@@ -600,8 +469,8 @@ public class MeshHelper implements Disposable {
 				this.recalculateMatrix = false;
 				// this.combinedMatrix.idt().mul(
 				// scaledView.getStage().getCamera().combined);
-				this.combinedMatrix.set(scaledView.getStage().getViewport()
-						.getCamera().combined);
+				this.combinedMatrix.set(batch.getProjectionMatrix().mul(
+						batch.getTransformMatrix()));
 			}
 			return;
 		}
@@ -619,9 +488,7 @@ public class MeshHelper implements Disposable {
 	 * @param batch
 	 */
 	private void drawShowingTexture(Batch batch) {
-		batch.draw(this.showingTexRegion, 0f, 0f, 0, 0,
-				this.showingTexRegion.getRegionWidth(),
-				this.showingTexRegion.getRegionHeight(), scaleX, scaleY, 0);
+		batch.draw(this.showingTexRegion, 0, 0);
 	}
 
 	/**
@@ -651,8 +518,6 @@ public class MeshHelper implements Disposable {
 		this.mesh = null;
 		this.meshShader.dispose();
 		this.meshShader = null;
-		this.frameBuffer.dispose();
-		this.frameBuffer = null;
 	}
 
 	void drawTouchDown(float x, float y) {
@@ -854,14 +719,6 @@ public class MeshHelper implements Disposable {
 		this.maxDrawRadius = maxRadius;
 	}
 
-	float getScaleX() {
-		return scaleX;
-	}
-
-	float getScaleY() {
-		return scaleY;
-	}
-
 	/**
 	 * Updates {@link #minX}, {@link #minY}, {@link #maxX} and {@link #maxY} to
 	 * the coordinates of the {@link PixmapRegion pixRegion}. Since
@@ -918,23 +775,6 @@ public class MeshHelper implements Disposable {
 		} else {
 			++cachedErasingInput;
 		}
-	}
-
-	/**
-	 * @return The position of the saved image in {@link #scaledView} local
-	 *         coordinates.
-	 */
-	Vector2 getPosition() {
-		return temp;
-	}
-
-	/**
-	 * @param resizable
-	 *            if true the resources are recreated after a resize event.
-	 *            Default is false.
-	 */
-	void setResizable(boolean resizable) {
-		this.resizable = resizable;
 	}
 
 	void eraseTouchUp(float stageX, float stageY) {
@@ -996,14 +836,21 @@ public class MeshHelper implements Disposable {
 					undoPixmaps.add(flusher);
 				}
 
-				frameBuffer.begin();
+				Gdx.gl.glClearColor(0f, 0f, 0f, 0f);
+				Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
+				Batch batch = controller.getPlatform().getBatch();
+				batch.setProjectionMatrix(combinedMatrix);
+				batch.begin();
+				drawShowingTexture(batch);
+				batch.end();
 				drawMesh();
-				currModifiedPixmap = new PixmapRegion(takeScreenShot(pixX,
-						pixY, pixWidth, pixHeight), pixX, pixY);
-				frameBuffer.end(stageViewport.getScreenX(),
-						stageViewport.getScreenY(),
-						stageViewport.getScreenWidth(),
-						stageViewport.getScreenHeight());
+				scaledView.localToStageCoordinates(temp.set(pixX, pixY));
+				currModifiedPixmap = new PixmapRegion(takeScreenShot(
+						MathUtils.round(temp.x), MathUtils.round(temp.y),
+						pixWidth, pixHeight), pixX, pixY);
+				showingTexRegion.getTexture().draw(currModifiedPixmap.pixmap,
+						pixX, pixY);
+				Gdx.gl.glClearColor(1f, 1f, 1f, 1f);
 
 				resetMesh();
 			}
@@ -1125,9 +972,9 @@ public class MeshHelper implements Disposable {
 	 * be drawn. The position is represented in the {@link Stage} coordinate
 	 * system.
 	 */
-	private class PixmapRegion implements Disposable {
-		private Pixmap pixmap;
-		private int x, y;
+	class PixmapRegion implements Disposable {
+		Pixmap pixmap;
+		int x, y;
 
 		/**
 		 * Keeps a reference to a {@link Pixmap} and the screen position that
