@@ -40,12 +40,12 @@ import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
-
 import es.eucm.ead.editor.control.Actions;
 import es.eucm.ead.editor.control.Clipboard.ClipboardListener;
 import es.eucm.ead.editor.control.Commands;
 import es.eucm.ead.editor.control.Controller;
 import es.eucm.ead.editor.control.Selection;
+import es.eucm.ead.editor.control.actions.editor.AddLabelToScene;
 import es.eucm.ead.editor.control.actions.editor.AddSceneElementFromResource;
 import es.eucm.ead.editor.control.actions.editor.ChangeMockupView;
 import es.eucm.ead.editor.control.actions.editor.MockupPaste;
@@ -53,10 +53,9 @@ import es.eucm.ead.editor.control.actions.editor.Redo;
 import es.eucm.ead.editor.control.actions.editor.Undo;
 import es.eucm.ead.editor.control.actions.editor.asynk.ExportMockupProject;
 import es.eucm.ead.editor.control.actions.editor.asynk.TakePicture;
-import es.eucm.ead.editor.control.actions.model.AddGatewayDefaultElement;
 import es.eucm.ead.editor.control.actions.model.AddInteractiveZone;
-import es.eucm.ead.editor.control.actions.editor.AddLabelToScene;
 import es.eucm.ead.editor.control.actions.model.SetSelection;
+import es.eucm.ead.editor.experiments.SelectionView;
 import es.eucm.ead.editor.view.builders.gallery.PlayView;
 import es.eucm.ead.editor.view.builders.gallery.repository.LibrariesView;
 import es.eucm.ead.editor.view.listeners.ActionListener;
@@ -185,7 +184,8 @@ public class TopEditionToolbar extends Toolbar {
 				} else if (listenerActor == zones) {
 					controller.action(AddInteractiveZone.class);
 				} else if (listenerActor == gate) {
-					controller.action(AddGatewayDefaultElement.class);
+					controller.action(ChangeMockupView.class,
+							SelectionView.class);
 				}
 			}
 		};
