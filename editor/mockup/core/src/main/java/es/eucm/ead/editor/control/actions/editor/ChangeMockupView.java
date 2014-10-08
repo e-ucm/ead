@@ -38,9 +38,13 @@ package es.eucm.ead.editor.control.actions.editor;
 
 import com.badlogic.gdx.utils.Array;
 
+import es.eucm.ead.editor.control.MockupViews;
 import es.eucm.ead.editor.control.Selection;
 import es.eucm.ead.editor.control.Views;
 import es.eucm.ead.editor.control.actions.EditorAction;
+import es.eucm.ead.editor.control.transitions.Slide;
+import es.eucm.ead.editor.control.transitions.TransitionManager.Transition;
+import es.eucm.ead.editor.control.transitions.Transitions;
 import es.eucm.ead.editor.model.Model;
 import es.eucm.ead.editor.model.Q;
 import es.eucm.ead.schema.editor.components.EditState;
@@ -66,11 +70,20 @@ public class ChangeMockupView extends EditorAction {
 
 	@Override
 	public void perform(Object... args) {
-		Object[] viewArguments = new Object[args.length - 1];
-		System.arraycopy(args, 1, viewArguments, 0, viewArguments.length);
+		int beginIndex = args.length > 1 && (args[1] instanceof Transition) ? 2
+				: 1;
+		Object[] viewArguments = new Object[args.length - beginIndex];
+		System.arraycopy(args, beginIndex, viewArguments, 0,
+				viewArguments.length);
 		Views views = controller.getViews();
 
-		views.setView((Class) args[0], viewArguments);
+		if (beginIndex == 2) {
+			((MockupViews) views).transition((Class) args[0],
+					(Transition) args[1], viewArguments);
+		} else {
+			((MockupViews) views).transition((Class) args[0],
+					Transitions.getFadeTransition(true), viewArguments);
+		}
 
 		Model model = controller.getModel();
 		ModelEntity game = model.getGame();

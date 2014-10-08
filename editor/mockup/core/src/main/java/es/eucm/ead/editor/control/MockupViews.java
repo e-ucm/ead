@@ -37,6 +37,7 @@
 package es.eucm.ead.editor.control;
 
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.Group;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.InputListener;
@@ -44,10 +45,14 @@ import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.actions.Actions;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.ObjectMap;
+import com.badlogic.gdx.utils.SnapshotArray;
 
 import es.eucm.ead.editor.control.MockupController.BackListener;
 import es.eucm.ead.editor.control.actions.editor.ChangeMockupView;
 import es.eucm.ead.editor.control.actions.editor.ForceSave;
+import es.eucm.ead.editor.control.transitions.TransitionManager;
+import es.eucm.ead.editor.control.transitions.TransitionManager.Transition;
+import es.eucm.ead.editor.control.transitions.Transitions;
 import es.eucm.ead.editor.view.builders.ViewBuilder;
 import es.eucm.ead.editor.view.builders.gallery.ProjectsView;
 import es.eucm.ead.editor.view.builders.gallery.ScenesView;
@@ -58,6 +63,7 @@ import es.eucm.ead.editor.view.widgets.helpmessage.sequence.HelpSequence;
 public class MockupViews extends Views implements BackListener {
 
 	private Toasts toasts;
+	private TransitionManager transitionManager;
 	private ObjectMap<ViewBuilder, HelpSequence> helpMessages;
 	private static final Array<HiddenPanel> showingPanels = new Array<HiddenPanel>(
 			3);
@@ -100,6 +106,34 @@ public class MockupViews extends Views implements BackListener {
 		super(controller, viewsContainer, viewsContainer);
 		helpMessages = new ObjectMap<ViewBuilder, HelpSequence>(8);
 		toasts = new Toasts(controller);
+		transitionManager = new TransitionManager(controller, viewsContainer,
+				this);
+	}
+
+	public <T extends ViewBuilder> void transition(Class<T> viewClass,
+			Transition transition, Object... args) {
+		popPanels();
+		controller.getTracker().changeView(viewClass.getSimpleName());
+		if (currentView != null) {
+			currentView.release(controller);
+		}
+		currentView = getBuilder(viewClass, viewsBuilders);
+		if (currentView != null) {
+			SnapshotArray<Actor> children = viewsContainer.getChildren();
+			Actor current = children.size > 0 ? children.first() : null;
+			for (Actor actor : children) {
+				if (actor != current) {
+					actor.remove();
+				}
+			}
+			Actor next = currentView.getView(args);
+			if (next != null) {
+				transitionManager.prepateTransition(transition, current, next);
+				currentArgs = args;
+				viewsHistory.viewUpdated(currentView.getClass(), currentArgs);
+			}
+		}
+
 	}
 
 	@Override
@@ -113,7 +147,8 @@ public class MockupViews extends Views implements BackListener {
 				ViewBuilder nextView = currentView;
 				back();
 				if (nextView == currentView) {
-					controller.action(ChangeMockupView.class, ScenesView.class);
+					controller.action(ChangeMockupView.class, ScenesView.class,
+							Transitions.getSlideTransition(false));
 				}
 			}
 		}
@@ -126,13 +161,20 @@ public class MockupViews extends Views implements BackListener {
 	@Override
 	public <T extends ViewBuilder> void setView(Class<T> viewClass,
 			Object... args) {
+		popPanels();
+		super.setView(viewClass, args);
+		showNotificationMessage();
+	}
+
+	private void popPanels() {
 		while (showingPanels.size > 0) {
 			showingPanels.pop().hide();
 		}
 
 		hideOnscreenKeyboard();
-		super.setView(viewClass, args);
+	}
 
+	public void showNotificationMessage() {
 		modalsContainer
 				.addAction(com.badlogic.gdx.scenes.scene2d.actions.Actions
 						.delay(0.3f, Actions.run(showHelpMessage)));
