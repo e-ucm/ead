@@ -50,6 +50,7 @@ import com.badlogic.gdx.utils.Disposable;
 
 import es.eucm.ead.editor.assets.EditorGameAssets;
 import es.eucm.ead.editor.control.Controller;
+import es.eucm.ead.editor.control.MockupController;
 import es.eucm.ead.editor.control.actions.model.AddSceneElement;
 import es.eucm.ead.editor.view.widgets.editionview.MockupSceneEditor;
 import es.eucm.ead.editor.view.widgets.editionview.draw.MeshHelper.PixmapRegion;
@@ -88,6 +89,7 @@ public class BrushStrokes extends WidgetGroup implements Disposable {
 		this.sceneEditor = scaledView;
 		this.controller = control;
 		this.mode = null;
+		((MockupController) controller).addDisposable(this);
 	}
 
 	/**
