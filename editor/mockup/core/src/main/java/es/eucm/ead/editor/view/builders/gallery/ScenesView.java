@@ -52,6 +52,7 @@ import es.eucm.ead.editor.control.actions.editor.asynk.ExportMockupProject;
 import es.eucm.ead.editor.control.actions.model.ChangeProjectName;
 import es.eucm.ead.editor.control.actions.model.EditScene;
 import es.eucm.ead.editor.control.actions.model.scene.NewScene;
+import es.eucm.ead.editor.control.transitions.Transitions;
 import es.eucm.ead.editor.model.Model.FieldListener;
 import es.eucm.ead.editor.model.Model.Resource;
 import es.eucm.ead.editor.model.Q;
@@ -140,7 +141,8 @@ public class ScenesView extends BaseGallery implements BackListener {
 
 			@Override
 			public void changed(ChangeEvent event, Actor actor) {
-				controller.action(ChangeMockupView.class, PlayView.class);
+				controller.action(ChangeMockupView.class, PlayView.class,
+						Transitions.getSlideTransition(true));
 			}
 		});
 		return play;
@@ -209,7 +211,8 @@ public class ScenesView extends BaseGallery implements BackListener {
 	@Override
 	protected void newItem() {
 		controller.action(NewScene.class, "");
-		controller.action(ChangeMockupView.class, EditionView.class);
+		controller.action(ChangeMockupView.class, EditionView.class,
+				Transitions.getFadeSlideTransition(topBar, galleryPane, true));
 	}
 
 	@Override
@@ -248,7 +251,9 @@ public class ScenesView extends BaseGallery implements BackListener {
 				((SceneItem) item).getScene());
 		if (sceneId != null) {
 			controller.action(EditScene.class, sceneId);
-			controller.action(ChangeMockupView.class, EditionView.class);
+			controller.action(ChangeMockupView.class, EditionView.class,
+					Transitions.getFadeSlideTransition(topBar, galleryPane,
+							true));
 		}
 	}
 
@@ -259,6 +264,7 @@ public class ScenesView extends BaseGallery implements BackListener {
 
 	@Override
 	public void onBackPressed() {
-		controller.action(CloseMockupGame.class);
+		controller.action(CloseMockupGame.class,
+				Transitions.getFadeSlideTransition(topBar, galleryPane, false));
 	}
 }

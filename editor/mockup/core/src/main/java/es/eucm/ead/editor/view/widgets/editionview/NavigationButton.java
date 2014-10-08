@@ -56,6 +56,7 @@ import es.eucm.ead.editor.control.Toasts;
 import es.eucm.ead.editor.control.actions.editor.ChangeMockupView;
 import es.eucm.ead.editor.control.actions.model.EditScene;
 import es.eucm.ead.editor.control.actions.model.scene.NewScene;
+import es.eucm.ead.editor.control.transitions.Transitions;
 import es.eucm.ead.editor.model.Model;
 import es.eucm.ead.editor.model.Model.SelectionListener;
 import es.eucm.ead.editor.model.events.SelectionEvent;
@@ -79,7 +80,8 @@ public class NavigationButton extends IconWithScalePanel implements
 
 	private Toasts toasts;
 
-	public NavigationButton(Skin skin, final Controller controller) {
+	public NavigationButton(Skin skin, final Controller controller,
+			final Actor top, final Actor bottom) {
 		super("menu", SEPARATION, skin);
 		setStyle(skin.get("white_union", IconButtonStyle.class));
 
@@ -113,7 +115,8 @@ public class NavigationButton extends IconWithScalePanel implements
 		goGallery.addListener(new ClickListener() {
 			@Override
 			public void clicked(InputEvent event, float x, float y) {
-				controller.action(ChangeMockupView.class, ScenesView.class);
+				controller.action(ChangeMockupView.class, ScenesView.class,
+						Transitions.getFadeSlideTransition(top, bottom, false));
 			}
 		});
 
@@ -122,7 +125,8 @@ public class NavigationButton extends IconWithScalePanel implements
 
 			@Override
 			public void changed(ChangeEvent event, Actor actor) {
-				controller.action(ChangeMockupView.class, PlayView.class);
+				controller.action(ChangeMockupView.class, PlayView.class,
+						Transitions.getSlideTransition(true));
 			}
 		});
 

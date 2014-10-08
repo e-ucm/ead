@@ -36,6 +36,8 @@
  */
 package es.eucm.ead.editor.view.widgets.editionview;
 
+import java.util.Stack;
+
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
@@ -46,6 +48,7 @@ import es.eucm.ead.editor.control.Clipboard.ClipboardListener;
 import es.eucm.ead.editor.control.Commands;
 import es.eucm.ead.editor.control.Controller;
 import es.eucm.ead.editor.control.Selection;
+import es.eucm.ead.editor.control.actions.editor.AddLabelToScene;
 import es.eucm.ead.editor.control.actions.editor.AddSceneElementFromResource;
 import es.eucm.ead.editor.control.actions.editor.ChangeMockupView;
 import es.eucm.ead.editor.control.actions.editor.MockupPaste;
@@ -55,9 +58,9 @@ import es.eucm.ead.editor.control.actions.editor.asynk.ExportMockupProject;
 import es.eucm.ead.editor.control.actions.editor.asynk.TakePicture;
 import es.eucm.ead.editor.control.actions.model.AddGatewayDefaultElement;
 import es.eucm.ead.editor.control.actions.model.AddInteractiveZone;
-import es.eucm.ead.editor.control.actions.editor.AddLabelToScene;
 import es.eucm.ead.editor.control.actions.model.SetSelection;
 import es.eucm.ead.editor.control.commands.Command;
+import es.eucm.ead.editor.control.transitions.Transitions;
 import es.eucm.ead.editor.view.builders.gallery.PlayView;
 import es.eucm.ead.editor.view.builders.gallery.repository.LibrariesView;
 import es.eucm.ead.editor.view.listeners.ActionListener;
@@ -69,8 +72,6 @@ import es.eucm.ead.editor.view.widgets.editionview.draw.PaintToolbar.DrawListene
 import es.eucm.ead.editor.view.widgets.gallery.AboutWidget;
 import es.eucm.ead.editor.view.widgets.iconwithpanel.IconWithScalePanel;
 import es.eucm.ead.engine.assets.GameAssets;
-
-import java.util.Stack;
 
 public class TopEditionToolbar extends Toolbar {
 
@@ -104,7 +105,7 @@ public class TopEditionToolbar extends Toolbar {
 
 	public TopEditionToolbar(final Controller controller, String style,
 			final PaintToolbar paintToolbar, float smallPad, float normalPad,
-			Actor reference) {
+			Actor reference, final Table top, final Table bottom) {
 		super(controller.getApplicationAssets().getSkin(), style);
 		Skin skin = controller.getApplicationAssets().getSkin();
 
@@ -161,6 +162,7 @@ public class TopEditionToolbar extends Toolbar {
 				Actor listenerActor = event.getListenerActor();
 				if (listenerActor == debugPlay) {
 					controller.action(ChangeMockupView.class, PlayView.class,
+							Transitions.getSlideTransition(true),
 							GameAssets.GAME_DEBUG);
 				} else if (listenerActor == share) {
 					controller.action(ExportMockupProject.class);
@@ -174,7 +176,8 @@ public class TopEditionToolbar extends Toolbar {
 					controller.action(MockupPaste.class);
 				} else if (listenerActor == repository) {
 					controller.action(ChangeMockupView.class,
-							LibrariesView.class);
+							LibrariesView.class, Transitions
+									.getFadeSlideTransition(top, bottom, true));
 				} else if (listenerActor == android) {
 					controller.action(AddSceneElementFromResource.class);
 				} else if (listenerActor == paint) {

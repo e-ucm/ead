@@ -52,6 +52,8 @@ import es.eucm.ead.editor.control.actions.model.EditScene;
 import es.eucm.ead.editor.control.background.BackgroundExecutor;
 import es.eucm.ead.editor.control.background.BackgroundExecutor.BackgroundTaskListener;
 import es.eucm.ead.editor.control.background.BackgroundTask;
+import es.eucm.ead.editor.control.transitions.TransitionManager.Transition;
+import es.eucm.ead.editor.control.transitions.Transitions;
 import es.eucm.ead.editor.model.Model;
 import es.eucm.ead.editor.model.Q;
 import es.eucm.ead.editor.view.builders.ViewBuilder;
@@ -69,10 +71,25 @@ public class OpenMockupGame extends OpenGame {
 	 */
 	private static final float SAVE_DELAY = 30f;
 	protected static final float ERROR_TIMEOUT = 3F;
+	private Transition transition;
+
+	public OpenMockupGame() {
+		super(new Class[] { String.class }, new Class[] { String.class,
+				Transition.class });
+	}
 
 	@Override
 	public void perform(Object... args) {
+		updateTransition(args);
 		fileChosen(args[0].toString());
+	}
+
+	protected void updateTransition(Object... args) {
+		if (args.length == 2) {
+			transition = (Transition) args[1];
+		} else {
+			transition = null;
+		}
 	}
 
 	@Override
@@ -126,10 +143,11 @@ public class OpenMockupGame extends OpenGame {
 	private Runnable closeGame = new Runnable() {
 		@Override
 		public void run() {
-			controller
-					.action(CloseMockupGame.class,
-							controller.getApplicationAssets().getI18N()
-									.m("project.errorOpening"));
+			controller.action(
+					CloseMockupGame.class,
+					controller.getApplicationAssets().getI18N()
+							.m("project.errorOpening"),
+					Transitions.getFadeTransition(false));
 		}
 	};
 
@@ -177,8 +195,12 @@ public class OpenMockupGame extends OpenGame {
 				Class viewClass = ClassReflection.forName(editState.getView());
 
 				int i = 0;
-				Object[] args = new Object[editState.getArguments().size + 1];
+				Object[] args = new Object[editState.getArguments().size
+						+ (transition != null ? 2 : 1)];
 				args[i++] = viewClass;
+				if (transition != null) {
+					args[i++] = transition;
+				}
 				for (Object arg : editState.getArguments()) {
 					args[i++] = arg;
 				}

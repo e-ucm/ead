@@ -39,6 +39,7 @@ package es.eucm.ead.editor.control.actions.editor.asynk;
 import es.eucm.ead.editor.control.Controller;
 import es.eucm.ead.editor.control.actions.editor.ChangeMockupView;
 import es.eucm.ead.editor.control.actions.editor.NewMockupGame;
+import es.eucm.ead.editor.control.transitions.TransitionManager.Transition;
 import es.eucm.ead.editor.view.builders.gallery.ScenesView;
 import es.eucm.ead.schema.entities.ModelEntity;
 
@@ -52,7 +53,7 @@ public class NewMockupGameAsynk extends BackgroundExecutorAction<String> {
 	private NewMockupGame newGame;
 
 	public NewMockupGameAsynk() {
-		super(new Class[] { String.class, ModelEntity.class });
+		super(new Class[] { String.class, ModelEntity.class, Transition.class });
 	}
 
 	@Override
@@ -80,7 +81,8 @@ public class NewMockupGameAsynk extends BackgroundExecutorAction<String> {
 	protected void onPostExecute(String result) {
 		if (result != null) {
 			newGame.openNewGame(result);
-			controller.action(ChangeMockupView.class, ScenesView.class);
+			controller.action(ChangeMockupView.class, ScenesView.class,
+					(Transition) args[2]);
 		}
 	}
 

@@ -44,6 +44,7 @@ import es.eucm.ead.editor.control.MockupViews;
 import es.eucm.ead.editor.control.Preferences;
 import es.eucm.ead.editor.control.actions.editor.ChangeMockupView;
 import es.eucm.ead.editor.control.actions.editor.ForceSave;
+import es.eucm.ead.editor.control.transitions.TransitionManager.Transition;
 import es.eucm.ead.editor.view.builders.gallery.ProjectsView;
 
 /**
@@ -52,7 +53,8 @@ import es.eucm.ead.editor.view.builders.gallery.ProjectsView;
 public class CloseMockupGame extends BackgroundExecutorAction<Boolean> {
 
 	public CloseMockupGame() {
-		super(new Class[] { String.class }, new Class[] {});
+		super(new Class[] { String.class, Transition.class },
+				new Class[] { Transition.class });
 	}
 
 	@Override
@@ -84,10 +86,15 @@ public class CloseMockupGame extends BackgroundExecutorAction<Boolean> {
 	@Override
 	protected void onPostExecute(Boolean result) {
 		controller.getEditorGameAssets().setLoadingPath("");
-		controller.action(ChangeMockupView.class, ProjectsView.class);
-		if (args.length > 0) {
+		String msg = args.length > 0 && args[0] instanceof String ? args[0]
+				.toString() : null;
+		Transition transition = args[0] instanceof Transition ? (Transition) args[0]
+				: (Transition) args[1];
+		controller.action(ChangeMockupView.class, ProjectsView.class,
+				transition);
+		if (msg != null) {
 			((MockupViews) controller.getViews()).getToasts().showNotification(
-					args[0].toString(), ERROR_TIMEOUT);
+					msg, ERROR_TIMEOUT);
 		}
 	}
 }
