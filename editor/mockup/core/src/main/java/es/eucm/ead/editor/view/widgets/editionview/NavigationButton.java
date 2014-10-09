@@ -63,10 +63,10 @@ import es.eucm.ead.editor.model.events.SelectionEvent.Type;
 import es.eucm.ead.editor.view.builders.gallery.PlayView;
 import es.eucm.ead.editor.view.builders.gallery.ScenesView;
 import es.eucm.ead.editor.view.widgets.IconButton;
-import es.eucm.ead.editor.view.widgets.iconwithpanel.IconWithScalePanel;
+import es.eucm.ead.editor.view.widgets.iconwithpanel.IconWithLateralPanel;
 import es.eucm.ead.engine.I18N;
 
-public class NavigationButton extends IconWithScalePanel implements
+public class NavigationButton extends IconWithLateralPanel implements
 		SelectionListener {
 
 	private static final float SEPARATION = -10, PAD = 0.4f;

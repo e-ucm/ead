@@ -66,7 +66,7 @@ import es.eucm.ead.editor.model.events.LoadEvent;
 import es.eucm.ead.editor.model.events.SelectionEvent;
 import es.eucm.ead.editor.view.listeners.SceneDocumentationListener;
 import es.eucm.ead.editor.view.widgets.ScrollPaneDif;
-import es.eucm.ead.editor.view.widgets.iconwithpanel.IconWithScalePanel;
+import es.eucm.ead.editor.view.widgets.iconwithpanel.IconWithLateralPanel;
 import es.eucm.ead.engine.I18N;
 import es.eucm.ead.engine.assets.Assets;
 import es.eucm.ead.schema.editor.components.Documentation;
@@ -77,7 +77,7 @@ import es.eucm.ead.schemax.FieldName;
 /**
  * A widget that displays some edition options for a specific scene.
  */
-public class OthersWidget extends IconWithScalePanel implements FieldListener {
+public class OthersWidget extends IconWithLateralPanel implements FieldListener {
 
 	private static final int PREF_DOCUMENTATION_ROWS = 5;
 

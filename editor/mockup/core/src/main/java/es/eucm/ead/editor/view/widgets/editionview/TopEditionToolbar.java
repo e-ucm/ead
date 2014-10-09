@@ -67,7 +67,7 @@ import es.eucm.ead.editor.view.widgets.Toolbar;
 import es.eucm.ead.editor.view.widgets.editionview.draw.PaintToolbar;
 import es.eucm.ead.editor.view.widgets.editionview.draw.PaintToolbar.DrawListener;
 import es.eucm.ead.editor.view.widgets.gallery.AboutWidget;
-import es.eucm.ead.editor.view.widgets.iconwithpanel.IconWithScalePanel;
+import es.eucm.ead.editor.view.widgets.iconwithpanel.IconWithLateralPanel;
 import es.eucm.ead.engine.assets.GameAssets;
 
 import java.util.Stack;
@@ -100,7 +100,7 @@ public class TopEditionToolbar extends Toolbar {
 
 	private IconButton share;
 
-	private IconWithScalePanel about;
+	private IconWithLateralPanel about;
 
 	public TopEditionToolbar(final Controller controller, String style,
 			final PaintToolbar paintToolbar, float smallPad, float normalPad,
