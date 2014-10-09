@@ -69,8 +69,8 @@ public class SceneItem extends GalleryItem implements
 
 	public SceneItem(final Controller controller, ModelEntity scen,
 			BaseGallery gallery) {
-		super(new Image(), "", true, controller.getApplicationAssets()
-				.getSkin(), "scene", true, gallery);
+		super("", true, controller.getApplicationAssets().getSkin(), "scene",
+				true, gallery);
 		this.scene = scen;
 
 		this.controller = controller;
