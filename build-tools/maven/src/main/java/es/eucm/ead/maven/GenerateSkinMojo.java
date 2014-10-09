@@ -37,6 +37,13 @@
 
 package es.eucm.ead.maven;
 
+import java.io.File;
+
+import org.apache.maven.plugin.AbstractMojo;
+import org.apache.maven.plugin.MojoExecutionException;
+import org.apache.maven.plugins.annotations.Mojo;
+import org.apache.maven.plugins.annotations.Parameter;
+
 import com.badlogic.gdx.backends.lwjgl.LwjglFiles;
 import com.badlogic.gdx.backends.lwjgl.LwjglNativesLoader;
 import com.badlogic.gdx.files.FileHandle;
@@ -49,12 +56,6 @@ import com.badlogic.gdx.tools.bmfont.BitmapFontWriter;
 import com.badlogic.gdx.tools.texturepacker.TexturePacker;
 import com.badlogic.gdx.tools.texturepacker.TexturePacker.Settings;
 import com.badlogic.gdx.utils.Array;
-import org.apache.maven.plugin.AbstractMojo;
-import org.apache.maven.plugin.MojoExecutionException;
-import org.apache.maven.plugins.annotations.Mojo;
-import org.apache.maven.plugins.annotations.Parameter;
-
-import java.io.File;
 
 /**
  * The plugin generate a libgdx atlas for the project skins.
@@ -141,6 +142,7 @@ public class GenerateSkinMojo extends AbstractMojo {
 								String[] props = line.split(" ");
 								String ttfFontName = props[0];
 								String fontSize = props[1];
+								fontSize = fontSize.replace("\r", "");
 
 								FileHandle child = fonts.child(ttfFontName);
 								if (child.exists()) {

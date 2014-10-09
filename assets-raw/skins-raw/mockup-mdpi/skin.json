@@ -326,6 +326,16 @@
 			background: bottom_bar
 		}
 	},
+	es.eucm.ead.editor.view.widgets.HorizontalToolbar$HorizontalToolbarStyle: {
+		default: { 
+		}, 
+		white_top: {
+			background: toolbar_top
+		},
+		white_bottom: {
+			background: bottom_bar
+		}
+	},
 	es.eucm.ead.editor.view.widgets.DropDown$DropDownStyle: {
 		default: {
 			listBackgroundUp: panel,
