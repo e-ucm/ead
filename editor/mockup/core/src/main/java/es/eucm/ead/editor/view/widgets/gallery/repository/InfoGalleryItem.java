@@ -78,7 +78,7 @@ public abstract class InfoGalleryItem extends GalleryItem {
 
 	public InfoGalleryItem(I18N i18n, ItemInfo info, Skin skin,
 			String styleName, BaseGallery gallery) {
-		super(new Image(), "", false, skin, styleName, false, gallery);
+		super("", false, skin, styleName, false, gallery);
 		this.i18n = i18n;
 
 		this.info = info;
