@@ -38,7 +38,6 @@ package es.eucm.ead.editor.view.widgets;
 
 import static com.badlogic.gdx.scenes.scene2d.actions.Actions.fadeIn;
 import static com.badlogic.gdx.scenes.scene2d.actions.Actions.fadeOut;
-import static com.badlogic.gdx.scenes.scene2d.actions.Actions.sequence;
 
 import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.math.Interpolation;
@@ -48,8 +47,6 @@ import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.InputListener;
 import com.badlogic.gdx.scenes.scene2d.Stage;
-import com.badlogic.gdx.scenes.scene2d.Touchable;
-import com.badlogic.gdx.scenes.scene2d.actions.Actions;
 import com.badlogic.gdx.scenes.scene2d.ui.Cell;
 import com.badlogic.gdx.scenes.scene2d.ui.Container;
 import com.badlogic.gdx.scenes.scene2d.ui.List.ListStyle;
@@ -77,7 +74,6 @@ public class DropDown extends Container<Actor> implements Disableable {
 	private static final Vector2 tmpCoords = new Vector2();
 
 	private ClickListener clickListener;
-	private Actor previousScrollFocus;
 	private DropDownStyle style;
 	private ListScroll scroll;
 	private boolean disabled;
@@ -85,26 +81,26 @@ public class DropDown extends Container<Actor> implements Disableable {
 	private boolean changeIcon;
 
 	public DropDown(Skin skin) {
-		this(skin.get(DropDownStyle.class), true);
+		this(skin, skin.get(DropDownStyle.class), true);
 	}
 
 	public DropDown(Skin skin, boolean changeIcon) {
-		this(skin.get(DropDownStyle.class), changeIcon);
+		this(skin, skin.get(DropDownStyle.class), changeIcon);
 	}
 
 	public DropDown(Skin skin, String styleName, boolean changeIcon) {
-		this(skin.get(styleName, DropDownStyle.class), changeIcon);
+		this(skin, skin.get(styleName, DropDownStyle.class), changeIcon);
 	}
 
 	public DropDown(Skin skin, String styleName) {
-		this(skin.get(styleName, DropDownStyle.class), true);
+		this(skin, skin.get(styleName, DropDownStyle.class), true);
 	}
 
-	public DropDown(DropDownStyle style, boolean changeIcon) {
+	private DropDown(Skin skin, DropDownStyle style, boolean changeIcon) {
 		setStyle(style);
 		setBackground(style.background);
 		this.changeIcon = changeIcon;
-		scroll = new ListScroll();
+		scroll = new ListScroll(skin);
 		scroll.setBackground(style.listBackgroundDown);
 
 		addListener(clickListener = new ClickListener() {
@@ -204,7 +200,7 @@ public class DropDown extends Container<Actor> implements Disableable {
 		if (selection == item) {
 			return;
 		}
-		Cell cell = scroll.getCell(item);
+		Cell<Actor> cell = scroll.getCell(item);
 		if (selection != null) {
 			cell.setActor(selection);
 		}
@@ -225,25 +221,11 @@ public class DropDown extends Container<Actor> implements Disableable {
 	}
 
 	public void showList() {
-		scroll.setTouchable(Touchable.enabled);
 		scroll.show(getStage());
 	}
 
 	public void hideList() {
-		if (!scroll.hasParent())
-			return;
-		scroll.setTouchable(Touchable.disabled);
-		Stage stage = scroll.getStage();
-		if (stage != null) {
-			if (previousScrollFocus != null
-					&& previousScrollFocus.getStage() == null)
-				previousScrollFocus = null;
-			Actor actor = stage.getScrollFocus();
-			if (actor == null || actor.isDescendantOf(scroll))
-				stage.setScrollFocus(previousScrollFocus);
-		}
-		scroll.addAction(sequence(fadeOut(0.2f, Interpolation.fade),
-				Actions.removeActor()));
+		scroll.hide();
 	}
 
 	/** Returns the list shown when the select box is open. */
@@ -251,9 +233,10 @@ public class DropDown extends Container<Actor> implements Disableable {
 		return scroll;
 	}
 
-	private class ListScroll extends Table {
+	private class ListScroll extends HiddenPanel {
 
-		public ListScroll() {
+		public ListScroll(Skin skin) {
+			super(skin);
 			defaults().uniform();
 
 			addListener(new InputListener() {
@@ -262,7 +245,7 @@ public class DropDown extends Container<Actor> implements Disableable {
 					if (changeIcon) {
 						Actor target = event.getTarget();
 						if (target != null) {
-							Cell cell = getCell(target);
+							Cell<Actor> cell = getCell(target);
 							if (cell != null) {
 								setSelected(target);
 								ChangeEvent changeEvent = Pools
@@ -280,7 +263,6 @@ public class DropDown extends Container<Actor> implements Disableable {
 		}
 
 		public void show(Stage stage) {
-			stage.addActor(this);
 
 			float prefWidth = getPrefWidth();
 			DropDown.this.localToStageCoordinates(tmpCoords.set(
@@ -320,21 +302,12 @@ public class DropDown extends Container<Actor> implements Disableable {
 
 			clearActions();
 			getColor().a = 0;
-			addAction(fadeIn(0.3f, Interpolation.fade));
-
-			previousScrollFocus = null;
-			Actor actor = stage.getScrollFocus();
-			if (actor != null && !actor.isDescendantOf(this)) {
-				previousScrollFocus = actor;
-			}
-
-			stage.setScrollFocus(this);
+			super.show(stage, fadeIn(0.3f, Interpolation.fade));
 		}
 
 		@Override
-		public Actor hit(float x, float y, boolean touchable) {
-			Actor actor = super.hit(x, y, touchable);
-			return actor != null ? actor : this;
+		public void hide() {
+			super.hide(fadeOut(0.2f, Interpolation.fade));
 		}
 	}
 
