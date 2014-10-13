@@ -38,7 +38,6 @@ package es.eucm.ead.editor.view.widgets.gallery;
 
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
-import com.badlogic.gdx.scenes.scene2d.ui.Image;
 import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable;
 
@@ -83,8 +82,8 @@ public class ProjectItem extends GalleryItem implements
 
 	public ProjectItem(Controller controller, String projectPath,
 			BaseGallery gallery) {
-		super(new Image(), "", true, controller.getApplicationAssets()
-				.getSkin(), "project", false, gallery);
+		super("", true, controller.getApplicationAssets().getSkin(), "project",
+				false, gallery);
 		this.controller = controller;
 		projectPath = controller.getEditorGameAssets().toCanonicalPath(
 				projectPath);

@@ -130,8 +130,8 @@ public class PaintToolbar extends Toolbar {
 			public void clicked(InputEvent event, float x, float y) {
 				if (!picker.getPanel().hasParent()) {
 					picker.setChecked(true);
-					picker.showPanel();
 					picker.colorChanged();
+					picker.showPanel();
 				} else {
 					picker.setChecked(false);
 					picker.hidePanel();
