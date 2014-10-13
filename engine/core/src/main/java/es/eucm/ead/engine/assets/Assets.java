@@ -104,6 +104,7 @@ public abstract class Assets extends Json implements FileHandleResolver {
 	private Skin skin;
 
 	public Assets(Files files) {
+		setEnumNames(false);
 		this.files = files;
 		assetManager = new AssetManager(this);
 		i18n = new I18N(this);
