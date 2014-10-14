@@ -34,56 +34,63 @@
  *      You should have received a copy of the GNU Lesser General Public License
  *      along with eAdventure.  If not, see <http://www.gnu.org/licenses/>.
  */
-package es.eucm.ead.editor.control.actions.editor.asynk;
+package es.eucm.ead.editor.control.transitions;
 
-import es.eucm.ead.editor.control.Controller;
-import es.eucm.ead.editor.control.actions.editor.ChangeMockupView;
-import es.eucm.ead.editor.control.actions.editor.NewMockupGame;
+import com.badlogic.gdx.graphics.Color;
+import com.badlogic.gdx.graphics.g2d.Batch;
+import com.badlogic.gdx.graphics.g2d.TextureRegion;
+import com.badlogic.gdx.math.Interpolation;
+import com.badlogic.gdx.math.MathUtils;
+
 import es.eucm.ead.editor.control.transitions.TransitionManager.Transition;
-import es.eucm.ead.editor.view.builders.gallery.ScenesView;
-import es.eucm.ead.schema.entities.ModelEntity;
 
 /**
- * Creates a new eAdventure Mockup game asynchronously.
- * 
- * @see NewMockupGame
+ * Fade transition between the current screen and the next screen.
  */
-public class NewMockupGameAsynk extends BackgroundExecutorAction<String> {
+public class Fade implements Transition {
 
-	private NewMockupGame newGame;
+	private static final Fade instance = new Fade();
 
-	public NewMockupGameAsynk() {
-		super(new Class[] { String.class, ModelEntity.class, Transition.class });
+	private float duration;
+	private boolean fadeCurrentScreen;
+
+	public static Transition init() {
+		return init(MathUtils.random(.4f, .6f), MathUtils.randomBoolean());
+	}
+
+	public static Fade init(float duration, boolean fadeCurrentScreen) {
+		instance.fadeCurrentScreen = fadeCurrentScreen;
+		instance.duration = duration;
+		return instance;
+	}
+
+	private Fade() {
+
 	}
 
 	@Override
-	public void initialize(Controller controller) {
-		super.initialize(controller);
-		newGame = controller.getActions().getAction(NewMockupGame.class);
+	public float getDuration() {
+		return duration;
 	}
 
 	@Override
-	protected String getProcessingI18N() {
-		return "newGame";
+	public void render(Batch batch, TextureRegion currScreen,
+			Region currScreenRegion, TextureRegion nextScreen,
+			Region nextScreenRegion, float alpha) {
+		alpha = Interpolation.fade.apply(alpha);
+		Color color = batch.getColor();
+		if (fadeCurrentScreen)
+			batch.setColor(1, 1, 1, 1 - alpha);
+		batch.draw(currScreen, currScreenRegion.x, currScreenRegion.y,
+				currScreenRegion.w, currScreenRegion.h);
+		batch.setColor(1, 1, 1, alpha);
+		batch.draw(nextScreen, nextScreenRegion.x, nextScreenRegion.y,
+				nextScreenRegion.w, nextScreenRegion.h);
+		batch.setColor(color);
 	}
 
 	@Override
-	protected String getErrorProcessingI18N() {
-		return "newGame.error";
-	}
+	public void end() {
 
-	@Override
-	protected String doInBackground() {
-		return newGame.createNewGame(args);
 	}
-
-	@Override
-	protected void onPostExecute(String result) {
-		if (result != null) {
-			newGame.openNewGame(result);
-			controller.action(ChangeMockupView.class, ScenesView.class,
-					(Transition) args[2]);
-		}
-	}
-
 }

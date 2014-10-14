@@ -47,6 +47,7 @@ import es.eucm.ead.editor.control.Controller;
 import es.eucm.ead.editor.control.MockupViews;
 import es.eucm.ead.editor.control.Selection;
 import es.eucm.ead.editor.control.actions.editor.ForceSave;
+import es.eucm.ead.editor.control.actions.model.SetSelection;
 import es.eucm.ead.editor.control.engine.Engine;
 import es.eucm.ead.editor.exporter.Exporter;
 import es.eucm.ead.editor.view.builders.ViewBuilder;
@@ -97,6 +98,9 @@ public class PlayView implements ViewBuilder {
 
 	@Override
 	public Actor getView(Object... args) {
+
+		controller.action(SetSelection.class, Selection.EDITED_GROUP,
+				Selection.SCENE_ELEMENT);
 		controller.action(ForceSave.class);
 		String gameString = GameAssets.GAME_FILE;
 

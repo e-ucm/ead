@@ -78,6 +78,10 @@ public class OpenGame extends EditorAction implements FileChooserListener,
 		super(true, true, String.class);
 	}
 
+	public OpenGame(Class[]... clazz) {
+		super(true, true, clazz);
+	}
+
 	@Override
 	public boolean validate(Object... args) {
 		return true;

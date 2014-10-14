@@ -47,6 +47,7 @@ import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 
 import es.eucm.ead.editor.control.Controller;
 import es.eucm.ead.editor.control.actions.editor.ChangeMockupView;
+import es.eucm.ead.editor.control.transitions.Transitions;
 import es.eucm.ead.editor.view.builders.gallery.CreditsView;
 import es.eucm.ead.editor.view.widgets.SendEmailPane;
 import es.eucm.ead.editor.view.widgets.iconwithpanel.IconWithLateralPanel;
@@ -93,8 +94,9 @@ public class AboutWidget extends IconWithLateralPanel {
 				if (listenerActor == web) {
 					controller.getPlatform().browseURL(URL);
 				} else if (listenerActor == credits) {
-					controller
-							.action(ChangeMockupView.class, CreditsView.class);
+					controller.action(ChangeMockupView.class,
+							CreditsView.class,
+							Transitions.getSlideTransition(true));
 				} else if (listenerActor == contact) {
 					emailPane.show();
 				}

@@ -46,6 +46,7 @@ import es.eucm.ead.editor.control.MockupController.BackListener;
 import es.eucm.ead.editor.control.actions.editor.ExitMockup;
 import es.eucm.ead.editor.control.actions.editor.asynk.NewMockupGameAsynk;
 import es.eucm.ead.editor.control.actions.editor.asynk.OpenMockupGameAsynk;
+import es.eucm.ead.editor.control.transitions.Transitions;
 import es.eucm.ead.editor.view.widgets.gallery.GalleryItem;
 import es.eucm.ead.editor.view.widgets.gallery.ProjectItem;
 import es.eucm.ead.editor.view.widgets.helpmessage.sequence.HelpSequence;
@@ -91,7 +92,8 @@ public class ProjectsView extends BaseGallery implements BackListener {
 		} while (file.exists());
 
 		controller.action(NewMockupGameAsynk.class, file.file()
-				.getAbsolutePath(), defaultGame);
+				.getAbsolutePath(), defaultGame, Transitions
+				.getFadeSlideTransition(topBar, galleryPane, true));
 	}
 
 	@Override
@@ -110,7 +112,8 @@ public class ProjectsView extends BaseGallery implements BackListener {
 	@Override
 	public void itemClicked(GalleryItem item) {
 		controller.action(OpenMockupGameAsynk.class,
-				((ProjectItem) item).getProjectPath());
+				((ProjectItem) item).getProjectPath(),
+				Transitions.getFadeSlideTransition(topBar, galleryPane, true));
 	}
 
 	@Override

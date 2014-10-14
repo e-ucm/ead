@@ -36,6 +36,9 @@
  */
 package es.eucm.ead.editor.control;
 
+import java.util.HashMap;
+import java.util.Map;
+
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.scenes.scene2d.Actor;
@@ -46,6 +49,7 @@ import com.badlogic.gdx.scenes.scene2d.ui.WidgetGroup;
 import com.badlogic.gdx.scenes.scene2d.utils.Layout;
 import com.badlogic.gdx.utils.reflect.ClassReflection;
 import com.badlogic.gdx.utils.reflect.ReflectionException;
+
 import es.eucm.ead.editor.control.ViewsHistory.ViewUpdate;
 import es.eucm.ead.editor.control.actions.editor.ChangeView;
 import es.eucm.ead.editor.model.Model.ModelListener;
@@ -56,9 +60,6 @@ import es.eucm.ead.editor.view.builders.DialogBuilder;
 import es.eucm.ead.editor.view.builders.ViewBuilder;
 import es.eucm.ead.editor.view.widgets.Dialog;
 
-import java.util.HashMap;
-import java.util.Map;
-
 /**
  * Controls all the views
  */
@@ -68,21 +69,21 @@ public class Views implements ModelListener<LoadEvent> {
 
 	protected Controller controller;
 
-	private Group viewsContainer;
+	protected Group viewsContainer;
 
 	protected Group modalsContainer;
 
-	private Map<Class, ViewBuilder> viewsBuilders;
+	protected Map<Class, ViewBuilder> viewsBuilders;
 
 	private Map<Class, DialogBuilder> dialogBuilders;
 
 	protected ViewBuilder currentView;
 
-	private Object[] currentArgs;
+	protected Object[] currentArgs;
 
 	private Actor currentContextMenu;
 
-	private ViewsHistory viewsHistory;
+	protected ViewsHistory viewsHistory;
 
 	private InputListener closeContextMenu = new InputListener() {
 
@@ -153,7 +154,7 @@ public class Views implements ModelListener<LoadEvent> {
 		return viewsHistory;
 	}
 
-	private <T extends Builder> T getBuilder(Class<T> viewClass,
+	protected <T extends Builder> T getBuilder(Class<T> viewClass,
 			Map viewsBuilders) {
 		Builder builder = (Builder) viewsBuilders.get(viewClass);
 

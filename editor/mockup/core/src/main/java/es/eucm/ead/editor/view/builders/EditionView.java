@@ -45,7 +45,9 @@ import es.eucm.ead.editor.control.Controller;
 import es.eucm.ead.editor.control.MockupController.BackListener;
 import es.eucm.ead.editor.control.MockupViews;
 import es.eucm.ead.editor.control.actions.editor.ChangeMockupView;
+import es.eucm.ead.editor.control.transitions.Transitions;
 import es.eucm.ead.editor.view.builders.gallery.ScenesView;
+import es.eucm.ead.editor.view.widgets.Toolbar;
 import es.eucm.ead.editor.view.widgets.editionview.InfoEditionPanel;
 import es.eucm.ead.editor.view.widgets.editionview.LeftEditionToolbar;
 import es.eucm.ead.editor.view.widgets.editionview.MockupSceneEditor;
@@ -53,6 +55,7 @@ import es.eucm.ead.editor.view.widgets.editionview.NavigationButton;
 import es.eucm.ead.editor.view.widgets.editionview.TopEditionToolbar;
 import es.eucm.ead.editor.view.widgets.editionview.draw.PaintToolbar;
 import es.eucm.ead.editor.view.widgets.helpmessage.sequence.EditionViewHelp;
+import es.eucm.ead.editor.view.widgets.layouts.LinearLayout;
 
 public class EditionView implements ViewBuilder, BackListener {
 
@@ -67,6 +70,10 @@ public class EditionView implements ViewBuilder, BackListener {
 	private InfoEditionPanel infoPanel;
 	private Controller controller;
 
+	private Table top;
+
+	private Table bottom;
+
 	@Override
 	public void initialize(Controller controller) {
 		this.controller = controller;
@@ -76,23 +83,31 @@ public class EditionView implements ViewBuilder, BackListener {
 		view = new Table();
 		view.setFillParent(true);
 
+		top = new Table();
+		bottom = new Table();
+
 		sceneEditor = new MockupSceneEditor(controller, LEFT_STYLE, TOP_STYLE);
 
 		paintToolbar = new PaintToolbar(sceneEditor, controller);
 
-		final NavigationButton union = new NavigationButton(skin, controller);
+		final NavigationButton union = new NavigationButton(skin, controller,
+				top, bottom);
 
 		final TopEditionToolbar topBar = new TopEditionToolbar(controller,
-				TOP_STYLE, paintToolbar, 0f, 0f, sceneEditor);
+				TOP_STYLE, paintToolbar, 0f, 0f, sceneEditor, top, bottom);
 		final Actor leftBar = new LeftEditionToolbar(controller, LEFT_STYLE,
 				0f, 0f);
 
-		view.add(union).fill();
-		view.add(topBar).expandX().fill();
+		top.add(union).fill();
+		top.add(topBar).expandX().fill();
+		bottom.add(leftBar).left().expandY().fill();
+		Cell sceneEditorCell = bottom.add(sceneEditor).expand().fill();
+
+		view.add(top).expandX().fill();
 		view.row();
-		view.add(leftBar).left().expandY().fill();
-		Cell sceneEditorCell = view.add(sceneEditor).expand().fill();
+		view.add(bottom).expand().fill();
 		sceneEditor.toBack();
+		bottom.toBack();
 
 		infoPanel = new InfoEditionPanel(controller, skin, sceneEditorCell,
 				paintToolbar);
@@ -117,6 +132,7 @@ public class EditionView implements ViewBuilder, BackListener {
 
 	@Override
 	public void onBackPressed() {
-		controller.action(ChangeMockupView.class, ScenesView.class);
+		controller.action(ChangeMockupView.class, ScenesView.class,
+				Transitions.getFadeSlideTransition(top, bottom, false));
 	}
 }

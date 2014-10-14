@@ -34,65 +34,27 @@
  *      You should have received a copy of the GNU Lesser General Public License
  *      along with eAdventure.  If not, see <http://www.gnu.org/licenses/>.
  */
-package es.eucm.ead.editor.control.actions.editor.asynk;
+package es.eucm.ead.editor.control.transitions;
 
-import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.scenes.scene2d.Actor;
+import com.badlogic.gdx.math.MathUtils;
 
-import es.eucm.ead.editor.control.MockupController;
-import es.eucm.ead.editor.control.MockupViews;
-import es.eucm.ead.editor.control.Toasts;
-import es.eucm.ead.editor.control.actions.editor.OpenMockupGame;
+import es.eucm.ead.editor.control.transitions.TransitionManager.Transition;
 
 /**
- * Opens the MockupGame asynchronously without blocking the main thread.
- * 
- * @see OpenMockupGame
+ * A portion of the screen that a {@link Transition} affects.
  */
-public class OpenMockupGameAsynk extends OpenMockupGame {
+public class Region {
+	public int x, y, w, h;
 
-	private String path;
-	private boolean done = true;
-
-	private Toasts toasts;
-
-	@Override
-	public void perform(Object... args) {
-		if (!done) {
-			return;
-		}
-		done = false;
-
-		updateTransition(args);
-		toasts = ((MockupViews) controller.getViews()).getToasts();
-		toasts.showNotification(controller.getApplicationAssets().getI18N()
-				.m("openGame"));
-
-		path = args[0].toString();
-		Gdx.app.postRunnable(save);
+	public Region(int x, int y, int w, int h) {
+		this.x = x;
+		this.y = y;
+		this.w = w;
+		this.h = h;
 	}
 
-	private Runnable save = new Runnable() {
-
-		@Override
-		public void run() {
-			load(path);
-			MockupController mockupController = ((MockupController) controller);
-			mockupController.getRootComponent().addActor(asynkAction);
-		}
-	};
-
-	private Actor asynkAction = new Actor() {
-
-		@Override
-		public void act(float delta) {
-			if (controller.getEditorGameAssets().isDoneLoading()) {
-				toasts.hideNotification();
-				finishLoading(path);
-				remove();
-				done = true;
-			}
-		}
-	};
-
+	public Region(float x, float y, float w, float h) {
+		this(MathUtils.round(x), MathUtils.round(y), MathUtils.round(w),
+				MathUtils.round(h));
+	}
 }
