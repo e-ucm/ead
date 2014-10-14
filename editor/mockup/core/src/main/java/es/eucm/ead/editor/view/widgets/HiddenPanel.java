@@ -39,9 +39,11 @@ package es.eucm.ead.editor.view.widgets;
 import static com.badlogic.gdx.scenes.scene2d.actions.Actions.sequence;
 
 import com.badlogic.gdx.scenes.scene2d.Action;
+import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.Touchable;
 import com.badlogic.gdx.scenes.scene2d.actions.Actions;
+import com.badlogic.gdx.scenes.scene2d.ui.Cell;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.scenes.scene2d.utils.Drawable;
@@ -56,6 +58,9 @@ public class HiddenPanel extends Table {
 
 	private boolean modal = false;
 
+	private int columns;
+	private int lastColCount;
+
 	public HiddenPanel(Skin skin) {
 		this(skin, (Drawable) null);
 	}
@@ -67,6 +72,8 @@ public class HiddenPanel extends Table {
 	public HiddenPanel(Skin skin, Drawable drawableBackground) {
 		super(skin);
 		setBackground(drawableBackground);
+		columns = 0;
+		lastColCount = 0;
 	}
 
 	public void show(Stage stage) {
@@ -106,8 +113,37 @@ public class HiddenPanel extends Table {
 		}
 	}
 
+	public void setColumns(int cols) {
+		this.columns = cols;
+	}
+
+	@Override
+	public Cell add() {
+		if (columns > 0 && lastColCount >= columns) {
+			row();
+			lastColCount = 0;
+		}
+		lastColCount++;
+		return super.add();
+	}
+
+	@Override
+	public <T extends Actor> Cell<T> add(T actor) {
+		if (columns > 0 && lastColCount >= columns) {
+			row();
+			lastColCount = 0;
+		}
+		lastColCount++;
+		return super.add(actor);
+	}
+
+	@Override
+	public Cell row() {
+		lastColCount = 0;
+		return super.row();
+	}
+
 	public boolean isModal() {
 		return modal;
 	}
-
 }

@@ -370,14 +370,23 @@ public class LinearLayout extends AbstractWidget {
 		switch (verticalAlign(c)) {
 		case Align.top:
 		case Align.right:
-			return (containerHeight() - height - paddingTop() - marginTop(c));
+			return (containerHeight() - height - paddingTop() - marginTop(c))
+					- (background == null ? 0 : background.getTopHeight());
 		case Align.left:
 		case Align.bottom:
-			return paddingBottom() + marginBottom(c);
+			return paddingBottom() + marginBottom(c)
+					+ (background == null ? 0 : background.getBottomHeight());
 		default:
 			// Align.center
-			return (containerHeight() - height - paddingHeight() - marginHeight(c))
-					/ 2.0f + paddingBottom() + marginBottom(c);
+			float offset = paddingBottom() + marginBottom(c);
+			float containerHeight = containerHeight();
+			if (background != null) {
+				offset += background.getBottomHeight();
+				containerHeight -= (background.getTopHeight() + background
+						.getBottomHeight());
+			}
+
+			return (containerHeight - height) / 2 + offset;
 		}
 
 	}
@@ -389,7 +398,12 @@ public class LinearLayout extends AbstractWidget {
 				prefWidth += marginWidth(c) + actorWidth(c.actor);
 			}
 		}
-		return prefWidth + paddingWidth();
+		prefWidth += paddingWidth();
+		if (background != null) {
+			return prefWidth + background.getLeftWidth()
+					+ background.getRightWidth();
+		}
+		return prefWidth;
 	}
 
 	public float prefHeight() {
@@ -400,7 +414,12 @@ public class LinearLayout extends AbstractWidget {
 						+ actorHeight(c.actor));
 			}
 		}
-		return prefHeight + paddingHeight();
+		prefHeight += paddingHeight();
+		if (background != null) {
+			return prefHeight + background.getBottomHeight()
+					+ background.getTopHeight();
+		}
+		return prefHeight;
 	}
 
 	protected float containerHeight() {

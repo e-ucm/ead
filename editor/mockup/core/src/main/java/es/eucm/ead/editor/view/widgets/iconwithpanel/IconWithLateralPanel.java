@@ -36,10 +36,9 @@
  */
 package es.eucm.ead.editor.view.widgets.iconwithpanel;
 
-import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.math.Interpolation;
 import com.badlogic.gdx.scenes.scene2d.Action;
+import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.actions.Actions;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 
@@ -48,46 +47,11 @@ import es.eucm.ead.editor.view.widgets.PositionedHiddenPanel;
 /**
  * A {@link IconWithPanel} that has a scale in/out animation.
  */
-public class IconWithScalePanel extends IconWithPanel {
+public class IconWithLateralPanel extends IconWithPanel {
 
-	public IconWithScalePanel(String icon, float space, Skin skin) {
-		this(icon, space, skin, "default", null);
-	}
+	public IconWithLateralPanel(String icon, float space, Skin skin) {
+		super(icon, space, skin, null);
 
-	public IconWithScalePanel(String icon, float space, Skin skin, Color color) {
-		this(icon, space, skin, "default", color);
-	}
-
-	public IconWithScalePanel(String icon, float space, Skin skin, String style) {
-		this(icon, space, skin, style, null);
-	}
-
-	public IconWithScalePanel(String icon, float space, int colPane, Skin skin) {
-		this(icon, space, colPane, skin, "default", null);
-	}
-
-	public IconWithScalePanel(String icon, float space, int colPane, Skin skin,
-			Color color) {
-		this(icon, space, colPane, skin, "default", color);
-	}
-
-	public IconWithScalePanel(String icon, float space, int colPane, Skin skin,
-			String style) {
-		this(icon, space, colPane, skin, style, null);
-	}
-
-	public IconWithScalePanel(String icon, float space, Skin skin,
-			String style, Color color) {
-		this(icon, space, -1, skin, style, color);
-	}
-
-	public IconWithScalePanel(String icon, float space, int colPane, Skin skin,
-			String style, Color color) {
-		super(icon, space, skin, null, colPane, style);
-		panel.setBackground("panel");
-		if (color != null) {
-			panel.setColor(color);
-		}
 	}
 
 	@Override
@@ -95,36 +59,20 @@ public class IconWithScalePanel extends IconWithPanel {
 		return new Panel(skin, colPane) {
 			@Override
 			protected void positionPanel(float x, float y) {
+				Stage stage = IconWithLateralPanel.this.getStage();
+				boolean left = x < stage.getWidth() * .5f;
 				setTransform(true);
-
-				float panelPrefHeight = Math.min(getPrefHeight(),
-						Gdx.graphics.getHeight());
-				float panelPrefWidth = Math.min(getPrefWidth(),
-						Gdx.graphics.getWidth());
-
-				float coordinateX = 0;
-				float coordinateY = 0;
-				float originX = 0;
-				float originY = 0;
-
-				if (y > Gdx.graphics.getHeight() * 0.5f) {
-					coordinateY = y - getPrefHeight() - space;
-					originY = getPrefHeight();
-				} else {
-					coordinateY = y + reference.getHeight() + space;
-				}
-
-				if (x > Gdx.graphics.getWidth() * 0.5f) {
-					coordinateX = x + reference.getWidth() - getPrefWidth();
-					originX = getPrefWidth();
-				} else {
-					coordinateX = x;
-				}
-
-				setPanelBounds(coordinateX, coordinateY, panelPrefWidth,
+				adjustBackground(left);
+				float panelPrefHeight = y - space;
+				float panelPrefY = 0f;
+				float prefX = left ? 0 : stage.getWidth() - getPrefWidth();
+				setPanelBounds(prefX, panelPrefY, getPrefWidth(),
 						panelPrefHeight);
+				setOrigin(left ? 0 : getWidth(), getHeight());
+			}
 
-				setOrigin(originX, originY);
+			private void adjustBackground(boolean left) {
+				setBackground(left ? "left_panel" : "right_panel");
 			}
 		};
 	}

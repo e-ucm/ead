@@ -47,7 +47,7 @@ import es.eucm.ead.editor.editorui.MockupUITest;
 import es.eucm.ead.editor.view.widgets.PositionedHiddenPanel.Position;
 import es.eucm.ead.editor.view.widgets.iconwithpanel.IconWithFadePanel;
 import es.eucm.ead.editor.view.widgets.iconwithpanel.IconWithPanel;
-import es.eucm.ead.editor.view.widgets.iconwithpanel.IconWithScalePanel;
+import es.eucm.ead.editor.view.widgets.iconwithpanel.IconWithLateralPanel;
 import es.eucm.ead.engine.I18N;
 
 public class IconWithPanelTest extends MockupUITest {
@@ -67,8 +67,8 @@ public class IconWithPanelTest extends MockupUITest {
 		fadeBottom.getPanel().add(
 				new Image(skin.getDrawable("conversation80x80")));
 
-		IconWithPanel scaleRight = new IconWithScalePanel("conversation80x80",
-				0f, skin);
+		IconWithPanel scaleRight = new IconWithLateralPanel(
+				"conversation80x80", 0f, skin);
 		scaleRight.getPanel().add(
 				new Image(skin.getDrawable("conversation80x80")));
 		scaleRight.getPanel().add(
@@ -78,7 +78,7 @@ public class IconWithPanelTest extends MockupUITest {
 		scaleRight.getPanel().add(
 				new Image(skin.getDrawable("conversation80x80")));
 
-		IconWithPanel scaleLeft = new IconWithScalePanel("conversation80x80",
+		IconWithPanel scaleLeft = new IconWithLateralPanel("conversation80x80",
 				0f, skin);
 		scaleLeft.getPanel().add(
 				new Image(skin.getDrawable("conversation80x80")));
