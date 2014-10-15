@@ -38,17 +38,11 @@ package es.eucm.ead.editor.view.widgets.iconwithpanel;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Color;
-import com.badlogic.gdx.math.Interpolation;
-import com.badlogic.gdx.scenes.scene2d.Action;
-import com.badlogic.gdx.scenes.scene2d.actions.Actions;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 
 import es.eucm.ead.editor.view.widgets.PositionedHiddenPanel;
 
-/**
- * A {@link IconWithPanel} that has a scale in/out animation.
- */
-public class IconWithScalePanel extends IconWithPanel {
+public class IconWithScalePanel extends BaseIconWithScalePanel {
 
 	public IconWithScalePanel(String icon, float space, Skin skin) {
 		this(icon, space, skin, "default", null);
@@ -95,7 +89,6 @@ public class IconWithScalePanel extends IconWithPanel {
 		return new Panel(skin, colPane) {
 			@Override
 			protected void positionPanel(float x, float y) {
-				setTransform(true);
 
 				float panelPrefHeight = Math.min(getPrefHeight(),
 						Gdx.graphics.getHeight());
@@ -127,16 +120,5 @@ public class IconWithScalePanel extends IconWithPanel {
 				setOrigin(originX, originY);
 			}
 		};
-	}
-
-	@Override
-	protected Action getShowAction() {
-		panel.setScale(0f);
-		return Actions.scaleTo(1f, 1f, IN_DURATION, Interpolation.sine);
-	}
-
-	@Override
-	protected Action getHideAction() {
-		return Actions.scaleTo(0f, 0f, OUT_DURATION);
 	}
 }

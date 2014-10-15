@@ -36,55 +36,50 @@
  */
 package es.eucm.ead.editor.view.widgets.iconwithpanel;
 
-import com.badlogic.gdx.math.Interpolation;
-import com.badlogic.gdx.scenes.scene2d.Action;
 import com.badlogic.gdx.scenes.scene2d.Stage;
-import com.badlogic.gdx.scenes.scene2d.actions.Actions;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 
 import es.eucm.ead.editor.view.widgets.PositionedHiddenPanel;
 
-/**
- * A {@link IconWithPanel} that has a scale in/out animation.
- */
-public class IconWithLateralPanel extends IconWithPanel {
+public class IconWithLateralPanel extends BaseIconWithScalePanel {
 
 	public IconWithLateralPanel(String icon, float space, Skin skin) {
-		super(icon, space, skin, null);
-
+		super(icon, space, skin, null, 0, "default");
 	}
 
 	@Override
 	protected PositionedHiddenPanel createPanel(Skin skin, int colPane) {
+
 		return new Panel(skin, colPane) {
+
+			private float prefWidth, prefHeight;
+
 			@Override
 			protected void positionPanel(float x, float y) {
 				Stage stage = IconWithLateralPanel.this.getStage();
 				boolean left = x < stage.getWidth() * .5f;
-				setTransform(true);
 				adjustBackground(left);
-				float panelPrefHeight = y - space;
+				prefHeight = y - space;
 				float panelPrefY = 0f;
 				float prefX = left ? 0 : stage.getWidth() - getPrefWidth();
-				setPanelBounds(prefX, panelPrefY, getPrefWidth(),
-						panelPrefHeight);
+				setPanelBounds(prefX, panelPrefY, prefWidth = getPrefWidth(),
+						prefHeight);
 				setOrigin(left ? 0 : getWidth(), getHeight());
 			}
 
 			private void adjustBackground(boolean left) {
 				setBackground(left ? "left_panel" : "right_panel");
 			}
+
+			@Override
+			public float getPrefWidth() {
+				return prefWidth == 0 ? super.getPrefWidth() : prefWidth;
+			}
+
+			@Override
+			public float getPrefHeight() {
+				return prefHeight == 0 ? super.getPrefHeight() : prefHeight;
+			}
 		};
-	}
-
-	@Override
-	protected Action getShowAction() {
-		panel.setScale(0f);
-		return Actions.scaleTo(1f, 1f, IN_DURATION, Interpolation.sine);
-	}
-
-	@Override
-	protected Action getHideAction() {
-		return Actions.scaleTo(0f, 0f, OUT_DURATION);
 	}
 }
