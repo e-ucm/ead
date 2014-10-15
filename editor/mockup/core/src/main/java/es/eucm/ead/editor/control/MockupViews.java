@@ -121,11 +121,14 @@ public class MockupViews extends Views implements BackListener {
 		if (currentView != null) {
 			SnapshotArray<Actor> children = viewsContainer.getChildren();
 			Actor current = children.size > 0 ? children.first() : null;
-			for (Actor actor : children) {
-				if (actor != current) {
-					actor.remove();
+			Actor[] actors = children.begin();
+			for (int i = 0, n = children.size; i < n; i++) {
+				Actor child = actors[i];
+				if (current != child) {
+					child.remove();
 				}
 			}
+			children.end();
 			Actor next = currentView.getView(args);
 			if (next != null) {
 				transitionManager.prepateTransition(transition, current, next);

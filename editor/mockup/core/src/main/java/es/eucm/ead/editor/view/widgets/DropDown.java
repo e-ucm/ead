@@ -36,7 +36,6 @@
  */
 package es.eucm.ead.editor.view.widgets;
 
-import static com.badlogic.gdx.scenes.scene2d.actions.Actions.fadeIn;
 import static com.badlogic.gdx.scenes.scene2d.actions.Actions.fadeOut;
 
 import com.badlogic.gdx.graphics.g2d.Batch;
@@ -47,6 +46,8 @@ import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.InputListener;
 import com.badlogic.gdx.scenes.scene2d.Stage;
+import com.badlogic.gdx.scenes.scene2d.Touchable;
+import com.badlogic.gdx.scenes.scene2d.actions.Actions;
 import com.badlogic.gdx.scenes.scene2d.ui.Cell;
 import com.badlogic.gdx.scenes.scene2d.ui.Container;
 import com.badlogic.gdx.scenes.scene2d.ui.List.ListStyle;
@@ -60,6 +61,8 @@ import com.badlogic.gdx.scenes.scene2d.utils.Drawable;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.Pools;
 
+import es.eucm.ead.editor.view.widgets.iconwithpanel.IconWithScalePanel;
+
 /**
  * A drop down allows a user to choose one of a number of values from a list.
  * When inactive, the selected value is displayed. When activated, it shows the
@@ -71,6 +74,8 @@ import com.badlogic.gdx.utils.Pools;
  * the items and the size of the {@link DropDownStyle#background}.
  */
 public class DropDown extends Container<Actor> implements Disableable {
+	private static final float FADE = .25f;
+
 	private static final Vector2 tmpCoords = new Vector2();
 
 	private ClickListener clickListener;
@@ -116,6 +121,30 @@ public class DropDown extends Container<Actor> implements Disableable {
 		});
 	}
 
+	@Override
+	public float getPrefWidth() {
+		Actor sel = scroll.first.getActor();
+		if (sel == null) {
+			sel = selection;
+		}
+		if (sel != null) {
+			return sel.getWidth();
+		}
+		return super.getPrefWidth();
+	}
+
+	@Override
+	public float getPrefHeight() {
+		Actor sel = scroll.first.getActor();
+		if (sel == null) {
+			sel = selection;
+		}
+		if (sel != null) {
+			return sel.getHeight();
+		}
+		return super.getPrefHeight();
+	}
+
 	public void setStyle(DropDownStyle style) {
 		if (style == null)
 			throw new IllegalArgumentException("style cannot be null.");
@@ -135,7 +164,7 @@ public class DropDown extends Container<Actor> implements Disableable {
 		if (newItems == null)
 			throw new IllegalArgumentException("newItems cannot be null.");
 
-		scroll.clearChildren();
+		resetScroll();
 		for (int i = 1; i < newItems.length; ++i) {
 			addToList(newItems[i]);
 		}
@@ -150,7 +179,7 @@ public class DropDown extends Container<Actor> implements Disableable {
 		if (newItems == null)
 			throw new IllegalArgumentException("newItems cannot be null.");
 
-		scroll.clearChildren();
+		resetScroll();
 		for (int i = 1; i < newItems.size; ++i) {
 			addToList(newItems.get(i));
 		}
@@ -159,6 +188,12 @@ public class DropDown extends Container<Actor> implements Disableable {
 			setSelected(newItems.first());
 		}
 
+	}
+
+	private void resetScroll() {
+		scroll.clearChildren();
+		scroll.first = scroll.add((Actor) null);
+		scroll.row();
 	}
 
 	public Array<Actor> getItems() {
@@ -197,11 +232,11 @@ public class DropDown extends Container<Actor> implements Disableable {
 	 * Sets the selection
 	 */
 	public void setSelected(Actor item) {
-		if (selection == item) {
+		if (getActor() == item) {
 			return;
 		}
 		Cell<Actor> cell = scroll.getCell(item);
-		if (selection != null) {
+		if (cell != null) {
 			cell.setActor(selection);
 		}
 		selection = item;
@@ -235,8 +270,42 @@ public class DropDown extends Container<Actor> implements Disableable {
 
 	private class ListScroll extends HiddenPanel {
 
+		private Cell<Actor> first;
+		private final Runnable showChildren = new Runnable() {
+
+			@Override
+			public void run() {
+
+				for (Cell cell : getCells()) {
+					Actor actor = cell.getActor();
+					if (actor != null) {
+						actor.addAction(Actions.fadeIn(.2f, Interpolation.fade));
+					}
+				}
+			}
+		};
+		private final Runnable addSelection = new Runnable() {
+
+			@Override
+			public void run() {
+				selection.setPosition(0f, 0f);
+				first.setActor(selection);
+				selection = null;
+			}
+		};
+
+		private final Runnable setSelection = new Runnable() {
+
+			@Override
+			public void run() {
+				setSelected(selection);
+				selection.setTouchable(Touchable.enabled);
+			}
+		};
+
 		public ListScroll(Skin skin) {
 			super(skin);
+			setTransform(true);
 			defaults().uniform();
 
 			addListener(new InputListener() {
@@ -246,8 +315,9 @@ public class DropDown extends Container<Actor> implements Disableable {
 						Actor target = event.getTarget();
 						if (target != null) {
 							Cell<Actor> cell = getCell(target);
-							if (cell != null) {
+							if (cell != null && cell != first) {
 								setSelected(target);
+								cell.setActor(first.getActor());
 								ChangeEvent changeEvent = Pools
 										.obtain(ChangeEvent.class);
 								changeEvent.setListenerActor(DropDown.this);
@@ -263,21 +333,26 @@ public class DropDown extends Container<Actor> implements Disableable {
 		}
 
 		public void show(Stage stage) {
+			selection.localToStageCoordinates(tmpCoords.set(0f, 0f));
+			int selectionX = MathUtils.round(tmpCoords.x);
+			int selectionY = MathUtils.round(tmpCoords.y);
+			first.setActor(selection);
 
+			Drawable bg = getBackground();
+			if (bg == null) {
+				bg = style.listBackgroundDown;
+			}
+			float iconHeight = DropDown.this.getPrefHeight()
+					- DropDown.this.getPadTop() + bg.getTopHeight();
 			float prefWidth = getPrefWidth();
 			DropDown.this.localToStageCoordinates(tmpCoords.set(
-					(DropDown.this.getWidth() - prefWidth) * .5f, 0));
+					(DropDown.this.getWidth() - prefWidth) * .5f, iconHeight));
 
 			float height = getPrefHeight();
-			Drawable background = getStyle().background;
-			if (background != null) {
-				height += background.getTopHeight()
-						+ background.getBottomHeight();
-			}
 
 			float heightBelow = tmpCoords.y;
 			float heightAbove = stage.getCamera().viewportHeight - tmpCoords.y
-					- DropDown.this.getHeight();
+					- iconHeight;
 			boolean below = true;
 			if (height > heightBelow) {
 				if (heightAbove > heightBelow) {
@@ -291,23 +366,59 @@ public class DropDown extends Container<Actor> implements Disableable {
 			if (below) {
 				setY(MathUtils.round(tmpCoords.y - height));
 				setBackground(style.listBackgroundDown);
+				setOriginY(height);
 			} else {
 				setY(MathUtils.round(tmpCoords.y + DropDown.this.getHeight()));
 				setBackground(style.listBackgroundUp);
+				setOriginY(0);
 			}
 			setX(MathUtils.round(tmpCoords.x));
 			setWidth(MathUtils.round(prefWidth));
 			setHeight(MathUtils.round(height));
 			validate();
 
+			if (getX() > stage.getCamera().viewportWidth * .5f) {
+				setOriginX(getWidth());
+			} else {
+				setOriginX(0);
+			}
+
 			clearActions();
-			getColor().a = 0;
-			super.show(stage, fadeIn(0.3f, Interpolation.fade));
+			setScale(0f);
+			getColor().a = 1f;
+
+			super.show(stage, Actions.sequence(IconWithScalePanel.showAction(
+					FADE, FADE * 2f, showChildren), Actions.run(addSelection),
+					Actions.touchable(Touchable.enabled)));
+			selection.setPosition(selectionX, selectionY);
+			stage.addActor(selection);
+			for (Cell<Actor> cell : getCells()) {
+				Actor actor = cell.getActor();
+				if (actor != null) {
+					actor.getColor().a = 0f;
+				}
+			}
 		}
 
 		@Override
 		public void hide() {
-			super.hide(fadeOut(0.2f, Interpolation.fade));
+			if (selection == null || getActions().size > 0) {
+				clearActions();
+				setTouchable(Touchable.disabled);
+				if (selection == null) {
+					selection = first.getActor();
+				}
+				selection.setTouchable(Touchable.disabled);
+				selection.localToStageCoordinates(tmpCoords.set(0f, 0f));
+				int selectionX = MathUtils.round(tmpCoords.x);
+				int selectionY = MathUtils.round(tmpCoords.y);
+				selection.setPosition(selectionX, selectionY);
+				getStage().addActor(selection);
+				hide(Actions.sequence(fadeOut(FADE, Interpolation.fade),
+						Actions.run(setSelection)));
+			} else {
+				hide(fadeOut(FADE, Interpolation.fade));
+			}
 		}
 	}
 

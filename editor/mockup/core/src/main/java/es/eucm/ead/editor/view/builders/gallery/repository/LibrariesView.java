@@ -95,8 +95,8 @@ public class LibrariesView extends BaseGallery implements ProgressListener {
 	@Override
 	public void finished(boolean succeeded, Controller controller) {
 		if (succeeded) {
-			toasts.hideNotification();
 			super.getView();
+			toasts.hideNotification();
 		} else {
 			toasts.showNotification(i18n.m("repository.refreshingError"),
 					ERROR_NOTIF_TIMEOUT);

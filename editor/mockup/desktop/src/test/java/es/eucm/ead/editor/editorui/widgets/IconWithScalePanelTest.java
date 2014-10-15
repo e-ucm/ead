@@ -41,24 +41,19 @@ import com.badlogic.gdx.backends.lwjgl.LwjglApplicationConfiguration;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.scenes.scene2d.Actor;
+import com.badlogic.gdx.scenes.scene2d.actions.Actions;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
 
 import es.eucm.ead.editor.control.MockupController.Dpi;
 import es.eucm.ead.editor.editorui.MockupUITest;
-import es.eucm.ead.editor.view.widgets.PositionedHiddenPanel;
 import es.eucm.ead.editor.view.widgets.HorizontalToolbar;
+import es.eucm.ead.editor.view.widgets.PositionedHiddenPanel;
 import es.eucm.ead.editor.view.widgets.iconwithpanel.IconWithScalePanel;
 import es.eucm.ead.engine.I18N;
-import es.eucm.ead.schemax.entities.ResourceCategory;
 
 public class IconWithScalePanelTest extends MockupUITest {
-
-	public static final String SCENE0 = ResourceCategory.SCENE
-			.getCategoryPrefix()
-			+ ResourceCategory.SCENE.getNamePrefix()
-			+ "0.json";
 
 	@Override
 	protected Actor builUI(Skin skin, I18N i18n) {
@@ -129,6 +124,23 @@ public class IconWithScalePanelTest extends MockupUITest {
 		table.add().expand().fill();
 		table.row();
 		table.add(botBar).expandX().fill();
+
+		final IconWithScalePanel[] panels = new IconWithScalePanel[] {
+				widgetTopLeft, widgetTopRight, widgetBotLeft, widgetBotRight };
+
+		table.addAction(Actions.forever(Actions.sequence(Actions.delay(2f,
+				Actions.run(new Runnable() {
+					@Override
+					public void run() {
+						for (IconWithScalePanel widget : panels) {
+							if (widget.getPanel().hasParent()) {
+								widget.hidePanel();
+							} else {
+								widget.showPanel();
+							}
+						}
+					}
+				})))));
 
 		return table;
 	}

@@ -55,9 +55,8 @@ import es.eucm.ead.editor.view.widgets.PositionedHiddenPanel.Position;
  */
 public abstract class IconWithPanel extends IconButton {
 
-	protected static HiddenPanel openPanel;
 	protected static final float IN_DURATION = .3F;
-	protected static final float OUT_DURATION = .2F;
+	protected static final float OUT_DURATION = .25F;
 
 	private static final ChangeListener showOrHide = new ChangeListener() {
 
@@ -120,12 +119,7 @@ public abstract class IconWithPanel extends IconButton {
 	protected abstract Action getHideAction();
 
 	public void showPanel() {
-		if (openPanel != panel && openPanel != null) {
-			openPanel.hide();
-		}
-
 		panel.show(getShowAction());
-		openPanel = panel;
 	}
 
 	public void hidePanel() {
@@ -150,12 +144,6 @@ public abstract class IconWithPanel extends IconButton {
 		@Override
 		public void hide() {
 			hidePanel();
-		}
-
-		@Override
-		public void hide(Action action) {
-			openPanel = null;
-			super.hide(action);
 		}
 	}
 }
