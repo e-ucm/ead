@@ -66,8 +66,7 @@ public class TransitionInfo implements Poolable {
 		actor.localToStageCoordinates(TEMP.set(0f, 0f));
 		actorInfo.currentScreenRegion = new Region(TEMP.x, TEMP.y,
 				actor.getWidth(), actor.getHeight());
-		actorInfo.nextScreenRegion = new Region(TEMP.x, TEMP.y,
-				actor.getWidth(), actor.getHeight());
+		actorInfo.nextScreenRegion = actorInfo.currentScreenRegion;
 
 		return actorInfo;
 	}

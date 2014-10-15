@@ -46,6 +46,7 @@ import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.Group;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.utils.Disposable;
+import com.badlogic.gdx.utils.viewport.Viewport;
 
 import es.eucm.ead.editor.control.Controller;
 import es.eucm.ead.editor.control.MockupController;
@@ -144,8 +145,9 @@ public class TransitionManager extends Actor implements Disposable {
 		public void run() {
 			Stage stage = viewsContainer.getStage();
 			if (nextFbo == null) {
-				int w = stage.getViewport().getScreenWidth();
-				int h = stage.getViewport().getScreenHeight();
+				Viewport viewport = stage.getViewport();
+				int w = viewport.getScreenWidth();
+				int h = viewport.getScreenHeight();
 				nextFbo = new FrameBuffer(Format.RGB888, w, h, false);
 				currFbo = new FrameBuffer(Format.RGB888, w, h, false);
 				currentScreenRegion = new Region(0, 0, w, h);

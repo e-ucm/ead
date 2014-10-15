@@ -83,10 +83,10 @@ public class HiddenPanel extends Table {
 	public void show(Stage stage, Action action) {
 		MockupViews.setUpHiddenPanel(this, stage);
 		stage.addActor(this);
-		setTouchable(Touchable.enabled);
 		clearActions();
 		if (action != null) {
-			addAction(action);
+			addAction(Actions.sequence(action,
+					Actions.touchable(Touchable.enabled)));
 		}
 		validate();
 	}
@@ -101,7 +101,7 @@ public class HiddenPanel extends Table {
 
 	public void hide(Action action) {
 		Stage stage = getStage();
-		if (!isTouchable() || stage == null) {
+		if (stage == null) {
 			return;
 		}
 		setTouchable(Touchable.disabled);
@@ -109,7 +109,7 @@ public class HiddenPanel extends Table {
 		if (action != null) {
 			addAction(sequence(action, Actions.removeActor()));
 		} else {
-			addAction(Actions.removeActor());
+			remove();
 		}
 	}
 
