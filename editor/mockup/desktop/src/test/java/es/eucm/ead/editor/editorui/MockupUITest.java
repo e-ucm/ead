@@ -50,7 +50,7 @@ import com.badlogic.gdx.scenes.scene2d.InputListener;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.utils.UIUtils;
-import com.badlogic.gdx.utils.viewport.ExtendViewport;
+import com.badlogic.gdx.utils.viewport.ScreenViewport;
 
 import es.eucm.ead.editor.MockupDesktopPlatform;
 import es.eucm.ead.editor.assets.ApplicationAssets;
@@ -98,7 +98,7 @@ public abstract class MockupUITest implements ApplicationListener {
 	public void create() {
 		Gdx.app.setLogLevel(Application.LOG_DEBUG);
 		Gdx.gl.glClearColor(1f, 1f, 1f, 1f);
-		stage = new Stage(new ExtendViewport(1280f, 800f));
+		stage = new Stage(new ScreenViewport());
 		controller = new MockupController(platform = new MockPlatform(),
 				Gdx.files, stage.getRoot());
 		controller.getCommands().pushStack();
