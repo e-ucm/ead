@@ -37,6 +37,7 @@
 package es.eucm.ead.editor.view.widgets;
 
 import com.badlogic.gdx.scenes.scene2d.ui.Button;
+import com.badlogic.gdx.scenes.scene2d.ui.Cell;
 import com.badlogic.gdx.scenes.scene2d.ui.Image;
 import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
@@ -59,11 +60,11 @@ public class IconTextButton extends Button {
 
 	private Position pos;
 
-	private Drawable icon;
+	private Cell<Image> iconCell;
 
 	private float size;
 
-	private Label label;
+	private Cell<Label> labelCell;
 
 	/**
 	 * Create a Button with a text <b>name</b>, an image <b>icon</b>. The
@@ -115,44 +116,41 @@ public class IconTextButton extends Button {
 		this.pos = pos;
 		this.size = size;
 
-		this.icon = icon;
-
 		Image sceneIcon = new Image(icon);
 		sceneIcon.setScaling(Scaling.fit);
 
-		this.label = new Label(name, skin);
-		this.label.setWrap(true);
+		Label label = new Label(name, skin);
 
 		switch (pos) {
 		case TOP:
 			pad(PAD_LARGE, PAD_LARGE, PAD_SMALL, PAD_LARGE);
-			this.label.setAlignment(Align.center);
-			add(this.label).expand().fill();
+			label.setAlignment(Align.center);
+			labelCell = add(label).expand().fill();
 			row();
-			add(sceneIcon).expand().fill()
+			iconCell = add(sceneIcon).expand().fill()
 					.pad(basePad, lateralPad, basePad, lateralPad);
 			break;
 		case BOTTOM:
 			pad(PAD_LARGE, PAD_LARGE, PAD_SMALL, PAD_LARGE);
-			this.label.setAlignment(Align.center);
-			add(sceneIcon).expand().fill()
+			label.setAlignment(Align.center);
+			iconCell = add(sceneIcon).expand().fill()
 					.pad(basePad, lateralPad, basePad, lateralPad);
 			row();
-			add(this.label).expand().fill();
+			labelCell = add(label).expand().fill();
 			break;
 		case LEFT:
 			pad(PAD_LARGE, PAD_SMALL, PAD_LARGE, PAD_SMALL);
-			this.label.setAlignment(Align.right);
-			add(this.label).right().expand().fill();
-			add(sceneIcon).left().fill()
+			label.setAlignment(Align.right);
+			labelCell = add(label).right().expand().fill();
+			iconCell = add(sceneIcon).left().fill()
 					.pad(basePad, lateralPad, basePad, lateralPad);
 			break;
 		case RIGHT:
-			add(sceneIcon).right().fill()
+			iconCell = add(sceneIcon).right().fill()
 					.pad(basePad, lateralPad, basePad, lateralPad);
 			pad(PAD_LARGE, PAD_SMALL, PAD_LARGE, PAD_SMALL);
-			this.label.setAlignment(Align.left);
-			add(this.label).left().expand().fill();
+			label.setAlignment(Align.left);
+			labelCell = add(label).left().expand().fill();
 		}
 	}
 
@@ -161,7 +159,7 @@ public class IconTextButton extends Button {
 	}
 
 	public void setAligmentText(int alig) {
-		this.label.setAlignment(alig);
+		labelCell.getActor().setAlignment(alig);
 	}
 
 	@Override
@@ -176,21 +174,44 @@ public class IconTextButton extends Button {
 	public float getPrefWidth() {
 		if (pos == Position.LEFT || pos == Position.RIGHT && size != 0) {
 			return size;
-		} else if (label != null && label.getWidth() > super.getPrefWidth()) {
-			return label.getWidth();
+		} else if (labelCell != null
+				&& labelCell.getActor().getWidth() > super.getPrefWidth()) {
+			return labelCell.getActor().getWidth();
 		}
 		return super.getPrefWidth();
 	}
 
 	public Label getLabel() {
-		return this.label;
+		return this.labelCell.getActor();
 	}
 
 	public void changeText(String newText) {
-		this.label.setText(newText);
+		this.labelCell.getActor().setText(newText);
 	}
 
 	public Drawable getDrawableImage() {
-		return icon;
+		return iconCell.getActor().getDrawable();
 	}
+
+	public void setPadding(float top, float right, float bottom, float left,
+			float center) {
+		switch (pos) {
+		case TOP:
+			labelCell.pad(top, left, 0, right);
+			iconCell.pad(center, left, bottom, right);
+			break;
+		case BOTTOM:
+			labelCell.pad(0, left, bottom, right);
+			iconCell.pad(top, left, center, right);
+			break;
+		case LEFT:
+			labelCell.pad(top, left, bottom, 0);
+			iconCell.pad(top, center, bottom, right);
+			break;
+		case RIGHT:
+			labelCell.pad(top, 0, bottom, right);
+			iconCell.pad(top, left, bottom, center);
+		}
+	}
+
 }

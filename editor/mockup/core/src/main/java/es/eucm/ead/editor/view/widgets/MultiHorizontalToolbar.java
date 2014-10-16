@@ -47,16 +47,31 @@ import com.badlogic.gdx.utils.Array;
 
 public class MultiHorizontalToolbar extends Container<HorizontalToolbar> {
 
+	private static final float ANIM_TIME = 0.3f;
+
 	private static final Vector2 TEMP = new Vector2();
 
 	private Array<HorizontalToolbar> arrayBars;
 
 	private float maxHeight;
 
+	private HorizontalToolbar toHide;
+
+	private HorizontalToolbar toShow;
+
+	private Runnable actionAddActor;
+
 	public MultiHorizontalToolbar() {
 		arrayBars = new Array<HorizontalToolbar>();
 		maxHeight = 0;
 		fill();
+
+		actionAddActor = new Runnable() {
+			@Override
+			public void run() {
+				setActor(toShow);
+			}
+		};
 	}
 
 	public void addHorizontalToolbar(HorizontalToolbar... toolbars) {
@@ -75,33 +90,76 @@ public class MultiHorizontalToolbar extends Container<HorizontalToolbar> {
 		}
 	}
 
+	public void resetShow() {
+		HorizontalToolbar toolbar = arrayBars.first();
+		toolbar.setTouchable(Touchable.enabled);
+		setActor(toolbar);
+	}
+
 	public void show(final HorizontalToolbar newBar) {
-		if (arrayBars.contains(newBar, true)) {
-			Actor current = getActor();
-			current.setTouchable(Touchable.disabled);
-
-			localToStageCoordinates(TEMP.set(current.getX(), current.getY()));
-			float goalY = TEMP.y;
-
-			setActor(newBar);
-			if (TEMP.y > Gdx.graphics.getHeight() * 0.5f) {
-				goalY += maxHeight;
-				newBar.setPosition(0, maxHeight);
-			} else {
-				goalY -= maxHeight;
-				newBar.setPosition(0, -maxHeight);
+		if (arrayBars.contains(newBar, true) && newBar != toShow
+				&& getStage() != null) {
+			for (HorizontalToolbar toolbar : arrayBars) {
+				toolbar.clearActions();
 			}
 
+			Actor current = getActor();
+			if (current != null) {
+				current.setTouchable(Touchable.disabled);
+			} else {
+				current = toShow;
+			}
+
+			toShow = newBar;
+			if (toHide != null && toHide != current && toHide != toShow) {
+				toHide.remove();
+			}
+			toHide = (HorizontalToolbar) current;
+
+			localToStageCoordinates(TEMP.set(0, 0));
+			float goalY;
+			float y = TEMP.y;
+			float x = TEMP.x;
+
+			if (y > Gdx.graphics.getHeight() * 0.5f) {
+				goalY = y + maxHeight;
+			} else {
+				goalY = y - maxHeight;
+			}
+
+			if (getStage().getRoot() != toShow.getParent()) {
+				getStage().addActor(toShow);
+			}
+
+			// If is the first time than add the toolbar and not have
+			// coordinates.
+			if (toShow.getY() == 0 && toShow.getX() == 0) {
+				toShow.setBounds(x, goalY, getWidth(), getHeight());
+			}
+
+			float time = ANIM_TIME * Math.abs(y - newBar.getY()) / maxHeight;
+
 			newBar.addAction(Actions.sequence(
-					Actions.moveTo(0, 0, 0.4f, Interpolation.pow2In),
+					Actions.moveTo(x, y, time, Interpolation.sineIn),
 					Actions.touchable(Touchable.enabled)));
 
-			getStage().addActor(current);
-			current.setBounds(TEMP.x, TEMP.y, getWidth(), getHeight());
-			current.addAction(Actions.sequence(
-					Actions.moveTo(TEMP.x, goalY, 0.4f, Interpolation.pow2Out),
-					Actions.removeActor()));
+			hide(x, goalY, time);
 		}
+	}
+
+	private void hide(float x, float y, float time) {
+		localToStageCoordinates(TEMP.set(toHide.getX(), toHide.getY()));
+
+		float currentX = TEMP.x;
+		float currenyY = TEMP.y;
+		if (getStage().getRoot() != toHide.getParent()) {
+			getStage().addActor(toHide);
+
+		}
+		toHide.setPosition(currentX, currenyY);
+		toHide.addAction(Actions.sequence(
+				Actions.moveTo(x, y, 1.7f * time, Interpolation.sineOut),
+				Actions.run(actionAddActor), Actions.removeActor()));
 	}
 
 	@Override
@@ -111,5 +169,15 @@ public class MultiHorizontalToolbar extends Container<HorizontalToolbar> {
 
 	public Array<HorizontalToolbar> getHorizontalToolbars() {
 		return arrayBars;
+	}
+
+	public HorizontalToolbar getCurrentToolbar() {
+		return this.getActor();
+	}
+
+	public void release() {
+		for (HorizontalToolbar toolbar : arrayBars) {
+			toolbar.clearActions();
+		}
 	}
 }
