@@ -61,6 +61,7 @@ import es.eucm.ead.editor.view.builders.gallery.repository.LibrariesView;
 import es.eucm.ead.editor.view.widgets.HorizontalToolbar;
 import es.eucm.ead.editor.view.widgets.IconButton;
 import es.eucm.ead.editor.view.widgets.MultiHorizontalToolbar;
+import es.eucm.ead.editor.view.widgets.editionview.TransformationsWidget;
 import es.eucm.ead.editor.view.widgets.editionview.composition.draw.PaintToolbar;
 import es.eucm.ead.editor.view.widgets.editionview.composition.draw.PaintToolbar.DrawListener;
 
@@ -206,7 +207,8 @@ public class CompositionToolbar extends MultiHorizontalToolbar implements
 	private void createTransformationToolbar() {
 		this.transformToolbar = new HorizontalToolbar(skin, "white_bottom");
 		transformToolbar.backgroundColor(Color.ORANGE);
-		//TODO
+		transformToolbar.rightAdd(new TransformationsWidget(controller, 5f));
+		// TODO
 	}
 
 	public HorizontalToolbar getInsertToolbar() {
