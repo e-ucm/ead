@@ -43,23 +43,22 @@ import es.eucm.ead.schemax.FieldName;
 
 /**
  * <p>
- * Rotates 90º the current selection
+ * Moves the current selection
  * </p>
  * <dl>
  * <dt><strong>Arguments</strong></dt>
- * <dd><strong>args[0]</strong> <em>{@link Type}</em> the type of rotation,
- * clockwise or counter clockwise</dd>
+ * <dd><strong>args[0]</strong> <em>{@link Type}</em> the direction of the movement</dd>
  * </dl>
  */
-public class RotateSelection extends TransformSelection {
+public class MoveSelection extends TransformSelection {
 
-	private static final float ROTATION = 90;
+	private static final float AMOUNT = 20F;
 
 	public enum Type {
-		CLOCKWISE, COUNTER_CLOCKWISE
+		LEFT, RIGHT, UP, DOWN
 	}
 
-	public RotateSelection() {
+	public MoveSelection() {
 		super(true, false, Type.class);
 	}
 
@@ -67,8 +66,31 @@ public class RotateSelection extends TransformSelection {
 	public Command performOverModelEntity(ModelEntity modelEntity,
 			Object... args) {
 		Type type = (Type) args[0];
-		float rotation = modelEntity.getRotation();
-		return new FieldCommand(modelEntity, FieldName.ROTATION, rotation
-				+ (type == Type.CLOCKWISE ? -ROTATION : ROTATION));
+		float value;
+		String fieldName = null;
+
+		if (type == Type.UP) {
+
+			fieldName = FieldName.Y;
+			value = modelEntity.getY() + AMOUNT;
+
+		} else if (type == Type.DOWN) {
+
+			fieldName = FieldName.Y;
+			value = modelEntity.getY() - AMOUNT;
+
+		} else if (type == Type.LEFT) {
+
+			fieldName = FieldName.X;
+			value = modelEntity.getX() - AMOUNT;
+
+		} else {
+
+			fieldName = FieldName.X;
+			value = modelEntity.getX() + AMOUNT;
+		}
+
+		return new FieldCommand(modelEntity, fieldName, value);
+
 	}
 }
