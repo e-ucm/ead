@@ -37,29 +37,29 @@
 package es.eucm.ead.editor.control.actions.model.scene.transform;
 
 import es.eucm.ead.editor.control.commands.Command;
+import es.eucm.ead.editor.control.commands.CompositeCommand;
 import es.eucm.ead.editor.control.commands.FieldCommand;
 import es.eucm.ead.schema.entities.ModelEntity;
 import es.eucm.ead.schemax.FieldName;
 
 /**
  * <p>
- * Rotates 90º the current selection
+ * Scales the current selection
  * </p>
  * <dl>
  * <dt><strong>Arguments</strong></dt>
- * <dd><strong>args[0]</strong> <em>{@link Type}</em> the type of rotation,
- * clockwise or counter clockwise</dd>
+ * <dd><strong>args[0]</strong> <em>{@link Type}</em> the type of scaling</dd>
  * </dl>
  */
-public class RotateSelection extends TransformSelection {
+public class ScaleSelection extends TransformSelection {
 
-	private static final float ROTATION = 90;
+	private static final float SCALE = .4F;
 
 	public enum Type {
-		CLOCKWISE, COUNTER_CLOCKWISE
+		INCREASE, DECREASE
 	}
 
-	public RotateSelection() {
+	public ScaleSelection() {
 		super(true, false, Type.class);
 	}
 
@@ -67,8 +67,11 @@ public class RotateSelection extends TransformSelection {
 	public Command performOverModelEntity(ModelEntity modelEntity,
 			Object... args) {
 		Type type = (Type) args[0];
-		float rotation = modelEntity.getRotation();
-		return new FieldCommand(modelEntity, FieldName.ROTATION, rotation
-				+ (type == Type.CLOCKWISE ? -ROTATION : ROTATION));
+		float value = type == Type.INCREASE ? SCALE : -SCALE;
+		return new CompositeCommand(new FieldCommand(modelEntity,
+				FieldName.SCALE_X, modelEntity.getScaleX() + value),
+				new FieldCommand(modelEntity, FieldName.SCALE_Y, modelEntity
+						.getScaleY() + value));
+
 	}
 }
