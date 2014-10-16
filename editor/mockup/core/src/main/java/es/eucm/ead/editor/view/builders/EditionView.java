@@ -47,92 +47,85 @@ import es.eucm.ead.editor.control.MockupViews;
 import es.eucm.ead.editor.control.actions.editor.ChangeMockupView;
 import es.eucm.ead.editor.control.transitions.Transitions;
 import es.eucm.ead.editor.view.builders.gallery.ScenesView;
-import es.eucm.ead.editor.view.widgets.Toolbar;
 import es.eucm.ead.editor.view.widgets.editionview.InfoEditionPanel;
-import es.eucm.ead.editor.view.widgets.editionview.LeftEditionToolbar;
 import es.eucm.ead.editor.view.widgets.editionview.MockupSceneEditor;
-import es.eucm.ead.editor.view.widgets.editionview.NavigationButton;
 import es.eucm.ead.editor.view.widgets.editionview.TopEditionToolbar;
-import es.eucm.ead.editor.view.widgets.editionview.draw.PaintToolbar;
+import es.eucm.ead.editor.view.widgets.editionview.composition.CompositionToolbar;
+import es.eucm.ead.editor.view.widgets.editionview.composition.draw.PaintToolbar;
 import es.eucm.ead.editor.view.widgets.helpmessage.sequence.EditionViewHelp;
-import es.eucm.ead.editor.view.widgets.layouts.LinearLayout;
 
 public class EditionView implements ViewBuilder, BackListener {
 
-	private static final String TOP_STYLE = "white_top",
-			LEFT_STYLE = "white_left";
+	private static final String TOP_STYLE = "white_top";
 
 	private Table view;
 
 	private MockupSceneEditor sceneEditor;
 
-	private PaintToolbar paintToolbar;
 	private InfoEditionPanel infoPanel;
 	private Controller controller;
+	private Skin skin;
 
-	private Table top;
+	private CompositionToolbar composition;
+
+	private TopEditionToolbar topBar;
 
 	private Table bottom;
 
 	@Override
 	public void initialize(Controller controller) {
 		this.controller = controller;
-
-		Skin skin = controller.getApplicationAssets().getSkin();
+		this.skin = controller.getApplicationAssets().getSkin();
 
 		view = new Table();
 		view.setFillParent(true);
 
-		top = new Table();
+		sceneEditor = new MockupSceneEditor(controller, TOP_STYLE);
+
+		topBar = new TopEditionToolbar(controller, TOP_STYLE, 0f, 0f,
+				sceneEditor);
+
+		PaintToolbar paintToolbar = new PaintToolbar(sceneEditor, controller);
+		composition = new CompositionToolbar(controller, paintToolbar);
+
+		view.add(topBar).expandX().fill();
 		bottom = new Table();
 
-		sceneEditor = new MockupSceneEditor(controller, LEFT_STYLE, TOP_STYLE);
-
-		paintToolbar = new PaintToolbar(sceneEditor, controller);
-
-		final NavigationButton union = new NavigationButton(skin, controller,
-				top, bottom);
-
-		final TopEditionToolbar topBar = new TopEditionToolbar(controller,
-				TOP_STYLE, paintToolbar, 0f, 0f, sceneEditor, top, bottom);
-		final Actor leftBar = new LeftEditionToolbar(controller, LEFT_STYLE,
-				0f, 0f);
-
-		top.add(union).fill();
-		top.add(topBar).expandX().fill();
-		bottom.add(leftBar).left().expandY().fill();
 		Cell sceneEditorCell = bottom.add(sceneEditor).expand().fill();
+		sceneEditor.toBack();
+		bottom.row();
+		bottom.add(composition).expandX().fill();
 
-		view.add(top).expandX().fill();
 		view.row();
 		view.add(bottom).expand().fill();
-		sceneEditor.toBack();
-		bottom.toBack();
 
 		infoPanel = new InfoEditionPanel(controller, skin, sceneEditorCell,
 				paintToolbar);
 
 		((MockupViews) controller.getViews())
 				.registerHelpMessage(new EditionViewHelp(controller, this,
-						topBar, leftBar));
+						topBar));
 	}
 
 	@Override
 	public void release(Controller controller) {
 		sceneEditor.release();
-		paintToolbar.hide();
+		composition.getPaintToolbar().hide();
+		composition.release();
 	}
 
 	@Override
 	public Actor getView(Object... args) {
 		infoPanel.show();
 		sceneEditor.prepare();
+		composition.resetShow();
+
 		return view;
 	}
 
 	@Override
 	public void onBackPressed() {
 		controller.action(ChangeMockupView.class, ScenesView.class,
-				Transitions.getFadeSlideTransition(top, bottom, false));
+				Transitions.getFadeSlideTransition(topBar, bottom, false));
 	}
 }
