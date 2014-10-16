@@ -34,7 +34,7 @@
  *      You should have received a copy of the GNU Lesser General Public License
  *      along with eAdventure.  If not, see <http://www.gnu.org/licenses/>.
  */
-package es.eucm.ead.editor.view.widgets.editionview.draw;
+package es.eucm.ead.editor.view.widgets.editionview.composition.draw;
 
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.g2d.Batch;
@@ -50,7 +50,7 @@ import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.utils.Array;
 
 import es.eucm.ead.editor.view.widgets.PositionedHiddenPanel.Position;
-import es.eucm.ead.editor.view.widgets.editionview.SlideColorPicker;
+import es.eucm.ead.editor.view.widgets.editionview.composition.SlideColorPicker;
 import es.eucm.ead.editor.view.widgets.iconwithpanel.IconWithFadePanel;
 
 public class ColorPicker extends IconWithFadePanel {

@@ -34,7 +34,7 @@
  *      You should have received a copy of the GNU Lesser General Public License
  *      along with eAdventure.  If not, see <http://www.gnu.org/licenses/>.
  */
-package es.eucm.ead.editor.view.widgets.editionview.draw;
+package es.eucm.ead.editor.view.widgets.editionview.composition.draw;
 
 import java.nio.ByteBuffer;
 
@@ -469,8 +469,8 @@ public class MeshHelper implements Disposable {
 				this.recalculateMatrix = false;
 				// this.combinedMatrix.idt().mul(
 				// scaledView.getStage().getCamera().combined);
-				this.combinedMatrix.set(batch.getProjectionMatrix().mul(
-						batch.getTransformMatrix()));
+				this.combinedMatrix.set(batch.getProjectionMatrix()).mul(
+						batch.getTransformMatrix());
 			}
 			return;
 		}

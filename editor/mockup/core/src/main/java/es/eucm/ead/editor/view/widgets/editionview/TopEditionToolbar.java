@@ -38,42 +38,27 @@ package es.eucm.ead.editor.view.widgets.editionview;
 
 import java.util.Stack;
 
+import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
-import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
 
 import es.eucm.ead.editor.control.Actions;
-import es.eucm.ead.editor.control.Clipboard.ClipboardListener;
 import es.eucm.ead.editor.control.Commands;
 import es.eucm.ead.editor.control.Controller;
-import es.eucm.ead.editor.control.Selection;
-import es.eucm.ead.editor.control.actions.editor.AddLabelToScene;
-import es.eucm.ead.editor.control.actions.editor.AddSceneElementFromResource;
 import es.eucm.ead.editor.control.actions.editor.ChangeMockupView;
-import es.eucm.ead.editor.control.actions.editor.MockupPaste;
 import es.eucm.ead.editor.control.actions.editor.Redo;
 import es.eucm.ead.editor.control.actions.editor.Undo;
-import es.eucm.ead.editor.control.actions.editor.asynk.ExportMockupProject;
-import es.eucm.ead.editor.control.actions.editor.asynk.TakePicture;
-import es.eucm.ead.editor.control.actions.model.AddGatewayDefaultElement;
-import es.eucm.ead.editor.control.actions.model.AddInteractiveZone;
-import es.eucm.ead.editor.control.actions.model.SetSelection;
 import es.eucm.ead.editor.control.commands.Command;
 import es.eucm.ead.editor.control.transitions.Transitions;
 import es.eucm.ead.editor.view.builders.gallery.PlayView;
-import es.eucm.ead.editor.view.builders.gallery.repository.LibrariesView;
 import es.eucm.ead.editor.view.listeners.ActionListener;
+import es.eucm.ead.editor.view.widgets.HorizontalToolbar;
 import es.eucm.ead.editor.view.widgets.IconButton;
-import es.eucm.ead.editor.view.widgets.ScrollPaneDif;
-import es.eucm.ead.editor.view.widgets.Toolbar;
-import es.eucm.ead.editor.view.widgets.editionview.draw.PaintToolbar;
-import es.eucm.ead.editor.view.widgets.editionview.draw.PaintToolbar.DrawListener;
-import es.eucm.ead.editor.view.widgets.gallery.AboutWidget;
 import es.eucm.ead.editor.view.widgets.iconwithpanel.IconWithLateralPanel;
 import es.eucm.ead.engine.assets.GameAssets;
 
-public class TopEditionToolbar extends Toolbar {
+public class TopEditionToolbar extends HorizontalToolbar {
 
 	private OthersWidget others;
 
@@ -83,77 +68,20 @@ public class TopEditionToolbar extends Toolbar {
 
 	private IconButton redo;
 
-	private IconButton paste;
-
-	private IconButton camera;
-
-	private IconButton repository;
-
-	private IconButton android;
-
-	private IconButton paint;
-
-	private IconButton text;
-
-	private IconButton zones;
-
-	private IconButton gate;
-
-	private IconButton share;
-
 	private IconWithLateralPanel about;
 
 	public TopEditionToolbar(final Controller controller, String style,
-			final PaintToolbar paintToolbar, float smallPad, float normalPad,
-			Actor reference, final Table top, final Table bottom) {
+			float smallPad, float normalPad, Actor reference) {
+
 		super(controller.getApplicationAssets().getSkin(), style);
 		Skin skin = controller.getApplicationAssets().getSkin();
 
-		about = new AboutWidget(controller, reference);
 		debugPlay = new IconButton("play", "debugPlay", 0f, skin, "inverted");
-		share = new IconButton("share", "share80x80", 0f, skin, "inverted");
 
 		undo = new IconButton("undo", "undo80x80", 0f, skin);
 		redo = new IconButton("redo", "redo80x80", 0f, skin);
 
-		paste = new IconButton("paste", "paste80x80", 0f, skin);
-		camera = new IconButton("camera", "camera80x80", 0f, skin);
-		repository = new IconButton("repository", "repository80x80", 0f, skin);
-		android = new IconButton("gallery", "android_gallery80x80", 0f, skin);
-
-		paint = new IconButton("paint", "paint80x80", 0f, skin);
-		text = new IconButton("text", "text80x80", 0f, skin);
-
-		zones = new IconButton("zone", "interactive80x80", 0f, skin);
-		gate = new IconButton("exit", "gateway80x80", 0f, skin);
-
-		others = new OthersWidget(controller);
-
-		paintToolbar.addListener(new DrawListener() {
-
-			private Object selection;
-
-			@Override
-			public void drawStarted() {
-				selection = controller.getModel().getSelection()
-						.getSingle(Selection.SCENE_ELEMENT);
-				if (selection != null) {
-					controller.action(SetSelection.class, Selection.SCENE,
-							Selection.SCENE_ELEMENT);
-				}
-				setDisabled(true, controller);
-			}
-
-			@Override
-			public void drawEnded(boolean saved) {
-				setDisabled(false, controller);
-				if (!saved && selection != null) {
-					controller.action(SetSelection.class, Selection.SCENE,
-							Selection.SCENE_ELEMENT, selection);
-				}
-			}
-
-		});
+		others = new OthersWidget(controller, reference);
 
 		ChangeListener buttonsListener = new ChangeListener() {
 
@@ -164,50 +92,17 @@ public class TopEditionToolbar extends Toolbar {
 					controller.action(ChangeMockupView.class, PlayView.class,
 							Transitions.getSlideTransition(true),
 							GameAssets.GAME_DEBUG);
-				} else if (listenerActor == share) {
-					controller.action(ExportMockupProject.class);
 				} else if (listenerActor == undo) {
 					controller.action(Undo.class);
 				} else if (listenerActor == redo) {
 					controller.action(Redo.class);
-				} else if (listenerActor == camera) {
-					controller.action(TakePicture.class);
-				} else if (listenerActor == paste) {
-					controller.action(MockupPaste.class);
-				} else if (listenerActor == repository) {
-					controller.action(ChangeMockupView.class,
-							LibrariesView.class, Transitions
-									.getFadeSlideTransition(top, bottom, true));
-				} else if (listenerActor == android) {
-					controller.action(AddSceneElementFromResource.class);
-				} else if (listenerActor == paint) {
-					if (paintToolbar.isShowing()) {
-						paintToolbar.hide();
-					} else {
-						paintToolbar.show();
-					}
-				} else if (listenerActor == text) {
-					controller.action(AddLabelToScene.class);
-				} else if (listenerActor == zones) {
-					controller.action(AddInteractiveZone.class);
-				} else if (listenerActor == gate) {
-					controller.action(AddGatewayDefaultElement.class);
 				}
 			}
 		};
 
 		debugPlay.addListener(buttonsListener);
-		share.addListener(buttonsListener);
 		undo.addListener(buttonsListener);
 		redo.addListener(buttonsListener);
-		camera.addListener(buttonsListener);
-		paste.addListener(buttonsListener);
-		repository.addListener(buttonsListener);
-		android.addListener(buttonsListener);
-		paint.addListener(buttonsListener);
-		text.addListener(buttonsListener);
-		zones.addListener(buttonsListener);
-		gate.addListener(buttonsListener);
 
 		ActionListener undoRedo = new ActionListener() {
 
@@ -229,59 +124,16 @@ public class TopEditionToolbar extends Toolbar {
 		actions.addActionListener(Undo.class, undoRedo);
 		actions.addActionListener(Redo.class, undoRedo);
 
-		paste.setDisabled(controller.getClipboard().getContents() == null);
-		controller.getClipboard().addClipboardListener(new ClipboardListener() {
+		rightAdd(undo);
+		rightAdd(redo);
+		rightAdd(debugPlay);
+		rightAdd(others);
 
-			@Override
-			public void clipboardChanged(String clibpoardContent) {
-				paste.setDisabled(false);
-
-			}
-		});
-
-		defaults().expandY().fill();
-		add(about);
-		add(debugPlay);
-		add(share);
-
-		add().expandX();
-		add(undo).fill();
-		add(redo).fill();
-		add().expandX();
-
-		Table table = new Table();
-		table.defaults().expandY().fill();
-		ScrollPaneDif scrollPane = new ScrollPaneDif(table, skin, "fadeX");
-		scrollPane.setScrollingDisabled(false, true);
-		table.add(paste).padRight(smallPad).right();
-		table.add(camera).padRight(smallPad);
-		table.add(repository).padRight(smallPad);
-		table.add(android).padRight(normalPad);
-
-		table.add(paint).padRight(smallPad);
-		table.add(text).padRight(normalPad);
-
-		table.add(zones).padRight(smallPad);
-		table.add(gate).padRight(normalPad);
-
-		add(scrollPane);
-		add(others).padRight(smallPad);
+		backgroundColor(Color.LIGHT_GRAY);
 	}
 
 	private void setDisabled(boolean disabled, Controller controller) {
-		share.setDisabled(disabled);
 		undo.setDisabled(disabled);
 		redo.setDisabled(disabled);
-		if (disabled) {
-			paste.setDisabled(disabled);
-		} else {
-			paste.setDisabled(controller.getClipboard().getContents() == null);
-		}
-		camera.setDisabled(disabled);
-		repository.setDisabled(disabled);
-		android.setDisabled(disabled);
-		text.setDisabled(disabled);
-		zones.setDisabled(disabled);
-		gate.setDisabled(disabled);
 	}
 }

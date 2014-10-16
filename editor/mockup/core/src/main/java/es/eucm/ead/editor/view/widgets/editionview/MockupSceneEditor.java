@@ -72,7 +72,6 @@ public class MockupSceneEditor extends SceneEditor {
 	private ElementContext context;
 
 	private final Rectangle scissorBounds;
-	private final float leftPad;
 	private final float topPad;
 
 	private Runnable updateSelection = new Runnable() {
@@ -100,14 +99,11 @@ public class MockupSceneEditor extends SceneEditor {
 		}
 	};
 
-	public MockupSceneEditor(final Controller controller, String leftStyle,
-			String topStyle) {
+	public MockupSceneEditor(final Controller controller, String topStyle) {
 		super(controller);
 
 		Skin skin = controller.getApplicationAssets().getSkin();
-		ToolbarStyle toolbarStyle = skin.get(leftStyle, ToolbarStyle.class);
-		leftPad = toolbarStyle.background.getRightWidth();
-		toolbarStyle = skin.get(topStyle, ToolbarStyle.class);
+		ToolbarStyle toolbarStyle = skin.get(topStyle, ToolbarStyle.class);
 		topPad = toolbarStyle.background.getBottomHeight();
 
 		scissorBounds = new Rectangle();
@@ -170,8 +166,7 @@ public class MockupSceneEditor extends SceneEditor {
 		groupEditor.setBounds(0, 0, getWidth(), getHeight());
 		groupEditor.fit(false);
 
-		scissorBounds.set(getX() - leftPad, getY(), getWidth() + 4 * leftPad,
-				getHeight() + topPad);
+		scissorBounds.set(getX(), getY(), getWidth(), getHeight() + topPad);
 		getStage().calculateScissors(scissorBounds, scissorBounds);
 		fixScissorBounds();
 	}
