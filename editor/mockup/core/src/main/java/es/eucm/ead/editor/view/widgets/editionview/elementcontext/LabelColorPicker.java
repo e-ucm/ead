@@ -45,7 +45,7 @@ import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 
 import es.eucm.ead.editor.control.Controller;
 import es.eucm.ead.editor.control.actions.model.ChangeSelectionText;
-import es.eucm.ead.editor.view.widgets.editionview.draw.ColorPicker;
+import es.eucm.ead.editor.view.widgets.editionview.composition.draw.ColorPicker;
 
 public class LabelColorPicker extends ColorPicker {
 

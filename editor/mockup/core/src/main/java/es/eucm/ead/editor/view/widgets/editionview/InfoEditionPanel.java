@@ -55,7 +55,7 @@ import es.eucm.ead.editor.control.actions.editor.asynk.TakePicture;
 import es.eucm.ead.editor.view.builders.gallery.repository.LibrariesView;
 import es.eucm.ead.editor.view.widgets.HiddenPanel;
 import es.eucm.ead.editor.view.widgets.IconButton;
-import es.eucm.ead.editor.view.widgets.editionview.draw.PaintToolbar;
+import es.eucm.ead.editor.view.widgets.editionview.composition.draw.PaintToolbar;
 import es.eucm.ead.engine.I18N;
 import es.eucm.ead.schema.entities.ModelEntity;
 
