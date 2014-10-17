@@ -94,6 +94,8 @@ public class MultiHorizontalToolbar extends Container<HorizontalToolbar> {
 		HorizontalToolbar toolbar = arrayBars.first();
 		toolbar.setTouchable(Touchable.enabled);
 		setActor(toolbar);
+		toShow = null;
+		toHide = null;
 	}
 
 	public void show(final HorizontalToolbar newBar) {
