@@ -47,7 +47,8 @@ import es.eucm.ead.schemax.FieldName;
  * </p>
  * <dl>
  * <dt><strong>Arguments</strong></dt>
- * <dd><strong>args[0]</strong> <em>{@link Type}</em> the direction of the movement</dd>
+ * <dd><strong>args[0]</strong> <em>{@link Type}</em> the direction of the
+ * movement</dd>
  * </dl>
  */
 public class MoveSelection extends TransformSelection {

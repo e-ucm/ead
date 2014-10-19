@@ -54,6 +54,7 @@ import com.badlogic.gdx.graphics.VertexAttributes.Usage;
 import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
+import com.badlogic.gdx.graphics.glutils.FrameBuffer;
 import com.badlogic.gdx.graphics.glutils.ShaderProgram;
 import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Matrix4;
@@ -108,13 +109,6 @@ public class MeshHelper implements Disposable {
 	private static final float DASH_ACCURACY = 50f;
 
 	/**
-	 * Establishes the maximum amount of inputs that will be cached before
-	 * updating the eased pixels to the GPU while in
-	 * {@link #eraseTouchDragged(float, float)} .
-	 */
-	private static final int MAX_CACHED_ERASING_INPUTS = 2;
-
-	/**
 	 * Used to convert from local to {@link Stage} coordinates and vice versa.
 	 */
 	private final Vector2 unprojectedVertex = new Vector2();
@@ -122,10 +116,6 @@ public class MeshHelper implements Disposable {
 	 * Performs the undo/redo encapsulation while drawing.
 	 */
 	private final DrawLineCommand drawLine = new DrawLineCommand();
-	/**
-	 * Performs the undo/redo encapsulation while erasing.
-	 */
-	private final EraseLineCommand eraseLine = new EraseLineCommand();
 	/**
 	 * Used to convert from LocalToStageCoordinates and vice versa.
 	 */
@@ -161,8 +151,6 @@ public class MeshHelper implements Disposable {
 	 * doesn't drag enough to render a line).
 	 */
 	private int primitiveType;
-	private int cachedErasingInput, cachedErasingInputs;
-	private int eraseRadius;
 	private float drawRadius = 20f, maxDrawRadius = drawRadius * 2f;
 	/**
 	 * Used to define the {@link Color} of the brush stroke.
@@ -193,10 +181,6 @@ public class MeshHelper implements Disposable {
 	 */
 	private PixmapRegion currModifiedPixmap;
 	/**
-	 * Used to perform undo/redo commands while erasing.
-	 */
-	private Pixmap erasedPixmap;
-	/**
 	 * The {@link TextureRegion} that holds the {@link Texture} to whom the
 	 * {@link #mesh} is being drawn, with the help of the {@link #frameBuffer}.
 	 * This texture has {@link Stage} coordinates but is drawn with the local
@@ -210,6 +194,13 @@ public class MeshHelper implements Disposable {
 	 * {@link TextureRegion#flip(boolean, boolean)}.
 	 */
 	private TextureRegion showingTexRegion;
+	/**
+	 * Used while erasing.
+	 */
+	private TextureRegion fboTex;
+	private FrameBuffer fbo;
+	private boolean erasing;
+
 	private ShaderProgram meshShader;
 	private Mesh mesh;
 
@@ -238,10 +229,8 @@ public class MeshHelper implements Disposable {
 				if (!enable) {
 					if (actionClass == Undo.class) {
 						release(drawLine.undoPixmaps);
-						release(eraseLine.undoPixmaps);
 					} else {
 						release(drawLine.redoPixmaps);
-						release(eraseLine.redoPixmaps);
 					}
 				}
 			}
@@ -274,12 +263,6 @@ public class MeshHelper implements Disposable {
 		resetTotalBounds();
 		release(drawLine.redoPixmaps);
 		release(drawLine.undoPixmaps);
-		release(eraseLine.redoPixmaps);
-		release(eraseLine.undoPixmaps);
-		if (this.erasedPixmap != null) {
-			this.erasedPixmap.dispose();
-			this.erasedPixmap = null;
-		}
 		if (this.currModifiedPixmap != null) {
 			this.currModifiedPixmap.dispose();
 			this.currModifiedPixmap = null;
@@ -293,7 +276,8 @@ public class MeshHelper implements Disposable {
 	boolean hasSomethingToSave() {
 		return this.currModifiedPixmap != null
 				&& this.currModifiedPixmap.pixmap != null
-				&& this.currModifiedPixmap.pixmap != this.flusher.pixmap;
+				&& this.currModifiedPixmap.pixmap != this.flusher.pixmap
+				&& minX != Float.MAX_VALUE;
 	}
 
 	/**
@@ -392,15 +376,22 @@ public class MeshHelper implements Disposable {
 		final Texture colorTexture = new Texture(flusher.pixmap);
 		this.showingTexRegion.setTexture(colorTexture);
 
+		fbo = new FrameBuffer(Format.RGBA8888, Gdx.graphics.getWidth(),
+				Gdx.graphics.getHeight(), false);
+		fboTex = new TextureRegion(fbo.getColorBufferTexture());
+
 		clampMinX = 0f;
 		clampMinY = 0f;
 
 		clampMaxX = w;
 		clampMaxY = h;
 
+		scaledView.localToStageCoordinates(temp.set(0f, 0f));
 		Gdx.app.log(MESH_TAG, "(Local coords) texture region ~> " + clampMinX
 				+ ", " + clampMinY + ", " + w + ", " + h);
-
+		this.fboTex.setRegion(MathUtils.round(temp.x), MathUtils.round(temp.y),
+				MathUtils.round(w), MathUtils.round(h));
+		fboTex.flip(false, true);
 		this.showingTexRegion.setRegion(MathUtils.round(clampMinX),
 				MathUtils.round(clampMinY), MathUtils.round(w),
 				MathUtils.round(h));
@@ -463,20 +454,33 @@ public class MeshHelper implements Disposable {
 	 * @param parentAlpha
 	 */
 	void draw(Batch batch, float parentAlpha) {
-		drawShowingTexture(batch);
-		if (this.vertexIndex < MIN_VERTICES) {
-			if (this.recalculateMatrix) {
-				this.recalculateMatrix = false;
-				// this.combinedMatrix.idt().mul(
-				// scaledView.getStage().getCamera().combined);
-				this.combinedMatrix.set(batch.getProjectionMatrix()).mul(
-						batch.getTransformMatrix());
+		if (!erasing) {
+			drawShowingTexture(batch);
+			if (this.vertexIndex < MIN_VERTICES) {
+				if (this.recalculateMatrix) {
+					this.recalculateMatrix = false;
+					this.combinedMatrix.set(batch.getProjectionMatrix()).mul(
+							batch.getTransformMatrix());
+				}
+				return;
 			}
-			return;
+			batch.end();
+			drawMesh();
+			batch.begin();
+		} else {
+			fbo.begin();
+			Gdx.gl.glClearColor(0f, 0f, 0f, 0f);
+			Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
+			drawShowingTexture(batch);
+			if (this.vertexIndex >= MIN_VERTICES) {
+				batch.end();
+				drawMesh();
+				batch.begin();
+			}
+			fbo.end();
+			Gdx.gl.glClearColor(1f, 1f, 1f, 1f);
+			batch.draw(fboTex, 0, 0);
 		}
-		batch.end();
-		drawMesh();
-		batch.begin();
 	}
 
 	/**
@@ -498,6 +502,7 @@ public class MeshHelper implements Disposable {
 	 * {@link Camera#combined} (ProjectionMatrix * TransformMatrix).
 	 */
 	private void drawMesh() {
+
 		this.meshShader.begin();
 
 		this.meshShader.setUniformf("u_color", this.r, this.g, this.b, this.a);
@@ -506,6 +511,7 @@ public class MeshHelper implements Disposable {
 		this.mesh.render(this.meshShader, this.primitiveType);
 
 		this.meshShader.end();
+
 	}
 
 	@Override
@@ -514,13 +520,14 @@ public class MeshHelper implements Disposable {
 			this.flusher.pixmap.dispose();
 			this.flusher.pixmap = null;
 		}
+		this.fbo.dispose();
 		this.mesh.dispose();
 		this.mesh = null;
 		this.meshShader.dispose();
 		this.meshShader = null;
 	}
 
-	void drawTouchDown(float x, float y) {
+	void touchDown(float x, float y) {
 		this.primitiveType = GL20.GL_TRIANGLE_STRIP;
 		this.lineVertices[this.vertexIndex++] = x;
 		this.lineVertices[this.vertexIndex++] = y;
@@ -538,7 +545,7 @@ public class MeshHelper implements Disposable {
 	 * @param x
 	 * @param y
 	 */
-	void drawTouchDragged(float x, float y) {
+	void touchDragged(float x, float y) {
 		if (this.vertexIndex == MAX_VERTICES_2) {
 			return;
 		}
@@ -589,12 +596,12 @@ public class MeshHelper implements Disposable {
 	/**
 	 * This method decides if a dot should be rendered via
 	 * {@link GL20#GL_TRIANGLE_FAN}, if the user didn't drag enough space to
-	 * draw a stroke, or a normal {@link #drawTouchDragged(float, float)}.
+	 * draw a stroke, or a normal {@link #touchDragged(float, float)}.
 	 * 
 	 * @param x
 	 * @param y
 	 */
-	void drawTouchUp(float x, float y) {
+	void touchUp(float x, float y) {
 		if (this.vertexIndex < MIN_VERTICES) {
 			this.vertexIndex = 0;
 			final int startCount = 2;
@@ -629,7 +636,7 @@ public class MeshHelper implements Disposable {
 			this.mesh.setVertices(this.lineVertices, 0, this.vertexIndex);
 		} else if (x != this.lastX && y != this.lastY
 				&& this.vertexIndex < MAX_VERTICES_2) {
-			drawTouchDown(x, y);
+			touchDown(x, y);
 			this.mesh.setVertices(this.lineVertices, 0, this.vertexIndex);
 		}
 		this.controller.command(drawLine);
@@ -679,10 +686,12 @@ public class MeshHelper implements Disposable {
 	 * @param maxy
 	 */
 	private void clampTotalBounds(float minx, float miny, float maxx, float maxy) {
-		this.minX = Math.min(this.minX, minx);
-		this.minY = Math.min(this.minY, miny);
-		this.maxX = Math.max(this.maxX, maxx);
-		this.maxY = Math.max(this.maxY, maxy);
+		if (!erasing) {
+			this.minX = Math.min(this.minX, minx);
+			this.minY = Math.min(this.minY, miny);
+			this.maxX = Math.max(this.maxX, maxx);
+			this.maxY = Math.max(this.maxY, maxy);
+		}
 	}
 
 	/**
@@ -693,21 +702,17 @@ public class MeshHelper implements Disposable {
 		this.g = color.g;
 		this.b = color.b;
 		this.a = color.a;
-	}
-
-	/**
-	 * Sets the radius of the brush while erasing.
-	 * 
-	 * @param radius
-	 */
-	void setEraseRadius(float radius) {
-		this.eraseRadius = MathUtils.round(radius);
+		if (a == 0f) {
+			erasing = true;
+		} else {
+			erasing = false;
+		}
 	}
 
 	/**
 	 * Sets the width of the brush.
 	 */
-	void setDrawRadius(float radius) {
+	void setRadius(float radius) {
 		this.drawRadius = radius;
 	}
 
@@ -741,51 +746,6 @@ public class MeshHelper implements Disposable {
 		} else {
 			resetTotalBounds();
 		}
-	}
-
-	void eraseTouchDown(float stageX, float stageY) {
-		if (currModifiedPixmap == null)
-			return;
-		erasedPixmap = new Pixmap(currModifiedPixmap.pixmap.getWidth(),
-				currModifiedPixmap.pixmap.getHeight(), Format.RGBA8888);
-		erasedPixmap.drawPixmap(currModifiedPixmap.pixmap, 0, 0);
-
-		currModifiedPixmap.pixmap.fillCircle(MathUtils.round(stageX)
-				- currModifiedPixmap.x, MathUtils.round(stageY)
-				- currModifiedPixmap.y, eraseRadius);
-		showingTexRegion.getTexture().draw(currModifiedPixmap.pixmap,
-				currModifiedPixmap.x, currModifiedPixmap.y);
-		this.cachedErasingInput = 0;
-
-		int fps = Gdx.graphics.getFramesPerSecond() - 25;
-		this.cachedErasingInputs = fps < 0 ? 0 : MathUtils
-				.round(MAX_CACHED_ERASING_INPUTS * fps / 35f);
-	}
-
-	void eraseTouchDragged(float stageX, float stageY) {
-		if (currModifiedPixmap == null)
-			return;
-		currModifiedPixmap.pixmap.fillCircle(MathUtils.round(stageX)
-				- currModifiedPixmap.x, MathUtils.round(stageY)
-				- currModifiedPixmap.y, eraseRadius);
-		if (this.cachedErasingInput >= this.cachedErasingInputs) {
-			this.cachedErasingInput = 0;
-			showingTexRegion.getTexture().draw(currModifiedPixmap.pixmap,
-					currModifiedPixmap.x, currModifiedPixmap.y);
-		} else {
-			++cachedErasingInput;
-		}
-	}
-
-	void eraseTouchUp(float stageX, float stageY) {
-		if (currModifiedPixmap == null)
-			return;
-		currModifiedPixmap.pixmap.fillCircle(MathUtils.round(stageX)
-				- currModifiedPixmap.x, MathUtils.round(stageY)
-				- currModifiedPixmap.y, eraseRadius);
-		showingTexRegion.getTexture().draw(currModifiedPixmap.pixmap,
-				currModifiedPixmap.x, currModifiedPixmap.y);
-		controller.command(eraseLine);
 	}
 
 	/**
@@ -836,26 +796,27 @@ public class MeshHelper implements Disposable {
 					undoPixmaps.add(flusher);
 				}
 
-				Gdx.gl.glClearColor(0f, 0f, 0f, 0f);
-				Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
-				Batch batch = controller.getPlatform().getBatch();
-				batch.setProjectionMatrix(combinedMatrix);
-				batch.begin();
-				drawShowingTexture(batch);
-				batch.end();
-				drawMesh();
-				scaledView.localToStageCoordinates(temp.set(pixX, pixY));
-				currModifiedPixmap = new PixmapRegion(takeScreenShot(
-						MathUtils.round(temp.x), MathUtils.round(temp.y),
-						pixWidth, pixHeight), pixX, pixY);
-				showingTexRegion.getTexture().draw(currModifiedPixmap.pixmap,
-						pixX, pixY);
-				Gdx.gl.glClearColor(1f, 1f, 1f, 1f);
-
+				takePixmap(pixX, pixY, pixWidth, pixHeight);
 				resetMesh();
 			}
 
 			return this.dummyEvent;
+		}
+
+		private void takePixmap(int x, int y, int width, int height) {
+			Gdx.gl.glClearColor(0f, 0f, 0f, 0f);
+			Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
+			Batch batch = controller.getPlatform().getBatch();
+			batch.setProjectionMatrix(combinedMatrix);
+			batch.begin();
+			draw(batch, 1f);
+			batch.end();
+			scaledView.localToStageCoordinates(temp.set(x, y));
+			currModifiedPixmap = new PixmapRegion(takeScreenShot(
+					MathUtils.round(temp.x), MathUtils.round(temp.y), width,
+					height), x, y);
+			showingTexRegion.getTexture().draw(currModifiedPixmap.pixmap, x, y);
+			Gdx.gl.glClearColor(1f, 1f, 1f, 1f);
 		}
 
 		@Override
@@ -884,79 +845,6 @@ public class MeshHelper implements Disposable {
 
 			showingTexRegion.getTexture().draw(flusher.pixmap, flusher.x,
 					flusher.y);
-
-			return this.dummyEvent;
-		}
-
-		@Override
-		public boolean combine(Command other) {
-			return false;
-		}
-	};
-
-	/**
-	 * Uses {@link MeshHelper} attributes in order to erase correctly brush
-	 * strokes.
-	 */
-	private class EraseLineCommand extends Command {
-
-		/**
-		 * Used by the {@link #eraseLine} to perform correctly.
-		 */
-		private final Array<PixmapRegion> undoPixmaps = new Array<PixmapRegion>(
-				false, 15), redoPixmaps = new Array<PixmapRegion>(false, 15);
-
-		private final ModelEvent dummyEvent = new ModelEvent() {
-			@Override
-			public Object getTarget() {
-				return null;
-			}
-		};
-
-		@Override
-		public ModelEvent doCommand() {
-
-			if (erasedPixmap != null) {
-
-				undoPixmaps.add(new PixmapRegion(erasedPixmap,
-						currModifiedPixmap.x, currModifiedPixmap.y));
-				erasedPixmap = null;
-
-			} else if (redoPixmaps.size != 0) {
-
-				undoPixmaps.add(currModifiedPixmap);
-				currModifiedPixmap = null;
-
-				PixmapRegion oldPix = redoPixmaps.pop();
-				showingTexRegion.getTexture().draw(oldPix.pixmap, oldPix.x,
-						oldPix.y);
-
-				currModifiedPixmap = oldPix;
-
-			}
-
-			return this.dummyEvent;
-		}
-
-		@Override
-		public boolean canUndo() {
-			return true;
-		}
-
-		@Override
-		public ModelEvent undoCommand() {
-			if (undoPixmaps.size == 0) {
-				return this.dummyEvent;
-			}
-
-			redoPixmaps.add(currModifiedPixmap);
-			currModifiedPixmap = null;
-
-			PixmapRegion oldPix = undoPixmaps.pop();
-			showingTexRegion.getTexture().draw(oldPix.pixmap, oldPix.x,
-					oldPix.y);
-
-			currModifiedPixmap = oldPix;
 
 			return this.dummyEvent;
 		}
