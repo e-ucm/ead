@@ -39,7 +39,6 @@ package es.eucm.ead.editor.view.widgets.editionview.composition.draw;
 import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.Pixmap;
-import com.badlogic.gdx.graphics.Pixmap.Blending;
 import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.scenes.scene2d.Group;
@@ -67,6 +66,7 @@ public class BrushStrokes extends WidgetGroup implements Disposable {
 
 	public static final int MAX_COMMANDS = 50;
 	private static final Vector2 TEMP = new Vector2();
+	private static final Color eraseColor = new Color(1F, 1F, 1F, 0F);
 
 	public enum Mode {
 		DRAW, ERASE
@@ -90,6 +90,7 @@ public class BrushStrokes extends WidgetGroup implements Disposable {
 		this.controller = control;
 		this.mode = null;
 		((MockupController) controller).addDisposable(this);
+		addCaptureListener(drawListener);
 	}
 
 	/**
@@ -100,12 +101,8 @@ public class BrushStrokes extends WidgetGroup implements Disposable {
 	public void setMode(Mode mode) {
 		if (this.mode == mode)
 			return;
-		if (mode == Mode.DRAW) {
-			removeCaptureListener(eraseListener);
-			addCaptureListener(drawListener);
-		} else if (mode == Mode.ERASE) {
-			removeCaptureListener(drawListener);
-			addCaptureListener(eraseListener);
+		if (mode == Mode.ERASE) {
+			mesh.setColor(eraseColor);
 		}
 		this.mode = mode;
 	}
@@ -177,7 +174,6 @@ public class BrushStrokes extends WidgetGroup implements Disposable {
 	public void show() {
 		if (!hasParent()) {
 			sceneEditor.addActor(this);
-			Pixmap.setBlending(Blending.None);
 			controller.getCommands().pushStack(MAX_COMMANDS);
 			setBounds(0f, 0f, sceneEditor.getWidth(), sceneEditor.getHeight());
 		}
@@ -195,7 +191,6 @@ public class BrushStrokes extends WidgetGroup implements Disposable {
 			if (release) {
 				release();
 			}
-			Pixmap.setBlending(Blending.SourceOver);
 			controller.getCommands().popStack(false);
 		}
 	}
@@ -212,14 +207,13 @@ public class BrushStrokes extends WidgetGroup implements Disposable {
 	}
 
 	/**
-	 * Calls {@link MeshHelper#setDrawRadius(float)} or
+	 * Calls {@link MeshHelper#setRadius(float)} or
 	 * {@link MeshHelper#setEraseRadius(float)} depending on the current mode.
 	 * 
 	 * @param radius
 	 */
 	public void setRadius(float radius) {
-		this.mesh.setDrawRadius(radius);
-		this.mesh.setEraseRadius(radius);
+		this.mesh.setRadius(radius);
 	}
 
 	/**
@@ -255,7 +249,7 @@ public class BrushStrokes extends WidgetGroup implements Disposable {
 		public boolean touchDown(InputEvent event, float x, float y,
 				int pointer, int button) {
 			if (pointer == 0) {
-				mesh.drawTouchDown(x, y);
+				mesh.touchDown(x, y);
 			}
 			return true;
 		}
@@ -263,7 +257,7 @@ public class BrushStrokes extends WidgetGroup implements Disposable {
 		@Override
 		public void touchDragged(InputEvent event, float x, float y, int pointer) {
 			if (pointer == 0) {
-				mesh.drawTouchDragged(x, y);
+				mesh.touchDragged(x, y);
 			}
 		}
 
@@ -271,34 +265,7 @@ public class BrushStrokes extends WidgetGroup implements Disposable {
 		public void touchUp(InputEvent event, float x, float y, int pointer,
 				int button) {
 			if (pointer == 0) {
-				mesh.drawTouchUp(x, y);
-			}
-		}
-	};
-
-	private final InputListener eraseListener = new InputListener() {
-
-		@Override
-		public boolean touchDown(InputEvent event, float x, float y,
-				int pointer, int button) {
-			if (pointer == 0) {
-				mesh.eraseTouchDown(x, y);
-			}
-			return true;
-		}
-
-		@Override
-		public void touchDragged(InputEvent event, float x, float y, int pointer) {
-			if (pointer == 0) {
-				mesh.eraseTouchDragged(x, y);
-			}
-		}
-
-		@Override
-		public void touchUp(InputEvent event, float x, float y, int pointer,
-				int button) {
-			if (pointer == 0) {
-				mesh.eraseTouchUp(x, y);
+				mesh.touchUp(x, y);
 			}
 		}
 	};
