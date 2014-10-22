@@ -247,17 +247,29 @@ public class Modifier extends Group {
 		Group parent = group.getParent();
 		Array<Actor> actors = new Array<Actor>();
 		for (Actor actor : group.getChildren()) {
-			Vector2 o = tmp1.set(0, 0);
-			Vector2 t = tmp2.set(actor.getWidth(), 0);
-			Vector2 n = tmp3.set(0, actor.getHeight());
-			actor.localToAscendantCoordinates(parent, o);
-			actor.localToAscendantCoordinates(parent, t);
-			actor.localToAscendantCoordinates(parent, n);
-			actor.setRotation(actor.getRotation() + group.getRotation());
-			applyTransformation(actor, o, t, n);
+			computeTransform(actor, parent);
 			actors.add(actor);
 		}
 		return actors;
+	}
+
+	/**
+	 * For a given actor computes and applies the transformation of the new
+	 * group.
+	 * 
+	 * @param actor
+	 * @param oldGroup
+	 * @param newGroup
+	 */
+	public void computeTransform(Actor actor, Group newGroup) {
+		Vector2 o = tmp1.set(0, 0);
+		Vector2 t = tmp2.set(actor.getWidth(), 0);
+		Vector2 n = tmp3.set(0, actor.getHeight());
+		actor.localToAscendantCoordinates(newGroup, o);
+		actor.localToAscendantCoordinates(newGroup, t);
+		actor.localToAscendantCoordinates(newGroup, n);
+		actor.setRotation(actor.getRotation() + actor.getParent().getRotation());
+		applyTransformation(actor, o, t, n);
 	}
 
 	@Override
@@ -456,7 +468,7 @@ public class Modifier extends Group {
 	 * @param resultSize
 	 *            result size of the bounds
 	 */
-	private void calculateBounds(Array<Actor> actors, Vector2 resultOrigin,
+	public void calculateBounds(Array<Actor> actors, Vector2 resultOrigin,
 			Vector2 resultSize) {
 		resultOrigin.set(0, 0);
 		resultSize.set(0, 0);

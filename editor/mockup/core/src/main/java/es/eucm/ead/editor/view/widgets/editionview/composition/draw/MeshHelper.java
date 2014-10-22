@@ -60,6 +60,7 @@ import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Matrix4;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.scenes.scene2d.Actor;
+import com.badlogic.gdx.scenes.scene2d.Group;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.Disposable;
@@ -77,7 +78,6 @@ import es.eucm.ead.editor.view.listeners.ActionListener;
  * delete them.
  */
 public class MeshHelper implements Disposable {
-	private static final String MESH_TAG = "MeshHelper";
 
 	/**
 	 * The maximum number of triangles. Increasing this value increases the
@@ -197,7 +197,6 @@ public class MeshHelper implements Disposable {
 	/**
 	 * Used while erasing.
 	 */
-	private TextureRegion fboTex;
 	private FrameBuffer fbo;
 	private boolean erasing;
 
@@ -369,16 +368,10 @@ public class MeshHelper implements Disposable {
 		}
 
 		float w = scaledView.getWidth(), h = scaledView.getHeight();
-		if (this.flusher.pixmap == null) {
-			this.flusher.pixmap = new Pixmap(MathUtils.round(w),
-					MathUtils.round(h), Format.RGBA8888);
-		}
-		final Texture colorTexture = new Texture(flusher.pixmap);
-		this.showingTexRegion.setTexture(colorTexture);
 
 		fbo = new FrameBuffer(Format.RGBA8888, Gdx.graphics.getWidth(),
 				Gdx.graphics.getHeight(), false);
-		fboTex = new TextureRegion(fbo.getColorBufferTexture());
+		showingTexRegion = new TextureRegion(fbo.getColorBufferTexture());
 
 		clampMinX = 0f;
 		clampMinY = 0f;
@@ -387,15 +380,16 @@ public class MeshHelper implements Disposable {
 		clampMaxY = h;
 
 		scaledView.localToStageCoordinates(temp.set(0f, 0f));
-		Gdx.app.log(MESH_TAG, "(Local coords) texture region ~> " + clampMinX
-				+ ", " + clampMinY + ", " + w + ", " + h);
-		this.fboTex.setRegion(MathUtils.round(temp.x), MathUtils.round(temp.y),
-				MathUtils.round(w), MathUtils.round(h));
-		fboTex.flip(false, true);
-		this.showingTexRegion.setRegion(MathUtils.round(clampMinX),
-				MathUtils.round(clampMinY), MathUtils.round(w),
+		int stageX = MathUtils.round(temp.x), stageY = MathUtils.round(temp.y);
+		showingTexRegion.setRegion(stageX, stageY, MathUtils.round(w),
 				MathUtils.round(h));
-		this.showingTexRegion.flip(false, true);
+		showingTexRegion.flip(false, true);
+		if (this.flusher.pixmap == null) {
+			this.flusher.pixmap = new Pixmap(MathUtils.round(w),
+					MathUtils.round(h), Format.RGBA8888);
+			flusher.x = stageX;
+			flusher.y = stageY;
+		}
 	}
 
 	/**
@@ -468,18 +462,14 @@ public class MeshHelper implements Disposable {
 			drawMesh();
 			batch.begin();
 		} else {
-			fbo.begin();
-			Gdx.gl.glClearColor(0f, 0f, 0f, 0f);
-			Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
-			drawShowingTexture(batch);
-			if (this.vertexIndex >= MIN_VERTICES) {
+			if (this.vertexIndex >= MIN_VERTICES && minX != Float.MAX_VALUE) {
 				batch.end();
+				fbo.begin();
 				drawMesh();
+				fbo.end();
 				batch.begin();
 			}
-			fbo.end();
-			Gdx.gl.glClearColor(1f, 1f, 1f, 1f);
-			batch.draw(fboTex, 0, 0);
+			drawShowingTexture(batch);
 		}
 	}
 
@@ -520,7 +510,10 @@ public class MeshHelper implements Disposable {
 			this.flusher.pixmap.dispose();
 			this.flusher.pixmap = null;
 		}
-		this.fbo.dispose();
+		if (fbo != null) {
+			fbo.dispose();
+			fbo = null;
+		}
 		this.mesh.dispose();
 		this.mesh = null;
 		this.meshShader.dispose();
@@ -639,7 +632,11 @@ public class MeshHelper implements Disposable {
 			touchDown(x, y);
 			this.mesh.setVertices(this.lineVertices, 0, this.vertexIndex);
 		}
-		this.controller.command(drawLine);
+		if (minX != Float.MAX_VALUE) {
+			this.controller.command(drawLine);
+		} else {
+			resetMesh();
+		}
 	}
 
 	/**
@@ -739,13 +736,45 @@ public class MeshHelper implements Disposable {
 			float x = pixRegion.x;
 			float y = pixRegion.y;
 
-			minX = x;
-			minY = y;
-			maxX = x + pix.getWidth();
-			maxY = y + pix.getHeight();
+			scaledView.stageToLocalCoordinates(temp.set(x, y));
+			minX = temp.x;
+			minY = temp.y;
+			maxX = minX + pix.getWidth();
+			maxY = minY + pix.getHeight();
 		} else {
 			resetTotalBounds();
 		}
+	}
+
+	/**
+	 * Initializes the mesh with the pixels of the given group.
+	 * 
+	 * The result vectors must be in {@link #scaledView} coordinates.
+	 * 
+	 * @param toEdit
+	 * @param resultOrigin
+	 * @param resultSize
+	 */
+	public void show(Group toEdit, Vector2 resultOrigin, Vector2 resultSize) {
+		int x = MathUtils.round(resultOrigin.x), y = MathUtils
+				.round(resultOrigin.y), width = (int) resultSize.x, height = (int) resultSize.y;
+		minX = x;
+		minY = y;
+		maxX = minX + width;
+		maxY = minY + height;
+
+		scaledView.localToStageCoordinates(temp.set(x, y));
+		int stageX = MathUtils.round(temp.x), stageY = MathUtils.round(temp.y);
+
+		Batch batch = controller.getPlatform().getBatch();
+		batch.setProjectionMatrix(combinedMatrix);
+		fbo.begin();
+		batch.begin();
+		toEdit.draw(batch, 1f);
+		batch.end();
+		currModifiedPixmap = new PixmapRegion(takeScreenShot(stageX, stageY,
+				width, height), stageX, stageY);
+		fbo.end();
 	}
 
 	/**
@@ -753,6 +782,8 @@ public class MeshHelper implements Disposable {
 	 * strokes.
 	 */
 	private class DrawLineCommand extends Command {
+
+		private final boolean debug = false;
 
 		/**
 		 * Used by the {@link #drawLine} to perform correctly.
@@ -776,6 +807,7 @@ public class MeshHelper implements Disposable {
 				currModifiedPixmap = null;
 
 				final PixmapRegion oldPix = redoPixmaps.pop();
+				debug(oldPix);
 				showingTexRegion.getTexture().draw(oldPix.pixmap, oldPix.x,
 						oldPix.y);
 				currModifiedPixmap = oldPix;
@@ -785,10 +817,12 @@ public class MeshHelper implements Disposable {
 
 				clampTotalBounds();
 
-				int pixX = MathUtils.round(minX);
-				int pixY = MathUtils.round(minY);
-				int pixWidth = MathUtils.round(maxX - minX);
-				int pixHeight = MathUtils.round(maxY - minY);
+				scaledView.localToStageCoordinates(temp.set(minX, minY));
+				int pixX = MathUtils.round(temp.x);
+				int pixY = MathUtils.round(temp.y);
+				scaledView.localToStageCoordinates(temp.set(maxX, maxY));
+				int pixWidth = MathUtils.round(temp.x - pixX);
+				int pixHeight = MathUtils.round(temp.y - pixY);
 
 				if (currModifiedPixmap != null) {
 					undoPixmaps.add(currModifiedPixmap);
@@ -804,19 +838,19 @@ public class MeshHelper implements Disposable {
 		}
 
 		private void takePixmap(int x, int y, int width, int height) {
-			Gdx.gl.glClearColor(0f, 0f, 0f, 0f);
-			Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
-			Batch batch = controller.getPlatform().getBatch();
-			batch.setProjectionMatrix(combinedMatrix);
-			batch.begin();
-			draw(batch, 1f);
-			batch.end();
-			scaledView.localToStageCoordinates(temp.set(x, y));
-			currModifiedPixmap = new PixmapRegion(takeScreenShot(
-					MathUtils.round(temp.x), MathUtils.round(temp.y), width,
+			fbo.begin();
+			drawMesh();
+			currModifiedPixmap = new PixmapRegion(takeScreenShot(x, y, width,
 					height), x, y);
-			showingTexRegion.getTexture().draw(currModifiedPixmap.pixmap, x, y);
-			Gdx.gl.glClearColor(1f, 1f, 1f, 1f);
+			fbo.end();
+		}
+
+		private void debug(PixmapRegion pix) {
+			if (debug) {
+				pix.pixmap.setColor(Color.GREEN);
+				pix.pixmap.drawRectangle(pix.x, pix.y, pix.pixmap.getWidth(),
+						pix.pixmap.getHeight());
+			}
 		}
 
 		@Override
@@ -833,15 +867,21 @@ public class MeshHelper implements Disposable {
 			redoPixmaps.add(currModifiedPixmap);
 			currModifiedPixmap = null;
 
+			if (debug) {
+				flusher.pixmap.setColor(Color.BLUE);
+			}
 			flusher.pixmap.fill();
 
 			final PixmapRegion oldPix = undoPixmaps.pop();
 			if (oldPix.pixmap != flusher.pixmap) {
-				flusher.pixmap.drawPixmap(oldPix.pixmap, oldPix.x, oldPix.y);
+				debug(oldPix);
+				flusher.pixmap.drawPixmap(oldPix.pixmap, oldPix.x - flusher.x,
+						oldPix.y - flusher.y);
 			}
 			currModifiedPixmap = oldPix;
 
 			updateTotalBounds(oldPix);
+			debug(flusher);
 
 			showingTexRegion.getTexture().draw(flusher.pixmap, flusher.x,
 					flusher.y);

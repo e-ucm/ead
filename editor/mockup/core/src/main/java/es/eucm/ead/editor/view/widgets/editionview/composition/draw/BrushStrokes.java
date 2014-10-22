@@ -36,24 +36,28 @@
  */
 package es.eucm.ead.editor.view.widgets.editionview.composition.draw;
 
+import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.Pixmap;
+import com.badlogic.gdx.graphics.Pixmap.Blending;
 import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.math.Vector2;
+import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.Group;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.InputListener;
 import com.badlogic.gdx.scenes.scene2d.ui.WidgetGroup;
-import com.badlogic.gdx.utils.Disposable;
+import com.badlogic.gdx.utils.Array;
 
 import es.eucm.ead.editor.assets.EditorGameAssets;
 import es.eucm.ead.editor.control.Controller;
 import es.eucm.ead.editor.control.MockupController;
-import es.eucm.ead.editor.control.actions.model.AddSceneElement;
 import es.eucm.ead.editor.view.widgets.editionview.MockupSceneEditor;
 import es.eucm.ead.editor.view.widgets.editionview.composition.draw.MeshHelper.PixmapRegion;
+import es.eucm.ead.editor.view.widgets.groupeditor.Modifier;
 import es.eucm.ead.engine.I18N;
+import es.eucm.ead.engine.entities.EngineEntity;
 import es.eucm.ead.schema.entities.ModelEntity;
 import es.eucm.ead.schemax.GameStructure;
 
@@ -62,16 +66,21 @@ import es.eucm.ead.schemax.GameStructure;
  * a texture and manages the necessary {@link Pixmap pixmaps} to perform
  * undo/redo actions, erase and save it as a {@link ModelEntity}
  */
-public class BrushStrokes extends WidgetGroup implements Disposable {
+public class BrushStrokes extends WidgetGroup {
 
 	public static final int MAX_COMMANDS = 50;
 	private static final Vector2 TEMP = new Vector2();
 	private static final Color eraseColor = new Color(1F, 1F, 1F, 0F);
 
+	private final Vector2 resultOrigin = new Vector2(),
+			resultSize = new Vector2();
+	private final Array<Actor> actors = new Array<Actor>(1);
+
 	public enum Mode {
 		DRAW, ERASE
 	}
 
+	private ModelEntity toEdit;
 	private FileHandle savePath;
 	private final Controller controller;
 	private final MeshHelper mesh;
@@ -89,7 +98,7 @@ public class BrushStrokes extends WidgetGroup implements Disposable {
 		this.sceneEditor = scaledView;
 		this.controller = control;
 		this.mode = null;
-		((MockupController) controller).addDisposable(this);
+		((MockupController) controller).addDisposable(mesh);
 		addCaptureListener(drawListener);
 	}
 
@@ -114,6 +123,7 @@ public class BrushStrokes extends WidgetGroup implements Disposable {
 
 	@Override
 	public void drawChildren(Batch batch, float parentAlpha) {
+		batch.setColor(Color.WHITE);
 		this.mesh.draw(batch, parentAlpha);
 	}
 
@@ -147,8 +157,8 @@ public class BrushStrokes extends WidgetGroup implements Disposable {
 		Pixmap pixmap = currentPixmap.pixmap;
 		Group container = sceneEditor.getContainer();
 
-		sceneEditor.localToDescendantCoordinates(container,
-				TEMP.set(currentPixmap.x, currentPixmap.y));
+		container.stageToLocalCoordinates(TEMP.set(currentPixmap.x,
+				currentPixmap.y));
 		scaleX = container.getScaleX();
 		scaleY = container.getScaleY();
 		targetX = TEMP.x + pixmap.getWidth() * .5f / scaleX;
@@ -163,21 +173,55 @@ public class BrushStrokes extends WidgetGroup implements Disposable {
 	 * Creates a {@link ModelEntity}. This method should only be invoked if the
 	 * return value of the {@link #save()} method was true.
 	 */
-	public void createSceneElement() {
+	public ModelEntity createSceneElement() {
 		ModelEntity savedElement = controller.getTemplates()
 				.createSceneElement(savePath.path(), targetX, targetY);
 		savedElement.setScaleX(scaleX);
 		savedElement.setScaleY(scaleX);
-		controller.action(AddSceneElement.class, savedElement);
+		return savedElement;
 	}
 
-	public void show() {
+	public void show(ModelEntity selection) {
 		if (!hasParent()) {
 			sceneEditor.addActor(this);
+			Pixmap.setBlending(Blending.None);
 			controller.getCommands().pushStack(MAX_COMMANDS);
 			setBounds(0f, 0f, sceneEditor.getWidth(), sceneEditor.getHeight());
+
+			if (selection != null) {
+				toEdit = selection;
+
+				Gdx.app.postRunnable(editImage);
+			}
 		}
 	}
+
+	private Runnable editImage = new Runnable() {
+
+		@Override
+		public void run() {
+			EngineEntity engineEntity = controller.getEngine()
+					.getEntitiesLoader().toEngineEntity(toEdit);
+			Group eG = engineEntity.getGroup();
+			controller.getEngine().getGameLoop().removeEntity(engineEntity);
+
+			Modifier modifier = sceneEditor.getModifier();
+
+			sceneEditor.getContainer().addActor(eG);
+
+			modifier.computeTransform(eG, sceneEditor);
+
+			sceneEditor.addActor(eG);
+
+			actors.clear();
+			actors.add(eG);
+			modifier.calculateBounds(actors, resultOrigin, resultSize);
+
+			eG.remove();
+
+			mesh.show(eG, resultOrigin, resultSize);
+		}
+	};
 
 	/**
 	 * Clears undo/redo history and invokes {@link MeshHelper#release()}.
@@ -186,6 +230,7 @@ public class BrushStrokes extends WidgetGroup implements Disposable {
 	 */
 	public void hide(boolean release) {
 		if (hasParent()) {
+			Pixmap.setBlending(Blending.SourceOver);
 			remove();
 			clearMesh();
 			if (release) {
@@ -233,14 +278,6 @@ public class BrushStrokes extends WidgetGroup implements Disposable {
 	@Override
 	public void setColor(Color color) {
 		this.mesh.setColor(color);
-	}
-
-	/**
-	 * Calls {@link MeshHelper#dispose()}.
-	 */
-	@Override
-	public void dispose() {
-		this.mesh.dispose();
 	}
 
 	private final InputListener drawListener = new InputListener() {
