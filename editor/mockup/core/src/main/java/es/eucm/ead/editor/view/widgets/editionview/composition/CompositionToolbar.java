@@ -208,6 +208,25 @@ public class CompositionToolbar extends MultiHorizontalToolbar implements
 		this.transformToolbar = new HorizontalToolbar(skin, "white_bottom");
 		transformToolbar.backgroundColor(Color.ORANGE);
 		transformToolbar.rightAdd(new TransformationsWidget(controller, 5f));
+		final IconButton paint = new IconButton("paint", "paint80x80", 0f, skin);
+		transformToolbar.rightAdd(paint);
+
+		ChangeListener buttonsListener = new ChangeListener() {
+			@Override
+			public void changed(ChangeEvent event, Actor actor) {
+				Actor listenerActor = event.getListenerActor();
+				if (listenerActor == paint) {
+					if (paintToolbar.isShowing()) {
+						paintToolbar.hide();
+					} else {
+						show(paintToolbar);
+						paintToolbar.show();
+					}
+				}
+			}
+		};
+
+		paint.addListener(buttonsListener);
 		// TODO
 	}
 
@@ -225,12 +244,13 @@ public class CompositionToolbar extends MultiHorizontalToolbar implements
 
 	@Override
 	public void modelChanged(SelectionEvent event) {
-		float selected = controller.getModel().getSelection()
+		int selected = controller.getModel().getSelection()
 				.get(Selection.SCENE_ELEMENT).length;
 		if (event.getType() == Type.FOCUSED) {
 			if (selected > 0 && getCurrentToolbar() != transformToolbar) {
 				show(transformToolbar);
-			} else if (selected == 0 && getCurrentToolbar() != insertToolbar) {
+			} else if (selected == 0 && getCurrentToolbar() != insertToolbar
+					&& toShow != paintToolbar) {
 				show(insertToolbar);
 			}
 		}

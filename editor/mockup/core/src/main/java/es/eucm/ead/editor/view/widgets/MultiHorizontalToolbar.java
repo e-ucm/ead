@@ -57,7 +57,7 @@ public class MultiHorizontalToolbar extends Container<HorizontalToolbar> {
 
 	private HorizontalToolbar toHide;
 
-	private HorizontalToolbar toShow;
+	protected HorizontalToolbar toShow;
 
 	private Runnable actionAddActor;
 
