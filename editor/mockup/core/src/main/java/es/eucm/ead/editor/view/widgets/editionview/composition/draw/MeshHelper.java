@@ -85,21 +85,20 @@ public class MeshHelper implements Disposable {
 	 * process. But this will increase the memory usage and decrease the
 	 * performance if the number of triangles is too high.
 	 */
-	private static final int MAX_TRIANGLES = 750;
+	private static final int MAX_TRIANGLES = 1500;
 	/**
 	 * Used to decide when to draw a dot or to start drawing the brush stroke.
 	 */
-	private static final int MIN_VERTICES = 8;
+	private static final int MIN_VERTICES = 0;
 	/**
 	 * Defines the quality of the dot. The current amount is calculated via
 	 * MAX_DOT_TRIANGLES * currentRadius / maxRadius.
 	 */
-	private static final int MAX_DOT_TRIANGLES = 14;
+	private static final int MAX_DOT_TRIANGLES = 28;
 	/**
 	 * Auxiliary constants cached in order to avoid per-frame calculation.
 	 */
-	private static final int MAX_VERTICES = MAX_TRIANGLES * 2 + 2,
-			MAX_VERTICES_2 = MAX_VERTICES - 2;
+	private static final int MAX_VERTICES = MAX_TRIANGLES * 2;
 
 	/**
 	 * The lower this value is the higher is the accuracy of the brush stroke
@@ -199,6 +198,10 @@ public class MeshHelper implements Disposable {
 	 */
 	private FrameBuffer fbo;
 	private boolean erasing;
+	private int vertexLimit;
+
+	private boolean firstSemiCircle = false;
+	private float lastAngle;
 
 	private ShaderProgram meshShader;
 	private Mesh mesh;
@@ -215,6 +218,7 @@ public class MeshHelper implements Disposable {
 	 *            Used to correctly perform the commands.
 	 */
 	public MeshHelper(Actor scaledView, Controller controller) {
+		this.primitiveType = GL20.GL_TRIANGLE_STRIP;
 		this.lineVertices = new float[MAX_VERTICES];
 		this.controller = controller;
 		this.scaledView = scaledView;
@@ -237,35 +241,6 @@ public class MeshHelper implements Disposable {
 		Actions actions = controller.getActions();
 		actions.addActionListener(Undo.class, erasePixmaps);
 		actions.addActionListener(Redo.class, erasePixmaps);
-	}
-
-	/**
-	 * Clears the contents of the current {@link #frameBuffer} by clearing it's
-	 * {@link Texture} with the help of the {@link #flusher}.
-	 */
-	void clear() {
-		if (this.showingTexRegion == null)
-			return;
-
-		this.flusher.pixmap.fill();
-		this.showingTexRegion.getTexture().draw(this.flusher.pixmap,
-				this.flusher.x, this.flusher.y);
-	}
-
-	/**
-	 * Disposes all the {@link Array}s, {@link #currModifiedPixmap} and resets
-	 * {@link #minX}, {@link #minY}, {@link #maxX} and {@link #maxY} via
-	 * {@link #resetTotalBounds()}. Also disposed {@link #erasedPixmap} and
-	 * {@link #currModifiedPixmap} if they weren't already disposed.
-	 */
-	void release() {
-		resetTotalBounds();
-		release(drawLine.redoPixmaps);
-		release(drawLine.undoPixmaps);
-		if (this.currModifiedPixmap != null) {
-			this.currModifiedPixmap.dispose();
-			this.currModifiedPixmap = null;
-		}
 	}
 
 	/**
@@ -450,19 +425,18 @@ public class MeshHelper implements Disposable {
 	void draw(Batch batch, float parentAlpha) {
 		if (!erasing) {
 			drawShowingTexture(batch);
-			if (this.vertexIndex < MIN_VERTICES) {
-				if (this.recalculateMatrix) {
-					this.recalculateMatrix = false;
-					this.combinedMatrix.set(batch.getProjectionMatrix()).mul(
-							batch.getTransformMatrix());
-				}
-				return;
+			if (this.recalculateMatrix) {
+				this.recalculateMatrix = false;
+				this.combinedMatrix.set(batch.getProjectionMatrix()).mul(
+						batch.getTransformMatrix());
 			}
-			batch.end();
-			drawMesh();
-			batch.begin();
+			if (this.vertexIndex > MIN_VERTICES) {
+				batch.end();
+				drawMesh();
+				batch.begin();
+			}
 		} else {
-			if (this.vertexIndex >= MIN_VERTICES && minX != Float.MAX_VALUE) {
+			if (this.vertexIndex > MIN_VERTICES && minX != Float.MAX_VALUE) {
 				batch.end();
 				fbo.begin();
 				drawMesh();
@@ -521,14 +495,15 @@ public class MeshHelper implements Disposable {
 	}
 
 	void touchDown(float x, float y) {
-		this.primitiveType = GL20.GL_TRIANGLE_STRIP;
-		this.lineVertices[this.vertexIndex++] = x;
-		this.lineVertices[this.vertexIndex++] = y;
+		vertexLimit = Integer.MAX_VALUE;
+		drawHalfCircle(0, x, y);
+		drawHalfCircle(180, x, y);
 
-		this.lastX = Float.MAX_VALUE;
-		this.lastY = this.lastX;
-
-		clampTotalBounds(x, y, x, y);
+		this.lastX = x;
+		this.lastY = y;
+		this.mesh.setVertices(this.lineVertices, 0, this.vertexIndex);
+		clampTotalBounds(x - drawRadius, y - drawRadius, x + drawRadius, y
+				+ drawRadius);
 	}
 
 	/**
@@ -539,20 +514,45 @@ public class MeshHelper implements Disposable {
 	 * @param y
 	 */
 	void touchDragged(float x, float y) {
-		if (this.vertexIndex == MAX_VERTICES_2) {
+		if (this.vertexIndex >= vertexLimit) {
 			return;
 		}
 
-		this.unprojectedVertex.set(x, y);
+		if (this.unprojectedVertex.set(x, y).dst2(this.lastX, this.lastY) > DASH_ACCURACY) {
 
-		x = this.unprojectedVertex.x;
-		y = this.unprojectedVertex.y;
+			if (!firstSemiCircle) {
+				firstSemiCircle = true;
+				this.vertexIndex = 0;
 
-		if (this.unprojectedVertex.dst2(this.lastX, this.lastY) > DASH_ACCURACY) {
+				this.unprojectedVertex.set(lastX, lastY).sub(x, y);
+				float angle = unprojectedVertex.angle() - 90;
+				drawHalfCircle(angle, lastX, lastY);
+				prepareLine(angle, lastX, lastY);
 
-			this.unprojectedVertex.sub(this.lastX, this.lastY).nor()
-					.set(-this.unprojectedVertex.y, this.unprojectedVertex.x)
-					.scl(this.drawRadius);
+				vertexIndex += ((1 + getHalfCircleTriangles()) * 4 + 2);
+				lastAngle = angle + 180;
+
+			}
+
+			int circleTriangles = ((1 + getHalfCircleTriangles()) * 4 + 2);
+			vertexIndex -= circleTriangles;
+
+			vertexLimit = MAX_VERTICES - (circleTriangles + 4);
+
+			this.unprojectedVertex.set(x, y).sub(this.lastX, this.lastY).nor();
+			float currentAngle = unprojectedVertex.angle() - 90;
+
+			if (Math.abs(currentAngle - lastAngle) > 45) {
+
+				drawHalfCircle(lastAngle, lastX, lastY);
+				prepareLine(lastAngle, lastX, lastY);
+				x = lastX;
+				y = lastY;
+			}
+			lastAngle = currentAngle;
+
+			unprojectedVertex.set(-this.unprojectedVertex.y,
+					this.unprojectedVertex.x).scl(this.drawRadius);
 
 			float maxNorX = x + this.unprojectedVertex.x;
 			this.lineVertices[this.vertexIndex++] = maxNorX;
@@ -561,29 +561,41 @@ public class MeshHelper implements Disposable {
 			this.lineVertices[this.vertexIndex++] = maxNorY;
 
 			float minNorX, minNorY;
-			if (this.vertexIndex < MAX_VERTICES_2) {
-				minNorX = x - this.unprojectedVertex.x;
-				this.lineVertices[this.vertexIndex++] = minNorX;
+			minNorX = x - this.unprojectedVertex.x;
+			this.lineVertices[this.vertexIndex++] = minNorX;
 
-				minNorY = y - this.unprojectedVertex.y;
-				this.lineVertices[this.vertexIndex++] = minNorY;
-			} else {
-				minNorX = x;
-				minNorY = y;
-			}
+			minNorY = y - this.unprojectedVertex.y;
+			this.lineVertices[this.vertexIndex++] = minNorY;
 
-			if (this.vertexIndex >= MIN_VERTICES) {
+			this.lineVertices[this.vertexIndex++] = x;
+			this.lineVertices[this.vertexIndex++] = y;
+			drawHalfCircle(currentAngle, x, y);
 
-				clampTotalBounds(Math.min(maxNorX, minNorX),
-						Math.min(maxNorY, minNorY), Math.max(maxNorX, minNorX),
-						Math.max(maxNorY, minNorY));
+			clampTotalBounds(x - drawRadius, y - drawRadius, x + drawRadius, y
+					+ drawRadius);
 
-				this.mesh.setVertices(this.lineVertices, 0, this.vertexIndex);
-			}
+			this.mesh.setVertices(this.lineVertices, 0, this.vertexIndex);
 
 			this.lastX = x;
 			this.lastY = y;
 		}
+	}
+
+	private void prepareLine(float angle, float x, float y) {
+
+		float cosDeg = MathUtils.cosDeg(angle) * drawRadius;
+		float maxNorX = x + cosDeg;
+		this.lineVertices[this.vertexIndex++] = maxNorX;
+
+		float sinDeg = MathUtils.sinDeg(angle) * drawRadius;
+		float maxNorY = y + sinDeg;
+		this.lineVertices[this.vertexIndex++] = maxNorY;
+
+		float minNorX = x - cosDeg;
+		this.lineVertices[this.vertexIndex++] = minNorX;
+
+		float minNorY = y - sinDeg;
+		this.lineVertices[this.vertexIndex++] = minNorY;
 	}
 
 	/**
@@ -595,48 +607,36 @@ public class MeshHelper implements Disposable {
 	 * @param y
 	 */
 	void touchUp(float x, float y) {
-		if (this.vertexIndex < MIN_VERTICES) {
-			this.vertexIndex = 0;
-			final int startCount = 2;
-			final int triangleAmount = startCount
-					+ MathUtils.round(MAX_DOT_TRIANGLES * this.drawRadius
-							/ this.maxDrawRadius) + 1;
-			primitiveType = GL20.GL_TRIANGLE_FAN;
-			lineVertices[vertexIndex++] = x;
-			lineVertices[vertexIndex++] = y;
 
-			float rightMostX = x + drawRadius;
-			lineVertices[vertexIndex++] = rightMostX;
-			lineVertices[vertexIndex++] = y;
-
-			float circleStep = MathUtils.PI2 / triangleAmount;
-			lineVertices[vertexIndex++] = x
-					+ (drawRadius * MathUtils.cos(circleStep));
-			lineVertices[vertexIndex++] = y
-					+ (drawRadius * MathUtils.sin(circleStep));
-
-			for (int i = startCount; i <= triangleAmount; ++i) {
-				float deg = i * circleStep;
-				lineVertices[vertexIndex++] = x
-						+ (drawRadius * MathUtils.cos(deg));
-				lineVertices[vertexIndex++] = y
-						+ (drawRadius * MathUtils.sin(deg));
-			}
-
-			clampTotalBounds(x - drawRadius, y - drawRadius, rightMostX, y
-					+ drawRadius);
-
-			this.mesh.setVertices(this.lineVertices, 0, this.vertexIndex);
-		} else if (x != this.lastX && y != this.lastY
-				&& this.vertexIndex < MAX_VERTICES_2) {
-			touchDown(x, y);
-			this.mesh.setVertices(this.lineVertices, 0, this.vertexIndex);
-		}
+		touchDragged(x, y);
+		firstSemiCircle = false;
 		if (minX != Float.MAX_VALUE) {
 			this.controller.command(drawLine);
 		} else {
 			resetMesh();
 		}
+	}
+
+	private void drawHalfCircle(float startingAngle, float x, float y) {
+		final int triangleAmount = getHalfCircleTriangles();
+
+		float startCount = triangleAmount * startingAngle / 180;
+
+		float circleStep = MathUtils.PI / triangleAmount;
+
+		for (int i = 0; i <= triangleAmount; ++i) {
+			float deg = (i + startCount) * circleStep;
+			lineVertices[vertexIndex++] = x + (drawRadius * MathUtils.cos(deg));
+			lineVertices[vertexIndex++] = y + (drawRadius * MathUtils.sin(deg));
+			lineVertices[vertexIndex++] = x;
+			lineVertices[vertexIndex++] = y;
+		}
+
+	}
+
+	private int getHalfCircleTriangles() {
+		return MathUtils.round(MAX_DOT_TRIANGLES * this.drawRadius
+				/ this.maxDrawRadius * .5f);
 	}
 
 	/**
@@ -775,6 +775,35 @@ public class MeshHelper implements Disposable {
 		currModifiedPixmap = new PixmapRegion(takeScreenShot(stageX, stageY,
 				width, height), stageX, stageY);
 		fbo.end();
+	}
+
+	/**
+	 * Clears the contents of the current {@link #frameBuffer} by clearing it's
+	 * {@link Texture} with the help of the {@link #flusher}.
+	 */
+	void clear() {
+		if (this.showingTexRegion == null)
+			return;
+
+		this.flusher.pixmap.fill();
+		this.showingTexRegion.getTexture().draw(this.flusher.pixmap,
+				this.flusher.x, this.flusher.y);
+	}
+
+	/**
+	 * Disposes all the {@link Array}s, {@link #currModifiedPixmap} and resets
+	 * {@link #minX}, {@link #minY}, {@link #maxX} and {@link #maxY} via
+	 * {@link #resetTotalBounds()}. Also disposed {@link #erasedPixmap} and
+	 * {@link #currModifiedPixmap} if they weren't already disposed.
+	 */
+	void release() {
+		resetTotalBounds();
+		release(drawLine.redoPixmaps);
+		release(drawLine.undoPixmaps);
+		if (this.currModifiedPixmap != null) {
+			this.currModifiedPixmap.dispose();
+			this.currModifiedPixmap = null;
+		}
 	}
 
 	/**
