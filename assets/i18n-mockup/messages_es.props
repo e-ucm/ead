@@ -140,3 +140,4 @@ about.madeBy = hecho por
 about.poweredBy = Construido sobre
 about.technicalAdvisor = Asesor técnico
 error.openArchive = No se ha podido cargar el archivo.
+error.variables.invalidText = No se pueden crear variables sin nombre o con espacios.

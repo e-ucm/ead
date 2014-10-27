@@ -89,7 +89,7 @@ public class TweensPanel extends PrefabPanel {
 		table.defaults().uniform();
 
 		Rotate360Tween rotate360 = new Rotate360Tween("rotate80x80",
-				i18n.m("edition.rotate360"), controller, skin);
+				"edition.rotate360", controller, skin);
 		Value space = Value.percentHeight(SPACE, rotate360);
 		table.pad(space).defaults().space(space);
 		rotate360.addListener(tweenListener);
@@ -97,15 +97,13 @@ public class TweensPanel extends PrefabPanel {
 		table.add(rotate360).fill();
 
 		HorizontalMoveTween horizontal = new HorizontalMoveTween(
-				"horizontal_move80x80", i18n.m("edition.horizontal"),
-				controller, skin);
+				"horizontal_move80x80", "edition.horizontal", controller, skin);
 		horizontal.addListener(tweenListener);
 		horizontal.setUserObject(this);
 		table.add(horizontal).fill();
 
 		VerticalMoveTween vertical = new VerticalMoveTween(
-				"vertical_move80x80", i18n.m("edition.vertical"), controller,
-				skin);
+				"vertical_move80x80", "edition.vertical", controller, skin);
 		vertical.addListener(tweenListener);
 		vertical.setUserObject(this);
 		table.add(vertical).fill();
@@ -113,19 +111,19 @@ public class TweensPanel extends PrefabPanel {
 		table.row();
 
 		DecreaseTween decrease = new DecreaseTween("decrease80x80",
-				i18n.m("edition.decrease"), controller, skin);
+				"edition.decrease", controller, skin);
 		decrease.addListener(tweenListener);
 		decrease.setUserObject(this);
 		table.add(decrease).fill();
 
 		IncreaseTween increase = new IncreaseTween("increase80x80",
-				i18n.m("edition.increase"), controller, skin);
+				"edition.increase", controller, skin);
 		increase.addListener(tweenListener);
 		increase.setUserObject(this);
 		table.add(increase).fill();
 
-		BlinkTween blink = new BlinkTween("blink80x80",
-				i18n.m("edition.blink"), controller, skin);
+		BlinkTween blink = new BlinkTween("blink80x80", "edition.blink",
+				controller, skin);
 		blink.addListener(tweenListener);
 		blink.setUserObject(this);
 		table.add(blink).fill();
