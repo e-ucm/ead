@@ -120,6 +120,11 @@ public class MockAudio implements Audio {
 		@Override
 		public void setOnCompletionListener(OnCompletionListener listener) {
 		}
+
+		@Override
+		public void setPosition(float arg0) {
+
+		}
 	}
 
 	public static class TestSound implements Sound {
