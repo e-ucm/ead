@@ -36,55 +36,89 @@
  */
 package es.eucm.ead.editor.view.widgets.iconwithpanel;
 
-import com.badlogic.gdx.math.Interpolation;
-import com.badlogic.gdx.scenes.scene2d.Action;
-import com.badlogic.gdx.scenes.scene2d.Stage;
-import com.badlogic.gdx.scenes.scene2d.actions.Actions;
+import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 
 import es.eucm.ead.editor.view.widgets.PositionedHiddenPanel;
 
-/**
- * A {@link IconWithPanel} that has a scale in/out animation.
- */
-public class IconWithScalePanel extends IconWithPanel {
+public class IconWithScalePanel extends BaseIconWithScalePanel {
 
 	public IconWithScalePanel(String icon, float space, Skin skin) {
-		super(icon, space, skin, null);
+		this(icon, space, skin, "default", null);
+	}
 
+	public IconWithScalePanel(String icon, float space, Skin skin, Color color) {
+		this(icon, space, skin, "default", color);
+	}
+
+	public IconWithScalePanel(String icon, float space, Skin skin, String style) {
+		this(icon, space, skin, style, null);
+	}
+
+	public IconWithScalePanel(String icon, float space, int colPane, Skin skin) {
+		this(icon, space, colPane, skin, "default", null);
+	}
+
+	public IconWithScalePanel(String icon, float space, int colPane, Skin skin,
+			Color color) {
+		this(icon, space, colPane, skin, "default", color);
+	}
+
+	public IconWithScalePanel(String icon, float space, int colPane, Skin skin,
+			String style) {
+		this(icon, space, colPane, skin, style, null);
+	}
+
+	public IconWithScalePanel(String icon, float space, Skin skin,
+			String style, Color color) {
+		this(icon, space, -1, skin, style, color);
+	}
+
+	public IconWithScalePanel(String icon, float space, int colPane, Skin skin,
+			String style, Color color) {
+		super(icon, space, skin, null, colPane, style);
+		panel.setBackground("panel");
+		if (color != null) {
+			panel.setColor(color);
+		}
 	}
 
 	@Override
-	protected PositionedHiddenPanel createPanel(Skin skin) {
-		return new Panel(skin) {
+	protected PositionedHiddenPanel createPanel(Skin skin, int colPane) {
+		return new Panel(skin, colPane) {
 			@Override
 			protected void positionPanel(float x, float y) {
-				Stage stage = IconWithScalePanel.this.getStage();
-				boolean left = x < stage.getWidth() * .5f;
-				setTransform(true);
-				adjustBackground(left);
-				float panelPrefHeight = y - space;
-				float panelPrefY = 0f;
-				float prefX = left ? 0 : stage.getWidth() - getPrefWidth();
-				setPanelBounds(prefX, panelPrefY, getPrefWidth(),
-						panelPrefHeight);
-				setOrigin(left ? 0 : getWidth(), getHeight());
-			}
 
-			private void adjustBackground(boolean left) {
-				setBackground(left ? "left_panel" : "right_panel");
+				float panelPrefHeight = Math.min(getPrefHeight(),
+						Gdx.graphics.getHeight());
+				float panelPrefWidth = Math.min(getPrefWidth(),
+						Gdx.graphics.getWidth());
+
+				float coordinateX = 0;
+				float coordinateY = 0;
+				float originX = 0;
+				float originY = 0;
+
+				if (y > Gdx.graphics.getHeight() * 0.5f) {
+					coordinateY = y - getPrefHeight() - space;
+					originY = getPrefHeight();
+				} else {
+					coordinateY = y + reference.getHeight() + space;
+				}
+
+				if (x > Gdx.graphics.getWidth() * 0.5f) {
+					coordinateX = x + reference.getWidth() - getPrefWidth();
+					originX = getPrefWidth();
+				} else {
+					coordinateX = x;
+				}
+
+				setPanelBounds(coordinateX, coordinateY, panelPrefWidth,
+						panelPrefHeight);
+
+				setOrigin(originX, originY);
 			}
 		};
-	}
-
-	@Override
-	protected Action getShowAction() {
-		panel.setScale(0f);
-		return Actions.scaleTo(1f, 1f, IN_DURATION, Interpolation.sine);
-	}
-
-	@Override
-	protected Action getHideAction() {
-		return Actions.scaleTo(0f, 0f, OUT_DURATION);
 	}
 }

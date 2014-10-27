@@ -63,6 +63,7 @@ public class OpenMockupGameAsynk extends OpenMockupGame {
 		}
 		done = false;
 
+		updateTransition(args);
 		toasts = ((MockupViews) controller.getViews()).getToasts();
 		toasts.showNotification(controller.getApplicationAssets().getI18N()
 				.m("openGame"));

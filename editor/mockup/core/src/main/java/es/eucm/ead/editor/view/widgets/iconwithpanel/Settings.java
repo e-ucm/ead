@@ -52,7 +52,7 @@ import es.eucm.ead.editor.view.widgets.ScrollPaneDif;
 import es.eucm.ead.engine.I18N;
 import es.eucm.ead.engine.I18N.Lang;
 
-public class Settings extends IconWithScalePanel {
+public class Settings extends IconWithLateralPanel {
 
 	private CheckBox helpMessages;
 	private Controller controller;

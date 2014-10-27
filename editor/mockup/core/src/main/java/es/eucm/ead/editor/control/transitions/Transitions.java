@@ -34,19 +34,40 @@
  *      You should have received a copy of the GNU Lesser General Public License
  *      along with eAdventure.  If not, see <http://www.gnu.org/licenses/>.
  */
-package es.eucm.ead.android;
+package es.eucm.ead.editor.control.transitions;
 
-import android.app.Application;
+import com.badlogic.gdx.math.Interpolation;
+import com.badlogic.gdx.scenes.scene2d.Actor;
 
-import com.google.android.gms.analytics.GoogleAnalytics;
-import com.google.android.gms.analytics.Tracker;
+import es.eucm.ead.editor.control.transitions.TransitionManager.Transition;
+import es.eucm.ead.editor.control.transitions.parallel.ParallelTransition;
+import es.eucm.ead.editor.control.transitions.parallel.TransitionInfo;
 
-public class MockupApplication extends Application {
+/**
+ * Class with static methods that create convenience transitions.
+ */
+public class Transitions {
 
-	public synchronized Tracker buildTracker() {
-		GoogleAnalytics analytics = GoogleAnalytics.getInstance(this);
-		Tracker tracker = analytics.newTracker(R.xml.tracker);
-		return tracker;
+	private static final float IN_OUT = .5f;
+
+	private Transitions() {
 	}
 
+	public static Transition getFadeSlideTransition(Actor fadeActor,
+			Actor slideActor, boolean in) {
+		return ParallelTransition.init(TransitionInfo.init(
+				Fade.init(IN_OUT, false), fadeActor), TransitionInfo.init(Slide
+				.init(IN_OUT, in ? Slide.RIGHT : Slide.LEFT, !in,
+						in ? Interpolation.pow2In : Interpolation.pow2Out),
+				slideActor));
+	}
+
+	public static Transition getSlideTransition(boolean in) {
+		return Slide.init(IN_OUT, in ? Slide.RIGHT : Slide.LEFT, !in,
+				in ? Interpolation.pow2In : Interpolation.pow2Out);
+	}
+
+	public static Transition getFadeTransition(boolean in) {
+		return Fade.init(IN_OUT, false);
+	}
 }

@@ -39,7 +39,6 @@ package es.eucm.ead.editor.view.builders.gallery.repository;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
-import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.Touchable;
 import com.badlogic.gdx.scenes.scene2d.ui.Button;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
@@ -47,20 +46,22 @@ import com.badlogic.gdx.utils.Array;
 
 import es.eucm.ead.editor.control.Controller;
 import es.eucm.ead.editor.control.MockupController;
+import es.eucm.ead.editor.control.MockupViews;
 import es.eucm.ead.editor.control.RepositoryManager.OnEntityImportedListener;
 import es.eucm.ead.editor.control.RepositoryManager.ProgressListener;
+import es.eucm.ead.editor.control.Toasts;
 import es.eucm.ead.editor.control.actions.editor.ChangeMockupView;
 import es.eucm.ead.editor.control.actions.editor.repository.ImportElement;
 import es.eucm.ead.editor.control.actions.editor.repository.UpdateLibraryElements;
 import es.eucm.ead.editor.control.background.BackgroundExecutor;
 import es.eucm.ead.editor.control.background.BackgroundExecutor.BackgroundTaskListener;
 import es.eucm.ead.editor.control.background.BackgroundTask;
+import es.eucm.ead.editor.control.transitions.Transitions;
 import es.eucm.ead.editor.view.builders.EditionView;
 import es.eucm.ead.editor.view.builders.gallery.BaseGallery;
 import es.eucm.ead.editor.view.builders.gallery.repository.info.ItemInfo;
 import es.eucm.ead.editor.view.builders.gallery.repository.info.RepositoryInfo;
 import es.eucm.ead.editor.view.widgets.IconButton;
-import es.eucm.ead.editor.view.widgets.Notification;
 import es.eucm.ead.editor.view.widgets.gallery.GalleryItem;
 import es.eucm.ead.editor.view.widgets.gallery.repository.RepositoryItem;
 import es.eucm.ead.editor.view.widgets.helpmessage.sequence.HelpSequence;
@@ -72,22 +73,14 @@ public class RepositoryView extends BaseGallery implements ProgressListener,
 	private static final float DEFAULT_NOTIF_TIMEOUT = 2.5F;
 	private static final int COLUMNS = 3;
 
-	private Notification importingNotif, updatingNotif, errorUpdating,
-			errorImporting;
+	private Toasts toasts;
 	private ItemInfo<RepositoryItem> info;
 
 	@Override
 	public void initialize(Controller controller) {
 		super.initialize(controller);
-		this.importingNotif = new Notification(skin).text(i18n
-				.m("repository.importing"));
-		this.updatingNotif = new Notification(skin).text(i18n
-				.m("repository.refreshing"));
-		this.errorUpdating = new Notification(skin).text(i18n
-				.m("repository.refreshingError"));
-		this.errorImporting = new Notification(skin).text(i18n
-				.m("repository.importingError"));
 		info = new RepositoryInfo(controller, view);
+		toasts = ((MockupViews) controller.getViews()).getToasts();
 	}
 
 	@Override
@@ -101,7 +94,9 @@ public class RepositoryView extends BaseGallery implements ProgressListener,
 		back.addListener(new ClickListener() {
 			@Override
 			public void clicked(InputEvent event, float x, float y) {
-				controller.action(ChangeMockupView.class, LibrariesView.class);
+				controller.action(ChangeMockupView.class, LibrariesView.class,
+						Transitions.getFadeSlideTransition(topBar, galleryPane,
+								false));
 			}
 		});
 		return back;
@@ -124,7 +119,7 @@ public class RepositoryView extends BaseGallery implements ProgressListener,
 
 	@Override
 	public void itemClicked(GalleryItem item) {
-		importingNotif.show(getStage());
+		toasts.showNotification(i18n.m("repository.importing"));
 		controller.action(ImportElement.class,
 				((RepositoryItem) item).getElement(), this);
 		view.setTouchable(Touchable.disabled);
@@ -134,19 +129,25 @@ public class RepositoryView extends BaseGallery implements ProgressListener,
 	public void entityImported(ModelEntity entity, Controller controller) {
 		view.setTouchable(Touchable.enabled);
 		if (entity != null) {
-			controller.action(ChangeMockupView.class, EditionView.class);
+			toasts.hideNotification();
+			controller.action(ChangeMockupView.class, EditionView.class,
+					Transitions.getFadeSlideTransition(topBar, galleryPane,
+							false));
 		} else {
-			errorImporting.show(getStage(), DEFAULT_NOTIF_TIMEOUT);
+			toasts.showNotification(i18n.m("repository.importingError"),
+					DEFAULT_NOTIF_TIMEOUT);
 		}
-		importingNotif.hide();
 	}
 
 	@Override
 	public void finished(boolean succeeded, Controller controller) {
 		if (!succeeded) {
-			errorUpdating.show(getStage(), DEFAULT_NOTIF_TIMEOUT);
+			toasts.showNotification("repository.refreshingError",
+					DEFAULT_NOTIF_TIMEOUT);
+		} else {
+			toasts.hideNotification();
 		}
-		controller.getBackgroundExecutor().submit(loadingTask, taskListener);
+		super.getView();
 	}
 
 	@Override
@@ -159,36 +160,16 @@ public class RepositoryView extends BaseGallery implements ProgressListener,
 		}
 	}
 
-	private Stage getStage() {
-		return topBar.getStage();
-	}
-
 	@Override
 	public Actor getView(Object... args) {
+		galleryGrid.clear();
 		((MockupController) controller).getRepositoryManager()
 				.setCurrentLibrary(args[0].toString());
-		Gdx.app.postRunnable(update);
+		toasts.showNotification(i18n.m("repository.refreshing"));
+		controller.getBackgroundExecutor().submit(updatingTask, taskListener);
 
 		return super.view;
 	}
-
-	@Override
-	public void release(Controller controller) {
-		super.release(controller);
-		galleryGrid.clear();
-		updatingNotif.hide();
-		importingNotif.hide();
-	}
-
-	private final Runnable update = new Runnable() {
-
-		@Override
-		public void run() {
-			updatingNotif.show(getStage());
-			controller.getBackgroundExecutor().submit(updatingTask,
-					taskListener);
-		}
-	};
 
 	private final BackgroundTask<Boolean> updatingTask = new BackgroundTask<Boolean>() {
 
@@ -196,15 +177,6 @@ public class RepositoryView extends BaseGallery implements ProgressListener,
 		public Boolean call() throws Exception {
 			controller.action(UpdateLibraryElements.class, RepositoryView.this);
 			return false;
-		}
-	};
-
-	private final BackgroundTask<Boolean> loadingTask = new BackgroundTask<Boolean>() {
-
-		@Override
-		public Boolean call() throws Exception {
-			RepositoryView.super.getView();
-			return true;
 		}
 	};
 
@@ -217,14 +189,14 @@ public class RepositoryView extends BaseGallery implements ProgressListener,
 		@Override
 		public void done(BackgroundExecutor backgroundExecutor, Boolean result) {
 			if (result) {
-				updatingNotif.hide();
+				toasts.hideNotification();
 			}
 		}
 
 		@Override
 		public void error(Throwable e) {
-			updatingNotif.hide();
-			errorUpdating.show(getStage(), DEFAULT_NOTIF_TIMEOUT);
+			toasts.showNotification("repository.refreshingError",
+					DEFAULT_NOTIF_TIMEOUT);
 			Gdx.app.error("RepositoryView", "Error updating elements", e);
 		}
 	};

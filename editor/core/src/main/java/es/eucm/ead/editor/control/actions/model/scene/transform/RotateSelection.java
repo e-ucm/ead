@@ -53,7 +53,7 @@ import es.eucm.ead.schemax.FieldName;
  */
 public class RotateSelection extends TransformSelection {
 
-	public static final float ROTATION = 90;
+	private static final float ROTATION = 90;
 
 	public enum Type {
 		CLOCKWISE, COUNTER_CLOCKWISE

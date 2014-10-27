@@ -56,8 +56,7 @@ public class EditionViewHelp extends HelpSequence {
 
 	private Controller controller;
 
-	public EditionViewHelp(Controller controller, EditionView view,
-			Actor topBar, Actor leftBar) {
+	public EditionViewHelp(Controller controller, EditionView view, Actor topBar) {
 		super(view);
 		this.controller = controller;
 		ApplicationAssets assets = controller.getApplicationAssets();
@@ -66,8 +65,6 @@ public class EditionViewHelp extends HelpSequence {
 
 		addHelpMessage(new TextHelpMessage(skin, i18n, Position.BOTTOM, topBar,
 				"help.topBarButtons"));
-		addHelpMessage(new TextHelpMessage(skin, i18n, Position.RIGHT, leftBar,
-				"help.leftBarButtons"));
 	}
 
 	@Override

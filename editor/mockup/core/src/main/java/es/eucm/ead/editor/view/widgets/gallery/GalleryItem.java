@@ -42,12 +42,19 @@ import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.Touchable;
-import com.badlogic.gdx.scenes.scene2d.ui.*;
+import com.badlogic.gdx.scenes.scene2d.ui.Button;
+import com.badlogic.gdx.scenes.scene2d.ui.Container;
+import com.badlogic.gdx.scenes.scene2d.ui.Image;
+import com.badlogic.gdx.scenes.scene2d.ui.Label;
+import com.badlogic.gdx.scenes.scene2d.ui.Skin;
+import com.badlogic.gdx.scenes.scene2d.ui.Table;
+import com.badlogic.gdx.scenes.scene2d.ui.TextField;
 import com.badlogic.gdx.scenes.scene2d.ui.TextField.TextFieldStyle;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.scenes.scene2d.utils.Drawable;
 import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable;
 import com.badlogic.gdx.utils.Scaling;
+
 import es.eucm.ead.editor.view.builders.gallery.BaseGallery;
 import es.eucm.ead.editor.view.widgets.IconButton;
 
@@ -76,19 +83,18 @@ public abstract class GalleryItem extends Button {
 	protected Table top;
 	private GalleryItemStyle style;
 
-	public GalleryItem(Image image, String text, boolean canBeDeleted,
-			Skin skin, BaseGallery gallery) {
-		this(image, text, canBeDeleted, skin, null, true, gallery);
-	}
-
-	public GalleryItem(Image image, String text, float padImage, float padText,
-			boolean canBeDeleted, Skin skin, BaseGallery gallery) {
-		this(image, text, canBeDeleted, skin, null, true, gallery);
-	}
-
-	public GalleryItem(Image image, String text, boolean canBeDeleted,
-			Skin skin, String nameStyle, boolean editableName,
+	public GalleryItem(String text, boolean canBeDeleted, Skin skin,
 			BaseGallery gallery) {
+		this(text, canBeDeleted, skin, null, true, gallery);
+	}
+
+	public GalleryItem(String text, float padImage, float padText,
+			boolean canBeDeleted, Skin skin, BaseGallery gallery) {
+		this(text, canBeDeleted, skin, null, true, gallery);
+	}
+
+	public GalleryItem(String text, boolean canBeDeleted, Skin skin,
+			String nameStyle, boolean editableName, final BaseGallery gallery) {
 		super(skin.get("galleryItem", ButtonStyle.class));
 		this.skin = skin;
 		this.gallery = gallery;
@@ -115,18 +121,25 @@ public abstract class GalleryItem extends Button {
 		top.setTouchable(Touchable.enabled);
 		top.setUserObject(this);
 
-		this.image = image;
+		this.image = new Image();
 		image.setScaling(Scaling.fit);
 		image.setDrawable(skin.getDrawable("new_project80x80"));
 		top.add(image).maxSize(
 				Gdx.graphics.getWidth() / (gallery.getColumns() + .5f));
 
-		Container<Actor> bot = new Container<Actor>(name);
-		bot.setBackground(style.textBackground);
+		Drawable botBg = style.textBackground;
+		Actor bot;
+		if (botBg != null) {
+			Container<Actor> botCont = new Container<Actor>(name);
+			botCont.setBackground(botBg);
+			bot = botCont;
+		} else {
+			bot = name;
+		}
 
-		add(top).expand().fill();
+		add(top).fill().expand();
 		row();
-		add(bot).expandX().fill();
+		add(bot);
 		if (canBeDeleted) {
 			IconButton iconButton = new IconButton(DELETE_ICON, skin);
 			Container<Actor> icon = new Container<Actor>(iconButton).top()

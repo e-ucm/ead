@@ -39,6 +39,7 @@ package es.eucm.ead.editor.view.widgets;
 import com.badlogic.gdx.math.Interpolation;
 import com.badlogic.gdx.scenes.scene2d.Action;
 import com.badlogic.gdx.scenes.scene2d.Stage;
+import com.badlogic.gdx.scenes.scene2d.Touchable;
 import com.badlogic.gdx.scenes.scene2d.actions.Actions;
 import com.badlogic.gdx.scenes.scene2d.ui.Cell;
 import com.badlogic.gdx.scenes.scene2d.ui.Image;
@@ -72,6 +73,7 @@ public class Notification extends HiddenPanel {
 		padRight(getPadRight() + DEFAULT_SPACING);
 		padTop(getPadTop() + DEFAULT_SPACING);
 		padLeft(getPadLeft() + DEFAULT_SPACING);
+		setTouchable(Touchable.disabled);
 	}
 
 	/**
@@ -150,9 +152,6 @@ public class Notification extends HiddenPanel {
 	 * seconds and then removes it from the stage.
 	 */
 	public void hide() {
-		if (!isShowing()) {
-			return;
-		}
 		super.hide(Actions.fadeOut(FADE_OUT, Interpolation.fade));
 	}
 
@@ -178,6 +177,6 @@ public class Notification extends HiddenPanel {
 	}
 
 	public boolean isShowing() {
-		return hasParent() && isTouchable();
+		return hasParent();
 	}
 }

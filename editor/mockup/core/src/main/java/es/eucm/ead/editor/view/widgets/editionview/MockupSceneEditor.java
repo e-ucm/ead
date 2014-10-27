@@ -45,6 +45,7 @@ import com.badlogic.gdx.scenes.scene2d.Group;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.InputListener;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
+
 import es.eucm.ead.editor.control.Controller;
 import es.eucm.ead.editor.control.Selection;
 import es.eucm.ead.editor.model.Model.SelectionListener;
@@ -52,6 +53,7 @@ import es.eucm.ead.editor.model.events.SelectionEvent;
 import es.eucm.ead.editor.view.widgets.Toolbar.ToolbarStyle;
 import es.eucm.ead.editor.view.widgets.editionview.elementcontext.ElementContext;
 import es.eucm.ead.editor.view.widgets.groupeditor.GroupEditorConfiguration;
+import es.eucm.ead.editor.view.widgets.groupeditor.Modifier;
 import es.eucm.ead.editor.view.widgets.scenes.SceneEditor;
 import es.eucm.ead.schema.entities.ModelEntity;
 
@@ -72,7 +74,6 @@ public class MockupSceneEditor extends SceneEditor {
 	private ElementContext context;
 
 	private final Rectangle scissorBounds;
-	private final float leftPad;
 	private final float topPad;
 
 	private Runnable updateSelection = new Runnable() {
@@ -100,14 +101,11 @@ public class MockupSceneEditor extends SceneEditor {
 		}
 	};
 
-	public MockupSceneEditor(final Controller controller, String leftStyle,
-			String topStyle) {
+	public MockupSceneEditor(final Controller controller, String topStyle) {
 		super(controller);
 
 		Skin skin = controller.getApplicationAssets().getSkin();
-		ToolbarStyle toolbarStyle = skin.get(leftStyle, ToolbarStyle.class);
-		leftPad = toolbarStyle.background.getRightWidth();
-		toolbarStyle = skin.get(topStyle, ToolbarStyle.class);
+		ToolbarStyle toolbarStyle = skin.get(topStyle, ToolbarStyle.class);
 		topPad = toolbarStyle.background.getBottomHeight();
 
 		scissorBounds = new Rectangle();
@@ -152,6 +150,14 @@ public class MockupSceneEditor extends SceneEditor {
 		return groupEditor.getGroupEditorDragListener().getContainer();
 	}
 
+	public Modifier getModifier() {
+		return groupEditor.getGroupEditorDragListener().getModifier();
+	}
+
+	public Group getRootGroup() {
+		return groupEditor.getGroupEditorDragListener().getRootGroup();
+	}
+
 	@Override
 	public void prepare() {
 		super.prepare();
@@ -170,8 +176,7 @@ public class MockupSceneEditor extends SceneEditor {
 		groupEditor.setBounds(0, 0, getWidth(), getHeight());
 		groupEditor.fit(false);
 
-		scissorBounds.set(getX() - leftPad, getY(), getWidth() + 4 * leftPad,
-				getHeight() + topPad);
+		scissorBounds.set(getX(), getY(), getWidth(), getHeight() + topPad);
 		getStage().calculateScissors(scissorBounds, scissorBounds);
 		fixScissorBounds();
 	}

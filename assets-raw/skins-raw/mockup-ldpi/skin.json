@@ -326,6 +326,16 @@
 			background: bottom_bar
 		}
 	},
+	es.eucm.ead.editor.view.widgets.HorizontalToolbar$HorizontalToolbarStyle: {
+		default: { 
+		}, 
+		white_top: {
+			background: toolbar_top
+		},
+		white_bottom: {
+			background: bottom_bar
+		}
+	},
 	es.eucm.ead.editor.view.widgets.DropDown$DropDownStyle: {
 		default: {
 			listBackgroundUp: panel,
@@ -364,22 +374,18 @@
 	es.eucm.ead.editor.view.widgets.gallery.GalleryItem$GalleryItemStyle : {
 		project: {
 			imageBackground: project,
-			textBackground: project_name,
 			textStyle: transparent
 		},
 		scene: {
 			imageBackground: scene,
-			textBackground: scene_name,
 			textStyle: transparent
 		},
 		repository: {
 			imageBackground: repository,
-			textBackground: repository_name,
 			textStyle: transparent
 		},
 		library: {
 			imageBackground: library,
-			textBackground: library_name,
 			textStyle: transparent
 		}
 	},

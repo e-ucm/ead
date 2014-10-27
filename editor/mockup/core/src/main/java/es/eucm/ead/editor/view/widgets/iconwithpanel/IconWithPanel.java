@@ -36,7 +36,6 @@
  */
 package es.eucm.ead.editor.view.widgets.iconwithpanel;
 
-import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.scenes.scene2d.Action;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
@@ -56,9 +55,8 @@ import es.eucm.ead.editor.view.widgets.PositionedHiddenPanel.Position;
  */
 public abstract class IconWithPanel extends IconButton {
 
-	protected static HiddenPanel openPanel;
 	protected static final float IN_DURATION = .3F;
-	protected static final float OUT_DURATION = .2F;
+	protected static final float OUT_DURATION = .25F;
 
 	private static final ChangeListener showOrHide = new ChangeListener() {
 
@@ -75,26 +73,37 @@ public abstract class IconWithPanel extends IconButton {
 
 	public IconWithPanel(String icon, float separation, Skin skin,
 			Position position) {
-		this(icon, separation, skin, position, "default");
+		this(icon, separation, skin, position, -1, "default");
+	}
+
+	public IconWithPanel(String icon, float separation, Skin skin,
+			Position position, int paneCol) {
+		this(icon, separation, skin, position, paneCol, "default");
 	}
 
 	public IconWithPanel(String icon, float separation, Skin skin,
 			Position position, String styleName) {
+		this(icon, separation, skin, position, -1, styleName);
+	}
+
+	public IconWithPanel(String icon, float separation, Skin skin,
+			Position position, int paneCol, String styleName) {
 		super(icon, 0f, skin, styleName);
 		panel.setPosition(position);
 		panel.setSpace(separation);
+		panel.setColumns(paneCol);
 	}
 
 	@Override
 	protected void init(Drawable icon, float padding, Skin skin) {
 		super.init(icon, padding, skin);
-		panel = createPanel(skin);
+		panel = createPanel(skin, -1);
 		panel.setReference(this);
 		addListener(showOrHide);
 	}
 
-	protected PositionedHiddenPanel createPanel(Skin skin) {
-		return new Panel(skin);
+	protected PositionedHiddenPanel createPanel(Skin skin, int columns) {
+		return new Panel(skin, columns);
 	}
 
 	/**
@@ -110,12 +119,7 @@ public abstract class IconWithPanel extends IconButton {
 	protected abstract Action getHideAction();
 
 	public void showPanel() {
-		if (openPanel != panel && openPanel != null) {
-			openPanel.hide();
-		}
-
 		panel.show(getShowAction());
-		openPanel = panel;
 	}
 
 	public void hidePanel() {
@@ -129,19 +133,17 @@ public abstract class IconWithPanel extends IconButton {
 	protected class Panel extends PositionedHiddenPanel {
 
 		public Panel(Skin skin) {
-			super(skin);
+			this(skin, -1);
 
+		}
+
+		public Panel(Skin skin, int columns) {
+			super(skin);
 		}
 
 		@Override
 		public void hide() {
 			hidePanel();
-		}
-
-		@Override
-		public void hide(Action action) {
-			openPanel = null;
-			super.hide(action);
 		}
 	}
 }

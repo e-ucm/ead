@@ -56,6 +56,7 @@ import es.eucm.ead.editor.control.Toasts;
 import es.eucm.ead.editor.control.actions.editor.ChangeMockupView;
 import es.eucm.ead.editor.control.actions.model.EditScene;
 import es.eucm.ead.editor.control.actions.model.scene.NewScene;
+import es.eucm.ead.editor.control.transitions.Transitions;
 import es.eucm.ead.editor.model.Model;
 import es.eucm.ead.editor.model.Model.SelectionListener;
 import es.eucm.ead.editor.model.events.SelectionEvent;
@@ -63,10 +64,10 @@ import es.eucm.ead.editor.model.events.SelectionEvent.Type;
 import es.eucm.ead.editor.view.builders.gallery.PlayView;
 import es.eucm.ead.editor.view.builders.gallery.ScenesView;
 import es.eucm.ead.editor.view.widgets.IconButton;
-import es.eucm.ead.editor.view.widgets.iconwithpanel.IconWithScalePanel;
+import es.eucm.ead.editor.view.widgets.iconwithpanel.IconWithLateralPanel;
 import es.eucm.ead.engine.I18N;
 
-public class NavigationButton extends IconWithScalePanel implements
+public class NavigationButton extends IconWithLateralPanel implements
 		SelectionListener {
 
 	private static final float SEPARATION = -10, PAD = 0.4f;
@@ -79,7 +80,8 @@ public class NavigationButton extends IconWithScalePanel implements
 
 	private Toasts toasts;
 
-	public NavigationButton(Skin skin, final Controller controller) {
+	public NavigationButton(Skin skin, final Controller controller,
+			final Actor top, final Actor bottom) {
 		super("menu", SEPARATION, skin);
 		setStyle(skin.get("white_union", IconButtonStyle.class));
 
@@ -113,7 +115,8 @@ public class NavigationButton extends IconWithScalePanel implements
 		goGallery.addListener(new ClickListener() {
 			@Override
 			public void clicked(InputEvent event, float x, float y) {
-				controller.action(ChangeMockupView.class, ScenesView.class);
+				controller.action(ChangeMockupView.class, ScenesView.class,
+						Transitions.getFadeSlideTransition(top, bottom, false));
 			}
 		});
 
@@ -122,7 +125,8 @@ public class NavigationButton extends IconWithScalePanel implements
 
 			@Override
 			public void changed(ChangeEvent event, Actor actor) {
-				controller.action(ChangeMockupView.class, PlayView.class);
+				controller.action(ChangeMockupView.class, PlayView.class,
+						Transitions.getSlideTransition(true));
 			}
 		});
 

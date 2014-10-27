@@ -127,6 +127,8 @@ public abstract class BaseGallery implements ViewBuilder {
 	protected Skin skin;
 	protected I18N i18n;
 
+	protected ScrollPane galleryPane;
+
 	@Override
 	public void initialize(Controller controller) {
 		this.controller = controller;
@@ -200,13 +202,13 @@ public abstract class BaseGallery implements ViewBuilder {
 		createnNewButton();
 
 		galleryGrid = new GridPanel<Actor>(getColumns(), DEFAULT_ENTITY_SPACING);
-		ScrollPane galleryPane = new ScrollPane(galleryGrid);
+		galleryPane = new ScrollPane(galleryGrid);
 		galleryPane.setScrollingDisabled(true, false);
 
 		view.top();
 		view.add(topBar).expandX().fillX();
 		view.row();
-		view.add(galleryPane).expandX().fill();
+		view.add(galleryPane).expand().fill();
 
 		HelpSequence helpSequence = getHelpSequence(controller);
 		if (helpSequence != null) {

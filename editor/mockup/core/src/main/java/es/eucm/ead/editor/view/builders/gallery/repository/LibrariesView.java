@@ -36,7 +36,6 @@
  */
 package es.eucm.ead.editor.view.builders.gallery.repository;
 
-import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.ui.Button;
@@ -51,6 +50,7 @@ import es.eucm.ead.editor.control.RepositoryManager.ProgressListener;
 import es.eucm.ead.editor.control.Toasts;
 import es.eucm.ead.editor.control.actions.editor.ChangeMockupView;
 import es.eucm.ead.editor.control.actions.editor.repository.UpdateLibraries;
+import es.eucm.ead.editor.control.transitions.Transitions;
 import es.eucm.ead.editor.view.builders.EditionView;
 import es.eucm.ead.editor.view.builders.gallery.BaseGallery;
 import es.eucm.ead.editor.view.builders.gallery.repository.info.ItemInfo;
@@ -69,18 +69,13 @@ public class LibrariesView extends BaseGallery implements ProgressListener {
 	private static final String IC_GO_BACK = "back80x80";
 
 	private Toasts toasts;
-	private Runnable updateLibraries = new Runnable() {
-		@Override
-		public void run() {
-			toasts.showNotification(i18n.m("repository.refreshing"));
-			controller.action(UpdateLibraries.class, LibrariesView.this);
-		}
-	};
 	private ItemInfo<LibraryItem> info;
 
 	@Override
 	public Actor getView(Object... args) {
-		Gdx.app.postRunnable(updateLibraries);
+		galleryGrid.clear();
+		toasts.showNotification(i18n.m("repository.refreshing"));
+		controller.action(UpdateLibraries.class, LibrariesView.this);
 		return view;
 	}
 
@@ -95,14 +90,13 @@ public class LibrariesView extends BaseGallery implements ProgressListener {
 	public void release(Controller controller) {
 		super.release(controller);
 		toasts.hideNotification();
-		galleryGrid.clear();
 	}
 
 	@Override
 	public void finished(boolean succeeded, Controller controller) {
 		if (succeeded) {
-			toasts.hideNotification();
 			super.getView();
+			toasts.hideNotification();
 		} else {
 			toasts.showNotification(i18n.m("repository.refreshingError"),
 					ERROR_NOTIF_TIMEOUT);
@@ -132,7 +126,9 @@ public class LibrariesView extends BaseGallery implements ProgressListener {
 		back.addListener(new ClickListener() {
 			@Override
 			public void clicked(InputEvent event, float x, float y) {
-				controller.action(ChangeMockupView.class, EditionView.class);
+				controller.action(ChangeMockupView.class, EditionView.class,
+						Transitions.getFadeSlideTransition(topBar, galleryPane,
+								false));
 			}
 		});
 		return back;
@@ -143,6 +139,7 @@ public class LibrariesView extends BaseGallery implements ProgressListener {
 		RepoLibrary repoLibrary = ((LibraryItem) item).getRepoLibrary();
 		String targetLib = repoLibrary.getPath();
 		controller.action(ChangeMockupView.class, RepositoryView.class,
+				Transitions.getFadeSlideTransition(topBar, galleryPane, true),
 				targetLib);
 	}
 

@@ -34,27 +34,16 @@
  *      You should have received a copy of the GNU Lesser General Public License
  *      along with eAdventure.  If not, see <http://www.gnu.org/licenses/>.
  */
-package es.eucm.ead.editor.view.widgets.editionview.draw;
-
-import static com.badlogic.gdx.scenes.scene2d.actions.Actions.sequence;
+package es.eucm.ead.editor.view.widgets.editionview.composition.draw;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Color;
-import com.badlogic.gdx.math.Interpolation;
-import com.badlogic.gdx.math.MathUtils;
-import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.Event;
 import com.badlogic.gdx.scenes.scene2d.EventListener;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
-import com.badlogic.gdx.scenes.scene2d.Stage;
-import com.badlogic.gdx.scenes.scene2d.Touchable;
-import com.badlogic.gdx.scenes.scene2d.actions.Actions;
-import com.badlogic.gdx.scenes.scene2d.ui.ButtonGroup;
-import com.badlogic.gdx.scenes.scene2d.ui.ScrollPane;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.ui.Slider;
-import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
 import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
@@ -63,35 +52,44 @@ import com.badlogic.gdx.utils.Pools;
 import es.eucm.ead.editor.assets.ApplicationAssets;
 import es.eucm.ead.editor.control.Controller;
 import es.eucm.ead.editor.control.MockupViews;
+import es.eucm.ead.editor.control.Selection;
 import es.eucm.ead.editor.control.Toasts;
+import es.eucm.ead.editor.control.actions.model.AddSceneElement;
+import es.eucm.ead.editor.control.actions.model.ReplaceEntity;
+import es.eucm.ead.editor.control.actions.model.SetSelection;
 import es.eucm.ead.editor.control.background.BackgroundExecutor;
 import es.eucm.ead.editor.control.background.BackgroundExecutor.BackgroundTaskListener;
 import es.eucm.ead.editor.control.background.BackgroundTask;
+import es.eucm.ead.editor.model.Q;
+import es.eucm.ead.editor.view.widgets.HorizontalToolbar;
 import es.eucm.ead.editor.view.widgets.IconButton;
-import es.eucm.ead.editor.view.widgets.Toolbar;
 import es.eucm.ead.editor.view.widgets.editionview.MockupSceneEditor;
-import es.eucm.ead.editor.view.widgets.editionview.draw.BrushStrokes.Mode;
+import es.eucm.ead.editor.view.widgets.editionview.composition.CompositionToolbar;
+import es.eucm.ead.editor.view.widgets.editionview.composition.draw.BrushStrokes.Mode;
 import es.eucm.ead.engine.I18N;
+import es.eucm.ead.schema.entities.ModelEntity;
+import es.eucm.ead.schema.renderers.Image;
 
-public class PaintToolbar extends Toolbar {
+public class PaintToolbar extends HorizontalToolbar {
 
 	private static final String LOGTAG = "PaintToolbar";
-
-	private static final Vector2 TEMP = new Vector2();
-
-	private static final float NORMAL_PAD = .02F;
-	private static final float SLIDER_WIDTH = .1F;
-	private static final float IN_DURATION = .3F;
-	private static final float OUT_DURATION = .2F;
-
-	private MockupSceneEditor parent;
+	private static final float ALPHA_FACTOR = .5F;
 
 	private BrushStrokes brushStrokes;
 
-	public PaintToolbar(MockupSceneEditor parent, final Controller controller) {
-		super(controller.getApplicationAssets().getSkin(), "white_bottom");
-		this.parent = parent;
-		brushStrokes = new BrushStrokes(parent, controller);
+	private Controller controller;
+
+	private ModelEntity selection;
+
+	private MockupSceneEditor sceneEditor;
+
+	private float selectionAlpha;
+
+	public PaintToolbar(MockupSceneEditor sceneEditor, Controller control) {
+		super(control.getApplicationAssets().getSkin(), "white_bottom");
+		this.controller = control;
+		this.sceneEditor = sceneEditor;
+		brushStrokes = new BrushStrokes(sceneEditor, controller);
 		ApplicationAssets assets = controller.getApplicationAssets();
 		Skin skin = assets.getSkin();
 		final I18N i18n = assets.getI18N();
@@ -100,22 +98,6 @@ public class PaintToolbar extends Toolbar {
 		final IconButton erase = new IconButton("rubber80x80", 0f, skin,
 				styleName);
 		erase.setColor(Color.PINK);
-
-		// Colors
-		IconButton color1 = new IconButton("rectangle", 0f, skin, styleName);
-		color1.getIcon().setColor(Color.WHITE);
-
-		IconButton color3 = new IconButton("rectangle", 0f, skin, styleName);
-		color3.getIcon().setColor(Color.RED);
-
-		IconButton color4 = new IconButton("rectangle", 0f, skin, styleName);
-		color4.getIcon().setColor(Color.GREEN);
-
-		IconButton color5 = new IconButton("rectangle", 0f, skin, styleName);
-		color5.getIcon().setColor(Color.BLUE);
-
-		IconButton color6 = new IconButton("rectangle", 0f, skin, styleName);
-		color6.getIcon().setColor(Color.BLACK);
 
 		final ColorPicker picker = new ColorPicker(false, skin) {
 			@Override
@@ -130,8 +112,8 @@ public class PaintToolbar extends Toolbar {
 			public void clicked(InputEvent event, float x, float y) {
 				if (!picker.getPanel().hasParent()) {
 					picker.setChecked(true);
-					picker.showPanel();
 					picker.colorChanged();
+					picker.showPanel();
 				} else {
 					picker.setChecked(false);
 					picker.hidePanel();
@@ -150,39 +132,36 @@ public class PaintToolbar extends Toolbar {
 
 		final TextButton cancel = new TextButton(i18n.m("cancel"), skin,
 				"white");
-		Table colors = new Table();
-		colors.add(color1);
-		colors.add(color3);
-		colors.add(color4);
-		colors.add(color5);
-		colors.add(color6);
-		ScrollPane pane = new ScrollPane(colors);
-		pane.setScrollingDisabled(false, true);
 
-		float topBottomPad = 0f;
-		float normalPad = Gdx.graphics.getWidth() * NORMAL_PAD;
-		defaults().expand().fill();
-		add(erase).padLeft(normalPad).padRight(normalPad);
-		add(pane);
-		add(picker).padLeft(normalPad);
-		add(slider).padLeft(normalPad).width(
-				Gdx.graphics.getWidth() * SLIDER_WIDTH);
-		add(save).pad(topBottomPad, normalPad, topBottomPad, normalPad);
-		add(cancel).pad(topBottomPad, 0f, topBottomPad, normalPad);
+		leftAdd(save);
+		leftAdd(cancel);
+
+		rightAdd(erase);
+		rightAdd(picker);
+		rightAdd(slider);
 
 		ChangeListener listener = new ChangeListener() {
 			@Override
 			public void changed(ChangeEvent event, Actor actor) {
 				Actor listener = event.getListenerActor();
 
+				CompositionToolbar parent = null;
+				if (getParent() instanceof CompositionToolbar) {
+					parent = (CompositionToolbar) getParent();
+				}
 				if (listener == cancel) {
 					hide();
+					if (parent != null) {
+						parent.show(parent.getInsertToolbar());
+					}
 				} else if (listener == save) {
-
 					toasts.showNotification(i18n.m("edition.creatingImage"));
 					controller.getBackgroundExecutor().submit(saveTask,
 							saveListener);
 					hide(false, true);
+					if (parent != null) {
+						parent.show(parent.getTransformToolbar());
+					}
 				} else if (listener == slider) {
 					brushStrokes.setRadius(slider.getValue());
 				} else {
@@ -210,7 +189,19 @@ public class PaintToolbar extends Toolbar {
 					Gdx.app.log(LOGTAG, "done saving, result is: " + result);
 					toasts.hideNotification();
 					if (result) {
-						brushStrokes.createSceneElement();
+						ModelEntity sceneElement = brushStrokes
+								.createSceneElement();
+						if (selection == null) {
+							controller.action(AddSceneElement.class,
+									sceneElement);
+						} else {
+							controller.action(ReplaceEntity.class, selection,
+									sceneElement);
+							controller.action(SetSelection.class,
+									Selection.EDITED_GROUP,
+									Selection.SCENE_ELEMENT, sceneElement);
+						}
+						selection = null;
 					}
 				}
 
@@ -232,39 +223,29 @@ public class PaintToolbar extends Toolbar {
 			};
 		};
 		erase.addListener(listener);
-		color1.addListener(listener);
-		color3.addListener(listener);
-		color4.addListener(listener);
-		color5.addListener(listener);
-		color6.addListener(listener);
 		slider.addListener(listener);
 		save.addListener(listener);
 		cancel.addListener(listener);
-
-		new ButtonGroup(erase, color1, color3, color4, color5, color6, picker);
-		color6.setChecked(true);
-		brushStrokes.setColor(color6.getIcon().getColor());
 	}
 
 	public void show() {
-		Stage stage = parent.getStage();
-		if (stage == null) {
-			return;
+
+		Object[] selArray = controller.getModel().getSelection()
+				.get(Selection.SCENE_ELEMENT);
+		if (selArray.length == 1) {
+			Object sel = selArray[0];
+			if (sel instanceof ModelEntity) {
+				selection = (ModelEntity) sel;
+				if (selection.getChildren().size != 0
+						|| !Q.hasComponent(selection, Image.class)) {
+					selection = null;
+				}
+			}
 		}
-		clearActions();
-		setTouchable(Touchable.enabled);
-		stage.addActor(this);
-		parent.localToStageCoordinates(TEMP.set(0f, 0f));
-		brushStrokes.show();
 
-		float prefW = MathUtils.round(Math.min(getPrefWidth(),
-				parent.getWidth()));
-		float prefH = MathUtils.round(getPrefHeight());
-		float x = MathUtils.round(TEMP.x + (parent.getWidth() - prefW) * .5f);
-		float y = -prefH;
+		transparency(false, false);
+		brushStrokes.show(selection);
 
-		setBounds(x, y, prefW, prefH);
-		addAction(Actions.moveTo(x, 0f, IN_DURATION, Interpolation.sineOut));
 		fireDraw(true, false);
 	}
 
@@ -273,15 +254,30 @@ public class PaintToolbar extends Toolbar {
 	}
 
 	private void hide(boolean release, boolean saved) {
-		if (!isShowing())
-			return;
-		clearActions();
-		setTouchable(Touchable.disabled);
 		brushStrokes.hide(release);
 
-		addAction(sequence(Actions.moveTo(getX(), -getHeight(), OUT_DURATION,
-				Interpolation.fade), Actions.removeActor()));
+		transparency(true, saved);
 		fireDraw(false, saved);
+	}
+
+	private void transparency(boolean restore, boolean saved) {
+		for (Actor actor : sceneEditor.getRootGroup().getChildren()) {
+
+			Color color = actor.getColor();
+			if (selection != null && Q.getModelEntity(actor) == selection) {
+				if (restore) {
+					if (!saved) {
+						color.a = selectionAlpha;
+					}
+				} else {
+					selectionAlpha = color.a;
+					color.a = 0f;
+				}
+			} else {
+				color.a = restore ? (color.a / ALPHA_FACTOR)
+						: (color.a * ALPHA_FACTOR);
+			}
+		}
 	}
 
 	public boolean isShowing() {
