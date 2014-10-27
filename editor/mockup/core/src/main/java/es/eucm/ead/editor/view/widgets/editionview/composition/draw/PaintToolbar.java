@@ -52,26 +52,43 @@ import com.badlogic.gdx.utils.Pools;
 import es.eucm.ead.editor.assets.ApplicationAssets;
 import es.eucm.ead.editor.control.Controller;
 import es.eucm.ead.editor.control.MockupViews;
+import es.eucm.ead.editor.control.Selection;
 import es.eucm.ead.editor.control.Toasts;
+import es.eucm.ead.editor.control.actions.model.AddSceneElement;
+import es.eucm.ead.editor.control.actions.model.ReplaceEntity;
+import es.eucm.ead.editor.control.actions.model.SetSelection;
 import es.eucm.ead.editor.control.background.BackgroundExecutor;
 import es.eucm.ead.editor.control.background.BackgroundExecutor.BackgroundTaskListener;
 import es.eucm.ead.editor.control.background.BackgroundTask;
+import es.eucm.ead.editor.model.Q;
 import es.eucm.ead.editor.view.widgets.HorizontalToolbar;
 import es.eucm.ead.editor.view.widgets.IconButton;
 import es.eucm.ead.editor.view.widgets.editionview.MockupSceneEditor;
 import es.eucm.ead.editor.view.widgets.editionview.composition.CompositionToolbar;
 import es.eucm.ead.editor.view.widgets.editionview.composition.draw.BrushStrokes.Mode;
 import es.eucm.ead.engine.I18N;
+import es.eucm.ead.schema.entities.ModelEntity;
+import es.eucm.ead.schema.renderers.Image;
 
 public class PaintToolbar extends HorizontalToolbar {
 
 	private static final String LOGTAG = "PaintToolbar";
+	private static final float ALPHA_FACTOR = .5F;
 
 	private BrushStrokes brushStrokes;
 
-	public PaintToolbar(MockupSceneEditor sceneEditor,
-			final Controller controller) {
-		super(controller.getApplicationAssets().getSkin(), "white_bottom");
+	private Controller controller;
+
+	private ModelEntity selection;
+
+	private MockupSceneEditor sceneEditor;
+
+	private float selectionAlpha;
+
+	public PaintToolbar(MockupSceneEditor sceneEditor, Controller control) {
+		super(control.getApplicationAssets().getSkin(), "white_bottom");
+		this.controller = control;
+		this.sceneEditor = sceneEditor;
 		brushStrokes = new BrushStrokes(sceneEditor, controller);
 		ApplicationAssets assets = controller.getApplicationAssets();
 		Skin skin = assets.getSkin();
@@ -172,7 +189,19 @@ public class PaintToolbar extends HorizontalToolbar {
 					Gdx.app.log(LOGTAG, "done saving, result is: " + result);
 					toasts.hideNotification();
 					if (result) {
-						brushStrokes.createSceneElement();
+						ModelEntity sceneElement = brushStrokes
+								.createSceneElement();
+						if (selection == null) {
+							controller.action(AddSceneElement.class,
+									sceneElement);
+						} else {
+							controller.action(ReplaceEntity.class, selection,
+									sceneElement);
+							controller.action(SetSelection.class,
+									Selection.EDITED_GROUP,
+									Selection.SCENE_ELEMENT, sceneElement);
+						}
+						selection = null;
 					}
 				}
 
@@ -200,7 +229,22 @@ public class PaintToolbar extends HorizontalToolbar {
 	}
 
 	public void show() {
-		brushStrokes.show();
+
+		Object[] selArray = controller.getModel().getSelection()
+				.get(Selection.SCENE_ELEMENT);
+		if (selArray.length == 1) {
+			Object sel = selArray[0];
+			if (sel instanceof ModelEntity) {
+				selection = (ModelEntity) sel;
+				if (selection.getChildren().size != 0
+						|| !Q.hasComponent(selection, Image.class)) {
+					selection = null;
+				}
+			}
+		}
+
+		transparency(false, false);
+		brushStrokes.show(selection);
 
 		fireDraw(true, false);
 	}
@@ -211,7 +255,29 @@ public class PaintToolbar extends HorizontalToolbar {
 
 	private void hide(boolean release, boolean saved) {
 		brushStrokes.hide(release);
+
+		transparency(true, saved);
 		fireDraw(false, saved);
+	}
+
+	private void transparency(boolean restore, boolean saved) {
+		for (Actor actor : sceneEditor.getRootGroup().getChildren()) {
+
+			Color color = actor.getColor();
+			if (selection != null && Q.getModelEntity(actor) == selection) {
+				if (restore) {
+					if (!saved) {
+						color.a = selectionAlpha;
+					}
+				} else {
+					selectionAlpha = color.a;
+					color.a = 0f;
+				}
+			} else {
+				color.a = restore ? (color.a / ALPHA_FACTOR)
+						: (color.a * ALPHA_FACTOR);
+			}
+		}
 	}
 
 	public boolean isShowing() {

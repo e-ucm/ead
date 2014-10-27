@@ -45,6 +45,7 @@ import com.badlogic.gdx.scenes.scene2d.Group;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.InputListener;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
+
 import es.eucm.ead.editor.control.Controller;
 import es.eucm.ead.editor.control.Selection;
 import es.eucm.ead.editor.model.Model.SelectionListener;
@@ -52,6 +53,7 @@ import es.eucm.ead.editor.model.events.SelectionEvent;
 import es.eucm.ead.editor.view.widgets.Toolbar.ToolbarStyle;
 import es.eucm.ead.editor.view.widgets.editionview.elementcontext.ElementContext;
 import es.eucm.ead.editor.view.widgets.groupeditor.GroupEditorConfiguration;
+import es.eucm.ead.editor.view.widgets.groupeditor.Modifier;
 import es.eucm.ead.editor.view.widgets.scenes.SceneEditor;
 import es.eucm.ead.schema.entities.ModelEntity;
 
@@ -146,6 +148,14 @@ public class MockupSceneEditor extends SceneEditor {
 
 	public Group getContainer() {
 		return groupEditor.getGroupEditorDragListener().getContainer();
+	}
+
+	public Modifier getModifier() {
+		return groupEditor.getGroupEditorDragListener().getModifier();
+	}
+
+	public Group getRootGroup() {
+		return groupEditor.getGroupEditorDragListener().getRootGroup();
 	}
 
 	@Override
