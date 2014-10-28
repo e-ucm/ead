@@ -73,12 +73,12 @@ public abstract class IconWithPanel extends IconButton {
 
 	public IconWithPanel(String icon, float separation, Skin skin,
 			Position position) {
-		this(icon, separation, skin, position, -1, "default");
+		this(icon, separation, skin, position, -1, "checkable");
 	}
 
 	public IconWithPanel(String icon, float separation, Skin skin,
 			Position position, int paneCol) {
-		this(icon, separation, skin, position, paneCol, "default");
+		this(icon, separation, skin, position, paneCol, "checkable");
 	}
 
 	public IconWithPanel(String icon, float separation, Skin skin,
@@ -120,10 +120,16 @@ public abstract class IconWithPanel extends IconButton {
 
 	public void showPanel() {
 		panel.show(getShowAction());
+		if (!isChecked()) {
+			setChecked(true);
+		}
 	}
 
 	public void hidePanel() {
 		panel.hide(getHideAction());
+		if (isChecked()) {
+			setChecked(false);
+		}
 	}
 
 	public PositionedHiddenPanel getPanel() {

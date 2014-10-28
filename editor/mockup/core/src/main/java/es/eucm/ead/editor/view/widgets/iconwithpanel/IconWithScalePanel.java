@@ -45,11 +45,11 @@ import es.eucm.ead.editor.view.widgets.PositionedHiddenPanel;
 public class IconWithScalePanel extends BaseIconWithScalePanel {
 
 	public IconWithScalePanel(String icon, float space, Skin skin) {
-		this(icon, space, skin, "default", null);
+		this(icon, space, skin, "checkable", null);
 	}
 
 	public IconWithScalePanel(String icon, float space, Skin skin, Color color) {
-		this(icon, space, skin, "default", color);
+		this(icon, space, skin, "checkable", color);
 	}
 
 	public IconWithScalePanel(String icon, float space, Skin skin, String style) {
@@ -57,12 +57,12 @@ public class IconWithScalePanel extends BaseIconWithScalePanel {
 	}
 
 	public IconWithScalePanel(String icon, float space, int colPane, Skin skin) {
-		this(icon, space, colPane, skin, "default", null);
+		this(icon, space, colPane, skin, "checkable", null);
 	}
 
 	public IconWithScalePanel(String icon, float space, int colPane, Skin skin,
 			Color color) {
-		this(icon, space, colPane, skin, "default", color);
+		this(icon, space, colPane, skin, "checkable", color);
 	}
 
 	public IconWithScalePanel(String icon, float space, int colPane, Skin skin,
