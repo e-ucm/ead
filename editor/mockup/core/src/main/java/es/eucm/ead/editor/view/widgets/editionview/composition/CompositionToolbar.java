@@ -78,6 +78,9 @@ public class CompositionToolbar extends MultiHorizontalToolbar implements
 
 	public CompositionToolbar(final Controller controller,
 			PaintToolbar paintToolbar) {
+		super(controller.getApplicationAssets().getSkin(), "bottom_bar",
+				Color.CYAN);
+
 		this.controller = controller;
 		this.skin = controller.getApplicationAssets().getSkin();
 

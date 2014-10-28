@@ -61,7 +61,8 @@ public class MultiHorizontalToolbarTest extends MockupUITest {
 		Table table = new Table();
 		table.setFillParent(true);
 
-		final MultiHorizontalToolbar multiTop = new MultiHorizontalToolbar();
+		final MultiHorizontalToolbar multiTop = new MultiHorizontalToolbar(
+				skin, "toolbar_top", Color.CYAN);
 
 		HorizontalToolbar topBar1 = new HorizontalToolbar(skin, 40, "white_top");
 		topBar1.backgroundColor(Color.YELLOW);
