@@ -45,7 +45,6 @@ import com.badlogic.gdx.graphics.glutils.FrameBuffer;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.Group;
 import com.badlogic.gdx.scenes.scene2d.Stage;
-import com.badlogic.gdx.utils.Disposable;
 import com.badlogic.gdx.utils.viewport.Viewport;
 
 import es.eucm.ead.editor.control.Controller;
@@ -55,7 +54,7 @@ import es.eucm.ead.editor.control.MockupViews;
 /**
  * Manages a {@link Transition} between the current screen and the next screen.
  */
-public class TransitionManager extends Actor implements Disposable {
+public class TransitionManager extends Actor {
 
 	private Actor currentScreen, nextScreen;
 	private FrameBuffer currFbo, nextFbo;
@@ -65,12 +64,13 @@ public class TransitionManager extends Actor implements Disposable {
 	private TextureRegion currTex;
 	private TextureRegion nexTex;
 	private float percentageCompletion;
+	private MockupController controller;
 	private Region currentScreenRegion, nextScreenRegion;
 	private float time;
 
 	public TransitionManager(Controller controller, Group viewsContainer,
 			MockupViews views) {
-		((MockupController) controller).addDisposable(this);
+		controller = ((MockupController) controller);
 		this.viewsContainer = viewsContainer;
 		this.views = views;
 	}
@@ -120,11 +120,6 @@ public class TransitionManager extends Actor implements Disposable {
 				nextScreenRegion, percentageCompletion);
 	}
 
-	public void dispose() {
-		currFbo.dispose();
-		nextFbo.dispose();
-	}
-
 	/**
 	 * Defines a way to change between the current screen and the next screen.
 	 */
@@ -150,6 +145,8 @@ public class TransitionManager extends Actor implements Disposable {
 				int h = viewport.getScreenHeight();
 				nextFbo = new FrameBuffer(Format.RGB888, w, h, false);
 				currFbo = new FrameBuffer(Format.RGB888, w, h, false);
+				controller.addDisposable(currFbo);
+				controller.addDisposable(nextFbo);
 				currentScreenRegion = new Region(0, 0, w, h);
 				nextScreenRegion = currentScreenRegion;
 				nexTex = new TextureRegion();
