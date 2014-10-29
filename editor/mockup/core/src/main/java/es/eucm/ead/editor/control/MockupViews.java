@@ -44,6 +44,7 @@ import com.badlogic.gdx.scenes.scene2d.InputListener;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.actions.Actions;
 import com.badlogic.gdx.utils.Array;
+import com.badlogic.gdx.utils.Disposable;
 import com.badlogic.gdx.utils.ObjectMap;
 import com.badlogic.gdx.utils.SnapshotArray;
 
@@ -60,7 +61,7 @@ import es.eucm.ead.editor.view.widgets.HiddenPanel;
 import es.eucm.ead.editor.view.widgets.Notification;
 import es.eucm.ead.editor.view.widgets.helpmessage.sequence.HelpSequence;
 
-public class MockupViews extends Views implements BackListener {
+public class MockupViews extends Views implements BackListener, Disposable {
 
 	private Toasts toasts;
 	private TransitionManager transitionManager;
@@ -220,6 +221,10 @@ public class MockupViews extends Views implements BackListener {
 
 	public Toasts getToasts() {
 		return toasts;
+	}
+
+	public void dispose() {
+		transitionManager.dispose();
 	}
 
 }
