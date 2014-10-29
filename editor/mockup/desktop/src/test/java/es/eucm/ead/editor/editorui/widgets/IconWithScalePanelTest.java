@@ -56,7 +56,7 @@ import es.eucm.ead.engine.I18N;
 public class IconWithScalePanelTest extends MockupUITest {
 
 	@Override
-	protected Actor builUI(Skin skin, I18N i18n) {
+	protected Actor buildUI(Skin skin, I18N i18n) {
 
 		Table table = new Table();
 		table.setFillParent(true);

@@ -82,7 +82,7 @@ public class MockupEditionSkinTest extends MockupUITest {
 	private Table bubble_top;
 
 	@Override
-	protected Actor builUI(Skin skin, I18N i18n) {
+	protected Actor buildUI(Skin skin, I18N i18n) {
 		Gdx.gl.glClearColor(1f, 1f, 1f, 1f);
 		this.skin = skin;
 

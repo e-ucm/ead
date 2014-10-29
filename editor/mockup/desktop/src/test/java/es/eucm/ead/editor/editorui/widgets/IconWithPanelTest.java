@@ -53,7 +53,7 @@ import es.eucm.ead.engine.I18N;
 public class IconWithPanelTest extends MockupUITest {
 
 	@Override
-	protected Actor builUI(Skin skin, I18N i18n) {
+	protected Actor buildUI(Skin skin, I18N i18n) {
 
 		Container container = new Container();
 		Table table = new Table(skin);

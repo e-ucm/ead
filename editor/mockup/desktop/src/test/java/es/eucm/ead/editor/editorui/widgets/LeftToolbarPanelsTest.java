@@ -64,7 +64,7 @@ public class LeftToolbarPanelsTest extends MockupUITest {
 			+ "0.json";
 
 	@Override
-	protected Actor builUI(Skin skin, I18N i18n) {
+	protected Actor buildUI(Skin skin, I18N i18n) {
 		Container container = new Container();
 		container.setFillParent(true);
 

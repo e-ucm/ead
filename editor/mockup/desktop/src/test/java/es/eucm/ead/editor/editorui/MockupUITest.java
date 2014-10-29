@@ -52,6 +52,7 @@ import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.utils.UIUtils;
 import com.badlogic.gdx.utils.viewport.ScreenViewport;
 
+import com.badlogic.gdx.utils.viewport.ScreenViewport;
 import es.eucm.ead.editor.MockupDesktopPlatform;
 import es.eucm.ead.editor.assets.ApplicationAssets;
 import es.eucm.ead.editor.control.Controller;
@@ -72,8 +73,8 @@ import es.eucm.ead.schemax.entities.ResourceCategory;
  * <p>
  * This recreates the minimum classes to have a complete editor without UI, and
  * is intended as playground to test editor views individually, implementing
- * {@link #builUI(Group)}. In this method, any view can be added to the root and
- * it will be shown.
+ * {@link #buildUI(Group)}. In this method, any view can be added to the root
+ * and it will be shown.
  * <p>
  * <p>
  * This class also provides some shortcuts for common tasks in the editor:
@@ -105,7 +106,7 @@ public abstract class MockupUITest implements ApplicationListener {
 		platform.setBatch(stage.getBatch());
 		Gdx.input.setInputProcessor(stage);
 		ApplicationAssets assets = controller.getApplicationAssets();
-		stage.getRoot().addActor(builUI(assets.getSkin(), assets.getI18N()));
+		stage.getRoot().addActor(buildUI(assets.getSkin(), assets.getI18N()));
 
 		stage.addListener(new ShortcutListener());
 	}
@@ -137,7 +138,7 @@ public abstract class MockupUITest implements ApplicationListener {
 		controller.exit();
 	}
 
-	protected abstract Actor builUI(Skin skin, I18N i18n);
+	protected abstract Actor buildUI(Skin skin, I18N i18n);
 
 	public class ShortcutListener extends InputListener {
 		@Override
