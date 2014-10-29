@@ -44,8 +44,6 @@ import com.badlogic.gdx.scenes.scene2d.Group;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.InputListener;
 import com.badlogic.gdx.scenes.scene2d.ui.TextArea;
-import com.badlogic.gdx.utils.Array;
-import com.badlogic.gdx.utils.Disposable;
 
 import es.eucm.ead.editor.assets.ApplicationAssets;
 import es.eucm.ead.editor.control.engine.MobileEngineInitializer;
@@ -90,7 +88,6 @@ public class MockupController extends Controller {
 	private Group rootComponent;
 	private RepositoryManager repositoryManager;
 	private String mockupDpiPath;
-	private Array<Disposable> disposables;
 
 	public MockupController(Platform platform, Files files,
 			final Group rootComponent) {
@@ -148,13 +145,8 @@ public class MockupController extends Controller {
 		super.loadPreferences();
 	}
 
-	public void addDisposable(Disposable disposable) {
-		disposables.add(disposable);
-	}
-
 	@Override
 	protected ApplicationAssets createApplicationAssets(Files files) {
-		disposables = new Array<Disposable>(5);
 		String dpi = Dpi.getDpi();
 		mockupDpiPath = "skins/mockup-" + dpi + "/";
 		return new ApplicationAssets(files, mockupDpiPath + "skin");
@@ -173,9 +165,7 @@ public class MockupController extends Controller {
 	@Override
 	public void exit() {
 		super.exit();
-		for (Disposable disposable : disposables) {
-			disposable.dispose();
-		}
+		((MockupViews) views).dispose();
 	}
 
 	public static interface BackListener {

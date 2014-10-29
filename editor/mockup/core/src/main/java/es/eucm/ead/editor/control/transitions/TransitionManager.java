@@ -49,7 +49,6 @@ import com.badlogic.gdx.utils.Disposable;
 import com.badlogic.gdx.utils.viewport.Viewport;
 
 import es.eucm.ead.editor.control.Controller;
-import es.eucm.ead.editor.control.MockupController;
 import es.eucm.ead.editor.control.MockupViews;
 
 /**
@@ -70,7 +69,6 @@ public class TransitionManager extends Actor implements Disposable {
 
 	public TransitionManager(Controller controller, Group viewsContainer,
 			MockupViews views) {
-		((MockupController) controller).addDisposable(this);
 		this.viewsContainer = viewsContainer;
 		this.views = views;
 	}
@@ -118,11 +116,6 @@ public class TransitionManager extends Actor implements Disposable {
 		batch.setColor(1f, 1f, 1f, 1f);
 		screenTransition.render(batch, currTex, currentScreenRegion, nexTex,
 				nextScreenRegion, percentageCompletion);
-	}
-
-	public void dispose() {
-		currFbo.dispose();
-		nextFbo.dispose();
 	}
 
 	/**
@@ -180,5 +173,17 @@ public class TransitionManager extends Actor implements Disposable {
 			viewsContainer.addActor(TransitionManager.this);
 		}
 	};
+
+	@Override
+	public void dispose() {
+		if (currFbo != null) {
+			currFbo.dispose();
+			currFbo = null;
+		}
+		if (nextFbo != null) {
+			nextFbo.dispose();
+			nextFbo = null;
+		}
+	}
 
 }
