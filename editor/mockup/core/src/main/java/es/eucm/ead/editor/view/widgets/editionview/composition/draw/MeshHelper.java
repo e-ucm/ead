@@ -36,7 +36,7 @@
  */
 package es.eucm.ead.editor.view.widgets.editionview.composition.draw;
 
-import java.nio.ByteBuffer;
+import java.io.IOException;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.files.FileHandle;
@@ -47,7 +47,7 @@ import com.badlogic.gdx.graphics.Mesh;
 import com.badlogic.gdx.graphics.Pixmap;
 import com.badlogic.gdx.graphics.Pixmap.Blending;
 import com.badlogic.gdx.graphics.Pixmap.Format;
-import com.badlogic.gdx.graphics.PixmapIO;
+import com.badlogic.gdx.graphics.PixmapIO.PNG;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.VertexAttribute;
 import com.badlogic.gdx.graphics.VertexAttributes.Usage;
@@ -64,6 +64,8 @@ import com.badlogic.gdx.scenes.scene2d.Group;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.Disposable;
+import com.badlogic.gdx.utils.GdxRuntimeException;
+import com.badlogic.gdx.utils.ScreenUtils;
 
 import es.eucm.ead.editor.control.Actions;
 import es.eucm.ead.editor.control.Controller;
@@ -77,7 +79,7 @@ import es.eucm.ead.editor.view.listeners.ActionListener;
  * Handles all the necessary data required to draw brush strokes, undo/redo and
  * delete them.
  */
-public class MeshHelper implements Disposable {
+public class MeshHelper {
 
 	/**
 	 * The maximum number of triangles. Increasing this value increases the
@@ -223,8 +225,6 @@ public class MeshHelper implements Disposable {
 		this.controller = controller;
 		this.scaledView = scaledView;
 		resetTotalBounds();
-		createShader();
-		createMesh();
 
 		ActionListener erasePixmaps = new ActionListener() {
 			@Override
@@ -270,58 +270,27 @@ public class MeshHelper implements Disposable {
 	}
 
 	/**
-	 * Computes and caches any information needed for drawing.
-	 */
-	void layout() {
-		reinitializeRenderingResources();
-	}
-
-	/**
 	 * Saves the minimum amount of pixels that encapsulates the drawn image.
 	 * 
 	 * @return
 	 */
 	PixmapRegion save(FileHandle file) {
 		final Pixmap savedPixmap = this.currModifiedPixmap.pixmap;
-		// We must convert the OpenGL ES coordinates of the pixels (y-down)
-		// to an y-up coordinate system before saving.
-		final int w = savedPixmap.getWidth();
-		final int h = savedPixmap.getHeight();
-		final ByteBuffer pixels = savedPixmap.getPixels();
-		byte[] lines = new byte[w * h * 4];
-		final int numBytesPerLine = w * 4, height_index = h - 1;
-		for (int i = 0; i < h; ++i) {
-			pixels.position((height_index - i) * numBytesPerLine);
-			pixels.get(lines, i * numBytesPerLine, numBytesPerLine);
+
+		try {
+			PNG writer = new PNG((int) (savedPixmap.getWidth()
+					* savedPixmap.getHeight() * 1.5f));
+			// Guess at deflated size.
+			try {
+				writer.setFlipY(true);
+				writer.write(file, savedPixmap);
+			} finally {
+				writer.dispose();
+			}
+		} catch (IOException ex) {
+			throw new GdxRuntimeException("Error writing PNG: " + file, ex);
 		}
-		pixels.clear();
-		pixels.put(lines);
-
-		PixmapIO.writePNG(file, savedPixmap);
 		return currModifiedPixmap;
-	}
-
-	/**
-	 * Returns a portion of the default {@link #frameBuffer} contents specified
-	 * by x, y, width and height as a {@link Pixmap} with the same dimensions.
-	 * Always has RGBA8888 {@link Format}.
-	 * 
-	 * @param x
-	 *            the x position of the {@link #frameBuffer} contents to capture
-	 * @param y
-	 *            the y position of the {@link #frameBuffer} contents to capture
-	 * @param w
-	 *            the width of the {@link #frameBuffer} contents to capture
-	 * @param h
-	 *            the height of the {@link #frameBuffer} contents to capture
-	 */
-	private Pixmap takeScreenShot(int x, int y, int w, int h) {
-		Gdx.gl.glPixelStorei(GL20.GL_PACK_ALIGNMENT, 1);
-		final Pixmap pixmap = new Pixmap(w, h, Format.RGBA8888);
-		ByteBuffer pixels = pixmap.getPixels();
-		Gdx.gl.glReadPixels(x, y, w, h, GL20.GL_RGBA, GL20.GL_UNSIGNED_BYTE,
-				pixels);
-		return pixmap;
 	}
 
 	/**
@@ -331,10 +300,9 @@ public class MeshHelper implements Disposable {
 	 * {@link Stage} size changed, the resources are translated via
 	 * {@link #translateResources(Actor)}.
 	 */
-	private void reinitializeRenderingResources() {
-		if (showingTexRegion != null) {
-			return;
-		}
+	public void initializeRenderingResources() {
+		createShader();
+		createMesh();
 
 		this.recalculateMatrix = true;
 
@@ -344,9 +312,11 @@ public class MeshHelper implements Disposable {
 
 		float w = scaledView.getWidth(), h = scaledView.getHeight();
 
-		fbo = new FrameBuffer(Format.RGBA8888, Gdx.graphics.getWidth(),
-				Gdx.graphics.getHeight(), false);
-		showingTexRegion = new TextureRegion(fbo.getColorBufferTexture());
+		if (fbo == null) {
+			fbo = new FrameBuffer(Format.RGBA8888, Gdx.graphics.getWidth(),
+					Gdx.graphics.getHeight(), false);
+		}
+		showingTexRegion.setRegion(fbo.getColorBufferTexture());
 
 		clampMinX = 0f;
 		clampMinY = 0f;
@@ -355,25 +325,15 @@ public class MeshHelper implements Disposable {
 		clampMaxY = h;
 
 		scaledView.localToStageCoordinates(temp.set(0f, 0f));
-		int stageX = MathUtils.round(temp.x), stageY = MathUtils.round(temp.y);
-		showingTexRegion.setRegion(stageX, stageY, MathUtils.round(w),
-				MathUtils.round(h));
+		int stageX = MathUtils.round(temp.x), stageY = MathUtils.round(temp.y), width = MathUtils
+				.round(w), height = MathUtils.round(h);
+		showingTexRegion.setRegion(stageX, stageY, width, height);
 		showingTexRegion.flip(false, true);
 		if (this.flusher.pixmap == null) {
-			this.flusher.pixmap = new Pixmap(MathUtils.round(w),
-					MathUtils.round(h), Format.RGBA8888);
+			this.flusher.pixmap = new Pixmap(width, height, Format.RGBA8888);
 			flusher.x = stageX;
 			flusher.y = stageY;
 		}
-	}
-
-	/**
-	 * Clears the {@link #mesh}. Nothing will be rendered by the mesh after the
-	 * call to this method unless new vertices are added to the {@link #mesh}
-	 * via {@link Mesh#setVertices(float[], int, int)}.
-	 */
-	private void resetMesh() {
-		this.vertexIndex = 0;
 	}
 
 	/**
@@ -414,6 +374,37 @@ public class MeshHelper implements Disposable {
 		// check there's no shader compile error
 		if (!this.meshShader.isCompiled())
 			throw new IllegalStateException(this.meshShader.getLog());
+	}
+
+	/**
+	 * Initializes the mesh with the pixels of the given group.
+	 * 
+	 * The result vectors must be in {@link #scaledView} coordinates.
+	 * 
+	 * @param toEdit
+	 * @param resultOrigin
+	 * @param resultSize
+	 */
+	public void show(Group toEdit, Vector2 resultOrigin, Vector2 resultSize) {
+		int x = MathUtils.round(resultOrigin.x), y = MathUtils
+				.round(resultOrigin.y), width = (int) resultSize.x, height = (int) resultSize.y;
+		minX = x;
+		minY = y;
+		maxX = minX + width;
+		maxY = minY + height;
+
+		scaledView.localToStageCoordinates(temp.set(x, y));
+		int stageX = MathUtils.round(temp.x), stageY = MathUtils.round(temp.y);
+
+		Batch batch = controller.getPlatform().getBatch();
+		batch.setProjectionMatrix(combinedMatrix);
+		fbo.begin();
+		batch.begin();
+		toEdit.draw(batch, 1f);
+		batch.end();
+		currModifiedPixmap = new PixmapRegion(ScreenUtils.getFrameBufferPixmap(
+				stageX, stageY, width, height), stageX, stageY);
+		fbo.end();
 	}
 
 	/**
@@ -478,8 +469,7 @@ public class MeshHelper implements Disposable {
 
 	}
 
-	@Override
-	public void dispose() {
+	private void dispose() {
 		if (this.flusher.pixmap != null) {
 			this.flusher.pixmap.dispose();
 			this.flusher.pixmap = null;
@@ -494,6 +484,20 @@ public class MeshHelper implements Disposable {
 		this.meshShader = null;
 	}
 
+	private final Runnable dispose = new Runnable() {
+
+		@Override
+		public void run() {
+			dispose();
+		}
+	};
+
+	/**
+	 * Starts adding vertices to the {@link #mesh}.
+	 * 
+	 * @param x
+	 * @param y
+	 */
 	void touchDown(float x, float y) {
 		vertexLimit = Integer.MAX_VALUE;
 		drawHalfCircle(0, x, y);
@@ -581,27 +585,9 @@ public class MeshHelper implements Disposable {
 		}
 	}
 
-	private void prepareLine(float angle, float x, float y) {
-
-		float cosDeg = MathUtils.cosDeg(angle) * drawRadius;
-		float maxNorX = x + cosDeg;
-		this.lineVertices[this.vertexIndex++] = maxNorX;
-
-		float sinDeg = MathUtils.sinDeg(angle) * drawRadius;
-		float maxNorY = y + sinDeg;
-		this.lineVertices[this.vertexIndex++] = maxNorY;
-
-		float minNorX = x - cosDeg;
-		this.lineVertices[this.vertexIndex++] = minNorX;
-
-		float minNorY = y - sinDeg;
-		this.lineVertices[this.vertexIndex++] = minNorY;
-	}
-
 	/**
-	 * This method decides if a dot should be rendered via
-	 * {@link GL20#GL_TRIANGLE_FAN}, if the user didn't drag enough space to
-	 * draw a stroke, or a normal {@link #touchDragged(float, float)}.
+	 * Finishes adding vertices to the {@link #mesh} and performs the #
+	 * {@link DrawLineCommand}.
 	 * 
 	 * @param x
 	 * @param y
@@ -617,6 +603,14 @@ public class MeshHelper implements Disposable {
 		}
 	}
 
+	/**
+	 * Draws half circle with GL_TRIANGLE_STRIP vertices starting at a given
+	 * angle.
+	 * 
+	 * @param startingAngle
+	 * @param x
+	 * @param y
+	 */
 	private void drawHalfCircle(float startingAngle, float x, float y) {
 		final int triangleAmount = getHalfCircleTriangles();
 
@@ -634,9 +628,39 @@ public class MeshHelper implements Disposable {
 
 	}
 
+	/**
+	 * Prepares the vertices after drawing a half circle via
+	 * {@link #drawHalfCircle(float, float, float)}.
+	 */
+	private void prepareLine(float angle, float x, float y) {
+
+		float cosDeg = MathUtils.cosDeg(angle) * drawRadius;
+		float maxNorX = x + cosDeg;
+		this.lineVertices[this.vertexIndex++] = maxNorX;
+
+		float sinDeg = MathUtils.sinDeg(angle) * drawRadius;
+		float maxNorY = y + sinDeg;
+		this.lineVertices[this.vertexIndex++] = maxNorY;
+
+		float minNorX = x - cosDeg;
+		this.lineVertices[this.vertexIndex++] = minNorX;
+
+		float minNorY = y - sinDeg;
+		this.lineVertices[this.vertexIndex++] = minNorY;
+	}
+
 	private int getHalfCircleTriangles() {
 		return MathUtils.round(MAX_DOT_TRIANGLES * this.drawRadius
 				/ this.maxDrawRadius * .5f);
+	}
+
+	/**
+	 * Clears the {@link #mesh}. Nothing will be rendered by the mesh after the
+	 * call to this method unless new vertices are added to the {@link #mesh}
+	 * via {@link Mesh#setVertices(float[], int, int)}.
+	 */
+	private void resetMesh() {
+		this.vertexIndex = 0;
 	}
 
 	/**
@@ -692,6 +716,31 @@ public class MeshHelper implements Disposable {
 	}
 
 	/**
+	 * Updates {@link #minX}, {@link #minY}, {@link #maxX} and {@link #maxY} to
+	 * the coordinates of the {@link PixmapRegion pixRegion}. Since
+	 * {@link PixmapRegion pixRegion} uses {@link Stage} coordinate system which
+	 * is the same as the one used by {@link #minX}, {@link #minY},
+	 * {@link #maxX} and {@link #maxY} no conversion must be done before
+	 * updating the new values.
+	 */
+	private void updateTotalBounds(PixmapRegion pixRegion) {
+		final Pixmap pix = pixRegion.pixmap;
+
+		if (pix != flusher.pixmap) {
+			float x = pixRegion.x;
+			float y = pixRegion.y;
+
+			scaledView.stageToLocalCoordinates(temp.set(x, y));
+			minX = temp.x;
+			minY = temp.y;
+			maxX = minX + pix.getWidth();
+			maxY = minY + pix.getHeight();
+		} else {
+			resetTotalBounds();
+		}
+	}
+
+	/**
 	 * Sets the {@link Color} of the brush.
 	 */
 	void setColor(Color color) {
@@ -722,75 +771,6 @@ public class MeshHelper implements Disposable {
 	}
 
 	/**
-	 * Updates {@link #minX}, {@link #minY}, {@link #maxX} and {@link #maxY} to
-	 * the coordinates of the {@link PixmapRegion pixRegion}. Since
-	 * {@link PixmapRegion pixRegion} uses {@link Stage} coordinate system which
-	 * is the same as the one used by {@link #minX}, {@link #minY},
-	 * {@link #maxX} and {@link #maxY} no conversion must be done before
-	 * updating the new values.
-	 */
-	private void updateTotalBounds(PixmapRegion pixRegion) {
-		final Pixmap pix = pixRegion.pixmap;
-
-		if (pix != flusher.pixmap) {
-			float x = pixRegion.x;
-			float y = pixRegion.y;
-
-			scaledView.stageToLocalCoordinates(temp.set(x, y));
-			minX = temp.x;
-			minY = temp.y;
-			maxX = minX + pix.getWidth();
-			maxY = minY + pix.getHeight();
-		} else {
-			resetTotalBounds();
-		}
-	}
-
-	/**
-	 * Initializes the mesh with the pixels of the given group.
-	 * 
-	 * The result vectors must be in {@link #scaledView} coordinates.
-	 * 
-	 * @param toEdit
-	 * @param resultOrigin
-	 * @param resultSize
-	 */
-	public void show(Group toEdit, Vector2 resultOrigin, Vector2 resultSize) {
-		int x = MathUtils.round(resultOrigin.x), y = MathUtils
-				.round(resultOrigin.y), width = (int) resultSize.x, height = (int) resultSize.y;
-		minX = x;
-		minY = y;
-		maxX = minX + width;
-		maxY = minY + height;
-
-		scaledView.localToStageCoordinates(temp.set(x, y));
-		int stageX = MathUtils.round(temp.x), stageY = MathUtils.round(temp.y);
-
-		Batch batch = controller.getPlatform().getBatch();
-		batch.setProjectionMatrix(combinedMatrix);
-		fbo.begin();
-		batch.begin();
-		toEdit.draw(batch, 1f);
-		batch.end();
-		currModifiedPixmap = new PixmapRegion(takeScreenShot(stageX, stageY,
-				width, height), stageX, stageY);
-		fbo.end();
-	}
-
-	/**
-	 * Clears the contents of the current {@link #frameBuffer} by clearing it's
-	 * {@link Texture} with the help of the {@link #flusher}.
-	 */
-	void clear() {
-		if (this.showingTexRegion == null)
-			return;
-
-		this.flusher.pixmap.fill();
-		this.showingTexRegion.getTexture().draw(this.flusher.pixmap,
-				this.flusher.x, this.flusher.y);
-	}
-
-	/**
 	 * Disposes all the {@link Array}s, {@link #currModifiedPixmap} and resets
 	 * {@link #minX}, {@link #minY}, {@link #maxX} and {@link #maxY} via
 	 * {@link #resetTotalBounds()}. Also disposed {@link #erasedPixmap} and
@@ -804,6 +784,7 @@ public class MeshHelper implements Disposable {
 			this.currModifiedPixmap.dispose();
 			this.currModifiedPixmap = null;
 		}
+		Gdx.app.postRunnable(dispose);
 	}
 
 	/**
@@ -869,8 +850,8 @@ public class MeshHelper implements Disposable {
 		private void takePixmap(int x, int y, int width, int height) {
 			fbo.begin();
 			drawMesh();
-			currModifiedPixmap = new PixmapRegion(takeScreenShot(x, y, width,
-					height), x, y);
+			currModifiedPixmap = new PixmapRegion(
+					ScreenUtils.getFrameBufferPixmap(x, y, width, height), x, y);
 			fbo.end();
 		}
 

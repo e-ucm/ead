@@ -52,7 +52,6 @@ import com.badlogic.gdx.utils.Array;
 
 import es.eucm.ead.editor.assets.EditorGameAssets;
 import es.eucm.ead.editor.control.Controller;
-import es.eucm.ead.editor.control.MockupController;
 import es.eucm.ead.editor.view.widgets.editionview.MockupSceneEditor;
 import es.eucm.ead.editor.view.widgets.editionview.composition.draw.MeshHelper.PixmapRegion;
 import es.eucm.ead.editor.view.widgets.groupeditor.Modifier;
@@ -98,7 +97,6 @@ public class BrushStrokes extends WidgetGroup {
 		this.sceneEditor = scaledView;
 		this.controller = control;
 		this.mode = null;
-		((MockupController) controller).addDisposable(mesh);
 		addCaptureListener(drawListener);
 	}
 
@@ -114,11 +112,6 @@ public class BrushStrokes extends WidgetGroup {
 			mesh.setColor(eraseColor);
 		}
 		this.mode = mode;
-	}
-
-	@Override
-	public void layout() {
-		this.mesh.layout();
 	}
 
 	@Override
@@ -187,6 +180,7 @@ public class BrushStrokes extends WidgetGroup {
 			Pixmap.setBlending(Blending.None);
 			controller.getCommands().pushStack(MAX_COMMANDS);
 			setBounds(0f, 0f, sceneEditor.getWidth(), sceneEditor.getHeight());
+			mesh.initializeRenderingResources();
 
 			if (selection != null) {
 				toEdit = selection;
@@ -232,19 +226,11 @@ public class BrushStrokes extends WidgetGroup {
 		if (hasParent()) {
 			Pixmap.setBlending(Blending.SourceOver);
 			remove();
-			clearMesh();
 			if (release) {
 				release();
 			}
 			controller.getCommands().popStack(false);
 		}
-	}
-
-	/**
-	 * Calls {@link MeshHelper#clear()}.
-	 */
-	private void clearMesh() {
-		this.mesh.clear();
 	}
 
 	public void release() {
