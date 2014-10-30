@@ -180,10 +180,17 @@ public class AbstractWidget extends WidgetGroup {
 	}
 
 	/**
-	 * @return centimeters converted into screen pixels
+	 * @return centimeters converted into screen pixels in the x axis
 	 */
-	protected float cmToPixels(float cm) {
+	protected float cmToXPixels(float cm) {
 		return Gdx.graphics.getPpcX() * cm;
+	}
+
+	/**
+	 * @return centimeters converted into screen pixels in the y axis
+	 */
+	protected float cmToYPixels(float cm) {
+		return Gdx.graphics.getPpcY() * cm;
 	}
 
 	@Override
