@@ -37,74 +37,52 @@
 package es.eucm.ead.editor.view.builders;
 
 import com.badlogic.gdx.scenes.scene2d.Actor;
-import com.badlogic.gdx.scenes.scene2d.ui.Cell;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
-import com.badlogic.gdx.scenes.scene2d.ui.Table;
+import com.badlogic.gdx.scenes.scene2d.utils.Drawable;
 
 import es.eucm.ead.editor.control.Controller;
 import es.eucm.ead.editor.control.MockupController.BackListener;
-import es.eucm.ead.editor.control.MockupViews;
 import es.eucm.ead.editor.control.actions.editor.ChangeMockupView;
 import es.eucm.ead.editor.control.transitions.Transitions;
 import es.eucm.ead.editor.view.builders.gallery.ScenesView;
-import es.eucm.ead.editor.view.widgets.editionview.InfoEditionPanel;
+import es.eucm.ead.editor.view.widgets.baseview.BaseView;
+import es.eucm.ead.editor.view.widgets.baseview.BaseView.BaseViewStyle;
 import es.eucm.ead.editor.view.widgets.editionview.MockupSceneEditor;
-import es.eucm.ead.editor.view.widgets.editionview.TopEditionToolbar;
 import es.eucm.ead.editor.view.widgets.editionview.composition.CompositionToolbar;
-import es.eucm.ead.editor.view.widgets.editionview.composition.draw.PaintToolbar;
-import es.eucm.ead.editor.view.widgets.helpmessage.sequence.EditionViewHelp;
 
 public class EditionView implements ViewBuilder, BackListener {
 
-	private static final String TOP_STYLE = "white_top";
-
-	private Table view;
+	private BaseView view;
 
 	private MockupSceneEditor sceneEditor;
 
-	private InfoEditionPanel infoPanel;
 	private Controller controller;
 	private Skin skin;
 
 	private CompositionToolbar composition;
-
-	private TopEditionToolbar topBar;
-
-	private Table bottom;
 
 	@Override
 	public void initialize(Controller controller) {
 		this.controller = controller;
 		this.skin = controller.getApplicationAssets().getSkin();
 
-		view = new Table();
+		Drawable blank = skin.getDrawable("blank");
+		BaseViewStyle style = new BaseViewStyle();
+		style.navigationBackground = blank;
+		style.navigationBackgroundAlpha = 0.5f;
+
+		view = new BaseView(style);
 		view.setFillParent(true);
 
-		sceneEditor = new MockupSceneEditor(controller, TOP_STYLE);
+		sceneEditor = new MockupSceneEditor(controller);
 
-		topBar = new TopEditionToolbar(controller, TOP_STYLE, 0f, 0f,
-				sceneEditor);
+		composition = new CompositionToolbar(controller, sceneEditor);
 
-		PaintToolbar paintToolbar = new PaintToolbar(sceneEditor, controller);
-		composition = new CompositionToolbar(controller, paintToolbar);
+		view.setToolbar(composition);
+		sceneEditor.setFillParent(true);
+		view.addActor(sceneEditor);
 
-		view.add(topBar).expandX().fill();
-		bottom = new Table();
-
-		Cell sceneEditorCell = bottom.add(sceneEditor).expand().fill();
 		sceneEditor.toBack();
-		bottom.row();
-		bottom.add(composition).expandX().fill();
-
-		view.row();
-		view.add(bottom).expand().fill();
-
-		infoPanel = new InfoEditionPanel(controller, skin, sceneEditorCell,
-				paintToolbar);
-
-		((MockupViews) controller.getViews())
-				.registerHelpMessage(new EditionViewHelp(controller, this,
-						topBar));
 	}
 
 	@Override
@@ -116,7 +94,6 @@ public class EditionView implements ViewBuilder, BackListener {
 
 	@Override
 	public Actor getView(Object... args) {
-		infoPanel.show();
 		sceneEditor.prepare();
 		composition.resetShow();
 
@@ -126,6 +103,6 @@ public class EditionView implements ViewBuilder, BackListener {
 	@Override
 	public void onBackPressed() {
 		controller.action(ChangeMockupView.class, ScenesView.class,
-				Transitions.getFadeSlideTransition(topBar, bottom, false));
+				Transitions.getFadeSlideTransition(composition, view, false));
 	}
 }
