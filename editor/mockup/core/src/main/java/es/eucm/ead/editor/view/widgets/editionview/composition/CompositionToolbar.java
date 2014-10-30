@@ -58,14 +58,15 @@ import es.eucm.ead.editor.model.Model.SelectionListener;
 import es.eucm.ead.editor.model.events.SelectionEvent;
 import es.eucm.ead.editor.model.events.SelectionEvent.Type;
 import es.eucm.ead.editor.view.builders.gallery.repository.LibrariesView;
-import es.eucm.ead.editor.view.widgets.HorizontalToolbar;
 import es.eucm.ead.editor.view.widgets.IconButton;
-import es.eucm.ead.editor.view.widgets.MultiHorizontalToolbar;
+import es.eucm.ead.editor.view.widgets.MultiToolbar;
+import es.eucm.ead.editor.view.widgets.Toolbar;
+import es.eucm.ead.editor.view.widgets.editionview.MockupSceneEditor;
 import es.eucm.ead.editor.view.widgets.editionview.TransformationsWidget;
 import es.eucm.ead.editor.view.widgets.editionview.composition.draw.PaintToolbar;
 import es.eucm.ead.editor.view.widgets.editionview.composition.draw.PaintToolbar.DrawListener;
 
-public class CompositionToolbar extends MultiHorizontalToolbar implements
+public class CompositionToolbar extends MultiToolbar implements
 		SelectionListener {
 
 	private Skin skin;
@@ -73,22 +74,20 @@ public class CompositionToolbar extends MultiHorizontalToolbar implements
 	private Controller controller;
 
 	private PaintToolbar paintToolbar;
-	private HorizontalToolbar insertToolbar;
-	private HorizontalToolbar transformToolbar;
+	private Toolbar insertToolbar;
+	private Toolbar transformToolbar;
 
-	public CompositionToolbar(final Controller controller,
-			PaintToolbar paintToolbar) {
-		super(controller.getApplicationAssets().getSkin(), "bottom_bar",
-				Color.CYAN);
+	public CompositionToolbar(Controller c, MockupSceneEditor sceneEditor) {
+		super(c.getApplicationAssets().getSkin(), "mokap");
 
-		this.controller = controller;
+		this.controller = c;
 		this.skin = controller.getApplicationAssets().getSkin();
 
-		this.paintToolbar = paintToolbar;
+		this.paintToolbar = new PaintToolbar(sceneEditor, controller);
 		createInsertToolbar();
 		createTransformationToolbar();
 
-		addHorizontalToolbar(insertToolbar, transformToolbar, paintToolbar);
+		addToolbar(insertToolbar, transformToolbar, paintToolbar);
 		paintToolbar.addListener(new DrawListener() {
 
 			private Object selection;
@@ -115,7 +114,7 @@ public class CompositionToolbar extends MultiHorizontalToolbar implements
 	}
 
 	private void createInsertToolbar() {
-		this.insertToolbar = new HorizontalToolbar(skin, "white_bottom");
+		this.insertToolbar = new Toolbar(skin);
 		insertToolbar.backgroundColor(Color.CYAN);
 
 		final IconButton paste = new IconButton("paste", "paste80x80", 0f, skin);
@@ -208,7 +207,7 @@ public class CompositionToolbar extends MultiHorizontalToolbar implements
 	}
 
 	private void createTransformationToolbar() {
-		this.transformToolbar = new HorizontalToolbar(skin, "white_bottom");
+		this.transformToolbar = new Toolbar(skin);
 		transformToolbar.backgroundColor(Color.ORANGE);
 		transformToolbar.rightAdd(new TransformationsWidget(controller, 5f));
 		final IconButton paint = new IconButton("paint", "paint80x80", 0f, skin);
@@ -233,11 +232,11 @@ public class CompositionToolbar extends MultiHorizontalToolbar implements
 		// TODO
 	}
 
-	public HorizontalToolbar getInsertToolbar() {
+	public Toolbar getInsertToolbar() {
 		return insertToolbar;
 	}
 
-	public HorizontalToolbar getTransformToolbar() {
+	public Toolbar getTransformToolbar() {
 		return transformToolbar;
 	}
 
@@ -250,10 +249,9 @@ public class CompositionToolbar extends MultiHorizontalToolbar implements
 		int selected = controller.getModel().getSelection()
 				.get(Selection.SCENE_ELEMENT).length;
 		if (event.getType() == Type.FOCUSED) {
-			if (selected > 0 && getCurrentToolbar() != transformToolbar) {
+			if (selected > 0) {
 				show(transformToolbar);
-			} else if (selected == 0 && getCurrentToolbar() != insertToolbar
-					&& toShow != paintToolbar) {
+			} else if (selected == 0 && toShow != paintToolbar) {
 				show(insertToolbar);
 			}
 		}
@@ -263,4 +261,5 @@ public class CompositionToolbar extends MultiHorizontalToolbar implements
 	public boolean listenToContext(String contextId) {
 		return true;
 	}
+
 }

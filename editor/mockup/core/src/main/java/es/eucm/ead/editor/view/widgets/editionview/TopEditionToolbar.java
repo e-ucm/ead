@@ -53,12 +53,12 @@ import es.eucm.ead.editor.control.commands.Command;
 import es.eucm.ead.editor.control.transitions.Transitions;
 import es.eucm.ead.editor.view.builders.gallery.PlayView;
 import es.eucm.ead.editor.view.listeners.ActionListener;
-import es.eucm.ead.editor.view.widgets.HorizontalToolbar;
+import es.eucm.ead.editor.view.widgets.Toolbar;
 import es.eucm.ead.editor.view.widgets.IconButton;
 import es.eucm.ead.editor.view.widgets.iconwithpanel.IconWithLateralPanel;
 import es.eucm.ead.engine.assets.GameAssets;
 
-public class TopEditionToolbar extends HorizontalToolbar {
+public class TopEditionToolbar extends Toolbar {
 
 	private OthersWidget others;
 

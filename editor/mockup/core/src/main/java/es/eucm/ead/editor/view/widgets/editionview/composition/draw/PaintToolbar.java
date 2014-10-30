@@ -61,7 +61,7 @@ import es.eucm.ead.editor.control.background.BackgroundExecutor;
 import es.eucm.ead.editor.control.background.BackgroundExecutor.BackgroundTaskListener;
 import es.eucm.ead.editor.control.background.BackgroundTask;
 import es.eucm.ead.editor.model.Q;
-import es.eucm.ead.editor.view.widgets.HorizontalToolbar;
+import es.eucm.ead.editor.view.widgets.Toolbar;
 import es.eucm.ead.editor.view.widgets.IconButton;
 import es.eucm.ead.editor.view.widgets.editionview.MockupSceneEditor;
 import es.eucm.ead.editor.view.widgets.editionview.composition.CompositionToolbar;
@@ -70,7 +70,7 @@ import es.eucm.ead.engine.I18N;
 import es.eucm.ead.schema.entities.ModelEntity;
 import es.eucm.ead.schema.renderers.Image;
 
-public class PaintToolbar extends HorizontalToolbar {
+public class PaintToolbar extends Toolbar {
 
 	private static final String LOGTAG = "PaintToolbar";
 	private static final float ALPHA_FACTOR = .5F;

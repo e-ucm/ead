@@ -157,46 +157,44 @@ public abstract class BaseGallery implements ViewBuilder {
 		view.align(Align.top);
 		view.setFillParent(true);
 
-		topBar = new Toolbar(skin, "white_top");
+		topBar = new Toolbar(skin, littlePad, "white_top");
 
-		topBar.defaults().expandY().fill();
 		Value smallPad = Value.percentHeight(.5f, topBar);
 		Actor backButton = createBackButton();
 		if (backButton != null) {
-			topBar.add(backButton);
+			topBar.leftAdd(backButton);
 		}
 
 		Actor about = createAboutWidget();
 		if (about != null) {
-			topBar.add(about).padLeft(smallPad);
+			topBar.leftAdd(about);
 		}
 
 		Actor play = createPlayButton();
 		if (play != null) {
-			topBar.add(play).padLeft(smallPad);
+			topBar.leftAdd(play);
 		}
 
 		Actor share = createShareButton();
 		if (share != null) {
-			topBar.add(share).padLeft(smallPad);
+			topBar.leftAdd(share);
 		}
 
-		topBar.add().expandX();
 		Actor toolbarText = createToolbarText();
 		if (toolbarText != null) {
 			topBar.add(toolbarText);
 		}
 
-		topBar.add().expandX();
+		topBar.addSpace();
 		searchWidget = createSearchWidget();
-		topBar.add(searchWidget).padRight(smallPad);
+		topBar.add(searchWidget);
 
 		sortWidget = addReorderWidget();
-		topBar.add(sortWidget).padRight(smallPad);
+		topBar.add(sortWidget);
 
 		Actor settings = createSettings(controller);
 		if (settings != null) {
-			topBar.add(settings).padRight(smallPad);
+			topBar.add(settings);
 		}
 
 		createnNewButton();

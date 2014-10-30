@@ -48,7 +48,7 @@ import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
 
 import es.eucm.ead.editor.control.MockupController.Dpi;
 import es.eucm.ead.editor.editorui.MockupUITest;
-import es.eucm.ead.editor.view.widgets.HorizontalToolbar;
+import es.eucm.ead.editor.view.widgets.Toolbar;
 import es.eucm.ead.editor.view.widgets.PositionedHiddenPanel;
 import es.eucm.ead.editor.view.widgets.iconwithpanel.IconWithScalePanel;
 import es.eucm.ead.engine.I18N;
@@ -61,9 +61,8 @@ public class IconWithScalePanelTest extends MockupUITest {
 		Table table = new Table();
 		table.setFillParent(true);
 
-		HorizontalToolbar topBar = new HorizontalToolbar(skin, 20, "white_top");
-		HorizontalToolbar botBar = new HorizontalToolbar(skin, 30,
-				"white_bottom");
+		Toolbar topBar = new Toolbar(skin, 20, "white_top");
+		Toolbar botBar = new Toolbar(skin, 30, "white_bottom");
 
 		IconWithScalePanel widgetTopLeft = new IconWithScalePanel("menu", 0,
 				-1, skin, Color.ORANGE);
