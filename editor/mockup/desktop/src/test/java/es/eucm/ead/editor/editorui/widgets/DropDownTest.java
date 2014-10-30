@@ -59,7 +59,7 @@ import es.eucm.ead.engine.assets.Assets.AssetLoadedCallback;
 public class DropDownTest extends MockupUITest {
 
 	@Override
-	protected Actor builUI(Skin skin, I18N i18n) {
+	protected Actor buildUI(Skin skin, I18N i18n) {
 
 		Container container = new Container();
 		EditorGameAssets gameAssets = controller.getEditorGameAssets();

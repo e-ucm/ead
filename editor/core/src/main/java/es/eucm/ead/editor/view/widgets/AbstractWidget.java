@@ -36,6 +36,7 @@
  */
 package es.eucm.ead.editor.view.widgets;
 
+import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.Group;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
@@ -176,6 +177,20 @@ public class AbstractWidget extends WidgetGroup {
 			}
 		}
 		return maxWidth;
+	}
+
+	/**
+	 * @return centimeters converted into screen pixels in the x axis
+	 */
+	protected float cmToXPixels(float cm) {
+		return Gdx.graphics.getPpcX() * cm;
+	}
+
+	/**
+	 * @return centimeters converted into screen pixels in the y axis
+	 */
+	protected float cmToYPixels(float cm) {
+		return Gdx.graphics.getPpcY() * cm;
 	}
 
 	@Override
