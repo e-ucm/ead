@@ -104,19 +104,19 @@ public class BaseView extends AbstractWidget {
 				if (!event.isHandled()) {
 					switch (area) {
 					case NAVIGATION_AREA:
-						if (velocityX > cmToPixels(FLING_MIN_VELOCITY_CM)) {
+						if (velocityX > cmToXPixels(FLING_MIN_VELOCITY_CM)) {
 							navigation.show();
 							event.stop();
 						}
 						break;
 					case SELECTION_CONTEXT_AREA:
-						if (velocityX < cmToPixels(FLING_MIN_VELOCITY_CM)) {
+						if (velocityX < cmToXPixels(FLING_MIN_VELOCITY_CM)) {
 							selectionContext.show();
 							event.stop();
 						}
 						break;
 					case -1:
-						if (velocityX > cmToPixels(FLING_MIN_VELOCITY_CM)) {
+						if (velocityX > cmToXPixels(FLING_MIN_VELOCITY_CM)) {
 							selectionContext.hide();
 							event.stop();
 						}
@@ -169,10 +169,10 @@ public class BaseView extends AbstractWidget {
 	}
 
 	private int area(float x, float y) {
-		if (x < cmToPixels(FLING_AREA_CM)) {
+		if (x < cmToXPixels(FLING_AREA_CM)) {
 			return NAVIGATION_AREA;
 		} else if (selectionContext != null
-				&& x > Gdx.graphics.getWidth() - cmToPixels(FLING_AREA_CM)) {
+				&& x > Gdx.graphics.getWidth() - cmToXPixels(FLING_AREA_CM)) {
 			return SELECTION_CONTEXT_AREA;
 		} else {
 			return -1;

@@ -179,7 +179,7 @@ class Navigation extends Panel {
 
 	@Override
 	public boolean isVelocityToHide(float velocityX, float velocityY) {
-		return velocityX < -cmToPixels(BaseView.FLING_MIN_VELOCITY_CM);
+		return velocityX < -cmToXPixels(BaseView.FLING_MIN_VELOCITY_CM);
 	}
 
 	@Override

@@ -140,7 +140,7 @@ abstract class Panel extends AbstractWidget {
 	public abstract void displace(InputEvent event, float deltaX, float deltaY);
 
 	protected boolean isVelocityToScroll(InputEvent event, float vy) {
-		return Math.abs(vy) > cmToPixels(BaseView.FLING_MIN_VELOCITY_CM);
+		return Math.abs(vy) > cmToYPixels(BaseView.FLING_MIN_VELOCITY_CM);
 	}
 
 	public abstract boolean isVelocityToHide(float velocityX, float velocityY);
