@@ -38,64 +38,64 @@ package es.eucm.ead.editor.view.widgets;
 
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.math.Interpolation;
-import com.badlogic.gdx.math.Vector2;
+import com.badlogic.gdx.scenes.scene2d.Action;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.Touchable;
 import com.badlogic.gdx.scenes.scene2d.actions.Actions;
 import com.badlogic.gdx.scenes.scene2d.ui.Container;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.utils.Align;
+import com.badlogic.gdx.scenes.scene2d.utils.Drawable;
 import com.badlogic.gdx.utils.Array;
 
-public class MultiHorizontalToolbar extends Container<HorizontalToolbar> {
+public class MultiToolbar extends Container<Toolbar> {
 
-	private static final float ANIM_TIME = 0.2f;
+	private static final float ANIM_TIME = 0.15f;
 
-	private static final Vector2 TEMP = new Vector2();
-
-	private Array<HorizontalToolbar> arrayBars;
+	private Array<Toolbar> arrayBars;
 
 	private float maxHeight;
 
-	private HorizontalToolbar toHide;
+	private Toolbar toHide;
 
-	protected HorizontalToolbar toShow;
+	protected Toolbar toShow;
 
 	private Runnable actionAddActor;
 
-	boolean sameToolbar;
+	private MultiToolbarStyle style;
 
-	public MultiHorizontalToolbar() {
-		this(null, null, null);
-	}
+	public MultiToolbar(Skin skin, String styleName) {
 
-	public MultiHorizontalToolbar(Skin skin, String string, Color color) {
-		arrayBars = new Array<HorizontalToolbar>();
+		style = skin.get(styleName, MultiToolbarStyle.class);
+
+		setBackground(style.background);
+		if (style.color != null) {
+			setColor(style.color);
+		}
+
+		arrayBars = new Array<Toolbar>();
 		maxHeight = 0;
 		fill();
 
 		actionAddActor = new Runnable() {
 			@Override
 			public void run() {
+
+				float timeShow = ANIM_TIME * (1 - Math.abs(toShow.getScaleY()));
+
 				setActor(toShow);
+				toShow.addAction(Actions.sequence(Actions.parallel(
+						Actions.scaleTo(1, 1, timeShow, Interpolation.sineIn),
+						Actions.fadeIn(timeShow)), Actions
+						.touchable(Touchable.enabled)));
 			}
 		};
-
-		if (skin != null) {
-			setBackground(skin.getDrawable(string));
-			setColor(color);
-			sameToolbar = true;
-		} else {
-			sameToolbar = false;
-		}
 	}
 
-	public void addHorizontalToolbar(HorizontalToolbar... toolbars) {
-		for (HorizontalToolbar toolbar : toolbars) {
+	public void addToolbar(Toolbar... toolbars) {
+		for (Toolbar toolbar : toolbars) {
 			toolbar.setTouchable(Touchable.disabled);
-			if (sameToolbar) {
-				toolbar.background(null);
-			}
+			toolbar.background(null);
 
 			arrayBars.add(toolbar);
 			if (maxHeight < toolbar.getPrefHeight()) {
@@ -105,23 +105,24 @@ public class MultiHorizontalToolbar extends Container<HorizontalToolbar> {
 
 		if (getActor() == null) {
 			setActor(toolbars[0]);
+			toShow = toolbars[0];
 			toolbars[0].setTouchable(Touchable.enabled);
 		}
 	}
 
 	public void resetShow() {
-		HorizontalToolbar toolbar = arrayBars.first();
+		Toolbar toolbar = arrayBars.first();
 		toolbar.setTouchable(Touchable.enabled);
 		toolbar.getColor().a = 1;
+		toolbar.setScaleY(1);
 		setActor(toolbar);
-		toShow = null;
+		toShow = toolbar;
 		toHide = null;
 	}
 
-	public void show(final HorizontalToolbar newBar) {
-		if (arrayBars.contains(newBar, true) && newBar != toShow
-				&& getStage() != null) {
-			for (HorizontalToolbar toolbar : arrayBars) {
+	public void show(final Toolbar newBar) {
+		if (arrayBars.contains(newBar, true) && newBar != toShow) {
+			for (Toolbar toolbar : arrayBars) {
 				toolbar.clearActions();
 			}
 
@@ -133,46 +134,28 @@ public class MultiHorizontalToolbar extends Container<HorizontalToolbar> {
 			}
 
 			toShow = newBar;
-			if (toHide != null && toHide.hasParent() && toHide != current
-					&& toHide != toShow) {
-				toHide.remove();
-			}
-			toHide = (HorizontalToolbar) current;
+
+			toHide = (Toolbar) current;
 			toHide.setOrigin(Align.center);
 
-			localToStageCoordinates(TEMP.set(toHide.getX(), toHide.getY()));
-			float y = TEMP.y;
-			float x = TEMP.x;
-
-			if (getStage().getRoot() != toShow.getParent()) {
-				getStage().addActor(toShow);
-			}
-
-			// If is the first time than add the toolbar and not have
-			// coordinates.
-			if (toShow.getY() == 0 && toShow.getX() == 0) {
-				toShow.setBounds(x, y, toHide.getWidth(), toHide.getHeight());
-				toShow.setOrigin(Align.center);
-				toShow.getColor().a = 0;
+			if (toShow.getScaleY() == 1) {
 				toShow.setScaleY(0);
+				toShow.setOriginY(toHide.getOriginY());
+				toShow.getColor().a = 0;
 			}
 
 			float timeHide = ANIM_TIME * Math.abs(toHide.getScaleY());
-			float timeShow = ANIM_TIME * (1 - Math.abs(toShow.getScaleY()));
 
-			if (getStage().getRoot() != toHide.getParent()) {
-				getStage().addActor(toHide);
-				toHide.setPosition(x, y);
-			}
-
-			toHide.addAction(Actions.sequence(Actions.parallel(
+			Action actionShow = Actions.run(actionAddActor);
+			Action actionHide = Actions.parallel(
 					Actions.scaleTo(1, 0, timeHide, Interpolation.sineOut),
-					Actions.fadeOut(timeHide)), Actions.addAction(Actions
-					.sequence(Actions.parallel(Actions.scaleTo(1, 1, timeShow,
-							Interpolation.sineIn), Actions.fadeIn(timeShow)),
-							Actions.run(actionAddActor), Actions
-									.touchable(Touchable.enabled), Actions
-									.removeActor(toHide)), newBar)));
+					Actions.fadeOut(timeHide));
+
+			if (newBar == current) {
+				toHide.addAction(actionShow);
+			} else {
+				toHide.addAction(Actions.sequence(actionHide, actionShow));
+			}
 		}
 	}
 
@@ -186,17 +169,25 @@ public class MultiHorizontalToolbar extends Container<HorizontalToolbar> {
 		return maxHeight + backgroungPadding;
 	}
 
-	public Array<HorizontalToolbar> getHorizontalToolbars() {
+	public Array<Toolbar> getToolbars() {
 		return arrayBars;
 	}
 
-	public HorizontalToolbar getCurrentToolbar() {
+	public Toolbar getCurrentToolbar() {
 		return this.getActor();
 	}
 
 	public void release() {
-		for (HorizontalToolbar toolbar : arrayBars) {
+		for (Toolbar toolbar : arrayBars) {
 			toolbar.clearActions();
 		}
+	}
+
+	public static class MultiToolbarStyle {
+
+		public Drawable background;
+
+		public Color color;
+
 	}
 }

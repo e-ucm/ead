@@ -48,12 +48,12 @@ import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 
 import es.eucm.ead.editor.control.MockupController.Dpi;
 import es.eucm.ead.editor.editorui.MockupUITest;
-import es.eucm.ead.editor.view.widgets.HorizontalToolbar;
+import es.eucm.ead.editor.view.widgets.Toolbar;
 import es.eucm.ead.editor.view.widgets.IconButton;
-import es.eucm.ead.editor.view.widgets.MultiHorizontalToolbar;
+import es.eucm.ead.editor.view.widgets.MultiToolbar;
 import es.eucm.ead.engine.I18N;
 
-public class MultiHorizontalToolbarTest extends MockupUITest {
+public class MultiToolbarTest extends MockupUITest {
 
 	@Override
 	protected Actor buildUI(Skin skin, I18N i18n) {
@@ -61,64 +61,31 @@ public class MultiHorizontalToolbarTest extends MockupUITest {
 		Table table = new Table();
 		table.setFillParent(true);
 
-		final MultiHorizontalToolbar multiTop = new MultiHorizontalToolbar(
-				skin, "toolbar_top", Color.CYAN);
+		final MultiToolbar multiTop = new MultiToolbar(skin, "mokap");
 
-		HorizontalToolbar topBar1 = new HorizontalToolbar(skin, 40, "white_top");
+		Toolbar topBar1 = new Toolbar(skin, 40, "white_top");
 		topBar1.backgroundColor(Color.YELLOW);
 		IconButton icon1 = new IconButton("menu", skin);
 		topBar1.leftAdd(icon1);
 
-		HorizontalToolbar topBar2 = new HorizontalToolbar(skin, 40, "white_top");
+		Toolbar topBar2 = new Toolbar(skin, 40, "white_top");
 		topBar2.backgroundColor(Color.ORANGE);
 		IconButton icon2 = new IconButton("menu", skin);
 		topBar2.rightAdd(icon2);
 
-		HorizontalToolbar topBar3 = new HorizontalToolbar(skin, 40, "white_top");
+		Toolbar topBar3 = new Toolbar(skin, 40, "white_top");
 		topBar3.backgroundColor(Color.RED);
 		IconButton icon3 = new IconButton("menu", skin);
 		topBar3.leftAdd(icon3);
 
-		final MultiHorizontalToolbar multiBot = new MultiHorizontalToolbar();
-
-		HorizontalToolbar botBar1 = new HorizontalToolbar(skin, 40,
-				"white_bottom");
-		botBar1.backgroundColor(Color.BLUE);
-		IconButton icon4 = new IconButton("menu", skin);
-		botBar1.add(icon4);
-
-		HorizontalToolbar botBar2 = new HorizontalToolbar(skin, 40,
-				"white_bottom");
-		botBar2.backgroundColor(Color.GREEN);
-		IconButton icon5 = new IconButton("menu", skin);
-		botBar2.add(icon5);
-
-		HorizontalToolbar botBar3 = new HorizontalToolbar(skin, 40,
-				"white_bottom");
-		botBar3.backgroundColor(Color.GRAY);
-		IconButton icon6 = new IconButton("menu", skin);
-		botBar3.add(icon6);
-
-		multiTop.addHorizontalToolbar(topBar1, topBar2, topBar3);
-		multiBot.addHorizontalToolbar(botBar1, botBar2, botBar3);
+		multiTop.addToolbar(topBar1, topBar2, topBar3);
 
 		ClickListener topListener = new ClickListener() {
 			@Override
 			public void clicked(InputEvent event, float x, float y) {
 				Actor actor = event.getListenerActor();
-				HorizontalToolbar toolbar = (HorizontalToolbar) actor
-						.getUserObject();
+				Toolbar toolbar = (Toolbar) actor.getUserObject();
 				multiTop.show(toolbar);
-			}
-		};
-
-		ClickListener botListener = new ClickListener() {
-			@Override
-			public void clicked(InputEvent event, float x, float y) {
-				Actor actor = event.getListenerActor();
-				HorizontalToolbar toolbar = (HorizontalToolbar) actor
-						.getUserObject();
-				multiBot.show(toolbar);
 			}
 		};
 
@@ -131,20 +98,9 @@ public class MultiHorizontalToolbarTest extends MockupUITest {
 		icon3.addListener(topListener);
 		icon3.setUserObject(topBar1);
 
-		icon4.addListener(botListener);
-		icon4.setUserObject(botBar2);
-
-		icon5.addListener(botListener);
-		icon5.setUserObject(botBar3);
-
-		icon6.addListener(botListener);
-		icon6.setUserObject(botBar1);
-
 		table.add(multiTop).expandX().fill();
 		table.row();
 		table.add().expand().fill();
-		table.row();
-		table.add(multiBot).expandX().fill();
 
 		return table;
 	}
@@ -155,7 +111,7 @@ public class MultiHorizontalToolbarTest extends MockupUITest {
 		config.height = 720;
 		config.overrideDensity = MathUtils.round(Dpi.HDPI.getMaxDpi());
 		config.title = "TEST";
-		new LwjglApplication(new MultiHorizontalToolbarTest(), config);
+		new LwjglApplication(new MultiToolbarTest(), config);
 	}
 
 }
