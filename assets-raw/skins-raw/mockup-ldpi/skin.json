@@ -40,6 +40,12 @@
             g: 0.47,
             b: 0.86,
             a: 1
+        },
+        brown_moka: {
+        	r: 0.5245,
+        	g: 0.3333,
+        	b: 0.2823,
+        	a: 1
         }
 	},
 	com.badlogic.gdx.scenes.scene2d.ui.Skin$TintedDrawable: {
@@ -319,22 +325,17 @@
 		white_top: {
 			background: toolbar_top
 		},
-		white_left: {
-			background: toolbar_left
-		},
 		white_bottom: {
 			background: bottom_bar
 		}
 	},
-	es.eucm.ead.editor.view.widgets.HorizontalToolbar$HorizontalToolbarStyle: {
+	es.eucm.ead.editor.view.widgets.MultiToolbar$MultiToolbarStyle: {
 		default: { 
 		}, 
-		white_top: {
-			background: toolbar_top
+		mokap: {
+			background: toolbar_top,
+			color: brown_moka
 		},
-		white_bottom: {
-			background: bottom_bar
-		}
 	},
 	es.eucm.ead.editor.view.widgets.DropDown$DropDownStyle: {
 		default: {
