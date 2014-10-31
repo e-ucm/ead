@@ -58,34 +58,37 @@ import es.eucm.ead.editor.model.Model.SelectionListener;
 import es.eucm.ead.editor.model.events.SelectionEvent;
 import es.eucm.ead.editor.model.events.SelectionEvent.Type;
 import es.eucm.ead.editor.view.builders.gallery.repository.LibrariesView;
-import es.eucm.ead.editor.view.widgets.HorizontalToolbar;
 import es.eucm.ead.editor.view.widgets.IconButton;
-import es.eucm.ead.editor.view.widgets.MultiHorizontalToolbar;
+import es.eucm.ead.editor.view.widgets.MultiToolbar;
+import es.eucm.ead.editor.view.widgets.Toolbar;
+import es.eucm.ead.editor.view.widgets.editionview.MockupSceneEditor;
 import es.eucm.ead.editor.view.widgets.editionview.TransformationsWidget;
 import es.eucm.ead.editor.view.widgets.editionview.composition.draw.PaintToolbar;
 import es.eucm.ead.editor.view.widgets.editionview.composition.draw.PaintToolbar.DrawListener;
 
-public class CompositionToolbar extends MultiHorizontalToolbar implements
+public class CompositionToolbar extends MultiToolbar implements
 		SelectionListener {
 
+	private static final int INSERT = 0, TRANSFORM = 1, PAINT = 2;
 	private Skin skin;
 
 	private Controller controller;
 
 	private PaintToolbar paintToolbar;
-	private HorizontalToolbar insertToolbar;
-	private HorizontalToolbar transformToolbar;
+	private Toolbar insertToolbar;
+	private Toolbar transformToolbar;
 
-	public CompositionToolbar(final Controller controller,
-			PaintToolbar paintToolbar) {
-		this.controller = controller;
+	public CompositionToolbar(Controller c, MockupSceneEditor sceneEditor) {
+		super(c.getApplicationAssets().getSkin());
+
+		this.controller = c;
 		this.skin = controller.getApplicationAssets().getSkin();
 
-		this.paintToolbar = paintToolbar;
+		this.paintToolbar = new PaintToolbar(sceneEditor, controller);
 		createInsertToolbar();
 		createTransformationToolbar();
 
-		addHorizontalToolbar(insertToolbar, transformToolbar, paintToolbar);
+		addToolbars(insertToolbar, transformToolbar, paintToolbar);
 		paintToolbar.addListener(new DrawListener() {
 
 			private Object selection;
@@ -112,7 +115,7 @@ public class CompositionToolbar extends MultiHorizontalToolbar implements
 	}
 
 	private void createInsertToolbar() {
-		this.insertToolbar = new HorizontalToolbar(skin, "white_bottom");
+		this.insertToolbar = new Toolbar(skin);
 		insertToolbar.backgroundColor(Color.CYAN);
 
 		final IconButton paste = new IconButton("paste", "paste80x80", 0f, skin);
@@ -146,7 +149,7 @@ public class CompositionToolbar extends MultiHorizontalToolbar implements
 					if (paintToolbar.isShowing()) {
 						paintToolbar.hide();
 					} else {
-						show(paintToolbar);
+						show(PAINT);
 						paintToolbar.show();
 					}
 				} else if (listenerActor == text) {
@@ -205,7 +208,7 @@ public class CompositionToolbar extends MultiHorizontalToolbar implements
 	}
 
 	private void createTransformationToolbar() {
-		this.transformToolbar = new HorizontalToolbar(skin, "white_bottom");
+		this.transformToolbar = new Toolbar(skin);
 		transformToolbar.backgroundColor(Color.ORANGE);
 		transformToolbar.rightAdd(new TransformationsWidget(controller, 5f));
 		final IconButton paint = new IconButton("paint", "paint80x80", 0f, skin);
@@ -219,7 +222,7 @@ public class CompositionToolbar extends MultiHorizontalToolbar implements
 					if (paintToolbar.isShowing()) {
 						paintToolbar.hide();
 					} else {
-						show(paintToolbar);
+						show(PAINT);
 						paintToolbar.show();
 					}
 				}
@@ -230,12 +233,12 @@ public class CompositionToolbar extends MultiHorizontalToolbar implements
 		// TODO
 	}
 
-	public HorizontalToolbar getInsertToolbar() {
-		return insertToolbar;
+	public int getInsertIndex() {
+		return INSERT;
 	}
 
-	public HorizontalToolbar getTransformToolbar() {
-		return transformToolbar;
+	public int getTransformIndex() {
+		return TRANSFORM;
 	}
 
 	public PaintToolbar getPaintToolbar() {
@@ -247,11 +250,10 @@ public class CompositionToolbar extends MultiHorizontalToolbar implements
 		int selected = controller.getModel().getSelection()
 				.get(Selection.SCENE_ELEMENT).length;
 		if (event.getType() == Type.FOCUSED) {
-			if (selected > 0 && getCurrentToolbar() != transformToolbar) {
-				show(transformToolbar);
-			} else if (selected == 0 && getCurrentToolbar() != insertToolbar
-					&& toShow != paintToolbar) {
-				show(insertToolbar);
+			if (selected > 0) {
+				show(TRANSFORM);
+			} else if (selected == 0 && toShow != paintToolbar) {
+				show(INSERT);
 			}
 		}
 	}
@@ -260,4 +262,5 @@ public class CompositionToolbar extends MultiHorizontalToolbar implements
 	public boolean listenToContext(String contextId) {
 		return true;
 	}
+
 }

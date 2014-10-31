@@ -61,7 +61,7 @@ import es.eucm.ead.editor.control.background.BackgroundExecutor;
 import es.eucm.ead.editor.control.background.BackgroundExecutor.BackgroundTaskListener;
 import es.eucm.ead.editor.control.background.BackgroundTask;
 import es.eucm.ead.editor.model.Q;
-import es.eucm.ead.editor.view.widgets.HorizontalToolbar;
+import es.eucm.ead.editor.view.widgets.Toolbar;
 import es.eucm.ead.editor.view.widgets.IconButton;
 import es.eucm.ead.editor.view.widgets.editionview.MockupSceneEditor;
 import es.eucm.ead.editor.view.widgets.editionview.composition.CompositionToolbar;
@@ -70,7 +70,7 @@ import es.eucm.ead.engine.I18N;
 import es.eucm.ead.schema.entities.ModelEntity;
 import es.eucm.ead.schema.renderers.Image;
 
-public class PaintToolbar extends HorizontalToolbar {
+public class PaintToolbar extends Toolbar {
 
 	private static final String LOGTAG = "PaintToolbar";
 	private static final float ALPHA_FACTOR = .5F;
@@ -86,7 +86,7 @@ public class PaintToolbar extends HorizontalToolbar {
 	private float selectionAlpha;
 
 	public PaintToolbar(MockupSceneEditor sceneEditor, Controller control) {
-		super(control.getApplicationAssets().getSkin(), "white_bottom");
+		super(control.getApplicationAssets().getSkin());
 		this.controller = control;
 		this.sceneEditor = sceneEditor;
 		brushStrokes = new BrushStrokes(sceneEditor, controller);
@@ -152,7 +152,7 @@ public class PaintToolbar extends HorizontalToolbar {
 				if (listener == cancel) {
 					hide();
 					if (parent != null) {
-						parent.show(parent.getInsertToolbar());
+						parent.show(parent.getInsertIndex());
 					}
 				} else if (listener == save) {
 					toasts.showNotification(i18n.m("edition.creatingImage"));
@@ -160,7 +160,7 @@ public class PaintToolbar extends HorizontalToolbar {
 							saveListener);
 					hide(false, true);
 					if (parent != null) {
-						parent.show(parent.getTransformToolbar());
+						parent.show(parent.getTransformIndex());
 					}
 				} else if (listener == slider) {
 					brushStrokes.setRadius(slider.getValue());

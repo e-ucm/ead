@@ -37,24 +37,36 @@
 package es.eucm.ead.editor.view.widgets;
 
 import com.badlogic.gdx.scenes.scene2d.Actor;
-import com.badlogic.gdx.scenes.scene2d.ui.Cell;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
-import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.scenes.scene2d.utils.Drawable;
 
-public class Toolbar extends Table {
+import es.eucm.ead.editor.view.widgets.layouts.LinearLayout;
+
+public class Toolbar extends LinearLayout {
 
 	public Toolbar(Skin skin) {
-		this(skin, "default");
+		this(skin, 0, "default");
 	}
 
 	public Toolbar(Skin skin, String style) {
-		super(skin);
-		setBackground(skin.get(style, ToolbarStyle.class).background);
+		this(skin, 0, style);
 	}
 
-	public Cell addInNewRow(Actor actor) {
-		row();
+	public Toolbar(Skin skin, float sidePadding) {
+		this(skin, sidePadding, "default");
+	}
+
+	public Toolbar(Skin skin, float sidePadding, String style) {
+		super(true, skin.get(style, ToolbarStyle.class).background);
+		defaultWidgetsMargin(sidePadding, 0, sidePadding, 0);
+		add(new SpaceConsumer()).expandX();
+	}
+
+	public Constraints leftAdd(Actor actor) {
+		return add(0, actor);
+	}
+
+	public Constraints rightAdd(Actor actor) {
 		return add(actor);
 	}
 

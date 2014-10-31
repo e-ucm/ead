@@ -50,7 +50,6 @@ import es.eucm.ead.editor.control.Controller;
 import es.eucm.ead.editor.control.Selection;
 import es.eucm.ead.editor.model.Model.SelectionListener;
 import es.eucm.ead.editor.model.events.SelectionEvent;
-import es.eucm.ead.editor.view.widgets.Toolbar.ToolbarStyle;
 import es.eucm.ead.editor.view.widgets.editionview.elementcontext.ElementContext;
 import es.eucm.ead.editor.view.widgets.groupeditor.GroupEditorConfiguration;
 import es.eucm.ead.editor.view.widgets.groupeditor.Modifier;
@@ -74,7 +73,6 @@ public class MockupSceneEditor extends SceneEditor {
 	private ElementContext context;
 
 	private final Rectangle scissorBounds;
-	private final float topPad;
 
 	private Runnable updateSelection = new Runnable() {
 
@@ -101,13 +99,10 @@ public class MockupSceneEditor extends SceneEditor {
 		}
 	};
 
-	public MockupSceneEditor(final Controller controller, String topStyle) {
+	public MockupSceneEditor(final Controller controller) {
 		super(controller);
 
 		Skin skin = controller.getApplicationAssets().getSkin();
-		ToolbarStyle toolbarStyle = skin.get(topStyle, ToolbarStyle.class);
-		topPad = toolbarStyle.background.getBottomHeight();
-
 		scissorBounds = new Rectangle();
 		context = new ElementContext(controller, this);
 		elementSelected = new SelectionListener() {
@@ -176,7 +171,7 @@ public class MockupSceneEditor extends SceneEditor {
 		groupEditor.setBounds(0, 0, getWidth(), getHeight());
 		groupEditor.fit(false);
 
-		scissorBounds.set(getX(), getY(), getWidth(), getHeight() + topPad);
+		scissorBounds.set(getX(), getY(), getWidth(), getHeight());
 		getStage().calculateScissors(scissorBounds, scissorBounds);
 		fixScissorBounds();
 	}
