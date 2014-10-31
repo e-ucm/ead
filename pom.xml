@@ -353,9 +353,9 @@
                 <module>editor/desktop</module>
                 <module>editor/exporter</module>
                 <!-- mokcup -->
-                <module>editor/mockup/core</module>
-                <module>editor/mockup/android</module>
-                <module>editor/mockup/desktop</module>
+                <module>editor/mokap/core</module>
+                <module>editor/mokap/android</module>
+                <module>editor/mokap/desktop</module>
             </modules>
         </profile>
         <profile>
@@ -383,12 +383,12 @@
         </profile>
         <!-- This profile generates editor-android apk -->
         <profile>
-            <id>mockup-android</id>
+            <id>mokap-android</id>
             <modules>
                 <module>engine/schema</module>
                 <module>engine/core</module>
-                <module>editor/mockup/core</module>
-                <module>editor/mockup/android/</module>
+                <module>editor/mokap/core</module>
+                <module>editor/mokap/android/</module>
             </modules>
         </profile>
     </profiles>

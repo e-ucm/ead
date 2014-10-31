@@ -1,8 +1,0 @@
-{
-    "appVersion": "${eadventure.version}",
-    "releaseType": "${release.channel}",
-    "dev": false,
-    "os": "${release.os}",
-    "updateURL": "http://sourceforge.net/projects/e-adventure/files/${release.channel}/update.json/download",
-    "engineLibPath": "libs/engine-desktop-${project.version}-jar-with-dependencies.jar"
-}
