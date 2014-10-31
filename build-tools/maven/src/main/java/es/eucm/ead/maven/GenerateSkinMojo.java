@@ -37,13 +37,6 @@
 
 package es.eucm.ead.maven;
 
-import java.io.File;
-
-import org.apache.maven.plugin.AbstractMojo;
-import org.apache.maven.plugin.MojoExecutionException;
-import org.apache.maven.plugins.annotations.Mojo;
-import org.apache.maven.plugins.annotations.Parameter;
-
 import com.badlogic.gdx.backends.lwjgl.LwjglFiles;
 import com.badlogic.gdx.backends.lwjgl.LwjglNativesLoader;
 import com.badlogic.gdx.files.FileHandle;
@@ -56,6 +49,12 @@ import com.badlogic.gdx.tools.bmfont.BitmapFontWriter;
 import com.badlogic.gdx.tools.texturepacker.TexturePacker;
 import com.badlogic.gdx.tools.texturepacker.TexturePacker.Settings;
 import com.badlogic.gdx.utils.Array;
+import org.apache.maven.plugin.AbstractMojo;
+import org.apache.maven.plugin.MojoExecutionException;
+import org.apache.maven.plugins.annotations.Mojo;
+import org.apache.maven.plugins.annotations.Parameter;
+
+import java.io.File;
 
 /**
  * The plugin generate a libgdx atlas for the project skins.
@@ -120,76 +119,110 @@ public class GenerateSkinMojo extends AbstractMojo {
 		}
 
 		Array<FileHandle> tempFolders = new Array<FileHandle>();
-		for (FileHandle folder : rawRoot.list()) {
-			if (folder.isDirectory()) {
-				FileHandle skinFolder = skinsRoot.child(folder.name());
+		for (FileHandle skinRaw : rawRoot.list()) {
+			if (skinRaw.isDirectory()) {
+				FileHandle skinFolder = skinsRoot.child(skinRaw.name());
 
 				if (!skinFolder.exists()) {
 					getLog().info(
-							"[generate-skins] Generating: " + folder.name());
+							"[generate-skins] Generating: " + skinRaw.name());
 					skinFolder.mkdirs();
-					FileHandle imagesFolder = folder.child("images");
-					FileHandle fonts = folder.child("ttf2fnt");
-					if (fonts.exists()) {
-						FileHandle config = fonts.child("fonts.config");
-						// fonts.config defines which .ttf will be transformed
-						// to what .fnt and with what size.
-						if (!config.exists()) {
-							fonts.copyTo(skinFolder);
-						} else {
-							String[] lines = config.readString().split("\n");
-							for (String line : lines) {
-								String[] props = line.split(" ");
-								String ttfFontName = props[0];
-								String fontSize = props[1];
-								fontSize = fontSize.replace("\r", "");
 
-								FileHandle child = fonts.child(ttfFontName);
-								if (child.exists()) {
-									String fontName = child
-											.nameWithoutExtension()
-											+ "-"
-											+ fontSize;
-									FileHandle dstFolder = imagesFolder
-											.child(fontName);
-									dstFolder.mkdirs();
-									dstFolder.child("pack.json").writeString(
-											defaultPack, false);
-									tempFolders.add(dstFolder);
-									generateFiles(fontName, child,
-											Integer.valueOf(fontSize),
-											dstFolder);
-									dstFolder.child(fontName + ".fnt").copyTo(
-											skinFolder);
+					if (skinRaw.child("common").exists()) {
+						generateMultipleSkins(skinRaw, skinsRoot);
+					} else {
+						FileHandle imagesFolder = skinRaw.child("images");
+
+						FileHandle fonts = skinRaw.child("ttf2fnt");
+						if (fonts.exists()) {
+							FileHandle config = fonts.child("fonts.config");
+							// fonts.config defines which .ttf will be
+							// transformed
+							// to what .fnt and with what size.
+							if (!config.exists()) {
+								fonts.copyTo(skinFolder);
+							} else {
+								String[] lines = config.readString()
+										.split("\n");
+								for (String line : lines) {
+									String[] props = line.split(" ");
+									String ttfFontName = props[0];
+									String fontSize = props[1];
+									fontSize = fontSize.replace("\r", "");
+
+									FileHandle child = fonts.child(ttfFontName);
+									if (child.exists()) {
+										String fontName = child
+												.nameWithoutExtension()
+												+ "-"
+												+ fontSize;
+										FileHandle dstFolder = imagesFolder
+												.child(fontName);
+										dstFolder.mkdirs();
+										dstFolder
+												.child("pack.json")
+												.writeString(defaultPack, false);
+										tempFolders.add(dstFolder);
+										generateFiles(fontName, child,
+												Integer.valueOf(fontSize),
+												dstFolder);
+										dstFolder.child(fontName + ".fnt")
+												.copyTo(skinFolder);
+									}
 								}
 							}
 						}
-					}
-					fonts = folder.child("fonts");
-					if (fonts.exists()) {
-						fonts.copyTo(skinFolder);
-					}
+						fonts = skinRaw.child("fonts");
+						if (fonts.exists()) {
+							fonts.copyTo(skinFolder);
+						}
 
-					TexturePacker.process(settings, imagesFolder.file()
-							.getAbsolutePath(), skinFolder.file()
-							.getAbsolutePath(), "skin");
+						TexturePacker.process(settings, imagesFolder.file()
+								.getAbsolutePath(), skinFolder.file()
+								.getAbsolutePath(), "skin");
 
-					folder.child("skin.json").copyTo(skinFolder);
-					FileHandle other = folder.child("other");
-					if (other.exists()) {
-						other.copyTo(skinFolder.child("other"));
-					}
-					for (FileHandle tempFolder : tempFolders) {
-						tempFolder.deleteDirectory();
+						skinRaw.child("skin.json").copyTo(skinFolder);
+
+						for (FileHandle tempFolder : tempFolders) {
+							tempFolder.deleteDirectory();
+						}
 					}
 				} else {
 					getLog().info(
 							"[generate-skins] skin already exists, skipping: "
-									+ folder.name());
+									+ skinRaw.name());
 				}
 			}
 		}
 
+	}
+
+	private void generateMultipleSkins(FileHandle skinRaw, FileHandle skinRoot) {
+		Settings settings = new Settings();
+		settings.limitMemory = false;
+
+		FileHandle common = skinRaw.child("common");
+		for (FileHandle dpi : skinRaw.list()) {
+			if (dpi.isDirectory() && !"common".equals(dpi.name())) {
+				FileHandle skinFolder = skinRoot.child(skinRaw.name() + '-' + dpi.name());
+				skinFolder.mkdirs();
+				skinRaw.child("skin.json").copyTo(skinFolder);
+				FileHandle atlasImagesFolder = skinFolder.child("atlas");
+				atlasImagesFolder.mkdirs();
+
+				common.copyTo(atlasImagesFolder);
+				dpi.child("images").copyTo(atlasImagesFolder);
+				dpi.child("fonts").child("font.png").copyTo(atlasImagesFolder);
+
+				dpi.child("fonts").child("font.fnt").copyTo(skinFolder);
+
+				TexturePacker.process(settings, atlasImagesFolder.file()
+						.getAbsolutePath(),
+						skinFolder.file().getAbsolutePath(), "skin");
+
+				atlasImagesFolder.deleteDirectory();
+			}
+		}
 	}
 
 	/**
@@ -258,6 +291,14 @@ public class GenerateSkinMojo extends AbstractMojo {
 
 		BitmapFontWriter.writeFont(data, pageRefs, fontFile,
 				new BitmapFontWriter.FontInfo(fontName, fontSize), 1, 1);
+	}
+
+	public static void main(String args[]) {
+		GenerateSkinMojo skinMojo = new GenerateSkinMojo();
+		LwjglFiles files = new LwjglFiles();
+		skinMojo.generateMultipleSkins(
+				files.absolute("/home/angel/repositories/ead/assets-raw/skins-raw/mokap"),
+				files.absolute("/home/angel/repositories/ead/assets/skins"));
 	}
 
 }
