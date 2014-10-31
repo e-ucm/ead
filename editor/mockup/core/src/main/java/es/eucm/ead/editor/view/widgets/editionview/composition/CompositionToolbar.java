@@ -69,6 +69,7 @@ import es.eucm.ead.editor.view.widgets.editionview.composition.draw.PaintToolbar
 public class CompositionToolbar extends MultiToolbar implements
 		SelectionListener {
 
+	private static final int INSERT = 0, TRANSFORM = 1, PAINT = 2;
 	private Skin skin;
 
 	private Controller controller;
@@ -78,7 +79,7 @@ public class CompositionToolbar extends MultiToolbar implements
 	private Toolbar transformToolbar;
 
 	public CompositionToolbar(Controller c, MockupSceneEditor sceneEditor) {
-		super(c.getApplicationAssets().getSkin(), "mokap");
+		super(c.getApplicationAssets().getSkin());
 
 		this.controller = c;
 		this.skin = controller.getApplicationAssets().getSkin();
@@ -87,7 +88,7 @@ public class CompositionToolbar extends MultiToolbar implements
 		createInsertToolbar();
 		createTransformationToolbar();
 
-		addToolbar(insertToolbar, transformToolbar, paintToolbar);
+		addToolbars(insertToolbar, transformToolbar, paintToolbar);
 		paintToolbar.addListener(new DrawListener() {
 
 			private Object selection;
@@ -148,7 +149,7 @@ public class CompositionToolbar extends MultiToolbar implements
 					if (paintToolbar.isShowing()) {
 						paintToolbar.hide();
 					} else {
-						show(paintToolbar);
+						show(PAINT);
 						paintToolbar.show();
 					}
 				} else if (listenerActor == text) {
@@ -221,7 +222,7 @@ public class CompositionToolbar extends MultiToolbar implements
 					if (paintToolbar.isShowing()) {
 						paintToolbar.hide();
 					} else {
-						show(paintToolbar);
+						show(PAINT);
 						paintToolbar.show();
 					}
 				}
@@ -232,12 +233,12 @@ public class CompositionToolbar extends MultiToolbar implements
 		// TODO
 	}
 
-	public Toolbar getInsertToolbar() {
-		return insertToolbar;
+	public int getInsertIndex() {
+		return INSERT;
 	}
 
-	public Toolbar getTransformToolbar() {
-		return transformToolbar;
+	public int getTransformIndex() {
+		return TRANSFORM;
 	}
 
 	public PaintToolbar getPaintToolbar() {
@@ -250,9 +251,9 @@ public class CompositionToolbar extends MultiToolbar implements
 				.get(Selection.SCENE_ELEMENT).length;
 		if (event.getType() == Type.FOCUSED) {
 			if (selected > 0) {
-				show(transformToolbar);
+				show(TRANSFORM);
 			} else if (selected == 0 && toShow != paintToolbar) {
-				show(insertToolbar);
+				show(INSERT);
 			}
 		}
 	}

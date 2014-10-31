@@ -86,7 +86,7 @@ public class PaintToolbar extends Toolbar {
 	private float selectionAlpha;
 
 	public PaintToolbar(MockupSceneEditor sceneEditor, Controller control) {
-		super(control.getApplicationAssets().getSkin(), "white_bottom");
+		super(control.getApplicationAssets().getSkin());
 		this.controller = control;
 		this.sceneEditor = sceneEditor;
 		brushStrokes = new BrushStrokes(sceneEditor, controller);
@@ -152,7 +152,7 @@ public class PaintToolbar extends Toolbar {
 				if (listener == cancel) {
 					hide();
 					if (parent != null) {
-						parent.show(parent.getInsertToolbar());
+						parent.show(parent.getInsertIndex());
 					}
 				} else if (listener == save) {
 					toasts.showNotification(i18n.m("edition.creatingImage"));
@@ -160,7 +160,7 @@ public class PaintToolbar extends Toolbar {
 							saveListener);
 					hide(false, true);
 					if (parent != null) {
-						parent.show(parent.getTransformToolbar());
+						parent.show(parent.getTransformIndex());
 					}
 				} else if (listener == slider) {
 					brushStrokes.setRadius(slider.getValue());

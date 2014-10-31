@@ -52,7 +52,7 @@ public class MultiToolbar extends Container<Toolbar> {
 
 	private static final float ANIM_TIME = 0.15f;
 
-	private Array<Toolbar> arrayBars;
+	private Array<Toolbar> toolbars;
 
 	private float maxHeight;
 
@@ -64,6 +64,10 @@ public class MultiToolbar extends Container<Toolbar> {
 
 	private MultiToolbarStyle style;
 
+	public MultiToolbar(Skin skin) {
+		this(skin, "default");
+	}
+
 	public MultiToolbar(Skin skin, String styleName) {
 
 		style = skin.get(styleName, MultiToolbarStyle.class);
@@ -73,7 +77,7 @@ public class MultiToolbar extends Container<Toolbar> {
 			setColor(style.color);
 		}
 
-		arrayBars = new Array<Toolbar>();
+		toolbars = new Array<Toolbar>();
 		maxHeight = 0;
 		fill();
 
@@ -92,69 +96,86 @@ public class MultiToolbar extends Container<Toolbar> {
 		};
 	}
 
-	public void addToolbar(Toolbar... toolbars) {
-		for (Toolbar toolbar : toolbars) {
+	public void addToolbars(Toolbar... t) {
+		for (Toolbar toolbar : t) {
 			toolbar.setTouchable(Touchable.disabled);
-			toolbar.background(null);
 
-			arrayBars.add(toolbar);
+			toolbars.add(toolbar);
 			if (maxHeight < toolbar.getPrefHeight()) {
 				maxHeight = toolbar.getPrefHeight();
 			}
 		}
 
 		if (getActor() == null) {
-			setActor(toolbars[0]);
-			toShow = toolbars[0];
-			toolbars[0].setTouchable(Touchable.enabled);
+			setActor(t[0]);
+			toShow = t[0];
+			t[0].setTouchable(Touchable.enabled);
 		}
 	}
 
-	public void resetShow() {
-		Toolbar toolbar = arrayBars.first();
-		toolbar.setTouchable(Touchable.enabled);
-		toolbar.getColor().a = 1;
-		toolbar.setScaleY(1);
-		setActor(toolbar);
-		toShow = toolbar;
-		toHide = null;
+	/**
+	 * Set the default Toolbar, without animation.
+	 * 
+	 */
+	public void showSimple() {
+		showSimple(0);
 	}
 
-	public void show(final Toolbar newBar) {
-		if (arrayBars.contains(newBar, true) && newBar != toShow) {
-			for (Toolbar toolbar : arrayBars) {
-				toolbar.clearActions();
-			}
+	/**
+	 * Set the Toolbar in index position, without animation.
+	 * 
+	 */
+	public void showSimple(int index) {
+		if (index < toolbars.size) {
+			Toolbar toolbar = toolbars.get(index);
+			toolbar.setTouchable(Touchable.enabled);
+			toolbar.getColor().a = 1;
+			toolbar.setScaleY(1);
+			setActor(toolbar);
+			toShow = toolbar;
+			toHide = null;
+		}
+	}
 
-			Actor current = getActor();
-			if (current != null) {
-				current.setTouchable(Touchable.disabled);
-			} else {
-				current = toShow;
-			}
+	public void show(int index) {
+		if (toolbars.size > index) {
+			Toolbar newBar = toolbars.get(index);
 
-			toShow = newBar;
+			if (newBar != toShow) {
+				for (Toolbar toolbar : toolbars) {
+					toolbar.clearActions();
+				}
 
-			toHide = (Toolbar) current;
-			toHide.setOrigin(Align.center);
+				Actor current = getActor();
+				if (current != null) {
+					current.setTouchable(Touchable.disabled);
+				} else {
+					current = toShow;
+				}
 
-			if (toShow.getScaleY() == 1) {
-				toShow.setScaleY(0);
-				toShow.setOriginY(toHide.getOriginY());
-				toShow.getColor().a = 0;
-			}
+				toShow = newBar;
 
-			float timeHide = ANIM_TIME * Math.abs(toHide.getScaleY());
+				toHide = (Toolbar) current;
+				toHide.setOrigin(Align.center);
 
-			Action actionShow = Actions.run(actionAddActor);
-			Action actionHide = Actions.parallel(
-					Actions.scaleTo(1, 0, timeHide, Interpolation.sineOut),
-					Actions.fadeOut(timeHide));
+				if (toShow.getScaleY() == 1) {
+					toShow.setScaleY(0);
+					toShow.setOriginY(toHide.getOriginY());
+					toShow.getColor().a = 0;
+				}
 
-			if (newBar == current) {
-				toHide.addAction(actionShow);
-			} else {
-				toHide.addAction(Actions.sequence(actionHide, actionShow));
+				float timeHide = ANIM_TIME * Math.abs(toHide.getScaleY());
+
+				Action actionShow = Actions.run(actionAddActor);
+				Action actionHide = Actions.parallel(
+						Actions.scaleTo(1, 0, timeHide, Interpolation.sineOut),
+						Actions.fadeOut(timeHide));
+
+				if (newBar == current) {
+					toHide.addAction(actionShow);
+				} else {
+					toHide.addAction(Actions.sequence(actionHide, actionShow));
+				}
 			}
 		}
 	}
@@ -170,7 +191,7 @@ public class MultiToolbar extends Container<Toolbar> {
 	}
 
 	public Array<Toolbar> getToolbars() {
-		return arrayBars;
+		return toolbars;
 	}
 
 	public Toolbar getCurrentToolbar() {
@@ -178,7 +199,7 @@ public class MultiToolbar extends Container<Toolbar> {
 	}
 
 	public void release() {
-		for (Toolbar toolbar : arrayBars) {
+		for (Toolbar toolbar : toolbars) {
 			toolbar.clearActions();
 		}
 	}

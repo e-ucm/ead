@@ -330,9 +330,7 @@
 		}
 	},
 	es.eucm.ead.editor.view.widgets.MultiToolbar$MultiToolbarStyle: {
-		default: { 
-		}, 
-		mokap: {
+		default: {
 			background: toolbar_top,
 			color: brown_moka
 		},

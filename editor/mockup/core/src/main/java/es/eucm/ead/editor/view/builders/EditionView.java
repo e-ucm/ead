@@ -95,7 +95,7 @@ public class EditionView implements ViewBuilder, BackListener {
 	@Override
 	public Actor getView(Object... args) {
 		sceneEditor.prepare();
-		composition.resetShow();
+		composition.showSimple();
 
 		return view;
 	}

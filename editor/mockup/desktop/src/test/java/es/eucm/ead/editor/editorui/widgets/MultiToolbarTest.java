@@ -61,7 +61,7 @@ public class MultiToolbarTest extends MockupUITest {
 		Table table = new Table();
 		table.setFillParent(true);
 
-		final MultiToolbar multiTop = new MultiToolbar(skin, "mokap");
+		final MultiToolbar multiTop = new MultiToolbar(skin);
 
 		Toolbar topBar1 = new Toolbar(skin, 40, "white_top");
 		topBar1.backgroundColor(Color.YELLOW);
@@ -78,25 +78,25 @@ public class MultiToolbarTest extends MockupUITest {
 		IconButton icon3 = new IconButton("menu", skin);
 		topBar3.leftAdd(icon3);
 
-		multiTop.addToolbar(topBar1, topBar2, topBar3);
+		multiTop.addToolbars(topBar1, topBar2, topBar3);
 
 		ClickListener topListener = new ClickListener() {
 			@Override
 			public void clicked(InputEvent event, float x, float y) {
 				Actor actor = event.getListenerActor();
-				Toolbar toolbar = (Toolbar) actor.getUserObject();
-				multiTop.show(toolbar);
+				int index = (Integer) actor.getUserObject();
+				multiTop.show(index);
 			}
 		};
 
 		icon1.addListener(topListener);
-		icon1.setUserObject(topBar2);
+		icon1.setUserObject(1);
 
 		icon2.addListener(topListener);
-		icon2.setUserObject(topBar3);
+		icon2.setUserObject(2);
 
 		icon3.addListener(topListener);
-		icon3.setUserObject(topBar1);
+		icon3.setUserObject(0);
 
 		table.add(multiTop).expandX().fill();
 		table.row();
