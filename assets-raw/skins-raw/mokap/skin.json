@@ -35,21 +35,32 @@
         	b: 0.2823,
         	a: 1
         }
-        },
+    },
+	com.badlogic.gdx.scenes.scene2d.ui.Button$ButtonStyle: {
+		default: { 
+		}
+	},
+	es.eucm.ead.editor.view.widgets.IconButton$IconButtonStyle: {
+		default: {  
+			disabledImageColor: gray,
+            enabledImageColor: black
+		},
+		toolbar: {  
+			disabledImageColor: gray,
+            enabledImageColor: white
+		}
+	},
 	es.eucm.ead.editor.view.widgets.Toolbar$ToolbarStyle: {
 		default: { 
 		}, 
-		white_top: {
-			background: toolbar_top
-		},
-		white_bottom: {
-			background: bottom_bar
+		mokap: {
+			background: toolbar
 		}
 	},
 	es.eucm.ead.editor.view.widgets.MultiToolbar$MultiToolbarStyle: {
 		default: {
-			background: toolbar_top,
-			color: brown_moka
-		},
-	}
+			background: toolbar,
+			color: brown-moka
+		}
+	},
 }
