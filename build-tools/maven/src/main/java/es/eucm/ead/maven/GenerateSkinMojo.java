@@ -203,7 +203,7 @@ public class GenerateSkinMojo extends AbstractMojo {
 
 		FileHandle common = skinRaw.child("common");
 		for (FileHandle dpi : skinRaw.list()) {
-			if (dpi.isDirectory() && !"common".equals(dpi.name())) {
+			if (dpi.isDirectory() && !"common".equals(dpi.name()) && !"svg".equals(dpi.name())) {
 				FileHandle skinFolder = skinRoot.child(skinRaw.name() + '-' + dpi.name());
 				skinFolder.mkdirs();
 				skinRaw.child("skin.json").copyTo(skinFolder);
@@ -291,14 +291,6 @@ public class GenerateSkinMojo extends AbstractMojo {
 
 		BitmapFontWriter.writeFont(data, pageRefs, fontFile,
 				new BitmapFontWriter.FontInfo(fontName, fontSize), 1, 1);
-	}
-
-	public static void main(String args[]) {
-		GenerateSkinMojo skinMojo = new GenerateSkinMojo();
-		LwjglFiles files = new LwjglFiles();
-		skinMojo.generateMultipleSkins(
-				files.absolute("/home/angel/repositories/ead/assets-raw/skins-raw/mokap"),
-				files.absolute("/home/angel/repositories/ead/assets/skins"));
 	}
 
 }
