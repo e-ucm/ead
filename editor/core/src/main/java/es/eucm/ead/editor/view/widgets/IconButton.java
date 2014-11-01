@@ -87,6 +87,10 @@ public class IconButton extends Button implements Tooltip {
 		this(icon, skin.getDrawable(icon), padding, skin, styleName);
 	}
 
+	public IconButton(String icon, Skin skin, String styleName) {
+		this(icon, icon, 0, skin, styleName);
+	}
+
 	public IconButton(String name, String icon, float padding, Skin skin,
 			String styleName) {
 		this(name, skin.getDrawable(icon), padding, skin, styleName);
@@ -152,7 +156,7 @@ public class IconButton extends Button implements Tooltip {
 	/**
 	 * Change the {@link Button#isDisabled} attribute and accordingly the color
 	 * of the image.
-	 * 
+	 * <p/>
 	 * The background color when disabled is managed with
 	 * {@link ButtonStyle#disabled} attribute in {@link Button#draw} method.
 	 * 

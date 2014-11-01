@@ -129,11 +129,15 @@ public class ReleaseMojo extends AbstractMojo {
 			writer.endObject();
 			writer.close();
 		} catch (FileNotFoundException e) {
-			getLog().error(
-					"Can not write to file: " + outputFile.getAbsolutePath(), e);
+			getLog()
+					.error(
+							"Can not write to file: "
+									+ outputFile.getAbsolutePath(), e);
 		} catch (IOException e) {
-			getLog().error(
-					"Error writing to file: " + outputFile.getAbsolutePath(), e);
+			getLog()
+					.error(
+							"Error writing to file: "
+									+ outputFile.getAbsolutePath(), e);
 		}
 	}
 }

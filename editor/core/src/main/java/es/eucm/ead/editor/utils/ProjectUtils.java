@@ -34,48 +34,35 @@
  *      You should have received a copy of the GNU Lesser General Public License
  *      along with eAdventure.  If not, see <http://www.gnu.org/licenses/>.
  */
-package es.eucm.ead.editor;
+package es.eucm.ead.editor.utils;
 
-import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.backends.lwjgl.LwjglApplicationConfiguration;
-import com.badlogic.gdx.backends.lwjgl.LwjglFrame;
-import com.badlogic.gdx.math.MathUtils;
-import es.eucm.ead.editor.control.MockupController.Dpi;
-import es.eucm.ead.engine.utils.SwingEDTUtils;
+import com.badlogic.gdx.files.FileHandle;
+import com.badlogic.gdx.utils.Array;
 
-import javax.swing.JFrame;
-import java.awt.event.ComponentAdapter;
-import java.awt.event.ComponentEvent;
+/**
+ * Some useful methods to deal with file system and projects
+ */
+public class ProjectUtils {
 
-public class MockupMain {
-
-	public static void main(String[] args) {
-
-		LwjglApplicationConfiguration config = new LwjglApplicationConfiguration();
-		config.width = 1280;
-		config.height = 720;
-		config.overrideDensity = MathUtils.round(Dpi.HDPI.getMaxDpi());
-		config.title = "eAdventure Mockup";
-
-		MockupDesktopPlatform platform = new MockupDesktopPlatform();
-		final LwjglFrame frame = new LwjglFrame(new MockupApplicationListener(
-				platform), config);
-		frame.setDefaultCloseOperation(JFrame.HIDE_ON_CLOSE);
-		frame.addComponentListener(new ComponentAdapter() {
-			@Override
-			public void componentHidden(ComponentEvent e) {
-				Gdx.app.exit();
-			}
-		});
-		platform.setFrame(frame);
-
-		// set visible calls create()
-		SwingEDTUtils.invokeLater(new Runnable() {
-
-			@Override
-			public void run() {
-				frame.setVisible(true);
-			}
-		});
+	/**
+	 * @return an array with paths of all the projects inside the given folder
+	 */
+	public static Array<String> findProjects(FileHandle folder) {
+		Array<String> projects = new Array<String>();
+		findProjects(folder, projects);
+		return projects;
 	}
+
+	private static void findProjects(FileHandle folder, Array<String> projects) {
+		for (FileHandle child : folder.list()) {
+			if (child.isDirectory()) {
+				if (child.child("game.json").exists()) {
+					projects.add(child.path());
+				} else {
+					findProjects(child, projects);
+				}
+			}
+		}
+	}
+
 }

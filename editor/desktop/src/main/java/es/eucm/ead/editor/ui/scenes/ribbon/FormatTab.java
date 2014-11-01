@@ -42,7 +42,7 @@ import es.eucm.ead.editor.control.actions.model.scene.ReorderSelection;
 import es.eucm.ead.editor.control.actions.model.scene.transform.MirrorSelection;
 import es.eucm.ead.editor.control.actions.model.scene.transform.RotateSelection;
 import es.eucm.ead.editor.control.actions.model.scene.transform.RotateSelection.Type;
-import es.eucm.ead.editor.ui.WidgetsUtils;
+import es.eucm.ead.editor.view.widgets.WidgetsUtils;
 import es.eucm.ead.editor.view.widgets.Separator;
 import es.eucm.ead.editor.view.widgets.layouts.LinearLayout;
 import es.eucm.ead.engine.I18N;

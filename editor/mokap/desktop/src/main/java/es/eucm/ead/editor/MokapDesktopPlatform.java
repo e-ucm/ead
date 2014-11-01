@@ -52,11 +52,11 @@ import com.badlogic.gdx.Input.TextInputListener;
 import com.badlogic.gdx.backends.lwjgl.LwjglFrame;
 
 import es.eucm.ead.editor.control.Controller;
-import es.eucm.ead.editor.platform.MockupPlatform;
-import es.eucm.ead.editor.platform.MockupPlatform.ImageCapturedListener.Result;
+import es.eucm.ead.editor.platform.MokapPlatform;
+import es.eucm.ead.editor.platform.MokapPlatform.ImageCapturedListener.Result;
 import es.eucm.ead.engine.I18N;
 
-public class MockupDesktopPlatform extends MockupPlatform {
+public class MokapDesktopPlatform extends MokapPlatform {
 
 	private LwjglFrame frame;
 

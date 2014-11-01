@@ -44,15 +44,14 @@ import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
-
-import es.eucm.ead.editor.control.MockupController.Dpi;
-import es.eucm.ead.editor.editorui.MockupUITest;
+import es.eucm.ead.editor.control.MokapController.Dpi;
+import es.eucm.ead.editor.editorui.UITest;
 import es.eucm.ead.editor.view.widgets.IconButton;
 import es.eucm.ead.editor.view.widgets.MultiToolbar;
-import es.eucm.ead.editor.view.widgets.Toolbar;
+import es.eucm.ead.editor.view.widgets.layouts.LinearLayout;
 import es.eucm.ead.engine.I18N;
 
-public class MultiToolbarTest extends MockupUITest {
+public class MultiToolbarTest extends UITest {
 
 	@Override
 	protected Actor buildUI(Skin skin, I18N i18n) {
@@ -62,71 +61,77 @@ public class MultiToolbarTest extends MockupUITest {
 
 		final MultiToolbar multiTop = new MultiToolbar(skin);
 
-		Toolbar insertBar = new Toolbar(skin);
+		LinearLayout insertBar = new LinearLayout(true);
 
 		IconButton redo = new IconButton("ic_redo", 0, skin, "toolbar");
-		insertBar.leftAdd(redo);
+		insertBar.add(redo);
 
 		IconButton undo = new IconButton("ic_undo", 0, skin, "toolbar");
-		insertBar.leftAdd(undo);
+		insertBar.add(undo);
 
 		IconButton compose = new IconButton("ic_compose", 0, skin, "toolbar");
-		insertBar.leftAdd(compose);
+		insertBar.add(compose);
 
 		IconButton menu = new IconButton("ic_menu", 0, skin, "toolbar");
-		insertBar.leftAdd(menu);
+		insertBar.add(menu);
+
+		insertBar.addSpace();
 
 		IconButton paste = new IconButton("ic_paste", 0, skin, "toolbar");
-		insertBar.rightAdd(paste);
+		insertBar.add(paste);
 
 		IconButton add = new IconButton("ic_add", 0, skin, "toolbar");
-		insertBar.rightAdd(add);
+		insertBar.add(add);
 
-		Toolbar transformBar = new Toolbar(skin);
+		LinearLayout transformBar = new LinearLayout(true);
 
 		IconButton redo2 = new IconButton("ic_redo", 0, skin, "toolbar");
-		transformBar.leftAdd(redo2);
+		transformBar.add(redo2);
 
 		IconButton undo2 = new IconButton("ic_undo", 0, skin, "toolbar");
-		transformBar.leftAdd(undo2);
+		transformBar.add(undo2);
 
 		IconButton check = new IconButton("ic_check", 0, skin, "toolbar");
-		transformBar.leftAdd(check);
+		transformBar.add(check);
+
+		transformBar.addSpace();
 
 		IconButton group = new IconButton("ic_group", 0, skin, "toolbar");
-		transformBar.rightAdd(group);
+		transformBar.add(group);
 
 		IconButton edit = new IconButton("ic_edit", 0, skin, "toolbar");
-		transformBar.rightAdd(edit);
+		transformBar.add(edit);
 
 		IconButton toBack = new IconButton("ic_to_back", 0, skin, "toolbar");
-		transformBar.rightAdd(toBack);
+		transformBar.add(toBack);
 
 		IconButton toFront = new IconButton("ic_to_front", 0, skin, "toolbar");
-		transformBar.rightAdd(toFront);
+		transformBar.add(toFront);
 
 		IconButton moreTrans = new IconButton("ic_more", 0, skin, "toolbar");
-		transformBar.rightAdd(moreTrans);
+		transformBar.add(moreTrans);
 
-		Toolbar paintBar = new Toolbar(skin);
+		LinearLayout paintBar = new LinearLayout(true);
 
 		IconButton redo3 = new IconButton("ic_redo", 0, skin, "toolbar");
-		paintBar.leftAdd(redo3);
+		paintBar.add(redo3);
 
 		IconButton undo3 = new IconButton("ic_undo", 0, skin, "toolbar");
-		paintBar.leftAdd(undo3);
+		paintBar.add(undo3);
 
 		IconButton circle = new IconButton("ic_circle", 0, skin, "toolbar");
-		paintBar.leftAdd(circle);
+		paintBar.add(circle);
 
 		IconButton brush = new IconButton("ic_brush", 0, skin, "toolbar");
-		paintBar.leftAdd(brush);
+		paintBar.add(brush);
 
 		IconButton save = new IconButton("ic_check", 0, skin, "toolbar");
-		paintBar.leftAdd(save);
+		paintBar.add(save);
+
+		paintBar.addSpace();
 
 		IconButton cancel = new IconButton("ic_close", 0, skin, "toolbar");
-		paintBar.rightAdd(cancel);
+		paintBar.add(cancel);
 
 		multiTop.addToolbars(insertBar, transformBar, paintBar);
 

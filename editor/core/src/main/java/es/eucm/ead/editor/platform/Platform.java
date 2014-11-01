@@ -125,6 +125,8 @@ public interface Platform {
 	 */
 	Tracker createTracker(Controller controller);
 
+	String getDefaultProjectsFolder();
+
 	public interface FileChooserListener {
 		/**
 		 * 

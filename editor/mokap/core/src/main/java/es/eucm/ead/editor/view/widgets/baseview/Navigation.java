@@ -188,6 +188,11 @@ class Navigation extends Panel {
 	}
 
 	@Override
+	public boolean hasContent() {
+		return navigation != null;
+	}
+
+	@Override
 	protected boolean isVelocityToScroll(InputEvent event, float vy) {
 		return event.getTarget() != background
 				&& super.isVelocityToScroll(event, vy);

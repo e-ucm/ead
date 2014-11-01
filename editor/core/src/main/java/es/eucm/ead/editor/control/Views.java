@@ -36,36 +36,35 @@
  */
 package es.eucm.ead.editor.control;
 
-import java.util.HashMap;
-import java.util.Map;
-
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.Group;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
-import com.badlogic.gdx.scenes.scene2d.InputListener;
+import com.badlogic.gdx.scenes.scene2d.Touchable;
 import com.badlogic.gdx.scenes.scene2d.ui.WidgetGroup;
+import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.scenes.scene2d.utils.Layout;
 import com.badlogic.gdx.utils.reflect.ClassReflection;
 import com.badlogic.gdx.utils.reflect.ReflectionException;
-
 import es.eucm.ead.editor.control.ViewsHistory.ViewUpdate;
 import es.eucm.ead.editor.control.actions.editor.ChangeView;
 import es.eucm.ead.editor.model.Model.ModelListener;
 import es.eucm.ead.editor.model.events.LoadEvent;
 import es.eucm.ead.editor.model.events.LoadEvent.Type;
+import es.eucm.ead.editor.view.Modal;
 import es.eucm.ead.editor.view.builders.Builder;
 import es.eucm.ead.editor.view.builders.DialogBuilder;
 import es.eucm.ead.editor.view.builders.ViewBuilder;
 import es.eucm.ead.editor.view.widgets.Dialog;
 
+import java.util.HashMap;
+import java.util.Map;
+
 /**
  * Controls all the views
  */
 public class Views implements ModelListener<LoadEvent> {
-
-	public static final int CONTEXT_MENU_OFFSET = 3;
 
 	protected Controller controller;
 
@@ -81,41 +80,59 @@ public class Views implements ModelListener<LoadEvent> {
 
 	protected Object[] currentArgs;
 
-	private Actor currentContextMenu;
+	private Actor currentModal;
 
 	protected ViewsHistory viewsHistory;
 
-	private InputListener closeContextMenu = new InputListener() {
+	protected boolean resendTouch = true;
+
+	private ClickListener closeContextMenu = new ClickListener() {
 
 		private Vector2 auxVector = new Vector2();
 
-		@Override
-		public boolean touchDown(InputEvent event, float x, float y,
-				int pointer, int button) {
-			if (currentContextMenu != null) {
-				// Resend touch down if user pressed outside the context menu
-				boolean resendTouch = event.getTarget() != currentContextMenu
-						&& !event.getTarget()
-								.isDescendantOf(currentContextMenu);
+		private InputEvent lastEvent;
 
-				currentContextMenu.remove();
-				currentContextMenu = null;
+		private Runnable hideModalsContainer = new Runnable() {
+
+			@Override
+			public void run() {
+				// Resend touch down if user pressed outside the context menu
+				boolean resendTouch = Views.this.resendTouch
+						&& lastEvent.getTarget() != currentModal
+						&& !lastEvent.getTarget().isDescendantOf(currentModal);
+
+				currentModal.remove();
+				currentModal.setTouchable(Touchable.enabled);
+				currentModal = null;
 
 				if (resendTouch) {
-					auxVector.set(event.getStageX(), event.getStageY());
-					event.getStage().stageToScreenCoordinates(auxVector);
-					event.getStage().touchDown((int) auxVector.x,
-							(int) auxVector.y, event.getPointer(),
-							event.getButton());
+					auxVector.set(lastEvent.getStageX(), lastEvent.getStageY());
+					lastEvent.getStage().stageToScreenCoordinates(auxVector);
+					lastEvent.getStage().touchDown((int) auxVector.x,
+							(int) auxVector.y, lastEvent.getPointer(),
+							lastEvent.getButton());
 				}
 
 			}
-			return true;
+		};
+
+		@Override
+		public void clicked(InputEvent event, float x, float y) {
+			if (currentModal != null) {
+				currentModal.setTouchable(Touchable.disabled);
+				modalsContainer.setTouchable(Touchable.disabled);
+				lastEvent = event;
+				if (currentModal instanceof Modal) {
+					((Modal) currentModal).hide(hideModalsContainer);
+				} else {
+					hideModalsContainer.run();
+				}
+
+			}
 		}
 	};
 
 	/**
-	 * 
 	 * @param controller
 	 *            the editor controller
 	 * @param viewsContainer
@@ -128,7 +145,14 @@ public class Views implements ModelListener<LoadEvent> {
 		this.controller = controller;
 		controller.getModel().addLoadListener(this);
 		this.viewsContainer = viewsContainer;
+
 		this.modalsContainer = modalsContainer;
+		if (modalsContainer instanceof WidgetGroup) {
+			((WidgetGroup) modalsContainer).pack();
+		}
+		modalsContainer.setTouchable(Touchable.disabled);
+		modalsContainer.addListener(closeContextMenu);
+
 		viewsBuilders = new HashMap<Class, ViewBuilder>();
 		dialogBuilders = new HashMap<Class, DialogBuilder>();
 		viewsHistory = new ViewsHistory();
@@ -191,8 +215,10 @@ public class Views implements ModelListener<LoadEvent> {
 			if (view != null) {
 				viewsContainer.clearChildren();
 				viewsContainer.addActor(view);
+
 				if (view instanceof Layout) {
 					((Layout) view).invalidateHierarchy();
+					((Layout) view).setFillParent(true);
 				}
 			}
 			this.currentArgs = args;
@@ -223,23 +249,29 @@ public class Views implements ModelListener<LoadEvent> {
 	/**
 	 * Show the given context menu in the given coordinates
 	 */
-	public void showContextMenu(Actor contextMenu, float x, float y) {
-		if (contextMenu instanceof WidgetGroup) {
-			((WidgetGroup) contextMenu).pack();
+	public void showModal(Actor modal, float x, float y) {
+		if (modal instanceof WidgetGroup) {
+			((WidgetGroup) modal).pack();
 		}
 
-		contextMenu.setPosition(x,
-				y + CONTEXT_MENU_OFFSET - contextMenu.getHeight());
+		modal.setPosition(
+				Math.min(x, modalsContainer.getWidth() - modal.getWidth()), y
+						- modal.getHeight());
 
-		if (currentContextMenu != null) {
-			currentContextMenu.remove();
+		if (currentModal != null) {
+			currentModal.remove();
 		}
 
-		modalsContainer.addActor(contextMenu);
-		setKeyboardFocus(contextMenu);
-		setScrollFocus(contextMenu);
-		currentContextMenu = contextMenu;
-		modalsContainer.addListener(closeContextMenu);
+		modalsContainer.addActor(modal);
+		modalsContainer.setTouchable(Touchable.enabled);
+
+		if (modal instanceof Modal) {
+			((Modal) modal).show();
+		}
+
+		setKeyboardFocus(modal);
+		setScrollFocus(modal);
+		currentModal = modal;
 	}
 
 	public void requestKeyboardFocus(Actor actor) {

@@ -41,9 +41,9 @@ import java.io.IOException;
 
 import com.badlogic.gdx.utils.Array;
 
-import es.eucm.ead.editor.MockupDesktopPlatform;
+import es.eucm.ead.editor.MokapDesktopPlatform;
 
-public class MockPlatform extends MockupDesktopPlatform {
+public class MockPlatform extends MokapDesktopPlatform {
 
 	private Array<File> tempFiles = new Array();
 

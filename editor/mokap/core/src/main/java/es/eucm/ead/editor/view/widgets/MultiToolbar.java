@@ -44,21 +44,22 @@ import com.badlogic.gdx.scenes.scene2d.Touchable;
 import com.badlogic.gdx.scenes.scene2d.actions.Actions;
 import com.badlogic.gdx.scenes.scene2d.ui.Container;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
+import com.badlogic.gdx.scenes.scene2d.ui.WidgetGroup;
 import com.badlogic.gdx.scenes.scene2d.utils.Align;
 import com.badlogic.gdx.scenes.scene2d.utils.Drawable;
 import com.badlogic.gdx.utils.Array;
 
-public class MultiToolbar extends Container<Toolbar> {
+public class MultiToolbar extends Container<WidgetGroup> {
 
 	private static final float ANIM_TIME = 0.15f;
 
-	private Array<Toolbar> toolbars;
+	private Array<WidgetGroup> toolbars;
 
 	private float maxHeight;
 
-	private Toolbar toHide;
+	private WidgetGroup toHide;
 
-	protected Toolbar toShow;
+	protected WidgetGroup toShow;
 
 	private Runnable actionAddActor;
 
@@ -77,7 +78,7 @@ public class MultiToolbar extends Container<Toolbar> {
 			setColor(style.color);
 		}
 
-		toolbars = new Array<Toolbar>();
+		toolbars = new Array<WidgetGroup>();
 		maxHeight = 0;
 		fill();
 
@@ -96,8 +97,8 @@ public class MultiToolbar extends Container<Toolbar> {
 		};
 	}
 
-	public void addToolbars(Toolbar... t) {
-		for (Toolbar toolbar : t) {
+	public void addToolbars(WidgetGroup... t) {
+		for (WidgetGroup toolbar : t) {
 			toolbar.setTouchable(Touchable.disabled);
 
 			toolbars.add(toolbar);
@@ -127,7 +128,7 @@ public class MultiToolbar extends Container<Toolbar> {
 	 */
 	public void showSimple(int index) {
 		if (index < toolbars.size) {
-			Toolbar toolbar = toolbars.get(index);
+			WidgetGroup toolbar = toolbars.get(index);
 			toolbar.setTouchable(Touchable.enabled);
 			toolbar.getColor().a = 1;
 			toolbar.setScaleY(1);
@@ -139,10 +140,10 @@ public class MultiToolbar extends Container<Toolbar> {
 
 	public void show(int index) {
 		if (toolbars.size > index) {
-			Toolbar newBar = toolbars.get(index);
+			WidgetGroup newBar = toolbars.get(index);
 
 			if (newBar != toShow) {
-				for (Toolbar toolbar : toolbars) {
+				for (WidgetGroup toolbar : toolbars) {
 					toolbar.clearActions();
 				}
 
@@ -155,7 +156,7 @@ public class MultiToolbar extends Container<Toolbar> {
 
 				toShow = newBar;
 
-				toHide = (Toolbar) current;
+				toHide = (WidgetGroup) current;
 				toHide.setOrigin(Align.center);
 
 				if (toShow.getScaleY() == 1) {
@@ -190,16 +191,16 @@ public class MultiToolbar extends Container<Toolbar> {
 		return maxHeight + backgroungPadding;
 	}
 
-	public Array<Toolbar> getToolbars() {
+	public Array<WidgetGroup> getToolbars() {
 		return toolbars;
 	}
 
-	public Toolbar getCurrentToolbar() {
+	public WidgetGroup getCurrentToolbar() {
 		return this.getActor();
 	}
 
 	public void release() {
-		for (Toolbar toolbar : toolbars) {
+		for (WidgetGroup toolbar : toolbars) {
 			toolbar.clearActions();
 		}
 	}

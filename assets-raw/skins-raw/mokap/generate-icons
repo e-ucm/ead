@@ -10,17 +10,13 @@ for file in $(find . -type f)
         do
             case $folder in
                 ../ldpi)
-                    dpi=90
+                    dpi=45
                     echo "Hey";;
+                ../mdpi) dpi=90;;
                 ../mdpi) dpi=135;;
-                ../mdpi) dpi=180;;
-                ../hdpi) dpi=225;;
+                ../hdpi) dpi=180;;
             esac
             echo "$folder has $dpi dpi"
 		    inkscape --export-png=$folder/images/$imagepng --export-dpi=$dpi --export-background-opacity=0 --without-gui $imagefile
         done
 	done
-cd ..
-cd ..
-cd ..
-mvn es.e-ucm.ead:ead-maven-plugin:generate-skins

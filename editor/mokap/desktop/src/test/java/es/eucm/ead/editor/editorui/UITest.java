@@ -36,27 +36,23 @@
  */
 package es.eucm.ead.editor.editorui;
 
-import java.util.Map;
-
 import com.badlogic.gdx.Application;
 import com.badlogic.gdx.ApplicationListener;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input.Keys;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.scenes.scene2d.Actor;
-import com.badlogic.gdx.scenes.scene2d.Group;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.InputListener;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
+import com.badlogic.gdx.scenes.scene2d.ui.WidgetGroup;
 import com.badlogic.gdx.scenes.scene2d.utils.UIUtils;
 import com.badlogic.gdx.utils.viewport.ScreenViewport;
-
-import com.badlogic.gdx.utils.viewport.ScreenViewport;
-import es.eucm.ead.editor.MockupDesktopPlatform;
+import es.eucm.ead.editor.MokapDesktopPlatform;
 import es.eucm.ead.editor.assets.ApplicationAssets;
 import es.eucm.ead.editor.control.Controller;
-import es.eucm.ead.editor.control.MockupController;
+import es.eucm.ead.editor.control.MokapController;
 import es.eucm.ead.editor.control.Selection;
 import es.eucm.ead.editor.control.actions.editor.Exit;
 import es.eucm.ead.editor.control.actions.editor.ForceSave;
@@ -69,12 +65,14 @@ import es.eucm.ead.editor.model.Model.Resource;
 import es.eucm.ead.engine.I18N;
 import es.eucm.ead.schemax.entities.ResourceCategory;
 
+import java.util.Map;
+
 /**
  * <p>
  * This recreates the minimum classes to have a complete editor without UI, and
  * is intended as playground to test editor views individually, implementing
- * {@link #buildUI(Group)}. In this method, any view can be added to the root
- * and it will be shown.
+ * {@link #buildUI(Skin, I18N)}. In this method, any view can be added to the
+ * root and it will be shown.
  * <p>
  * <p>
  * This class also provides some shortcuts for common tasks in the editor:
@@ -85,28 +83,39 @@ import es.eucm.ead.schemax.entities.ResourceCategory;
  * <li>Ctrl+Q: Edit next scene</li>
  * </ol>
  * </p>
- * 
  */
-public abstract class MockupUITest implements ApplicationListener {
+public abstract class UITest implements ApplicationListener {
 
 	protected Stage stage;
 
 	protected Controller controller;
 
-	protected MockupDesktopPlatform platform;
+	protected MokapDesktopPlatform platform;
 
 	@Override
 	public void create() {
 		Gdx.app.setLogLevel(Application.LOG_DEBUG);
 		Gdx.gl.glClearColor(1f, 1f, 1f, 1f);
 		stage = new Stage(new ScreenViewport());
-		controller = new MockupController(platform = new MockPlatform(),
-				Gdx.files, stage.getRoot());
+		WidgetGroup modalContainer = new WidgetGroup();
+		modalContainer.setFillParent(true);
+
+		WidgetGroup viewContainer = new WidgetGroup();
+		viewContainer.setFillParent(true);
+
+		stage.getRoot().addActor(viewContainer);
+		stage.getRoot().addActor(modalContainer);
+		controller = new MokapController(platform = new MockPlatform(),
+				Gdx.files, viewContainer, modalContainer);
 		controller.getCommands().pushStack();
 		platform.setBatch(stage.getBatch());
 		Gdx.input.setInputProcessor(stage);
 		ApplicationAssets assets = controller.getApplicationAssets();
-		stage.getRoot().addActor(buildUI(assets.getSkin(), assets.getI18N()));
+		Actor actor = buildUI(assets.getSkin(), assets.getI18N());
+		if (actor instanceof WidgetGroup) {
+			((WidgetGroup) actor).setFillParent(true);
+		}
+		stage.getRoot().addActor(actor);
 
 		stage.addListener(new ShortcutListener());
 	}

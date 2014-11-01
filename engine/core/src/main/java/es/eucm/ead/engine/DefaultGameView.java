@@ -37,16 +37,23 @@
 package es.eucm.ead.engine;
 
 import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.scenes.scene2d.*;
+import com.badlogic.gdx.scenes.scene2d.Actor;
+import com.badlogic.gdx.scenes.scene2d.Group;
+import com.badlogic.gdx.scenes.scene2d.InputEvent;
+import com.badlogic.gdx.scenes.scene2d.InputListener;
+import com.badlogic.gdx.scenes.scene2d.Touchable;
 import com.badlogic.gdx.scenes.scene2d.ui.WidgetGroup;
+import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.scenes.scene2d.utils.UIUtils;
 import com.badlogic.gdx.utils.Pools;
 import com.badlogic.gdx.utils.SnapshotArray;
 import com.badlogic.gdx.utils.viewport.FitViewport;
 import es.eucm.ead.engine.components.KeyPressedComponent;
+import es.eucm.ead.engine.components.TouchedComponent;
 import es.eucm.ead.engine.components.behaviors.events.RuntimeKey;
 import es.eucm.ead.engine.entities.EngineEntity;
 import es.eucm.ead.engine.entities.actors.EntityGroup;
+import es.eucm.ead.schema.components.behaviors.events.Touch.Type;
 import es.eucm.ead.schemax.Layer;
 
 import java.util.HashMap;
@@ -57,7 +64,7 @@ import java.util.Map;
  * layers. Any element that is to be rendered on the screen has to belong to a
  * GameLayer. Adding elements to one layer or another just changes the order (Z)
  * they are painted.
- * 
+ * <p/>
  * The order of the layers, from top to bottom, is
  * <ol>
  * <li>HUD: displays game controls, on top of everything</li>
@@ -66,9 +73,9 @@ import java.util.Map;
  * layer</li>
  * <li>SCENE_CONTENT: displays normal scene contents (characters, background)</li>
  * </ol>
- * 
+ * <p/>
  * Each layer can contain its own internal ordering.
- * 
+ * <p/>
  * For more information, visit: <a
  * href="https://github.com/e-ucm/ead/wiki/Game-view"
  * ·target="_blank">https://github.com/e-ucm/ead/wiki/Game-view</a>
@@ -88,6 +95,7 @@ public class DefaultGameView extends WidgetGroup implements GameView {
 		this.gameLoop = gameLoop;
 		initializeLayers();
 		initKeyboardListener();
+		addListener(new TouchListener());
 	}
 
 	/*
@@ -203,7 +211,7 @@ public class DefaultGameView extends WidgetGroup implements GameView {
 	 * Just to differentiate layer entities from regular entities more easily.
 	 * This also prevents accidental removals since the game loop does not
 	 * remove these entities.
-	 **/
+	 */
 	public class EngineLayer extends EngineEntity {
 		private Layer layer;
 
@@ -223,4 +231,45 @@ public class DefaultGameView extends WidgetGroup implements GameView {
 			return layer;
 		}
 	}
+
+	private class TouchListener extends ClickListener {
+
+		@Override
+		public void touchUp(InputEvent event, float x, float y, int pointer,
+				int button) {
+			process(event.getTarget(), Type.CLICK);
+		}
+
+		@Override
+		public boolean touchDown(InputEvent event, float x, float y,
+				int pointer, int button) {
+			process(event.getTarget(), Type.PRESS);
+			return true;
+		}
+
+		private void process(Actor actor, Type type) {
+			if (gameLoop.isPlaying()) {
+				TouchedComponent component = gameLoop.addAndGetComponent(
+						getActorEntity(actor), TouchedComponent.class);
+				component.event(type);
+			}
+		}
+	}
+
+	/**
+	 * @return the entity associated to the given actor. Returns {@code null} if
+	 *         no entity associated is to the actor
+	 */
+	public static EngineEntity getActorEntity(Actor actor) {
+		if (actor == null) {
+			return null;
+		}
+		Object o = actor.getUserObject();
+		if (o instanceof EngineEntity) {
+			return ((EngineEntity) o);
+		} else {
+			return getActorEntity(actor.getParent());
+		}
+	}
+
 }

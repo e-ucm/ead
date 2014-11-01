@@ -57,7 +57,7 @@ import es.eucm.ead.editor.control.actions.editor.Save;
 import es.eucm.ead.editor.control.actions.editor.ShowContextMenu;
 import es.eucm.ead.editor.control.actions.editor.ShowDialog;
 import es.eucm.ead.editor.control.actions.editor.Undo;
-import es.eucm.ead.editor.ui.WidgetsUtils;
+import es.eucm.ead.editor.view.widgets.WidgetsUtils;
 import es.eucm.ead.editor.view.dialogs.NewGameDialog;
 import es.eucm.ead.editor.view.listeners.ActionOnClickListener;
 import es.eucm.ead.editor.view.widgets.IconButton;

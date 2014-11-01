@@ -42,19 +42,21 @@ import com.badlogic.gdx.scenes.scene2d.Group;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.utils.Disposable;
 import com.badlogic.gdx.utils.SnapshotArray;
-import es.eucm.ead.editor.control.MockupController.BackListener;
+import es.eucm.ead.editor.control.MokapController.BackListener;
 import es.eucm.ead.editor.control.transitions.TransitionManager;
 import es.eucm.ead.editor.control.transitions.TransitionManager.Transition;
 import es.eucm.ead.editor.view.builders.ViewBuilder;
 
-public class MockupViews extends Views implements BackListener, Disposable {
+public class MokapViews extends Views implements BackListener, Disposable {
 
 	private TransitionManager transitionManager;
 
-	public MockupViews(Controller controller, Group viewsContainer) {
-		super(controller, viewsContainer, viewsContainer);
+	public MokapViews(Controller controller, Group viewsContainer,
+			Group modalsContainer) {
+		super(controller, viewsContainer, modalsContainer);
 		transitionManager = new TransitionManager(controller, viewsContainer,
 				this);
+		resendTouch = false;
 	}
 
 	public <T extends ViewBuilder> void transition(Class<T> viewClass,

@@ -37,30 +37,46 @@
 package es.eucm.ead.editor;
 
 import com.badlogic.gdx.Gdx;
-
+import com.badlogic.gdx.scenes.scene2d.ui.WidgetGroup;
 import es.eucm.ead.editor.control.Controller;
-import es.eucm.ead.editor.control.MockupController;
+import es.eucm.ead.editor.control.MokapController;
+import es.eucm.ead.editor.control.actions.editor.ChangeView;
+import es.eucm.ead.editor.control.actions.editor.OpenLastGame;
+import es.eucm.ead.editor.control.actions.model.EditScene;
+import es.eucm.ead.editor.model.Model.ModelListener;
+import es.eucm.ead.editor.model.Q;
+import es.eucm.ead.editor.model.events.LoadEvent;
+import es.eucm.ead.editor.model.events.LoadEvent.Type;
 import es.eucm.ead.editor.platform.Platform;
+import es.eucm.ead.editor.view.builders.home.HomeView;
+import es.eucm.ead.editor.view.builders.scene.SceneView;
+import es.eucm.ead.editor.view.widgets.WidgetBuilder;
+import es.eucm.ead.schema.editor.components.GameData;
 
-public class MockupApplicationListener extends EditorApplicationListener {
+public class MokapApplicationListener extends EditorApplicationListener {
 
-	private final Runnable clearColor = new Runnable() {
-
-		@Override
-		public void run() {
-			Gdx.gl.glClearColor(1f, 1f, 1f, 1f);
-		}
-	};
-
-	public MockupApplicationListener(Platform platform) {
+	public MokapApplicationListener(Platform platform) {
 		super(platform);
 	}
 
 	@Override
-	public void create() {
-		super.create();
-		Gdx.app.postRunnable(clearColor);
+	protected void initialize() {
+		super.initialize();
 
+		controller.getModel().addLoadListener(new ModelListener<LoadEvent>() {
+			@Override
+			public void modelChanged(LoadEvent event) {
+				if (event.getType() == Type.LOADED) {
+					controller.action(
+							EditScene.class,
+							Q.getComponent(controller.getModel().getGame(),
+									GameData.class).getInitialScene());
+					controller.action(ChangeView.class, SceneView.class);
+				}
+			}
+		});
+
+		controller.action(OpenLastGame.class, HomeView.class);
 	}
 
 	@Override
@@ -68,23 +84,19 @@ public class MockupApplicationListener extends EditorApplicationListener {
 		super.stage.getViewport().update(width, height, true);
 	}
 
-	@Override
-	protected void initialize() {
-	}
-
-	@Override
-	public void pause() {
-		((MockupController) controller).pause();
-	}
-
-	@Override
-	public void resume() {
-		super.resume();
-		Gdx.app.postRunnable(clearColor);
-	}
-
 	protected Controller buildController() {
-		return new MockupController(this.platform, Gdx.files,
-				super.stage.getRoot());
+		WidgetGroup modalContainer = new WidgetGroup();
+		modalContainer.setFillParent(true);
+
+		WidgetGroup viewContainer = new WidgetGroup();
+		viewContainer.setFillParent(true);
+
+		stage.getRoot().addActor(viewContainer);
+		stage.getRoot().addActor(modalContainer);
+
+		MokapController controller = new MokapController(this.platform,
+				Gdx.files, viewContainer, modalContainer);
+		WidgetBuilder.setController(controller);
+		return controller;
 	}
 }

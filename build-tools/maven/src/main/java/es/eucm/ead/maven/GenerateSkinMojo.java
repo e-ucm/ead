@@ -154,8 +154,7 @@ public class GenerateSkinMojo extends AbstractMojo {
 									if (child.exists()) {
 										String fontName = child
 												.nameWithoutExtension()
-												+ "-"
-												+ fontSize;
+												+ "-" + fontSize;
 										FileHandle dstFolder = imagesFolder
 												.child(fontName);
 										dstFolder.mkdirs();
@@ -163,9 +162,8 @@ public class GenerateSkinMojo extends AbstractMojo {
 												.child("pack.json")
 												.writeString(defaultPack, false);
 										tempFolders.add(dstFolder);
-										generateFiles(fontName, child,
-												Integer.valueOf(fontSize),
-												dstFolder);
+										generateFiles(fontName, child, Integer
+												.valueOf(fontSize), dstFolder);
 										dstFolder.child(fontName + ".fnt")
 												.copyTo(skinFolder);
 									}
@@ -203,8 +201,10 @@ public class GenerateSkinMojo extends AbstractMojo {
 
 		FileHandle common = skinRaw.child("common");
 		for (FileHandle dpi : skinRaw.list()) {
-			if (dpi.isDirectory() && !"common".equals(dpi.name()) && !"svg".equals(dpi.name())) {
-				FileHandle skinFolder = skinRoot.child(skinRaw.name() + '-' + dpi.name());
+			if (dpi.isDirectory() && !"common".equals(dpi.name())
+					&& !"svg".equals(dpi.name())) {
+				FileHandle skinFolder = skinRoot.child(skinRaw.name() + '-'
+						+ dpi.name());
 				skinFolder.mkdirs();
 				skinRaw.child("skin.json").copyTo(skinFolder);
 				FileHandle atlasImagesFolder = skinFolder.child("atlas");

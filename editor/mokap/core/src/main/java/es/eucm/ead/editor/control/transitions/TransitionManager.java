@@ -49,7 +49,7 @@ import com.badlogic.gdx.utils.Disposable;
 import com.badlogic.gdx.utils.viewport.Viewport;
 
 import es.eucm.ead.editor.control.Controller;
-import es.eucm.ead.editor.control.MockupViews;
+import es.eucm.ead.editor.control.MokapViews;
 
 /**
  * Manages a {@link Transition} between the current screen and the next screen.
@@ -60,7 +60,7 @@ public class TransitionManager extends Actor implements Disposable {
 	private FrameBuffer currFbo, nextFbo;
 	private Transition screenTransition;
 	private Group viewsContainer;
-	private MockupViews views;
+	private MokapViews views;
 	private TextureRegion currTex;
 	private TextureRegion nexTex;
 	private float percentageCompletion;
@@ -68,7 +68,7 @@ public class TransitionManager extends Actor implements Disposable {
 	private float time;
 
 	public TransitionManager(Controller controller, Group viewsContainer,
-			MockupViews views) {
+			MokapViews views) {
 		this.viewsContainer = viewsContainer;
 		this.views = views;
 	}

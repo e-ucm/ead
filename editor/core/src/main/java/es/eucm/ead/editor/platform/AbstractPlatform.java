@@ -88,4 +88,9 @@ public abstract class AbstractPlatform implements Platform {
 		return Locale.getDefault().getLanguage() + "_"
 				+ Locale.getDefault().getCountry();
 	}
+
+	@Override
+	public String getDefaultProjectsFolder() {
+		return System.getProperty("user.dir");
+	}
 }

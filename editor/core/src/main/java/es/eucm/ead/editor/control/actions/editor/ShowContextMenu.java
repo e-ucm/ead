@@ -57,6 +57,7 @@ public class ShowContextMenu extends EditorAction {
 
 	public ShowContextMenu() {
 		super(true, false, new Class[] { Actor.class, Actor.class },
+				new Class[] { Actor.class, Actor.class, Boolean.class },
 				new Class[] { Actor.class, Actor.class, Float.class,
 						Float.class });
 	}
@@ -66,18 +67,21 @@ public class ShowContextMenu extends EditorAction {
 		Actor actor = (Actor) args[0];
 		Actor contextMenu = (Actor) args[1];
 
-		float offsetX, offsetY;
-		if (args.length == 2) {
-			offsetX = 0F;
-			offsetY = 0F;
-		} else {
+		float offsetX = 0, offsetY = 0;
+		if (args.length == 4) {
 			offsetX = (Float) args[2];
 			offsetY = (Float) args[3];
 		}
 
+		boolean overlay = args.length == 3 && (Boolean) args[2];
+
 		origin.set(offsetX, offsetY);
+		if (overlay) {
+			origin.add(0, actor.getHeight());
+		}
+
 		actor.localToStageCoordinates(origin);
-		controller.getViews().showContextMenu(contextMenu, origin.x, origin.y);
+		controller.getViews().showModal(contextMenu, origin.x, origin.y);
 
 	}
 }

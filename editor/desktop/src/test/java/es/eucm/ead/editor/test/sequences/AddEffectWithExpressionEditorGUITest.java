@@ -65,7 +65,6 @@ import static org.junit.Assert.assertTrue;
  */
 public class AddEffectWithExpressionEditorGUITest extends EditorGUITest {
 
-	@Override
 	protected void runTest() {
 		openEmptyGame();
 		click(PerspectiveButtons.SCENE_SELECTOR);

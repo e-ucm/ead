@@ -43,8 +43,8 @@ import com.badlogic.gdx.backends.android.AndroidApplication;
 import com.badlogic.gdx.backends.android.AndroidApplicationConfiguration;
 import com.google.android.gms.analytics.GoogleAnalytics;
 import com.google.android.gms.analytics.Tracker;
-import es.eucm.ead.editor.MockupApplicationListener;
-import es.eucm.ead.editor.platform.MockupPlatform;
+import es.eucm.ead.editor.MokapApplicationListener;
+import es.eucm.ead.editor.platform.MokapPlatform;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -69,11 +69,11 @@ public class EditorActivity extends AndroidApplication {
 		Tracker tracker = analytics.newTracker(R.xml.tracker);
 		analytics.reportActivityStart(this);
 		initialize(
-				new MockupApplicationListener(handleIntent(getIntent(),
+				new MokapApplicationListener(handleIntent(getIntent(),
 						new AndroidPlatform(getContext(), tracker))), config);
 	}
 
-	private MockupPlatform handleIntent(Intent intent, MockupPlatform platform) {
+	private MokapPlatform handleIntent(Intent intent, MokapPlatform platform) {
 
 		if (intent != null) {
 			String action = intent.getAction();

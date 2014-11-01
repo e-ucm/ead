@@ -34,45 +34,46 @@
  *      You should have received a copy of the GNU Lesser General Public License
  *      along with eAdventure.  If not, see <http://www.gnu.org/licenses/>.
  */
-package es.eucm.ead.editor.view.widgets;
+package es.eucm.ead.editor;
 
-import com.badlogic.gdx.scenes.scene2d.Actor;
-import com.badlogic.gdx.scenes.scene2d.ui.Skin;
-import com.badlogic.gdx.scenes.scene2d.utils.Drawable;
+import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.backends.lwjgl.LwjglApplicationConfiguration;
+import com.badlogic.gdx.backends.lwjgl.LwjglFrame;
+import es.eucm.ead.engine.utils.SwingEDTUtils;
 
-import es.eucm.ead.editor.view.widgets.layouts.LinearLayout;
+import javax.swing.*;
+import java.awt.event.ComponentAdapter;
+import java.awt.event.ComponentEvent;
 
-public class Toolbar extends LinearLayout {
+public class MokapDesktop {
 
-	public Toolbar(Skin skin) {
-		this(skin, 0, "default");
-	}
+	public static void main(String[] args) {
 
-	public Toolbar(Skin skin, String style) {
-		this(skin, 0, style);
-	}
+		LwjglApplicationConfiguration config = new LwjglApplicationConfiguration();
+		config.width = 640;
+		config.height = 360;
 
-	public Toolbar(Skin skin, float sidePadding) {
-		this(skin, sidePadding, "default");
-	}
+		MokapDesktopPlatform platform = new MokapDesktopPlatform();
 
-	public Toolbar(Skin skin, float sidePadding, String style) {
-		super(true, skin.get(style, ToolbarStyle.class).background);
-		defaultWidgetsMargin(sidePadding, 0, sidePadding, 0);
-		add(new SpaceConsumer()).expandX();
-	}
+		final LwjglFrame frame = new LwjglFrame(new MokapApplicationListener(
+				platform), config);
+		frame.setDefaultCloseOperation(JFrame.HIDE_ON_CLOSE);
+		frame.addComponentListener(new ComponentAdapter() {
+			@Override
+			public void componentHidden(ComponentEvent e) {
+				Gdx.app.exit();
+			}
+		});
+		platform.setFrame(frame);
+		frame.setLocationRelativeTo(null);
 
-	public Constraints leftAdd(Actor actor) {
-		return add(0, actor);
-	}
+		// set visible calls create()
+		SwingEDTUtils.invokeLater(new Runnable() {
 
-	public Constraints rightAdd(Actor actor) {
-		return add(actor);
-	}
-
-	public static class ToolbarStyle {
-
-		public Drawable background;
-
+			@Override
+			public void run() {
+				frame.setVisible(true);
+			}
+		});
 	}
 }

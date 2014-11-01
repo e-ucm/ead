@@ -2,13 +2,12 @@
 <!-- Generator: Adobe Illustrator 17.0.0, SVG Export Plug-In . SVG Version: 6.00 Build 0)  -->
 
 <svg
-   xmlns:i="&amp;ns_ai;"
+   xmlns:i="&amp;#38;ns_ai;"
    xmlns:dc="http://purl.org/dc/elements/1.1/"
    xmlns:cc="http://creativecommons.org/ns#"
    xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
    xmlns:svg="http://www.w3.org/2000/svg"
    xmlns="http://www.w3.org/2000/svg"
-   xmlns:xlink="http://www.w3.org/1999/xlink"
    xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
    xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
    version="1.2"
@@ -20,70 +19,39 @@
    viewBox="0 0 24 24"
    overflow="scroll"
    xml:space="preserve"
-   inkscape:version="0.48.3.1 r9886"
+   inkscape:version="0.48.4 r9939"
    sodipodi:docname="ic_text.svg"
    style="overflow:scroll"><metadata
-   id="metadata3641"><rdf:RDF><cc:Work
-       rdf:about=""><dc:format>image/svg+xml</dc:format><dc:type
-         rdf:resource="http://purl.org/dc/dcmitype/StillImage" /></cc:Work></rdf:RDF></metadata><defs
-   id="defs3639" /><sodipodi:namedview
-   pagecolor="#ffffff"
-   bordercolor="#666666"
-   borderopacity="1"
-   objecttolerance="10"
-   gridtolerance="10"
-   guidetolerance="10"
-   inkscape:pageopacity="0"
-   inkscape:pageshadow="2"
-   inkscape:window-width="640"
-   inkscape:window-height="480"
-   id="namedview3637"
-   showgrid="false"
-   inkscape:zoom="4.9166667"
-   inkscape:cx="24"
-   inkscape:cy="24"
-   inkscape:window-x="49"
-   inkscape:window-y="24"
-   inkscape:window-maximized="0"
-   inkscape:current-layer="Capa_1" />
-<switch
-   id="switch3628"
-   style="fill:#ffffff"
-   transform="translate(-12,-12)">
-	<foreignObject
-   requiredExtensions="http://ns.adobe.com/AdobeIllustrator/10.0/"
-   x="0"
-   y="0"
-   width="1"
-   height="1"
-   id="foreignObject3630">
-		<i:pgfRef
-   xlink:href="#adobe_illustrator_pgf">
-		</i:pgfRef>
-	</foreignObject>
-	<g
-   i:extraneous="self"
-   id="g3632"
-   style="fill:#ffffff">
-		<g
-   id="g8508"
-   style="fill:#ffffff">
-			<g
-   id="g8514"
-   transform="translate(994.3334,550)"
-   style="fill:#ffffff">
-				<path
-   id="path8516"
-   connector-curvature="0"
-   nodetypes="cccccscscsccccscscscccccc"
-   d="m -961.833,-535.5 v 4.456 h -0.567 c -0.11,-0.785 -0.259,-1.345 -0.449,-1.682 -0.308,-0.542 -0.72,-0.94 -1.232,-1.198 -0.513,-0.257 -1.916,-0.576 -2.752,-0.576 h -2 v 15 c 0,1.168 0.009,1.603 0.277,1.893 0.379,0.392 0.961,0.588 1.748,0.588 h 0.703 v 0.519 h -8.59 v -0.519 h 0.717 c 0.857,0 1.464,-0.242 1.823,-0.728 0.219,-0.299 0.323,-0.688 0.323,-1.753 v -15 h -2 c -0.946,0 -2.047,0.256 -2.446,0.387 -0.518,0.177 -0.961,0.518 -1.329,1.023 -0.369,0.504 -0.588,1.187 -0.657,2.046 h -0.567 v -4.456 h 16.998 z"
-   style="fill:#ffffff"
-   inkscape:connector-curvature="0" />
-			</g>
-		</g>
-	</g>
-</switch>
-<i:pgf>
+     id="metadata3641"><rdf:RDF><cc:Work
+         rdf:about=""><dc:format>image/svg+xml</dc:format><dc:type
+           rdf:resource="http://purl.org/dc/dcmitype/StillImage" /></cc:Work></rdf:RDF></metadata><defs
+     id="defs3639"><clipPath
+       clipPathUnits="userSpaceOnUse"
+       id="clipPath8510"><path
+         inkscape:connector-curvature="0"
+         d="M 0,800 1200,800 1200,0 0,0 0,800 z"
+         id="path8512" /></clipPath></defs><sodipodi:namedview
+     pagecolor="#ffffff"
+     bordercolor="#666666"
+     borderopacity="1"
+     objecttolerance="10"
+     gridtolerance="10"
+     guidetolerance="10"
+     inkscape:pageopacity="0"
+     inkscape:pageshadow="2"
+     inkscape:window-width="1871"
+     inkscape:window-height="1056"
+     id="namedview3637"
+     showgrid="true"
+     inkscape:zoom="48.726839"
+     inkscape:cx="13.280672"
+     inkscape:cy="14.4148"
+     inkscape:window-x="49"
+     inkscape:window-y="24"
+     inkscape:window-maximized="1"
+     inkscape:current-layer="Capa_1"><inkscape:grid
+       type="xygrid"
+       id="grid2987" /></sodipodi:namedview><i:pgf>
 	
 	eJzsvWuvJceVnvmdAP/Dng8NSIZ5OuMeoRkMcK49GvRFkLrtBmyDqCZL6rLJKqJYVLv962c974rI
 vXOfUyLboi0NQJ0mmzsjL5GRESvW5V3r/Yv/41e/+ez2y3f/9PqzdLOdPv3kL/7i/v3rVx/evf/F
@@ -2075,5 +2043,21 @@ zxq8+oSnBGYyw4ouvclkZOql3ngcLP2SZ0bmlYt11aVZcQ+01ipWmvGGx+alAnVtY1BAdm34zCBY
 3Tc8i5UMmUV8ReerN0iWOwxzn/XKemjr559aGa5Rt3OKPB89PzlHMzhviWaxSk3v7YXtW6CNMWV/
 X/8tO7rHMQ0FTjPdxsQSbynCjHEFsc4BQrGgEnKeIpnwDz2jSQUBmqL5VbfzDf7YuC4=
 	
-</i:pgf>
-</svg>
+</i:pgf><g
+     id="g8506"
+     transform="matrix(0.79688745,0,0,-0.79166667,-771.37182,438.41667)"
+     style="fill:#ffffff;fill-opacity:1;display:inline"
+     inkscape:export-filename="/home/bender/Dropbox/[ead2] Diseños/Diseños/Escritorio/animaciones/cont-insert.png"
+     inkscape:export-xdpi="90"
+     inkscape:export-ydpi="90"><g
+       id="g8508"
+       clip-path="url(#clipPath8510)"
+       style="fill:#ffffff;fill-opacity:1"><g
+         id="g8514"
+         transform="translate(994.3334,550)"
+         style="fill:#ffffff;fill-opacity:1"><path
+           d="m 0,0 0,-5.628 -0.712,0 c -0.138,0.991 -0.325,1.699 -0.563,2.124 -0.387,0.684 -0.903,1.188 -1.546,1.513 -0.644,0.324 -2.4044087,0.727844 -3.4534087,0.727844 l -2.5097647,0 0,-18.947368 c 0,-1.475 0.011173,-2.025476 0.3481734,-2.391476 0.475,-0.495 1.206,-0.743 2.193,-0.743 l 1.2234862,0 0,-0.655 -11.2939412,2e-6 0,0.654998 1.072455,0 c 1.075,0 1.837,0.306 2.287,0.92 0.275,0.378 0.405178,0.869476 0.405179,2.214476 l 2.1e-5,18.947368 -2.509764,0 c -1.187,0 -2.569415,-0.323844 -3.069415,-0.488844 -0.65,-0.224 -1.206,-0.655 -1.668,-1.292 -0.463,-0.637 -0.738,-1.499 -0.825,-2.584 l -0.712,0 0,5.628 z"
+           style="fill:#ffffff;fill-opacity:1;fill-rule:nonzero;stroke:none"
+           id="path8516"
+           inkscape:connector-curvature="0"
+           sodipodi:nodetypes="cccccscscsccccscscscccccc" /></g></g></g></svg>

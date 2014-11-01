@@ -50,7 +50,7 @@ import es.eucm.ead.editor.control.engine.MobileEngineInitializer;
 import es.eucm.ead.editor.platform.Platform;
 import es.eucm.ead.engine.EngineInitializer;
 
-public class MockupController extends Controller {
+public class MokapController extends Controller {
 
 	public static final String EXPORT_EXTENSION = ".zip";
 
@@ -73,15 +73,18 @@ public class MockupController extends Controller {
 		}
 
 		private static String getDpi() {
-			float screenDpi = Gdx.graphics.getDensity() * 160F;
-			Dpi[] values = Dpi.values();
-			for (int i = 0; i < values.length; ++i) {
-				Dpi dpi = values[i];
-				if (screenDpi <= dpi.maxDpi) {
-					return dpi.dpi;
-				}
+			float ppcX = Gdx.graphics.getPpcX();
+			Gdx.app.error("PX", ppcX + "ppc");
+
+			Dpi dpi = XHDPI;
+			if (ppcX < 36.0f) {
+				dpi = LDPI;
+			} else if (ppcX < 48.0f) {
+				dpi = MDPI;
+			} else if (ppcX < 60.0f) {
+				dpi = HDPI;
 			}
-			return XHDPI.dpi;
+			return dpi.dpi;
 		}
 	}
 
@@ -89,9 +92,9 @@ public class MockupController extends Controller {
 	private RepositoryManager repositoryManager;
 	private String mockupDpiPath;
 
-	public MockupController(Platform platform, Files files,
-			final Group rootComponent) {
-		super(platform, files, rootComponent, rootComponent);
+	public MokapController(Platform platform, Files files,
+			final Group rootComponent, final Group modalContainer) {
+		super(platform, files, rootComponent, modalContainer);
 		this.rootComponent = rootComponent;
 		repositoryManager = new RepositoryManager();
 
@@ -103,11 +106,11 @@ public class MockupController extends Controller {
 			public boolean keyUp(InputEvent event, int keycode) {
 				if (keycode == Keys.BACK
 						|| (Gdx.app.getType() == Application.ApplicationType.Desktop && keycode == Keys.ALT_LEFT)) {
-					((MockupViews) MockupController.this.views).onBackPressed();
+					((MokapViews) MokapController.this.views).onBackPressed();
 					return true;
 				} else if (keycode == Keys.ENTER
 						&& !(event.getTarget() instanceof TextArea)) {
-					((MockupViews) MockupController.this.views)
+					((MokapViews) MokapController.this.views)
 							.hideOnscreenKeyboard();
 					return true;
 				}
@@ -119,7 +122,7 @@ public class MockupController extends Controller {
 
 	public void pause() {
 		getPreferences().flush();
-		((MockupViews) views).pause();
+		((MokapViews) views).pause();
 	}
 
 	public Group getRootComponent() {
@@ -159,13 +162,13 @@ public class MockupController extends Controller {
 
 	@Override
 	protected Views createViews(Group rootView, Group modalsView) {
-		return new MockupViews(this, rootView);
+		return new MokapViews(this, rootView, modalsView);
 	}
 
 	@Override
 	public void exit() {
 		super.exit();
-		((MockupViews) views).dispose();
+		((MokapViews) views).dispose();
 	}
 
 	public static interface BackListener {

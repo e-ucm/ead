@@ -52,7 +52,7 @@ import es.eucm.ead.editor.view.widgets.IconButton;
 import es.eucm.ead.editor.view.widgets.layouts.LinearLayout;
 import es.eucm.ead.engine.I18N;
 
-public class BaseViewTest extends MockupUITest {
+public class BaseViewTest extends UITest {
 
 	@Override
 	protected Actor buildUI(Skin skin, I18N i18n) {

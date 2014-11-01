@@ -77,6 +77,8 @@ public class BaseView extends AbstractWidget {
 
 	private SelectionContext selectionContext;
 
+	private Actor content;
+
 	public BaseView(Skin skin) {
 		this(skin.get(BaseViewStyle.class));
 	}
@@ -169,9 +171,9 @@ public class BaseView extends AbstractWidget {
 	}
 
 	private int area(float x, float y) {
-		if (x < cmToXPixels(FLING_AREA_CM)) {
+		if (navigation.hasContent() && x < cmToXPixels(FLING_AREA_CM)) {
 			return NAVIGATION_AREA;
-		} else if (selectionContext != null
+		} else if (selectionContext.hasContent()
 				&& x > Gdx.graphics.getWidth() - cmToXPixels(FLING_AREA_CM)) {
 			return SELECTION_CONTEXT_AREA;
 		} else {
@@ -208,6 +210,18 @@ public class BaseView extends AbstractWidget {
 		}
 	}
 
+	public void setContent(Actor content) {
+		if (this.content != null) {
+			this.content.remove();
+		}
+
+		this.content = content;
+
+		if (content != null) {
+			addActorAt(0, content);
+		}
+	}
+
 	/**
 	 * Sets the selection context, removing the current one (if any)
 	 */
@@ -221,6 +235,9 @@ public class BaseView extends AbstractWidget {
 		setBounds(selectionContext, 0, 0, getWidth(), getHeight()
 				- (toolbar == null ? 0 : getPrefHeight(toolbar)));
 		layoutToolbar();
+		if (content != null) {
+			setBounds(content, 0, 0, getWidth(), getHeight());
+		}
 	}
 
 	private void layoutToolbar() {

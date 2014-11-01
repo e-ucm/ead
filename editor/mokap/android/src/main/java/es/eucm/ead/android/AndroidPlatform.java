@@ -64,8 +64,8 @@ import com.badlogic.gdx.files.FileHandle;
 import com.google.android.gms.analytics.Tracker;
 import es.eucm.ead.android.EditorActivity.ActivityResultListener;
 import es.eucm.ead.editor.control.Controller;
-import es.eucm.ead.editor.platform.MockupPlatform;
-import es.eucm.ead.editor.platform.MockupPlatform.ImageCapturedListener.Result;
+import es.eucm.ead.editor.platform.MokapPlatform;
+import es.eucm.ead.editor.platform.MokapPlatform.ImageCapturedListener.Result;
 import es.eucm.ead.engine.I18N;
 import es.eucm.ead.schema.data.Dimension;
 
@@ -78,7 +78,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.util.List;
 
-public class AndroidPlatform extends MockupPlatform {
+public class AndroidPlatform extends MokapPlatform {
 
 	private static final String IMAGE_TO_EDIT_MIME_TYPE = "image/*";
 	private static final String PLATFORM_TAG = "AndroidPlatform";

@@ -50,8 +50,8 @@ import es.eucm.ead.editor.platform.Platform;
  */
 public class EditorApplicationListener implements ApplicationListener {
 
-	private static final Color DEFAULT_BACKGROUND_COLOR = new Color(0.2f, 0.2f,
-			0.2f, 1.0f);
+	private static final Color DEFAULT_BACKGROUND_COLOR = new Color(1.0f, 1.0f,
+			1.0f, 1.0f);
 
 	/**
 	 * Platform-dependent functionality needed in other editor's components.

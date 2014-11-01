@@ -146,4 +146,6 @@ abstract class Panel extends AbstractWidget {
 	public abstract boolean isVelocityToHide(float velocityX, float velocityY);
 
 	public abstract boolean isHalfShown();
+
+	public abstract boolean hasContent();
 }

@@ -47,11 +47,11 @@ import com.badlogic.gdx.utils.Array;
 import es.eucm.ead.editor.view.widgets.AbstractWidget;
 
 /**
- * 
  * <p>
  * Layouts widgets horizontally or vertically. The container has a padding, and
  * each widget can have a margin. Space is distributed like this for horizontal:
  * </p>
+ * <p/>
  * 
  * <pre>
  *     _________________________________________
@@ -69,6 +69,7 @@ import es.eucm.ead.editor.view.widgets.AbstractWidget;
  * <p>
  * and like this for vertical:
  * </p>
+ * <p/>
  * 
  * <pre>
  *     __________________________
@@ -358,7 +359,6 @@ public class LinearLayout extends AbstractWidget {
 	}
 
 	/**
-	 * 
 	 * @param c
 	 *            constrains
 	 * @param height
@@ -379,13 +379,7 @@ public class LinearLayout extends AbstractWidget {
 		default:
 			// Align.center
 			float offset = paddingBottom() + marginBottom(c);
-			float containerHeight = containerHeight();
-			if (background != null) {
-				offset += background.getBottomHeight();
-				containerHeight -= (background.getTopHeight() + background
-						.getBottomHeight());
-			}
-
+			float containerHeight = containerHeight() - backgroundHeight();
 			return (containerHeight - height) / 2 + offset;
 		}
 
@@ -399,10 +393,6 @@ public class LinearLayout extends AbstractWidget {
 			}
 		}
 		prefWidth += paddingWidth();
-		if (background != null) {
-			return prefWidth + background.getLeftWidth()
-					+ background.getRightWidth();
-		}
 		return prefWidth;
 	}
 
@@ -415,10 +405,6 @@ public class LinearLayout extends AbstractWidget {
 			}
 		}
 		prefHeight += paddingHeight();
-		if (background != null) {
-			return prefHeight + background.getBottomHeight()
-					+ background.getTopHeight();
-		}
 		return prefHeight;
 	}
 
@@ -431,12 +417,26 @@ public class LinearLayout extends AbstractWidget {
 	}
 
 	protected float availableWidth() {
-		return horizontal ? getWidth() - padding.getWidth() : getHeight()
-				- padding.getHeight();
+		return (horizontal ? getWidth() - padding.getWidth() : getHeight()
+				- padding.getHeight())
+				- backgroundWidth();
+	}
+
+	protected float backgroundWidth() {
+		return background == null ? 0 : horizontal ? background.getLeftWidth()
+				+ background.getRightWidth() : background.getTopHeight()
+				+ background.getBottomHeight();
+	}
+
+	protected float backgroundHeight() {
+		return background == null ? 0 : horizontal ? background.getTopHeight()
+				+ background.getBottomHeight() : background.getLeftWidth()
+				+ background.getRightWidth();
 	}
 
 	protected float paddingWidth() {
-		return horizontal ? padding.getWidth() : padding.getHeight();
+		return (horizontal ? padding.getWidth() : padding.getHeight())
+				+ backgroundWidth();
 	}
 
 	protected float actorWidth(Actor actor) {
@@ -448,19 +448,36 @@ public class LinearLayout extends AbstractWidget {
 	}
 
 	protected float paddingLeft() {
-		return horizontal ? padding.left : padding.bottom;
+		return (horizontal ? padding.left : padding.bottom) + backgroundLeft();
+	}
+
+	protected float backgroundLeft() {
+		return background == null ? 0 : horizontal ? background.getLeftWidth()
+				: background.getBottomHeight();
 	}
 
 	private float paddingBottom() {
-		return horizontal ? padding.bottom : padding.left;
+		return (horizontal ? padding.bottom : padding.left)
+				+ backgroundBottom();
+	}
+
+	private float backgroundBottom() {
+		return background == null ? 0 : horizontal ? background
+				.getBottomHeight() : background.getLeftWidth();
 	}
 
 	protected float paddingHeight() {
-		return horizontal ? padding.getHeight() : padding.getWidth();
+		return (horizontal ? padding.getHeight() : padding.getWidth())
+				+ backgroundHeight();
 	}
 
 	private float paddingTop() {
-		return horizontal ? padding.top : padding.right;
+		return (horizontal ? padding.top : padding.right) + backgroundTop();
+	}
+
+	private float backgroundTop() {
+		return background == null ? 0 : horizontal ? background.getTopHeight()
+				: background.getRightWidth();
 	}
 
 	private float marginWidth(Constraints c) {

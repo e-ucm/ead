@@ -1,66 +1,117 @@
 {
-	com.badlogic.gdx.graphics.g2d.BitmapFont: { 
-		default-font: { 
-			file: font.fnt 
-		}
-	},
-	com.badlogic.gdx.graphics.Color: {
-		transparent: {
-            a: 0,
-            r: 0,
-            g: 0,
-            b: 0
-        },
-		white: { 
-			r: 1, 
-			g: 1, 
-			b: 1, 
-			a: 1 
-		}, 
-		black: { 
-			r: 0, 
-			g: 0, 
-			b: 0,
-			a: 1 
-		},
-		gray: {
-            r: 0.7,
-            g: 0.7,
-            b: 0.7,
-            a: 1
-        },
-        brown-moka: {
-        	r: 0.5245,
-        	g: 0.3333,
-        	b: 0.2823,
-        	a: 1
+    "com.badlogic.gdx.graphics.g2d.BitmapFont": {
+        "default-font": {
+            "file": "font.fnt"
         }
     },
-	com.badlogic.gdx.scenes.scene2d.ui.Button$ButtonStyle: {
-		default: { 
-		}
-	},
-	es.eucm.ead.editor.view.widgets.IconButton$IconButtonStyle: {
-		default: {  
-			disabledImageColor: gray,
-            enabledImageColor: black
-		},
-		toolbar: {  
-			disabledImageColor: gray,
-            enabledImageColor: white
-		}
-	},
-	es.eucm.ead.editor.view.widgets.Toolbar$ToolbarStyle: {
-		default: { 
-		}, 
-		mokap: {
-			background: toolbar
-		}
-	},
-	es.eucm.ead.editor.view.widgets.MultiToolbar$MultiToolbarStyle: {
-		default: {
-			background: toolbar,
-			color: brown-moka
-		}
-	},
+    "com.badlogic.gdx.graphics.Color": {
+        "transparent": {
+            "a": 0,
+            "r": 0,
+            "g": 0,
+            "b": 0
+        },
+        "white": {
+            "r": 1,
+            "g": 1,
+            "b": 1,
+            "a": 1
+        },
+        "black": {
+            "r": 0,
+            "g": 0,
+            "b": 0,
+            "a": 1
+        },
+        "gray": {
+            "r": 0.6,
+            "g": 0.6,
+            "b": 0.6,
+            "a": 1
+        },
+        "light-gray": {
+            "r": 0.8627,
+            "g": 0.8627,
+            "b": 0.8627,
+            "a": 1.0
+        },
+        "brown-moka": {
+            "r": 0.5245,
+            "g": 0.3333,
+            "b": 0.2823,
+            "a": 1
+        },
+        "dark-brown-moka": {
+            "r": 0.2431,
+            "g": 0.1529,
+            "b": 0.1372,
+            "a": 1
+        }
+    },
+    "com.badlogic.gdx.scenes.scene2d.ui.Skin$TintedDrawable": {
+        "black-bg": {
+            "name": "blank",
+            "color": "black"
+        },
+        "light-gray-bg": {
+            "name": "blank",
+            "color": "light-gray"
+        },
+        "transparent-48-bg": {
+            "name": "bg48",
+            "color": "transparent"
+        },
+        "pressed-48-bg": {
+            "name": "bg48",
+            "color": "dark-brown-moka"
+        }
+    },
+    "com.badlogic.gdx.scenes.scene2d.ui.Label$LabelStyle": {
+        "default": {
+            "font": "default-font",
+            "fontColor": "black"
+        },
+        "context": {
+            "font": "default-font",
+            "fontColor": "gray"
+        }
+    },
+    "com.badlogic.gdx.scenes.scene2d.ui.Button$ButtonStyle": {
+        "default": {},
+        "context": {
+            "down": "light-gray-bg"
+        }
+    },
+    "es.eucm.ead.editor.view.widgets.IconButton$IconButtonStyle": {
+        "default": {
+            "disabledImageColor": "gray",
+            "enabledImageColor": "black"
+        },
+        "toolbar": {
+            "disabledImageColor": "gray",
+            "enabledImageColor": "white",
+            "up": "transparent-48-bg",
+            "down": "pressed-48-bg"
+        },
+        "context": {
+            "enabledImageColor": "gray",
+            "up": "transparent-48-bg"
+        },
+        "drop-down": {
+            "enabledImageColor": "white",
+            "up": "drop_down_bg",
+            "down": "pressed-48-bg"
+        }
+    },
+    "es.eucm.ead.editor.view.widgets.baseview.BaseView$BaseViewStyle": {
+        "default": {
+            "navigationBackground": "black-bg"
+        }
+    },
+    "es.eucm.ead.editor.view.widgets.MultiToolbar$MultiToolbarStyle": {
+        "default": {
+            "background": "toolbar",
+            "color": "brown-moka"
+        }
+    }
 }

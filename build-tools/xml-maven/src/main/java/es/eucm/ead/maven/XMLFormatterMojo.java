@@ -124,13 +124,14 @@ public class XMLFormatterMojo extends AbstractMojo {
 				try {
 					format(new File(baseDirectory + File.separator + include));
 				} catch (RuntimeException re) {
-					getLog().error(
-							"File <"
-									+ baseDirectory
-									+ File.separator
-									+ include
-									+ "> failed to parse, skipping and moving on to the next file",
-							re);
+					getLog()
+							.error(
+									"File <"
+											+ baseDirectory
+											+ File.separator
+											+ include
+											+ "> failed to parse, skipping and moving on to the next file",
+									re);
 				}
 			}
 		}
@@ -336,8 +337,9 @@ public class XMLFormatterMojo extends AbstractMojo {
 						"remove-whitespace.xsl");
 
 				if (stylesheet == null) {
-					getLog().error(
-							"[xml formatter] Could not find remove-whitespace.xsl");
+					getLog()
+							.error(
+									"[xml formatter] Could not find remove-whitespace.xsl");
 					return;
 				}
 
@@ -397,7 +399,7 @@ public class XMLFormatterMojo extends AbstractMojo {
 	private void indentFile(File file) {
 
 		List<String> temp = new ArrayList<String>(); // a temporary list to hold
-														// the lines
+		// the lines
 		BufferedReader reader = null;
 		BufferedWriter writer = null;
 

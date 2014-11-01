@@ -38,19 +38,13 @@ package es.eucm.ead.engine.entities;
 
 import ashley.core.Component;
 import ashley.core.Entity;
-
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.Group;
-import com.badlogic.gdx.scenes.scene2d.InputEvent;
-import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.utils.Pool.Poolable;
 import com.badlogic.gdx.utils.Pools;
-
 import es.eucm.ead.engine.GameLoop;
-import es.eucm.ead.engine.components.TouchedComponent;
 import es.eucm.ead.engine.components.physics.BoundingAreaComponent;
 import es.eucm.ead.engine.components.renderers.RendererComponent;
-import es.eucm.ead.schema.components.behaviors.events.Touch.Type;
 import es.eucm.ead.schema.entities.ModelEntity;
 
 /**
@@ -65,8 +59,6 @@ public class EngineEntity extends Entity implements Poolable {
 
 	private GameLoop gameLoop;
 
-	private TouchListener touchListener = new TouchListener();
-
 	public EngineEntity(GameLoop gameLoop) {
 		this.gameLoop = gameLoop;
 	}
@@ -77,7 +69,6 @@ public class EngineEntity extends Entity implements Poolable {
 			this.group.clearListeners();
 		}
 		group.setUserObject(this);
-		group.addListener(touchListener);
 		this.group = group;
 		readModelEntity();
 		updateBoundingArea();
@@ -164,30 +155,6 @@ public class EngineEntity extends Entity implements Poolable {
 				EngineEntity parent = (EngineEntity) getGroup().getParent()
 						.getUserObject();
 				parent.updateBoundingArea();
-			}
-		}
-	}
-
-	private class TouchListener extends ClickListener {
-
-		@Override
-		public void touchUp(InputEvent event, float x, float y, int pointer,
-				int button) {
-			process(Type.CLICK);
-		}
-
-		@Override
-		public boolean touchDown(InputEvent event, float x, float y,
-				int pointer, int button) {
-			process(Type.PRESS);
-			return true;
-		}
-
-		private void process(Type type) {
-			if (gameLoop.isPlaying()) {
-				TouchedComponent component = gameLoop.addAndGetComponent(
-						EngineEntity.this, TouchedComponent.class);
-				component.event(type);
 			}
 		}
 	}

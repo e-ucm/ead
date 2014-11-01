@@ -95,6 +95,11 @@ public class SelectionContext extends Panel {
 	}
 
 	@Override
+	public boolean hasContent() {
+		return selectionContext != null;
+	}
+
+	@Override
 	public void layout() {
 		super.layout();
 		if (selectionContext != null) {

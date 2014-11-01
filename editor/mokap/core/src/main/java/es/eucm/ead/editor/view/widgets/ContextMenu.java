@@ -37,45 +37,33 @@
 package es.eucm.ead.editor.view.widgets;
 
 import com.badlogic.gdx.math.Interpolation;
-import com.badlogic.gdx.scenes.scene2d.Action;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.actions.Actions;
 import com.badlogic.gdx.scenes.scene2d.ui.Cell;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.utils.Array;
+import es.eucm.ead.editor.view.Modal;
 
 /**
  * A panel with a scale animation.
  */
-public abstract class ScalePanel extends Table {
+public class ContextMenu extends Table implements Modal {
 
 	protected static final float FADE = .5F;
+
 	protected static final float CHILD_DELAY_OFFSET = .035F;
+
 	protected static final float CHILD_FADE = .15F;
 
-	private final Runnable showCells = new Runnable() {
-
-		public void run() {
-			Array<Cell> cells = getCells();
-			for (int i = 0; i < cells.size; ++i) {
-				Actor actor = cells.get(i).getActor();
-				if (actor != null) {
-					actor.addAction(Actions.delay(i * CHILD_DELAY_OFFSET,
-							Actions.fadeIn(CHILD_FADE, Interpolation.fade)));
-				}
-			}
-		}
-	};
-
-	public ScalePanel() {
+	public ContextMenu() {
 		setTransform(true);
 	}
 
 	/**
-	 * The default animation used to show the {@link ScalePanel}.
-	 * 
+	 * The default animation used to show the {@link ContextMenu}.
 	 */
-	public Action getShowAction() {
+	@Override
+	public void show() {
 		float xDuration, yDuration;
 		float w = getPrefWidth(), h = getPrefHeight();
 		if (w > h) {
@@ -86,19 +74,29 @@ public abstract class ScalePanel extends Table {
 			yDuration = FADE;
 		}
 		float minDuration = Math.min(xDuration, yDuration);
-		return Actions.parallel(
+		setScale(0, 0);
+		clearActions();
+		addAction(Actions.sequence(Actions.parallel(
 				Actions.fadeIn(minDuration, Interpolation.fade),
 				Actions.scaleBy(1f, 0f, xDuration, Interpolation.pow2Out),
-				Actions.scaleBy(0f, 1f, yDuration, Interpolation.pow2Out),
-				Actions.delay(minDuration, Actions.run(showCells)));
+				Actions.scaleBy(0f, 1f, yDuration, Interpolation.pow2Out)),
+				Actions.scaleTo(1.0f, 1.0f)));
+
+		Array<Cell> cells = getCells();
+		for (int i = 0; i < cells.size; ++i) {
+			Actor actor = cells.get(i).getActor();
+			actor.getColor().a = 0.0f;
+			if (actor != null) {
+				actor.addAction(Actions.delay(i * CHILD_DELAY_OFFSET,
+						Actions.fadeIn(CHILD_FADE, Interpolation.fade)));
+			}
+		}
 	}
 
-	/**
-	 * The default animation used to hide the {@link ScalePanel}.
-	 * 
-	 */
-	protected Action getHideAction() {
-		return Actions.fadeOut(FADE, Interpolation.fade);
+	@Override
+	public void hide(Runnable runnable) {
+		addAction(Actions.sequence(Actions.fadeOut(FADE, Interpolation.fade),
+				Actions.run(runnable)));
 	}
 
 }

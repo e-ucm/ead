@@ -41,7 +41,7 @@ import es.eucm.ead.editor.control.Controller;
 import es.eucm.ead.editor.control.actions.model.scene.behaviors.AddBehavior;
 import es.eucm.ead.editor.indexes.EventIndex;
 import es.eucm.ead.editor.indexes.FuzzyIndex.Term;
-import es.eucm.ead.editor.ui.WidgetsUtils;
+import es.eucm.ead.editor.view.widgets.WidgetsUtils;
 import es.eucm.ead.editor.view.widgets.IconButton;
 import es.eucm.ead.editor.view.widgets.Separator;
 import es.eucm.ead.editor.view.widgets.layouts.LinearLayout;

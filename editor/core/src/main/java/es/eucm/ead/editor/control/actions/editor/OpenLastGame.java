@@ -34,11 +34,46 @@
  *      You should have received a copy of the GNU Lesser General Public License
  *      along with eAdventure.  If not, see <http://www.gnu.org/licenses/>.
  */
-package es.eucm.ead.editor.view;
+package es.eucm.ead.editor.control.actions.editor;
+
+import com.badlogic.gdx.Gdx;
+
+import es.eucm.ead.editor.control.Preferences;
+import es.eucm.ead.editor.control.actions.EditorAction;
+import es.eucm.ead.editor.control.actions.EditorActionException;
 
 /**
- * Class with constant for icons
+ * Open the last known opened game. Used when the application is initiated.
+ * <dl>
+ * <dt><strong>Arguments</strong></dt>
+ * <dd><strong>args[0]</strong> <em>Class</em> Class of the view to show if
+ * there is no last known game.</dd>
+ * </dl>
  */
-public interface Icons {
+public class OpenLastGame extends EditorAction {
 
+	public OpenLastGame() {
+		super(true, true, Class.class);
+	}
+
+	@Override
+	public void perform(Object... args) {
+		Class elseView = (Class) args[0];
+
+		String projectToOpenPath = controller.getPreferences().getString(
+				Preferences.LAST_OPENED_GAME);
+
+		if (projectToOpenPath != null && !"".equals(projectToOpenPath)) {
+			try {
+				controller.action(OpenGame.class, projectToOpenPath);
+			} catch (EditorActionException eae) {
+				// the project is probably corrupt; complain but continue
+				Gdx.app.log("OpenLastProject", "Error opening '"
+						+ projectToOpenPath + "'; ignoring request");
+				controller.action(ChangeView.class, elseView);
+			}
+		} else {
+			controller.action(ChangeView.class, elseView);
+		}
+	}
 }

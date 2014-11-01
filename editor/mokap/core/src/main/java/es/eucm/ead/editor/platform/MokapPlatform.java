@@ -36,6 +36,7 @@
  */
 package es.eucm.ead.editor.platform;
 
+import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input.TextInputListener;
 import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.math.Vector2;
@@ -47,7 +48,7 @@ import es.eucm.ead.schema.data.Dimension;
 import java.io.File;
 import java.io.InputStream;
 
-public abstract class MockupPlatform extends AbstractPlatform {
+public abstract class MokapPlatform extends AbstractPlatform {
 
 	private String importProjectPath;
 
@@ -155,5 +156,14 @@ public abstract class MockupPlatform extends AbstractPlatform {
 	public interface ProjectSentListener {
 
 		void projectSent(boolean success);
+	}
+
+	@Override
+	public String getDefaultProjectsFolder() {
+		String externalPath = Gdx.files.getExternalStoragePath();
+		if (!externalPath.endsWith("/")) {
+			externalPath += "/";
+		}
+		return externalPath + "Mokap";
 	}
 }
