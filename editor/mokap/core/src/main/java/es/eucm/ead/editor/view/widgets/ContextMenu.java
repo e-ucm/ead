@@ -55,6 +55,8 @@ public class ContextMenu extends Table implements Modal {
 
 	protected static final float CHILD_FADE = .15F;
 
+	protected static final float HIDE_OFFSET = .05F;
+
 	public ContextMenu() {
 		setTransform(true);
 	}
@@ -76,6 +78,7 @@ public class ContextMenu extends Table implements Modal {
 		float minDuration = Math.min(xDuration, yDuration);
 		setScale(0, 0);
 		clearActions();
+		getColor().a = 0f;
 		addAction(Actions.sequence(Actions.parallel(
 				Actions.fadeIn(minDuration, Interpolation.fade),
 				Actions.scaleBy(1f, 0f, xDuration, Interpolation.pow2Out),
@@ -85,9 +88,10 @@ public class ContextMenu extends Table implements Modal {
 		Array<Cell> cells = getCells();
 		for (int i = 0; i < cells.size; ++i) {
 			Actor actor = cells.get(i).getActor();
-			actor.getColor().a = 0.0f;
 			if (actor != null) {
-				actor.addAction(Actions.delay(i * CHILD_DELAY_OFFSET,
+				actor.getColor().a = 0.0f;
+				actor.addAction(Actions.delay(minDuration + i
+						* CHILD_DELAY_OFFSET,
 						Actions.fadeIn(CHILD_FADE, Interpolation.fade)));
 			}
 		}
@@ -95,8 +99,10 @@ public class ContextMenu extends Table implements Modal {
 
 	@Override
 	public void hide(Runnable runnable) {
-		addAction(Actions.sequence(Actions.fadeOut(FADE, Interpolation.fade),
-				Actions.run(runnable)));
+		addAction(Actions.sequence(Actions.parallel(Actions.fadeOut(FADE,
+				Interpolation.fade), Actions.moveBy(0f, getHeight()
+				* HIDE_OFFSET, FADE, Interpolation.exp5Out)), Actions
+				.run(runnable)));
 	}
 
 }
