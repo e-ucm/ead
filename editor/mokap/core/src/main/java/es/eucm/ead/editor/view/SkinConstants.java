@@ -63,4 +63,8 @@ public interface SkinConstants {
 	public static final String IC_PLAY = "ic_play";
 
 	public static final String IC_HOME = "ic_home";
+
+	public static final String IC_CHECK = "ic_check";
+	public static final String IC_UNDO = "ic_undo";
+	public static final String IC_REDO = "ic_redo";
 }

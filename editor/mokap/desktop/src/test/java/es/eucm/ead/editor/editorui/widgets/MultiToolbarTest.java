@@ -140,7 +140,7 @@ public class MultiToolbarTest extends UITest {
 			public void clicked(InputEvent event, float x, float y) {
 				Actor actor = event.getListenerActor();
 				int index = (Integer) actor.getUserObject();
-				multiTop.show(index);
+				multiTop.setSelectedToolbar(index);
 			}
 		};
 

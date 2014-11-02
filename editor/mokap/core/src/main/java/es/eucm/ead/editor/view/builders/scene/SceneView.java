@@ -41,6 +41,12 @@ import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import es.eucm.ead.editor.control.Controller;
+import es.eucm.ead.editor.control.Selection;
+import es.eucm.ead.editor.control.actions.editor.Redo;
+import es.eucm.ead.editor.control.actions.editor.Undo;
+import es.eucm.ead.editor.control.actions.model.SetSelection;
+import es.eucm.ead.editor.model.Model.SelectionListener;
+import es.eucm.ead.editor.model.events.SelectionEvent;
 import es.eucm.ead.editor.view.SkinConstants;
 import es.eucm.ead.editor.view.builders.ViewBuilder;
 import es.eucm.ead.editor.view.widgets.ContextMenu;
@@ -57,8 +63,11 @@ public class SceneView implements ViewBuilder {
 
 	private SceneEditor sceneEditor;
 
+	private Controller controller;
+
 	@Override
 	public void initialize(Controller controller) {
+		this.controller = controller;
 		Skin skin = controller.getApplicationAssets().getSkin();
 		I18N i18N = controller.getApplicationAssets().getI18N();
 
@@ -82,8 +91,29 @@ public class SceneView implements ViewBuilder {
 	}
 
 	private MultiToolbar buildToolbar(Skin skin, I18N i18N) {
-		MultiToolbar toolbar = new MultiToolbar(skin);
+		final MultiToolbar toolbar = new MultiToolbar(skin);
+		toolbar.addToolbars(buildComposeToolbar(skin, i18N),
+				buildTransformToolbar(skin, i18N));
 
+		controller.getModel().addSelectionListener(new SelectionListener() {
+			@Override
+			public boolean listenToContext(String contextId) {
+				return Selection.SCENE_ELEMENT.equals(contextId);
+			}
+
+			@Override
+			public void modelChanged(SelectionEvent event) {
+				if (event.getSelection().length == 0) {
+					toolbar.setSelectedToolbar(0);
+				} else {
+					toolbar.setSelectedToolbar(1);
+				}
+			}
+		});
+		return toolbar;
+	}
+
+	private LinearLayout buildComposeToolbar(Skin skin, I18N i18N) {
 		LinearLayout compose = new LinearLayout(true);
 		IconButton navigation = WidgetBuilder.toolbarIcon(skin,
 				SkinConstants.IC_MENU);
@@ -105,10 +135,19 @@ public class SceneView implements ViewBuilder {
 
 		compose.add(WidgetBuilder.toolbarIconWithMenu(skin,
 				SkinConstants.IC_ADD, buildInsertContextMenu(skin, i18N)));
+		return compose;
+	}
 
-		toolbar.addToolbars(compose);
-
-		return toolbar;
+	private LinearLayout buildTransformToolbar(Skin skin, I18N i18N) {
+		LinearLayout transform = new LinearLayout(true);
+		transform.add(WidgetBuilder.toolbarIcon(skin, SkinConstants.IC_CHECK,
+				SetSelection.class, Selection.EDITED_GROUP,
+				Selection.SCENE_ELEMENT));
+		transform.add(WidgetBuilder.toolbarIcon(skin, SkinConstants.IC_UNDO,
+				Undo.class));
+		transform.add(WidgetBuilder.toolbarIcon(skin, SkinConstants.IC_REDO,
+				Redo.class));
+		return transform;
 	}
 
 	private ContextMenu buildInsertContextMenu(Skin skin, I18N i18n) {

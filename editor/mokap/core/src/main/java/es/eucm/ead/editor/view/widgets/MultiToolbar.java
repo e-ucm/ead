@@ -138,7 +138,7 @@ public class MultiToolbar extends Container<WidgetGroup> {
 		}
 	}
 
-	public void show(int index) {
+	public void setSelectedToolbar(int index) {
 		if (toolbars.size > index) {
 			WidgetGroup newBar = toolbars.get(index);
 

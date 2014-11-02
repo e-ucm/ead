@@ -47,7 +47,7 @@ import com.badlogic.gdx.scenes.scene2d.InputListener;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.utils.Drawable;
 import es.eucm.ead.editor.editorui.UITest;
-import es.eucm.ead.editor.view.widgets.editionview.GroupEditor;
+import es.eucm.ead.editor.view.builders.scene.groupeditor.GroupEditor;
 import es.eucm.ead.engine.I18N;
 
 /**
@@ -77,6 +77,10 @@ public class GroupEditorTest extends UITest {
 				if (keycode == Keys.A) {
 					Actor a = new RectangleActor();
 					root.addActor(a);
+				} else if (keycode == Keys.M) {
+					container.setMultipleSelection(true);
+				} else if (keycode == Keys.N) {
+					container.setMultipleSelection(false);
 				}
 				return true;
 			}
