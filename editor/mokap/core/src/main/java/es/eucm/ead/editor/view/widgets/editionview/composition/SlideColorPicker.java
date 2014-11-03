@@ -36,58 +36,68 @@
  */
 package es.eucm.ead.editor.view.widgets.editionview.composition;
 
-import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.Pixmap;
 import com.badlogic.gdx.graphics.Pixmap.Format;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.math.MathUtils;
+import com.badlogic.gdx.scenes.scene2d.Event;
+import com.badlogic.gdx.scenes.scene2d.EventListener;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.InputListener;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.ui.Slider;
 import com.badlogic.gdx.scenes.scene2d.ui.Slider.SliderStyle;
-import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.scenes.scene2d.utils.DragListener;
 import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable;
+import com.badlogic.gdx.utils.Pools;
 
-public class SlideColorPicker extends Table {
-	private static final int MIN_COLOR = 0;
-	private static final int MAX_COLOR = 359;
+import es.eucm.ead.editor.view.widgets.AbstractWidget;
 
-	private static final float PREF_HEIGHT = .08f;
-	private static final float PREF_WIDTH = .35f;
+/**
+ * A color picker that uses {@link Slider}s to display HSB colors.
+ * 
+ * @author Rotaru Dan Cristian
+ * 
+ */
+public class SlideColorPicker extends AbstractWidget {
 
-	private static final InputListener listener = new InputListener() {
+	private static final float HEIGHT_CM = 2.1f;
+	private static final float WIDTH_CM = 5f;
 
-		public boolean touchDown(InputEvent event, float x, float y,
-				int pointer, int button) {
-			return true;
+	private static final InputListener listener = new DragListener() {
+
+		public void drag(InputEvent event, float x, float y, int pointer) {
+			if (pointer == 0) {
+				Slider slider = (Slider) event.getListenerActor();
+				SlideColorPicker picker = (SlideColorPicker) slider
+						.getUserObject();
+				picker.updateColor();
+				picker.updateAllExcept(slider);
+				picker.fireColorChanged();
+			}
 		}
 
-		public void touchDragged(InputEvent event, float x, float y, int pointer) {
-			SlideColorPicker picker = (SlideColorPicker) event
-					.getListenerActor().getUserObject();
-			picker.updateColor();
-			picker.updateBrightness();
-			picker.colorChanged(picker.color);
-		}
-
-		public void touchUp(InputEvent event, float x, float y, int pointer,
-				int button) {
-			touchDragged(event, 0f, 0f, 0);
+		public void dragStop(InputEvent event, float x, float y, int pointer) {
+			drag(event, x, y, pointer);
 		}
 	};
 
 	private final float[] tempValues = new float[3];
 	private final Color color = new Color();
-	private Texture colorTexture;
-	private Texture brightnessTexture;
-	private Pixmap colorPixmap;
+
+	private Pixmap huePixmap;
+	private Pixmap saturationPixmap;
 	private Pixmap brightnessPixmap;
-	private Slider colorSlider;
+
+	private Slider hueSlider;
+	private Slider saturationSlider;
 	private Slider brightnessSlider;
+
+	private Texture hueTexture;
+	private Texture saturationTexture;
+	private Texture brightnessTexture;
 
 	/**
 	 * Create a {@link SlideColorPicker} with default style.
@@ -96,68 +106,63 @@ public class SlideColorPicker extends Table {
 	 *            the skin to use
 	 */
 	public SlideColorPicker(Skin skin) {
-		this(skin, "colorPicker-horizontal");
+		this(skin.get(SlideColorPickerStyle.class));
+	}
+
+	/**
+	 * @see {@link #SlideColorPicker(SlideColorPickerStyle)}.
+	 * @param skin
+	 * @param styleName
+	 */
+	public SlideColorPicker(Skin skin, String styleName) {
+		this(skin.get(styleName, SlideColorPickerStyle.class));
 	}
 
 	/**
 	 * Create a {@link SlideColorPicker} with defined style.
 	 * 
-	 * @param skin
-	 *            the skin to use
-	 * @param styleName
+	 * @param slideColorPickerStyle
 	 *            the style to use
 	 */
-	public SlideColorPicker(Skin skin, String styleName) {
-		super();
-		SliderStyle sliderStyle = skin.get(styleName, SliderStyle.class);
-		colorSlider = new Slider(MIN_COLOR, MAX_COLOR, 1, false,
-				new SliderStyle(sliderStyle)) {
+	public SlideColorPicker(SlideColorPickerStyle slideColorPickerStyle) {
+		float width = getPrefWidth();
+		SliderStyle sliderStyle = slideColorPickerStyle.slider;
+		hueSlider = new Slider(0, width, 1, false, new SliderStyle(sliderStyle)) {
 			@Override
 			public float getPrefHeight() {
-				return SlideColorPicker.this.getPrefHeight();
-			}
-
-			@Override
-			public float getPrefWidth() {
-				return SlideColorPicker.this.getPrefWidth();
+				return 0;
 			}
 		};
-		colorSlider.setUserObject(this);
-		brightnessSlider = new Slider(MIN_COLOR, MAX_COLOR, 1, false,
-				new SliderStyle(sliderStyle)) {
+		hueSlider.setValue(width);
+		hueSlider.setUserObject(this);
+		hueSlider.addListener(listener);
+
+		saturationSlider = new Slider(0, width, 1, false, new SliderStyle(
+				sliderStyle)) {
 			@Override
 			public float getPrefHeight() {
-				return SlideColorPicker.this.getPrefHeight();
-			}
-
-			@Override
-			public float getPrefWidth() {
-				return SlideColorPicker.this.getPrefWidth();
+				return 0;
 			}
 		};
-		brightnessSlider.addListener(new DragListener() {
+		saturationSlider.setValue(width);
+		saturationSlider.setUserObject(this);
+		saturationSlider.addListener(listener);
 
-			public boolean touchDown(InputEvent event, float x, float y,
-					int pointer, int button) {
-				return true;
+		brightnessSlider = new Slider(0, width, 1, false, new SliderStyle(
+				sliderStyle)) {
+			@Override
+			public float getPrefHeight() {
+				return 0;
 			}
+		};
+		brightnessSlider.setValue(width);
+		brightnessSlider.setUserObject(this);
+		brightnessSlider.addListener(listener);
+		color.set(Color.RED);
 
-			public void touchDragged(InputEvent event, float x, float y,
-					int pointer) {
-				updateColor();
-				colorChanged(color);
-			}
-
-			public void touchUp(InputEvent event, float x, float y,
-					int pointer, int button) {
-				touchDragged(event, 0f, 0f, 0);
-			}
-		});
-		brightnessSlider.setValue(MAX_COLOR * .5f);
-		colorSlider.addListener(listener);
-		add(brightnessSlider);
-		row();
-		add(colorSlider);
+		addActor(hueSlider);
+		addActor(saturationSlider);
+		addActor(brightnessSlider);
 		initialize();
 	}
 
@@ -165,269 +170,342 @@ public class SlideColorPicker extends Table {
 	 * Generate the slider background.
 	 */
 	private void initialize() {
-		colorPixmap = new Pixmap((int) getPrefWidth(), (int) getPrefHeight(),
-				Format.RGBA8888);
-		int _colorMin = MIN_COLOR;
-		int _colorMax = MAX_COLOR;
-		int _colorCount = (_colorMax - _colorMin);
-		float _scaleRatio = (float) _colorCount / colorPixmap.getWidth();
+		int width = MathUtils.round(getPrefWidth()), height = MathUtils
+				.round(getPrefHeight() / 3f);
 
-		for (int i = 0; i <= colorPixmap.getWidth(); i++) {
-			int hsbToRGB = (0xff000000 | HSBtoRGB((i * _scaleRatio + _colorMin)
-					/ ((float) _colorMax)));
+		huePixmap = new Pixmap(width, height, Format.RGBA8888);
+		saturationPixmap = new Pixmap(width, height, Format.RGBA8888);
+		brightnessPixmap = new Pixmap(width, height, Format.RGBA8888);
 
-			colorPixmap.setColor(((hsbToRGB >> 16) & 0xFF) / 256f,
-					((hsbToRGB >> 8) & 0xFF) / 256f,
-					((hsbToRGB >> 0) & 0xFF) / 256f, 1f);
-			colorPixmap.drawLine(i, 0, i, colorPixmap.getHeight());
-		}
+		hueTexture = new Texture(huePixmap);
+		saturationTexture = new Texture(saturationPixmap);
+		brightnessTexture = new Texture(brightnessPixmap);
 
-		colorSlider.getStyle().background = new TextureRegionDrawable(
-				new TextureRegion(colorTexture = new Texture(colorPixmap)));
-
-		brightnessPixmap = new Pixmap((int) getPrefWidth(),
-				(int) getPrefHeight(), Format.RGBA8888);
-
+		hueSlider.getStyle().background = new TextureRegionDrawable(
+				new TextureRegion(hueTexture));
+		saturationSlider.getStyle().background = new TextureRegionDrawable(
+				new TextureRegion(saturationTexture = new Texture(
+						saturationPixmap)));
 		brightnessSlider.getStyle().background = new TextureRegionDrawable(
-				new TextureRegion(brightnessTexture = new Texture(
-						brightnessPixmap)));
+				new TextureRegion(brightnessTexture));
 
 		invalidateHierarchy();
-		updateColor();
-		updateBrightness();
-		colorChanged(color);
+		updateAllExcept(null);
+		fireColorChanged();
 	}
 
-	private void updateColor() {
-		int pixel = colorPixmap.getPixel(
-				(int) (colorPixmap.getWidth() * MathUtils.clamp(
-						colorSlider.getValue() / colorSlider.getMaxValue(), 0f,
-						.99f)), 0);
+	private void updateAllExcept(Slider slider) {
 
-		Color.rgba8888ToColor(color, pixel);
+		int width = brightnessPixmap.getWidth();
 
-		float[] hsl = RGBtoHSL(color, tempValues);
-		HSLtoRGB(hsl[0], hsl[1], (1 - brightnessSlider.getValue()
-				/ brightnessSlider.getMaxValue()), tempValues);
-		color.set(tempValues[0], tempValues[1], tempValues[2], 1f);
-	}
+		float[] hsb = RGBtoHSB(MathUtils.round(color.r * 255f),
+				MathUtils.round(color.g * 255f),
+				MathUtils.round(color.b * 255f), tempValues);
+		float h = hsb[0];
+		float s = hsb[1];
+		float b = hsb[2];
 
-	public void updatePosition(Color color) {
-		if (this.color.r == color.r && this.color.g == color.g
-				&& this.color.b == color.b) {
-			return;
-		}
-		this.color.set(color);
-		int brightnessWidth = brightnessPixmap.getWidth();
-		float[] hsl = RGBtoHSL(color, tempValues);
-		brightnessSlider
-				.setValue(-(hsl[2] * brightnessWidth) + brightnessWidth);
+		for (int i = 0; i < width; i++) {
+			float percentageCompletion = i / (float) width;
 
-		HSLtoRGB(hsl[0], hsl[1], .5f, tempValues);
+			if (slider != hueSlider) {
+				float[] rgb = HSBtoRGB(percentageCompletion, s, b, tempValues);
 
-		int threshold = 10000000;
-		int rgba8888 = Color.rgba8888(tempValues[0], tempValues[1],
-				tempValues[2], 1f);
-		int minColor = rgba8888 - threshold;
-		int maxColor = rgba8888 + threshold;
-		int roundI = -1;
-		int difference = Integer.MAX_VALUE;
-		int pixmapWidth = colorPixmap.getWidth();
-		for (int i = 0; i < pixmapWidth; ++i) {
-			int pixel = colorPixmap.getPixel(i, 0);
-			if (pixel == rgba8888) {
-				colorSlider.setValue((i / (float) pixmapWidth) * MAX_COLOR);
-				roundI = -1;
-				break;
-			} else if (pixel > minColor && pixel < maxColor) {
-				int currentDifference = Math.abs(pixel - rgba8888);
-				if (currentDifference < difference) {
-					difference = currentDifference;
-					roundI = i;
-				}
+				huePixmap.setColor(rgb[0], rgb[1], rgb[2], 1f);
+				huePixmap.drawLine(i, 0, i, huePixmap.getHeight());
 			}
+
+			if (slider != saturationSlider) {
+				float[] rgb = HSBtoRGB(h, percentageCompletion, b, tempValues);
+
+				saturationPixmap.setColor(rgb[0], rgb[1], rgb[2], 1f);
+				saturationPixmap.drawLine(i, 0, i, huePixmap.getHeight());
+			}
+
+			if (slider != brightnessSlider) {
+				float[] rgb = HSBtoRGB(h, s, percentageCompletion, tempValues);
+				brightnessPixmap.setColor(rgb[0], rgb[1], rgb[2], 1f);
+				brightnessPixmap
+						.drawLine(i, 0, i, brightnessPixmap.getHeight());
+			}
+
 		}
 
-		if (roundI != -1) {
-			colorSlider.setValue((roundI / (float) pixmapWidth) * MAX_COLOR);
+		if (slider != hueSlider) {
+			hueTexture.draw(huePixmap, 0, 0);
 		}
-
-		updateBrightness();
-
-		colorChanged(this.color);
-	}
-
-	private void updateBrightness() {
-
-		int brightnessWidth = brightnessPixmap.getWidth();
-
-		float[] hsl = RGBtoHSL(color, tempValues);
-		float h = hsl[0];
-		float s = hsl[1];
-		for (int i = 0; i < brightnessWidth; i++) {
-			float l = (brightnessWidth - i) / (float) brightnessWidth;
-
-			HSLtoRGB(h, s, l, tempValues);
-			brightnessPixmap.setColor(tempValues[0], tempValues[1],
-					tempValues[2], 1f);
-			brightnessPixmap.drawLine(i, 0, i, brightnessPixmap.getHeight());
+		if (slider != saturationSlider) {
+			saturationTexture.draw(saturationPixmap, 0, 0);
 		}
-
-		brightnessTexture.draw(brightnessPixmap, 0, 0);
-	}
-
-	protected void colorChanged(Color newColor) {
-
-	}
-
-	public void updateTexture() {
-		if (colorTexture != null) {
-			colorTexture.draw(colorPixmap, 0, 0);
-		}
-		if (brightnessTexture != null) {
+		if (slider != brightnessSlider) {
 			brightnessTexture.draw(brightnessPixmap, 0, 0);
 		}
 	}
 
+	private void updateColor() {
+		float[] rgb = HSBtoRGB(getValue(hueSlider), getValue(saturationSlider),
+				getValue(brightnessSlider), tempValues);
+		color.set(rgb[0], rgb[1], rgb[2], 1f);
+	}
+
+	/**
+	 * Updates the {@link #hueSlider} {@link #saturationSlider} and
+	 * {@link #brightnessSlider} and their textures to their new position
+	 * dictated by the color argument. Also fires that the color has changed.
+	 * 
+	 * @param color
+	 */
+	public void updateSlidersPosition(Color color) {
+		float[] hsb = RGBtoHSB(MathUtils.round(color.r * 255f),
+				MathUtils.round(color.g * 255f),
+				MathUtils.round(color.b * 255f), tempValues);
+		float h = hsb[0];
+		float s = hsb[1];
+		float b = hsb[2];
+
+		setValue(hueSlider, h);
+		setValue(saturationSlider, s);
+		setValue(brightnessSlider, b);
+
+		this.color.set(color);
+
+		updateAllExcept(null);
+
+		fireColorChanged();
+	}
+
+	private float getValue(Slider slider) {
+		return MathUtils.clamp(slider.getValue() / slider.getMaxValue(), .05f,
+				1f);
+	}
+
+	private void setValue(Slider slider, float value) {
+		slider.setValue(value * slider.getMaxValue());
+	}
+
+	@Override
+	public void layout() {
+		float width = getWidth(), heigth = getHeight();
+
+		float sliderHeight = heigth / 3f;
+		setBounds(hueSlider, 0, sliderHeight * 2f, width, sliderHeight);
+		setBounds(saturationSlider, 0, sliderHeight, width, sliderHeight);
+		setBounds(brightnessSlider, 0, 0, width, sliderHeight);
+	}
+
+	private void fireColorChanged() {
+		ColorEvent event = Pools.obtain(ColorEvent.class);
+		event.color = color;
+		fire(event);
+		Pools.free(event);
+	}
+
 	@Override
 	public float getPrefHeight() {
-		return PREF_HEIGHT * Gdx.graphics.getHeight();
+		return cmToYPixels(HEIGHT_CM);
 	}
 
 	@Override
 	public float getPrefWidth() {
-		return PREF_WIDTH * Gdx.graphics.getWidth();
+		return cmToXPixels(WIDTH_CM);
 	}
 
 	public Color getPickedColor() {
 		return color;
 	}
 
-	private void HSLtoRGB(float h, float s, float l, float[] values) {
-		float q = 0;
-		l = MathUtils.clamp(l, .01f, .99f);
-
-		if (l < 0.5) {
-			q = l * (1 + s);
+	/**
+	 * Converts the components of a color, as specified by the HSB model, to an
+	 * equivalent set of values for the default RGB model.
+	 * <p>
+	 * The <code>saturation</code> and <code>brightness</code> components should
+	 * be floating-point values between zero and one (numbers in the range
+	 * 0.0-1.0). The <code>hue</code> component can be any floating-point
+	 * number. The floor of this number is subtracted from it to create a
+	 * fraction between 0 and 1. This fractional number is then multiplied by
+	 * 360 to produce the hue angle in the HSB color model.
+	 * <p>
+	 * The integer that is returned by <code>HSBtoRGB</code> encodes the value
+	 * of a color in bits 0-23 of an integer value that is the same format used
+	 * by the method {@link #getRGB() <code>getRGB</code>}. This integer can be
+	 * supplied as an argument to the <code>Color</code> constructor that takes
+	 * a single integer argument.
+	 * 
+	 * @param hue
+	 *            the hue component of the color
+	 * @param saturation
+	 *            the saturation of the color
+	 * @param brightness
+	 *            the brightness of the color
+	 * @return the RGB value of the color with the indicated hue, saturation,
+	 *         and brightness.
+	 */
+	public static float[] HSBtoRGB(float hue, float saturation,
+			float brightness, float[] values) {
+		int r = 0, g = 0, b = 0;
+		if (saturation == 0) {
+			r = g = b = (int) (brightness * 255.0f + 0.5f);
 		} else {
-			q = (l + s) - (s * l);
+			float h = (hue - (float) Math.floor(hue)) * 6.0f;
+			float f = h - (float) java.lang.Math.floor(h);
+			float p = brightness * (1.0f - saturation);
+			float q = brightness * (1.0f - saturation * f);
+			float t = brightness * (1.0f - (saturation * (1.0f - f)));
+			switch ((int) h) {
+			case 0:
+				r = (int) (brightness * 255.0f + 0.5f);
+				g = (int) (t * 255.0f + 0.5f);
+				b = (int) (p * 255.0f + 0.5f);
+				break;
+			case 1:
+				r = (int) (q * 255.0f + 0.5f);
+				g = (int) (brightness * 255.0f + 0.5f);
+				b = (int) (p * 255.0f + 0.5f);
+				break;
+			case 2:
+				r = (int) (p * 255.0f + 0.5f);
+				g = (int) (brightness * 255.0f + 0.5f);
+				b = (int) (t * 255.0f + 0.5f);
+				break;
+			case 3:
+				r = (int) (p * 255.0f + 0.5f);
+				g = (int) (q * 255.0f + 0.5f);
+				b = (int) (brightness * 255.0f + 0.5f);
+				break;
+			case 4:
+				r = (int) (t * 255.0f + 0.5f);
+				g = (int) (p * 255.0f + 0.5f);
+				b = (int) (brightness * 255.0f + 0.5f);
+				break;
+			case 5:
+				r = (int) (brightness * 255.0f + 0.5f);
+				g = (int) (p * 255.0f + 0.5f);
+				b = (int) (q * 255.0f + 0.5f);
+				break;
+			}
 		}
-		float p = 2 * l - q;
-
-		float k = (1.0f / 3.0f);
-		float r = Math.max(0, HueToRGB(p, q, h + k));
-		float g = Math.max(0, HueToRGB(p, q, h));
-		float b = Math.max(0, HueToRGB(p, q, h - k));
-
-		values[0] = r;
-		values[1] = g;
-		values[2] = b;
-	}
-
-	private float HueToRGB(float p, float q, float h) {
-		if (h < 0) {
-			h += 1;
-		}
-
-		if (h > 1) {
-			h -= 1;
-		}
-
-		if (6 * h < 1) {
-			return p + ((q - p) * 6 * h);
-		}
-
-		if (2 * h < 1) {
-			return q;
-		}
-
-		if (3 * h < 2) {
-			return p + ((q - p) * 6 * ((2.0f / 3.0f) - h));
-		}
-
-		return p;
-	}
-
-	private float[] RGBtoHSL(Color color, float[] values) {
-		// Get RGB values in the range 0 - 1
-		float r = color.r;
-		float g = color.g;
-		float b = color.b;
-
-		// Minimum and Maximum RGB values are used in the HSL calculations
-		float min = Math.min(r, Math.min(g, b));
-		float max = Math.max(r, Math.max(g, b));
-
-		// Calculate the Hue
-		float h = 0;
-
-		if (max == min) {
-			h = 0;
-		} else if (max == r) {
-			h = ((60 * (g - b) / (max - min)) + 360) % 360;
-		} else if (max == g) {
-			h = (60 * (b - r) / (max - min)) + 120;
-		} else if (max == b) {
-			h = (60 * (r - g) / (max - min)) + 240;
-		}
-		// Calculate the Luminance
-		float l = (max + min) / 2;
-
-		// Calculate the Saturation
-		float s = 0;
-
-		if (max == min) {
-			s = 0;
-		} else if (l <= .5f) {
-			s = (max - min) / (max + min);
-		} else {
-			s = (max - min) / (2 - max - min);
-		}
-		values[0] = h / 360f;
-		values[1] = s;
-		values[2] = l;
+		values[0] = r / 255f;
+		values[1] = g / 255f;
+		values[2] = b / 255f;
 		return values;
 	}
 
-	private int HSBtoRGB(float hue) {
-		int r = 0, g = 0, b = 0;
-		float h = (hue - (float) Math.floor(hue)) * 6.0f;
-		float f = h - (float) Math.floor(h);
-		float p = 0.0f;
-		float q = (1.0f - f);
-		float t = f;
-		switch ((int) h) {
-		case 0:
-			r = (int) (255.0f + 0.5f);
-			g = (int) (t * 255.0f + 0.5f);
-			b = (int) (p * 255.0f + 0.5f);
-			break;
-		case 1:
-			r = (int) (q * 255.0f + 0.5f);
-			g = (int) (255.0f + 0.5f);
-			b = (int) (p * 255.0f + 0.5f);
-			break;
-		case 2:
-			r = (int) (p * 255.0f + 0.5f);
-			g = (int) (255.0f + 0.5f);
-			b = (int) (t * 255.0f + 0.5f);
-			break;
-		case 3:
-			r = (int) (p * 255.0f + 0.5f);
-			g = (int) (q * 255.0f + 0.5f);
-			b = (int) (255.0f + 0.5f);
-			break;
-		case 4:
-			r = (int) (t * 255.0f + 0.5f);
-			g = (int) (p * 255.0f + 0.5f);
-			b = (int) (255.0f + 0.5f);
-			break;
-		case 5:
-			r = (int) (255.0f + 0.5f);
-			g = (int) (p * 255.0f + 0.5f);
-			b = (int) (q * 255.0f + 0.5f);
-			break;
+	/**
+	 * Converts the components of a color, as specified by the default RGB
+	 * model, to an equivalent set of values for hue, saturation, and brightness
+	 * that are the three components of the HSB model.
+	 * <p>
+	 * If the <code>hsbvals</code> argument is <code>null</code>, then a new
+	 * array is allocated to return the result. Otherwise, the method returns
+	 * the array <code>hsbvals</code>, with the values put into that array.
+	 * 
+	 * @param r
+	 *            the red component of the color
+	 * @param g
+	 *            the green component of the color
+	 * @param b
+	 *            the blue component of the color
+	 * @param hsbvals
+	 *            the array used to return the three HSB values, or
+	 *            <code>null</code>
+	 * @return an array of three elements containing the hue, saturation, and
+	 *         brightness (in that order), of the color with the indicated red,
+	 *         green, and blue components.
+	 */
+	public static float[] RGBtoHSB(int r, int g, int b, float[] hsbvals) {
+		float hue, saturation, brightness;
+		if (hsbvals == null) {
+			hsbvals = new float[3];
 		}
-		return 0xff000000 | (r << 16) | (g << 8) | (b << 0);
+		int cmax = (r > g) ? r : g;
+		if (b > cmax)
+			cmax = b;
+		int cmin = (r < g) ? r : g;
+		if (b < cmin)
+			cmin = b;
+
+		brightness = ((float) cmax) / 255.0f;
+		if (cmax != 0)
+			saturation = ((float) (cmax - cmin)) / ((float) cmax);
+		else
+			saturation = 0;
+		if (saturation == 0)
+			hue = 0;
+		else {
+			float redc = ((float) (cmax - r)) / ((float) (cmax - cmin));
+			float greenc = ((float) (cmax - g)) / ((float) (cmax - cmin));
+			float bluec = ((float) (cmax - b)) / ((float) (cmax - cmin));
+			if (r == cmax)
+				hue = bluec - greenc;
+			else if (g == cmax)
+				hue = 2.0f + redc - bluec;
+			else
+				hue = 4.0f + greenc - redc;
+			hue = hue / 6.0f;
+			if (hue < 0)
+				hue = hue + 1.0f;
+		}
+		hsbvals[0] = hue;
+		hsbvals[1] = saturation;
+		hsbvals[2] = brightness;
+		return hsbvals;
+	}
+
+	/**
+	 * Base class to listen to {@link ColorEvent}s produced by
+	 * {@link SlideColorPicker}.
+	 */
+	public static class ColorListener implements EventListener {
+
+		@Override
+		public boolean handle(Event event) {
+			if (event instanceof ColorEvent) {
+				colorChanged((ColorEvent) event);
+			}
+			return true;
+		}
+
+		/**
+		 * The color has changed.
+		 */
+		public void colorChanged(ColorEvent event) {
+
+		}
+	}
+
+	public static class ColorEvent extends Event {
+
+		private Color color;
+
+		public Color getColor() {
+			return color;
+		}
+
+		@Override
+		public void reset() {
+			super.reset();
+			this.color = null;
+		}
+	}
+
+	/**
+	 * The style for a {@link SlideColorPicker}.
+	 * 
+	 * @author Rotaru Dan Cristian
+	 */
+	static public class SlideColorPickerStyle {
+
+		public SliderStyle slider;
+
+		public SlideColorPickerStyle() {
+		}
+
+		public SlideColorPickerStyle(SliderStyle slider) {
+			this.slider = slider;
+		}
+
+		public SlideColorPickerStyle(SlideColorPickerStyle style) {
+			this.slider = style.slider;
+		}
 	}
 }
