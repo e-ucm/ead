@@ -230,6 +230,14 @@ public class BaseView extends AbstractWidget {
 	}
 
 	@Override
+	public void invalidate() {
+		super.invalidate();
+		if (navigation != null) {
+			navigation.invalidate();
+		}
+	}
+
+	@Override
 	public void layout() {
 		setBounds(navigation, 0, 0, getWidth(), getHeight());
 		setBounds(selectionContext, 0, 0, getWidth(), getHeight()

@@ -53,6 +53,10 @@
             "name": "blank",
             "color": "black"
         },
+        "transparent_bg": {
+            "name": "blank",
+            "color": "transparent"
+        },
         "light-gray-bg": {
             "name": "blank",
             "color": "light-gray"
@@ -64,6 +68,10 @@
         "pressed-48-bg": {
             "name": "bg48",
             "color": "dark-brown-moka"
+        },
+        "page_pressed": {
+            "name": "page",
+            "color": "gray"
         }
     },
     "com.badlogic.gdx.scenes.scene2d.ui.Label$LabelStyle": {
@@ -80,16 +88,31 @@
         "default": {},
         "context": {
             "down": "light-gray-bg"
+        },
+        "add": {
+            "up": "button_add",
+            "down": "button_add_pressed"
+        }
+    },
+    "com.badlogic.gdx.scenes.scene2d.ui.ImageButton$ImageButtonStyle": {
+        "scene": {
+            "up": "page",
+            "down": "page_pressed"
         }
     },
     "com.badlogic.gdx.scenes.scene2d.ui.Slider$SliderStyle": {
         "colorPicker": {
-            "knob": color_picker_knob
+            "knob": "color_picker_knob"
         }
     },
     "es.eucm.ead.editor.view.widgets.editionview.composition.SlideColorPicker$SlideColorPickerStyle": {
         "default": {
-        	"slider": "colorPicker"
+            "slider": "colorPicker"
+        }
+    },
+    "com.badlogic.gdx.scenes.scene2d.ui.ScrollPane$ScrollPaneStyle": {
+        "default": {
+
         }
     },
     "es.eucm.ead.editor.view.widgets.IconButton$IconButtonStyle": {

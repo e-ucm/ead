@@ -36,9 +36,6 @@
  */
 package es.eucm.ead.editor.editorui;
 
-import java.io.File;
-import java.io.IOException;
-
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.backends.lwjgl.LwjglApplication;
 import com.badlogic.gdx.files.FileHandle;
@@ -47,12 +44,14 @@ import com.badlogic.gdx.scenes.scene2d.Group;
 import com.badlogic.gdx.scenes.scene2d.ui.ScrollPane;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.utils.Scaling;
-
 import es.eucm.ead.editor.model.Q;
 import es.eucm.ead.engine.assets.Assets.AssetLoadedCallback;
 import es.eucm.ead.schema.entities.ModelEntity;
 import es.eucm.ead.schema.renderers.Image;
 import es.eucm.ead.schemax.entities.ResourceCategory;
+
+import java.io.File;
+import java.io.IOException;
 
 public class CreateThumbnailTest extends EditorUITest {
 
@@ -89,7 +88,7 @@ public class CreateThumbnailTest extends EditorUITest {
 		scene.getChildren().add(child);
 		controller.getModel().putResource(id, ResourceCategory.SCENE, scene);
 		return Q.getThumbnail(controller, scene, 250, 250, scaling)
-				.getThumbnail();
+				.getPath();
 	}
 
 	@Override

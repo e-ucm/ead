@@ -44,6 +44,7 @@ import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 
 import es.eucm.ead.editor.control.Controller;
 import es.eucm.ead.editor.control.Selection;
+import es.eucm.ead.editor.control.actions.editor.ChangeView;
 import es.eucm.ead.editor.control.actions.editor.Redo;
 import es.eucm.ead.editor.control.actions.editor.Undo;
 import es.eucm.ead.editor.control.actions.model.AddInteractiveZone;
@@ -52,6 +53,7 @@ import es.eucm.ead.editor.model.Model.SelectionListener;
 import es.eucm.ead.editor.model.events.SelectionEvent;
 import es.eucm.ead.editor.view.SkinConstants;
 import es.eucm.ead.editor.view.builders.ViewBuilder;
+import es.eucm.ead.editor.view.builders.project.ProjectView;
 import es.eucm.ead.editor.view.widgets.ContextMenu;
 import es.eucm.ead.editor.view.widgets.IconButton;
 import es.eucm.ead.editor.view.widgets.MultiToolbar;
@@ -90,7 +92,8 @@ public class SceneView implements ViewBuilder {
 
 	@Override
 	public void release(Controller controller) {
-
+		sceneEditor.release();
+		view.invalidate();
 	}
 
 	private MultiToolbar buildToolbar(Skin skin, I18N i18N) {
@@ -188,7 +191,8 @@ public class SceneView implements ViewBuilder {
 		LinearLayout navigation = new LinearLayout(false,
 				skin.getDrawable(SkinConstants.DRAWABLE_PAGE_LEFT));
 		navigation.add(WidgetBuilder.button(skin, SkinConstants.IC_HOME,
-				i18N.m("project"), SkinConstants.STYLE_CONTEXT));
+				i18N.m("project"), SkinConstants.STYLE_CONTEXT,
+				ChangeView.class, ProjectView.class));
 		navigation.addSpace();
 		return navigation;
 	}

@@ -186,7 +186,7 @@ public class CreateThumbnail extends EditorAction {
 		gameLoop.removeEntity(engineEntity);
 
 		Thumbnail thumbnail = Q.getComponent(modelEntity, Thumbnail.class);
-		thumbnail.setThumbnail(thumbSavingPath);
+		thumbnail.setPath(thumbSavingPath);
 
 		if (editorGameAssets.isLoaded(thumbSavingPath, Texture.class)) {
 			editorGameAssets.unload(thumbSavingPath);
