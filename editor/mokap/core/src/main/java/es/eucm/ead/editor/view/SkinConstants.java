@@ -41,6 +41,8 @@ package es.eucm.ead.editor.view;
  */
 public interface SkinConstants {
 
+	public static final String ENGINE_DEFAULT_FONT = "roboto-small";
+
 	public static final String DRAWABLE_BLANK = "blank";
 	public static final String DRAWABLE_PAGE = "page";
 	public static final String DRAWABLE_PAGE_LEFT = "page_left";
