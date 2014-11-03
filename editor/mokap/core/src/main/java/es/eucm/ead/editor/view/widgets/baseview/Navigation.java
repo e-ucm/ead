@@ -62,8 +62,6 @@ class Navigation extends Panel {
 
 		addActor(background = new Container());
 		background.setBackground(style.navigationBackground);
-		background.setVisible(false);
-		background.getColor().a = 0.0f;
 
 		addListener(new DragListener() {
 
@@ -175,6 +173,8 @@ class Navigation extends Panel {
 					- height, getPrefWidth(navigation), height);
 		}
 		setBounds(background, 0, 0, getWidth(), getHeight());
+		background.setVisible(false);
+		background.getColor().a = 0.0f;
 	}
 
 	@Override
