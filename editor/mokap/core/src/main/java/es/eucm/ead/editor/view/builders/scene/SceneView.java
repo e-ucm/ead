@@ -38,12 +38,15 @@ package es.eucm.ead.editor.view.builders.scene;
 
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
+import com.badlogic.gdx.scenes.scene2d.ui.Button;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
+
 import es.eucm.ead.editor.control.Controller;
 import es.eucm.ead.editor.control.Selection;
 import es.eucm.ead.editor.control.actions.editor.Redo;
 import es.eucm.ead.editor.control.actions.editor.Undo;
+import es.eucm.ead.editor.control.actions.model.AddInteractiveZone;
 import es.eucm.ead.editor.control.actions.model.SetSelection;
 import es.eucm.ead.editor.model.Model.SelectionListener;
 import es.eucm.ead.editor.model.events.SelectionEvent;
@@ -151,12 +154,20 @@ public class SceneView implements ViewBuilder {
 	}
 
 	private ContextMenu buildInsertContextMenu(Skin skin, I18N i18n) {
+		String style = SkinConstants.STYLE_CONTEXT;
+
+		// ContextMenu contextMenu = WidgetBuilder.iconLabelContextPanel(skin,
+		// SkinConstants.IC_CLOUD, i18n.m("gallery"),
+		// SkinConstants.IC_CAMERA, i18n.m("picture"),
+		// SkinConstants.IC_BRUSH, i18n.m("drawing"),
+		// SkinConstants.IC_TEXT, i18n.m("text"), SkinConstants.IC_ZONE,
+		// i18n.m("interactive.zone"));
+		Button zone = WidgetBuilder.button(skin, SkinConstants.IC_ZONE,
+				i18n.m("interactive.zone"), style, AddInteractiveZone.class);
+
 		ContextMenu contextMenu = WidgetBuilder.iconLabelContextPanel(skin,
-				SkinConstants.IC_CLOUD, i18n.m("gallery"),
-				SkinConstants.IC_CAMERA, i18n.m("picture"),
-				SkinConstants.IC_BRUSH, i18n.m("drawing"),
-				SkinConstants.IC_TEXT, i18n.m("text"), SkinConstants.IC_ZONE,
-				i18n.m("interactive.zone"));
+				zone);
+
 		contextMenu.pack();
 		contextMenu.setOriginX(contextMenu.getWidth());
 		contextMenu.setOriginY(contextMenu.getHeight());
