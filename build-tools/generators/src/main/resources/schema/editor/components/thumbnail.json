@@ -5,7 +5,7 @@
         "$ref": "../../engine/components/component.json"
     },
     "properties": {
-        "thumbnail": {
+        "path": {
             "type": "string",
             "description": "The path to the thumbnail"
         }

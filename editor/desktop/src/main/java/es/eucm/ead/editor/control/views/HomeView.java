@@ -117,12 +117,12 @@ public class HomeView implements ViewBuilder {
 				ModelEntity modelEntity = (ModelEntity) resource.getObject();
 				Thumbnail thumbnailComp = Q.getComponent(modelEntity,
 						Thumbnail.class);
-				String thumbnail = thumbnailComp.getThumbnail();
+				String thumbnail = thumbnailComp.getPath();
 				if (thumbnail != null) {
 					if (editorGameAssets.isLoaded(thumbnail, Texture.class)) {
 						editorGameAssets.unload(thumbnail);
 					}
-					thumbnailComp.setThumbnail(null);
+					thumbnailComp.setPath(null);
 				}
 				Q.getThumbnail(controller, modelEntity);
 			}
