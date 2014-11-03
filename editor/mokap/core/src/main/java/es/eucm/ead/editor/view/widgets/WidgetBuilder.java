@@ -49,10 +49,20 @@ import es.eucm.ead.editor.view.widgets.layouts.LinearLayout;
 
 public class WidgetBuilder {
 
+	/**
+	 * This represents 0.76 cm (48px) in MDPI, the size for the buttons that we
+	 * want in all devices.
+	 */
+	private static float UNIT_SIZE = 48;
+
 	private static Controller controller;
+
+	private static float buttonSize;
 
 	public static void setController(Controller controller) {
 		WidgetBuilder.controller = controller;
+		WidgetBuilder.buttonSize = controller.getApplicationAssets().getSkin()
+				.getDrawable("bg48").getMinHeight();
 	}
 
 	public static IconButton toolbarIcon(Skin skin, String icon) {
@@ -127,7 +137,7 @@ public class WidgetBuilder {
 		row.add(icon(skin, icon, style));
 		row.add(new Label(label, skin, style));
 		row.addSpace();
-		row.pad(0, 0, 16, 0);
+		row.pad(0, 0, dpToPixels(16), 0);
 
 		Button button = button(skin, style);
 		button.add(row).fillX().expandX();
@@ -139,5 +149,9 @@ public class WidgetBuilder {
 		Button button = button(skin, icon, label, style);
 		button.addListener(new ActionOnClickListener(controller, action, args));
 		return button;
+	}
+
+	public static float dpToPixels(float dp) {
+		return (buttonSize / UNIT_SIZE) * dp;
 	}
 }
