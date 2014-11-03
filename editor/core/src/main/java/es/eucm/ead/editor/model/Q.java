@@ -284,4 +284,28 @@ public class Q {
 
 		return getComponent((ModelEntity) args[0], Thumbnail.class);
 	}
+
+	/**
+	 * Returns a new Entity positioned in the center of the device
+	 * 
+	 * @param controller
+	 * @param height
+	 * @param width
+	 * @param components
+	 * @return
+	 */
+	public static ModelEntity createCentricEntity(Controller controller,
+			float height, float width, ModelComponent... components) {
+		GameData gameData = getComponent(controller.getModel().getGame(),
+				GameData.class);
+
+		ModelEntity entity = new ModelEntity();
+
+		entity.setX((gameData.getWidth() - width) / 2);
+		entity.setY((gameData.getHeight() - height) / 2);
+
+		entity.getComponents().addAll(components);
+
+		return entity;
+	}
 }

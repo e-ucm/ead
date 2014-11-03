@@ -60,17 +60,14 @@ public class AddInteractiveZone extends ModelAction {
 
 		int size = MathUtils.round(gameData.getHeight() * 0.25f);
 
-		ModelEntity zone = new ModelEntity();
-		zone.setX(gameData.getWidth() / 2 - size / 2);
-		zone.setY(gameData.getHeight() / 2 - size / 2);
-
 		EmptyRenderer empty = new EmptyRenderer();
 		Rectangle rectangle = new Rectangle();
 		rectangle.setHeight(size);
 		rectangle.setWidth(size);
 
 		empty.setShape(rectangle);
-		zone.getComponents().add(empty);
+
+		ModelEntity zone = Q.createCentricEntity(controller, size, size, empty);
 
 		return controller.getActions().getAction(AddSceneElement.class)
 				.perform(zone);
