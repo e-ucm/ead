@@ -82,6 +82,16 @@
             "down": "light-gray-bg"
         }
     },
+    "com.badlogic.gdx.scenes.scene2d.ui.Slider$SliderStyle": {
+        "colorPicker": {
+            "knob": color_picker_knob
+        }
+    },
+    "es.eucm.ead.editor.view.widgets.editionview.composition.SlideColorPicker$SlideColorPickerStyle": {
+        "default": {
+        	"slider": "colorPicker"
+        }
+    },
     "es.eucm.ead.editor.view.widgets.IconButton$IconButtonStyle": {
         "default": {
             "disabledImageColor": "gray",
