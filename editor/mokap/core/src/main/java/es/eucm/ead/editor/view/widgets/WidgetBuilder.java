@@ -38,6 +38,7 @@ package es.eucm.ead.editor.view.widgets;
 
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.ui.Button;
+import com.badlogic.gdx.scenes.scene2d.ui.ImageButton;
 import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 
@@ -82,8 +83,7 @@ public class WidgetBuilder {
 	}
 
 	public static void launchContextMenu(Actor actor, Actor contextMenu) {
-		actor.addListener(new ActionOnClickListener(controller,
-				ShowContextMenu.class, actor, contextMenu, true));
+		actionOnClick(actor, ShowContextMenu.class, actor, contextMenu, true);
 	}
 
 	public static IconButton icon(Skin skin, String icon, String style) {
@@ -93,15 +93,26 @@ public class WidgetBuilder {
 	public static IconButton icon(Skin skin, String icon, String style,
 			Class action, Object... args) {
 		IconButton iconButton = new IconButton(icon, skin, style);
-		if (action != null) {
-			iconButton.addListener(new ActionOnClickListener(controller,
-					action, args));
-		}
+		actionOnClick(iconButton, action, args);
 		return iconButton;
 	}
 
 	public static Button button(Skin skin, String style) {
 		return new Button(skin, style);
+	}
+
+	public static Button button(Skin skin, String style, Class action,
+			Object... args) {
+		Button button = new Button(skin, style);
+		actionOnClick(button, action, args);
+		return button;
+	}
+
+	public static ImageButton imageButton(Skin skin, String style,
+			Class action, Object... args) {
+		ImageButton button = new ImageButton(skin, style);
+		actionOnClick(button, action, args);
+		return button;
 	}
 
 	public static ContextMenu iconLabelContextPanel(Skin skin,
@@ -147,8 +158,15 @@ public class WidgetBuilder {
 	public static Button button(Skin skin, String icon, String label,
 			String style, Class action, Object... args) {
 		Button button = button(skin, icon, label, style);
-		button.addListener(new ActionOnClickListener(controller, action, args));
+		actionOnClick(button, action, args);
 		return button;
+	}
+
+	public static void actionOnClick(Actor actor, Class action, Object... args) {
+		if (action != null) {
+			actor.addListener(new ActionOnClickListener(controller, action,
+					args));
+		}
 	}
 
 	public static float dpToPixels(float dp) {

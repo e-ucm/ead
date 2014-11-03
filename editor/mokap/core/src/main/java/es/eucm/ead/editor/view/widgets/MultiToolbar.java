@@ -66,12 +66,11 @@ public class MultiToolbar extends Container<WidgetGroup> {
 	private MultiToolbarStyle style;
 
 	public MultiToolbar(Skin skin) {
-		this(skin, "default");
+		this(skin.get(MultiToolbarStyle.class));
 	}
 
-	public MultiToolbar(Skin skin, String styleName) {
-
-		style = skin.get(styleName, MultiToolbarStyle.class);
+	public MultiToolbar(MultiToolbarStyle style) {
+		this.style = style;
 
 		setBackground(style.background);
 		if (style.color != null) {
