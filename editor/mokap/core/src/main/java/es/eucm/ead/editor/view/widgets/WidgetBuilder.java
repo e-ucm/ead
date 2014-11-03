@@ -40,6 +40,7 @@ import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.ui.Button;
 import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
+
 import es.eucm.ead.editor.control.Controller;
 import es.eucm.ead.editor.control.actions.editor.ShowContextMenu;
 import es.eucm.ead.editor.view.SkinConstants;
@@ -108,6 +109,18 @@ public class WidgetBuilder {
 		return contextMenu;
 	}
 
+	public static ContextMenu iconLabelContextPanel(Skin skin,
+			Button... iconLabel) {
+		ContextMenu contextMenu = new ContextMenu();
+		contextMenu.background(skin.getDrawable(SkinConstants.DRAWABLE_PAGE));
+		for (int i = 0; i < iconLabel.length; i++) {
+			Button button = iconLabel[i];
+			contextMenu.add(button).fillX();
+			contextMenu.row();
+		}
+		return contextMenu;
+	}
+
 	public static Button button(Skin skin, String icon, String label,
 			String style) {
 		LinearLayout row = new LinearLayout(true);
@@ -118,6 +131,13 @@ public class WidgetBuilder {
 
 		Button button = button(skin, style);
 		button.add(row).fillX().expandX();
+		return button;
+	}
+
+	public static Button button(Skin skin, String icon, String label,
+			String style, Class action, Object... args) {
+		Button button = button(skin, icon, label, style);
+		button.addListener(new ActionOnClickListener(controller, action, args));
 		return button;
 	}
 }
