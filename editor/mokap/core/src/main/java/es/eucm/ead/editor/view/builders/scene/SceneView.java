@@ -48,6 +48,7 @@ import es.eucm.ead.editor.control.actions.editor.Redo;
 import es.eucm.ead.editor.control.actions.editor.Undo;
 import es.eucm.ead.editor.control.actions.model.AddInteractiveZone;
 import es.eucm.ead.editor.control.actions.model.SetSelection;
+import es.eucm.ead.editor.control.actions.model.TakePicture;
 import es.eucm.ead.editor.model.Model.SelectionListener;
 import es.eucm.ead.editor.model.events.SelectionEvent;
 import es.eucm.ead.editor.view.SkinConstants;
@@ -162,11 +163,14 @@ public class SceneView implements ViewBuilder {
 		// SkinConstants.IC_BRUSH, i18n.m("drawing"),
 		// SkinConstants.IC_TEXT, i18n.m("text"), SkinConstants.IC_ZONE,
 		// i18n.m("interactive.zone"));
+		Button picture = WidgetBuilder.button(skin, SkinConstants.IC_CAMERA,
+				i18n.m("picture"), style, TakePicture.class);
+
 		Button zone = WidgetBuilder.button(skin, SkinConstants.IC_ZONE,
 				i18n.m("interactive.zone"), style, AddInteractiveZone.class);
 
 		ContextMenu contextMenu = WidgetBuilder.iconLabelContextPanel(skin,
-				zone);
+				picture, zone);
 
 		contextMenu.pack();
 		contextMenu.setOriginX(contextMenu.getWidth());
