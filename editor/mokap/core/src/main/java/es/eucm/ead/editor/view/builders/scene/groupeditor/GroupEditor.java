@@ -55,6 +55,9 @@ import es.eucm.ead.editor.view.widgets.AbstractWidget;
 
 public class GroupEditor extends AbstractWidget {
 
+	public final Vector2 tmp1 = new Vector2(), tmp2 = new Vector2(),
+			tmp3 = new Vector2(), tmp4 = new Vector2();
+
 	private Drawable background;
 
 	private Group rootGroup;
@@ -108,6 +111,9 @@ public class GroupEditor extends AbstractWidget {
 		}
 		this.rootGroup = rootGroup;
 		if (rootGroup != null) {
+			for (Actor actor : rootGroup.getChildren()) {
+				adjustGroup(actor);
+			}
 			addActorAt(0, rootGroup);
 		}
 	}
@@ -123,6 +129,7 @@ public class GroupEditor extends AbstractWidget {
 	public void setSelection(Iterable<Actor> selection) {
 		clearSelection();
 		for (Actor actor : selection) {
+			adjustGroup(actor);
 			addToSelection(actor);
 			SelectionBox selectionBox = Pools.obtain(SelectionBox.class);
 			selectionBox.selected();
@@ -292,6 +299,108 @@ public class GroupEditor extends AbstractWidget {
 		groupEvent.setSelection(selection);
 		fire(groupEvent);
 		Pools.free(groupEvent);
+	}
+
+	/**
+	 * Adjusts the position and size of the given group to its children
+	 */
+	private void adjustGroup(Actor root) {
+		if (!(root instanceof Group)) {
+			return;
+		}
+
+		Group group = (Group) root;
+		if (group.getChildren().size == 0) {
+			return;
+		}
+
+		for (Actor actor : group.getChildren()) {
+			if (actor != this && actor instanceof Group) {
+				adjustGroup(actor);
+			}
+		}
+
+		calculateBounds(group.getChildren(), tmp1, tmp2);
+
+		if (tmp1.x != 0 || tmp1.y != 0 || tmp2.x != group.getWidth()
+				|| tmp2.y != group.getHeight()) {
+			/*
+			 * minX and minY are the new origin (new 0, 0), so everything inside
+			 * the group must be translated that much.
+			 */
+			for (Actor actor : group.getChildren()) {
+				if (actor != this) {
+					actor.setPosition(actor.getX() - tmp1.x, actor.getY()
+							- tmp1.y);
+				}
+			}
+
+			/*
+			 * Now, we calculate the current origin (0, 0) and the new origin
+			 * (minX, minY), and group is translated by that difference.
+			 */
+			group.localToParentCoordinates(tmp3.set(0, 0));
+			group.localToParentCoordinates(tmp4.set(tmp1.x, tmp1.y));
+			tmp4.sub(tmp3);
+			group.setBounds(group.getX() + tmp4.x, group.getY() + tmp4.y,
+					tmp2.x, tmp2.y);
+		}
+	}
+
+	/**
+	 * Calculate the bounds of the given actors as a group
+	 * 
+	 * @param actors
+	 *            the actors
+	 * @param resultOrigin
+	 *            result origin of the bounds
+	 * @param resultSize
+	 *            result size of the bounds
+	 */
+	public void calculateBounds(Array<Actor> actors, Vector2 resultOrigin,
+			Vector2 resultSize) {
+		resultOrigin.set(0, 0);
+		resultSize.set(0, 0);
+		if (actors.size == 0) {
+			return;
+		}
+
+		float minX = Float.POSITIVE_INFINITY;
+		float minY = Float.POSITIVE_INFINITY;
+		float maxX = Float.NEGATIVE_INFINITY;
+		float maxY = Float.NEGATIVE_INFINITY;
+		for (Actor actor : actors) {
+			// Ignore the modifier itself to calculate bounds
+			if (actor != this) {
+				tmp1.set(0, 0);
+				tmp2.set(actor.getWidth(), 0);
+				tmp3.set(0, actor.getHeight());
+				tmp4.set(actor.getWidth(), actor.getHeight());
+				actor.localToParentCoordinates(tmp1);
+				actor.localToParentCoordinates(tmp2);
+				actor.localToParentCoordinates(tmp3);
+				actor.localToParentCoordinates(tmp4);
+
+				minX = Math.min(
+						minX,
+						Math.min(tmp1.x,
+								Math.min(tmp2.x, Math.min(tmp3.x, tmp4.x))));
+				minY = Math.min(
+						minY,
+						Math.min(tmp1.y,
+								Math.min(tmp2.y, Math.min(tmp3.y, tmp4.y))));
+				maxX = Math.max(
+						maxX,
+						Math.max(tmp1.x,
+								Math.max(tmp2.x, Math.max(tmp3.x, tmp4.x))));
+				maxY = Math.max(
+						maxY,
+						Math.max(tmp1.y,
+								Math.max(tmp2.y, Math.max(tmp3.y, tmp4.y))));
+			}
+		}
+		resultOrigin.set(minX, minY);
+		resultSize.set(maxX - minX, maxY - minY);
 	}
 
 	public static class GroupEvent extends Event {
