@@ -9,12 +9,10 @@ for file in $(find . -type f)
         for folder in $(find ../ -maxdepth 1 -type d -not -name . -not -name common -not -name svg)
         do
             case $folder in
-                ../ldpi)
-                    dpi=45
-                    echo "Hey";;
+                ../ldpi) dpi=45;;
                 ../mdpi) dpi=90;;
-                ../mdpi) dpi=135;;
-                ../hdpi) dpi=180;;
+                ../hdpi) dpi=135;;
+                ../xhdpi) dpi=180;;
             esac
             echo "$folder has $dpi dpi"
 		    inkscape --export-png=$folder/images/$imagepng --export-dpi=$dpi --export-background-opacity=0 --without-gui $imagefile
