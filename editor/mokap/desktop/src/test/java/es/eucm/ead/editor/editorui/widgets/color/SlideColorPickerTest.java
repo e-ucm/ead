@@ -74,6 +74,7 @@ public class SlideColorPickerTest extends UITest {
 				clearColor.set(event.getColor());
 			}
 		});
+		slideColorPicker.initialize();
 		clearColor.set(slideColorPicker.getPickedColor());
 		table.add(slideColorPicker);
 
