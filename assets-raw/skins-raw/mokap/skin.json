@@ -101,6 +101,11 @@
         }
     },
     "com.badlogic.gdx.scenes.scene2d.ui.Slider$SliderStyle": {
+    	"default-horizontal": { 
+			"background": "knob_after", 
+			"knob": "knob", 
+			"knobBefore": "knob_before"
+		},
         "colorPicker": {
             "knob": "color_picker_knob"
         }
