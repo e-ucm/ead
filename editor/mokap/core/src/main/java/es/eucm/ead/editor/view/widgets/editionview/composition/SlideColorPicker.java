@@ -49,11 +49,12 @@ import com.badlogic.gdx.scenes.scene2d.InputListener;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.ui.Slider;
 import com.badlogic.gdx.scenes.scene2d.ui.Slider.SliderStyle;
-import com.badlogic.gdx.scenes.scene2d.utils.DragListener;
+import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable;
 import com.badlogic.gdx.utils.Pools;
 
 import es.eucm.ead.editor.view.widgets.AbstractWidget;
+import es.eucm.ead.editor.view.widgets.WidgetBuilder;
 
 /**
  * A color picker that uses {@link Slider}s to display HSB colors.
@@ -66,9 +67,13 @@ public class SlideColorPicker extends AbstractWidget {
 	private static final float HEIGHT_CM = 2.1f;
 	private static final float WIDTH_CM = 5f;
 
-	private static final InputListener listener = new DragListener() {
+	private static final InputListener listener = new ClickListener() {
 
-		public void drag(InputEvent event, float x, float y, int pointer) {
+		public void clicked(InputEvent event, float x, float y) {
+			touchDragged(event, x, y, 0);
+		};
+
+		public void touchDragged(InputEvent event, float x, float y, int pointer) {
 			if (pointer == 0) {
 				Slider slider = (Slider) event.getListenerActor();
 				SlideColorPicker picker = (SlideColorPicker) slider
@@ -77,15 +82,13 @@ public class SlideColorPicker extends AbstractWidget {
 				picker.updateAllExcept(slider);
 				picker.fireColorChanged();
 			}
-		}
-
-		public void dragStop(InputEvent event, float x, float y, int pointer) {
-			drag(event, x, y, pointer);
-		}
+		};
 	};
 
 	private final float[] tempValues = new float[3];
 	private final Color color = new Color();
+
+	private float pad, sliderSpace;
 
 	private Pixmap huePixmap;
 	private Pixmap saturationPixmap;
@@ -125,8 +128,12 @@ public class SlideColorPicker extends AbstractWidget {
 	 *            the style to use
 	 */
 	public SlideColorPicker(SlideColorPickerStyle slideColorPickerStyle) {
-		float width = getPrefWidth();
+
 		SliderStyle sliderStyle = slideColorPickerStyle.slider;
+		setSliderSpace(slideColorPickerStyle.sliderSpace);
+		setPad(slideColorPickerStyle.pad);
+
+		float width = getPrefWidth();
 		hueSlider = new Slider(0, width, 1, false, new SliderStyle(sliderStyle)) {
 			@Override
 			public float getPrefHeight() {
@@ -163,35 +170,49 @@ public class SlideColorPicker extends AbstractWidget {
 		addActor(hueSlider);
 		addActor(saturationSlider);
 		addActor(brightnessSlider);
-		initialize();
 	}
 
 	/**
 	 * Generate the slider background.
 	 */
-	private void initialize() {
-		int width = MathUtils.round(getPrefWidth()), height = MathUtils
-				.round(getPrefHeight() / 3f);
+	public void initialize() {
+		if (huePixmap == null) {
+			int width = MathUtils.round(cmToXPixels(WIDTH_CM)), height = MathUtils
+					.round(cmToYPixels(HEIGHT_CM) / 3f);
 
-		huePixmap = new Pixmap(width, height, Format.RGBA8888);
-		saturationPixmap = new Pixmap(width, height, Format.RGBA8888);
-		brightnessPixmap = new Pixmap(width, height, Format.RGBA8888);
+			huePixmap = new Pixmap(width, height, Format.RGBA8888);
+			saturationPixmap = new Pixmap(width, height, Format.RGBA8888);
+			brightnessPixmap = new Pixmap(width, height, Format.RGBA8888);
 
-		hueTexture = new Texture(huePixmap);
-		saturationTexture = new Texture(saturationPixmap);
-		brightnessTexture = new Texture(brightnessPixmap);
+			hueTexture = new Texture(huePixmap);
+			saturationTexture = new Texture(saturationPixmap);
+			brightnessTexture = new Texture(brightnessPixmap);
 
-		hueSlider.getStyle().background = new TextureRegionDrawable(
-				new TextureRegion(hueTexture));
-		saturationSlider.getStyle().background = new TextureRegionDrawable(
-				new TextureRegion(saturationTexture = new Texture(
-						saturationPixmap)));
-		brightnessSlider.getStyle().background = new TextureRegionDrawable(
-				new TextureRegion(brightnessTexture));
+			hueSlider.getStyle().background = new TextureRegionDrawable(
+					new TextureRegion(hueTexture));
+			saturationSlider.getStyle().background = new TextureRegionDrawable(
+					new TextureRegion(saturationTexture = new Texture(
+							saturationPixmap)));
+			brightnessSlider.getStyle().background = new TextureRegionDrawable(
+					new TextureRegion(brightnessTexture));
 
-		invalidateHierarchy();
-		updateAllExcept(null);
-		fireColorChanged();
+			invalidateHierarchy();
+			updateAllExcept(null);
+			fireColorChanged();
+		}
+	}
+
+	public void release() {
+		if (huePixmap != null) {
+			huePixmap.dispose();
+			huePixmap = null;
+			saturationPixmap.dispose();
+			brightnessPixmap.dispose();
+
+			hueTexture.dispose();
+			saturationTexture.dispose();
+			brightnessTexture.dispose();
+		}
 	}
 
 	private void updateAllExcept(Slider slider) {
@@ -285,12 +306,14 @@ public class SlideColorPicker extends AbstractWidget {
 
 	@Override
 	public void layout() {
-		float width = getWidth(), heigth = getHeight();
+		float width = cmToXPixels(WIDTH_CM), heigth = cmToYPixels(HEIGHT_CM);
 
-		float sliderHeight = heigth / 3f;
-		setBounds(hueSlider, 0, sliderHeight * 2f, width, sliderHeight);
-		setBounds(saturationSlider, 0, sliderHeight, width, sliderHeight);
-		setBounds(brightnessSlider, 0, 0, width, sliderHeight);
+		float sliderHeight = MathUtils.round(heigth / 3f);
+		setBounds(brightnessSlider, pad, pad, width, sliderHeight);
+		setBounds(saturationSlider, pad, brightnessSlider.getY() + sliderSpace
+				+ brightnessSlider.getHeight(), width, sliderHeight);
+		setBounds(hueSlider, pad, saturationSlider.getY() + sliderSpace
+				+ saturationSlider.getHeight(), width, sliderHeight);
 	}
 
 	private void fireColorChanged() {
@@ -302,16 +325,34 @@ public class SlideColorPicker extends AbstractWidget {
 
 	@Override
 	public float getPrefHeight() {
-		return cmToYPixels(HEIGHT_CM);
+		return cmToYPixels(HEIGHT_CM) + 2 * sliderSpace + 2 * pad;
 	}
 
 	@Override
 	public float getPrefWidth() {
-		return cmToXPixels(WIDTH_CM);
+		return cmToXPixels(WIDTH_CM) + 2 * pad;
 	}
 
 	public Color getPickedColor() {
 		return color;
+	}
+
+	/**
+	 * 
+	 * @param pad
+	 *            the padding of the whole panel, must be in DP.
+	 */
+	public void setPad(float pad) {
+		this.pad = WidgetBuilder.dpToPixels(pad);
+	}
+
+	/**
+	 * 
+	 * @param space
+	 *            the space between the sliders, must be in DP.
+	 */
+	public void setSliderSpace(float space) {
+		this.sliderSpace = WidgetBuilder.dpToPixels(space);
 	}
 
 	/**
@@ -496,6 +537,11 @@ public class SlideColorPicker extends AbstractWidget {
 	static public class SlideColorPickerStyle {
 
 		public SliderStyle slider;
+
+		/**
+		 * Optional in DP.
+		 */
+		public float pad, sliderSpace;
 
 		public SlideColorPickerStyle() {
 		}

@@ -36,57 +36,64 @@
  */
 package es.eucm.ead.editor.editorui.widgets.color;
 
-import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.backends.lwjgl.LwjglApplication;
 import com.badlogic.gdx.backends.lwjgl.LwjglApplicationConfiguration;
-import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.scenes.scene2d.Actor;
+import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
-import com.badlogic.gdx.scenes.scene2d.ui.Table;
+import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 
 import es.eucm.ead.editor.editorui.UITest;
-import es.eucm.ead.editor.view.widgets.editionview.composition.SlideColorPicker;
-import es.eucm.ead.editor.view.widgets.editionview.composition.SlideColorPicker.ColorEvent;
-import es.eucm.ead.editor.view.widgets.editionview.composition.SlideColorPicker.ColorListener;
+import es.eucm.ead.editor.view.SkinConstants;
+import es.eucm.ead.editor.view.widgets.ContextMenu;
+import es.eucm.ead.editor.view.widgets.IconButton;
+import es.eucm.ead.editor.view.widgets.WidgetBuilder;
+import es.eucm.ead.editor.view.widgets.editionview.composition.ColorPickerPanel;
+import es.eucm.ead.editor.view.widgets.layouts.LinearLayout;
 import es.eucm.ead.engine.I18N;
 
-public class SlideColorPickerTest extends UITest {
-
-	private Color clearColor = new Color();
+public class ColorPickerPanelTest extends UITest {
 
 	@Override
 	protected Actor buildUI(Skin skin, I18N i18n) {
 
-		Table table = new Table() {
-			@Override
-			public void act(float delta) {
-				super.act(delta);
-				Gdx.gl20.glClearColor(clearColor.r, clearColor.g, clearColor.b,
-						clearColor.a);
-			}
-		};
-		table.setFillParent(true);
+		LinearLayout container = new LinearLayout(false).background(skin
+				.getDrawable("black-bg"));
+		IconButton iconButton = WidgetBuilder.toolbarIcon(skin,
+				SkinConstants.IC_ADD);
+		container.add(iconButton);
+		container.addSpace();
 
-		SlideColorPicker slideColorPicker = new SlideColorPicker(skin);
-		slideColorPicker.addListener(new ColorListener() {
+		final ContextMenu contextMenu = new ColorPickerPanel(skin);
+		contextMenu.pack();
+
+		iconButton.addListener(new ClickListener() {
 			@Override
-			public void colorChanged(ColorEvent event) {
-				clearColor.set(event.getColor());
+			public void clicked(InputEvent event, float x, float y) {
+				if (!contextMenu.hasParent()) {
+					stage.addActor(contextMenu);
+					contextMenu.show();
+				} else {
+					contextMenu.hide(new Runnable() {
+
+						@Override
+						public void run() {
+							contextMenu.remove();
+						}
+					});
+				}
 			}
 		});
-		slideColorPicker.initialize();
-		clearColor.set(slideColorPicker.getPickedColor());
-		table.add(slideColorPicker);
 
-		return table;
+		return container;
 	}
 
 	public static void main(String[] args) {
 		LwjglApplicationConfiguration config = new LwjglApplicationConfiguration();
 		config.width = 600;
 		config.height = 300;
-		config.title = "SlideColorPickerTest";
-		new LwjglApplication(new SlideColorPickerTest(), config);
+		config.title = "ColorPickerPanelTest";
+		new LwjglApplication(new ColorPickerPanelTest(), config);
 	}
 
 }

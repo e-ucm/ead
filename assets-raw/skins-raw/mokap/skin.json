@@ -134,6 +134,23 @@
             "enabledImageColor": "white",
             "up": "drop_down_bg",
             "down": "pressed-48-bg"
+        },
+        "recent-color": {
+            "enabledImageColor": "white",
+            "up": "transparent-48-bg",
+            "down": "pressed-48-bg"
+        }
+    },
+    "es.eucm.ead.editor.view.widgets.editionview.composition.ColorPickerPanel$ColorPickerPanelStyle": {
+        "default": {
+        	"recentColorIcon": "color_picker_recent_color",
+        	"recentColorStyle": "recent-color", 
+        	"slider": "colorPicker",
+        	"background": "page",
+        	"maxColors": 12,
+        	"columns": 4,
+        	"sliderSpace": 12,
+        	"pad": 12
         }
     },
     "es.eucm.ead.editor.view.widgets.baseview.BaseView$BaseViewStyle": {
