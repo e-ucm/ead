@@ -121,7 +121,8 @@ public class OpenGame extends EditorAction implements FileChooserListener,
 				doLoad(gamePath, fileHandle);
 				return true;
 			} else {
-				Gdx.app.error("OpenGame", "Invalid project folder: " + gamePath);
+				throw new EditorActionException("Invalid project folder "
+						+ gamePath);
 			}
 		}
 		return false;
