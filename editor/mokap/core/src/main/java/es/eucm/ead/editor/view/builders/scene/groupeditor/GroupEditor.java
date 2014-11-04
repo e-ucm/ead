@@ -344,6 +344,7 @@ public class GroupEditor extends AbstractWidget {
 			tmp4.sub(tmp3);
 			group.setBounds(group.getX() + tmp4.x, group.getY() + tmp4.y,
 					tmp2.x, tmp2.y);
+			group.setOrigin(group.getWidth() / 2.0f, group.getHeight() / 2.0f);
 		}
 	}
 

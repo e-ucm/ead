@@ -38,6 +38,7 @@ package es.eucm.ead.engine.components.controls;
 
 import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.scenes.scene2d.ui.Label.LabelStyle;
+import com.badlogic.gdx.scenes.scene2d.utils.Align;
 
 public class LabelComponent extends TextComponent<Label> {
 
@@ -49,6 +50,7 @@ public class LabelComponent extends TextComponent<Label> {
 	public void setStyle(LabelStyle style) {
 		if (label == null) {
 			label = new Label("", style);
+			label.setAlignment(Align.center);
 		} else {
 			label.setStyle(style);
 		}
@@ -58,6 +60,7 @@ public class LabelComponent extends TextComponent<Label> {
 	protected void updateText(String newText) {
 		label.setText(newText);
 		label.setSize(label.getPrefWidth(), label.getPrefHeight());
+		label.setOrigin(label.getWidth() / 2.0f, label.getHeight() / 2.0f);
 	}
 
 	@Override

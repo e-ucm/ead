@@ -294,7 +294,7 @@ public class Q {
 	 * @param components
 	 * @return
 	 */
-	public static ModelEntity createCentricEntity(Controller controller,
+	public static ModelEntity createCenteredEntity(Controller controller,
 			float height, float width, ModelComponent... components) {
 		GameData gameData = getComponent(controller.getModel().getGame(),
 				GameData.class);
