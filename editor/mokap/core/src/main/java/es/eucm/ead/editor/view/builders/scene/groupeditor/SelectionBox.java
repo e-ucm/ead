@@ -97,7 +97,7 @@ public class SelectionBox extends Group {
 	}
 
 	public void moving() {
-		Gdx.input.vibrate(100);
+		Gdx.input.vibrate(50);
 		this.state = MOVING;
 	}
 

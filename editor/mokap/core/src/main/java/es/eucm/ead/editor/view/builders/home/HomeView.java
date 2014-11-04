@@ -105,7 +105,7 @@ public class HomeView implements ViewBuilder {
 		} else {
 			projectsFolder.mkdirs();
 		}
-		projects.setFillParent(true);
+		projects.addSpace();
 		view = projects;
 	}
 
