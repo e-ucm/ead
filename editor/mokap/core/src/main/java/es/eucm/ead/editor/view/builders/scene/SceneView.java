@@ -41,10 +41,13 @@ import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.ui.Button;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
+
 import es.eucm.ead.editor.control.Controller;
 import es.eucm.ead.editor.control.Selection;
 import es.eucm.ead.editor.control.actions.editor.AddLabel;
 import es.eucm.ead.editor.control.actions.editor.ChangeView;
+import es.eucm.ead.editor.control.actions.editor.Copy;
+import es.eucm.ead.editor.control.actions.editor.Paste;
 import es.eucm.ead.editor.control.actions.editor.Redo;
 import es.eucm.ead.editor.control.actions.editor.Undo;
 import es.eucm.ead.editor.control.actions.model.AddInteractiveZone;
@@ -165,6 +168,9 @@ public class SceneView implements ViewBuilder {
 
 		compose.addSpace();
 
+		compose.add(WidgetBuilder.toolbarIcon(skin, SkinConstants.IC_PASTE,
+				Paste.class));
+
 		compose.add(WidgetBuilder.toolbarIconWithMenu(skin,
 				SkinConstants.IC_ADD, buildInsertContextMenu(skin, i18N)));
 		return compose;
@@ -179,6 +185,11 @@ public class SceneView implements ViewBuilder {
 				Undo.class));
 		transform.add(WidgetBuilder.toolbarIcon(skin, SkinConstants.IC_REDO,
 				Redo.class));
+
+		transform.addSpace();
+
+		transform.add(WidgetBuilder.toolbarIconWithMenu(skin,
+				SkinConstants.IC_MORE, buildTransformContextMenu(skin, i18N)));
 		return transform;
 	}
 
@@ -196,6 +207,21 @@ public class SceneView implements ViewBuilder {
 
 		ContextMenu contextMenu = WidgetBuilder.iconLabelContextPanel(skin,
 				picture, text, zone);
+
+		contextMenu.pack();
+		contextMenu.setOriginX(contextMenu.getWidth());
+		contextMenu.setOriginY(contextMenu.getHeight());
+		return contextMenu;
+	}
+
+	private ContextMenu buildTransformContextMenu(Skin skin, I18N i18n) {
+		String style = SkinConstants.STYLE_CONTEXT;
+
+		Button copy = WidgetBuilder.button(skin, SkinConstants.IC_COPY,
+				i18n.m("copy"), style, Copy.class);
+
+		ContextMenu contextMenu = WidgetBuilder.iconLabelContextPanel(skin,
+				copy);
 
 		contextMenu.pack();
 		contextMenu.setOriginX(contextMenu.getWidth());
