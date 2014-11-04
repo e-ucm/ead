@@ -19,3 +19,5 @@ project = Proyecto
 text = Texto
 toolbar.text.input = Introduce un texto
 copy = Copiar
+bring.to.front = Traer al frente
+send.to.back = Enviar detrás
