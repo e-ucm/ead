@@ -161,12 +161,6 @@ public class SceneView implements ViewBuilder {
 	private ContextMenu buildInsertContextMenu(Skin skin, I18N i18n) {
 		String style = SkinConstants.STYLE_CONTEXT;
 
-		// ContextMenu contextMenu = WidgetBuilder.iconLabelContextPanel(skin,
-		// SkinConstants.IC_CLOUD, i18n.m("gallery"),
-		// SkinConstants.IC_CAMERA, i18n.m("picture"),
-		// SkinConstants.IC_BRUSH, i18n.m("drawing"),
-		// SkinConstants.IC_TEXT, i18n.m("text"), SkinConstants.IC_ZONE,
-		// i18n.m("interactive.zone"));
 		Button picture = WidgetBuilder.button(skin, SkinConstants.IC_CAMERA,
 				i18n.m("picture"), style, TakePicture.class);
 
