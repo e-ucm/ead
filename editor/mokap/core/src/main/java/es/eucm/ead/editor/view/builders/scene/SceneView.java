@@ -41,11 +41,10 @@ import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.ui.Button;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
-
 import es.eucm.ead.editor.control.Controller;
 import es.eucm.ead.editor.control.Selection;
-import es.eucm.ead.editor.control.actions.editor.ChangeView;
 import es.eucm.ead.editor.control.actions.editor.AddLabel;
+import es.eucm.ead.editor.control.actions.editor.ChangeView;
 import es.eucm.ead.editor.control.actions.editor.Redo;
 import es.eucm.ead.editor.control.actions.editor.Undo;
 import es.eucm.ead.editor.control.actions.model.AddInteractiveZone;
@@ -66,11 +65,24 @@ import es.eucm.ead.engine.I18N;
 
 public class SceneView implements ViewBuilder {
 
-	private BaseView view;
+	public static final int INSERT = 0, TRANSFORM = 1;
 
-	private SceneEditor sceneEditor;
+	public enum Mode {
+		COMPOSE, FX, PLAY
+	}
+
+	public SceneView() {
+	}
 
 	private Controller controller;
+
+	private Mode mode;
+
+	private BaseView view;
+
+	private MultiToolbar toolbar;
+
+	private SceneEditor sceneEditor;
 
 	@Override
 	public void initialize(Controller controller) {
@@ -80,10 +92,12 @@ public class SceneView implements ViewBuilder {
 
 		view = new BaseView(skin);
 
-		view.setToolbar(buildToolbar(skin, i18N));
+		view.setToolbar(toolbar = buildToolbar(skin, i18N));
 		view.setNavigation(buildNavigation(skin, i18N));
 
 		view.setContent(sceneEditor = new SceneEditor(controller));
+
+		mode = Mode.COMPOSE;
 	}
 
 	@Override
@@ -96,6 +110,20 @@ public class SceneView implements ViewBuilder {
 	public void release(Controller controller) {
 		sceneEditor.release();
 		view.invalidate();
+	}
+
+	public void setMode(Mode mode) {
+		this.mode = mode;
+		Object[] selection = controller.getModel().getSelection().getCurrent();
+		switch (mode) {
+		case COMPOSE:
+			if (selection.length == 0) {
+				toolbar.setSelectedToolbar(INSERT);
+			} else {
+				toolbar.setSelectedToolbar(TRANSFORM);
+			}
+			break;
+		}
 	}
 
 	private MultiToolbar buildToolbar(Skin skin, I18N i18N) {
@@ -111,11 +139,7 @@ public class SceneView implements ViewBuilder {
 
 			@Override
 			public void modelChanged(SelectionEvent event) {
-				if (event.getSelection().length == 0) {
-					toolbar.setSelectedToolbar(0);
-				} else {
-					toolbar.setSelectedToolbar(1);
-				}
+				setMode(mode);
 			}
 		});
 		return toolbar;
@@ -186,6 +210,19 @@ public class SceneView implements ViewBuilder {
 				i18N.m("test"));
 		contextMenu.pack();
 		contextMenu.setOriginY(contextMenu.getHeight());
+		contextMenu.addListener(new ClickListener() {
+			@Override
+			public void clicked(InputEvent event, float x, float y) {
+				String name = event.getTarget().getName();
+				if (SkinConstants.IC_COMPOSE.equals(name)) {
+					setMode(Mode.COMPOSE);
+				} else if (SkinConstants.IC_FX.equals(name)) {
+					setMode(Mode.FX);
+				} else if (SkinConstants.IC_PLAY.equals(name)) {
+					setMode(Mode.PLAY);
+				}
+			}
+		});
 		return contextMenu;
 	}
 

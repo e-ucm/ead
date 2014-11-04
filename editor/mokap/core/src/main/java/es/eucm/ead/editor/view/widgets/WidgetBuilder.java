@@ -37,6 +37,7 @@
 package es.eucm.ead.editor.view.widgets;
 
 import com.badlogic.gdx.scenes.scene2d.Actor;
+import com.badlogic.gdx.scenes.scene2d.Touchable;
 import com.badlogic.gdx.scenes.scene2d.ui.Button;
 import com.badlogic.gdx.scenes.scene2d.ui.ImageButton;
 import com.badlogic.gdx.scenes.scene2d.ui.Label;
@@ -149,8 +150,10 @@ public class WidgetBuilder {
 		row.add(new Label(label, skin, style));
 		row.addSpace();
 		row.pad(0, 0, dpToPixels(16), 0);
+		row.setTouchable(Touchable.disabled);
 
 		Button button = button(skin, style);
+		button.setName(icon);
 		button.add(row).fillX().expandX();
 		return button;
 	}
