@@ -90,7 +90,7 @@ public class OpenGameTest extends ActionTest implements
 		count = 0;
 		try {
 			controller.action(OpenGame.class, "ñor/ñor");
-			fail("Execption should be launched");
+			fail("Exception should be launched");
 		} catch (EditorActionException e) {
 
 		}
