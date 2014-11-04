@@ -49,6 +49,7 @@ import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.ui.WidgetGroup;
 import com.badlogic.gdx.scenes.scene2d.utils.UIUtils;
 import com.badlogic.gdx.utils.viewport.ScreenViewport;
+
 import es.eucm.ead.editor.MokapDesktopPlatform;
 import es.eucm.ead.editor.assets.ApplicationAssets;
 import es.eucm.ead.editor.control.Controller;
@@ -62,6 +63,7 @@ import es.eucm.ead.editor.control.actions.editor.Undo;
 import es.eucm.ead.editor.control.actions.model.EditScene;
 import es.eucm.ead.editor.model.Model;
 import es.eucm.ead.editor.model.Model.Resource;
+import es.eucm.ead.editor.view.widgets.WidgetBuilder;
 import es.eucm.ead.engine.I18N;
 import es.eucm.ead.schemax.entities.ResourceCategory;
 
@@ -108,6 +110,7 @@ public abstract class UITest implements ApplicationListener {
 		controller = new MokapController(platform = new MockPlatform(),
 				Gdx.files, viewContainer, modalContainer);
 		controller.getCommands().pushStack();
+		WidgetBuilder.setController(controller);
 		platform.setBatch(stage.getBatch());
 		Gdx.input.setInputProcessor(stage);
 		ApplicationAssets assets = controller.getApplicationAssets();
