@@ -36,17 +36,17 @@
  */
 package es.eucm.ead.editor.platform;
 
+import java.io.File;
+import java.io.InputStream;
+
 import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.Input.TextInputListener;
 import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.math.Vector2;
+
 import es.eucm.ead.editor.control.Controller;
 import es.eucm.ead.editor.control.Tracker;
 import es.eucm.ead.engine.I18N;
 import es.eucm.ead.schema.data.Dimension;
-
-import java.io.File;
-import java.io.InputStream;
 
 public abstract class MokapPlatform extends AbstractPlatform {
 
@@ -96,11 +96,6 @@ public abstract class MokapPlatform extends AbstractPlatform {
 	@Override
 	public Vector2 getSize() {
 		return null;
-	}
-
-	public void getMultilineTextInput(TextInputListener listener,
-			final String title, final String text, I18N i18n) {
-
 	}
 
 	public void sendProject(FileHandle projectHandle, I18N i18n,

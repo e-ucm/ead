@@ -36,8 +36,10 @@
  */
 package es.eucm.ead.editor.platform;
 
+import com.badlogic.gdx.Input.TextInputListener;
 import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.math.Vector2;
+
 import es.eucm.ead.editor.control.Controller;
 import es.eucm.ead.editor.control.Tracker;
 import es.eucm.ead.engine.I18N;
@@ -115,6 +117,9 @@ public interface Platform {
 	 *         {@code URL}
 	 */
 	boolean browseURL(String URL);
+
+	public void getMultilineTextInput(TextInputListener listener,
+			final String title, final String text, I18N i18n);
 
 	/**
 	 * Creates the tracker for the specific platform

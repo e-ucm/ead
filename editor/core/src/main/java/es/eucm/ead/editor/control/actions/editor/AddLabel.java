@@ -44,10 +44,10 @@ import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import es.eucm.ead.editor.control.actions.EditorAction;
 import es.eucm.ead.editor.control.actions.model.AddSceneElement;
 import es.eucm.ead.editor.model.Q;
-import es.eucm.ead.editor.platform.MokapPlatform;
-import es.eucm.ead.editor.view.SkinConstants;
+import es.eucm.ead.editor.platform.Platform;
 import es.eucm.ead.engine.I18N;
 import es.eucm.ead.schema.components.controls.Label;
+import es.eucm.ead.schema.data.Color;
 import es.eucm.ead.schema.entities.ModelEntity;
 
 /**
@@ -60,19 +60,24 @@ import es.eucm.ead.schema.entities.ModelEntity;
 public class AddLabel extends EditorAction implements Input.TextInputListener {
 
 	public AddLabel() {
-		super(true, false);
+		super(true, false, new Class[] {}, new Class[] { Label.class });
 	}
 
 	@Override
 	public void perform(Object... args) {
-		I18N i18n = controller.getApplicationAssets().getI18N();
-		((MokapPlatform) controller.getPlatform()).getMultilineTextInput(this,
-				i18n.m("toolbar.text.input"), "", i18n);
+		if (args.length == 0) {
+			I18N i18n = controller.getApplicationAssets().getI18N();
+			((Platform) controller.getPlatform()).getMultilineTextInput(this,
+					i18n.m("toolbar.text.input"), "", i18n);
+		} else {
+			addText((Label) args[0]);
+		}
 	}
 
 	private void addText(Label label) {
 
 		Skin skin = controller.getEditorGameAssets().getSkin();
+
 		LabelStyle labelStyle = skin.get(label.getStyle(), LabelStyle.class);
 
 		TextBounds bounds = labelStyle.font.getMultiLineBounds(label.getText());
@@ -88,7 +93,13 @@ public class AddLabel extends EditorAction implements Input.TextInputListener {
 		if (text != null && !text.replace(" ", "").isEmpty()) {
 			Label label = new Label();
 			label.setText(text);
-			label.setStyle(SkinConstants.ENGINE_DEFAULT_FONT); // default style
+			Color c = new Color();
+			c.setR(0);
+			c.setG(0);
+			c.setB(0);
+			c.setA(1);
+			label.setColor(c);
+			label.setStyle("roboto-small"); // default style
 			addText(label);
 		}
 	}

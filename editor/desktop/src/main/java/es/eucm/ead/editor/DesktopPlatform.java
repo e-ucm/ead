@@ -37,11 +37,13 @@
 package es.eucm.ead.editor;
 
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.Input.TextInputListener;
 import com.badlogic.gdx.backends.lwjgl.LwjglFrame;
 import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
+
 import es.eucm.ead.editor.control.Controller;
 import es.eucm.ead.editor.control.GATracker;
 import es.eucm.ead.editor.control.Preferences;
@@ -54,6 +56,7 @@ import es.eucm.ead.engine.I18N;
 import javax.imageio.ImageIO;
 import javax.imageio.ImageReader;
 import javax.imageio.stream.ImageInputStream;
+
 import java.awt.Dimension;
 import java.io.IOException;
 import java.io.InputStream;
@@ -200,5 +203,11 @@ public class DesktopPlatform extends AbstractPlatform implements
 				}
 		}
 		return null;
+	}
+
+	@Override
+	public void getMultilineTextInput(TextInputListener listener, String title,
+			String text, I18N i18n) {
+		
 	}
 }

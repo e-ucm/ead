@@ -40,30 +40,36 @@ import static org.junit.Assert.assertEquals;
 
 import org.junit.Test;
 
-import es.eucm.ead.editor.control.Selection;
-import es.eucm.ead.editor.control.actions.model.AddLabel;
-import es.eucm.ead.editor.control.actions.model.SetSelection;
+import es.eucm.ead.editor.control.actions.editor.AddLabel;
+import es.eucm.ead.editor.control.actions.model.scene.NewScene;
 import es.eucm.ead.schema.components.controls.Label;
 import es.eucm.ead.schema.entities.ModelEntity;
+import es.eucm.ead.schemax.entities.ResourceCategory;
 
 public class AddLabelTest extends ActionTest {
+
+	@Override
+	public void setUp() {
+		super.setUp();
+		openEmpty();
+	}
 
 	@Test
 	public void testAddLabelText() {
 		// Add new label in the edited scene
-		ModelEntity scene = new ModelEntity();
-		controller.action(SetSelection.class, null, Selection.SCENE, scene);
-		int size = scene.getChildren().size;
-		controller.action(AddLabel.class);
-		assertEquals(scene.getChildren().size, size + 1);
 
-		// Add a label to the entity
-		ModelEntity element = new ModelEntity();
+		// Creates the edited scene where are be added the label
+		ModelEntity scene = new ModelEntity();
+		controller.action(NewScene.class, "scene1", controller.getModel()
+				.createId(ResourceCategory.SCENE), scene);
+
+		int size = scene.getChildren().size;
+
+		// Adds the label
 		Label label = new Label();
-		controller.action(SetSelection.class, null, Selection.SCENE_ELEMENT,
-				element);
-		int sizeElement = element.getChildren().size;
+		label.setText("");
 		controller.action(AddLabel.class, label);
-		assertEquals(element.getChildren().size, sizeElement + 1);
+
+		assertEquals(scene.getChildren().size, size + 1);
 	}
 }
