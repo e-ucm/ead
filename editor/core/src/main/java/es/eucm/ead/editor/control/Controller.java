@@ -36,6 +36,9 @@
  */
 package es.eucm.ead.editor.control;
 
+import java.util.HashMap;
+import java.util.Map;
+
 import com.badlogic.gdx.Files;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
@@ -44,6 +47,7 @@ import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.InputListener;
 import com.badlogic.gdx.utils.reflect.ClassReflection;
 import com.badlogic.gdx.utils.reflect.ReflectionException;
+
 import es.eucm.ead.editor.assets.ApplicationAssets;
 import es.eucm.ead.editor.assets.EditorGameAssets;
 import es.eucm.ead.editor.control.actions.ArgumentsValidationException;
@@ -55,6 +59,7 @@ import es.eucm.ead.editor.control.engine.EditorEngineInitializer;
 import es.eucm.ead.editor.control.engine.Engine;
 import es.eucm.ead.editor.control.pastelisteners.BehaviorCopyListener;
 import es.eucm.ead.editor.control.pastelisteners.ModelEntityCopyListener;
+import es.eucm.ead.editor.control.pastelisteners.TextCopyListener;
 import es.eucm.ead.editor.indexes.ControllerIndex;
 import es.eucm.ead.editor.model.Model;
 import es.eucm.ead.editor.platform.Platform;
@@ -62,9 +67,6 @@ import es.eucm.ead.editor.view.builders.ViewBuilder;
 import es.eucm.ead.engine.EngineInitializer;
 import es.eucm.ead.schema.components.behaviors.Behavior;
 import es.eucm.ead.schema.entities.ModelEntity;
-
-import java.util.HashMap;
-import java.util.Map;
 
 /**
  * Mediator and main controller of the editor's functionality
@@ -176,6 +178,8 @@ public class Controller {
 				new ModelEntityCopyListener(this));
 		clipboard.registerCopyListener(Behavior.class,
 				new BehaviorCopyListener(this));
+		clipboard
+				.registerCopyListener(String.class, new TextCopyListener(this));
 	}
 
 	private void setTracker(Group viewsContainer, Group modalsContainer) {

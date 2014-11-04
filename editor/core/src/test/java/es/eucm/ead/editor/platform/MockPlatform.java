@@ -36,6 +36,7 @@
  */
 package es.eucm.ead.editor.platform;
 
+import com.badlogic.gdx.Input.TextInputListener;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.utils.Array;
 
@@ -151,5 +152,12 @@ public class MockPlatform extends AbstractPlatform {
 	@Override
 	public Dimension getImageDimension(InputStream imageInputStream) {
 		return null;
+	}
+
+	@Override
+	public void getMultilineTextInput(TextInputListener listener, String title,
+			String text, I18N i18n) {
+		// TODO Auto-generated method stub
+
 	}
 }

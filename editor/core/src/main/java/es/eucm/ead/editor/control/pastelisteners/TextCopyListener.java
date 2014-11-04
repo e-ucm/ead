@@ -34,42 +34,41 @@
  *      You should have received a copy of the GNU Lesser General Public License
  *      along with eAdventure.  If not, see <http://www.gnu.org/licenses/>.
  */
-package es.eucm.ead.editor.actions;
+package es.eucm.ead.editor.control.pastelisteners;
 
-import static org.junit.Assert.assertEquals;
+import com.badlogic.gdx.utils.Array;
 
-import org.junit.Test;
-
+import es.eucm.ead.editor.control.Clipboard.CopyListener;
 import es.eucm.ead.editor.control.actions.editor.AddLabel;
-import es.eucm.ead.editor.control.actions.model.scene.NewScene;
+import es.eucm.ead.editor.control.Controller;
 import es.eucm.ead.schema.components.controls.Label;
-import es.eucm.ead.schema.entities.ModelEntity;
-import es.eucm.ead.schemax.entities.ResourceCategory;
 
-public class AddLabelTest extends ActionTest {
+public class TextCopyListener implements CopyListener<String> {
+
+	private static final int MAX_CHARACTERS = 750;
+
+	private Controller controller;
+
+	public TextCopyListener(Controller controller) {
+		this.controller = controller;
+	}
 
 	@Override
-	public void setUp() {
-		super.setUp();
-		openEmpty();
+	public void cut(String object) {
 	}
 
-	@Test
-	public void testAddLabelText() {
-		// Add new label in the edited scene
-
-		// Creates the edited scene where are be added the label
-		ModelEntity scene = new ModelEntity();
-		controller.action(NewScene.class, "scene1", controller.getModel()
-				.createId(ResourceCategory.SCENE), scene);
-
-		int size = scene.getChildren().size;
-
-		// Adds the label
+	@Override
+	public void paste(String object) {
 		Label label = new Label();
-		label.setText("");
+		if (object.length() > MAX_CHARACTERS) {
+			object = object.substring(0, MAX_CHARACTERS);
+		}
+		label.setText(object);
 		controller.action(AddLabel.class, label);
-
-		assertEquals(scene.getChildren().size, size + 1);
 	}
+
+	@Override
+	public void paste(Array<String> object) {
+	}
+
 }

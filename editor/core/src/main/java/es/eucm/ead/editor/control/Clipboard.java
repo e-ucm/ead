@@ -41,6 +41,7 @@ import java.util.Map;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.utils.Array;
+import com.badlogic.gdx.utils.SerializationException;
 
 import es.eucm.ead.editor.control.Selection.Context;
 import es.eucm.ead.editor.control.actions.model.SetSelection;
@@ -159,7 +160,14 @@ public class Clipboard {
 	}
 
 	private void paste(String content) {
-		Array contents = assets.fromJson(Array.class, content);
+		Array contents = new Array();
+		try {
+			contents = assets.fromJson(Array.class, content);
+		} catch (SerializationException se) {
+			CopyListener copyTextListener = copyListeners.get(String.class);
+			copyTextListener.paste(content);
+			return;
+		}
 		Class clazz = contents.first().getClass();
 		boolean oneClass = true;
 		for (Object o : contents) {

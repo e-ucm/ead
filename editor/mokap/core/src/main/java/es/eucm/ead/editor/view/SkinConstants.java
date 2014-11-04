@@ -56,12 +56,16 @@ public interface SkinConstants {
 
 	public static final String IC_MENU = "ic_menu";
 	public static final String IC_ADD = "ic_add";
+	public static final String IC_MORE = "ic_more";
 
+	public static final String IC_PASTE = "ic_paste";
 	public static final String IC_BRUSH = "ic_brush";
 	public static final String IC_CAMERA = "ic_camera";
 	public static final String IC_CLOUD = "ic_cloud";
 	public static final String IC_TEXT = "ic_text";
 	public static final String IC_ZONE = "ic_zone";
+
+	public static final String IC_COPY = "ic_copy";
 
 	public static final String IC_COMPOSE = "ic_compose";
 	public static final String IC_FX = "ic_fx";
