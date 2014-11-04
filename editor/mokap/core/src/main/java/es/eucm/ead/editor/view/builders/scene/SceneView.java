@@ -45,6 +45,7 @@ import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import es.eucm.ead.editor.control.Controller;
 import es.eucm.ead.editor.control.Selection;
 import es.eucm.ead.editor.control.actions.editor.ChangeView;
+import es.eucm.ead.editor.control.actions.editor.AddLabel;
 import es.eucm.ead.editor.control.actions.editor.Redo;
 import es.eucm.ead.editor.control.actions.editor.Undo;
 import es.eucm.ead.editor.control.actions.model.AddInteractiveZone;
@@ -169,11 +170,14 @@ public class SceneView implements ViewBuilder {
 		Button picture = WidgetBuilder.button(skin, SkinConstants.IC_CAMERA,
 				i18n.m("picture"), style, TakePicture.class);
 
+		Button text = WidgetBuilder.button(skin, SkinConstants.IC_TEXT,
+				i18n.m("text"), style, AddLabel.class);
+
 		Button zone = WidgetBuilder.button(skin, SkinConstants.IC_ZONE,
 				i18n.m("interactive.zone"), style, AddInteractiveZone.class);
 
 		ContextMenu contextMenu = WidgetBuilder.iconLabelContextPanel(skin,
-				picture, zone);
+				picture, text, zone);
 
 		contextMenu.pack();
 		contextMenu.setOriginX(contextMenu.getWidth());
