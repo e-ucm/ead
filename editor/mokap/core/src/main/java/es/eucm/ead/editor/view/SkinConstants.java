@@ -66,6 +66,10 @@ public interface SkinConstants {
 	public static final String IC_ZONE = "ic_zone";
 
 	public static final String IC_COPY = "ic_copy";
+	public static final String IC_TO_BACK = "ic_to_back";
+	public static final String IC_TO_FRONT = "ic_to_front";
+	public static final String IC_SEND_TO_BACK = "ic_send_to_back";
+	public static final String IC_BRING_TO_FRONT = "ic_bring_to_front";
 
 	public static final String IC_COMPOSE = "ic_compose";
 	public static final String IC_FX = "ic_fx";
