@@ -68,7 +68,7 @@ public class ColorPickerPanel extends ContextMenu {
 			ColorPickerPanel colorPicker = ((ColorPickerPanel) listenerActor
 					.getUserObject());
 			Color color = listenerActor.getColor();
-			colorPicker.picker.updateSlidersPosition(color);
+			colorPicker.picker.updateSlidersTo(color);
 		};
 	};
 
@@ -122,7 +122,16 @@ public class ColorPickerPanel extends ContextMenu {
 		add(picker).fill().expand();
 	}
 
+	public void setPickedColor(Color color) {
+		picker.setPickedColor(color);
+	}
+
 	public void show() {
+		initResources();
+		super.show();
+	}
+
+	public void initResources() {
 		Array<Cell> colorCells = this.colors.getCells();
 		if (!colorCells.get(1).getActor().getColor()
 				.equals(colorCells.first().getActor().getColor())) {
@@ -132,12 +141,15 @@ public class ColorPickerPanel extends ContextMenu {
 			}
 		}
 		picker.initialize();
-		super.show();
 	}
 
 	@Override
 	public void hide(Runnable runnable) {
 		super.hide(runnable);
+		release();
+	}
+
+	public void release() {
 		picker.release();
 	}
 
