@@ -54,6 +54,7 @@ import es.eucm.ead.editor.control.actions.model.AddInteractiveZone;
 import es.eucm.ead.editor.control.actions.model.SetSelection;
 import es.eucm.ead.editor.control.actions.model.TakePicture;
 import es.eucm.ead.editor.control.actions.model.scene.ReorderSelection;
+import es.eucm.ead.editor.control.actions.model.scene.transform.MirrorSelection;
 import es.eucm.ead.editor.model.Model.SelectionListener;
 import es.eucm.ead.editor.model.events.SelectionEvent;
 import es.eucm.ead.editor.view.SkinConstants;
@@ -237,8 +238,17 @@ public class SceneView implements ViewBuilder {
 				i18n.m("send.to.back"), style, ReorderSelection.class,
 				ReorderSelection.Type.SEND_TO_BACK);
 
+		Button vertical = WidgetBuilder.button(skin,
+				SkinConstants.IC_MIRROR_VERTICAL, i18n.m("mirror.vertical"),
+				style, MirrorSelection.class, MirrorSelection.Type.HORIZONTAL);
+
+		Button horizontal = WidgetBuilder.button(skin,
+				SkinConstants.IC_MIRROR_HORIZONTAL,
+				i18n.m("mirror.horizontal"), style, MirrorSelection.class,
+				MirrorSelection.Type.VERTICAL);
+
 		ContextMenu contextMenu = WidgetBuilder.iconLabelContextPanel(skin,
-				copy, front, back);
+				copy, front, back, vertical, horizontal);
 
 		contextMenu.pack();
 		contextMenu.setOriginX(contextMenu.getWidth());
