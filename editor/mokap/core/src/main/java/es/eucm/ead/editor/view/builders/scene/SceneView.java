@@ -51,6 +51,7 @@ import es.eucm.ead.editor.control.actions.editor.Paste;
 import es.eucm.ead.editor.control.actions.editor.Redo;
 import es.eucm.ead.editor.control.actions.editor.Undo;
 import es.eucm.ead.editor.control.actions.model.AddInteractiveZone;
+import es.eucm.ead.editor.control.actions.model.RemoveSelectionFromScene;
 import es.eucm.ead.editor.control.actions.model.SetSelection;
 import es.eucm.ead.editor.control.actions.model.TakePicture;
 import es.eucm.ead.editor.control.actions.model.scene.ReorderSelection;
@@ -247,8 +248,11 @@ public class SceneView implements ViewBuilder {
 				i18n.m("mirror.horizontal"), style, MirrorSelection.class,
 				MirrorSelection.Type.VERTICAL);
 
+		Button delete = WidgetBuilder.button(skin, SkinConstants.IC_DELETE,
+				i18n.m("delete"), style, RemoveSelectionFromScene.class);
+
 		ContextMenu contextMenu = WidgetBuilder.iconLabelContextPanel(skin,
-				copy, front, back, vertical, horizontal);
+				copy, front, back, vertical, horizontal, delete);
 
 		contextMenu.pack();
 		contextMenu.setOriginX(contextMenu.getWidth());

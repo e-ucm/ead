@@ -72,6 +72,7 @@ public interface SkinConstants {
 	public static final String IC_BRING_TO_FRONT = "ic_bring_to_front";
 	public static final String IC_MIRROR_VERTICAL = "ic_mirror_vertical";
 	public static final String IC_MIRROR_HORIZONTAL = "ic_mirror_horizontal";
+	public static final String IC_DELETE = "ic_delete";
 
 	public static final String IC_COMPOSE = "ic_compose";
 	public static final String IC_FX = "ic_fx";
