@@ -101,6 +101,11 @@
         }
     },
     "com.badlogic.gdx.scenes.scene2d.ui.Slider$SliderStyle": {
+    	"default-horizontal": { 
+			"background": "knob_after", 
+			"knob": "knob", 
+			"knobBefore": "knob_before"
+		},
         "colorPicker": {
             "knob": "color_picker_knob"
         }
@@ -151,6 +156,23 @@
         	"columns": 4,
         	"sliderSpace": 12,
         	"pad": 12
+        },
+        "default-no-background": {
+        	"recentColorIcon": "color_picker_recent_color",
+        	"recentColorStyle": "recent-color", 
+        	"slider": "colorPicker",
+        	"maxColors": 12,
+        	"columns": 4,
+        	"sliderSpace": 12,
+        	"pad": 12
+        }
+    },
+    "es.eucm.ead.editor.view.widgets.editionview.composition.BrushStrokesPicker$BrushStrokesPickerStyle": {
+        "default": {
+        	"background": "page",
+        	"sizeSliderStyleName": "default-horizontal", 
+        	"colorPickerStyle": "default-no-background",
+        	"sizeSliderPad": 12
         }
     },
     "es.eucm.ead.editor.view.widgets.baseview.BaseView$BaseViewStyle": {
