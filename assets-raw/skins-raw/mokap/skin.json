@@ -82,6 +82,11 @@
         "context": {
             "font": "default-font",
             "fontColor": "gray"
+        },
+        "toast": {
+            "font": "default-font",
+            "fontColor": "white",
+            "background": "page_pressed"
         }
     },
     "com.badlogic.gdx.scenes.scene2d.ui.Button$ButtonStyle": {
@@ -101,11 +106,11 @@
         }
     },
     "com.badlogic.gdx.scenes.scene2d.ui.Slider$SliderStyle": {
-    	"default-horizontal": { 
-			"background": "knob_after", 
-			"knob": "knob", 
-			"knobBefore": "knob_before"
-		},
+        "default-horizontal": {
+            "background": "knob_after",
+            "knob": "knob",
+            "knobBefore": "knob_before"
+        },
         "colorPicker": {
             "knob": "color_picker_knob"
         }
@@ -148,31 +153,31 @@
     },
     "es.eucm.ead.editor.view.widgets.editionview.composition.ColorPickerPanel$ColorPickerPanelStyle": {
         "default": {
-        	"recentColorIcon": "color_picker_recent_color",
-        	"recentColorStyle": "recent-color", 
-        	"slider": "colorPicker",
-        	"background": "page",
-        	"maxColors": 12,
-        	"columns": 4,
-        	"sliderSpace": 12,
-        	"pad": 12
+            "recentColorIcon": "color_picker_recent_color",
+            "recentColorStyle": "recent-color",
+            "slider": "colorPicker",
+            "background": "page",
+            "maxColors": 12,
+            "columns": 4,
+            "sliderSpace": 12,
+            "pad": 12
         },
         "default-no-background": {
-        	"recentColorIcon": "color_picker_recent_color",
-        	"recentColorStyle": "recent-color", 
-        	"slider": "colorPicker",
-        	"maxColors": 12,
-        	"columns": 4,
-        	"sliderSpace": 12,
-        	"pad": 12
+            "recentColorIcon": "color_picker_recent_color",
+            "recentColorStyle": "recent-color",
+            "slider": "colorPicker",
+            "maxColors": 12,
+            "columns": 4,
+            "sliderSpace": 12,
+            "pad": 12
         }
     },
     "es.eucm.ead.editor.view.widgets.editionview.composition.BrushStrokesPicker$BrushStrokesPickerStyle": {
         "default": {
-        	"background": "page",
-        	"sizeSliderStyleName": "default-horizontal", 
-        	"colorPickerStyle": "default-no-background",
-        	"sizeSliderPad": 12
+            "background": "page",
+            "sizeSliderStyleName": "default-horizontal",
+            "colorPickerStyle": "default-no-background",
+            "sizeSliderPad": 12
         }
     },
     "es.eucm.ead.editor.view.widgets.baseview.BaseView$BaseViewStyle": {
