@@ -39,12 +39,15 @@ package es.eucm.ead.editor.view.builders.scene;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.ui.Button;
+import com.badlogic.gdx.scenes.scene2d.ui.Image;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
+import com.badlogic.gdx.scenes.scene2d.utils.Align;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 
 import es.eucm.ead.editor.control.Controller;
 import es.eucm.ead.editor.control.Selection;
 import es.eucm.ead.editor.control.actions.editor.AddLabel;
+import es.eucm.ead.editor.control.actions.editor.AddPaintedElement;
 import es.eucm.ead.editor.control.actions.editor.ChangeView;
 import es.eucm.ead.editor.control.actions.editor.Copy;
 import es.eucm.ead.editor.control.actions.editor.Paste;
@@ -61,20 +64,29 @@ import es.eucm.ead.editor.model.events.SelectionEvent;
 import es.eucm.ead.editor.view.SkinConstants;
 import es.eucm.ead.editor.view.builders.ViewBuilder;
 import es.eucm.ead.editor.view.builders.project.ProjectView;
+import es.eucm.ead.editor.view.widgets.AbstractWidget;
 import es.eucm.ead.editor.view.widgets.ContextMenu;
 import es.eucm.ead.editor.view.widgets.IconButton;
 import es.eucm.ead.editor.view.widgets.MultiToolbar;
 import es.eucm.ead.editor.view.widgets.WidgetBuilder;
 import es.eucm.ead.editor.view.widgets.baseview.BaseView;
+import es.eucm.ead.editor.view.widgets.editionview.composition.BrushStrokesPicker;
+import es.eucm.ead.editor.view.widgets.editionview.composition.BrushStrokesPicker.SizeEvent;
+import es.eucm.ead.editor.view.widgets.editionview.composition.BrushStrokesPicker.SizeListener;
+import es.eucm.ead.editor.view.widgets.editionview.composition.SlideColorPicker.ColorEvent;
+import es.eucm.ead.editor.view.widgets.editionview.composition.SlideColorPicker.ColorListener;
+import es.eucm.ead.editor.view.widgets.editionview.composition.draw.BrushStrokes;
+import es.eucm.ead.editor.view.widgets.editionview.composition.draw.BrushStrokes.ModeEvent;
+import es.eucm.ead.editor.view.widgets.editionview.composition.draw.BrushStrokes.ModeListener;
 import es.eucm.ead.editor.view.widgets.layouts.LinearLayout;
 import es.eucm.ead.engine.I18N;
 
 public class SceneView implements ViewBuilder {
 
-	public static final int INSERT = 0, TRANSFORM = 1;
+	public static final int INSERT = 0, TRANSFORM = 1, PAINT = 2;
 
 	public enum Mode {
-		COMPOSE, FX, PLAY
+		COMPOSE, FX, PLAY, DRAW,
 	}
 
 	public SceneView() {
@@ -90,18 +102,28 @@ public class SceneView implements ViewBuilder {
 
 	private SceneEditor sceneEditor;
 
+	private BrushStrokes brushStrokes;
+
 	@Override
 	public void initialize(Controller controller) {
 		this.controller = controller;
 		Skin skin = controller.getApplicationAssets().getSkin();
 		I18N i18N = controller.getApplicationAssets().getI18N();
 
+		AbstractWidget container = new AbstractWidget();
+
+		sceneEditor = new SceneEditor(controller);
+		sceneEditor.setFillParent(true);
+		brushStrokes = new BrushStrokes(container, controller);
+
 		view = new BaseView(skin);
 
 		view.setToolbar(toolbar = buildToolbar(skin, i18N));
 		view.setNavigation(buildNavigation(skin, i18N));
 
-		view.setContent(sceneEditor = new SceneEditor(controller));
+		container.addActor(sceneEditor);
+
+		view.setContent(container);
 
 		mode = Mode.COMPOSE;
 	}
@@ -129,13 +151,17 @@ public class SceneView implements ViewBuilder {
 				toolbar.setSelectedToolbar(TRANSFORM);
 			}
 			break;
+		case DRAW:
+			toolbar.setSelectedToolbar(PAINT);
+			brushStrokes.show();
+			break;
 		}
 	}
 
 	private MultiToolbar buildToolbar(Skin skin, I18N i18N) {
 		final MultiToolbar toolbar = new MultiToolbar(skin);
 		toolbar.addToolbars(buildComposeToolbar(skin, i18N),
-				buildTransformToolbar(skin, i18N));
+				buildTransformToolbar(skin, i18N), buildDrawToolbar(skin, i18N));
 
 		controller.getModel().addSelectionListener(new SelectionListener() {
 			@Override
@@ -215,8 +241,18 @@ public class SceneView implements ViewBuilder {
 		Button zone = WidgetBuilder.button(skin, SkinConstants.IC_ZONE,
 				i18n.m("interactive.zone"), style, AddInteractiveZone.class);
 
+		Button paint = WidgetBuilder.button(skin, SkinConstants.IC_BRUSH,
+				i18n.m("drawing"), style);
+		paint.addListener(new ClickListener() {
+
+			@Override
+			public void clicked(InputEvent event, float x, float y) {
+				setMode(Mode.DRAW);
+			}
+		});
+
 		ContextMenu contextMenu = WidgetBuilder.iconLabelContextPanel(skin,
-				picture, text, zone);
+				picture, text, zone, paint);
 
 		contextMenu.pack();
 		contextMenu.setOriginX(contextMenu.getWidth());
@@ -291,5 +327,120 @@ public class SceneView implements ViewBuilder {
 				ChangeView.class, ProjectView.class));
 		navigation.addSpace();
 		return navigation;
+	}
+
+	private LinearLayout buildDrawToolbar(final Skin skin, I18N i18N) {
+		LinearLayout draw = new LinearLayout(true);
+		IconButton save = WidgetBuilder.toolbarIcon(skin,
+				SkinConstants.IC_CHECK);
+
+		draw.add(save);
+
+		IconButton mode = WidgetBuilder.icon(skin, SkinConstants.IC_BRUSH,
+				SkinConstants.STYLE_DROP_DOWN);
+		final Image modeIcon = mode.getIcon();
+		WidgetBuilder.launchContextMenu(mode,
+				buildDrawModeContextMenu(skin, i18N));
+
+		draw.add(mode);
+
+		IconButton picker = WidgetBuilder.icon(skin, SkinConstants.IC_CIRCLE,
+				SkinConstants.STYLE_DROP_DOWN);
+		WidgetBuilder.launchContextMenu(picker,
+				buildBrushStrokesColorPicker(skin, picker.getIcon()));
+		brushStrokes.addListener(new ModeListener() {
+			@Override
+			public void modeChanged(ModeEvent event) {
+				boolean drawing = event.getMode() == BrushStrokes.Mode.DRAW;
+				modeIcon.setDrawable(skin, drawing ? SkinConstants.IC_BRUSH
+						: SkinConstants.IC_RUBBER);
+			}
+		});
+
+		draw.add(picker);
+
+		draw.add(WidgetBuilder.toolbarIcon(skin, SkinConstants.IC_UNDO,
+				Undo.class));
+		draw.add(WidgetBuilder.toolbarIcon(skin, SkinConstants.IC_REDO,
+				Redo.class));
+
+		draw.addSpace();
+
+		IconButton close = WidgetBuilder.toolbarIcon(skin,
+				SkinConstants.IC_CLOSE);
+
+		draw.add(close);
+
+		draw.addListener(new ClickListener() {
+			@Override
+			public void clicked(InputEvent event, float x, float y) {
+				String name = event.getTarget().getName();
+				if (SkinConstants.IC_CHECK.equals(name)) {
+					setMode(Mode.COMPOSE);
+					controller.action(AddPaintedElement.class, brushStrokes);
+					brushStrokes.hide(false);
+				} else if (SkinConstants.IC_CLOSE.equals(name)) {
+					setMode(Mode.COMPOSE);
+					brushStrokes.hide(true);
+				}
+			}
+		});
+		return draw;
+	}
+
+	private Actor buildBrushStrokesColorPicker(Skin skin, final Image pickerIcon) {
+		BrushStrokesPicker colorPickerPanel = new BrushStrokesPicker(skin);
+		colorPickerPanel.pack();
+		colorPickerPanel.setOriginY(colorPickerPanel.getHeight());
+		colorPickerPanel.addListener(new ColorListener() {
+			@Override
+			public void colorChanged(ColorEvent event) {
+				brushStrokes.setColor(event.getColor());
+			}
+		});
+		colorPickerPanel.addListener(new SizeListener() {
+			@Override
+			public void sizeChanged(SizeEvent event) {
+				brushStrokes.setRadius(event.getCompletion());
+			}
+		});
+		pickerIcon.setOrigin(Align.center);
+		colorPickerPanel.addListener(new ColorListener() {
+			@Override
+			public void colorChanged(ColorEvent event) {
+				pickerIcon.setColor(event.getColor());
+				brushStrokes.setMode(BrushStrokes.Mode.DRAW);
+			}
+		});
+		colorPickerPanel.addListener(new SizeListener() {
+			@Override
+			public void sizeChanged(SizeEvent event) {
+				pickerIcon.setScale(event.getCompletion());
+			}
+		});
+		colorPickerPanel.setPickedColor(brushStrokes.getInitialColor());
+		colorPickerPanel.setSizeValue(brushStrokes.getInitialRadius()
+				/ brushStrokes.getMaxRadius());
+		return colorPickerPanel;
+	}
+
+	private Actor buildDrawModeContextMenu(Skin skin, I18N i18N) {
+		ContextMenu contextMenu = WidgetBuilder.iconLabelContextPanel(skin,
+				SkinConstants.IC_BRUSH, i18N.m("paint"),
+				SkinConstants.IC_RUBBER, i18N.m("erase"));
+		contextMenu.pack();
+		contextMenu.setOriginY(contextMenu.getHeight());
+		contextMenu.addListener(new ClickListener() {
+			@Override
+			public void clicked(InputEvent event, float x, float y) {
+				String name = event.getTarget().getName();
+				if (SkinConstants.IC_BRUSH.equals(name)) {
+					brushStrokes.setMode(BrushStrokes.Mode.DRAW);
+				} else if (SkinConstants.IC_RUBBER.equals(name)) {
+					brushStrokes.setMode(BrushStrokes.Mode.ERASE);
+				}
+			}
+		});
+		return contextMenu;
 	}
 }

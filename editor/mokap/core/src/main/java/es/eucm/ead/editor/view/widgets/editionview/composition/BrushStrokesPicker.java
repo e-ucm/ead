@@ -37,18 +37,25 @@
 package es.eucm.ead.editor.view.widgets.editionview.composition;
 
 import com.badlogic.gdx.graphics.Color;
+import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.scenes.scene2d.Event;
 import com.badlogic.gdx.scenes.scene2d.EventListener;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
+import com.badlogic.gdx.scenes.scene2d.ui.Image;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.ui.Slider;
+import com.badlogic.gdx.scenes.scene2d.utils.Align;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.scenes.scene2d.utils.Drawable;
 import com.badlogic.gdx.utils.Pools;
 
+import es.eucm.ead.editor.view.SkinConstants;
 import es.eucm.ead.editor.view.widgets.ContextMenu;
+import es.eucm.ead.editor.view.widgets.IconButton;
 import es.eucm.ead.editor.view.widgets.WidgetBuilder;
 import es.eucm.ead.editor.view.widgets.editionview.composition.ColorPickerPanel.ColorPickerPanelStyle;
+import es.eucm.ead.editor.view.widgets.editionview.composition.SlideColorPicker.ColorEvent;
+import es.eucm.ead.editor.view.widgets.editionview.composition.SlideColorPicker.ColorListener;
 
 /**
  * A panel with a {@link ColorPickerPanel} and a slider to select the size, when
@@ -91,12 +98,30 @@ public class BrushStrokesPicker extends ContextMenu {
 		});
 		slider.setValue((MAX_SIZE - MIN_SIZE) * .5f);
 
-		colorPicker = new ColorPickerPanel(skin, style.colorPickerStyle);
+		IconButton iconButton = WidgetBuilder.icon(skin,
+				SkinConstants.IC_CIRCLE, SkinConstants.STYLE_TOOLBAR_ICON);
+		final Image icon = iconButton.getIcon();
+		icon.setOrigin(Align.center);
 
+		colorPicker = new ColorPickerPanel(skin, style.colorPickerStyle);
+		colorPicker.addListener(new ColorListener() {
+			@Override
+			public void colorChanged(ColorEvent event) {
+				icon.setColor(event.getColor());
+			}
+		});
+		addListener(new SizeListener() {
+			@Override
+			public void sizeChanged(SizeEvent event) {
+				icon.setScale(event.getCompletion());
+			}
+		});
+
+		add(iconButton);
 		add(slider).pad(WidgetBuilder.dpToPixels(style.sizeSliderPad))
 				.expandX().fillX();
 		row();
-		add(colorPicker);
+		add(colorPicker).colspan(2);
 	}
 
 	/**
@@ -106,6 +131,7 @@ public class BrushStrokesPicker extends ContextMenu {
 	 */
 	public void setSizeValue(float value) {
 		slider.setValue((MAX_SIZE - MIN_SIZE) * value);
+		fireSizeChanged();
 	}
 
 	/**
@@ -123,7 +149,7 @@ public class BrushStrokesPicker extends ContextMenu {
 
 	private void fireSizeChanged() {
 		SizeEvent event = Pools.obtain(SizeEvent.class);
-		event.completion = getCompletion();
+		event.completion = MathUtils.clamp(getCompletion(), .025f, 1f);
 		fire(event);
 		Pools.free(event);
 	}
@@ -138,6 +164,11 @@ public class BrushStrokesPicker extends ContextMenu {
 	public void hide(Runnable runnable) {
 		super.hide(runnable);
 		colorPicker.release();
+	}
+
+	@Override
+	public boolean hideAlways() {
+		return false;
 	}
 
 	/**

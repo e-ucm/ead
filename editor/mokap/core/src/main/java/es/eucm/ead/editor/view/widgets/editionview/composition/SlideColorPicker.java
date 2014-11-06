@@ -174,7 +174,7 @@ public class SlideColorPicker extends AbstractWidget {
 
 	public void setPickedColor(Color color) {
 		this.color.set(color);
-		updateSlidersPosition();
+		updateSlidersTo(color);
 	}
 
 	/**
@@ -203,7 +203,6 @@ public class SlideColorPicker extends AbstractWidget {
 
 			invalidateHierarchy();
 			updateAllTexturesExcept(null);
-			fireColorChanged();
 		}
 	}
 

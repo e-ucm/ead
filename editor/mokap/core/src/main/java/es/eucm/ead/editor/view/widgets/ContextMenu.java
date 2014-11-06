@@ -105,4 +105,9 @@ public class ContextMenu extends Table implements Modal {
 				.run(runnable)));
 	}
 
+	@Override
+	public boolean hideAlways() {
+		return true;
+	}
+
 }
