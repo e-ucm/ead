@@ -43,10 +43,13 @@ import com.badlogic.gdx.scenes.scene2d.ui.ImageButton;
 import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 
+import com.badlogic.gdx.scenes.scene2d.utils.ActorGestureListener;
 import es.eucm.ead.editor.control.Controller;
 import es.eucm.ead.editor.control.actions.editor.ShowContextMenu;
+import es.eucm.ead.editor.control.actions.editor.ShowTooltip;
 import es.eucm.ead.editor.view.SkinConstants;
 import es.eucm.ead.editor.view.listeners.ActionOnClickListener;
+import es.eucm.ead.editor.view.tooltips.Tooltip;
 import es.eucm.ead.editor.view.widgets.layouts.LinearLayout;
 
 public class WidgetBuilder {
@@ -61,24 +64,43 @@ public class WidgetBuilder {
 
 	private static float buttonSize;
 
+	private static final ActorGestureListener TOOLTIP_LISTENER = new ActorGestureListener() {
+		@Override
+		public boolean longPress(Actor actor, float x, float y) {
+			if (actor instanceof Tooltip) {
+				controller.action(ShowTooltip.class,
+						((Tooltip) actor).getTooltip(), actor);
+				controller.getViews().getViewsContainer().getStage()
+						.cancelTouchFocus(actor);
+			}
+			return true;
+		}
+	};
+
 	public static void setController(Controller controller) {
 		WidgetBuilder.controller = controller;
 		WidgetBuilder.buttonSize = controller.getApplicationAssets().getSkin()
 				.getDrawable("bg48").getMinHeight();
 	}
 
-	public static IconButton toolbarIcon(Skin skin, String icon) {
-		return toolbarIcon(skin, icon, null);
+	public static IconButton toolbarIcon(Skin skin, String icon, String tooltip) {
+		return toolbarIcon(skin, icon, tooltip, null);
 	}
 
-	public static IconButton toolbarIcon(Skin skin, String icon, Class action,
-			Object... args) {
-		return icon(skin, icon, SkinConstants.STYLE_TOOLBAR_ICON, action, args);
+	public static IconButton toolbarIcon(Skin skin, String icon,
+			String tooltip, Class action, Object... args) {
+		IconButton iconButton = icon(skin, icon,
+				SkinConstants.STYLE_TOOLBAR_ICON, action, args);
+		if (tooltip != null) {
+			iconButton.setTooltip(tooltip);
+			iconButton.addListener(TOOLTIP_LISTENER);
+		}
+		return iconButton;
 	}
 
 	public static IconButton toolbarIconWithMenu(Skin skin, String icon,
 			Actor contextMenu) {
-		IconButton iconButton = toolbarIcon(skin, icon);
+		IconButton iconButton = toolbarIcon(skin, icon, null);
 		launchContextMenu(iconButton, contextMenu);
 		return iconButton;
 	}
