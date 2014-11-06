@@ -60,6 +60,8 @@ public interface SkinConstants {
 
 	public static final String IC_PASTE = "ic_paste";
 	public static final String IC_BRUSH = "ic_brush";
+	public static final String IC_RUBBER = "ic_rubber";
+	public static final String IC_CIRCLE = "ic_circle";
 	public static final String IC_CAMERA = "ic_camera";
 	public static final String IC_CLOUD = "ic_cloud";
 	public static final String IC_TEXT = "ic_text";
@@ -81,6 +83,7 @@ public interface SkinConstants {
 	public static final String IC_HOME = "ic_home";
 
 	public static final String IC_CHECK = "ic_check";
+	public static final String IC_CLOSE = "ic_close";
 	public static final String IC_UNDO = "ic_undo";
 	public static final String IC_REDO = "ic_redo";
 	public static final String IC_GO = "ic_go";

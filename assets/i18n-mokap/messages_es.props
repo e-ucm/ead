@@ -10,6 +10,8 @@
 application.title = Mokap
 compose = Componer
 drawing = Dibujo
+paint = Pintar
+erase = Borrar
 fx = Ambientación
 gallery = Galería
 interactive.zone = Zona interactiva
