@@ -55,9 +55,11 @@ import es.eucm.ead.editor.control.actions.editor.Redo;
 import es.eucm.ead.editor.control.actions.editor.ShowToast;
 import es.eucm.ead.editor.control.actions.editor.Undo;
 import es.eucm.ead.editor.control.actions.model.AddInteractiveZone;
+import es.eucm.ead.editor.control.actions.model.GroupSelection;
 import es.eucm.ead.editor.control.actions.model.RemoveSelectionFromScene;
 import es.eucm.ead.editor.control.actions.model.SetSelection;
 import es.eucm.ead.editor.control.actions.model.TakePicture;
+import es.eucm.ead.editor.control.actions.model.UngroupSelection;
 import es.eucm.ead.editor.control.actions.model.scene.ReorderSelection;
 import es.eucm.ead.editor.control.actions.model.scene.transform.MirrorSelection;
 import es.eucm.ead.editor.model.Model.SelectionListener;
@@ -217,6 +219,11 @@ public class SceneView implements ViewBuilder {
 				Redo.class));
 
 		transform.addSpace();
+
+		transform.add(WidgetBuilder.toolbarIcon(skin, SkinConstants.IC_GROUP,
+				GroupSelection.class));
+		transform.add(WidgetBuilder.toolbarIcon(skin, SkinConstants.IC_UNGROUP,
+				UngroupSelection.class));
 
 		transform.add(WidgetBuilder.toolbarIcon(skin, SkinConstants.IC_TO_BACK,
 				ReorderSelection.class, ReorderSelection.Type.TO_BACK));
