@@ -79,13 +79,15 @@ public class GroupEditor extends AbstractWidget {
 		addListener(new DragListener() {
 			@Override
 			public void drag(InputEvent event, float x, float y, int pointer) {
-				for (Actor actor : selectionLayer.getChildren()) {
-					if (actor instanceof SelectionBox) {
-						SelectionBox selectionBox = (SelectionBox) actor;
-						if (selectionBox.isMoving()) {
-							selectionBox.setPosition(selectionBox.getX()
-									- getDeltaX(), selectionBox.getY()
-									- getDeltaY());
+				if (pointer == 0) {
+					for (Actor actor : selectionLayer.getChildren()) {
+						if (actor instanceof SelectionBox) {
+							SelectionBox selectionBox = (SelectionBox) actor;
+							if (selectionBox.isMoving()) {
+								selectionBox.setPosition(selectionBox.getX()
+										- getDeltaX(), selectionBox.getY()
+										- getDeltaY());
+							}
 						}
 					}
 				}
@@ -181,6 +183,8 @@ public class GroupEditor extends AbstractWidget {
 
 		private boolean pinching = false;
 
+		private boolean resetAngle = true;
+
 		@Override
 		public void touchDown(InputEvent event, float x, float y, int pointer,
 				int button) {
@@ -203,7 +207,7 @@ public class GroupEditor extends AbstractWidget {
 					if (selectionLayer.getChildren().size == 0) {
 						task.run();
 					} else {
-						Timer.schedule(task, 0.2f);
+						Timer.schedule(task, 0.5f);
 					}
 				}
 			}
@@ -217,8 +221,9 @@ public class GroupEditor extends AbstractWidget {
 					pointer1.y - pointer2.y).angle();
 			for (Actor selectionBox : selectionLayer.getChildren()) {
 				if (selectionBox instanceof SelectionBox
-						&& ((SelectionBox) selectionBox).isSelected()) {
-					if (!pinching) {
+						&& !((SelectionBox) selectionBox).isPressed()) {
+					((SelectionBox) selectionBox).selected();
+					if (resetAngle) {
 						((SelectionBox) selectionBox)
 								.setInitialPinchRotation(angle);
 					} else {
@@ -227,6 +232,7 @@ public class GroupEditor extends AbstractWidget {
 				}
 			}
 			pinching = true;
+			resetAngle = false;
 		}
 
 		@Override
@@ -237,9 +243,12 @@ public class GroupEditor extends AbstractWidget {
 		@Override
 		public void touchUp(InputEvent event, float x, float y, int pointer,
 				int button) {
-			if (!event.isHandled() && pointer == 0) {
+			if (!event.isHandled() && pinching && pointer == 1) {
+				resetAngle = true;
+			} else if (!event.isHandled() && pointer == 0) {
 				if (pinching) {
 					pinching = false;
+					resetAngle = true;
 					fireTransformed();
 					return;
 				}

@@ -119,7 +119,8 @@ public class SelectionBox extends Group {
 	}
 
 	public void updateRotation(float degrees) {
-		super.setRotation(initialRotation + degrees - initialPinchRotation);
+		super.setRotation(initialRotation + (degrees - initialPinchRotation)
+				* 2.0f);
 		target.setRotation(getRotation());
 	}
 
