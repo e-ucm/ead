@@ -59,7 +59,6 @@ import es.eucm.ead.editor.control.actions.model.GroupSelection;
 import es.eucm.ead.editor.control.actions.model.RemoveSelectionFromScene;
 import es.eucm.ead.editor.control.actions.model.SetSelection;
 import es.eucm.ead.editor.control.actions.model.TakePicture;
-import es.eucm.ead.editor.control.actions.model.UngroupSelection;
 import es.eucm.ead.editor.control.actions.model.scene.ReorderSelection;
 import es.eucm.ead.editor.control.actions.model.scene.transform.MirrorSelection;
 import es.eucm.ead.editor.model.Model.SelectionListener;
@@ -67,6 +66,9 @@ import es.eucm.ead.editor.model.events.SelectionEvent;
 import es.eucm.ead.editor.view.SkinConstants;
 import es.eucm.ead.editor.view.builders.ViewBuilder;
 import es.eucm.ead.editor.view.builders.project.ProjectView;
+import es.eucm.ead.editor.view.builders.scene.draw.BrushStrokes;
+import es.eucm.ead.editor.view.builders.scene.draw.BrushStrokes.ModeEvent;
+import es.eucm.ead.editor.view.builders.scene.draw.BrushStrokes.ModeListener;
 import es.eucm.ead.editor.view.widgets.AbstractWidget;
 import es.eucm.ead.editor.view.widgets.ContextMenu;
 import es.eucm.ead.editor.view.widgets.IconButton;
@@ -78,11 +80,9 @@ import es.eucm.ead.editor.view.widgets.draw.BrushStrokesPicker.SizeEvent;
 import es.eucm.ead.editor.view.widgets.draw.BrushStrokesPicker.SizeListener;
 import es.eucm.ead.editor.view.widgets.draw.SlideColorPicker.ColorEvent;
 import es.eucm.ead.editor.view.widgets.draw.SlideColorPicker.ColorListener;
-import es.eucm.ead.editor.view.builders.scene.draw.BrushStrokes;
-import es.eucm.ead.editor.view.builders.scene.draw.BrushStrokes.ModeEvent;
-import es.eucm.ead.editor.view.builders.scene.draw.BrushStrokes.ModeListener;
 import es.eucm.ead.editor.view.widgets.layouts.LinearLayout;
 import es.eucm.ead.engine.I18N;
+import es.eucm.ead.schema.entities.ModelEntity;
 
 public class SceneView implements ViewBuilder {
 
@@ -225,9 +225,14 @@ public class SceneView implements ViewBuilder {
 		transform.addSpace();
 
 		transform.add(WidgetBuilder.toolbarIcon(skin, SkinConstants.IC_GROUP,
-				i18N.m("group.create"), GroupSelection.class));
-		transform.add(WidgetBuilder.toolbarIcon(skin, SkinConstants.IC_UNGROUP,
-				i18N.m("ungroup"), UngroupSelection.class));
+				i18N.m("group.create"), true, GroupSelection.class));
+
+		// TODO add edit and enter in group
+		final MultiWidget multiButton = WidgetBuilder
+				.multiToolbarIcon(WidgetBuilder.toolbarIcon(skin,
+						SkinConstants.IC_GROUP, i18N.m("group.create"), false, GroupSelection.class));
+
+		transform.add(multiButton);
 
 		transform.add(WidgetBuilder.toolbarIcon(skin, SkinConstants.IC_TO_BACK,
 				i18N.m("to.back"), ReorderSelection.class,
@@ -239,6 +244,29 @@ public class SceneView implements ViewBuilder {
 
 		transform.add(WidgetBuilder.toolbarIconWithMenu(skin,
 				SkinConstants.IC_MORE, buildTransformContextMenu(skin, i18N)));
+
+		controller.getModel().addSelectionListener(new SelectionListener() {
+
+			@Override
+			public void modelChanged(SelectionEvent event) {
+				if (controller.getModel().getSelection()
+						.get(Selection.SCENE_ELEMENT).length == 1) {
+					// group
+					if (((ModelEntity) controller.getModel().getSelection()
+							.getSingle(Selection.SCENE_ELEMENT)).getChildren().size > 1) {
+						multiButton.setSelectedWidget(0);
+					} else {
+						// TODO edit and to enter in group
+					}
+				}
+			}
+
+			@Override
+			public boolean listenToContext(String contextId) {
+				return contextId.equals(Selection.SCENE_ELEMENT);
+			}
+		});
+
 		return transform;
 	}
 
