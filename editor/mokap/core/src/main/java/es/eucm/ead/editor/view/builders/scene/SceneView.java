@@ -52,6 +52,7 @@ import es.eucm.ead.editor.control.actions.editor.ChangeView;
 import es.eucm.ead.editor.control.actions.editor.Copy;
 import es.eucm.ead.editor.control.actions.editor.Paste;
 import es.eucm.ead.editor.control.actions.editor.Redo;
+import es.eucm.ead.editor.control.actions.editor.ShowToast;
 import es.eucm.ead.editor.control.actions.editor.Undo;
 import es.eucm.ead.editor.control.actions.model.AddInteractiveZone;
 import es.eucm.ead.editor.control.actions.model.RemoveSelectionFromScene;
@@ -265,6 +266,9 @@ public class SceneView implements ViewBuilder {
 
 		Button copy = WidgetBuilder.button(skin, SkinConstants.IC_COPY,
 				i18n.m("copy"), style, Copy.class);
+		WidgetBuilder.actionOnClick(copy, ShowToast.class, i18n.m("copied"));
+		WidgetBuilder.actionOnClick(copy, SetSelection.class,
+				Selection.EDITED_GROUP, Selection.SCENE_ELEMENT);
 
 		Button front = WidgetBuilder.button(skin,
 				SkinConstants.IC_BRING_TO_FRONT, i18n.m("bring.to.front"),

@@ -8,21 +8,22 @@
 
 
 application.title = Mokap
+bring.to.front = Traer al frente
 compose = Componer
+copied = Copiado
+copy = Copiar
+delete = Eliminar
 drawing = Dibujo
 paint = Pintar
 erase = Borrar
 fx = Ambientación
 gallery = Galería
 interactive.zone = Zona interactiva
+mirror.horizontal = Reflejo horizontal
+mirror.vertical = Reflejo vertical
 picture = Fotografía
-test = Probar
 project = Proyecto
+send.to.back = Enviar detrás
+test = Probar
 text = Texto
 toolbar.text.input = Introduce un texto
-copy = Copiar
-bring.to.front = Traer al frente
-send.to.back = Enviar detrás
-mirror.vertical = Reflejo vertical
-mirror.horizontal = Reflejo horizontal
-delete = Eliminar

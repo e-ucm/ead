@@ -37,6 +37,7 @@
 package es.eucm.ead.editor.control;
 
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.math.Interpolation;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.Group;
@@ -47,6 +48,7 @@ import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.scenes.scene2d.utils.Layout;
 import com.badlogic.gdx.utils.reflect.ClassReflection;
 import com.badlogic.gdx.utils.reflect.ReflectionException;
+import com.badlogic.gdx.scenes.scene2d.actions.Actions;
 import es.eucm.ead.editor.control.ViewsHistory.ViewUpdate;
 import es.eucm.ead.editor.control.actions.editor.ChangeView;
 import es.eucm.ead.editor.model.Model.ModelListener;
@@ -65,6 +67,8 @@ import java.util.Map;
  * Controls all the views
  */
 public class Views implements ModelListener<LoadEvent> {
+
+	private static final float TOAST_TIME = 1.0f;
 
 	protected Controller controller;
 
@@ -283,6 +287,28 @@ public class Views implements ModelListener<LoadEvent> {
 		setKeyboardFocus(modal);
 		setScrollFocus(modal);
 		currentModal = modal;
+	}
+
+	/**
+	 * Shows the given actor as a toast in the bottom center of screen
+	 */
+	public void showToast(Actor toast) {
+		if (toast instanceof Layout) {
+			((Layout) toast).pack();
+		}
+
+		float x = modalsContainer.getWidth() / 2.0f - toast.getWidth() / 2.0f;
+		float y = modalsContainer.getHeight() / 10.0f;
+
+		toast.setPosition(x, y);
+		toast.setTouchable(Touchable.disabled);
+		modalsContainer.addActor(toast);
+		toast.clearActions();
+		toast.addAction(Actions.sequence(Actions.alpha(0.0f),
+				Actions.alpha(1.0f, TOAST_TIME, Interpolation.exp5Out),
+				Actions.delay(TOAST_TIME),
+				Actions.alpha(0.0f, TOAST_TIME, Interpolation.exp5Out),
+				Actions.removeActor()));
 	}
 
 	public void requestKeyboardFocus(Actor actor) {
