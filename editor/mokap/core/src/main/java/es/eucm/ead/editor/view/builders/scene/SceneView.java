@@ -70,7 +70,7 @@ import es.eucm.ead.editor.view.builders.project.ProjectView;
 import es.eucm.ead.editor.view.widgets.AbstractWidget;
 import es.eucm.ead.editor.view.widgets.ContextMenu;
 import es.eucm.ead.editor.view.widgets.IconButton;
-import es.eucm.ead.editor.view.widgets.MultiToolbar;
+import es.eucm.ead.editor.view.widgets.MultiWidget;
 import es.eucm.ead.editor.view.widgets.WidgetBuilder;
 import es.eucm.ead.editor.view.widgets.baseview.BaseView;
 import es.eucm.ead.editor.view.widgets.draw.BrushStrokesPicker;
@@ -101,7 +101,7 @@ public class SceneView implements ViewBuilder {
 
 	private BaseView view;
 
-	private MultiToolbar toolbar;
+	private MultiWidget toolbar;
 
 	private SceneEditor sceneEditor;
 
@@ -149,21 +149,21 @@ public class SceneView implements ViewBuilder {
 		switch (mode) {
 		case COMPOSE:
 			if (selection.length == 0) {
-				toolbar.setSelectedToolbar(INSERT);
+				toolbar.setSelectedWidget(INSERT);
 			} else {
-				toolbar.setSelectedToolbar(TRANSFORM);
+				toolbar.setSelectedWidget(TRANSFORM);
 			}
 			break;
 		case DRAW:
-			toolbar.setSelectedToolbar(PAINT);
+			toolbar.setSelectedWidget(PAINT);
 			brushStrokes.show();
 			break;
 		}
 	}
 
-	private MultiToolbar buildToolbar(Skin skin, I18N i18N) {
-		final MultiToolbar toolbar = new MultiToolbar(skin);
-		toolbar.addToolbars(buildComposeToolbar(skin, i18N),
+	private MultiWidget buildToolbar(Skin skin, I18N i18N) {
+		final MultiWidget toolbar = new MultiWidget(skin);
+		toolbar.addWidgets(buildComposeToolbar(skin, i18N),
 				buildTransformToolbar(skin, i18N), buildDrawToolbar(skin, i18N));
 
 		controller.getModel().addSelectionListener(new SelectionListener() {
