@@ -36,9 +36,11 @@
  */
 package es.eucm.ead.editor.view.builders.scene;
 
+import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.math.Interpolation;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.Group;
+import com.badlogic.gdx.scenes.scene2d.Touchable;
 import com.badlogic.gdx.scenes.scene2d.actions.Actions;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.Pools;
@@ -236,6 +238,17 @@ public class SceneEditor extends AbstractWidget {
 							.toEngineEntity(added);
 					addedActor = engineEntity.getGroup();
 					((Group) actor).addActorAt(event.getIndex(), addedActor);
+					addedActor.setTouchable(Touchable.disabled);
+					float y = addedActor.getY();
+					float alpha = addedActor.getColor().a;
+					addedActor.setY(Gdx.graphics.getHeight());
+					addedActor.getColor().a = 0.0f;
+					addedActor.setTouchable(Touchable.disabled);
+
+					addedActor.addAction(Actions.sequence(Actions.parallel(
+							Actions2.moveToY(y, TIME, Interpolation.exp5Out),
+							Actions.alpha(alpha, TIME, Interpolation.exp5Out)),
+							Actions.touchable(Touchable.enabled)));
 				}
 				addListeners(addedActor);
 				break;
@@ -247,7 +260,13 @@ public class SceneEditor extends AbstractWidget {
 				Actor removedActor = findActor(scene.getGroup(),
 						entityPredicate);
 				if (removedActor != null) {
-					removedActor.remove();
+					removedActor.setTouchable(Touchable.disabled);
+					removedActor.addAction(Actions.sequence(Actions.parallel(
+							Actions.scaleTo(0, 0, TIME, Interpolation.exp5In),
+							Actions.alpha(0, TIME, Interpolation.exp5In),
+							Actions2.moveToY(Gdx.graphics.getHeight(), TIME,
+									Interpolation.exp5In)), Actions
+							.removeActor()));
 				}
 				break;
 			}
