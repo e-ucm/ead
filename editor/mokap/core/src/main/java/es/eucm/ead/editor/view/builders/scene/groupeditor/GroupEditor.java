@@ -131,8 +131,8 @@ public class GroupEditor extends AbstractWidget {
 			GeometryUtils.adjustGroup(actor);
 			addToSelection(actor);
 			SelectionBox selectionBox = Pools.obtain(SelectionBox.class);
-			selectionBox.selected();
 			selectionBox.setTarget(actor, background);
+			selectionBox.selected();
 			selectionLayer.addActor(selectionBox);
 			Pools.free(selectionBox);
 		}
