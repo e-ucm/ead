@@ -185,6 +185,13 @@ public class GroupEditor extends AbstractWidget {
 		public void touchDown(InputEvent event, float x, float y, int pointer,
 				int button) {
 			if (!event.isHandled() && pointer == 0) {
+
+				if (selectionLayer.getChildren().size > 0) {
+					// Event is processed by the selection layer. We don't want
+					// any other listener processing this touchDown
+					event.stop();
+				}
+
 				Actor target = getDirectChild(selectionLayer, event.getTarget());
 				if (target instanceof SelectionBox) {
 					for (Actor actor : selectionLayer.getChildren()) {

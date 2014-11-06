@@ -276,6 +276,7 @@ public class BrushStrokes extends AbstractWidget {
 		public boolean touchDown(InputEvent event, float x, float y,
 				int pointer, int button) {
 			if (pointer == 0) {
+				event.stop();
 				mesh.touchDown(x, y);
 			}
 			return true;

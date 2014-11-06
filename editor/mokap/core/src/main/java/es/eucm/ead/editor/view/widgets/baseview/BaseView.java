@@ -96,7 +96,7 @@ public class BaseView extends AbstractWidget {
 			@Override
 			public void touchDown(InputEvent event, float x, float y,
 					int pointer, int button) {
-				area = area(x, y);
+				area = event.isStopped() || pointer != 0 ? -1 : area(x, y);
 				super.touchDown(event, x, y, pointer, button);
 			}
 
