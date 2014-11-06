@@ -87,7 +87,14 @@ public class SelectionBox extends Group {
 		setOrigin(target.getWidth() / 2.0f, target.getHeight() / 2.0f);
 	}
 
-	public void setInitialPinchRotation(float initialPinchRotation) {
+    @Override
+    public void act(float delta) {
+        if ( target.getActions().size > 0){
+            readTargetBounds();
+        }
+    }
+
+    public void setInitialPinchRotation(float initialPinchRotation) {
 		this.initialPinchRotation = initialPinchRotation;
 		this.initialRotation = getRotation();
 	}

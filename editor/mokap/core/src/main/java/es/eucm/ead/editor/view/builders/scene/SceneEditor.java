@@ -36,11 +36,14 @@
  */
 package es.eucm.ead.editor.view.builders.scene;
 
+import com.badlogic.gdx.math.Interpolation;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.Group;
+import com.badlogic.gdx.scenes.scene2d.actions.Actions;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.Pools;
 import com.badlogic.gdx.utils.Predicate;
+
 import es.eucm.ead.editor.control.Controller;
 import es.eucm.ead.editor.control.Selection;
 import es.eucm.ead.editor.model.Model;
@@ -62,6 +65,8 @@ import es.eucm.ead.schema.entities.ModelEntity;
 import es.eucm.ead.schemax.FieldName;
 
 public class SceneEditor extends AbstractWidget {
+
+    public static final float TIME = 0.4f;
 
 	private Controller controller;
 
@@ -94,11 +99,6 @@ public class SceneEditor extends AbstractWidget {
 		groupEditor.addListener(new SceneListener(controller));
 		groupEditor.setBackground(controller.getApplicationAssets().getSkin()
 				.getDrawable("blank"));
-	}
-
-	@Override
-	public void act(float delta) {
-		super.act(0);
 	}
 
 	public void prepare() {
@@ -284,13 +284,9 @@ public class SceneEditor extends AbstractWidget {
 			else if (FieldName.ORIGIN_X.equals(event.getField()))
 				actor.setOriginX(value);
 			else if (FieldName.SCALE_X.equals(event.getField()))
-				actor.setScaleX(value);
+				actor.addAction(Actions.scaleTo(value, actor.getScaleY(), TIME, Interpolation.exp5Out));
 			else if (FieldName.SCALE_Y.equals(event.getField()))
-				actor.setScaleY(value);
-			else if (FieldName.SCALE_Y.equals(event.getField()))
-				actor.setScaleY(value);
-			else if (FieldName.SCALE_Y.equals(event.getField()))
-				actor.setScaleY(value);
+                actor.addAction(Actions.scaleTo(actor.getScaleX(), value, TIME, Interpolation.exp5Out));
 			groupEditor.refreshSelectionBox();
 		}
 	}
