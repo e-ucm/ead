@@ -50,7 +50,7 @@ public interface SkinConstants {
 	public static final String STYLE_DEFAULT = "default";
 	public static final String STYLE_CONTEXT = "context";
 	public static final String STYLE_TOOLBAR_ICON = "toolbar";
-	public static final String STYLE_DROP_DOWN = "drop-down";
+	public static final String STYLE_DROP_DOWN = "drop_down";
 	public static final String STYLE_ADD = "add";
 	public static final String STYLE_SCENE = "scene";
 
