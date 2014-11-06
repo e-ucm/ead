@@ -49,9 +49,9 @@ import es.eucm.ead.editor.editorui.UITest;
 import es.eucm.ead.editor.view.SkinConstants;
 import es.eucm.ead.editor.view.widgets.IconButton;
 import es.eucm.ead.editor.view.widgets.WidgetBuilder;
-import es.eucm.ead.editor.view.widgets.editionview.composition.BrushStrokesPicker;
-import es.eucm.ead.editor.view.widgets.editionview.composition.BrushStrokesPicker.SizeEvent;
-import es.eucm.ead.editor.view.widgets.editionview.composition.BrushStrokesPicker.SizeListener;
+import es.eucm.ead.editor.view.widgets.draw.BrushStrokesPicker;
+import es.eucm.ead.editor.view.widgets.draw.BrushStrokesPicker.SizeEvent;
+import es.eucm.ead.editor.view.widgets.draw.BrushStrokesPicker.SizeListener;
 import es.eucm.ead.editor.view.widgets.layouts.LinearLayout;
 import es.eucm.ead.engine.I18N;
 

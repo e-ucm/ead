@@ -48,7 +48,7 @@ import es.eucm.ead.editor.view.SkinConstants;
 import es.eucm.ead.editor.view.widgets.ContextMenu;
 import es.eucm.ead.editor.view.widgets.IconButton;
 import es.eucm.ead.editor.view.widgets.WidgetBuilder;
-import es.eucm.ead.editor.view.widgets.editionview.composition.ColorPickerPanel;
+import es.eucm.ead.editor.view.widgets.draw.ColorPickerPanel;
 import es.eucm.ead.editor.view.widgets.layouts.LinearLayout;
 import es.eucm.ead.engine.I18N;
 

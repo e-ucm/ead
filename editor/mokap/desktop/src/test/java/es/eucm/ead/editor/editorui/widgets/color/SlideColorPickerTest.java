@@ -45,9 +45,9 @@ import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
 
 import es.eucm.ead.editor.editorui.UITest;
-import es.eucm.ead.editor.view.widgets.editionview.composition.SlideColorPicker;
-import es.eucm.ead.editor.view.widgets.editionview.composition.SlideColorPicker.ColorEvent;
-import es.eucm.ead.editor.view.widgets.editionview.composition.SlideColorPicker.ColorListener;
+import es.eucm.ead.editor.view.widgets.draw.SlideColorPicker;
+import es.eucm.ead.editor.view.widgets.draw.SlideColorPicker.ColorEvent;
+import es.eucm.ead.editor.view.widgets.draw.SlideColorPicker.ColorListener;
 import es.eucm.ead.engine.I18N;
 
 public class SlideColorPickerTest extends UITest {

@@ -115,7 +115,7 @@
             "knob": "color_picker_knob"
         }
     },
-    "es.eucm.ead.editor.view.widgets.editionview.composition.SlideColorPicker$SlideColorPickerStyle": {
+    "es.eucm.ead.editor.view.widgets.draw.SlideColorPicker$SlideColorPickerStyle": {
         "default": {
             "slider": "colorPicker"
         }
@@ -151,7 +151,7 @@
             "down": "pressed_48_bg"
         }
     },
-    "es.eucm.ead.editor.view.widgets.editionview.composition.ColorPickerPanel$ColorPickerPanelStyle": {
+    "es.eucm.ead.editor.view.widgets.draw.ColorPickerPanel$ColorPickerPanelStyle": {
         "default": {
             "recentColorIcon": "color_picker_recent_color",
             "recentColorStyle": "recent_color",
@@ -172,7 +172,7 @@
             "pad": 12
         }
     },
-    "es.eucm.ead.editor.view.widgets.editionview.composition.BrushStrokesPicker$BrushStrokesPickerStyle": {
+    "es.eucm.ead.editor.view.widgets.draw.BrushStrokesPicker$BrushStrokesPickerStyle": {
         "default": {
             "background": "page",
             "sizeSliderStyleName": "default_horizontal",

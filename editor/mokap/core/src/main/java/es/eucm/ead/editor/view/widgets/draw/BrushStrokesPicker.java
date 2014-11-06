@@ -34,7 +34,7 @@
  *      You should have received a copy of the GNU Lesser General Public License
  *      along with eAdventure.  If not, see <http://www.gnu.org/licenses/>.
  */
-package es.eucm.ead.editor.view.widgets.editionview.composition;
+package es.eucm.ead.editor.view.widgets.draw;
 
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.math.MathUtils;
@@ -53,9 +53,9 @@ import es.eucm.ead.editor.view.SkinConstants;
 import es.eucm.ead.editor.view.widgets.ContextMenu;
 import es.eucm.ead.editor.view.widgets.IconButton;
 import es.eucm.ead.editor.view.widgets.WidgetBuilder;
-import es.eucm.ead.editor.view.widgets.editionview.composition.ColorPickerPanel.ColorPickerPanelStyle;
-import es.eucm.ead.editor.view.widgets.editionview.composition.SlideColorPicker.ColorEvent;
-import es.eucm.ead.editor.view.widgets.editionview.composition.SlideColorPicker.ColorListener;
+import es.eucm.ead.editor.view.widgets.draw.ColorPickerPanel.ColorPickerPanelStyle;
+import es.eucm.ead.editor.view.widgets.draw.SlideColorPicker.ColorEvent;
+import es.eucm.ead.editor.view.widgets.draw.SlideColorPicker.ColorListener;
 
 /**
  * A panel with a {@link ColorPickerPanel} and a slider to select the size, when

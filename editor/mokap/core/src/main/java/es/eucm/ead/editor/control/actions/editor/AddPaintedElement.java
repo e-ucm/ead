@@ -41,7 +41,7 @@ import es.eucm.ead.editor.control.actions.model.AddSceneElement;
 import es.eucm.ead.editor.control.background.BackgroundExecutor;
 import es.eucm.ead.editor.control.background.BackgroundExecutor.BackgroundTaskListener;
 import es.eucm.ead.editor.control.background.BackgroundTask;
-import es.eucm.ead.editor.view.widgets.editionview.composition.draw.BrushStrokes;
+import es.eucm.ead.editor.view.builders.scene.draw.BrushStrokes;
 import es.eucm.ead.schema.entities.ModelEntity;
 
 /**

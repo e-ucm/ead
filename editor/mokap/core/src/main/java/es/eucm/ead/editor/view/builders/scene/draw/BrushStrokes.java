@@ -34,7 +34,7 @@
  *      You should have received a copy of the GNU Lesser General Public License
  *      along with eAdventure.  If not, see <http://www.gnu.org/licenses/>.
  */
-package es.eucm.ead.editor.view.widgets.editionview.composition.draw;
+package es.eucm.ead.editor.view.builders.scene.draw;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.files.FileHandle;
@@ -56,7 +56,7 @@ import es.eucm.ead.editor.assets.EditorGameAssets;
 import es.eucm.ead.editor.control.Controller;
 import es.eucm.ead.editor.utils.GeometryUtils;
 import es.eucm.ead.editor.view.widgets.AbstractWidget;
-import es.eucm.ead.editor.view.widgets.editionview.composition.draw.MeshHelper.PixmapRegion;
+import es.eucm.ead.editor.view.builders.scene.draw.MeshHelper.PixmapRegion;
 import es.eucm.ead.engine.I18N;
 import es.eucm.ead.engine.entities.EngineEntity;
 import es.eucm.ead.schema.entities.ModelEntity;
