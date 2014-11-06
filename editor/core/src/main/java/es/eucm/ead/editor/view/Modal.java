@@ -45,4 +45,11 @@ public interface Modal {
 	 */
 	void hide(Runnable runnable);
 
+	/**
+	 * 
+	 * @return whether this modal should be hidden with any touch, no matter
+	 *         whether is inside the bounds of the modal (true) or only when an
+	 *         input is detected outside its bounds.
+	 */
+	boolean hideAlways();
 }

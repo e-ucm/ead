@@ -119,16 +119,27 @@ public class Views implements ModelListener<LoadEvent> {
 		@Override
 		public void clicked(InputEvent event, float x, float y) {
 			if (currentModal != null) {
-				currentModal.setTouchable(Touchable.disabled);
-				modalsContainer.setTouchable(Touchable.disabled);
+				setModalsTouchable(Touchable.disabled);
 				lastEvent = event;
 				if (currentModal instanceof Modal) {
-					((Modal) currentModal).hide(hideModalsContainer);
+					Modal modal = ((Modal) currentModal);
+					if (modal.hideAlways()) {
+						modal.hide(hideModalsContainer);
+					} else if (!event.getTarget().isDescendantOf(currentModal)) {
+						modal.hide(hideModalsContainer);
+					} else {
+						setModalsTouchable(Touchable.enabled);
+					}
 				} else {
 					hideModalsContainer.run();
 				}
 
 			}
+		}
+
+		private void setModalsTouchable(Touchable touchable) {
+			currentModal.setTouchable(touchable);
+			modalsContainer.setTouchable(touchable);
 		}
 	};
 

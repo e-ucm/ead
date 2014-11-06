@@ -157,6 +157,11 @@ public class ColorPickerPanel extends ContextMenu {
 		colors.getCells().first().getActor().setColor(picker.getPickedColor());
 	}
 
+	@Override
+	public boolean hideAlways() {
+		return false;
+	}
+
 	/**
 	 * The style for a {@link ColorPickerPanel}.
 	 * 
