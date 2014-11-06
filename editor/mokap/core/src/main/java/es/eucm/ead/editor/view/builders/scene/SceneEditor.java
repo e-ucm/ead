@@ -54,6 +54,7 @@ import es.eucm.ead.editor.model.Q;
 import es.eucm.ead.editor.model.events.FieldEvent;
 import es.eucm.ead.editor.model.events.ListEvent;
 import es.eucm.ead.editor.model.events.SelectionEvent;
+import es.eucm.ead.editor.utils.Actions2;
 import es.eucm.ead.editor.view.builders.scene.groupeditor.GroupEditor;
 import es.eucm.ead.editor.view.builders.scene.groupeditor.SceneListener;
 import es.eucm.ead.editor.view.widgets.AbstractWidget;
@@ -66,7 +67,7 @@ import es.eucm.ead.schemax.FieldName;
 
 public class SceneEditor extends AbstractWidget {
 
-    public static final float TIME = 0.4f;
+	public static final float TIME = 0.25f;
 
 	private Controller controller;
 
@@ -274,19 +275,24 @@ public class SceneEditor extends AbstractWidget {
 			Actor actor = findActor(scene.getGroup(), entityPredicate);
 			float value = (Float) event.getValue();
 			if (FieldName.X.equals(event.getField()))
-				actor.setX(value);
+				actor.addAction(Actions2.moveToX(value, TIME,
+						Interpolation.exp5Out));
 			else if (FieldName.Y.equals(event.getField()))
-				actor.setY(value);
+				actor.addAction(Actions2.moveToY(value, TIME,
+						Interpolation.exp5Out));
 			else if (FieldName.ROTATION.equals(event.getField()))
-				actor.setRotation(value);
+				actor.addAction(Actions.rotateTo(value, TIME,
+						Interpolation.exp5Out));
 			else if (FieldName.ORIGIN_Y.equals(event.getField()))
 				actor.setOriginY(value);
 			else if (FieldName.ORIGIN_X.equals(event.getField()))
 				actor.setOriginX(value);
 			else if (FieldName.SCALE_X.equals(event.getField()))
-				actor.addAction(Actions.scaleTo(value, actor.getScaleY(), TIME, Interpolation.exp5Out));
+				actor.addAction(Actions2.scaleToX(value, TIME,
+						Interpolation.exp5Out));
 			else if (FieldName.SCALE_Y.equals(event.getField()))
-                actor.addAction(Actions.scaleTo(actor.getScaleX(), value, TIME, Interpolation.exp5Out));
+				actor.addAction(Actions2.scaleToY(value, TIME,
+						Interpolation.exp5Out));
 			groupEditor.refreshSelectionBox();
 		}
 	}

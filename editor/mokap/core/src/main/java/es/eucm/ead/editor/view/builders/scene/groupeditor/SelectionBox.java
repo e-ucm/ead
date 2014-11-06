@@ -48,8 +48,6 @@ import com.badlogic.gdx.scenes.scene2d.utils.Drawable;
  */
 public class SelectionBox extends Group {
 
-	private static final float TIME = 0.25f;
-
 	private static final Color pressedColor = new Color(0.5f, 0.5f, 0.5f, 0.3f);
 
 	private static final Color selectedColor = new Color(0, 1, 1, 0.3f);
@@ -87,14 +85,14 @@ public class SelectionBox extends Group {
 		setOrigin(target.getWidth() / 2.0f, target.getHeight() / 2.0f);
 	}
 
-    @Override
-    public void act(float delta) {
-        if ( target.getActions().size > 0){
-            readTargetBounds();
-        }
-    }
+	@Override
+	public void act(float delta) {
+		if (target.getActions().size > 0) {
+			readTargetBounds();
+		}
+	}
 
-    public void setInitialPinchRotation(float initialPinchRotation) {
+	public void setInitialPinchRotation(float initialPinchRotation) {
 		this.initialPinchRotation = initialPinchRotation;
 		this.initialRotation = getRotation();
 	}
