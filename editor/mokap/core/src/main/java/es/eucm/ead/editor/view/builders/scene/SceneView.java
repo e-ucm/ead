@@ -197,6 +197,10 @@ public class SceneView implements ViewBuilder {
 		WidgetBuilder.launchContextMenu(mode, buildModeContextMenu(skin, i18N));
 
 		compose.add(mode);
+		compose.add(WidgetBuilder.toolbarIcon(skin, SkinConstants.IC_UNDO,
+				Undo.class));
+		compose.add(WidgetBuilder.toolbarIcon(skin, SkinConstants.IC_REDO,
+				Redo.class));
 
 		compose.addSpace();
 
