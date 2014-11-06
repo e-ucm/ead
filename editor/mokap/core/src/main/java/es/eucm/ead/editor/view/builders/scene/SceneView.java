@@ -183,7 +183,7 @@ public class SceneView implements ViewBuilder {
 	private LinearLayout buildComposeToolbar(Skin skin, I18N i18N) {
 		LinearLayout compose = new LinearLayout(true);
 		IconButton navigation = WidgetBuilder.toolbarIcon(skin,
-				SkinConstants.IC_MENU);
+				SkinConstants.IC_MENU, null);
 		navigation.addListener(new ClickListener() {
 			@Override
 			public void clicked(InputEvent event, float x, float y) {
@@ -198,14 +198,14 @@ public class SceneView implements ViewBuilder {
 
 		compose.add(mode);
 		compose.add(WidgetBuilder.toolbarIcon(skin, SkinConstants.IC_UNDO,
-				Undo.class));
+				i18N.m("undo"), Undo.class));
 		compose.add(WidgetBuilder.toolbarIcon(skin, SkinConstants.IC_REDO,
-				Redo.class));
+				i18N.m("redo"), Redo.class));
 
 		compose.addSpace();
 
 		compose.add(WidgetBuilder.toolbarIcon(skin, SkinConstants.IC_PASTE,
-				Paste.class));
+				i18N.m("paste"), Paste.class));
 
 		compose.add(WidgetBuilder.toolbarIconWithMenu(skin,
 				SkinConstants.IC_ADD, buildInsertContextMenu(skin, i18N)));
@@ -215,26 +215,27 @@ public class SceneView implements ViewBuilder {
 	private LinearLayout buildTransformToolbar(Skin skin, I18N i18N) {
 		LinearLayout transform = new LinearLayout(true);
 		transform.add(WidgetBuilder.toolbarIcon(skin, SkinConstants.IC_CHECK,
-				SetSelection.class, Selection.EDITED_GROUP,
-				Selection.SCENE_ELEMENT));
+				i18N.m("clear.selection"), SetSelection.class,
+				Selection.EDITED_GROUP, Selection.SCENE_ELEMENT));
 		transform.add(WidgetBuilder.toolbarIcon(skin, SkinConstants.IC_UNDO,
-				Undo.class));
+				i18N.m("undo"), Undo.class));
 		transform.add(WidgetBuilder.toolbarIcon(skin, SkinConstants.IC_REDO,
-				Redo.class));
+				i18N.m("redo"), Redo.class));
 
 		transform.addSpace();
 
 		transform.add(WidgetBuilder.toolbarIcon(skin, SkinConstants.IC_GROUP,
-				GroupSelection.class));
+				i18N.m("group.create"), GroupSelection.class));
 		transform.add(WidgetBuilder.toolbarIcon(skin, SkinConstants.IC_UNGROUP,
-				UngroupSelection.class));
+				i18N.m("ungroup"), UngroupSelection.class));
 
 		transform.add(WidgetBuilder.toolbarIcon(skin, SkinConstants.IC_TO_BACK,
-				ReorderSelection.class, ReorderSelection.Type.TO_BACK));
+				i18N.m("to.back"), ReorderSelection.class,
+				ReorderSelection.Type.TO_BACK));
 
 		transform.add(WidgetBuilder.toolbarIcon(skin,
-				SkinConstants.IC_TO_FRONT, ReorderSelection.class,
-				ReorderSelection.Type.TO_FRONT));
+				SkinConstants.IC_TO_FRONT, i18N.m("to.front"),
+				ReorderSelection.class, ReorderSelection.Type.TO_FRONT));
 
 		transform.add(WidgetBuilder.toolbarIconWithMenu(skin,
 				SkinConstants.IC_MORE, buildTransformContextMenu(skin, i18N)));
@@ -347,7 +348,7 @@ public class SceneView implements ViewBuilder {
 	private LinearLayout buildDrawToolbar(final Skin skin, I18N i18N) {
 		LinearLayout draw = new LinearLayout(true);
 		IconButton save = WidgetBuilder.toolbarIcon(skin,
-				SkinConstants.IC_CHECK);
+				SkinConstants.IC_CHECK, i18N.m("drawing.save"));
 
 		draw.add(save);
 
@@ -375,14 +376,14 @@ public class SceneView implements ViewBuilder {
 		draw.add(picker);
 
 		draw.add(WidgetBuilder.toolbarIcon(skin, SkinConstants.IC_UNDO,
-				Undo.class));
+				i18N.m("undo"), Undo.class));
 		draw.add(WidgetBuilder.toolbarIcon(skin, SkinConstants.IC_REDO,
-				Redo.class));
+				i18N.m("redo"), Redo.class));
 
 		draw.addSpace();
 
 		IconButton close = WidgetBuilder.toolbarIcon(skin,
-				SkinConstants.IC_CLOSE);
+				SkinConstants.IC_CLOSE, i18N.m("drawing.discard"));
 
 		draw.add(close);
 

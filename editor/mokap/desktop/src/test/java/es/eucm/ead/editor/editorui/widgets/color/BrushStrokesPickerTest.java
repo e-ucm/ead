@@ -63,7 +63,7 @@ public class BrushStrokesPickerTest extends UITest {
 		LinearLayout container = new LinearLayout(false).background(skin
 				.getDrawable("light-gray-bg"));
 		IconButton iconButton = WidgetBuilder.toolbarIcon(skin,
-				SkinConstants.IC_ADD);
+				SkinConstants.IC_ADD, null);
 		container.add(iconButton);
 
 		float initialValue = .7f;

@@ -85,7 +85,7 @@ public class ProjectView implements ViewBuilder {
 		MultiToolbar toolbar = new MultiToolbar(skin);
 
 		LinearLayout project = new LinearLayout(true);
-		project.add(WidgetBuilder.toolbarIcon(skin, SkinConstants.IC_GO,
+		project.add(WidgetBuilder.toolbarIcon(skin, SkinConstants.IC_GO, null,
 				ChangeView.class, HomeView.class));
 		project.addSpace();
 

@@ -59,7 +59,7 @@ public class ContextMenuTest extends UITest {
 		LinearLayout container = new LinearLayout(false).background(skin
 				.getDrawable("black-bg"));
 		IconButton iconButton = WidgetBuilder.toolbarIcon(skin,
-				SkinConstants.IC_ADD);
+				SkinConstants.IC_ADD, null);
 		container.add(iconButton);
 		container.addSpace();
 
