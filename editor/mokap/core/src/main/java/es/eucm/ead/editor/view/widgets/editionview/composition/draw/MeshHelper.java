@@ -748,11 +748,15 @@ public class MeshHelper {
 		this.g = color.g;
 		this.b = color.b;
 		this.a = color.a;
-		if (a == 0f) {
-			erasing = true;
+	}
+
+	void setErasing(boolean erasing) {
+		if (erasing) {
+			a = 0f;
 		} else {
-			erasing = false;
+			a = 1f;
 		}
+		this.erasing = erasing;
 	}
 
 	/**
