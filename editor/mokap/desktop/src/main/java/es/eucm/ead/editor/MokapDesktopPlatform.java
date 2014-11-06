@@ -58,24 +58,18 @@ import es.eucm.ead.engine.I18N;
 
 public class MokapDesktopPlatform extends MokapPlatform {
 
-	private LwjglFrame frame;
-
-	public void setFrame(LwjglFrame frame) {
-		this.frame = frame;
-	}
-
 	@Override
 	public void setTitle(String title) {
-		frame.setTitle(title);
+
 	}
 
 	@Override
 	public void setSize(int width, int height) {
-		frame.setSize(width, height);
+
 	}
 
 	public LwjglFrame getFrame() {
-		return frame;
+		return null;
 	}
 
 	@Override

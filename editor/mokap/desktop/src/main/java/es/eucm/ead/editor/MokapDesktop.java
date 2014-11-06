@@ -36,14 +36,8 @@
  */
 package es.eucm.ead.editor;
 
-import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.backends.lwjgl.LwjglApplication;
 import com.badlogic.gdx.backends.lwjgl.LwjglApplicationConfiguration;
-import com.badlogic.gdx.backends.lwjgl.LwjglFrame;
-import es.eucm.ead.engine.utils.SwingEDTUtils;
-
-import javax.swing.*;
-import java.awt.event.ComponentAdapter;
-import java.awt.event.ComponentEvent;
 
 public class MokapDesktop {
 
@@ -52,28 +46,9 @@ public class MokapDesktop {
 		LwjglApplicationConfiguration config = new LwjglApplicationConfiguration();
 		config.width = 640;
 		config.height = 360;
+		config.title = "Mokap";
 
-		MokapDesktopPlatform platform = new MokapDesktopPlatform();
-
-		final LwjglFrame frame = new LwjglFrame(new MokapApplicationListener(
-				platform), config);
-		frame.setDefaultCloseOperation(JFrame.HIDE_ON_CLOSE);
-		frame.addComponentListener(new ComponentAdapter() {
-			@Override
-			public void componentHidden(ComponentEvent e) {
-				Gdx.app.exit();
-			}
-		});
-		platform.setFrame(frame);
-		frame.setLocationRelativeTo(null);
-
-		// set visible calls create()
-		SwingEDTUtils.invokeLater(new Runnable() {
-
-			@Override
-			public void run() {
-				frame.setVisible(true);
-			}
-		});
+		new LwjglApplication(new MokapApplicationListener(
+				new MokapDesktopPlatform()), config);
 	}
 }
