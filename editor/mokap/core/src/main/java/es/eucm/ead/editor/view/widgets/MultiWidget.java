@@ -44,16 +44,17 @@ import com.badlogic.gdx.scenes.scene2d.Touchable;
 import com.badlogic.gdx.scenes.scene2d.actions.Actions;
 import com.badlogic.gdx.scenes.scene2d.ui.Container;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
+import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.scenes.scene2d.ui.WidgetGroup;
 import com.badlogic.gdx.scenes.scene2d.utils.Align;
 import com.badlogic.gdx.scenes.scene2d.utils.Drawable;
 import com.badlogic.gdx.utils.Array;
 
-public class MultiToolbar extends Container<WidgetGroup> {
+public class MultiWidget extends Container<WidgetGroup> {
 
 	private static final float ANIM_TIME = 0.15f;
 
-	private Array<WidgetGroup> toolbars;
+	private Array<WidgetGroup> widgets;
 
 	private float maxHeight;
 
@@ -63,21 +64,31 @@ public class MultiToolbar extends Container<WidgetGroup> {
 
 	private Runnable actionAddActor;
 
-	private MultiToolbarStyle style;
+	private MultiWidgetStyle style;
 
-	public MultiToolbar(Skin skin) {
-		this(skin.get(MultiToolbarStyle.class));
+	public MultiWidget() {
+		initialize(null);
 	}
 
-	public MultiToolbar(MultiToolbarStyle style) {
+	public MultiWidget(Skin skin) {
+		initialize(skin.get(MultiWidgetStyle.class));
+	}
+
+	public MultiWidget(MultiWidgetStyle style) {
+		initialize(style);
+	}
+
+	private void initialize(MultiWidgetStyle style) {
 		this.style = style;
 
-		setBackground(style.background);
-		if (style.color != null) {
-			setColor(style.color);
+		if (style != null) {
+			setBackground(style.background);
+			if (style.color != null) {
+				setColor(style.color);
+			}
 		}
 
-		toolbars = new Array<WidgetGroup>();
+		widgets = new Array<WidgetGroup>();
 		maxHeight = 0;
 		fill();
 
@@ -96,25 +107,28 @@ public class MultiToolbar extends Container<WidgetGroup> {
 		};
 	}
 
-	public void addToolbars(WidgetGroup... t) {
-		for (WidgetGroup toolbar : t) {
-			toolbar.setTouchable(Touchable.disabled);
+	public void addWidgets(WidgetGroup... w) {
+		for (WidgetGroup widget : w) {
+			widget.setTouchable(Touchable.disabled);
 
-			toolbars.add(toolbar);
-			if (maxHeight < toolbar.getPrefHeight()) {
-				maxHeight = toolbar.getPrefHeight();
+			if (widget instanceof Table) {
+				((Table) widget).setTransform(true);
+			}
+			widgets.add(widget);
+			if (maxHeight < widget.getPrefHeight()) {
+				maxHeight = widget.getPrefHeight();
 			}
 		}
 
 		if (getActor() == null) {
-			setActor(t[0]);
-			toShow = t[0];
-			t[0].setTouchable(Touchable.enabled);
+			setActor(w[0]);
+			toShow = w[0];
+			w[0].setTouchable(Touchable.enabled);
 		}
 	}
 
 	/**
-	 * Set the default Toolbar, without animation.
+	 * Set the default Widget, without animation.
 	 * 
 	 */
 	public void showSimple() {
@@ -122,28 +136,28 @@ public class MultiToolbar extends Container<WidgetGroup> {
 	}
 
 	/**
-	 * Set the Toolbar in index position, without animation.
+	 * Set the Widget in index position, without animation.
 	 * 
 	 */
 	public void showSimple(int index) {
-		if (index < toolbars.size) {
-			WidgetGroup toolbar = toolbars.get(index);
-			toolbar.setTouchable(Touchable.enabled);
-			toolbar.getColor().a = 1;
-			toolbar.setScaleY(1);
-			setActor(toolbar);
-			toShow = toolbar;
+		if (index < widgets.size) {
+			WidgetGroup widget = widgets.get(index);
+			widget.setTouchable(Touchable.enabled);
+			widget.getColor().a = 1;
+			widget.setScaleY(1);
+			setActor(widget);
+			toShow = widget;
 			toHide = null;
 		}
 	}
 
-	public void setSelectedToolbar(int index) {
-		if (toolbars.size > index) {
-			WidgetGroup newBar = toolbars.get(index);
+	public void setSelectedWidget(int index) {
+		if (widgets.size > index) {
+			WidgetGroup newBar = widgets.get(index);
 
 			if (newBar != toShow) {
-				for (WidgetGroup toolbar : toolbars) {
-					toolbar.clearActions();
+				for (WidgetGroup widget : widgets) {
+					widget.clearActions();
 				}
 
 				Actor current = getActor();
@@ -190,21 +204,21 @@ public class MultiToolbar extends Container<WidgetGroup> {
 		return maxHeight + backgroungPadding;
 	}
 
-	public Array<WidgetGroup> getToolbars() {
-		return toolbars;
+	public Array<WidgetGroup> getWidgets() {
+		return widgets;
 	}
 
-	public WidgetGroup getCurrentToolbar() {
+	public WidgetGroup getCurrentWidget() {
 		return this.getActor();
 	}
 
 	public void release() {
-		for (WidgetGroup toolbar : toolbars) {
-			toolbar.clearActions();
+		for (WidgetGroup widget : widgets) {
+			widget.clearActions();
 		}
 	}
 
-	public static class MultiToolbarStyle {
+	public static class MultiWidgetStyle {
 
 		public Drawable background;
 

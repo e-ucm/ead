@@ -185,7 +185,7 @@
             "navigationBackground": "black_bg"
         }
     },
-    "es.eucm.ead.editor.view.widgets.MultiToolbar$MultiToolbarStyle": {
+    "es.eucm.ead.editor.view.widgets.MultiWidget$MultiWidgetStyle": {
         "default": {
             "background": "toolbar",
             "color": "brown_moka"

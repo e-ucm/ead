@@ -47,7 +47,7 @@ import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import es.eucm.ead.editor.control.MokapController.Dpi;
 import es.eucm.ead.editor.editorui.UITest;
 import es.eucm.ead.editor.view.widgets.IconButton;
-import es.eucm.ead.editor.view.widgets.MultiToolbar;
+import es.eucm.ead.editor.view.widgets.MultiWidget;
 import es.eucm.ead.editor.view.widgets.layouts.LinearLayout;
 import es.eucm.ead.engine.I18N;
 
@@ -59,7 +59,7 @@ public class MultiToolbarTest extends UITest {
 		Table table = new Table();
 		table.setFillParent(true);
 
-		final MultiToolbar multiTop = new MultiToolbar(skin);
+		final MultiWidget multiTop = new MultiWidget(skin);
 
 		LinearLayout insertBar = new LinearLayout(true);
 
@@ -133,14 +133,14 @@ public class MultiToolbarTest extends UITest {
 		IconButton cancel = new IconButton("ic_close", 0, skin, "toolbar");
 		paintBar.add(cancel);
 
-		multiTop.addToolbars(insertBar, transformBar, paintBar);
+		multiTop.addWidgets(insertBar, transformBar, paintBar);
 
 		ClickListener topListener = new ClickListener() {
 			@Override
 			public void clicked(InputEvent event, float x, float y) {
 				Actor actor = event.getListenerActor();
 				int index = (Integer) actor.getUserObject();
-				multiTop.setSelectedToolbar(index);
+				multiTop.setSelectedWidget(index);
 			}
 		};
 

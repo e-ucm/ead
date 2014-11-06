@@ -43,7 +43,7 @@ import es.eucm.ead.editor.control.actions.editor.ChangeView;
 import es.eucm.ead.editor.view.SkinConstants;
 import es.eucm.ead.editor.view.builders.ViewBuilder;
 import es.eucm.ead.editor.view.builders.home.HomeView;
-import es.eucm.ead.editor.view.widgets.MultiToolbar;
+import es.eucm.ead.editor.view.widgets.MultiWidget;
 import es.eucm.ead.editor.view.widgets.WidgetBuilder;
 import es.eucm.ead.editor.view.widgets.layouts.LinearLayout;
 import es.eucm.ead.engine.I18N;
@@ -82,14 +82,14 @@ public class ProjectView implements ViewBuilder {
 	}
 
 	private Actor buildToolbar(Skin skin, I18N i18N) {
-		MultiToolbar toolbar = new MultiToolbar(skin);
+		MultiWidget toolbar = new MultiWidget(skin);
 
 		LinearLayout project = new LinearLayout(true);
 		project.add(WidgetBuilder.toolbarIcon(skin, SkinConstants.IC_GO, null,
 				ChangeView.class, HomeView.class));
 		project.addSpace();
 
-		toolbar.addToolbars(project);
+		toolbar.addWidgets(project);
 		return toolbar;
 	}
 
