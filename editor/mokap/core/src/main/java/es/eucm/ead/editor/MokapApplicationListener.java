@@ -37,7 +37,9 @@
 package es.eucm.ead.editor;
 
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.WidgetGroup;
+
 import es.eucm.ead.editor.control.Controller;
 import es.eucm.ead.editor.control.MokapController;
 import es.eucm.ead.editor.control.Selection;
@@ -97,6 +99,9 @@ public class MokapApplicationListener extends EditorApplicationListener {
 		});
 
 		controller.action(OpenLastGame.class, HomeView.class);
+
+		Stage.setActionsRequestRendering(true);
+		Gdx.graphics.setContinuousRendering(false);
 	}
 
 	@Override
