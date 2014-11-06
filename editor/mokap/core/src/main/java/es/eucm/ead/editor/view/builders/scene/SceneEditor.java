@@ -237,19 +237,20 @@ public class SceneEditor extends AbstractWidget {
 					EngineEntity engineEntity = entitiesLoader
 							.toEngineEntity(added);
 					addedActor = engineEntity.getGroup();
-					((Group) actor).addActorAt(event.getIndex(), addedActor);
-					addedActor.setTouchable(Touchable.disabled);
-					float y = addedActor.getY();
-					float alpha = addedActor.getColor().a;
-					addedActor.setY(Gdx.graphics.getHeight());
-					addedActor.getColor().a = 0.0f;
-					addedActor.setTouchable(Touchable.disabled);
-
-					addedActor.addAction(Actions.sequence(Actions.parallel(
-							Actions2.moveToY(y, TIME, Interpolation.exp5Out),
-							Actions.alpha(alpha, TIME, Interpolation.exp5Out)),
-							Actions.touchable(Touchable.enabled)));
 				}
+				((Group) actor).addActorAt(event.getIndex(), addedActor);
+				addedActor.clearActions();
+				addedActor.setTouchable(Touchable.disabled);
+				float y = addedActor.getY();
+				float alpha = addedActor.getColor().a;
+				addedActor.setY(Gdx.graphics.getHeight());
+				addedActor.getColor().a = 0.0f;
+				addedActor.setTouchable(Touchable.disabled);
+
+				addedActor.addAction(Actions.sequence(Actions.parallel(
+						Actions2.moveToY(y, TIME, Interpolation.exp5Out),
+						Actions.alpha(alpha, TIME, Interpolation.exp5Out)),
+						Actions.touchable(Touchable.enabled)));
 				addListeners(addedActor);
 				break;
 			case REMOVED:
