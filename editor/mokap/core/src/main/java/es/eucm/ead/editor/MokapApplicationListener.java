@@ -45,6 +45,7 @@ import es.eucm.ead.editor.control.MokapController;
 import es.eucm.ead.editor.control.Selection;
 import es.eucm.ead.editor.control.actions.editor.ChangeView;
 import es.eucm.ead.editor.control.actions.editor.OpenLastGame;
+import es.eucm.ead.editor.control.actions.editor.Save;
 import es.eucm.ead.editor.control.actions.model.EditScene;
 import es.eucm.ead.editor.model.Model.ModelListener;
 import es.eucm.ead.editor.model.Model.SelectionListener;
@@ -123,5 +124,10 @@ public class MokapApplicationListener extends EditorApplicationListener {
 				Gdx.files, viewContainer, modalContainer);
 		WidgetBuilder.setController(controller);
 		return controller;
+	}
+
+	@Override
+	public void pause() {
+		controller.action(Save.class);
 	}
 }
