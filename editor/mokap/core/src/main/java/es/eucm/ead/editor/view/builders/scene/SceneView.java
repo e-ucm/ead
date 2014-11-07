@@ -182,6 +182,7 @@ public class SceneView implements ViewBuilder {
 
 	private LinearLayout buildComposeToolbar(Skin skin, I18N i18N) {
 		LinearLayout compose = new LinearLayout(true);
+		compose.setComputeInvisibles(false);
 		IconButton navigation = WidgetBuilder.toolbarIcon(skin,
 				SkinConstants.IC_MENU, null);
 		navigation.addListener(new ClickListener() {
@@ -198,9 +199,9 @@ public class SceneView implements ViewBuilder {
 
 		compose.add(mode);
 		compose.add(WidgetBuilder.toolbarIcon(skin, SkinConstants.IC_UNDO,
-				i18N.m("undo"), Undo.class));
+				i18N.m("undo"), true, Undo.class));
 		compose.add(WidgetBuilder.toolbarIcon(skin, SkinConstants.IC_REDO,
-				i18N.m("redo"), Redo.class));
+				i18N.m("redo"), true, Redo.class));
 
 		compose.addSpace();
 
@@ -214,13 +215,14 @@ public class SceneView implements ViewBuilder {
 
 	private LinearLayout buildTransformToolbar(Skin skin, I18N i18N) {
 		LinearLayout transform = new LinearLayout(true);
+		transform.setComputeInvisibles(true);
 		transform.add(WidgetBuilder.toolbarIcon(skin, SkinConstants.IC_CHECK,
 				i18N.m("clear.selection"), SetSelection.class,
 				Selection.EDITED_GROUP, Selection.SCENE_ELEMENT));
 		transform.add(WidgetBuilder.toolbarIcon(skin, SkinConstants.IC_UNDO,
-				i18N.m("undo"), Undo.class));
+				i18N.m("undo"), true, Undo.class));
 		transform.add(WidgetBuilder.toolbarIcon(skin, SkinConstants.IC_REDO,
-				i18N.m("redo"), Redo.class));
+				i18N.m("redo"), true, Redo.class));
 
 		transform.addSpace();
 
@@ -230,7 +232,8 @@ public class SceneView implements ViewBuilder {
 		// TODO add edit and enter in group
 		final MultiWidget multiButton = WidgetBuilder
 				.multiToolbarIcon(WidgetBuilder.toolbarIcon(skin,
-						SkinConstants.IC_GROUP, i18N.m("group.create"), false, GroupSelection.class));
+						SkinConstants.IC_GROUP, i18N.m("group.create"), false,
+						GroupSelection.class));
 
 		transform.add(multiButton);
 
