@@ -50,6 +50,7 @@ import es.eucm.ead.editor.control.actions.editor.ShowTooltip;
 import es.eucm.ead.editor.view.SkinConstants;
 import es.eucm.ead.editor.view.listeners.ActionOnClickListener;
 import es.eucm.ead.editor.view.tooltips.Tooltip;
+import es.eucm.ead.editor.view.listeners.VisibleActionListener;
 import es.eucm.ead.editor.view.widgets.layouts.LinearLayout;
 
 public class WidgetBuilder {
@@ -96,6 +97,28 @@ public class WidgetBuilder {
 			iconButton.addListener(TOOLTIP_LISTENER);
 		}
 		return iconButton;
+	}
+
+	public static IconButton toolbarIcon(Skin skin, String icon,
+			String tooltip, boolean listenToAction, Class action,
+			Object... args) {
+		IconButton button = toolbarIcon(skin, icon, tooltip, action, args);
+		if (listenToAction) {
+			controller.getActions().addActionListener(action,
+					new VisibleActionListener(button));
+			button.setVisible(controller.getActions().getAction(action)
+					.isEnabled());
+		}
+		return button;
+	}
+
+	public static MultiWidget multiToolbarIcon(IconButton... buttons) {
+		MultiWidget multiButton = new MultiWidget();
+		for (IconButton button : buttons) {
+			multiButton.addWidgets(button);
+		}
+
+		return multiButton;
 	}
 
 	public static IconButton toolbarIconWithMenu(Skin skin, String icon,
@@ -197,4 +220,5 @@ public class WidgetBuilder {
 	public static float dpToPixels(float dp) {
 		return (buttonSize / UNIT_SIZE) * dp;
 	}
+
 }

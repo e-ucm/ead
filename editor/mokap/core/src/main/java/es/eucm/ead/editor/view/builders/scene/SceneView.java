@@ -59,7 +59,6 @@ import es.eucm.ead.editor.control.actions.model.GroupSelection;
 import es.eucm.ead.editor.control.actions.model.RemoveSelectionFromScene;
 import es.eucm.ead.editor.control.actions.model.SetSelection;
 import es.eucm.ead.editor.control.actions.model.TakePicture;
-import es.eucm.ead.editor.control.actions.model.UngroupSelection;
 import es.eucm.ead.editor.control.actions.model.scene.ReorderSelection;
 import es.eucm.ead.editor.control.actions.model.scene.transform.MirrorSelection;
 import es.eucm.ead.editor.model.Model.SelectionListener;
@@ -67,10 +66,13 @@ import es.eucm.ead.editor.model.events.SelectionEvent;
 import es.eucm.ead.editor.view.SkinConstants;
 import es.eucm.ead.editor.view.builders.ViewBuilder;
 import es.eucm.ead.editor.view.builders.project.ProjectView;
+import es.eucm.ead.editor.view.builders.scene.draw.BrushStrokes;
+import es.eucm.ead.editor.view.builders.scene.draw.BrushStrokes.ModeEvent;
+import es.eucm.ead.editor.view.builders.scene.draw.BrushStrokes.ModeListener;
 import es.eucm.ead.editor.view.widgets.AbstractWidget;
 import es.eucm.ead.editor.view.widgets.ContextMenu;
 import es.eucm.ead.editor.view.widgets.IconButton;
-import es.eucm.ead.editor.view.widgets.MultiToolbar;
+import es.eucm.ead.editor.view.widgets.MultiWidget;
 import es.eucm.ead.editor.view.widgets.WidgetBuilder;
 import es.eucm.ead.editor.view.widgets.baseview.BaseView;
 import es.eucm.ead.editor.view.widgets.draw.BrushStrokesPicker;
@@ -78,11 +80,9 @@ import es.eucm.ead.editor.view.widgets.draw.BrushStrokesPicker.SizeEvent;
 import es.eucm.ead.editor.view.widgets.draw.BrushStrokesPicker.SizeListener;
 import es.eucm.ead.editor.view.widgets.draw.SlideColorPicker.ColorEvent;
 import es.eucm.ead.editor.view.widgets.draw.SlideColorPicker.ColorListener;
-import es.eucm.ead.editor.view.builders.scene.draw.BrushStrokes;
-import es.eucm.ead.editor.view.builders.scene.draw.BrushStrokes.ModeEvent;
-import es.eucm.ead.editor.view.builders.scene.draw.BrushStrokes.ModeListener;
 import es.eucm.ead.editor.view.widgets.layouts.LinearLayout;
 import es.eucm.ead.engine.I18N;
+import es.eucm.ead.schema.entities.ModelEntity;
 
 public class SceneView implements ViewBuilder {
 
@@ -101,7 +101,7 @@ public class SceneView implements ViewBuilder {
 
 	private BaseView view;
 
-	private MultiToolbar toolbar;
+	private MultiWidget toolbar;
 
 	private SceneEditor sceneEditor;
 
@@ -149,21 +149,21 @@ public class SceneView implements ViewBuilder {
 		switch (mode) {
 		case COMPOSE:
 			if (selection.length == 0) {
-				toolbar.setSelectedToolbar(INSERT);
+				toolbar.setSelectedWidget(INSERT);
 			} else {
-				toolbar.setSelectedToolbar(TRANSFORM);
+				toolbar.setSelectedWidget(TRANSFORM);
 			}
 			break;
 		case DRAW:
-			toolbar.setSelectedToolbar(PAINT);
+			toolbar.setSelectedWidget(PAINT);
 			brushStrokes.show();
 			break;
 		}
 	}
 
-	private MultiToolbar buildToolbar(Skin skin, I18N i18N) {
-		final MultiToolbar toolbar = new MultiToolbar(skin);
-		toolbar.addToolbars(buildComposeToolbar(skin, i18N),
+	private MultiWidget buildToolbar(Skin skin, I18N i18N) {
+		final MultiWidget toolbar = new MultiWidget(skin);
+		toolbar.addWidgets(buildComposeToolbar(skin, i18N),
 				buildTransformToolbar(skin, i18N), buildDrawToolbar(skin, i18N));
 
 		controller.getModel().addSelectionListener(new SelectionListener() {
@@ -182,6 +182,7 @@ public class SceneView implements ViewBuilder {
 
 	private LinearLayout buildComposeToolbar(Skin skin, I18N i18N) {
 		LinearLayout compose = new LinearLayout(true);
+		compose.setComputeInvisibles(false);
 		IconButton navigation = WidgetBuilder.toolbarIcon(skin,
 				SkinConstants.IC_MENU, null);
 		navigation.addListener(new ClickListener() {
@@ -198,14 +199,14 @@ public class SceneView implements ViewBuilder {
 
 		compose.add(mode);
 		compose.add(WidgetBuilder.toolbarIcon(skin, SkinConstants.IC_UNDO,
-				i18N.m("undo"), Undo.class));
+				i18N.m("undo"), true, Undo.class));
 		compose.add(WidgetBuilder.toolbarIcon(skin, SkinConstants.IC_REDO,
-				i18N.m("redo"), Redo.class));
+				i18N.m("redo"), true, Redo.class));
 
 		compose.addSpace();
 
 		compose.add(WidgetBuilder.toolbarIcon(skin, SkinConstants.IC_PASTE,
-				i18N.m("paste"), Paste.class));
+				i18N.m("paste"), true, Paste.class));
 
 		compose.add(WidgetBuilder.toolbarIconWithMenu(skin,
 				SkinConstants.IC_ADD, buildInsertContextMenu(skin, i18N)));
@@ -214,31 +215,61 @@ public class SceneView implements ViewBuilder {
 
 	private LinearLayout buildTransformToolbar(Skin skin, I18N i18N) {
 		LinearLayout transform = new LinearLayout(true);
+		transform.setComputeInvisibles(true);
 		transform.add(WidgetBuilder.toolbarIcon(skin, SkinConstants.IC_CHECK,
 				i18N.m("clear.selection"), SetSelection.class,
 				Selection.EDITED_GROUP, Selection.SCENE_ELEMENT));
 		transform.add(WidgetBuilder.toolbarIcon(skin, SkinConstants.IC_UNDO,
-				i18N.m("undo"), Undo.class));
+				i18N.m("undo"), true, Undo.class));
 		transform.add(WidgetBuilder.toolbarIcon(skin, SkinConstants.IC_REDO,
-				i18N.m("redo"), Redo.class));
+				i18N.m("redo"), true, Redo.class));
 
 		transform.addSpace();
 
 		transform.add(WidgetBuilder.toolbarIcon(skin, SkinConstants.IC_GROUP,
-				i18N.m("group.create"), GroupSelection.class));
-		transform.add(WidgetBuilder.toolbarIcon(skin, SkinConstants.IC_UNGROUP,
-				i18N.m("ungroup"), UngroupSelection.class));
+				i18N.m("group.create"), true, GroupSelection.class));
+
+		final MultiWidget multiButton = WidgetBuilder
+				.multiToolbarIcon(WidgetBuilder.toolbarIcon(skin,
+						SkinConstants.IC_GROUP, i18N.m("group.create"), false,
+						GroupSelection.class));
+
+		transform.add(multiButton);
 
 		transform.add(WidgetBuilder.toolbarIcon(skin, SkinConstants.IC_TO_BACK,
-				i18N.m("to.back"), ReorderSelection.class,
+				i18N.m("to.back"), true, ReorderSelection.class,
 				ReorderSelection.Type.TO_BACK));
 
 		transform.add(WidgetBuilder.toolbarIcon(skin,
-				SkinConstants.IC_TO_FRONT, i18N.m("to.front"),
+				SkinConstants.IC_TO_FRONT, i18N.m("to.front"), true,
 				ReorderSelection.class, ReorderSelection.Type.TO_FRONT));
 
 		transform.add(WidgetBuilder.toolbarIconWithMenu(skin,
 				SkinConstants.IC_MORE, buildTransformContextMenu(skin, i18N)));
+
+		controller.getModel().addSelectionListener(new SelectionListener() {
+
+			@Override
+			public void modelChanged(SelectionEvent event) {
+				if (controller.getModel().getSelection()
+						.get(Selection.SCENE_ELEMENT).length == 1) {
+					// show group button
+					if (((ModelEntity) controller.getModel().getSelection()
+							.getSingle(Selection.SCENE_ELEMENT)).getChildren().size > 1) {
+						multiButton.setSelectedWidget(0);
+						// Show edit or to enter in group button
+					} else {
+
+					}
+				}
+			}
+
+			@Override
+			public boolean listenToContext(String contextId) {
+				return contextId.equals(Selection.SCENE_ELEMENT);
+			}
+		});
+
 		return transform;
 	}
 
