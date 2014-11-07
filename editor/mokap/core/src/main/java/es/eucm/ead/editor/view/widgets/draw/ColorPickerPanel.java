@@ -48,8 +48,6 @@ import com.badlogic.gdx.utils.Array;
 
 import es.eucm.ead.editor.view.widgets.ContextMenu;
 import es.eucm.ead.editor.view.widgets.IconButton;
-import es.eucm.ead.editor.view.widgets.draw.SlideColorPicker.ColorEvent;
-import es.eucm.ead.editor.view.widgets.draw.SlideColorPicker.ColorListener;
 import es.eucm.ead.editor.view.widgets.draw.SlideColorPicker.SlideColorPickerStyle;
 
 /**
@@ -110,12 +108,6 @@ public class ColorPickerPanel extends ContextMenu {
 		}
 		colors.addListener(colorClicked);
 		picker = new SlideColorPicker(colorPickerPanelStyle);
-		picker.addListener(new ColorListener() {
-			@Override
-			public void colorChanged(ColorEvent event) {
-				updateNewColor();
-			}
-		});
 
 		add(colors);
 		row();
@@ -132,14 +124,6 @@ public class ColorPickerPanel extends ContextMenu {
 	}
 
 	public void initResources() {
-		Array<Cell> colorCells = this.colors.getCells();
-		if (!colorCells.get(1).getActor().getColor()
-				.equals(colorCells.first().getActor().getColor())) {
-			for (int i = colorCells.size - 2; i >= 0; --i) {
-				Actor actor = colorCells.get(i).getActor();
-				colorCells.get(i + 1).getActor().setColor(actor.getColor());
-			}
-		}
 		picker.initialize();
 	}
 
@@ -150,11 +134,26 @@ public class ColorPickerPanel extends ContextMenu {
 	}
 
 	public void release() {
+		if (!hasPickedColor()) {
+			Array<Cell> colorCells = this.colors.getCells();
+			for (int i = colorCells.size - 2; i >= 0; --i) {
+				Actor actor = colorCells.get(i).getActor();
+				colorCells.get(i + 1).getActor().setColor(actor.getColor());
+			}
+			colors.getCells().first().getActor()
+					.setColor(picker.getPickedColor());
+		}
 		picker.release();
 	}
 
-	private void updateNewColor() {
-		colors.getCells().first().getActor().setColor(picker.getPickedColor());
+	private boolean hasPickedColor() {
+		for (Cell cell : colors.getCells()) {
+			Actor actor = cell.getActor();
+			if (actor.getColor().equals(picker.getPickedColor())) {
+				return true;
+			}
+		}
+		return false;
 	}
 
 	@Override
