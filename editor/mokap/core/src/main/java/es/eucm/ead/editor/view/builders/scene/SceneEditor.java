@@ -89,8 +89,6 @@ public class SceneEditor extends AbstractWidget {
 
 	private ModelEntityPredicate entityPredicate = new ModelEntityPredicate();
 
-	private ComponentPredicate componentPredicate = new ComponentPredicate();
-
 	private SceneSelectionListener sceneSelectionListener = new SceneSelectionListener();
 
 	public SceneEditor(Controller c) {
@@ -341,7 +339,7 @@ public class SceneEditor extends AbstractWidget {
 		}
 	}
 
-	public class ModelEntityPredicate implements Predicate<Actor> {
+	public static class ModelEntityPredicate implements Predicate<Actor> {
 
 		private ModelEntity modelEntity;
 
@@ -355,7 +353,7 @@ public class SceneEditor extends AbstractWidget {
 		}
 	}
 
-	public class ComponentPredicate implements Predicate<Actor> {
+	public static class ComponentPredicate implements Predicate<Actor> {
 
 		private ModelComponent component;
 
