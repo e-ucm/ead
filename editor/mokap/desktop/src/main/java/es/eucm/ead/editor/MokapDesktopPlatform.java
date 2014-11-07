@@ -159,9 +159,21 @@ public class MokapDesktopPlatform extends MokapPlatform {
 				if (selectedValue != null
 						&& (selectedValue instanceof Integer)
 						&& ((Integer) selectedValue).intValue() == JOptionPane.OK_OPTION) {
-					listener.input(textArea.getText());
+					Gdx.app.postRunnable(new Runnable() {
+
+						@Override
+						public void run() {
+							listener.input(textArea.getText());
+						}
+					});
 				} else {
-					listener.canceled();
+					Gdx.app.postRunnable(new Runnable() {
+
+						@Override
+						public void run() {
+							listener.canceled();
+						}
+					});
 				}
 
 			}
