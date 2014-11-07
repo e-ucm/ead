@@ -37,3 +37,5 @@ to.front = Enviar delante
 undo = Deshacer
 ungroup = Desagrupar
 redo = Rehacer
+accept = Aceptar
+cancel = Cancelar
