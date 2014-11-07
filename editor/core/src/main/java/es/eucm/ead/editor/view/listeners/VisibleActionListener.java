@@ -36,19 +36,43 @@
  */
 package es.eucm.ead.editor.view.listeners;
 
+import com.badlogic.gdx.math.Interpolation;
 import com.badlogic.gdx.scenes.scene2d.Actor;
+import com.badlogic.gdx.scenes.scene2d.actions.Actions;
+import com.badlogic.gdx.scenes.scene2d.ui.Table;
 
 public class VisibleActionListener implements ActionListener {
+
+	private static final float ANIM_TIME = 0.15f;
 
 	private Actor actor;
 
 	public VisibleActionListener(Actor actor) {
 		this.actor = actor;
+		if (actor instanceof Table) {
+			((Table) actor).pack();
+			((Table) actor).setTransform(true);
+		}
+		this.actor.setScale(0.5f);
+		this.actor.setOrigin(actor.getHeight() / 2, actor.getWidth() / 2);
 	}
 
 	@Override
 	public void enableChanged(Class actionClass, boolean enable) {
-		actor.setVisible(enable);
+		actor.clearActions();
+		if (enable) {
+			actor.addAction(Actions.sequence(Actions.visible(true), Actions
+					.parallel(Actions.fadeIn(ANIM_TIME), Actions.scaleTo(1, 1,
+							ANIM_TIME), Actions.rotateBy(360, ANIM_TIME,
+							Interpolation.pow2Out))));
+		} else {
+			actor.addAction(Actions.sequence(Actions.parallel(
+					Actions.fadeOut(ANIM_TIME),
+					Actions.scaleTo(0.5f, 0.5f, ANIM_TIME),
+					Actions.rotateBy(-360, ANIM_TIME, Interpolation.pow2In)),
+					Actions.visible(false)));
+		}
+
 	}
 
 }

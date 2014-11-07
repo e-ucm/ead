@@ -100,9 +100,10 @@ public class WidgetBuilder {
 	}
 
 	public static IconButton toolbarIcon(Skin skin, String icon,
-			String tooltip, boolean lockeable, Class action, Object... args) {
+			String tooltip, boolean listenToAction, Class action,
+			Object... args) {
 		IconButton button = toolbarIcon(skin, icon, tooltip, action, args);
-		if (lockeable) {
+		if (listenToAction) {
 			controller.getActions().addActionListener(action,
 					new VisibleActionListener(button));
 			button.setVisible(controller.getActions().getAction(action)

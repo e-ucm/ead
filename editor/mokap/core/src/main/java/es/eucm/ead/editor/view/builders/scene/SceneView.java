@@ -206,7 +206,7 @@ public class SceneView implements ViewBuilder {
 		compose.addSpace();
 
 		compose.add(WidgetBuilder.toolbarIcon(skin, SkinConstants.IC_PASTE,
-				i18N.m("paste"), Paste.class));
+				i18N.m("paste"), true, Paste.class));
 
 		compose.add(WidgetBuilder.toolbarIconWithMenu(skin,
 				SkinConstants.IC_ADD, buildInsertContextMenu(skin, i18N)));
@@ -229,7 +229,6 @@ public class SceneView implements ViewBuilder {
 		transform.add(WidgetBuilder.toolbarIcon(skin, SkinConstants.IC_GROUP,
 				i18N.m("group.create"), true, GroupSelection.class));
 
-		// TODO add edit and enter in group
 		final MultiWidget multiButton = WidgetBuilder
 				.multiToolbarIcon(WidgetBuilder.toolbarIcon(skin,
 						SkinConstants.IC_GROUP, i18N.m("group.create"), false,
@@ -238,11 +237,11 @@ public class SceneView implements ViewBuilder {
 		transform.add(multiButton);
 
 		transform.add(WidgetBuilder.toolbarIcon(skin, SkinConstants.IC_TO_BACK,
-				i18N.m("to.back"), ReorderSelection.class,
+				i18N.m("to.back"), true, ReorderSelection.class,
 				ReorderSelection.Type.TO_BACK));
 
 		transform.add(WidgetBuilder.toolbarIcon(skin,
-				SkinConstants.IC_TO_FRONT, i18N.m("to.front"),
+				SkinConstants.IC_TO_FRONT, i18N.m("to.front"), true,
 				ReorderSelection.class, ReorderSelection.Type.TO_FRONT));
 
 		transform.add(WidgetBuilder.toolbarIconWithMenu(skin,
@@ -254,12 +253,13 @@ public class SceneView implements ViewBuilder {
 			public void modelChanged(SelectionEvent event) {
 				if (controller.getModel().getSelection()
 						.get(Selection.SCENE_ELEMENT).length == 1) {
-					// group
+					// show group button
 					if (((ModelEntity) controller.getModel().getSelection()
 							.getSingle(Selection.SCENE_ELEMENT)).getChildren().size > 1) {
 						multiButton.setSelectedWidget(0);
+						// Show edit or to enter in group button
 					} else {
-						// TODO edit and to enter in group
+
 					}
 				}
 			}
