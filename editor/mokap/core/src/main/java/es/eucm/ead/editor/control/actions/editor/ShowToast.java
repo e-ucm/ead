@@ -40,11 +40,12 @@ import com.badlogic.gdx.math.Interpolation;
 import com.badlogic.gdx.scenes.scene2d.Group;
 import com.badlogic.gdx.scenes.scene2d.Touchable;
 import com.badlogic.gdx.scenes.scene2d.actions.Actions;
-import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 
 import es.eucm.ead.editor.control.Controller;
 import es.eucm.ead.editor.control.actions.EditorAction;
+import es.eucm.ead.editor.view.widgets.Toast;
+import es.eucm.ead.editor.view.widgets.WidgetBuilder;
 
 /**
  * <p>
@@ -57,11 +58,11 @@ import es.eucm.ead.editor.control.actions.EditorAction;
  */
 public class ShowToast extends EditorAction {
 
+	private static final float TOAST_LETERAL_PAD = 24f;
+
 	private static final float TOAST_TIME = 1.0f;
 
-	private static final String STYLE_TOAST = "toast";
-
-	private Label label;
+	private Toast toast;
 
 	public ShowToast() {
 		super(true, true, String.class);
@@ -71,24 +72,29 @@ public class ShowToast extends EditorAction {
 	public void initialize(Controller controller) {
 		super.initialize(controller);
 		Skin skin = controller.getApplicationAssets().getSkin();
-		label = new Label("", skin, STYLE_TOAST);
-		label.setTouchable(Touchable.disabled);
+		toast = new Toast(skin);
+		toast.setTouchable(Touchable.disabled);
+
+		float pad = WidgetBuilder.dpToPixels(TOAST_LETERAL_PAD);
+		toast.padRight(pad);
+		toast.padLeft(pad);
 	}
 
 	@Override
 	public void perform(Object... args) {
-		label.setText((String) args[0]);
-		label.pack();
+		toast.setText((String) args[0]);
+		toast.pack();
+
 		Group modalsContainer = controller.getViews().getViewsContainer();
-		float x = modalsContainer.getWidth() / 2.0f - label.getWidth() / 2.0f;
+		float x = modalsContainer.getWidth() / 2.0f - toast.getWidth() / 2.0f;
 		float y = modalsContainer.getHeight() / 10.0f;
-		label.setPosition(x, y);
-		label.clearActions();
-		label.addAction(Actions.sequence(Actions.alpha(0.0f),
+		toast.setPosition(x, y);
+		toast.clearActions();
+		toast.addAction(Actions.sequence(Actions.alpha(0.0f),
 				Actions.alpha(1.0f, TOAST_TIME, Interpolation.exp5Out),
 				Actions.delay(TOAST_TIME),
 				Actions.alpha(0.0f, TOAST_TIME, Interpolation.exp5Out),
 				Actions.removeActor()));
-		controller.getViews().addToModalsContainer(label);
+		controller.getViews().addToModalsContainer(toast);
 	}
 }
