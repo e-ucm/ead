@@ -58,7 +58,7 @@ public class ColorPickerPanelTest extends UITest {
 	protected Actor buildUI(Skin skin, I18N i18n) {
 
 		LinearLayout container = new LinearLayout(false).background(skin
-				.getDrawable("black-bg"));
+				.getDrawable(SkinConstants.DRAWABLE_BLACK_BG));
 		IconButton iconButton = WidgetBuilder.toolbarIcon(skin,
 				SkinConstants.IC_ADD, null);
 		container.add(iconButton);

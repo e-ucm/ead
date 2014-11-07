@@ -46,6 +46,8 @@ public interface SkinConstants {
 	public static final String DRAWABLE_BLANK = "blank";
 	public static final String DRAWABLE_PAGE = "page";
 	public static final String DRAWABLE_PAGE_LEFT = "page_left";
+	public static final String DRAWABLE_BLACK_BG = "black_bg";
+	public static final String DRAWABLE_LIGHT_GRAY_BG = "light_gray_bg";
 
 	public static final String STYLE_DEFAULT = "default";
 	public static final String STYLE_CONTEXT = "context";
@@ -69,6 +71,8 @@ public interface SkinConstants {
 
 	public static final String IC_GROUP = "ic_group";
 	public static final String IC_UNGROUP = "ic_ungroup";
+
+	public static final String IC_EDIT = "ic_edit";
 
 	public static final String IC_COPY = "ic_copy";
 	public static final String IC_TO_BACK = "ic_to_back";
