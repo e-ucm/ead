@@ -38,12 +38,11 @@ package es.eucm.ead.editor.editorui.widgets;
 
 import com.badlogic.gdx.backends.lwjgl.LwjglApplication;
 import com.badlogic.gdx.backends.lwjgl.LwjglApplicationConfiguration;
-import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
-import es.eucm.ead.editor.control.MokapController.Dpi;
+
 import es.eucm.ead.editor.editorui.UITest;
 import es.eucm.ead.editor.view.SkinConstants;
 import es.eucm.ead.editor.view.widgets.ContextMenu;
@@ -57,7 +56,7 @@ public class ContextMenuTest extends UITest {
 	@Override
 	protected Actor buildUI(Skin skin, I18N i18n) {
 		LinearLayout container = new LinearLayout(false).background(skin
-				.getDrawable("black-bg"));
+				.getDrawable(SkinConstants.DRAWABLE_BLACK_BG));
 		IconButton iconButton = WidgetBuilder.toolbarIcon(skin,
 				SkinConstants.IC_ADD, null);
 		container.add(iconButton);
@@ -84,7 +83,6 @@ public class ContextMenuTest extends UITest {
 		LwjglApplicationConfiguration config = new LwjglApplicationConfiguration();
 		config.width = 640;
 		config.height = 360;
-		config.overrideDensity = MathUtils.round(Dpi.LDPI.getMaxDpi());
 		new LwjglApplication(new ContextMenuTest(), config);
 	}
 }

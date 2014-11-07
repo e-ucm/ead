@@ -45,6 +45,8 @@ import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.InputListener;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.utils.Drawable;
+
+import es.eucm.ead.editor.view.SkinConstants;
 import es.eucm.ead.editor.view.widgets.baseview.BaseView;
 import es.eucm.ead.editor.view.widgets.baseview.BaseView.BaseViewStyle;
 import es.eucm.ead.editor.assets.ApplicationAssets;
@@ -60,7 +62,8 @@ public class BaseViewTest extends UITest {
 
 		ApplicationAssets assets = controller.getApplicationAssets();
 
-		Drawable blank = assets.getSkin().getDrawable("blank");
+		Drawable blank = assets.getSkin().getDrawable(
+				SkinConstants.DRAWABLE_BLANK);
 
 		BaseViewStyle style = new BaseViewStyle();
 		style.navigationBackground = blank;
@@ -68,25 +71,25 @@ public class BaseViewTest extends UITest {
 		final BaseView glassContainer = new BaseView(style);
 		LinearLayout toolbar = new LinearLayout(true, blank)
 				.backgroundColor(Color.RED);
-		toolbar.add(new IconButton("back80x80", assets.getSkin()));
+		toolbar.add(new IconButton(SkinConstants.IC_TO_BACK, assets.getSkin()));
 
 		LinearLayout navigation = new LinearLayout(false, blank);
 
 		for (int i = 0; i < 30; i++) {
 			LinearLayout wide = new LinearLayout(true);
-			wide.add(new IconButton("camera250x250", assets.getSkin()));
-			wide.add(new IconButton("camera250x250", assets.getSkin()));
-			wide.add(new IconButton("camera250x250", assets.getSkin()));
-			wide.add(new IconButton("camera250x250", assets.getSkin()));
+			wide.add(new IconButton(SkinConstants.IC_CAMERA, assets.getSkin()));
+			wide.add(new IconButton(SkinConstants.IC_CAMERA, assets.getSkin()));
+			wide.add(new IconButton(SkinConstants.IC_CAMERA, assets.getSkin()));
+			wide.add(new IconButton(SkinConstants.IC_CAMERA, assets.getSkin()));
 			navigation.add(wide);
 		}
 
 		LinearLayout selectionContext = new LinearLayout(false, blank);
 		for (int i = 0; i < 30; i++) {
 			LinearLayout wide = new LinearLayout(true);
-			wide.add(new IconButton("camera250x250", assets.getSkin()));
-			wide.add(new IconButton("camera250x250", assets.getSkin()));
-			wide.add(new IconButton("camera250x250", assets.getSkin()));
+			wide.add(new IconButton(SkinConstants.IC_CAMERA, assets.getSkin()));
+			wide.add(new IconButton(SkinConstants.IC_CAMERA, assets.getSkin()));
+			wide.add(new IconButton(SkinConstants.IC_CAMERA, assets.getSkin()));
 			selectionContext.add(wide);
 		}
 
@@ -111,6 +114,6 @@ public class BaseViewTest extends UITest {
 	}
 
 	public static void main(String[] args) {
-		new LwjglApplication(new BaseViewTest(), "Glass Container", 800, 600);
+		new LwjglApplication(new BaseViewTest(), "BaseViewTest", 800, 600);
 	}
 }

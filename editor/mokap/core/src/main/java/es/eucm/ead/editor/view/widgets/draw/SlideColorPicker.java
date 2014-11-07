@@ -64,8 +64,16 @@ import es.eucm.ead.editor.view.widgets.WidgetBuilder;
  */
 public class SlideColorPicker extends AbstractWidget {
 
-	private static final float HEIGHT_CM = 2.1f;
-	private static final float WIDTH_CM = 5f;
+	/**
+	 * HUE is the color type (such as red, blue, or yellow).
+	 * 
+	 * Ranges from 0 to 360° in most applications. (each value corresponds to
+	 * one color : 0 is red, 45 is a shade of orange and 55 is a shade of
+	 * yellow).
+	 */
+	private static final float SLIDER_MAX_VALUE = 359;
+	private static final float HEIGHT_TIMES_KNOB = 1.1f;
+	private static final float WIDTH_TIMES_KNOB = 8f;
 
 	private static final InputListener listener = new ClickListener() {
 
@@ -133,36 +141,36 @@ public class SlideColorPicker extends AbstractWidget {
 		setSliderSpace(slideColorPickerStyle.sliderSpace);
 		setPad(slideColorPickerStyle.pad);
 
-		float width = getPrefWidth();
-		hueSlider = new Slider(0, width, 1, false, new SliderStyle(sliderStyle)) {
+		hueSlider = new Slider(0, SLIDER_MAX_VALUE, 1, false, new SliderStyle(
+				sliderStyle)) {
 			@Override
 			public float getPrefHeight() {
 				return 0;
 			}
 		};
-		hueSlider.setValue(width);
+		hueSlider.setValue(SLIDER_MAX_VALUE);
 		hueSlider.setUserObject(this);
 		hueSlider.addListener(listener);
 
-		saturationSlider = new Slider(0, width, 1, false, new SliderStyle(
-				sliderStyle)) {
+		saturationSlider = new Slider(0, SLIDER_MAX_VALUE, 1, false,
+				new SliderStyle(sliderStyle)) {
 			@Override
 			public float getPrefHeight() {
 				return 0;
 			}
 		};
-		saturationSlider.setValue(width);
+		saturationSlider.setValue(SLIDER_MAX_VALUE);
 		saturationSlider.setUserObject(this);
 		saturationSlider.addListener(listener);
 
-		brightnessSlider = new Slider(0, width, 1, false, new SliderStyle(
-				sliderStyle)) {
+		brightnessSlider = new Slider(0, SLIDER_MAX_VALUE, 1, false,
+				new SliderStyle(sliderStyle)) {
 			@Override
 			public float getPrefHeight() {
 				return 0;
 			}
 		};
-		brightnessSlider.setValue(width);
+		brightnessSlider.setValue(SLIDER_MAX_VALUE);
 		brightnessSlider.setUserObject(this);
 		brightnessSlider.addListener(listener);
 		color.set(Color.RED);
@@ -182,8 +190,8 @@ public class SlideColorPicker extends AbstractWidget {
 	 */
 	public void initialize() {
 		if (huePixmap == null) {
-			int width = MathUtils.round(cmToXPixels(WIDTH_CM)), height = MathUtils
-					.round(cmToYPixels(HEIGHT_CM) / 3f);
+			int width = MathUtils.round(backgroundWidth()), height = MathUtils
+					.round(backgroundHeight());
 
 			huePixmap = new Pixmap(width, height, Format.RGBA8888);
 			saturationPixmap = new Pixmap(width, height, Format.RGBA8888);
@@ -326,9 +334,8 @@ public class SlideColorPicker extends AbstractWidget {
 
 	@Override
 	public void layout() {
-		float width = cmToXPixels(WIDTH_CM), heigth = cmToYPixels(HEIGHT_CM);
+		float width = backgroundWidth(), sliderHeight = backgroundHeight();
 
-		float sliderHeight = MathUtils.round(heigth / 3f);
 		setBounds(brightnessSlider, pad, pad, width, sliderHeight);
 		setBounds(saturationSlider, pad, brightnessSlider.getY() + sliderSpace
 				+ brightnessSlider.getHeight(), width, sliderHeight);
@@ -336,14 +343,22 @@ public class SlideColorPicker extends AbstractWidget {
 				+ saturationSlider.getHeight(), width, sliderHeight);
 	}
 
+	private float backgroundHeight() {
+		return hueSlider.getStyle().knob.getMinHeight() * HEIGHT_TIMES_KNOB;
+	}
+
+	private float backgroundWidth() {
+		return hueSlider.getStyle().knob.getMinWidth() * WIDTH_TIMES_KNOB;
+	}
+
 	@Override
 	public float getPrefHeight() {
-		return cmToYPixels(HEIGHT_CM) + 2 * sliderSpace + 2 * pad;
+		return backgroundHeight() * 3 + 2 * sliderSpace + 2 * pad;
 	}
 
 	@Override
 	public float getPrefWidth() {
-		return cmToXPixels(WIDTH_CM) + 2 * pad;
+		return backgroundWidth() + 2 * pad;
 	}
 
 	public Color getPickedColor() {

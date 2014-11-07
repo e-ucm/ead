@@ -46,7 +46,9 @@ import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.InputListener;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.utils.Drawable;
+
 import es.eucm.ead.editor.editorui.UITest;
+import es.eucm.ead.editor.view.SkinConstants;
 import es.eucm.ead.editor.view.builders.scene.groupeditor.GroupEditor;
 import es.eucm.ead.engine.I18N;
 
@@ -58,13 +60,13 @@ public class GroupEditorTest extends UITest {
 	private static Drawable drawable;
 
 	public static void main(String args[]) {
-		new LwjglApplication(new GroupEditorTest(), "Test for DragAndDrop",
+		new LwjglApplication(new GroupEditorTest(), "Test for GroupEditorTest",
 				1000, 600);
 	}
 
 	@Override
 	protected Actor buildUI(Skin skin, I18N i18n) {
-		drawable = skin.getDrawable("blank");
+		drawable = skin.getDrawable(SkinConstants.DRAWABLE_BLANK);
 		final GroupEditor container = new GroupEditor();
 		container.setBackground(drawable);
 
