@@ -70,7 +70,6 @@ public class GroupEditor extends AbstractWidget {
 	public GroupEditor() {
 		selection = new Array<Actor>();
 
-		addListener(new GroupEditorListener());
 		selectionLayer = new Group();
 		addActor(selectionLayer);
 
