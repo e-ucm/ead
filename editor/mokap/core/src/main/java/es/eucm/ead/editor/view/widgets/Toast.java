@@ -34,61 +34,66 @@
  *      You should have received a copy of the GNU Lesser General Public License
  *      along with eAdventure.  If not, see <http://www.gnu.org/licenses/>.
  */
-package es.eucm.ead.editor.control.actions.editor;
+package es.eucm.ead.editor.view.widgets;
 
-import com.badlogic.gdx.math.Interpolation;
-import com.badlogic.gdx.scenes.scene2d.Group;
-import com.badlogic.gdx.scenes.scene2d.Touchable;
-import com.badlogic.gdx.scenes.scene2d.actions.Actions;
+import com.badlogic.gdx.graphics.Color;
+import com.badlogic.gdx.graphics.g2d.Batch;
+import com.badlogic.gdx.scenes.scene2d.ui.Container;
 import com.badlogic.gdx.scenes.scene2d.ui.Label;
+import com.badlogic.gdx.scenes.scene2d.ui.Label.LabelStyle;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
+import com.badlogic.gdx.scenes.scene2d.utils.Drawable;
 
-import es.eucm.ead.editor.control.Controller;
-import es.eucm.ead.editor.control.actions.EditorAction;
+public class Toast extends Container<Label> {
 
-/**
- * <p>
- * Shows a toast with the given text
- * </p>
- * <dl>
- * <dt><strong>Arguments</strong></dt>
- * <dd><strong>args[0]</strong> <em>String</em> The toast text</dd>
- * </dl>
- */
-public class ShowToast extends EditorAction {
+	Label label;
 
-	private static final float TOAST_TIME = 1.0f;
+	private float height;
 
-	private static final String STYLE_TOAST = "toast";
+	public Toast(Skin skin) {
+		this(skin.get(ToastStyle.class), -1);
+	}
 
-	private Label label;
+	public Toast(Skin skin, float height) {
+		this(skin.get(ToastStyle.class), height);
+	}
 
-	public ShowToast() {
-		super(true, true, String.class);
+	public Toast(Skin skin, String style, float height) {
+		this(skin.get(style, ToastStyle.class), height);
+	}
+
+	public Toast(ToastStyle style, float height) {
+		super(new Label("", style.label));
+		this.setBackground(style.background);
+		Color g = style.color;
+		this.setColor(g);
+		this.height(height);
 	}
 
 	@Override
-	public void initialize(Controller controller) {
-		super.initialize(controller);
-		Skin skin = controller.getApplicationAssets().getSkin();
-		label = new Label("", skin, STYLE_TOAST);
-		label.setTouchable(Touchable.disabled);
+	protected void drawBackground(Batch batch, float parentAlpha, float x,
+			float y) {
+		super.drawBackground(batch, parentAlpha, x, y);
+		batch.setColor(Color.WHITE);
+	}
+
+	public void setText(String text) {
+		getActor().setText(text);
 	}
 
 	@Override
-	public void perform(Object... args) {
-		label.setText((String) args[0]);
-		label.pack();
-		Group modalsContainer = controller.getViews().getViewsContainer();
-		float x = modalsContainer.getWidth() / 2.0f - label.getWidth() / 2.0f;
-		float y = modalsContainer.getHeight() / 10.0f;
-		label.setPosition(x, y);
-		label.clearActions();
-		label.addAction(Actions.sequence(Actions.alpha(0.0f),
-				Actions.alpha(1.0f, TOAST_TIME, Interpolation.exp5Out),
-				Actions.delay(TOAST_TIME),
-				Actions.alpha(0.0f, TOAST_TIME, Interpolation.exp5Out),
-				Actions.removeActor()));
-		controller.getViews().addToModalsContainer(label);
+	public float getPrefHeight() {
+		return height > 0 ? height : super.getPrefHeight();
 	}
+
+	public static class ToastStyle {
+
+		public Drawable background;
+
+		public Color color;
+
+		public LabelStyle label;
+
+	}
+
 }

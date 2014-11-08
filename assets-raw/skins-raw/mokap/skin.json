@@ -29,6 +29,12 @@
             "b": 0.6,
             "a": 1
         },
+         "dark_gray": {
+            "r": 0.196,
+            "g": 0.196,
+            "b": 0.196,
+            "a": 1
+        },
         "light_gray": {
             "r": 0.8627,
             "g": 0.8627,
@@ -86,7 +92,6 @@
         "toast": {
             "font": "default_font",
             "fontColor": "white",
-            "background": "page_pressed"
         }
     },
     "com.badlogic.gdx.scenes.scene2d.ui.Button$ButtonStyle": {
@@ -190,5 +195,17 @@
             "background": "toolbar",
             "color": "brown_moka"
         }
+    },
+    "es.eucm.ead.editor.view.widgets.Toast$ToastStyle": {
+        "default": {
+            "background": "page",
+            "color": "dark_gray",
+            "label": "toast"
+        }, 
+        "tooltip": {
+            "background": "page90",
+            "color": "dark_gray",
+            "label": "toast"
+        } 
     }
 }

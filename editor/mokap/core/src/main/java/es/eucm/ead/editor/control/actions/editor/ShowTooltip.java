@@ -41,10 +41,12 @@ import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.Touchable;
 import com.badlogic.gdx.scenes.scene2d.actions.Actions;
-import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
+
 import es.eucm.ead.editor.control.Controller;
 import es.eucm.ead.editor.control.actions.EditorAction;
+import es.eucm.ead.editor.view.widgets.Toast;
+import es.eucm.ead.editor.view.widgets.WidgetBuilder;
 
 /**
  * <p>
@@ -58,11 +60,14 @@ import es.eucm.ead.editor.control.actions.EditorAction;
  */
 public class ShowTooltip extends EditorAction {
 
+	private static final float TOOLTIP_HEIGHT = 14;
+	private static final float TOOLTIP_LETERAL_PAD = 16f;
+
+	private static final String STYLE_TOOLTIP = "tooltip";
+
 	private static final float TOOLTIP_TIME = 1.0f;
 
-	private static final String STYLE_TOAST = "toast";
-
-	private Label label;
+	private Toast tooltip;
 
 	private Vector2 position = new Vector2();
 
@@ -74,27 +79,36 @@ public class ShowTooltip extends EditorAction {
 	public void initialize(Controller controller) {
 		super.initialize(controller);
 		Skin skin = controller.getApplicationAssets().getSkin();
-		label = new Label("", skin, STYLE_TOAST);
-		label.setTouchable(Touchable.disabled);
+
+		tooltip = new Toast(skin, STYLE_TOOLTIP,
+				WidgetBuilder.dpToPixels(TOOLTIP_HEIGHT));
+		tooltip.setTouchable(Touchable.disabled);
+
+		float pad = WidgetBuilder.dpToPixels(TOOLTIP_LETERAL_PAD);
+		tooltip.padRight(pad);
+		tooltip.padLeft(pad);
+
 	}
 
 	@Override
 	public void perform(Object... args) {
-		label.setText((String) args[0]);
-		label.pack();
+		tooltip.setText((String) args[0]);
+		tooltip.pack();
 
 		Actor actor = (Actor) args[1];
 
 		position.set(0, 0);
 		actor.localToStageCoordinates(position);
 
-		label.setPosition(position.x, position.y - label.getHeight());
-		label.clearActions();
-		label.addAction(Actions.sequence(Actions.alpha(0.0f),
+		tooltip.setPosition(position.x
+				+ (actor.getWidth() - tooltip.getWidth()) / 2, position.y
+				- tooltip.getHeight());
+		tooltip.clearActions();
+		tooltip.addAction(Actions.sequence(Actions.alpha(0.0f),
 				Actions.alpha(1.0f, TOOLTIP_TIME, Interpolation.exp5Out),
 				Actions.delay(TOOLTIP_TIME),
 				Actions.alpha(0.0f, TOOLTIP_TIME, Interpolation.exp5Out),
 				Actions.removeActor()));
-		controller.getViews().addToModalsContainer(label);
+		controller.getViews().addToModalsContainer(tooltip);
 	}
 }
