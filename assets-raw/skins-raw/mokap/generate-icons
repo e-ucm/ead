@@ -1,4 +1,9 @@
 cd svg
+for folder in $(find ../ -maxdepth 1 -type d -not -name . -not -name common -not -name svg)
+do
+    rm -R $folder/images
+    mkdir $folder/images
+done
 for file in $(find . -type f)
 	do
 		imagefile=${file:2}
@@ -9,10 +14,12 @@ for file in $(find . -type f)
         for folder in $(find ../ -maxdepth 1 -type d -not -name . -not -name common -not -name svg)
         do
             case $folder in
-                ../ldpi) dpi=45;;
+                ../ldpi) dpi=67;;
                 ../mdpi) dpi=90;;
-                ../hdpi) dpi=135;;
-                ../xhdpi) dpi=180;;
+                ../hdpi) dpi=112;;
+                ../xhdpi) dpi=135;;
+                ../xxhdpi) dpi=157;;
+                ../xxxhdpi) dpi=180;;
             esac
             echo "$folder has $dpi dpi"
 		    inkscape --export-png=$folder/images/$imagepng --export-dpi=$dpi --export-background-opacity=0 --without-gui $imagefile
