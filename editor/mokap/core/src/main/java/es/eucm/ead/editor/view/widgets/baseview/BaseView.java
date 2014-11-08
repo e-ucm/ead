@@ -103,7 +103,7 @@ public class BaseView extends AbstractWidget {
 			@Override
 			public void fling(InputEvent event, float velocityX,
 					float velocityY, int button) {
-				if (!event.isHandled()) {
+				if (!event.isStopped()) {
 					switch (area) {
 					case NAVIGATION_AREA:
 						if (velocityX > cmToXPixels(FLING_MIN_VELOCITY_CM)) {

@@ -213,6 +213,19 @@ public class GroupEditor extends AbstractWidget {
 		}
 
 		@Override
+		public void pan(InputEvent event, float x, float y, float deltaX,
+				float deltaY) {
+			// If panning, cancel selection process, removing the pressed
+			// selection box
+			for (Actor selectionBox : selectionLayer.getChildren()) {
+				if (((SelectionBox) selectionBox).isPressed()) {
+					selectionBox.remove();
+					Pools.free(selectionBox);
+				}
+			}
+		}
+
+		@Override
 		public void pinch(InputEvent event, Vector2 initialPointer1,
 				Vector2 initialPointer2, Vector2 pointer1, Vector2 pointer2) {
 			task.cancel();
