@@ -39,7 +39,9 @@ package es.eucm.ead.editor.view.builders.project;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import es.eucm.ead.editor.control.Controller;
+import es.eucm.ead.editor.control.Selection;
 import es.eucm.ead.editor.control.actions.editor.ChangeView;
+import es.eucm.ead.editor.control.actions.model.SetSelection;
 import es.eucm.ead.editor.view.SkinConstants;
 import es.eucm.ead.editor.view.builders.ViewBuilder;
 import es.eucm.ead.editor.view.builders.home.HomeView;
@@ -72,6 +74,7 @@ public class ProjectView implements ViewBuilder {
 
 	@Override
 	public Actor getView(Object... args) {
+		controller.action(SetSelection.class, null, Selection.RESOURCE);
 		scenesGallery.prepare();
 		return view;
 	}

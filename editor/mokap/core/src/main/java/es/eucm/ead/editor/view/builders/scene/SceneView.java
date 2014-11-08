@@ -133,12 +133,14 @@ public class SceneView implements ViewBuilder {
 
 	@Override
 	public Actor getView(Object... args) {
+		controller.getCommands().pushStack();
 		sceneEditor.prepare();
 		return view;
 	}
 
 	@Override
 	public void release(Controller controller) {
+		controller.getCommands().popStack(false);
 		sceneEditor.release();
 		view.invalidate();
 	}

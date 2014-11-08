@@ -49,6 +49,8 @@ public class Selection {
 
 	private static final Object[] NO_SELECTION = new Object[0];
 
+	public static final String RESOURCE = "resource";
+
 	public static final String SCENE = "scene";
 
 	public static final String EDITED_GROUP = "editedGroup";
@@ -64,8 +66,6 @@ public class Selection {
 	public static final String DEBUG = "debug";
 
 	public static final String SCENE_MAP = "sceneMap";
-
-	public static final String RESOURCE = "resource";
 
 	private int pointer = -1;
 
