@@ -85,7 +85,7 @@ public class MokapDesktopPlatform extends MokapPlatform {
 			public void canceled() {
 			}
 
-		}, "File path!", "");
+		}, "File path!", "", "");
 	}
 
 	@Override
@@ -102,7 +102,7 @@ public class MokapDesktopPlatform extends MokapPlatform {
 			public void canceled() {
 			}
 
-		}, "File path!", "");
+		}, "File path!", "", "");
 	}
 
 	@Override
