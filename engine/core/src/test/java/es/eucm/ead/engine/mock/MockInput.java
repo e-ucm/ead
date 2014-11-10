@@ -130,16 +130,6 @@ public class MockInput implements Input {
 	}
 
 	@Override
-	public void getTextInput(TextInputListener listener, String title,
-			String text) {
-	}
-
-	@Override
-	public void getPlaceholderTextInput(TextInputListener listener,
-			String title, String placeholder) {
-	}
-
-	@Override
 	public void setOnscreenKeyboardVisible(boolean visible) {
 	}
 
@@ -232,12 +222,17 @@ public class MockInput implements Input {
 	}
 
 	@Override
-	public boolean isKeyJustPressed(int arg0) {
+	public boolean isKeyJustPressed(int keyCode) {
 		return false;
 	}
 
 	@Override
 	public boolean isCatchBackKey() {
 		return false;
+	}
+
+	@Override
+	public void getTextInput(TextInputListener listener, String title,
+			String text, String placeholder) {
 	}
 }
