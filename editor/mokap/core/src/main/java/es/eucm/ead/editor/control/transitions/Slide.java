@@ -54,30 +54,23 @@ public class Slide implements Transition {
 	public static final int DOWN = 4;
 	public static final int RANDOM = 0;
 
-	private static final Slide instance = new Slide();
-
 	private float duration;
 	private int direction;
 	private boolean slideOut;
 	private Interpolation easing;
 
-	public static Slide init() {
-		return init(MathUtils.random(.6f, .9f), RANDOM,
-				MathUtils.randomBoolean(), Interpolation.pow2Out);
+	public Slide() {
+		this(MathUtils.random(.6f, .9f), RANDOM, MathUtils.randomBoolean(),
+				Interpolation.pow2Out);
 	}
 
-	public static Slide init(float duration, int direction, boolean slideOut,
+	public Slide(float duration, int direction, boolean slideOut,
 			Interpolation easing) {
-		instance.duration = duration;
-		instance.direction = direction == RANDOM ? MathUtils.random(LEFT, DOWN)
+		this.duration = duration;
+		this.direction = direction == RANDOM ? MathUtils.random(LEFT, DOWN)
 				: direction;
-		instance.slideOut = slideOut;
-		instance.easing = easing;
-		return instance;
-	}
-
-	private Slide() {
-
+		this.slideOut = slideOut;
+		this.easing = easing;
 	}
 
 	@Override

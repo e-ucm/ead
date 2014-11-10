@@ -55,19 +55,22 @@ public class Transitions {
 
 	public static Transition getFadeSlideTransition(Actor fadeActor,
 			Actor slideActor, boolean in) {
-		return ParallelTransition.init(TransitionInfo.init(
-				Fade.init(IN_OUT, false), fadeActor), TransitionInfo.init(Slide
-				.init(IN_OUT, in ? Slide.RIGHT : Slide.LEFT, !in,
-						in ? Interpolation.pow2In : Interpolation.pow2Out),
-				slideActor));
+		return new ParallelTransition(TransitionInfo.init(new Fade(IN_OUT,
+				false), fadeActor), TransitionInfo.init(new Slide(IN_OUT,
+				in ? Slide.RIGHT : Slide.LEFT, !in, in ? Interpolation.pow2In
+						: Interpolation.pow2Out), slideActor));
 	}
 
 	public static Transition getSlideTransition(boolean in) {
-		return Slide.init(IN_OUT, in ? Slide.RIGHT : Slide.LEFT, !in,
+		return new Slide(IN_OUT, in ? Slide.RIGHT : Slide.LEFT, !in,
 				in ? Interpolation.pow2In : Interpolation.pow2Out);
 	}
 
 	public static Transition getFadeTransition(boolean in) {
-		return Fade.init(IN_OUT, false);
+		return new Fade(IN_OUT, false);
+	}
+
+	public static Transition getScaleAndFadeTransition(boolean in) {
+		return new ScaleAndFade(IN_OUT, in);
 	}
 }
