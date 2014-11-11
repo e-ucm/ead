@@ -44,6 +44,7 @@ import com.badlogic.gdx.utils.Disposable;
 import com.badlogic.gdx.utils.ObjectMap;
 
 import es.eucm.ead.editor.control.MokapController.BackListener;
+import es.eucm.ead.editor.control.actions.editor.ChangeView;
 import es.eucm.ead.editor.control.transitions.TransitionManager;
 import es.eucm.ead.editor.control.transitions.TransitionManager.Transition;
 import es.eucm.ead.editor.control.transitions.Transitions;
@@ -93,7 +94,17 @@ public class MokapViews extends Views implements BackListener, Disposable {
 
 	@Override
 	public void onBackPressed() {
-
+		if (!hideModalIfNeeded()) {
+			if (currentView instanceof BackListener) {
+				((BackListener) currentView).onBackPressed();
+			} else {
+				ViewBuilder nextView = currentView;
+				back();
+				if (nextView == currentView) {
+					controller.action(ChangeView.class, ProjectView.class);
+				}
+			}
+		}
 	}
 
 	public <T extends ViewBuilder> void setView(Class<T> viewClass,
@@ -131,13 +142,6 @@ public class MokapViews extends Views implements BackListener, Disposable {
 			stage.setKeyboardFocus(null);
 			stage.unfocusAll();
 		}
-	}
-
-	public void pause() {
-		/*
-		 * if (currentView.getClass() != ProjectsView.class) {
-		 * controller.action(ForceSave.class); }
-		 */
 	}
 
 	public void dispose() {
