@@ -184,7 +184,7 @@ public class SceneView implements ViewBuilder {
 
 	private LinearLayout buildComposeToolbar(Skin skin, I18N i18N) {
 		LinearLayout compose = new LinearLayout(true);
-		compose.setComputeInvisibles(false);
+		compose.setComputeInvisibles(true);
 		IconButton navigation = WidgetBuilder.toolbarIcon(skin,
 				SkinConstants.IC_MENU, null);
 		navigation.addListener(new ClickListener() {
