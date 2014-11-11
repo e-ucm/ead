@@ -106,7 +106,7 @@ public class MokapController extends Controller {
 		// This allows us to catch events related with
 		// the back key in Android.
 		Gdx.input.setCatchBackKey(true);
-		rootComponent.addCaptureListener(new InputListener() {
+		modalContainer.getStage().addCaptureListener(new InputListener() {
 			@Override
 			public boolean keyUp(InputEvent event, int keycode) {
 				if (keycode == Keys.BACK
@@ -127,7 +127,6 @@ public class MokapController extends Controller {
 
 	public void pause() {
 		getPreferences().flush();
-		((MokapViews) views).pause();
 	}
 
 	public Group getRootComponent() {
