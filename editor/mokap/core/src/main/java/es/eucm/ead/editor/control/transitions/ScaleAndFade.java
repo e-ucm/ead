@@ -52,8 +52,8 @@ public class ScaleAndFade implements Transition {
 	private float duration;
 	private boolean out;
 
-	public ScaleAndFade(float duration, boolean in) {
-		this.out = in;
+	public ScaleAndFade(float duration, boolean out) {
+		this.out = out;
 		this.duration = duration;
 	}
 

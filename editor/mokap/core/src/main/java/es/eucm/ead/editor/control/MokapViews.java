@@ -41,49 +41,53 @@ import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.Group;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.utils.Disposable;
-import com.badlogic.gdx.utils.SnapshotArray;
+import com.badlogic.gdx.utils.ObjectMap;
+
 import es.eucm.ead.editor.control.MokapController.BackListener;
 import es.eucm.ead.editor.control.transitions.TransitionManager;
 import es.eucm.ead.editor.control.transitions.TransitionManager.Transition;
+import es.eucm.ead.editor.control.transitions.Transitions;
 import es.eucm.ead.editor.view.builders.ViewBuilder;
+import es.eucm.ead.editor.view.builders.home.HomeView;
+import es.eucm.ead.editor.view.builders.project.ProjectView;
+import es.eucm.ead.editor.view.builders.scene.SceneView;
 
 public class MokapViews extends Views implements BackListener, Disposable {
+	private static final Transition DEFAULT_TRANSITION = Transitions
+			.getFadeTransition(true);
 
 	private TransitionManager transitionManager;
+	private ObjectMap<Class<?>, ObjectMap<Class<?>, Transition>> transitions;
 
 	public MokapViews(Controller controller, Group viewsContainer,
 			Group modalsContainer) {
 		super(controller, viewsContainer, modalsContainer);
-		transitionManager = new TransitionManager(controller, viewsContainer,
-				this);
 		resendTouch = false;
-	}
+		transitionManager = new TransitionManager(controller, viewsContainer,
+				modalsContainer);
 
-	public <T extends ViewBuilder> void transition(Class<T> viewClass,
-			Transition transition, Object... args) {
-		controller.getTracker().changeView(viewClass.getSimpleName());
-		if (currentView != null) {
-			currentView.release(controller);
-		}
-		currentView = getBuilder(viewClass, viewsBuilders);
-		if (currentView != null) {
-			SnapshotArray<Actor> children = viewsContainer.getChildren();
-			Actor current = children.size > 0 ? children.first() : null;
-			Actor[] actors = children.begin();
-			for (int i = 0, n = children.size; i < n; i++) {
-				Actor child = actors[i];
-				if (current != child) {
-					child.remove();
-				}
-			}
-			children.end();
-			Actor next = currentView.getView(args);
-			if (next != null) {
-				transitionManager.prepateTransition(transition, current, next);
-				currentArgs = args;
-				viewsHistory.viewUpdated(currentView.getClass(), currentArgs);
-			}
-		}
+		transitions = new ObjectMap<Class<?>, ObjectMap<Class<?>, Transition>>(
+				10);
+
+		ObjectMap<Class<?>, Transition> homeViewTransitions = new ObjectMap<Class<?>, Transition>(
+				3);
+		homeViewTransitions.put(ProjectView.class,
+				Transitions.getScaleAndFadeTransition(true));
+		transitions.put(HomeView.class, homeViewTransitions);
+
+		ObjectMap<Class<?>, Transition> projectViewTransitions = new ObjectMap<Class<?>, Transition>(
+				3);
+		projectViewTransitions.put(HomeView.class,
+				Transitions.getScaleAndFadeTransition(false));
+		projectViewTransitions.put(SceneView.class,
+				Transitions.getScaleAndFadeTransition(true));
+		transitions.put(ProjectView.class, projectViewTransitions);
+
+		ObjectMap<Class<?>, Transition> sceneViewTransitions = new ObjectMap<Class<?>, Transition>(
+				3);
+		sceneViewTransitions.put(ProjectView.class,
+				Transitions.getScaleAndFadeTransition(false));
+		transitions.put(SceneView.class, sceneViewTransitions);
 
 	}
 
@@ -92,14 +96,32 @@ public class MokapViews extends Views implements BackListener, Disposable {
 
 	}
 
-	protected Class getChangeViewClass() {
-		return null;
-	}
-
-	@Override
 	public <T extends ViewBuilder> void setView(Class<T> viewClass,
 			Object... args) {
-		super.setView(viewClass, args);
+		controller.getTracker().changeView(viewClass.getSimpleName());
+		if (currentView != null) {
+			currentView.release(controller);
+		}
+		Class currentClass = currentView != null ? currentView.getClass()
+				: null;
+		currentView = getBuilder(viewClass, viewsBuilders);
+		if (currentView != null) {
+			Actor next = currentView.getView(args);
+			if (next != null) {
+
+				Transition transition = null;
+				if (currentClass != null) {
+					transition = transitions.get(currentClass).get(
+							currentView.getClass());
+				}
+				if (transition == null) {
+					transition = DEFAULT_TRANSITION;
+				}
+				transitionManager.prepateTransition(transition, next);
+				currentArgs = args;
+				viewsHistory.viewUpdated(currentView.getClass(), currentArgs);
+			}
+		}
 	}
 
 	public void hideOnscreenKeyboard() {

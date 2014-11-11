@@ -45,22 +45,21 @@ import com.badlogic.gdx.graphics.glutils.FrameBuffer;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.Group;
 import com.badlogic.gdx.scenes.scene2d.Stage;
+import com.badlogic.gdx.scenes.scene2d.utils.Layout;
 import com.badlogic.gdx.utils.Disposable;
 import com.badlogic.gdx.utils.viewport.Viewport;
 
 import es.eucm.ead.editor.control.Controller;
-import es.eucm.ead.editor.control.MokapViews;
 
 /**
  * Manages a {@link Transition} between the current screen and the next screen.
  */
 public class TransitionManager extends Actor implements Disposable {
 
-	private Actor currentScreen, nextScreen;
+	private Actor nextScreen;
 	private FrameBuffer currFbo, nextFbo;
 	private Transition screenTransition;
-	private Group viewsContainer;
-	private MokapViews views;
+	private Group viewsContainer, modalsContainer;
 	private TextureRegion currTex;
 	private TextureRegion nexTex;
 	private float percentageCompletion;
@@ -68,21 +67,19 @@ public class TransitionManager extends Actor implements Disposable {
 	private float time;
 
 	public TransitionManager(Controller controller, Group viewsContainer,
-			MokapViews views) {
+			Group modalsContainer) {
 		this.viewsContainer = viewsContainer;
-		this.views = views;
+		this.modalsContainer = modalsContainer;
 	}
 
-	public void prepateTransition(Transition screenTransition, Actor current,
-			Actor next) {
-		currentScreen = current;
+	public void prepateTransition(Transition screenTransition, Actor next) {
 		nextScreen = next;
 
 		// start new transition
 		Gdx.input.setInputProcessor(null); // disable input
 		this.screenTransition = screenTransition;
-		time = 0;
-		Gdx.app.postRunnable(transition);
+		time = 0f;
+		Gdx.app.postRunnable(startTransition);
 	}
 
 	public void act(float delta) {
@@ -101,13 +98,16 @@ public class TransitionManager extends Actor implements Disposable {
 
 	private void endTransition() {
 		screenTransition.end();
+		nextScreen = null;
 		// transition has just finished
 		// enable input for next screen
-		Stage stage = viewsContainer.getStage();
+		Stage stage = getStage();
 		Gdx.input.setInputProcessor(stage);
 		// switch screens
 		remove();
-		viewsContainer.addActorAt(0, nextScreen);
+		stage.addActor(viewsContainer);
+		stage.addActor(modalsContainer);
+		Gdx.graphics.setContinuousRendering(false);
 	}
 
 	@Override
@@ -131,11 +131,18 @@ public class TransitionManager extends Actor implements Disposable {
 		void end();
 	}
 
-	private final Runnable transition = new Runnable() {
+	private final Runnable startTransition = new Runnable() {
 
 		@Override
 		public void run() {
+			Gdx.graphics.setContinuousRendering(true);
 			Stage stage = viewsContainer.getStage();
+			if (stage == null) {
+				stage = getStage();
+				stage.getRoot().clearChildren();
+				stage.addActor(viewsContainer);
+				stage.addActor(modalsContainer);
+			}
 			if (nextFbo == null) {
 				Viewport viewport = stage.getViewport();
 				int w = viewport.getScreenWidth();
@@ -156,10 +163,13 @@ public class TransitionManager extends Actor implements Disposable {
 			currTex.setRegion(currFbo.getColorBufferTexture());
 			currTex.flip(false, true);
 
-			if (currentScreen != null) {
-				currentScreen.remove();
-			}
+			viewsContainer.clearChildren();
 			viewsContainer.addActor(nextScreen);
+			if (nextScreen instanceof Layout) {
+				Layout layout = (Layout) nextScreen;
+				layout.invalidateHierarchy();
+				layout.setFillParent(true);
+			}
 
 			nextFbo.begin();
 			Gdx.gl20.glClear(GL20.GL_COLOR_BUFFER_BIT);
@@ -168,8 +178,8 @@ public class TransitionManager extends Actor implements Disposable {
 			nexTex.setRegion(nextFbo.getColorBufferTexture());
 			nexTex.flip(false, true);
 
-			nextScreen.remove();
-			viewsContainer.addActor(TransitionManager.this);
+			stage.getRoot().clearChildren();
+			stage.addActor(TransitionManager.this);
 		}
 	};
 
