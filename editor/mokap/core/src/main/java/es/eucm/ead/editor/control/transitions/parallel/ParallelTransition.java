@@ -49,29 +49,18 @@ import es.eucm.ead.editor.control.transitions.TransitionManager.Transition;
  */
 public class ParallelTransition implements Transition {
 
-	private static final ParallelTransition instance = new ParallelTransition();
-
 	private Array<TransitionInfo> transitions = new Array<TransitionInfo>(4);
 	private float duration;
 
-	public static ParallelTransition init() {
-		return null;
-	}
-
-	public static ParallelTransition init(TransitionInfo... transitions) {
+	public ParallelTransition(TransitionInfo... transitions) {
 		float duration = 0.0f;
-		instance.transitions.clear();
+		this.transitions.clear();
 		for (int i = 0, n = transitions.length; i < n; ++i) {
 			TransitionInfo transition = transitions[i];
 			duration = Math.max(duration, transition.transition.getDuration());
-			instance.transitions.add(transition);
+			this.transitions.add(transition);
 		}
-		instance.duration = duration;
-		return instance;
-	}
-
-	private ParallelTransition() {
-
+		this.duration = duration;
 	}
 
 	@Override
@@ -107,6 +96,6 @@ public class ParallelTransition implements Transition {
 
 	@Override
 	public void end() {
-		Pools.freeAll(transitions);
+		Pools.freeAll(transitions, true);
 	}
 }

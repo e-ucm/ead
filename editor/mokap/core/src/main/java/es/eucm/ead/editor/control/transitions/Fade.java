@@ -49,23 +49,16 @@ import es.eucm.ead.editor.control.transitions.TransitionManager.Transition;
  */
 public class Fade implements Transition {
 
-	private static final Fade instance = new Fade();
-
 	private float duration;
 	private boolean fadeCurrentScreen;
 
-	public static Transition init() {
-		return init(MathUtils.random(.4f, .6f), MathUtils.randomBoolean());
+	public Fade(float duration, boolean fadeCurrentScreen) {
+		this.fadeCurrentScreen = fadeCurrentScreen;
+		this.duration = duration;
 	}
 
-	public static Fade init(float duration, boolean fadeCurrentScreen) {
-		instance.fadeCurrentScreen = fadeCurrentScreen;
-		instance.duration = duration;
-		return instance;
-	}
-
-	private Fade() {
-
+	public Fade() {
+		this(MathUtils.random(.4f, .6f), MathUtils.randomBoolean());
 	}
 
 	@Override

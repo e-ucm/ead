@@ -36,6 +36,7 @@
  */
 package es.eucm.ead.editor.control.transitions;
 
+import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.math.Interpolation;
@@ -44,33 +45,20 @@ import com.badlogic.gdx.math.MathUtils;
 import es.eucm.ead.editor.control.transitions.TransitionManager.Transition;
 
 /**
- * Slides between two screens.
+ * Scale and Fade transition between the current screen and the next screen.
  */
-public class Slide implements Transition {
-
-	public static final int LEFT = 1;
-	public static final int RIGHT = 2;
-	public static final int UP = 3;
-	public static final int DOWN = 4;
-	public static final int RANDOM = 0;
+public class ScaleAndFade implements Transition {
 
 	private float duration;
-	private int direction;
-	private boolean slideOut;
-	private Interpolation easing;
+	private boolean out;
 
-	public Slide() {
-		this(MathUtils.random(.6f, .9f), RANDOM, MathUtils.randomBoolean(),
-				Interpolation.pow2Out);
+	public ScaleAndFade(float duration, boolean out) {
+		this.out = out;
+		this.duration = duration;
 	}
 
-	public Slide(float duration, int direction, boolean slideOut,
-			Interpolation easing) {
-		this.duration = duration;
-		this.direction = direction == RANDOM ? MathUtils.random(LEFT, DOWN)
-				: direction;
-		this.slideOut = slideOut;
-		this.easing = easing;
+	public ScaleAndFade() {
+		this(MathUtils.random(.4f, .6f), MathUtils.randomBoolean());
 	}
 
 	@Override
@@ -78,59 +66,29 @@ public class Slide implements Transition {
 		return duration;
 	}
 
+	@Override
 	public void render(Batch batch, TextureRegion currScreen,
 			Region currScreenRegion, TextureRegion nextScreen,
-			Region nextScreenRegion, float alpha) {
-		float w = currScreenRegion.w;
-		float h = currScreenRegion.h;
-		float x = currScreenRegion.x;
-		float y = currScreenRegion.y;
-		alpha = easing.apply(alpha);
-		// calculate position
-		switch (direction) {
-		case LEFT:
-			x = -w * alpha;
-			if (!slideOut)
-				x += w;
-			break;
-		case RIGHT:
-			x = w * alpha;
-			if (!slideOut)
-				x -= w;
-			break;
-		case UP:
-			y = h * alpha;
-			if (!slideOut)
-				y -= h;
-			break;
-		case DOWN:
-			y = -h * alpha;
-			if (!slideOut)
-				y += h;
-			break;
+			Region nextScreenRegion, float completion) {
+		if (!out) {
+			TextureRegion temp = currScreen;
+			currScreen = nextScreen;
+			nextScreen = temp;
 		}
-		// drawing order depends on slide type ('in' or 'out')
-		TextureRegion texBottom = null;
-		TextureRegion texTop = null;
-		Region bottomRegion = null;
-		Region topRegion = null;
-		if (slideOut) {
-			texBottom = nextScreen;
-			bottomRegion = nextScreenRegion;
 
-			texTop = currScreen;
-			topRegion = currScreenRegion;
-		} else {
-			texBottom = currScreen;
-			bottomRegion = currScreenRegion;
+		completion = out ? Interpolation.exp5Out.apply(completion)
+				: Interpolation.exp5In.apply(1 - completion);
 
-			texTop = nextScreen;
-			topRegion = nextScreenRegion;
-		}
-		// finally, draw both screens
-		batch.draw(texBottom, bottomRegion.x, bottomRegion.y, bottomRegion.w,
-				bottomRegion.h);
-		batch.draw(texTop, x, y, topRegion.w, topRegion.h);
+		batch.draw(currScreen, currScreenRegion.x, currScreenRegion.y,
+				currScreenRegion.w, currScreenRegion.h);
+
+		Color color = batch.getColor();
+		batch.setColor(1, 1, 1, completion);
+		float width = nextScreenRegion.w, height = nextScreenRegion.h;
+		batch.draw(nextScreen, nextScreenRegion.x, nextScreenRegion.y,
+				width * .5f, height * .5f, width, height, completion,
+				completion, 0f);
+		batch.setColor(color);
 	}
 
 	@Override
