@@ -37,6 +37,7 @@
 package es.eucm.ead.editor.control.actions.editor;
 
 import com.badlogic.gdx.Gdx;
+
 import es.eucm.ead.editor.control.Controller;
 import es.eucm.ead.editor.control.actions.EditorAction;
 import es.eucm.ead.editor.view.builders.classic.dialogs.InfoDialogBuilder;
@@ -50,7 +51,8 @@ import es.eucm.ead.engine.I18N;
  * 
  * <dl>
  * <dt><strong>Arguments</strong></dt>
- * <dd>None.</dd>
+ * <dd><strong>args[0]</strong> <em>(Optional) Boolean</em> Whether it should
+ * ask for saving confirmation (true) or not (false).</dd>
  * </dl>
  * 
  */
@@ -74,7 +76,7 @@ public class Exit extends EditorAction {
 	};
 
 	public Exit() {
-		super(true, false);
+		super(true, false, new Class[] {}, new Class[] { Boolean.class });
 	}
 
 	@Override
@@ -86,11 +88,16 @@ public class Exit extends EditorAction {
 	@Override
 	public void perform(Object... args) {
 		if (controller.getCommands().commandsPendingToSave()) {
-			controller.action(ShowDialog.class, InfoDialogBuilder.class,
-					i18N.m("dialog.unsavedchanges"),
-					i18N.m("dialog.unsavedchanges.message"),
-					i18N.m("general.yes"), yesListener, i18N.m("general.no"),
-					noListener, i18N.m("general.cancel"), null);
+			if (args.length == 1 && !(Boolean) args[0]) {
+				yesListener.selected();
+			} else {
+				controller.action(ShowDialog.class, InfoDialogBuilder.class,
+						i18N.m("dialog.unsavedchanges"),
+						i18N.m("dialog.unsavedchanges.message"),
+						i18N.m("general.yes"), yesListener,
+						i18N.m("general.no"), noListener,
+						i18N.m("general.cancel"), null);
+			}
 		} else {
 			exit();
 		}

@@ -48,6 +48,8 @@ import com.badlogic.gdx.utils.TimeUtils;
 
 import es.eucm.ead.editor.assets.ApplicationAssets;
 import es.eucm.ead.editor.control.Controller;
+import es.eucm.ead.editor.control.MokapController.BackListener;
+import es.eucm.ead.editor.control.actions.editor.Exit;
 import es.eucm.ead.editor.control.actions.editor.NewGame;
 import es.eucm.ead.editor.control.actions.editor.OpenGame;
 import es.eucm.ead.editor.model.Q;
@@ -57,7 +59,7 @@ import es.eucm.ead.editor.view.widgets.layouts.LinearLayout;
 import es.eucm.ead.schema.editor.components.GameData;
 import es.eucm.ead.schema.entities.ModelEntity;
 
-public class HomeView implements ViewBuilder {
+public class HomeView implements ViewBuilder, BackListener {
 
 	private Actor view;
 
@@ -117,5 +119,10 @@ public class HomeView implements ViewBuilder {
 	@Override
 	public void release(Controller controller) {
 
+	}
+
+	@Override
+	public void onBackPressed() {
+		controller.action(Exit.class, false);
 	}
 }

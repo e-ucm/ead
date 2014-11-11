@@ -38,7 +38,9 @@ package es.eucm.ead.editor.view.builders.project;
 
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
+
 import es.eucm.ead.editor.control.Controller;
+import es.eucm.ead.editor.control.MokapController.BackListener;
 import es.eucm.ead.editor.control.Selection;
 import es.eucm.ead.editor.control.actions.editor.ChangeView;
 import es.eucm.ead.editor.control.actions.model.SetSelection;
@@ -53,7 +55,7 @@ import es.eucm.ead.engine.I18N;
 /**
  * Project view. A list with the scenes of the project
  */
-public class ProjectView implements ViewBuilder {
+public class ProjectView implements ViewBuilder, BackListener {
 
 	private Controller controller;
 
@@ -99,5 +101,10 @@ public class ProjectView implements ViewBuilder {
 	private ScenesGallery buildScenesGallery(Skin skin) {
 		ScenesGallery scenesGallery = new ScenesGallery(controller);
 		return scenesGallery;
+	}
+
+	@Override
+	public void onBackPressed() {
+		controller.action(ChangeView.class, HomeView.class);
 	}
 }
