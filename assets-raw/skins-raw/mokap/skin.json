@@ -215,5 +215,14 @@
             "on": "switch_on",
             "off": "switch_off"
         }
+    },
+    "es.eucm.ead.editor.view.builders.scene.groupeditor.GroupEditor$GroupEditorStyle": {
+        "default": {
+            "layersBackground": "page",
+            "layerButtonStyle": {
+                "down": "light_gray_bg"
+            },
+            "touch": "touch"
+        }
     }
 }

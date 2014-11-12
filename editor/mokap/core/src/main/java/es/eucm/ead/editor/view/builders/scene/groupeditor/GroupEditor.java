@@ -65,17 +65,37 @@ public class GroupEditor extends AbstractWidget {
 
 	private Array<Actor> selection;
 
+	private Array<Actor> layersTouched;
+
+	private SelectLayerMenu selectLayerMenu;
+
 	private boolean multipleSelection;
 
-	public GroupEditor() {
+	public GroupEditor(Skin skin) {
+		this(skin.get(GroupEditorStyle.class));
+	}
+
+	public GroupEditor(GroupEditorStyle style) {
 		selection = new Array<Actor>();
+		layersTouched = new Array<Actor>();
+		selectLayerMenu = new SelectLayerMenu(style.layerButtonStyle,
+				layersTouched, this);
+		selectLayerMenu.setVisible(false);
+		selectLayerMenu.setBackground(style.layersBackground);
 
 		selectionLayer = new Group();
 		addActor(selectionLayer);
+		addActor(selectLayerMenu);
+
+		TouchRepresentation touchRepresentation = new TouchRepresentation(
+				style.touch);
+		addActor(touchRepresentation);
+		addListener(touchRepresentation);
 
 		addListener(new GroupEditorListener());
 		// Drags moving objects
 		addListener(new DragListener() {
+
 			@Override
 			public void drag(InputEvent event, float x, float y, int pointer) {
 				if (pointer == 0) {
