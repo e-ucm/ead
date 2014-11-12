@@ -94,9 +94,9 @@ public class GroupEditor extends AbstractWidget {
 		TouchRepresentation touchRepresentation = new TouchRepresentation(
 				style.touch);
 		addActor(touchRepresentation);
-		addListener(touchRepresentation);
 
 		addListener(new GroupEditorListener());
+		addListener(touchRepresentation);
 		// Drags moving objects
 		addListener(new DragListener() {
 

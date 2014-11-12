@@ -94,6 +94,7 @@ public class TouchRepresentation extends AbstractWidget implements
 	};
 
 	public TouchRepresentation(Drawable touch) {
+		setTouchable(Touchable.disabled);
 		addActor(touch1 = new Image(touch));
 		addActor(touch2 = new Image(touch));
 		touch1.setVisible(false);
