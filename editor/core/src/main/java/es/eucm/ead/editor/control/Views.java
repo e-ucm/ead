@@ -86,35 +86,35 @@ public class Views implements ModelListener<LoadEvent> {
 
 	protected boolean resendTouch = true;
 
-	private ClickListener closeContextMenu = new ClickListener() {
+	private Vector2 auxVector = new Vector2();
 
-		private Vector2 auxVector = new Vector2();
+	private InputEvent lastEvent;
 
-		private InputEvent lastEvent;
+	private Runnable hideModalsContainer = new Runnable() {
 
-		private Runnable hideModalsContainer = new Runnable() {
+		@Override
+		public void run() {
+			// Resend touch down if user pressed outside the context menu
+			boolean resendTouch = Views.this.resendTouch
+					&& lastEvent.getTarget() != currentModal
+					&& !lastEvent.getTarget().isDescendantOf(currentModal);
 
-			@Override
-			public void run() {
-				// Resend touch down if user pressed outside the context menu
-				boolean resendTouch = Views.this.resendTouch
-						&& lastEvent.getTarget() != currentModal
-						&& !lastEvent.getTarget().isDescendantOf(currentModal);
+			currentModal.remove();
+			currentModal.setTouchable(Touchable.enabled);
+			currentModal = null;
 
-				currentModal.remove();
-				currentModal.setTouchable(Touchable.enabled);
-				currentModal = null;
-
-				if (resendTouch) {
-					auxVector.set(lastEvent.getStageX(), lastEvent.getStageY());
-					lastEvent.getStage().stageToScreenCoordinates(auxVector);
-					lastEvent.getStage().touchDown((int) auxVector.x,
-							(int) auxVector.y, lastEvent.getPointer(),
-							lastEvent.getButton());
-				}
-
+			if (resendTouch) {
+				auxVector.set(lastEvent.getStageX(), lastEvent.getStageY());
+				lastEvent.getStage().stageToScreenCoordinates(auxVector);
+				lastEvent.getStage().touchDown((int) auxVector.x,
+						(int) auxVector.y, lastEvent.getPointer(),
+						lastEvent.getButton());
 			}
-		};
+
+		}
+	};
+
+	private ClickListener closeContextMenu = new ClickListener() {
 
 		@Override
 		public void clicked(InputEvent event, float x, float y) {
@@ -133,15 +133,32 @@ public class Views implements ModelListener<LoadEvent> {
 				} else {
 					hideModalsContainer.run();
 				}
-
 			}
 		}
-
-		private void setModalsTouchable(Touchable touchable) {
-			currentModal.setTouchable(touchable);
-			modalsContainer.setTouchable(touchable);
-		}
 	};
+
+	/**
+	 * 
+	 * @return true is a {@link Modal} has been hidden, false otherwise.
+	 */
+	protected boolean hideModalIfNeeded() {
+		if (currentModal != null && currentModal.hasParent()) {
+			setModalsTouchable(Touchable.disabled);
+			if (currentModal instanceof Modal) {
+				Modal modal = ((Modal) currentModal);
+				modal.hide(hideModalsContainer);
+			} else {
+				hideModalsContainer.run();
+			}
+			return true;
+		}
+		return false;
+	}
+
+	private void setModalsTouchable(Touchable touchable) {
+		currentModal.setTouchable(touchable);
+		modalsContainer.setTouchable(touchable);
+	}
 
 	/**
 	 * @param controller
@@ -329,11 +346,7 @@ public class Views implements ModelListener<LoadEvent> {
 		args[0] = viewUpdate.getViewClass();
 		System.arraycopy(viewUpdate.getArgs(), 0, args, 1,
 				viewUpdate.getArgs().length);
-		controller.action(getChangeViewClass(), args);
-	}
-
-	protected Class getChangeViewClass() {
-		return ChangeView.class;
+		controller.action(ChangeView.class, args);
 	}
 
 	@Override

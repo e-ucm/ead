@@ -117,8 +117,8 @@ public class MokapApplicationListener extends EditorApplicationListener {
 		WidgetGroup viewContainer = new WidgetGroup();
 		viewContainer.setFillParent(true);
 
-		stage.getRoot().addActor(viewContainer);
-		stage.getRoot().addActor(modalContainer);
+		stage.addActor(viewContainer);
+		stage.addActor(modalContainer);
 
 		MokapController controller = new MokapController(this.platform,
 				Gdx.files, viewContainer, modalContainer);
@@ -128,6 +128,7 @@ public class MokapApplicationListener extends EditorApplicationListener {
 
 	@Override
 	public void pause() {
+		((MokapController) controller).pause();
 		controller.action(Save.class);
 	}
 }
