@@ -39,6 +39,7 @@ package es.eucm.ead.editor.view.widgets;
 import com.badlogic.gdx.math.Interpolation;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.actions.Actions;
+import com.badlogic.gdx.scenes.scene2d.actions.SequenceAction;
 import com.badlogic.gdx.scenes.scene2d.ui.Cell;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.utils.Array;
@@ -99,10 +100,14 @@ public class ContextMenu extends Table implements Modal {
 
 	@Override
 	public void hide(Runnable runnable) {
-		addAction(Actions.sequence(Actions.parallel(Actions.fadeOut(FADE,
-				Interpolation.fade), Actions.moveBy(0f, getHeight()
-				* HIDE_OFFSET, FADE, Interpolation.exp5Out)), Actions
-				.run(runnable)));
+		SequenceAction hide = Actions.sequence(Actions.parallel(Actions
+				.fadeOut(FADE, Interpolation.fade), Actions.moveBy(0f,
+				getHeight() * HIDE_OFFSET, FADE, Interpolation.exp5Out)));
+
+		if (runnable != null) {
+			hide.addAction(Actions.run(runnable));
+		}
+		addAction(hide);
 	}
 
 	@Override

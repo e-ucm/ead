@@ -37,12 +37,15 @@
 package es.eucm.ead.editor.view.builders.scene.groupeditor;
 
 import com.badlogic.gdx.graphics.g2d.Batch;
+import com.badlogic.gdx.math.Polygon;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.Event;
 import com.badlogic.gdx.scenes.scene2d.EventListener;
 import com.badlogic.gdx.scenes.scene2d.Group;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
+import com.badlogic.gdx.scenes.scene2d.ui.Button.ButtonStyle;
+import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.utils.ActorGestureListener;
 import com.badlogic.gdx.scenes.scene2d.utils.DragListener;
 import com.badlogic.gdx.scenes.scene2d.utils.Drawable;
@@ -50,12 +53,13 @@ import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.Pools;
 import com.badlogic.gdx.utils.Timer;
 import com.badlogic.gdx.utils.Timer.Task;
-
 import es.eucm.ead.editor.utils.GeometryUtils;
 import es.eucm.ead.editor.view.builders.scene.groupeditor.GroupEditor.GroupEvent.Type;
 import es.eucm.ead.editor.view.widgets.AbstractWidget;
 
 public class GroupEditor extends AbstractWidget {
+
+	public static final float NEAR_CM = 1.0f;
 
 	private Drawable background;
 
@@ -149,18 +153,19 @@ public class GroupEditor extends AbstractWidget {
 	public void setSelection(Iterable<Actor> selection) {
 		clearSelection();
 		for (Actor actor : selection) {
+			addToSelection(actor, true);
+		}
+	}
+
+	void addToSelection(Actor actor, boolean addBox) {
+		selection.add(actor);
+		if (addBox) {
 			GeometryUtils.adjustGroup(actor);
-			addToSelection(actor);
 			SelectionBox selectionBox = Pools.obtain(SelectionBox.class);
 			selectionBox.setTarget(actor, background);
 			selectionBox.selected();
 			selectionLayer.addActor(selectionBox);
-			Pools.free(selectionBox);
 		}
-	}
-
-	private void addToSelection(Actor actor) {
-		selection.add(actor);
 	}
 
 	/**
@@ -207,6 +212,12 @@ public class GroupEditor extends AbstractWidget {
 		@Override
 		public void touchDown(InputEvent event, float x, float y, int pointer,
 				int button) {
+
+			if (event.isStopped()) {
+				// If the event is stopped, long press must be cancelled
+				getGestureDetector().cancel();
+			}
+
 			if (!event.isHandled() && pointer == 0) {
 
 				if (selectionLayer.getChildren().size > 0) {
@@ -269,7 +280,12 @@ public class GroupEditor extends AbstractWidget {
 
 		@Override
 		public boolean longPress(Actor actor, float x, float y) {
-			return false;
+			if (!multipleSelection) {
+				clearSelection();
+				fireSelection();
+			}
+			showLayersSelector(x, y);
+			return true;
 		}
 
 		@Override
@@ -291,7 +307,8 @@ public class GroupEditor extends AbstractWidget {
 				Actor target = selectionLayer.hit(x, y, true);
 				if (target instanceof SelectionBox) {
 					if (((SelectionBox) target).isPressed()) {
-						addToSelection(((SelectionBox) target).getTarget());
+						addToSelection(((SelectionBox) target).getTarget(),
+								false);
 						fireSelection();
 					} else if (((SelectionBox) target).isMoving()) {
 						for (Actor actor : selectionLayer.getChildren()) {
@@ -326,6 +343,49 @@ public class GroupEditor extends AbstractWidget {
 		}
 	}
 
+	float[] points = new float[8];
+
+	private void showLayersSelector(float x, float y) {
+		layersTouched.clear();
+		Vector2 tmp = Pools.obtain(Vector2.class);
+		Polygon polygon = Pools.obtain(Polygon.class);
+
+		for (Actor actor : rootGroup.getChildren()) {
+
+			int j = 0;
+			for (int i = 0; i < 4; i++) {
+				tmp.set(i == 0 || i == 3 ? 0 : actor.getWidth(), i > 1 ? 0
+						: actor.getHeight());
+				actor.localToAscendantCoordinates(this, tmp);
+				points[j++] = tmp.x;
+				points[j++] = tmp.y;
+			}
+			polygon.setVertices(points);
+			if (polygon.contains(x, y)) {
+				layersTouched.add(actor);
+			} else {
+				for (int i = 0; i < 8; i += 2) {
+					if (nearEnough(x, y, points[i], points[i + 1])) {
+						layersTouched.add(actor);
+						break;
+					}
+				}
+			}
+		}
+		Pools.free(polygon);
+		Pools.free(tmp);
+		if (layersTouched.size > 0) {
+			selectLayerMenu.setPosition(x, y);
+			selectLayerMenu.setVisible(true);
+			selectLayerMenu.show();
+		}
+	}
+
+	private boolean nearEnough(float x1, float y1, float x2, float y2) {
+		return Math.abs(x1 - x2) < cmToXPixels(NEAR_CM)
+				&& Math.abs(y1 - y2) < cmToYPixels(NEAR_CM);
+	}
+
 	/**
 	 * Fires some actors has been transformed
 	 */
@@ -340,12 +400,24 @@ public class GroupEditor extends AbstractWidget {
 	/**
 	 * Notifies current selection has been updated
 	 */
-	private void fireSelection() {
+	void fireSelection() {
 		GroupEvent groupEvent = Pools.obtain(GroupEvent.class);
 		groupEvent.setType(Type.selected);
 		groupEvent.setSelection(selection);
 		fire(groupEvent);
 		Pools.free(groupEvent);
+	}
+
+	public static class GroupEditorStyle {
+
+		/**
+		 * Background for layer selector
+		 */
+		public Drawable layersBackground;
+
+		public ButtonStyle layerButtonStyle;
+
+		public Drawable touch;
 	}
 
 	public static class GroupEvent extends Event {

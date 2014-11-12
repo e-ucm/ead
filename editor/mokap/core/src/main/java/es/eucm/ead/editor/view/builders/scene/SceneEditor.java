@@ -96,7 +96,8 @@ public class SceneEditor extends AbstractWidget {
 		this.model = controller.getModel();
 		this.entitiesLoader = controller.getEngine().getEntitiesLoader();
 
-		addActor(groupEditor = new GroupEditor());
+		addActor(groupEditor = new GroupEditor(controller
+				.getApplicationAssets().getSkin()));
 		groupEditor.addListener(new SceneListener(controller));
 		groupEditor.setBackground(controller.getApplicationAssets().getSkin()
 				.getDrawable("blank"));

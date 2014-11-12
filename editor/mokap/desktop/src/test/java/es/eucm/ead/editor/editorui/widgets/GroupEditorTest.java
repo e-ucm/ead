@@ -67,7 +67,7 @@ public class GroupEditorTest extends UITest {
 	@Override
 	protected Actor buildUI(Skin skin, I18N i18n) {
 		drawable = skin.getDrawable(SkinConstants.DRAWABLE_BLANK);
-		final GroupEditor container = new GroupEditor();
+		final GroupEditor container = new GroupEditor(skin);
 		container.setBackground(drawable);
 
 		final Group root = new Group();
