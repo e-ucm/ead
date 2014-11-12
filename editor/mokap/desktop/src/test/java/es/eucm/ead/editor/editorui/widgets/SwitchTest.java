@@ -67,7 +67,6 @@ public class SwitchTest extends UITest {
 		LwjglApplicationConfiguration config = new LwjglApplicationConfiguration();
 		config.width = 300;
 		config.height = 100;
-		config.title = "MultiToolbarTest";
 		new LwjglApplication(new SwitchTest(), config);
 	}
 }

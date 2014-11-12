@@ -187,7 +187,6 @@ public class MultiToolbarTest extends UITest {
 		LwjglApplicationConfiguration config = new LwjglApplicationConfiguration();
 		config.width = 1280;
 		config.height = 720;
-		config.title = "MultiToolbarTest";
 		new LwjglApplication(new MultiToolbarTest(), config);
 	}
 
