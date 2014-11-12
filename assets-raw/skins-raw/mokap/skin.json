@@ -207,5 +207,13 @@
             "color": "dark_gray",
             "label": "toast"
         } 
+    },
+     "es.eucm.ead.editor.view.widgets.Switch$SwitchStyle": {
+        "default": {
+            "backgroundOn": "switch_bar_on",
+            "backgroundOff": "switch_bar_off",
+            "on": "switch_on",
+            "off": "switch_off"
+        }
     }
 }
