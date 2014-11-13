@@ -78,6 +78,10 @@
         "page_pressed": {
             "name": "page",
             "color": "gray"
+        },
+        "page_checked": {
+            "name": "page",
+            "color": "dark_brown_moka"
         }
     },
     "com.badlogic.gdx.scenes.scene2d.ui.Label$LabelStyle": {
@@ -112,6 +116,11 @@
         "scene": {
             "up": "page",
             "down": "page_pressed"
+        },
+        "navigation_scene": {
+            "up": "page",
+            "down": "page_pressed",
+            "checked": "page_checked"
         }
     },
     "com.badlogic.gdx.scenes.scene2d.ui.Slider$SliderStyle": {
@@ -132,7 +141,10 @@
     "com.badlogic.gdx.scenes.scene2d.ui.ScrollPane$ScrollPaneStyle": {
         "default": {
 
-        }
+        },
+        "navigation": {
+			"background": "page_left"
+        } 
     },
     "es.eucm.ead.editor.view.widgets.IconButton$IconButtonStyle": {
         "default": {
