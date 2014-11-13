@@ -88,7 +88,7 @@ public abstract class EnabledOnLoadAction extends EditorAction implements
 	@Override
 	public void modelChanged(LoadEvent event) {
 		setEnabled(event.getType() == LoadEvent.Type.LOADED
-				&& !checkAdditionalPreconditions());
+				&& checkAdditionalPreconditions());
 	}
 
 	/**
