@@ -56,6 +56,8 @@ public interface SkinConstants {
 	public static final String STYLE_ADD = "add";
 	public static final String STYLE_SCENE = "scene";
 	public static final String STYLE_CIRCLE = "circle";
+	public static final String STYLE_NAVIGATION_SCENE = "navigation_scene";
+	public static final String STYLE_NAVIGATION = "navigation";
 
 	public static final String IC_MENU = "ic_menu";
 	public static final String IC_ADD = "ic_add";

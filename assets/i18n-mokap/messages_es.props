@@ -34,6 +34,7 @@ project = Proyecto
 redo = Rehacer
 send.to.back = Enviar detrás
 test = Probar
+test.all = Probar todo
 text = Texto
 toolbar.text.input = Introduce un texto
 to.back = Enviar detrás
