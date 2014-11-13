@@ -36,36 +36,55 @@
  */
 package es.eucm.ead.editor.view.builders.scene;
 
+import java.util.Map.Entry;
+
+import com.badlogic.gdx.graphics.Texture;
+import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.ui.Button;
+import com.badlogic.gdx.scenes.scene2d.ui.ButtonGroup;
+import com.badlogic.gdx.scenes.scene2d.ui.Cell;
 import com.badlogic.gdx.scenes.scene2d.ui.Image;
+import com.badlogic.gdx.scenes.scene2d.ui.ImageButton;
+import com.badlogic.gdx.scenes.scene2d.ui.ImageButton.ImageButtonStyle;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
+import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.scenes.scene2d.utils.Align;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
+import com.badlogic.gdx.scenes.scene2d.utils.Drawable;
+import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable;
+import com.badlogic.gdx.utils.Array;
+import com.badlogic.gdx.utils.Scaling;
 
+import es.eucm.ead.editor.assets.EditorGameAssets;
 import es.eucm.ead.editor.control.Controller;
 import es.eucm.ead.editor.control.Selection;
 import es.eucm.ead.editor.control.actions.editor.AddLabel;
 import es.eucm.ead.editor.control.actions.editor.AddPaintedElement;
-import es.eucm.ead.editor.control.actions.editor.ChangeView;
 import es.eucm.ead.editor.control.actions.editor.Copy;
 import es.eucm.ead.editor.control.actions.editor.Paste;
 import es.eucm.ead.editor.control.actions.editor.Redo;
 import es.eucm.ead.editor.control.actions.editor.ShowToast;
 import es.eucm.ead.editor.control.actions.editor.Undo;
 import es.eucm.ead.editor.control.actions.model.AddInteractiveZone;
+import es.eucm.ead.editor.control.actions.model.EditScene;
 import es.eucm.ead.editor.control.actions.model.GroupSelection;
 import es.eucm.ead.editor.control.actions.model.RemoveSelectionFromScene;
 import es.eucm.ead.editor.control.actions.model.SetSelection;
 import es.eucm.ead.editor.control.actions.model.TakePicture;
 import es.eucm.ead.editor.control.actions.model.scene.ReorderSelection;
 import es.eucm.ead.editor.control.actions.model.scene.transform.MirrorSelection;
+import es.eucm.ead.editor.model.Model;
+import es.eucm.ead.editor.model.Model.ModelListener;
+import es.eucm.ead.editor.model.Model.Resource;
 import es.eucm.ead.editor.model.Model.SelectionListener;
+import es.eucm.ead.editor.model.Q;
+import es.eucm.ead.editor.model.events.LoadEvent;
+import es.eucm.ead.editor.model.events.ResourceEvent;
 import es.eucm.ead.editor.model.events.SelectionEvent;
 import es.eucm.ead.editor.view.SkinConstants;
 import es.eucm.ead.editor.view.builders.ViewBuilder;
-import es.eucm.ead.editor.view.builders.project.ProjectView;
 import es.eucm.ead.editor.view.builders.scene.draw.BrushStrokes;
 import es.eucm.ead.editor.view.builders.scene.draw.BrushStrokes.ModeEvent;
 import es.eucm.ead.editor.view.builders.scene.draw.BrushStrokes.ModeListener;
@@ -82,7 +101,10 @@ import es.eucm.ead.editor.view.widgets.draw.SlideColorPicker.ColorEvent;
 import es.eucm.ead.editor.view.widgets.draw.SlideColorPicker.ColorListener;
 import es.eucm.ead.editor.view.widgets.layouts.LinearLayout;
 import es.eucm.ead.engine.I18N;
+import es.eucm.ead.engine.assets.Assets.AssetLoadedCallback;
+import es.eucm.ead.schema.editor.components.Thumbnail;
 import es.eucm.ead.schema.entities.ModelEntity;
+import es.eucm.ead.schemax.entities.ResourceCategory;
 
 public class SceneView implements ViewBuilder {
 
@@ -390,14 +412,125 @@ public class SceneView implements ViewBuilder {
 		return contextMenu;
 	}
 
-	private LinearLayout buildNavigationPanel(Skin skin, I18N i18N) {
-		LinearLayout navigation = new LinearLayout(false,
-				skin.getDrawable(SkinConstants.DRAWABLE_PAGE_LEFT));
-		navigation.add(WidgetBuilder.button(skin, SkinConstants.IC_HOME,
-				i18N.m("project"), SkinConstants.STYLE_CONTEXT,
-				ChangeView.class, ProjectView.class));
-		navigation.addSpace();
+	private Navigation buildNavigationPanel(Skin skin, I18N i18N) {
+		final Navigation navigation = new Navigation(skin, i18N);
+		final ButtonGroup buttonGroup = new ButtonGroup();
+		initializeScenes(navigation.getScenes(), buttonGroup);
+		navigation.addListener(new ClickListener() {
+			@Override
+			public void clicked(InputEvent event, float x, float y) {
+				String name = event.getTarget().getName();
+				if (SkinConstants.IC_PLAY.equals(name)) {
+					setMode(Mode.PLAY);
+				}
+			}
+		});
+		Model model = controller.getModel();
+		model.addResourceListener(new ModelListener<ResourceEvent>() {
+
+			@Override
+			public void modelChanged(ResourceEvent event) {
+				if (event.getCategory() == ResourceCategory.SCENE) {
+					initializeScenes(navigation.getScenes(), buttonGroup);
+				}
+			}
+		});
+		model.addLoadListener(new ModelListener<LoadEvent>() {
+			@Override
+			public void modelChanged(LoadEvent event) {
+				if (event.getType() == LoadEvent.Type.LOADED) {
+					initializeScenes(navigation.getScenes(), buttonGroup);
+				}
+			}
+		});
+		model.addSelectionListener(new SelectionListener() {
+
+			private AssetLoadedCallback<Texture> assetLoaded = new AssetLoadedCallback<Texture>() {
+				@Override
+				public void loaded(String fileName, Texture asset) {
+					Actor image = navigation.getScenes().findActor(fileName);
+					if (image instanceof ImageButton) {
+						ImageButton imageButton = (ImageButton) image;
+						Drawable imageUp = imageButton.getStyle().imageUp;
+						TextureRegionDrawable regionDrawable = (TextureRegionDrawable) imageUp;
+						TextureRegion region = regionDrawable.getRegion();
+						region.setRegion(asset);
+						regionDrawable.setRegion(region);
+						imageButton.getImage().invalidateHierarchy();
+					}
+				}
+			};
+
+			@Override
+			public boolean listenToContext(String contextId) {
+				return contextId.equals(Selection.EDITED_GROUP);
+			}
+
+			@Override
+			public void modelChanged(SelectionEvent event) {
+				if (event.getType() == SelectionEvent.Type.FOCUSED) {
+					EditorGameAssets editorGameAssets = controller
+							.getEditorGameAssets();
+					for (Entry<String, Resource> resource : controller
+							.getModel().getResources(ResourceCategory.SCENE)
+							.entrySet()) {
+						ModelEntity scene = (ModelEntity) resource.getValue()
+								.getObject();
+						Thumbnail thumbnail = Q.getThumbnail(controller, scene);
+						String path = thumbnail.getPath();
+						editorGameAssets.get(path, Texture.class, assetLoaded);
+					}
+					checkCurrentScene(navigation.getScenes());
+				}
+			}
+		});
 		return navigation;
+	}
+
+	private void initializeScenes(Table scenes, ButtonGroup buttonGroup) {
+		buttonGroup.clear();
+		Array<Cell> cells = scenes.getCells();
+		Actor project = cells.get(0).getActor();
+		Actor test = cells.get(1).getActor();
+		scenes.clearChildren();
+		scenes.top();
+		scenes.add(project).row();
+		scenes.add(test);
+		scenes.defaults().fillX().expandX();
+
+		for (Entry<String, Resource> resource : controller.getModel()
+				.getResources(ResourceCategory.SCENE).entrySet()) {
+			ModelEntity scene = (ModelEntity) resource.getValue().getObject();
+			Thumbnail thumbnail = Q.getThumbnail(controller, scene);
+			String path = thumbnail.getPath();
+			ImageButton sceneButton = WidgetBuilder.imageButton(controller
+					.getApplicationAssets().getSkin(),
+					SkinConstants.STYLE_NAVIGATION_SCENE, EditScene.class,
+					resource.getKey());
+			sceneButton.setStyle(new ImageButtonStyle(sceneButton.getStyle()));
+			sceneButton.getStyle().imageUp = new TextureRegionDrawable(
+					new TextureRegion());
+			sceneButton.setName(path);
+			scenes.row();
+			scenes.add(sceneButton);
+			buttonGroup.add(sceneButton);
+		}
+		checkCurrentScene(scenes);
+	}
+
+	private void checkCurrentScene(Table scenes) {
+		Object editedGroup = controller.getModel().getSelection()
+				.getSingle(Selection.EDITED_GROUP);
+		if (editedGroup instanceof ModelEntity) {
+			String path = Q.getComponent((ModelEntity) editedGroup,
+					Thumbnail.class).getPath();
+			if (path != null) {
+				Actor image = scenes.findActor(path);
+				if (image instanceof ImageButton) {
+					((ImageButton) image).setChecked(true);
+				}
+			}
+		}
 	}
 
 	private LinearLayout buildDrawToolbar(final Skin skin, I18N i18N) {
