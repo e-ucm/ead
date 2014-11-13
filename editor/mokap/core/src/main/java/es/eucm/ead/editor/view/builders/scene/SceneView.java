@@ -36,8 +36,6 @@
  */
 package es.eucm.ead.editor.view.builders.scene;
 
-import java.util.Map.Entry;
-
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.scenes.scene2d.Actor;
@@ -55,8 +53,6 @@ import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.scenes.scene2d.utils.Drawable;
 import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable;
 import com.badlogic.gdx.utils.Array;
-import com.badlogic.gdx.utils.Scaling;
-
 import es.eucm.ead.editor.assets.EditorGameAssets;
 import es.eucm.ead.editor.control.Controller;
 import es.eucm.ead.editor.control.Selection;
@@ -106,6 +102,8 @@ import es.eucm.ead.engine.assets.Assets.AssetLoadedCallback;
 import es.eucm.ead.schema.editor.components.Thumbnail;
 import es.eucm.ead.schema.entities.ModelEntity;
 import es.eucm.ead.schemax.entities.ResourceCategory;
+
+import java.util.Map.Entry;
 
 public class SceneView implements ViewBuilder {
 
@@ -284,11 +282,11 @@ public class SceneView implements ViewBuilder {
 		transform.add(multiButton);
 
 		transform.add(WidgetBuilder.toolbarIcon(skin, SkinConstants.IC_TO_BACK,
-				i18N.m("to.back"), true, ReorderSelection.class,
+				i18N.m("to.back"), false, ReorderSelection.class,
 				ReorderSelection.Type.TO_BACK));
 
 		transform.add(WidgetBuilder.toolbarIcon(skin,
-				SkinConstants.IC_TO_FRONT, i18N.m("to.front"), true,
+				SkinConstants.IC_TO_FRONT, i18N.m("to.front"), false,
 				ReorderSelection.class, ReorderSelection.Type.TO_FRONT));
 
 		transform.add(WidgetBuilder.toolbarIconWithMenu(skin,
