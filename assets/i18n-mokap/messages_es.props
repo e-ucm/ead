@@ -7,8 +7,10 @@
 # Each '{}' will be interpreted as a placeholder for the next argument
 
 
+accept = Aceptar
 application.title = Mokap
 bring.to.front = Traer al frente
+cancel = Cancelar
 clear.selection = Quitar selección
 compose = Componer
 copied = Copiado
@@ -19,15 +21,17 @@ drawing.save = Guardar dibujo
 drawing.discard = Descartar dibujo
 paint = Pintar
 erase = Borrar
-group.create = Crear grupo
 fx = Ambientación
+group.create = Crear grupo
 gallery = Galería
+interaction = Interacción
 interactive.zone = Zona interactiva
 mirror.horizontal = Reflejo horizontal
 mirror.vertical = Reflejo vertical
 paste = Pegar
 picture = Fotografía
 project = Proyecto
+redo = Rehacer
 send.to.back = Enviar detrás
 test = Probar
 text = Texto
@@ -36,6 +40,3 @@ to.back = Enviar detrás
 to.front = Enviar delante
 undo = Deshacer
 ungroup = Desagrupar
-redo = Rehacer
-accept = Aceptar
-cancel = Cancelar

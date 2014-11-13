@@ -95,4 +95,5 @@ public interface SkinConstants {
 	public static final String IC_UNDO = "ic_undo";
 	public static final String IC_REDO = "ic_redo";
 	public static final String IC_GO = "ic_go";
+	public static final String IC_TOUCH = "ic_touch";
 }

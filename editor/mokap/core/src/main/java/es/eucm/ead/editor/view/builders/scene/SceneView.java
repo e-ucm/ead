@@ -86,10 +86,11 @@ import es.eucm.ead.schema.entities.ModelEntity;
 
 public class SceneView implements ViewBuilder {
 
-	public static final int INSERT = 0, TRANSFORM = 1, PAINT = 2;
+	public static final int INSERT = 0, TRANSFORM = 1, PAINT = 2, FX = 3,
+			INTERACTION = 4;
 
 	public enum Mode {
-		COMPOSE, FX, PLAY, DRAW,
+		COMPOSE, FX, INTERACTION, PLAY, DRAW,
 	}
 
 	public SceneView() {
@@ -107,6 +108,13 @@ public class SceneView implements ViewBuilder {
 
 	private BrushStrokes brushStrokes;
 
+	private ClickListener navigationListener = new ClickListener() {
+		@Override
+		public void clicked(InputEvent event, float x, float y) {
+			view.toggleNavigation();
+		}
+	};
+
 	@Override
 	public void initialize(Controller controller) {
 		this.controller = controller;
@@ -122,7 +130,7 @@ public class SceneView implements ViewBuilder {
 		view = new BaseView(skin);
 
 		view.setToolbar(toolbar = buildToolbar(skin, i18N));
-		view.setNavigation(buildNavigation(skin, i18N));
+		view.setNavigation(buildNavigationPanel(skin, i18N));
 
 		container.addActor(sceneEditor);
 
@@ -160,13 +168,25 @@ public class SceneView implements ViewBuilder {
 			toolbar.setSelectedWidget(PAINT);
 			brushStrokes.show();
 			break;
+		case INTERACTION:
+			toolbar.setSelectedWidget(INTERACTION);
+			break;
+		case FX:
+			toolbar.setSelectedWidget(FX);
+			break;
 		}
 	}
 
 	private MultiWidget buildToolbar(Skin skin, I18N i18N) {
 		final MultiWidget toolbar = new MultiWidget(skin);
-		toolbar.addWidgets(buildComposeToolbar(skin, i18N),
-				buildTransformToolbar(skin, i18N), buildDrawToolbar(skin, i18N));
+
+		Actor modeSelector = buildModeContextMenu(skin, i18N);
+
+		toolbar.addWidgets(buildComposeToolbar(skin, i18N, modeSelector),
+				buildTransformToolbar(skin, i18N),
+				buildDrawToolbar(skin, i18N),
+				buildFxToolbar(skin, i18N, modeSelector),
+				buildInteractionToolbar(skin, i18N, modeSelector));
 
 		controller.getModel().addSelectionListener(new SelectionListener() {
 			@Override
@@ -182,22 +202,22 @@ public class SceneView implements ViewBuilder {
 		return toolbar;
 	}
 
-	private LinearLayout buildComposeToolbar(Skin skin, I18N i18N) {
+	private IconButton navigationButton() {
+		IconButton navigation = WidgetBuilder.toolbarIcon(controller
+				.getApplicationAssets().getSkin(), SkinConstants.IC_MENU, null);
+		navigation.addListener(navigationListener);
+		return navigation;
+	}
+
+	private LinearLayout buildComposeToolbar(Skin skin, I18N i18N,
+			Actor modeSelector) {
 		LinearLayout compose = new LinearLayout(true);
 		compose.setComputeInvisibles(true);
-		IconButton navigation = WidgetBuilder.toolbarIcon(skin,
-				SkinConstants.IC_MENU, null);
-		navigation.addListener(new ClickListener() {
-			@Override
-			public void clicked(InputEvent event, float x, float y) {
-				view.toggleNavigation();
-			}
-		});
-		compose.add(navigation);
+		compose.add(navigationButton());
 
 		IconButton mode = WidgetBuilder.icon(skin, SkinConstants.IC_COMPOSE,
 				SkinConstants.STYLE_DROP_DOWN);
-		WidgetBuilder.launchContextMenu(mode, buildModeContextMenu(skin, i18N));
+		WidgetBuilder.launchContextMenu(mode, modeSelector);
 
 		compose.add(mode);
 		compose.add(WidgetBuilder.toolbarIcon(skin, SkinConstants.IC_UNDO,
@@ -348,8 +368,8 @@ public class SceneView implements ViewBuilder {
 	private Actor buildModeContextMenu(Skin skin, I18N i18N) {
 		ContextMenu contextMenu = WidgetBuilder.iconLabelContextPanel(skin,
 				SkinConstants.IC_COMPOSE, i18N.m("compose"),
-				SkinConstants.IC_FX, i18N.m("fx"), SkinConstants.IC_PLAY,
-				i18N.m("test"));
+				SkinConstants.IC_FX, i18N.m("fx"), SkinConstants.IC_TOUCH,
+				i18N.m("interaction"), SkinConstants.IC_PLAY, i18N.m("test"));
 		contextMenu.pack();
 		contextMenu.setOriginY(contextMenu.getHeight());
 		contextMenu.addListener(new ClickListener() {
@@ -362,13 +382,15 @@ public class SceneView implements ViewBuilder {
 					setMode(Mode.FX);
 				} else if (SkinConstants.IC_PLAY.equals(name)) {
 					setMode(Mode.PLAY);
+				} else if (SkinConstants.IC_TOUCH.equals(name)) {
+					setMode(Mode.INTERACTION);
 				}
 			}
 		});
 		return contextMenu;
 	}
 
-	private LinearLayout buildNavigation(Skin skin, I18N i18N) {
+	private LinearLayout buildNavigationPanel(Skin skin, I18N i18N) {
 		LinearLayout navigation = new LinearLayout(false,
 				skin.getDrawable(SkinConstants.DRAWABLE_PAGE_LEFT));
 		navigation.add(WidgetBuilder.button(skin, SkinConstants.IC_HOME,
@@ -491,5 +513,30 @@ public class SceneView implements ViewBuilder {
 			}
 		});
 		return contextMenu;
+	}
+
+	private LinearLayout buildFxToolbar(Skin skin, I18N i18N, Actor modeSelector) {
+		LinearLayout fx = new LinearLayout(true);
+		fx.setComputeInvisibles(true);
+		fx.add(navigationButton());
+
+		IconButton mode = WidgetBuilder.icon(skin, SkinConstants.IC_FX,
+				SkinConstants.STYLE_DROP_DOWN);
+		WidgetBuilder.launchContextMenu(mode, modeSelector);
+		fx.add(mode);
+		return fx;
+	}
+
+	private LinearLayout buildInteractionToolbar(Skin skin, I18N i18N,
+			Actor modeSelector) {
+		LinearLayout interaction = new LinearLayout(true);
+		interaction.setComputeInvisibles(true);
+		interaction.add(navigationButton());
+
+		IconButton mode = WidgetBuilder.icon(skin, SkinConstants.IC_TOUCH,
+				SkinConstants.STYLE_DROP_DOWN);
+		WidgetBuilder.launchContextMenu(mode, modeSelector);
+		interaction.add(mode);
+		return interaction;
 	}
 }
