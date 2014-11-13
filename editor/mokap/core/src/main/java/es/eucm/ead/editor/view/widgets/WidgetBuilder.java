@@ -39,7 +39,9 @@ package es.eucm.ead.editor.view.widgets;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.Touchable;
 import com.badlogic.gdx.scenes.scene2d.ui.Button;
+import com.badlogic.gdx.scenes.scene2d.ui.Button.ButtonStyle;
 import com.badlogic.gdx.scenes.scene2d.ui.ImageButton;
+import com.badlogic.gdx.scenes.scene2d.ui.ImageButton.ImageButtonStyle;
 import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 
@@ -221,4 +223,32 @@ public class WidgetBuilder {
 		return (buttonSize / UNIT_SIZE) * dp;
 	}
 
+	public static Actor circlesMenu(int align, String[] icons, Class[] actions,
+			Object[][] args) {
+		if (icons.length != actions.length || actions.length != args.length) {
+			throw new IllegalArgumentException(
+					"Icons array needs to have the same length as actions array.");
+		}
+		Skin skin = controller.getApplicationAssets().getSkin();
+
+		ButtonStyle circleStyle = skin.get(SkinConstants.STYLE_CIRCLE,
+				ButtonStyle.class);
+
+		CirclesMenu menu = new CirclesMenu(align);
+
+		if (menu.isHorizontal()) {
+			menu.defaultWidgetsMargin(0, 0, dpToPixels(8), 0);
+		} else {
+			menu.defaultWidgetsMargin(0, dpToPixels(8), 0, 0);
+		}
+		for (int i = 0; i < icons.length; i++) {
+			ImageButtonStyle imageButtonStyle = new ImageButtonStyle(
+					circleStyle);
+			imageButtonStyle.imageUp = skin.getDrawable(icons[i]);
+			ImageButton imageButton = new ImageButton(imageButtonStyle);
+			actionOnClick(imageButton, actions[i], args[i]);
+			menu.add(imageButton);
+		}
+		return menu;
+	}
 }

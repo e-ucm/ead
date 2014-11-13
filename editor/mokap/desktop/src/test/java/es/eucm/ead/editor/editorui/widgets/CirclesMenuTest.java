@@ -39,34 +39,59 @@ package es.eucm.ead.editor.editorui.widgets;
 import com.badlogic.gdx.backends.lwjgl.LwjglApplication;
 import com.badlogic.gdx.backends.lwjgl.LwjglApplicationConfiguration;
 import com.badlogic.gdx.scenes.scene2d.Actor;
+import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
-import com.badlogic.gdx.scenes.scene2d.ui.Table;
-
+import com.badlogic.gdx.scenes.scene2d.utils.Align;
+import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import es.eucm.ead.editor.editorui.UITest;
 import es.eucm.ead.editor.view.SkinConstants;
-import es.eucm.ead.editor.view.widgets.Switch;
+import es.eucm.ead.editor.view.widgets.CirclesMenu;
+import es.eucm.ead.editor.view.widgets.IconButton;
+import es.eucm.ead.editor.view.widgets.WidgetBuilder;
+import es.eucm.ead.editor.view.widgets.layouts.LinearLayout;
 import es.eucm.ead.engine.I18N;
 
-public class SwitchTest extends UITest {
+public class CirclesMenuTest extends UITest {
+
+	private boolean showing = false;
 
 	@Override
 	protected Actor buildUI(Skin skin, I18N i18n) {
 
-		Table table = new Table();
-		table.setFillParent(true);
+		final CirclesMenu menu = (CirclesMenu) WidgetBuilder.circlesMenu(
+				Align.left, new String[] { SkinConstants.IC_ADD,
+						SkinConstants.IC_BRING_TO_FRONT,
+						SkinConstants.IC_CAMERA, SkinConstants.IC_PLAY },
+				new Class[] { null, null, null, null }, new Object[][] { null,
+						null, null, null });
 
-		Switch sw = new Switch(skin, SkinConstants.IC_ADD,
-				SkinConstants.IC_CLOSE);
+		LinearLayout container = new LinearLayout(false).background(skin
+				.getDrawable(SkinConstants.DRAWABLE_BLACK_BG));
+		IconButton iconButton = WidgetBuilder.toolbarIcon(skin,
+				SkinConstants.IC_ADD, null);
+		container.add(iconButton);
+		container.addSpace();
 
-		table.add(sw);
+		iconButton.addListener(new ClickListener() {
+			@Override
+			public void clicked(InputEvent event, float x, float y) {
+				stage.addActor(menu);
+				if (!showing) {
+					menu.show();
+				} else {
+					menu.hide(null);
+				}
+				showing = !showing;
+			}
+		});
 
-		return table;
+		return container;
 	}
 
 	public static void main(String[] args) {
 		LwjglApplicationConfiguration config = new LwjglApplicationConfiguration();
-		config.width = 300;
-		config.height = 100;
-		new LwjglApplication(new SwitchTest(), config);
+		config.width = 640;
+		config.height = 360;
+		new LwjglApplication(new CirclesMenuTest(), config);
 	}
 }

@@ -102,6 +102,10 @@
         "add": {
             "up": "button_add",
             "down": "button_add_pressed"
+        },
+        "circle": {
+            "up": "circle",
+            "down": "circle_pressed"
         }
     },
     "com.badlogic.gdx.scenes.scene2d.ui.ImageButton$ImageButtonStyle": {
