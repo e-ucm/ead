@@ -75,8 +75,8 @@ public class HomeView implements ViewBuilder, BackListener {
 		LinearLayout projects = new LinearLayout(false);
 		final FileHandle projectsFolder = assets.absolute(controller
 				.getPlatform().getDefaultProjectsFolder());
-        LabelStyle style = new LabelStyle(skin.get(LabelStyle.class));
-        style.background = skin.getDrawable(SkinConstants.DRAWABLE_PAGE);
+		LabelStyle style = new LabelStyle(skin.get(LabelStyle.class));
+		style.background = skin.getDrawable(SkinConstants.DRAWABLE_PAGE);
 		if (projectsFolder.exists()) {
 
 			Array<String> projectPaths = ProjectUtils
