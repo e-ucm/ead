@@ -58,6 +58,8 @@ import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
+import com.badlogic.gdx.utils.Array;
+import com.badlogic.gdx.utils.GdxRuntimeException;
 import com.badlogic.gdx.utils.Json;
 import com.badlogic.gdx.utils.JsonValue;
 import com.badlogic.gdx.utils.SerializationException;
@@ -103,9 +105,12 @@ public abstract class Assets extends Json implements FileHandleResolver {
 	 */
 	private Skin skin;
 
+	private Array<AssetLoadingListener> listeners;
+
 	public Assets(Files files) {
 		setEnumNames(false);
 		this.files = files;
+		listeners = new Array<AssetLoadingListener>();
 		assetManager = new AssetManager(this);
 		i18n = new I18N(this);
 		setLoader(Skin.class, new ExtendedSkinLoader(this));
@@ -264,6 +269,26 @@ public abstract class Assets extends Json implements FileHandleResolver {
 		assetManager.setLoader(type, loader);
 	}
 
+	public void addAssetListener(AssetLoadingListener listener) {
+		listeners.add(listener);
+	}
+
+	public void removeAssetListener(AssetLoadingListener listener) {
+		listeners.removeValue(listener, true);
+	}
+
+	/**
+	 * Adds the given asset to the loading queue of the AssetManager.
+	 * 
+	 * @param fileName
+	 *            the file name (interpretation depends on {@link AssetLoader})
+	 * @param type
+	 *            the type of the asset.
+	 */
+	public <T> void load(String fileName, Class<T> type) {
+		assetManager.load(fileName, type);
+	}
+
 	/**
 	 * Adds the given asset to the loading queue of the assets. It will be
 	 * loaded and passed to the callback eventually.
@@ -395,6 +420,21 @@ public abstract class Assets extends Json implements FileHandleResolver {
 	}
 
 	/**
+	 * Unloads the asset
+	 */
+	public void unload(String fileName) {
+		try {
+			assetManager.unload(fileName);
+			for (AssetLoadingListener listener : listeners) {
+				listener.unloaded(fileName, Assets.this);
+			}
+		} catch (GdxRuntimeException e) {
+			Gdx.app.error("EditorGameAssets", "Impossible to unload "
+					+ fileName);
+		}
+	}
+
+	/**
 	 * @see AssetManager#get(String, Class)
 	 */
 
@@ -417,6 +457,9 @@ public abstract class Assets extends Json implements FileHandleResolver {
 		@Override
 		public <T> void addAsset(String fileName, Class<T> type, T asset) {
 			super.addAsset(fileName, type, asset);
+			for (AssetLoadingListener listener : listeners) {
+				listener.loaded(fileName, asset, Assets.this);
+			}
 		}
 	}
 
@@ -461,10 +504,22 @@ public abstract class Assets extends Json implements FileHandleResolver {
 		@Override
 		public void finishedLoading(
 				com.badlogic.gdx.assets.AssetManager assetManager,
-				String fileName, Class aClass) {
-			Object asset = assetManager.get(fileName, aClass);
+				String fileName, Class clazz) {
+			Object asset = assetManager.get(fileName, clazz);
 			assetLoadedCallback.loaded(fileName, (T) asset);
 		}
+	}
+
+	/**
+	 * Listens to assets being loaded or unloaded, using their path as
+	 * identifier
+	 */
+	public interface AssetLoadingListener<T> {
+
+		void loaded(String fileName, T asset, Assets assets);
+
+		void unloaded(String fileName, Assets assets);
+
 	}
 
 	/**

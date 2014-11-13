@@ -37,16 +37,13 @@
 package es.eucm.ead.editor.assets;
 
 import com.badlogic.gdx.Files;
-import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.audio.Music;
 import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.graphics.Pixmap;
 import com.badlogic.gdx.graphics.Texture;
-import com.badlogic.gdx.utils.GdxRuntimeException;
 import com.badlogic.gdx.utils.Json;
 import com.badlogic.gdx.utils.JsonValue;
 import com.badlogic.gdx.utils.JsonWriter.OutputType;
-
 import es.eucm.ead.engine.assets.GameAssets;
 import es.eucm.ead.schema.editor.components.Parent;
 
@@ -241,18 +238,6 @@ public class EditorGameAssets extends GameAssets {
 	 */
 	public <T> void addAsset(String fileName, Class<T> type, T asset) {
 		assetManager.addAsset(fileName, type, asset);
-	}
-
-	/**
-	 * Unloads the asset
-	 */
-	public void unload(String fileName) {
-		try {
-			assetManager.unload(fileName);
-		} catch (GdxRuntimeException e) {
-			Gdx.app.error("EditorGameAssets", "Impossible to unload "
-					+ fileName);
-		}
 	}
 
 	/**
