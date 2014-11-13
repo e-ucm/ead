@@ -11,6 +11,12 @@
             "g": 0,
             "b": 0
         },
+        "semi_transparent": {
+            "a": 0.5,
+            "r": 0.5,
+            "g": 0.5,
+            "b": 0.5
+        },
         "white": {
             "r": 1,
             "g": 1,
@@ -82,6 +88,10 @@
         "page_checked": {
             "name": "page",
             "color": "dark_brown_moka"
+        },
+        "page_semi_transparent": {
+            "name": "page",
+            "color": "semi_transparent"
         }
     },
     "com.badlogic.gdx.scenes.scene2d.ui.Label$LabelStyle": {
@@ -143,8 +153,8 @@
 
         },
         "navigation": {
-			"background": "page_left"
-        } 
+            "background": "page_left"
+        }
     },
     "es.eucm.ead.editor.view.widgets.IconButton$IconButtonStyle": {
         "default": {
@@ -234,7 +244,7 @@
     },
     "es.eucm.ead.editor.view.builders.scene.groupeditor.GroupEditor$GroupEditorStyle": {
         "default": {
-            "layersBackground": "page",
+            "layersBackground": "page_semi_transparent",
             "layerButtonStyle": {
                 "down": "light_gray_bg"
             },
