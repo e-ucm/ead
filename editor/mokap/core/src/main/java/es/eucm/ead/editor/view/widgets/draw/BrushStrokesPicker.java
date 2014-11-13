@@ -149,7 +149,7 @@ public class BrushStrokesPicker extends ContextMenu {
 
 	private void fireSizeChanged() {
 		SizeEvent event = Pools.obtain(SizeEvent.class);
-		event.completion = MathUtils.clamp(getCompletion(), .025f, 1f);
+		event.completion = MathUtils.clamp(getCompletion(), .1f, 1f);
 		fire(event);
 		Pools.free(event);
 	}

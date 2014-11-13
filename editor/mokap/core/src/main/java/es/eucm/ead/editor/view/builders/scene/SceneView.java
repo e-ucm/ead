@@ -596,26 +596,15 @@ public class SceneView implements ViewBuilder {
 	}
 
 	private Actor buildBrushStrokesColorPicker(Skin skin, final Image pickerIcon) {
+		pickerIcon.setOrigin(Align.center);
 		BrushStrokesPicker colorPickerPanel = new BrushStrokesPicker(skin);
 		colorPickerPanel.pack();
 		colorPickerPanel.setOriginY(colorPickerPanel.getHeight());
 		colorPickerPanel.addListener(new ColorListener() {
 			@Override
 			public void colorChanged(ColorEvent event) {
-				brushStrokes.setColor(event.getColor());
-			}
-		});
-		colorPickerPanel.addListener(new SizeListener() {
-			@Override
-			public void sizeChanged(SizeEvent event) {
-				brushStrokes.setRadius(event.getCompletion());
-			}
-		});
-		pickerIcon.setOrigin(Align.center);
-		colorPickerPanel.addListener(new ColorListener() {
-			@Override
-			public void colorChanged(ColorEvent event) {
 				pickerIcon.setColor(event.getColor());
+				brushStrokes.setColor(event.getColor());
 				brushStrokes.setMode(BrushStrokes.Mode.DRAW);
 			}
 		});
@@ -623,6 +612,7 @@ public class SceneView implements ViewBuilder {
 			@Override
 			public void sizeChanged(SizeEvent event) {
 				pickerIcon.setScale(event.getCompletion());
+				brushStrokes.setRadius(event.getCompletion());
 			}
 		});
 		colorPickerPanel.setPickedColor(brushStrokes.getInitialColor());
