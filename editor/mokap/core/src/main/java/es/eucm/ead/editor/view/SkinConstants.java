@@ -72,6 +72,9 @@ public interface SkinConstants {
 	public static final String IC_TEXT = "ic_text";
 	public static final String IC_ZONE = "ic_zone";
 
+	public static final String IC_SINGLE_SELECTION = "ic_single_selection";
+	public static final String IC_MULTIPLE_SELECTION = "ic_multiple_selection";
+
 	public static final String IC_GROUP = "ic_group";
 	public static final String IC_UNGROUP = "ic_ungroup";
 

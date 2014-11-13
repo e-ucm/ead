@@ -368,4 +368,8 @@ public class SceneEditor extends AbstractWidget {
 					.contains(component, true);
 		}
 	}
+
+	public void setMultipleSelection(boolean multipleSelection) {
+		groupEditor.setMultipleSelection(multipleSelection);
+	}
 }
