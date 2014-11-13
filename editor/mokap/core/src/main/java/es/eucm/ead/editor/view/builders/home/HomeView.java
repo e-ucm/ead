@@ -41,11 +41,11 @@ import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.ui.Label;
+import com.badlogic.gdx.scenes.scene2d.ui.Label.LabelStyle;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.TimeUtils;
-
 import es.eucm.ead.editor.assets.ApplicationAssets;
 import es.eucm.ead.editor.control.Controller;
 import es.eucm.ead.editor.control.MokapController.BackListener;
@@ -54,6 +54,7 @@ import es.eucm.ead.editor.control.actions.editor.NewGame;
 import es.eucm.ead.editor.control.actions.editor.OpenGame;
 import es.eucm.ead.editor.model.Q;
 import es.eucm.ead.editor.utils.ProjectUtils;
+import es.eucm.ead.editor.view.SkinConstants;
 import es.eucm.ead.editor.view.builders.ViewBuilder;
 import es.eucm.ead.editor.view.widgets.layouts.LinearLayout;
 import es.eucm.ead.schema.editor.components.GameData;
@@ -74,11 +75,14 @@ public class HomeView implements ViewBuilder, BackListener {
 		LinearLayout projects = new LinearLayout(false);
 		final FileHandle projectsFolder = assets.absolute(controller
 				.getPlatform().getDefaultProjectsFolder());
+        LabelStyle style = new LabelStyle(skin.get(LabelStyle.class));
+        style.background = skin.getDrawable(SkinConstants.DRAWABLE_PAGE);
 		if (projectsFolder.exists()) {
+
 			Array<String> projectPaths = ProjectUtils
 					.findProjects(projectsFolder);
 			for (final String path : projectPaths) {
-				Label label = new Label(path, skin);
+				Label label = new Label(path, style);
 				label.addListener(new ClickListener() {
 
 					@Override
@@ -88,7 +92,7 @@ public class HomeView implements ViewBuilder, BackListener {
 				});
 				projects.add(label);
 			}
-			Label add = new Label("Add project", skin);
+			Label add = new Label("Add project", style);
 			add.addListener(new ClickListener() {
 				@Override
 				public void clicked(InputEvent event, float x, float y) {
