@@ -50,6 +50,14 @@ public class CirclesMenu extends LinearLayout implements Modal {
 
 	private int align;
 
+	/**
+	 * 
+	 * @param align
+	 *            It indicates where the menu aligns when is opened/closed.
+	 *            {@link Align#left} or {@link Align#right} will create an
+	 *            horizontal menu. {@link Align#top} and {@link Align#bottom}
+	 *            will create a vertical menu. Other values are not supported
+	 */
 	public CirclesMenu(int align) {
 		super(align == Align.left || align == Align.right);
 		this.align = align;
