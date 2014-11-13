@@ -39,7 +39,6 @@ package es.eucm.ead.editor.view.listeners;
 import com.badlogic.gdx.math.Interpolation;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.actions.Actions;
-import com.badlogic.gdx.scenes.scene2d.ui.Table;
 
 public class VisibleActionListener implements ActionListener {
 
@@ -49,12 +48,6 @@ public class VisibleActionListener implements ActionListener {
 
 	public VisibleActionListener(Actor actor) {
 		this.actor = actor;
-		if (actor instanceof Table) {
-			((Table) actor).pack();
-			((Table) actor).setTransform(true);
-		}
-		this.actor.setScale(0.5f);
-		this.actor.setOrigin(actor.getHeight() / 2, actor.getWidth() / 2);
 	}
 
 	@Override
@@ -62,10 +55,10 @@ public class VisibleActionListener implements ActionListener {
 		actor.clearActions();
 		if (enable) {
 			actor.addAction(Actions.sequence(Actions.visible(true), Actions
-					.rotateTo(0, 0), Actions.parallel(
-					Actions.fadeIn(ANIM_TIME),
-					Actions.scaleTo(1, 1, ANIM_TIME),
-					Actions.rotateBy(360, ANIM_TIME, Interpolation.pow2Out))));
+					.rotateTo(0, 0), Actions.scaleTo(0.5f, 0.5f), Actions
+					.parallel(Actions.fadeIn(ANIM_TIME), Actions.scaleTo(1, 1,
+							ANIM_TIME), Actions.rotateBy(360, ANIM_TIME,
+							Interpolation.pow2Out))));
 		} else {
 			actor.addAction(Actions.sequence(Actions.rotateTo(0, 0), Actions
 					.parallel(Actions.fadeOut(ANIM_TIME), Actions.scaleTo(0.5f,

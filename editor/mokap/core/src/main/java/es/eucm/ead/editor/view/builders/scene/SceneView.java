@@ -63,6 +63,7 @@ import es.eucm.ead.editor.control.actions.model.scene.ReorderSelection;
 import es.eucm.ead.editor.control.actions.model.scene.transform.MirrorSelection;
 import es.eucm.ead.editor.model.Model.SelectionListener;
 import es.eucm.ead.editor.model.events.SelectionEvent;
+import es.eucm.ead.editor.model.events.SelectionEvent.Type;
 import es.eucm.ead.editor.view.SkinConstants;
 import es.eucm.ead.editor.view.builders.ViewBuilder;
 import es.eucm.ead.editor.view.builders.project.ProjectView;
@@ -196,7 +197,9 @@ public class SceneView implements ViewBuilder {
 
 			@Override
 			public void modelChanged(SelectionEvent event) {
-				setMode(mode);
+				if (event.getType() == Type.FOCUSED) {
+					setMode(mode);
+				}
 			}
 		});
 		return toolbar;

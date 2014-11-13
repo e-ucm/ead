@@ -108,6 +108,7 @@ public class TransitionManager extends Actor implements Disposable {
 		stage.addActor(viewsContainer);
 		stage.addActor(modalsContainer);
 		Gdx.graphics.setContinuousRendering(false);
+		Gdx.graphics.requestRendering();
 	}
 
 	@Override

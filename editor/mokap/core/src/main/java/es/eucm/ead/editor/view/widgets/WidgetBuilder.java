@@ -46,6 +46,7 @@ import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 
 import com.badlogic.gdx.scenes.scene2d.utils.ActorGestureListener;
+import com.badlogic.gdx.scenes.scene2d.utils.Align;
 import es.eucm.ead.editor.control.Controller;
 import es.eucm.ead.editor.control.actions.editor.ShowContextMenu;
 import es.eucm.ead.editor.control.actions.editor.ShowTooltip;
@@ -106,6 +107,9 @@ public class WidgetBuilder {
 			Object... args) {
 		IconButton button = toolbarIcon(skin, icon, tooltip, action, args);
 		if (listenToAction) {
+			button.pack();
+			button.setTransform(true);
+			button.setOrigin(Align.center);
 			controller.getActions().addActionListener(action,
 					new VisibleActionListener(button));
 			button.setVisible(controller.getActions().getAction(action)
