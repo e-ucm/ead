@@ -72,7 +72,7 @@ public class BrushStrokes extends AbstractWidget {
 	private static final int MAX_COMMANDS = 50;
 	private static final Vector2 TEMP = new Vector2();
 
-	private static final float MAX_RADIUS_CM = 2;
+	private static final float MAX_RADIUS_CM = .5F;
 	private static final float INITIAL_RADIUS_CM = MAX_RADIUS_CM * .5F;
 	private static final Color INITIAL_COLOR = Color.GREEN;
 	private static final Mode INITIAL_MODE = Mode.DRAW;
