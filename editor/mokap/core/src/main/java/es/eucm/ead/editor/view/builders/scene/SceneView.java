@@ -36,6 +36,8 @@
  */
 package es.eucm.ead.editor.view.builders.scene;
 
+import java.util.Map.Entry;
+
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.scenes.scene2d.Actor;
@@ -49,10 +51,12 @@ import com.badlogic.gdx.scenes.scene2d.ui.ImageButton.ImageButtonStyle;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.scenes.scene2d.utils.Align;
+import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.scenes.scene2d.utils.Drawable;
 import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable;
 import com.badlogic.gdx.utils.Array;
+
 import es.eucm.ead.editor.assets.EditorGameAssets;
 import es.eucm.ead.editor.control.Controller;
 import es.eucm.ead.editor.control.Selection;
@@ -69,6 +73,7 @@ import es.eucm.ead.editor.control.actions.model.GroupSelection;
 import es.eucm.ead.editor.control.actions.model.RemoveSelectionFromScene;
 import es.eucm.ead.editor.control.actions.model.SetSelection;
 import es.eucm.ead.editor.control.actions.model.TakePicture;
+import es.eucm.ead.editor.control.actions.model.UngroupSelection;
 import es.eucm.ead.editor.control.actions.model.scene.ReorderSelection;
 import es.eucm.ead.editor.control.actions.model.scene.transform.MirrorSelection;
 import es.eucm.ead.editor.model.Model;
@@ -89,6 +94,7 @@ import es.eucm.ead.editor.view.widgets.AbstractWidget;
 import es.eucm.ead.editor.view.widgets.ContextMenu;
 import es.eucm.ead.editor.view.widgets.IconButton;
 import es.eucm.ead.editor.view.widgets.MultiWidget;
+import es.eucm.ead.editor.view.widgets.Switch;
 import es.eucm.ead.editor.view.widgets.WidgetBuilder;
 import es.eucm.ead.editor.view.widgets.baseview.BaseView;
 import es.eucm.ead.editor.view.widgets.draw.BrushStrokesPicker;
@@ -102,8 +108,6 @@ import es.eucm.ead.engine.assets.Assets.AssetLoadedCallback;
 import es.eucm.ead.schema.editor.components.Thumbnail;
 import es.eucm.ead.schema.entities.ModelEntity;
 import es.eucm.ead.schemax.entities.ResourceCategory;
-
-import java.util.Map.Entry;
 
 public class SceneView implements ViewBuilder {
 
@@ -269,10 +273,27 @@ public class SceneView implements ViewBuilder {
 		transform.add(WidgetBuilder.toolbarIcon(skin, SkinConstants.IC_REDO,
 				i18N.m("redo"), true, Redo.class));
 
+		final Switch multiSelection = new Switch(skin,
+				SkinConstants.IC_MULTIPLE_SELECTION,
+				SkinConstants.IC_SINGLE_SELECTION);
+		multiSelection.addListener(new ChangeListener() {
+			@Override
+			public void changed(ChangeEvent event, Actor actor) {
+				if (actor instanceof Switch) {
+					sceneEditor.setMultipleSelection(((Switch) actor)
+							.isStateOn());
+				}
+			}
+		});
+
 		transform.addSpace();
 
-		transform.add(WidgetBuilder.toolbarIcon(skin, SkinConstants.IC_GROUP,
-				i18N.m("group.create"), true, GroupSelection.class));
+		transform.add(multiSelection);
+
+		transform.addSpace();
+
+		transform.add(WidgetBuilder.toolbarIcon(skin, SkinConstants.IC_UNGROUP,
+				i18N.m("ungroup"), true, UngroupSelection.class));
 
 		final MultiWidget multiButton = WidgetBuilder
 				.multiToolbarIcon(WidgetBuilder.toolbarIcon(skin,
