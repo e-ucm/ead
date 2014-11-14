@@ -66,6 +66,8 @@ public class WidgetBuilder {
 
 	private static Controller controller;
 
+	private static Skin skin;
+
 	private static float buttonSize;
 
 	private static final ActorGestureListener TOOLTIP_LISTENER = new ActorGestureListener() {
@@ -85,16 +87,17 @@ public class WidgetBuilder {
 		WidgetBuilder.controller = controller;
 		WidgetBuilder.buttonSize = controller.getApplicationAssets().getSkin()
 				.getDrawable("bg48").getMinHeight();
+		skin = controller.getApplicationAssets().getSkin();
 	}
 
-	public static IconButton toolbarIcon(Skin skin, String icon, String tooltip) {
-		return toolbarIcon(skin, icon, tooltip, null);
+	public static IconButton toolbarIcon(String icon, String tooltip) {
+		return toolbarIcon(icon, tooltip, null);
 	}
 
-	public static IconButton toolbarIcon(Skin skin, String icon,
-			String tooltip, Class action, Object... args) {
-		IconButton iconButton = icon(skin, icon,
-				SkinConstants.STYLE_TOOLBAR_ICON, action, args);
+	public static IconButton toolbarIcon(String icon, String tooltip,
+			Class action, Object... args) {
+		IconButton iconButton = icon(icon, SkinConstants.STYLE_TOOLBAR_ICON,
+				action, args);
 		if (tooltip != null) {
 			iconButton.setTooltip(tooltip);
 			iconButton.addListener(TOOLTIP_LISTENER);
@@ -102,10 +105,9 @@ public class WidgetBuilder {
 		return iconButton;
 	}
 
-	public static IconButton toolbarIcon(Skin skin, String icon,
-			String tooltip, boolean listenToAction, Class action,
-			Object... args) {
-		IconButton button = toolbarIcon(skin, icon, tooltip, action, args);
+	public static IconButton toolbarIcon(String icon, String tooltip,
+			boolean listenToAction, Class action, Object... args) {
+		IconButton button = toolbarIcon(icon, tooltip, action, args);
 		if (listenToAction) {
 			button.pack();
 			button.setTransform(true);
@@ -127,9 +129,8 @@ public class WidgetBuilder {
 		return multiButton;
 	}
 
-	public static IconButton toolbarIconWithMenu(Skin skin, String icon,
-			Actor contextMenu) {
-		IconButton iconButton = toolbarIcon(skin, icon, null);
+	public static IconButton toolbarIconWithMenu(String icon, Actor contextMenu) {
+		IconButton iconButton = toolbarIcon(icon, null);
 		launchContextMenu(iconButton, contextMenu);
 		return iconButton;
 	}
@@ -138,52 +139,48 @@ public class WidgetBuilder {
 		actionOnClick(actor, ShowContextMenu.class, actor, contextMenu, true);
 	}
 
-	public static IconButton icon(Skin skin, String icon, String style) {
-		return icon(skin, icon, style, null);
+	public static IconButton icon(String icon, String style) {
+		return icon(icon, style, null);
 	}
 
-	public static IconButton icon(Skin skin, String icon, String style,
-			Class action, Object... args) {
+	public static IconButton icon(String icon, String style, Class action,
+			Object... args) {
 		IconButton iconButton = new IconButton(icon, skin, style);
 		actionOnClick(iconButton, action, args);
 		return iconButton;
 	}
 
-	public static Button button(Skin skin, String style) {
+	public static Button button(String style) {
 		return new Button(skin, style);
 	}
 
-	public static Button button(Skin skin, String style, Class action,
-			Object... args) {
+	public static Button button(String style, Class action, Object... args) {
 		Button button = new Button(skin, style);
 		actionOnClick(button, action, args);
 		return button;
 	}
 
-	public static ImageButton imageButton(Skin skin, String style,
-			Class action, Object... args) {
+	public static ImageButton imageButton(String style, Class action,
+			Object... args) {
 		ImageButton button = new ImageButton(skin, style);
 		actionOnClick(button, action, args);
 		return button;
 	}
 
-	public static ContextMenu iconLabelContextPanel(Skin skin,
-			String... iconLabel) {
+	public static ContextMenu iconLabelContextPanel(String... iconLabel) {
 		ContextMenu contextMenu = new ContextMenu();
 		contextMenu.background(skin.getDrawable(SkinConstants.DRAWABLE_PAGE));
 		for (int i = 0; i < iconLabel.length; i += 2) {
 			String icon = iconLabel[i];
 			String label = iconLabel[i + 1];
-			contextMenu.add(
-					button(skin, icon, label, SkinConstants.STYLE_CONTEXT))
+			contextMenu.add(button(icon, label, SkinConstants.STYLE_CONTEXT))
 					.fillX();
 			contextMenu.row();
 		}
 		return contextMenu;
 	}
 
-	public static ContextMenu iconLabelContextPanel(Skin skin,
-			Button... iconLabel) {
+	public static ContextMenu iconLabelContextPanel(Button... iconLabel) {
 		ContextMenu contextMenu = new ContextMenu();
 		contextMenu.background(skin.getDrawable(SkinConstants.DRAWABLE_PAGE));
 		for (int i = 0; i < iconLabel.length; i++) {
@@ -194,24 +191,23 @@ public class WidgetBuilder {
 		return contextMenu;
 	}
 
-	public static Button button(Skin skin, String icon, String label,
-			String style) {
+	public static Button button(String icon, String label, String style) {
 		LinearLayout row = new LinearLayout(true);
-		row.add(icon(skin, icon, style));
+		row.add(icon(icon, style));
 		row.add(new Label(label, skin, style));
 		row.addSpace();
 		row.pad(0, 0, dpToPixels(16), 0);
 		row.setTouchable(Touchable.disabled);
 
-		Button button = button(skin, style);
+		Button button = button(style);
 		button.setName(icon);
 		button.add(row).fillX().expandX();
 		return button;
 	}
 
-	public static Button button(Skin skin, String icon, String label,
-			String style, Class action, Object... args) {
-		Button button = button(skin, icon, label, style);
+	public static Button button(String icon, String label, String style,
+			Class action, Object... args) {
+		Button button = button(icon, label, style);
 		actionOnClick(button, action, args);
 		return button;
 	}
@@ -263,6 +259,13 @@ public class WidgetBuilder {
 	 */
 	public static AsyncImage asyncImage(String imagePath) {
 		return new AsyncImage(imagePath, controller.getEditorGameAssets());
+	}
+
+	public static Tile tile(Actor background, String text) {
+		Tile tile = new Tile(controller.getApplicationAssets().getSkin());
+		tile.setBackground(background);
+		tile.setText(text);
+		return tile;
 	}
 
 }
