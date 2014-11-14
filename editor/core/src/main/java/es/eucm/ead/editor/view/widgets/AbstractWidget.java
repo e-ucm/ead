@@ -84,7 +84,9 @@ public class AbstractWidget extends WidgetGroup {
 	}
 
 	protected float getPrefWidth(Actor a) {
-		if (a instanceof Widget) {
+		if (a == null) {
+			return 0;
+		} else if (a instanceof Widget) {
 			return ((Widget) a).getPrefWidth();
 		} else if (a instanceof WidgetGroup) {
 			return ((WidgetGroup) a).getPrefWidth();
@@ -94,7 +96,9 @@ public class AbstractWidget extends WidgetGroup {
 	}
 
 	protected float getPrefHeight(Actor a) {
-		if (a instanceof Widget) {
+		if (a == null) {
+			return 0;
+		} else if (a instanceof Widget) {
 			return ((Widget) a).getPrefHeight();
 		} else if (a instanceof WidgetGroup) {
 			return ((WidgetGroup) a).getPrefHeight();
