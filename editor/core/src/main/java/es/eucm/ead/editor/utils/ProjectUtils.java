@@ -50,6 +50,7 @@ public class ProjectUtils {
 	public static Array<String> findProjects(FileHandle folder) {
 		Array<String> projects = new Array<String>();
 		findProjects(folder, projects);
+		projects.sort();
 		return projects;
 	}
 
