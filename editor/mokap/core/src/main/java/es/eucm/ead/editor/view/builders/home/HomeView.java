@@ -36,97 +36,41 @@
  */
 package es.eucm.ead.editor.view.builders.home;
 
-import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.scenes.scene2d.Actor;
-import com.badlogic.gdx.scenes.scene2d.InputEvent;
-import com.badlogic.gdx.scenes.scene2d.ui.Label;
-import com.badlogic.gdx.scenes.scene2d.ui.Label.LabelStyle;
-import com.badlogic.gdx.scenes.scene2d.ui.Skin;
-import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
-import com.badlogic.gdx.utils.Array;
-import com.badlogic.gdx.utils.TimeUtils;
-import es.eucm.ead.editor.assets.ApplicationAssets;
 import es.eucm.ead.editor.control.Controller;
 import es.eucm.ead.editor.control.MokapController.BackListener;
+import es.eucm.ead.editor.control.Preferences;
 import es.eucm.ead.editor.control.actions.editor.Exit;
-import es.eucm.ead.editor.control.actions.editor.NewGame;
-import es.eucm.ead.editor.control.actions.editor.OpenGame;
-import es.eucm.ead.editor.model.Q;
-import es.eucm.ead.editor.utils.ProjectUtils;
-import es.eucm.ead.editor.view.SkinConstants;
 import es.eucm.ead.editor.view.builders.ViewBuilder;
-import es.eucm.ead.editor.view.widgets.layouts.LinearLayout;
-import es.eucm.ead.schema.editor.components.GameData;
-import es.eucm.ead.schema.entities.ModelEntity;
 
 public class HomeView implements ViewBuilder, BackListener {
 
-	private Actor view;
+	private ProjectsGallery view;
 
 	private Controller controller;
 
 	@Override
 	public void initialize(Controller c) {
 		this.controller = c;
-		ApplicationAssets assets = controller.getApplicationAssets();
-		Skin skin = assets.getSkin();
-
-		LinearLayout projects = new LinearLayout(false);
-		final FileHandle projectsFolder = assets.absolute(controller
-				.getPlatform().getDefaultProjectsFolder());
-		LabelStyle style = new LabelStyle(skin.get(LabelStyle.class));
-		style.background = skin.getDrawable(SkinConstants.DRAWABLE_PAGE);
-		if (projectsFolder.exists()) {
-
-			Array<String> projectPaths = ProjectUtils
-					.findProjects(projectsFolder);
-			for (final String path : projectPaths) {
-				Label label = new Label(path, style);
-				label.addListener(new ClickListener() {
-
-					@Override
-					public void clicked(InputEvent event, float x, float y) {
-						controller.action(OpenGame.class, path);
-					}
-				});
-				projects.add(label);
-			}
-			Label add = new Label("Add project", style);
-			add.addListener(new ClickListener() {
-				@Override
-				public void clicked(InputEvent event, float x, float y) {
-					ModelEntity game = new ModelEntity();
-					GameData gameData = Q.getComponent(game, GameData.class);
-					gameData.setWidth(Gdx.graphics.getWidth());
-					gameData.setHeight(Gdx.graphics.getHeight());
-					controller.action(NewGame.class,
-							projectsFolder
-									.child("project" + TimeUtils.millis())
-									.path(), game);
-				}
-			});
-			projects.add(add);
-
-		} else {
-			projectsFolder.mkdirs();
-		}
-		projects.addSpace();
-		view = projects;
+		view = new ProjectsGallery(c);
 	}
 
 	@Override
 	public Actor getView(Object... args) {
+		controller.getPreferences().putString(Preferences.LAST_OPENED_GAME, "");
+		controller.getEditorGameAssets().clear();
+		view.prepare();
 		return view;
 	}
 
 	@Override
 	public void release(Controller controller) {
-
+		controller.getEditorGameAssets().clear();
 	}
 
 	@Override
 	public void onBackPressed() {
 		controller.action(Exit.class, false);
 	}
+
 }
