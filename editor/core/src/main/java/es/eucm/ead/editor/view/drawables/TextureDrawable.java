@@ -38,18 +38,21 @@ package es.eucm.ead.editor.view.drawables;
 
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Batch;
+import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.scenes.scene2d.utils.BaseDrawable;
 
 public class TextureDrawable extends BaseDrawable {
 
 	private Texture texture;
 
+	private TextureRegion textureRegion = new TextureRegion();
+
 	public TextureDrawable() {
 		this(null);
 	}
 
 	public TextureDrawable(Texture texture) {
-		this.texture = texture;
+		setTexture(texture);
 	}
 
 	public void setTexture(Texture texture) {
@@ -57,14 +60,42 @@ public class TextureDrawable extends BaseDrawable {
 		if (texture != null) {
 			setMinWidth(texture.getWidth());
 			setMinHeight(texture.getHeight());
+			textureRegion.setTexture(texture);
 		}
+
 	}
 
 	@Override
 	public void draw(Batch batch, float x, float y, float width, float height) {
 		if (texture != null) {
-			batch.draw(texture, x, y, width, height);
+			updateRegion(width, height);
+			batch.draw(textureRegion, 0, 0, width, height);
 		}
+	}
+
+	private void updateRegion(float width, float height) {
+		float textureWidth = texture.getWidth();
+		float textureHeight = texture.getHeight();
+
+		float diffWidth = textureWidth - width;
+		float diffHeight = textureHeight - height;
+
+		float regionWidth;
+		float regionHeight;
+
+		boolean fillY = diffHeight < 0.0f && diffWidth > 0.0f;
+
+		if (!fillY) {
+			regionWidth = textureWidth;
+			float scale = regionWidth / width;
+			regionHeight = height * scale;
+		} else {
+			regionHeight = textureHeight;
+			float scale = regionHeight / height;
+			regionWidth = width * scale;
+		}
+
+		textureRegion.setRegion(0, 0, (int) regionWidth, (int) regionHeight);
 	}
 
 }
