@@ -78,7 +78,7 @@ public class ScenesGallery extends AbstractWidget implements
 		this.controller = controller;
 		Skin skin = controller.getApplicationAssets().getSkin();
 		addActor(scrollPane = new ScrollPane(scenes = new Table(), skin));
-		addActor(addScene = WidgetBuilder.button(skin, SkinConstants.STYLE_ADD,
+		addActor(addScene = WidgetBuilder.button(SkinConstants.STYLE_ADD,
 				NewScene.class, ""));
 	}
 
@@ -92,10 +92,9 @@ public class ScenesGallery extends AbstractWidget implements
 			ModelEntity scene = (ModelEntity) resource.getValue().getObject();
 			String thumbnail = Q.getThumbnail(controller, scene).getPath();
 
-			ImageButton sceneButton = WidgetBuilder.imageButton(controller
-					.getApplicationAssets().getSkin(),
-					SkinConstants.STYLE_SCENE, EditScene.class, resource
-							.getKey());
+			ImageButton sceneButton = WidgetBuilder.imageButton(
+					SkinConstants.STYLE_SCENE, EditScene.class,
+					resource.getKey());
 			sceneButton.setStyle(new ImageButtonStyle(sceneButton.getStyle()));
 
 			sceneButton.setName(thumbnail);

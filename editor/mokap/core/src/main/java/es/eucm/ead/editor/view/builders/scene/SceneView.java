@@ -36,8 +36,6 @@
  */
 package es.eucm.ead.editor.view.builders.scene;
 
-import java.util.Map.Entry;
-
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.scenes.scene2d.Actor;
@@ -56,7 +54,6 @@ import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.scenes.scene2d.utils.Drawable;
 import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable;
 import com.badlogic.gdx.utils.Array;
-
 import es.eucm.ead.editor.assets.EditorGameAssets;
 import es.eucm.ead.editor.control.Controller;
 import es.eucm.ead.editor.control.Selection;
@@ -108,6 +105,8 @@ import es.eucm.ead.engine.assets.Assets.AssetLoadedCallback;
 import es.eucm.ead.schema.editor.components.Thumbnail;
 import es.eucm.ead.schema.entities.ModelEntity;
 import es.eucm.ead.schemax.entities.ResourceCategory;
+
+import java.util.Map.Entry;
 
 public class SceneView implements ViewBuilder {
 
@@ -205,13 +204,13 @@ public class SceneView implements ViewBuilder {
 	private MultiWidget buildToolbar(Skin skin, I18N i18N) {
 		final MultiWidget toolbar = new MultiWidget(skin);
 
-		Actor modeSelector = buildModeContextMenu(skin, i18N);
+		Actor modeSelector = buildModeContextMenu(i18N);
 
 		toolbar.addWidgets(buildComposeToolbar(skin, i18N, modeSelector),
 				buildTransformToolbar(skin, i18N),
 				buildDrawToolbar(skin, i18N),
-				buildFxToolbar(skin, i18N, modeSelector),
-				buildInteractionToolbar(skin, i18N, modeSelector));
+				buildFxToolbar(i18N, modeSelector),
+				buildInteractionToolbar(i18N, modeSelector));
 
 		controller.getModel().addSelectionListener(new SelectionListener() {
 			@Override
@@ -230,8 +229,8 @@ public class SceneView implements ViewBuilder {
 	}
 
 	private IconButton navigationButton() {
-		IconButton navigation = WidgetBuilder.toolbarIcon(controller
-				.getApplicationAssets().getSkin(), SkinConstants.IC_MENU, null);
+		IconButton navigation = WidgetBuilder.toolbarIcon(
+				SkinConstants.IC_MENU, null);
 		navigation.addListener(navigationListener);
 		return navigation;
 	}
@@ -242,35 +241,35 @@ public class SceneView implements ViewBuilder {
 		compose.setComputeInvisibles(true);
 		compose.add(navigationButton());
 
-		IconButton mode = WidgetBuilder.icon(skin, SkinConstants.IC_COMPOSE,
+		IconButton mode = WidgetBuilder.icon(SkinConstants.IC_COMPOSE,
 				SkinConstants.STYLE_DROP_DOWN);
 		WidgetBuilder.launchContextMenu(mode, modeSelector);
 
 		compose.add(mode);
-		compose.add(WidgetBuilder.toolbarIcon(skin, SkinConstants.IC_UNDO,
+		compose.add(WidgetBuilder.toolbarIcon(SkinConstants.IC_UNDO,
 				i18N.m("undo"), true, Undo.class));
-		compose.add(WidgetBuilder.toolbarIcon(skin, SkinConstants.IC_REDO,
+		compose.add(WidgetBuilder.toolbarIcon(SkinConstants.IC_REDO,
 				i18N.m("redo"), true, Redo.class));
 
 		compose.addSpace();
 
-		compose.add(WidgetBuilder.toolbarIcon(skin, SkinConstants.IC_PASTE,
+		compose.add(WidgetBuilder.toolbarIcon(SkinConstants.IC_PASTE,
 				i18N.m("paste"), true, Paste.class));
 
-		compose.add(WidgetBuilder.toolbarIconWithMenu(skin,
-				SkinConstants.IC_ADD, buildInsertContextMenu(skin, i18N)));
+		compose.add(WidgetBuilder.toolbarIconWithMenu(SkinConstants.IC_ADD,
+				buildInsertContextMenu(i18N)));
 		return compose;
 	}
 
 	private LinearLayout buildTransformToolbar(Skin skin, I18N i18N) {
 		LinearLayout transform = new LinearLayout(true);
 		transform.setComputeInvisibles(true);
-		transform.add(WidgetBuilder.toolbarIcon(skin, SkinConstants.IC_CHECK,
+		transform.add(WidgetBuilder.toolbarIcon(SkinConstants.IC_CHECK,
 				i18N.m("clear.selection"), SetSelection.class,
 				Selection.EDITED_GROUP, Selection.SCENE_ELEMENT));
-		transform.add(WidgetBuilder.toolbarIcon(skin, SkinConstants.IC_UNDO,
+		transform.add(WidgetBuilder.toolbarIcon(SkinConstants.IC_UNDO,
 				i18N.m("undo"), true, Undo.class));
-		transform.add(WidgetBuilder.toolbarIcon(skin, SkinConstants.IC_REDO,
+		transform.add(WidgetBuilder.toolbarIcon(SkinConstants.IC_REDO,
 				i18N.m("redo"), true, Redo.class));
 
 		final Switch multiSelection = new Switch(skin,
@@ -292,26 +291,26 @@ public class SceneView implements ViewBuilder {
 
 		transform.addSpace();
 
-		transform.add(WidgetBuilder.toolbarIcon(skin, SkinConstants.IC_UNGROUP,
+		transform.add(WidgetBuilder.toolbarIcon(SkinConstants.IC_UNGROUP,
 				i18N.m("ungroup"), true, UngroupSelection.class));
 
 		final MultiWidget multiButton = WidgetBuilder
-				.multiToolbarIcon(WidgetBuilder.toolbarIcon(skin,
+				.multiToolbarIcon(WidgetBuilder.toolbarIcon(
 						SkinConstants.IC_GROUP, i18N.m("group.create"), false,
 						GroupSelection.class));
 
 		transform.add(multiButton);
 
-		transform.add(WidgetBuilder.toolbarIcon(skin, SkinConstants.IC_TO_BACK,
+		transform.add(WidgetBuilder.toolbarIcon(SkinConstants.IC_TO_BACK,
 				i18N.m("to.back"), false, ReorderSelection.class,
 				ReorderSelection.Type.TO_BACK));
 
-		transform.add(WidgetBuilder.toolbarIcon(skin,
-				SkinConstants.IC_TO_FRONT, i18N.m("to.front"), false,
-				ReorderSelection.class, ReorderSelection.Type.TO_FRONT));
+		transform.add(WidgetBuilder.toolbarIcon(SkinConstants.IC_TO_FRONT,
+				i18N.m("to.front"), false, ReorderSelection.class,
+				ReorderSelection.Type.TO_FRONT));
 
-		transform.add(WidgetBuilder.toolbarIconWithMenu(skin,
-				SkinConstants.IC_MORE, buildTransformContextMenu(skin, i18N)));
+		transform.add(WidgetBuilder.toolbarIconWithMenu(SkinConstants.IC_MORE,
+				buildTransformContextMenu(i18N)));
 
 		controller.getModel().addSelectionListener(new SelectionListener() {
 
@@ -339,19 +338,19 @@ public class SceneView implements ViewBuilder {
 		return transform;
 	}
 
-	private ContextMenu buildInsertContextMenu(Skin skin, I18N i18n) {
+	private ContextMenu buildInsertContextMenu(I18N i18n) {
 		String style = SkinConstants.STYLE_CONTEXT;
 
-		Button picture = WidgetBuilder.button(skin, SkinConstants.IC_CAMERA,
+		Button picture = WidgetBuilder.button(SkinConstants.IC_CAMERA,
 				i18n.m("picture"), style, TakePicture.class);
 
-		Button text = WidgetBuilder.button(skin, SkinConstants.IC_TEXT,
+		Button text = WidgetBuilder.button(SkinConstants.IC_TEXT,
 				i18n.m("text"), style, AddLabel.class);
 
-		Button zone = WidgetBuilder.button(skin, SkinConstants.IC_ZONE,
+		Button zone = WidgetBuilder.button(SkinConstants.IC_ZONE,
 				i18n.m("interactive.zone"), style, AddInteractiveZone.class);
 
-		Button paint = WidgetBuilder.button(skin, SkinConstants.IC_BRUSH,
+		Button paint = WidgetBuilder.button(SkinConstants.IC_BRUSH,
 				i18n.m("drawing"), style);
 		paint.addListener(new ClickListener() {
 
@@ -361,8 +360,8 @@ public class SceneView implements ViewBuilder {
 			}
 		});
 
-		ContextMenu contextMenu = WidgetBuilder.iconLabelContextPanel(skin,
-				picture, text, zone, paint);
+		ContextMenu contextMenu = WidgetBuilder.iconLabelContextPanel(picture,
+				text, zone, paint);
 
 		contextMenu.pack();
 		contextMenu.setOriginX(contextMenu.getWidth());
@@ -370,38 +369,37 @@ public class SceneView implements ViewBuilder {
 		return contextMenu;
 	}
 
-	private ContextMenu buildTransformContextMenu(Skin skin, I18N i18n) {
+	private ContextMenu buildTransformContextMenu(I18N i18n) {
 		String style = SkinConstants.STYLE_CONTEXT;
 
-		Button copy = WidgetBuilder.button(skin, SkinConstants.IC_COPY,
+		Button copy = WidgetBuilder.button(SkinConstants.IC_COPY,
 				i18n.m("copy"), style, Copy.class);
 		WidgetBuilder.actionOnClick(copy, ShowToast.class, i18n.m("copied"));
 		WidgetBuilder.actionOnClick(copy, SetSelection.class,
 				Selection.EDITED_GROUP, Selection.SCENE_ELEMENT);
 
-		Button front = WidgetBuilder.button(skin,
-				SkinConstants.IC_BRING_TO_FRONT, i18n.m("bring.to.front"),
-				style, ReorderSelection.class,
+		Button front = WidgetBuilder.button(SkinConstants.IC_BRING_TO_FRONT,
+				i18n.m("bring.to.front"), style, ReorderSelection.class,
 				ReorderSelection.Type.BRING_TO_FRONT);
 
-		Button back = WidgetBuilder.button(skin, SkinConstants.IC_SEND_TO_BACK,
+		Button back = WidgetBuilder.button(SkinConstants.IC_SEND_TO_BACK,
 				i18n.m("send.to.back"), style, ReorderSelection.class,
 				ReorderSelection.Type.SEND_TO_BACK);
 
-		Button vertical = WidgetBuilder.button(skin,
+		Button vertical = WidgetBuilder.button(
 				SkinConstants.IC_MIRROR_VERTICAL, i18n.m("mirror.vertical"),
 				style, MirrorSelection.class, MirrorSelection.Type.HORIZONTAL);
 
-		Button horizontal = WidgetBuilder.button(skin,
+		Button horizontal = WidgetBuilder.button(
 				SkinConstants.IC_MIRROR_HORIZONTAL,
 				i18n.m("mirror.horizontal"), style, MirrorSelection.class,
 				MirrorSelection.Type.VERTICAL);
 
-		Button delete = WidgetBuilder.button(skin, SkinConstants.IC_DELETE,
+		Button delete = WidgetBuilder.button(SkinConstants.IC_DELETE,
 				i18n.m("delete"), style, RemoveSelectionFromScene.class);
 
-		ContextMenu contextMenu = WidgetBuilder.iconLabelContextPanel(skin,
-				copy, front, back, vertical, horizontal, delete);
+		ContextMenu contextMenu = WidgetBuilder.iconLabelContextPanel(copy,
+				front, back, vertical, horizontal, delete);
 
 		contextMenu.pack();
 		contextMenu.setOriginX(contextMenu.getWidth());
@@ -409,8 +407,8 @@ public class SceneView implements ViewBuilder {
 		return contextMenu;
 	}
 
-	private Actor buildModeContextMenu(Skin skin, I18N i18N) {
-		ContextMenu contextMenu = WidgetBuilder.iconLabelContextPanel(skin,
+	private Actor buildModeContextMenu(I18N i18N) {
+		ContextMenu contextMenu = WidgetBuilder.iconLabelContextPanel(
 				SkinConstants.IC_COMPOSE, i18N.m("compose"),
 				SkinConstants.IC_FX, i18N.m("fx"), SkinConstants.IC_TOUCH,
 				i18N.m("interaction"), SkinConstants.IC_PLAY, i18N.m("test"));
@@ -525,8 +523,7 @@ public class SceneView implements ViewBuilder {
 			ModelEntity scene = (ModelEntity) resource.getValue().getObject();
 			Thumbnail thumbnail = Q.getThumbnail(controller, scene);
 			String path = thumbnail.getPath();
-			ImageButton sceneButton = WidgetBuilder.imageButton(controller
-					.getApplicationAssets().getSkin(),
+			ImageButton sceneButton = WidgetBuilder.imageButton(
 					SkinConstants.STYLE_NAVIGATION_SCENE, EditScene.class,
 					resource.getKey());
 			sceneButton.setStyle(new ImageButtonStyle(sceneButton.getStyle()));
@@ -557,20 +554,19 @@ public class SceneView implements ViewBuilder {
 
 	private LinearLayout buildDrawToolbar(final Skin skin, I18N i18N) {
 		LinearLayout draw = new LinearLayout(true);
-		IconButton save = WidgetBuilder.toolbarIcon(skin,
-				SkinConstants.IC_CHECK, i18N.m("drawing.save"));
+		IconButton save = WidgetBuilder.toolbarIcon(SkinConstants.IC_CHECK,
+				i18N.m("drawing.save"));
 
 		draw.add(save);
 
-		IconButton mode = WidgetBuilder.icon(skin, SkinConstants.IC_BRUSH,
+		IconButton mode = WidgetBuilder.icon(SkinConstants.IC_BRUSH,
 				SkinConstants.STYLE_DROP_DOWN);
 		final Image modeIcon = mode.getIcon();
-		WidgetBuilder.launchContextMenu(mode,
-				buildDrawModeContextMenu(skin, i18N));
+		WidgetBuilder.launchContextMenu(mode, buildDrawModeContextMenu(i18N));
 
 		draw.add(mode);
 
-		IconButton picker = WidgetBuilder.icon(skin, SkinConstants.IC_CIRCLE,
+		IconButton picker = WidgetBuilder.icon(SkinConstants.IC_CIRCLE,
 				SkinConstants.STYLE_DROP_DOWN);
 		WidgetBuilder.launchContextMenu(picker,
 				buildBrushStrokesColorPicker(skin, picker.getIcon()));
@@ -585,15 +581,15 @@ public class SceneView implements ViewBuilder {
 
 		draw.add(picker);
 
-		draw.add(WidgetBuilder.toolbarIcon(skin, SkinConstants.IC_UNDO,
+		draw.add(WidgetBuilder.toolbarIcon(SkinConstants.IC_UNDO,
 				i18N.m("undo"), Undo.class));
-		draw.add(WidgetBuilder.toolbarIcon(skin, SkinConstants.IC_REDO,
+		draw.add(WidgetBuilder.toolbarIcon(SkinConstants.IC_REDO,
 				i18N.m("redo"), Redo.class));
 
 		draw.addSpace();
 
-		IconButton close = WidgetBuilder.toolbarIcon(skin,
-				SkinConstants.IC_CLOSE, i18N.m("drawing.discard"));
+		IconButton close = WidgetBuilder.toolbarIcon(SkinConstants.IC_CLOSE,
+				i18N.m("drawing.discard"));
 
 		draw.add(close);
 
@@ -640,8 +636,8 @@ public class SceneView implements ViewBuilder {
 		return colorPickerPanel;
 	}
 
-	private Actor buildDrawModeContextMenu(Skin skin, I18N i18N) {
-		ContextMenu contextMenu = WidgetBuilder.iconLabelContextPanel(skin,
+	private Actor buildDrawModeContextMenu(I18N i18N) {
+		ContextMenu contextMenu = WidgetBuilder.iconLabelContextPanel(
 				SkinConstants.IC_BRUSH, i18N.m("paint"),
 				SkinConstants.IC_RUBBER, i18N.m("erase"));
 		contextMenu.pack();
@@ -660,25 +656,24 @@ public class SceneView implements ViewBuilder {
 		return contextMenu;
 	}
 
-	private LinearLayout buildFxToolbar(Skin skin, I18N i18N, Actor modeSelector) {
+	private LinearLayout buildFxToolbar(I18N i18N, Actor modeSelector) {
 		LinearLayout fx = new LinearLayout(true);
 		fx.setComputeInvisibles(true);
 		fx.add(navigationButton());
 
-		IconButton mode = WidgetBuilder.icon(skin, SkinConstants.IC_FX,
+		IconButton mode = WidgetBuilder.icon(SkinConstants.IC_FX,
 				SkinConstants.STYLE_DROP_DOWN);
 		WidgetBuilder.launchContextMenu(mode, modeSelector);
 		fx.add(mode);
 		return fx;
 	}
 
-	private LinearLayout buildInteractionToolbar(Skin skin, I18N i18N,
-			Actor modeSelector) {
+	private LinearLayout buildInteractionToolbar(I18N i18N, Actor modeSelector) {
 		LinearLayout interaction = new LinearLayout(true);
 		interaction.setComputeInvisibles(true);
 		interaction.add(navigationButton());
 
-		IconButton mode = WidgetBuilder.icon(skin, SkinConstants.IC_TOUCH,
+		IconButton mode = WidgetBuilder.icon(SkinConstants.IC_TOUCH,
 				SkinConstants.STYLE_DROP_DOWN);
 		WidgetBuilder.launchContextMenu(mode, modeSelector);
 		interaction.add(mode);

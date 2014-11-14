@@ -70,8 +70,7 @@ public class ProjectView implements ViewBuilder, BackListener {
 		I18N i18N = controller.getApplicationAssets().getI18N();
 		view = new LinearLayout(false);
 		view.add(buildToolbar(skin, i18N)).expandX();
-		view.add(scenesGallery = buildScenesGallery(skin)).expand(true, true)
-				.top();
+		view.add(scenesGallery = buildScenesGallery()).expand(true, true).top();
 	}
 
 	@Override
@@ -90,7 +89,7 @@ public class ProjectView implements ViewBuilder, BackListener {
 		MultiWidget toolbar = new MultiWidget(skin);
 
 		LinearLayout project = new LinearLayout(true);
-		project.add(WidgetBuilder.toolbarIcon(skin, SkinConstants.IC_GO, null,
+		project.add(WidgetBuilder.toolbarIcon(SkinConstants.IC_GO, null,
 				ChangeView.class, HomeView.class));
 		project.addSpace();
 
@@ -98,7 +97,7 @@ public class ProjectView implements ViewBuilder, BackListener {
 		return toolbar;
 	}
 
-	private ScenesGallery buildScenesGallery(Skin skin) {
+	private ScenesGallery buildScenesGallery() {
 		ScenesGallery scenesGallery = new ScenesGallery(controller);
 		return scenesGallery;
 	}

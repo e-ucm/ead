@@ -65,12 +65,12 @@ public class Navigation extends AbstractWidget {
 		addActor(scrollPane = new ScrollPane(scenes = new Table(), skin.get(
 				SkinConstants.STYLE_NAVIGATION, ScrollPaneStyle.class)));
 		scrollPane.setFillParent(true);
-		addActor(addScene = WidgetBuilder.button(skin, SkinConstants.STYLE_ADD,
+		addActor(addScene = WidgetBuilder.button(SkinConstants.STYLE_ADD,
 				NewScene.class, ""));
-		scenes.add(WidgetBuilder.button(skin, SkinConstants.IC_HOME,
+		scenes.add(WidgetBuilder.button(SkinConstants.IC_HOME,
 				i18N.m("project"), SkinConstants.STYLE_CONTEXT,
 				ChangeView.class, ProjectView.class));
-		scenes.add(WidgetBuilder.button(skin, SkinConstants.IC_PLAY,
+		scenes.add(WidgetBuilder.button(SkinConstants.IC_PLAY,
 				i18N.m("test.all"), SkinConstants.STYLE_CONTEXT));
 	}
 

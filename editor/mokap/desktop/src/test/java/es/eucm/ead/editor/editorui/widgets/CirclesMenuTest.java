@@ -67,8 +67,8 @@ public class CirclesMenuTest extends UITest {
 
 		LinearLayout container = new LinearLayout(false).background(skin
 				.getDrawable(SkinConstants.DRAWABLE_BLACK_BG));
-		IconButton iconButton = WidgetBuilder.toolbarIcon(skin,
-				SkinConstants.IC_ADD, null);
+		IconButton iconButton = WidgetBuilder.toolbarIcon(SkinConstants.IC_ADD,
+				null);
 		container.add(iconButton);
 		container.addSpace();
 
