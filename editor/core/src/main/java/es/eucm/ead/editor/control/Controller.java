@@ -36,9 +36,6 @@
  */
 package es.eucm.ead.editor.control;
 
-import java.util.HashMap;
-import java.util.Map;
-
 import com.badlogic.gdx.Files;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
@@ -47,7 +44,6 @@ import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.InputListener;
 import com.badlogic.gdx.utils.reflect.ClassReflection;
 import com.badlogic.gdx.utils.reflect.ReflectionException;
-
 import es.eucm.ead.editor.assets.ApplicationAssets;
 import es.eucm.ead.editor.assets.EditorGameAssets;
 import es.eucm.ead.editor.control.actions.ArgumentsValidationException;
@@ -60,6 +56,7 @@ import es.eucm.ead.editor.control.engine.Engine;
 import es.eucm.ead.editor.control.pastelisteners.BehaviorCopyListener;
 import es.eucm.ead.editor.control.pastelisteners.ModelEntityCopyListener;
 import es.eucm.ead.editor.control.pastelisteners.TextCopyListener;
+import es.eucm.ead.editor.control.workers.WorkerExecutor;
 import es.eucm.ead.editor.indexes.ControllerIndex;
 import es.eucm.ead.editor.model.Model;
 import es.eucm.ead.editor.platform.Platform;
@@ -67,6 +64,9 @@ import es.eucm.ead.editor.view.builders.ViewBuilder;
 import es.eucm.ead.engine.EngineInitializer;
 import es.eucm.ead.schema.components.behaviors.Behavior;
 import es.eucm.ead.schema.entities.ModelEntity;
+
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  * Mediator and main controller of the editor's functionality
@@ -132,6 +132,8 @@ public class Controller {
 
 	private BackgroundExecutor backgroundExecutor;
 
+	private WorkerExecutor workerExecutor;
+
 	private Engine engine;
 
 	private Map<Class, ControllerIndex> indexes;
@@ -150,6 +152,7 @@ public class Controller {
 				editorGameAssets);
 		this.actions = new Actions(this);
 		this.backgroundExecutor = new BackgroundExecutor();
+		this.workerExecutor = new WorkerExecutor(this);
 		this.preferences = applicationAssets.loadPreferences();
 		// Get the release info from editor assets
 		this.releaseInfo = applicationAssets.loadReleaseInfo();
@@ -269,6 +272,10 @@ public class Controller {
 
 	public BackgroundExecutor getBackgroundExecutor() {
 		return backgroundExecutor;
+	}
+
+	public WorkerExecutor getWorkerExecutor() {
+		return workerExecutor;
 	}
 
 	public Engine getEngine() {
