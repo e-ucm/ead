@@ -290,6 +290,17 @@ public abstract class Assets extends Json implements FileHandleResolver {
 	}
 
 	/**
+	 * @param fileName
+	 *            the asset file name
+	 * @param type
+	 *            the asset type
+	 * @return the asset
+	 */
+	public <T> T get(String fileName, Class<T> type) {
+		return assetManager.get(fileName, type);
+	}
+
+	/**
 	 * Adds the given asset to the loading queue of the assets. It will be
 	 * loaded and passed to the callback eventually.
 	 * 
@@ -425,9 +436,6 @@ public abstract class Assets extends Json implements FileHandleResolver {
 	public void unload(String fileName) {
 		try {
 			assetManager.unload(fileName);
-			for (AssetLoadingListener listener : listeners) {
-				listener.unloaded(fileName, Assets.this);
-			}
 		} catch (GdxRuntimeException e) {
 			Gdx.app.error("EditorGameAssets", "Impossible to unload "
 					+ fileName);
@@ -458,7 +466,19 @@ public abstract class Assets extends Json implements FileHandleResolver {
 		public <T> void addAsset(String fileName, Class<T> type, T asset) {
 			super.addAsset(fileName, type, asset);
 			for (AssetLoadingListener listener : listeners) {
-				listener.loaded(fileName, asset, Assets.this);
+				if (listener.listenTo(fileName)) {
+					listener.loaded(fileName, asset, Assets.this);
+				}
+			}
+		}
+
+		@Override
+		public void unload(String fileName) {
+			super.unload(fileName);
+			for (AssetLoadingListener listener : listeners) {
+				if (listener.listenTo(fileName)) {
+					listener.unloaded(fileName, Assets.this);
+				}
 			}
 		}
 	}
@@ -515,6 +535,8 @@ public abstract class Assets extends Json implements FileHandleResolver {
 	 * identifier
 	 */
 	public interface AssetLoadingListener<T> {
+
+		boolean listenTo(String fileName);
 
 		void loaded(String fileName, T asset, Assets assets);
 

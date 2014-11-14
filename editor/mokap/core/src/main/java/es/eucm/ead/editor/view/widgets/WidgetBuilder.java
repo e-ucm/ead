@@ -36,26 +36,22 @@
  */
 package es.eucm.ead.editor.view.widgets;
 
-import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.Touchable;
 import com.badlogic.gdx.scenes.scene2d.ui.Button;
 import com.badlogic.gdx.scenes.scene2d.ui.Button.ButtonStyle;
-import com.badlogic.gdx.scenes.scene2d.ui.Image;
 import com.badlogic.gdx.scenes.scene2d.ui.ImageButton;
 import com.badlogic.gdx.scenes.scene2d.ui.ImageButton.ImageButtonStyle;
 import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.utils.ActorGestureListener;
 import com.badlogic.gdx.scenes.scene2d.utils.Align;
-
 import es.eucm.ead.editor.control.Controller;
 import es.eucm.ead.editor.control.actions.editor.ShowContextMenu;
 import es.eucm.ead.editor.control.actions.editor.ShowTooltip;
 import es.eucm.ead.editor.view.SkinConstants;
-import es.eucm.ead.editor.view.drawables.TextureDrawable;
 import es.eucm.ead.editor.view.listeners.ActionOnClickListener;
-import es.eucm.ead.editor.view.listeners.AsyncTextureListener;
+import es.eucm.ead.editor.view.listeners.AsyncImage;
 import es.eucm.ead.editor.view.listeners.VisibleActionListener;
 import es.eucm.ead.editor.view.tooltips.Tooltip;
 import es.eucm.ead.editor.view.widgets.layouts.LinearLayout;
@@ -265,13 +261,8 @@ public class WidgetBuilder {
 	 * path every time the image changes
 	 * 
 	 */
-	public static Image asyncImage(String imagePath) {
-		TextureDrawable drawable = new TextureDrawable();
-		Image image = new Image(drawable);
-		controller.getEditorGameAssets().addAssetListener(
-				new AsyncTextureListener(imagePath, drawable));
-		controller.getEditorGameAssets().load(imagePath, Texture.class);
-		return image;
+	public static AsyncImage asyncImage(String imagePath) {
+		return new AsyncImage(imagePath, controller.getEditorGameAssets());
 	}
 
 }

@@ -36,37 +36,72 @@
  */
 package es.eucm.ead.editor.view.listeners;
 
-import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Texture;
-
+import com.badlogic.gdx.graphics.g2d.Batch;
+import com.badlogic.gdx.scenes.scene2d.Group;
+import com.badlogic.gdx.scenes.scene2d.ui.Image;
 import es.eucm.ead.editor.view.drawables.TextureDrawable;
 import es.eucm.ead.engine.assets.Assets;
 import es.eucm.ead.engine.assets.Assets.AssetLoadingListener;
 
-public class AsyncTextureListener implements AssetLoadingListener<Texture> {
+public class AsyncImage extends Image implements AssetLoadingListener<Texture> {
+
+	private Assets assets;
 
 	private String fileName;
 
 	private TextureDrawable textureDrawable;
 
-	public AsyncTextureListener(String fileName, TextureDrawable textureDrawable) {
+	private boolean reload;
+
+	public AsyncImage(String fileName, Assets assets) {
 		this.fileName = fileName;
-		this.textureDrawable = textureDrawable;
+		this.assets = assets;
+		setDrawable(this.textureDrawable = new TextureDrawable());
+		reload = true;
+	}
+
+	@Override
+	public void draw(Batch batch, float parentAlpha) {
+		if (reload) {
+			if (assets.isLoaded(fileName, Texture.class)) {
+				loaded(null, assets.get(fileName, Texture.class), null);
+			} else {
+				assets.load(fileName, Texture.class);
+			}
+			reload = false;
+		}
+		super.draw(batch, parentAlpha);
+	}
+
+	@Override
+	protected void setParent(Group parent) {
+		super.setParent(parent);
+		if (parent != null) {
+			assets.addAssetListener(this);
+		}
+	}
+
+	@Override
+	public boolean remove() {
+		assets.removeAssetListener(this);
+		return super.remove();
+	}
+
+	@Override
+	public boolean listenTo(String fileName) {
+		return this.fileName.equals(fileName);
 	}
 
 	@Override
 	public void loaded(String fileName, Texture texture, Assets assets) {
-		if (fileName.equals(this.fileName)) {
-			textureDrawable.setTexture(texture);
-			Gdx.graphics.requestRendering();
-		}
+		textureDrawable.setTexture(texture);
+		invalidateHierarchy();
 	}
 
 	@Override
 	public void unloaded(String fileName, Assets assets) {
-		if (fileName.equals(this.fileName)) {
-			textureDrawable.setTexture(null);
-			Gdx.graphics.requestRendering();
-		}
+		textureDrawable.setTexture(null);
+		reload = true;
 	}
 }
