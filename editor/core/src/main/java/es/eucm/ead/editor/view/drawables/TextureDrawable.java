@@ -44,6 +44,14 @@ public class TextureDrawable extends BaseDrawable {
 
 	private Texture texture;
 
+	public TextureDrawable() {
+		this(null);
+	}
+
+	public TextureDrawable(Texture texture) {
+		this.texture = texture;
+	}
+
 	public void setTexture(Texture texture) {
 		this.texture = texture;
 		if (texture != null) {
