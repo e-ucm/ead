@@ -69,6 +69,10 @@
             "name": "blank",
             "color": "transparent"
         },
+        "semi_transparent_bg": {
+            "name": "blank",
+            "color": "semi_transparent"
+        },
         "light_gray_bg": {
             "name": "blank",
             "color": "light_gray"
@@ -249,6 +253,15 @@
                 "down": "light_gray_bg"
             },
             "touch": "touch"
+        }
+    },
+    "es.eucm.ead.editor.view.widgets.Tile$TileStyle": {
+        "default": {
+            "labelBackground": "semi_transparent_bg",
+            "labelStyle": {
+                "font": "default_font",
+                "fontColor": "white"
+            }
         }
     }
 }
