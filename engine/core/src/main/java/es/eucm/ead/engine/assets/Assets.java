@@ -38,6 +38,8 @@ package es.eucm.ead.engine.assets;
 
 import com.badlogic.gdx.Files;
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.assets.AssetDescriptor;
+import com.badlogic.gdx.assets.AssetErrorListener;
 import com.badlogic.gdx.assets.AssetLoaderParameters;
 import com.badlogic.gdx.assets.AssetLoaderParameters.LoadedCallback;
 import com.badlogic.gdx.assets.loaders.AssetLoader;
@@ -83,7 +85,8 @@ import es.eucm.ead.engine.assets.loaders.ExtendedSkinLoader;
  * editor).
  * 
  */
-public abstract class Assets extends Json implements FileHandleResolver {
+public abstract class Assets extends Json implements FileHandleResolver,
+		AssetErrorListener {
 
 	/**
 	 * Default time slot for loading assets.
@@ -112,6 +115,7 @@ public abstract class Assets extends Json implements FileHandleResolver {
 		this.files = files;
 		listeners = new Array<AssetLoadingListener>();
 		assetManager = new AssetManager(this);
+		assetManager.setErrorListener(this);
 		i18n = new I18N(this);
 		setLoader(Skin.class, new ExtendedSkinLoader(this));
 	}
@@ -504,6 +508,11 @@ public abstract class Assets extends Json implements FileHandleResolver {
 		}
 		parameters.loadedCallback = loadedCallback;
 		return parameters;
+	}
+
+	@Override
+	public void error(AssetDescriptor asset, Throwable throwable) {
+		Gdx.app.error("Assets", "Error loading " + asset, throwable);
 	}
 
 	public interface AssetLoadedCallback<T> {
