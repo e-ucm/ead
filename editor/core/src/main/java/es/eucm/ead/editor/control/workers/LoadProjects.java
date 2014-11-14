@@ -42,6 +42,7 @@ import es.eucm.ead.editor.assets.EditorGameAssets;
 import es.eucm.ead.editor.control.Controller;
 import es.eucm.ead.editor.model.Q;
 import es.eucm.ead.editor.utils.ProjectUtils;
+import es.eucm.ead.schema.editor.components.Documentation;
 import es.eucm.ead.schema.editor.components.GameData;
 import es.eucm.ead.schema.editor.components.Thumbnail;
 import es.eucm.ead.schema.entities.ModelEntity;
@@ -69,7 +70,11 @@ public class LoadProjects extends Worker {
 			Array<String> projectPaths = ProjectUtils
 					.findProjects(projectsFolder);
 			for (String projectPath : projectPaths) {
-				result(projectPath, findThumbnail(projectPath));
+				ModelEntity game = findGame(projectPath);
+				if (game != null) {
+					result(projectPath, findTitle(game),
+							findThumbnail(game, projectPath));
+				}
 			}
 		} else {
 			projectsFolder.mkdirs();
@@ -77,18 +82,18 @@ public class LoadProjects extends Worker {
 		done();
 	}
 
-	private String findThumbnail(String path) {
-		ModelEntity game = findGame(path);
-		if (game != null) {
-			String scenePath = Q.getComponent(game, GameData.class)
-					.getInitialScene();
-			ModelEntity scene = findScene(path, scenePath);
-			if (Q.hasComponent(scene, Thumbnail.class)) {
-				return assets
-						.absolute(path)
-						.child(Q.getComponent(scene, Thumbnail.class).getPath())
-						.path();
-			}
+	private String findTitle(ModelEntity game) {
+		return Q.getComponent(game, Documentation.class).getName();
+	}
+
+	private String findThumbnail(ModelEntity game, String path) {
+		String scenePath = Q.getComponent(game, GameData.class)
+				.getInitialScene();
+		ModelEntity scene = findScene(path, scenePath);
+		if (Q.hasComponent(scene, Thumbnail.class)) {
+			return assets.absolute(path)
+					.child(Q.getComponent(scene, Thumbnail.class).getPath())
+					.path();
 		}
 		return null;
 	}

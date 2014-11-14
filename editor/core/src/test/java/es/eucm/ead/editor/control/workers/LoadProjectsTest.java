@@ -83,7 +83,7 @@ public class LoadProjectsTest extends EditorTest implements WorkerListener {
 	@Override
 	public void result(Object... results) {
 		assertEquals(paths.removeIndex(0), results[0]);
-		assertEquals(paths.removeIndex(0), results[1]);
+		assertEquals(paths.removeIndex(0), results[2]);
 	}
 
 	@Override
