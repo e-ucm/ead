@@ -51,6 +51,8 @@ import java.io.InputStream;
 
 public class MockPlatform extends AbstractPlatform {
 
+	private String defaultProjectsFolder;
+
 	private Vector2 size;
 
 	private Array<File> tempFiles;
@@ -61,6 +63,15 @@ public class MockPlatform extends AbstractPlatform {
 		size = new Vector2();
 		tempFiles = new Array<File>();
 		pathsStack = new Array<String>();
+	}
+
+	public void setDefaultProjectsFolder(String defaultProjectsFolder) {
+		this.defaultProjectsFolder = defaultProjectsFolder;
+	}
+
+	@Override
+	public String getDefaultProjectsFolder() {
+		return defaultProjectsFolder;
 	}
 
 	@Override
@@ -157,7 +168,5 @@ public class MockPlatform extends AbstractPlatform {
 	@Override
 	public void getMultilineTextInput(TextInputListener listener, String title,
 			String text, I18N i18n) {
-		// TODO Auto-generated method stub
-
 	}
 }
