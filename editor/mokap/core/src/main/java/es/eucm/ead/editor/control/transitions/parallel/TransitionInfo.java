@@ -41,8 +41,8 @@ import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.utils.Pool.Poolable;
 import com.badlogic.gdx.utils.Pools;
 
-import es.eucm.ead.editor.control.transitions.Region;
-import es.eucm.ead.editor.control.transitions.TransitionManager.Transition;
+import es.eucm.ead.engine.systems.effects.transitions.Region;
+import es.eucm.ead.engine.systems.effects.transitions.TransitionManager.Transition;
 
 /**
  * Holds a {@link Transition} and a {@link Region} where the transition is

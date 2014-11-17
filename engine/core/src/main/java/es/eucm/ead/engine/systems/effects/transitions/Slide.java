@@ -34,14 +34,14 @@
  *      You should have received a copy of the GNU Lesser General Public License
  *      along with eAdventure.  If not, see <http://www.gnu.org/licenses/>.
  */
-package es.eucm.ead.editor.control.transitions;
+package es.eucm.ead.engine.systems.effects.transitions;
 
 import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.math.Interpolation;
 import com.badlogic.gdx.math.MathUtils;
 
-import es.eucm.ead.editor.control.transitions.TransitionManager.Transition;
+import es.eucm.ead.engine.systems.effects.transitions.TransitionManager.Transition;
 
 /**
  * Slides between two screens.
@@ -54,23 +54,40 @@ public class Slide implements Transition {
 	public static final int DOWN = 4;
 	public static final int RANDOM = 0;
 
+	private static Slide instance;
+
 	private float duration;
 	private int direction;
-	private boolean slideOut;
+	private boolean slideOut, over;
 	private Interpolation easing;
+
+	public static Slide init(float duration, int direction, boolean slideOut,
+			boolean over) {
+		if (instance == null) {
+			instance = new Slide(duration, direction, slideOut, over);
+		} else {
+			instance.initialize(duration, direction, slideOut, over);
+		}
+		return instance;
+	}
 
 	public Slide() {
 		this(MathUtils.random(.6f, .9f), RANDOM, MathUtils.randomBoolean(),
-				Interpolation.pow2Out);
+				MathUtils.randomBoolean());
 	}
 
-	public Slide(float duration, int direction, boolean slideOut,
-			Interpolation easing) {
+	public Slide(float duration, int direction, boolean slideOut, boolean over) {
+		initialize(duration, direction, slideOut, over);
+	}
+
+	private void initialize(float duration, int direction, boolean slideOut,
+			boolean over) {
 		this.duration = duration;
 		this.direction = direction == RANDOM ? MathUtils.random(LEFT, DOWN)
 				: direction;
 		this.slideOut = slideOut;
-		this.easing = easing;
+		this.easing = slideOut ? Interpolation.pow2Out : Interpolation.pow2In;
+		this.over = over;
 	}
 
 	@Override
@@ -127,9 +144,43 @@ public class Slide implements Transition {
 			texTop = nextScreen;
 			topRegion = nextScreenRegion;
 		}
+
 		// finally, draw both screens
-		batch.draw(texBottom, bottomRegion.x, bottomRegion.y, bottomRegion.w,
-				bottomRegion.h);
+		if (!over) {
+			w = bottomRegion.w;
+			h = bottomRegion.h;
+			float x2 = bottomRegion.x, y2 = bottomRegion.y;
+			switch (direction) {
+			case LEFT:
+				x2 = x - w;
+				if (slideOut) {
+					x2 += 2 * w;
+				}
+				break;
+			case RIGHT:
+				x2 = x + w;
+				if (slideOut) {
+					x2 -= 2 * w;
+				}
+				break;
+			case UP:
+				y2 = y + h;
+				if (slideOut) {
+					y2 -= 2 * h;
+				}
+				break;
+			case DOWN:
+				y2 = y - h;
+				if (slideOut) {
+					y2 += 2 * h;
+				}
+				break;
+			}
+			batch.draw(texBottom, x2, y2, w, h);
+		} else {
+			batch.draw(texBottom, bottomRegion.x, bottomRegion.y,
+					bottomRegion.w, bottomRegion.h);
+		}
 		batch.draw(texTop, x, y, topRegion.w, topRegion.h);
 	}
 

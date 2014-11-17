@@ -34,32 +34,45 @@
  *      You should have received a copy of the GNU Lesser General Public License
  *      along with eAdventure.  If not, see <http://www.gnu.org/licenses/>.
  */
-package es.eucm.ead.editor.control.transitions.parallel;
+package es.eucm.ead.engine.systems.effects.transitions;
 
+import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
-import com.badlogic.gdx.utils.Array;
-import com.badlogic.gdx.utils.Pools;
+import com.badlogic.gdx.math.Interpolation;
+import com.badlogic.gdx.math.MathUtils;
 
-import es.eucm.ead.engine.systems.effects.transitions.Region;
 import es.eucm.ead.engine.systems.effects.transitions.TransitionManager.Transition;
 
 /**
- * Executes {@link Transition} transitions in parallel.
+ * Fade transition between the current screen and the next screen.
  */
-public class ParallelTransition implements Transition {
+public class Fade implements Transition {
 
-	private Array<TransitionInfo> transitions = new Array<TransitionInfo>(4);
+	private static Fade instance;
+
 	private float duration;
+	private boolean fadeCurrentScreen;
 
-	public ParallelTransition(TransitionInfo... transitions) {
-		float duration = 0.0f;
-		this.transitions.clear();
-		for (int i = 0, n = transitions.length; i < n; ++i) {
-			TransitionInfo transition = transitions[i];
-			duration = Math.max(duration, transition.transition.getDuration());
-			this.transitions.add(transition);
+	public static Fade init(float duration, boolean fadeCurrentScreen) {
+		if (instance == null) {
+			instance = new Fade(duration, fadeCurrentScreen);
+		} else {
+			instance.initialize(duration, fadeCurrentScreen);
 		}
+		return instance;
+	}
+
+	public Fade() {
+		this(MathUtils.random(.4f, .6f), MathUtils.randomBoolean());
+	}
+
+	public Fade(float duration, boolean fadeCurrentScreen) {
+		initialize(duration, fadeCurrentScreen);
+	}
+
+	private void initialize(float duration, boolean fadeCurrentScreen) {
+		this.fadeCurrentScreen = fadeCurrentScreen;
 		this.duration = duration;
 	}
 
@@ -68,34 +81,24 @@ public class ParallelTransition implements Transition {
 		return duration;
 	}
 
+	@Override
 	public void render(Batch batch, TextureRegion currScreen,
 			Region currScreenRegion, TextureRegion nextScreen,
-			Region nextScreenRegion, float percentageCompletion) {
-		for (TransitionInfo transition : transitions) {
-			Region currRegion = transition.currentScreenRegion;
-			if (currRegion != null) {
-				currScreen.setRegion(currRegion.x, currRegion.y, currRegion.w,
-						currRegion.h);
-				currScreen.flip(false, true);
-			} else {
-				currRegion = currScreenRegion;
-			}
-
-			Region nextRegion = transition.nextScreenRegion;
-			if (nextRegion != null) {
-				nextScreen.setRegion(nextRegion.x, nextRegion.y, nextRegion.w,
-						nextRegion.h);
-				nextScreen.flip(false, true);
-			} else {
-				nextRegion = nextScreenRegion;
-			}
-			transition.transition.render(batch, currScreen, currRegion,
-					nextScreen, nextRegion, percentageCompletion);
-		}
+			Region nextScreenRegion, float alpha) {
+		alpha = Interpolation.fade.apply(alpha);
+		Color color = batch.getColor();
+		if (fadeCurrentScreen)
+			batch.setColor(1, 1, 1, 1 - alpha);
+		batch.draw(currScreen, currScreenRegion.x, currScreenRegion.y,
+				currScreenRegion.w, currScreenRegion.h);
+		batch.setColor(1, 1, 1, alpha);
+		batch.draw(nextScreen, nextScreenRegion.x, nextScreenRegion.y,
+				nextScreenRegion.w, nextScreenRegion.h);
+		batch.setColor(color);
 	}
 
 	@Override
 	public void end() {
-		Pools.freeAll(transitions, true);
+
 	}
 }
