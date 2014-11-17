@@ -73,6 +73,11 @@ public class Gallery extends ScrollPane {
 		container.addActor(new Cell(actor));
 	}
 
+	@Override
+	public void clearChildren() {
+		container.clearChildren();
+	}
+
 	static class Grid extends AbstractWidget {
 
 		private int columns;

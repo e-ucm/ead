@@ -38,42 +38,29 @@ package es.eucm.ead.editor.view.builders.home;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.files.FileHandle;
-import com.badlogic.gdx.graphics.Texture;
-import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.ui.Button;
-import com.badlogic.gdx.scenes.scene2d.ui.Image;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
-import com.badlogic.gdx.utils.ObjectMap;
 import com.badlogic.gdx.utils.TimeUtils;
-
 import es.eucm.ead.editor.control.Controller;
-import es.eucm.ead.editor.control.actions.editor.ExecuteWorker;
 import es.eucm.ead.editor.control.actions.editor.NewGame;
-import es.eucm.ead.editor.control.actions.editor.OpenGame;
-import es.eucm.ead.editor.control.workers.LoadProjects;
-import es.eucm.ead.editor.control.workers.Worker.WorkerListener;
 import es.eucm.ead.editor.model.Q;
 import es.eucm.ead.editor.view.SkinConstants;
-import es.eucm.ead.editor.view.drawables.TextureDrawable;
 import es.eucm.ead.editor.view.widgets.AbstractWidget;
-import es.eucm.ead.editor.view.widgets.Tile;
 import es.eucm.ead.editor.view.widgets.WidgetBuilder;
 import es.eucm.ead.editor.view.widgets.layouts.Gallery;
-import es.eucm.ead.engine.assets.Assets.AssetLoadedCallback;
 import es.eucm.ead.schema.editor.components.GameData;
 import es.eucm.ead.schema.entities.ModelEntity;
 
-public class ProjectsGallery extends AbstractWidget implements WorkerListener,
-		AssetLoadedCallback<Texture> {
+public class ProjectsGallery extends AbstractWidget {
 
 	private Controller controller;
-
-	private ObjectMap<String, TextureDrawable> pendingTextures = new ObjectMap<String, TextureDrawable>();
 
 	private Gallery gallery;
 
 	private Button addProject;
+
+	private ProjectsListener projectsListener;
 
 	public ProjectsGallery(Controller c) {
 		gallery = new Gallery(Gdx.graphics.getHeight() / 2.15f, 3);
@@ -98,10 +85,11 @@ public class ProjectsGallery extends AbstractWidget implements WorkerListener,
 								.path(), game);
 			}
 		});
+		projectsListener = new ProjectsListener(controller, gallery);
 	}
 
 	public void prepare() {
-		controller.action(ExecuteWorker.class, LoadProjects.class, this);
+		projectsListener.prepare();
 	}
 
 	@Override
@@ -111,67 +99,5 @@ public class ProjectsGallery extends AbstractWidget implements WorkerListener,
 		setBounds(addProject,
 				getWidth() - width - WidgetBuilder.dpToPixels(16),
 				WidgetBuilder.dpToPixels(16), width, getPrefHeight(addProject));
-	}
-
-	@Override
-	public void start() {
-
-	}
-
-	@Override
-	public void result(Object... results) {
-		String thumbnailPath = (String) results[2];
-		if (!pendingTextures.containsKey(thumbnailPath)) {
-			TextureDrawable thumbnail = new TextureDrawable();
-			Image image = WidgetBuilder.asyncImage(thumbnailPath);
-			String title = results[1] == null || "".equals(results[1]) ? controller
-					.getApplicationAssets().getI18N().m("untitled")
-					: (String) results[1];
-			Tile tile = WidgetBuilder.tile(image, title);
-			WidgetBuilder.actionOnClick(tile, OpenGame.class, results[0]);
-			pendingTextures.put(thumbnailPath, thumbnail);
-
-			Gdx.app.postRunnable(new AddImage(gallery, tile));
-		}
-		controller.getEditorGameAssets()
-				.get(thumbnailPath, Texture.class, this);
-	}
-
-	@Override
-	public void done() {
-
-	}
-
-	@Override
-	public void error(Throwable ex) {
-
-	}
-
-	@Override
-	public void cancelled() {
-
-	}
-
-	@Override
-	public void loaded(String fileName, Texture asset) {
-		TextureDrawable drawable = pendingTextures.get(fileName);
-		drawable.setTexture(asset);
-	}
-
-	public static class AddImage implements Runnable {
-
-		private Gallery gallery;
-
-		private Actor image;
-
-		public AddImage(Gallery gallery, Actor image) {
-			this.gallery = gallery;
-			this.image = image;
-		}
-
-		@Override
-		public void run() {
-			gallery.add(image);
-		}
 	}
 }
