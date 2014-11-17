@@ -62,6 +62,7 @@ import es.eucm.ead.editor.control.actions.editor.AddPaintedElement;
 import es.eucm.ead.editor.control.actions.editor.Copy;
 import es.eucm.ead.editor.control.actions.editor.Paste;
 import es.eucm.ead.editor.control.actions.editor.Redo;
+import es.eucm.ead.editor.control.actions.editor.Save;
 import es.eucm.ead.editor.control.actions.editor.ShowToast;
 import es.eucm.ead.editor.control.actions.editor.Undo;
 import es.eucm.ead.editor.control.actions.model.AddInteractiveZone;
@@ -172,6 +173,7 @@ public class SceneView implements ViewBuilder {
 
 	@Override
 	public void release(Controller controller) {
+		controller.action(Save.class);
 		controller.getCommands().popStack(false);
 		sceneEditor.release();
 		view.invalidate();
