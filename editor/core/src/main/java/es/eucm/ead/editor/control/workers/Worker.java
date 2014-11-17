@@ -38,8 +38,6 @@ package es.eucm.ead.editor.control.workers;
 
 import es.eucm.ead.editor.control.Controller;
 
-import java.util.concurrent.atomic.AtomicBoolean;
-
 /**
  * A task that incrementally receives results. It will run in its own thread
  */
@@ -48,8 +46,6 @@ public abstract class Worker implements Runnable {
 	protected Controller controller;
 
 	private WorkerListener listener;
-
-	private AtomicBoolean busy = new AtomicBoolean(false);
 
 	public void setController(Controller controller) {
 		this.controller = controller;
@@ -63,6 +59,10 @@ public abstract class Worker implements Runnable {
 		listener.result(args);
 	}
 
+	public WorkerListener getListener() {
+		return listener;
+	}
+
 	protected void done() {
 		listener.done();
 	}
@@ -71,14 +71,10 @@ public abstract class Worker implements Runnable {
 		listener.error(t);
 	}
 
-	public boolean isBusy() {
-		return busy.getAndSet(true);
-	}
-
 	@Override
 	public void run() {
+		listener.start();
 		runWork();
-		busy.set(false);
 	}
 
 	/**
@@ -88,6 +84,11 @@ public abstract class Worker implements Runnable {
 	protected abstract void runWork();
 
 	public interface WorkerListener {
+
+		/**
+		 * The work was started
+		 */
+		void start();
 
 		/**
 		 * A result was found
@@ -103,6 +104,11 @@ public abstract class Worker implements Runnable {
 		 * An error ocurred
 		 */
 		void error(Throwable ex);
+
+		/**
+		 * The work was cancelled
+		 */
+		void cancelled();
 
 	}
 

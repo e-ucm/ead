@@ -114,6 +114,11 @@ public class ProjectsGallery extends AbstractWidget implements WorkerListener,
 	}
 
 	@Override
+	public void start() {
+
+	}
+
+	@Override
 	public void result(Object... results) {
 		String thumbnailPath = (String) results[2];
 		if (!pendingTextures.containsKey(thumbnailPath)) {
@@ -139,6 +144,11 @@ public class ProjectsGallery extends AbstractWidget implements WorkerListener,
 
 	@Override
 	public void error(Throwable ex) {
+
+	}
+
+	@Override
+	public void cancelled() {
 
 	}
 

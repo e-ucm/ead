@@ -81,6 +81,11 @@ public class LoadProjectsTest extends EditorTest implements WorkerListener {
 	}
 
 	@Override
+	public void start() {
+
+	}
+
+	@Override
 	public void result(Object... results) {
 		assertEquals(paths.removeIndex(0), results[0]);
 		assertEquals(paths.removeIndex(0), results[2]);
@@ -94,6 +99,11 @@ public class LoadProjectsTest extends EditorTest implements WorkerListener {
 	@Override
 	public void error(Throwable ex) {
 		fail("Exception thrown" + ex);
+	}
+
+	@Override
+	public void cancelled() {
+
 	}
 
 	private void createGame(FileHandle temp, int i) {

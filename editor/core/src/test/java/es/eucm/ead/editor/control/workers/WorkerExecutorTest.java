@@ -55,7 +55,7 @@ public class WorkerExecutorTest {
 	}
 
 	@Test
-	public void testSimpleWork() {
+	public void testSimpleWorker() {
 		TestWorkerListener t1 = new TestWorkerListener();
 		TestWorkerListener t2 = new TestWorkerListener();
 		TestWorkerListener t3 = new TestWorkerListener();
@@ -73,8 +73,8 @@ public class WorkerExecutorTest {
 		} catch (InterruptedException e) {
 			e.printStackTrace();
 		}
-		assertEquals(t1.counter, 10);
-		assertEquals(t2.counter, 0);
+		assertTrue(t1.cancelled);
+		assertEquals(t2.counter, 10);
 		assertEquals(t3.counter, 10);
 	}
 
@@ -101,7 +101,14 @@ public class WorkerExecutorTest {
 
 	public class TestWorkerListener implements WorkerListener {
 
+		boolean cancelled;
+
 		int counter;
+
+		@Override
+		public void start() {
+
+		}
 
 		@Override
 		public void result(Object... args) {
@@ -116,6 +123,11 @@ public class WorkerExecutorTest {
 		@Override
 		public void error(Throwable ex) {
 
+		}
+
+		@Override
+		public void cancelled() {
+			cancelled = true;
 		}
 	}
 }

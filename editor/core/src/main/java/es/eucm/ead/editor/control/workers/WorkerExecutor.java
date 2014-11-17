@@ -43,6 +43,7 @@ import es.eucm.ead.editor.control.workers.Worker.WorkerListener;
 
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
+import java.util.concurrent.Future;
 import java.util.concurrent.ThreadFactory;
 
 /**
@@ -56,9 +57,12 @@ public class WorkerExecutor {
 
 	private ObjectMap<Class, Worker> workersMap;
 
+	private ObjectMap<Class, Future> futuresMap;
+
 	public WorkerExecutor(Controller controller) {
 		this.controller = controller;
 		workersMap = new ObjectMap<Class, Worker>();
+		futuresMap = new ObjectMap<Class, Future>();
 		executorService = Executors.newFixedThreadPool(
 				Math.max(1, Runtime.getRuntime().availableProcessors() - 1),
 				new ThreadFactory() {
@@ -72,8 +76,8 @@ public class WorkerExecutor {
 	/**
 	 * Starts a worker
 	 * 
-	 * @return {@code true} if the worker started. {@code false} if the worker
-	 *         was busy and was not started
+	 * @return {@code false} if the previous worker was cancelled, {@code true}
+	 *         if the worker started cleanly
 	 */
 	public <T extends Worker> boolean execute(Class<T> workerClass,
 			WorkerListener workerListener) {
@@ -85,11 +89,17 @@ public class WorkerExecutor {
 				workersMap.put(workerClass, worker);
 			}
 
-			if (!worker.isBusy()) {
-				worker.setListener(workerListener);
-				executorService.submit(worker);
-				return true;
+			boolean result = true;
+			Future future = futuresMap.get(workerClass);
+			if (future != null && !future.isDone()) {
+				future.cancel(true);
+				worker.getListener().cancelled();
+				result = false;
 			}
+			worker.setListener(workerListener);
+			future = executorService.submit(worker);
+			futuresMap.put(workerClass, future);
+			return result;
 		} catch (Exception e) {
 			Gdx.app.error("WorkerExecutor", "Error submitting worker", e);
 		}
