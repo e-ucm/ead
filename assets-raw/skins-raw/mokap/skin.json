@@ -58,6 +58,12 @@
             "g": 0.1529,
             "b": 0.1372,
             "a": 1
+        },
+        "light_blue": {
+            "r": 0.011764706,
+            "g": 0.6627451,
+            "b": 0.95686275,
+            "a": 0.5
         }
     },
     "com.badlogic.gdx.scenes.scene2d.ui.Skin$TintedDrawable": {
@@ -76,6 +82,10 @@
         "light_gray_bg": {
             "name": "blank",
             "color": "light_gray"
+        },
+        "light_blue_bg": {
+            "name": "blank",
+            "color": "light_blue"
         },
         "transparent_48_bg": {
             "name": "bg48",
@@ -261,7 +271,8 @@
             "labelStyle": {
                 "font": "default_font",
                 "fontColor": "white"
-            }
+            },
+            "pressed": "light_blue_bg"
         }
     }
 }

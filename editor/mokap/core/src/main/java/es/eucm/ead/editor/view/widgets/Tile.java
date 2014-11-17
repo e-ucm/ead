@@ -36,11 +36,13 @@
  */
 package es.eucm.ead.editor.view.widgets;
 
+import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.ui.Container;
 import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.scenes.scene2d.ui.Label.LabelStyle;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
+import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.scenes.scene2d.utils.Drawable;
 
 public class Tile extends AbstractWidget {
@@ -51,6 +53,10 @@ public class Tile extends AbstractWidget {
 
 	private Container<Label> labelContainer;
 
+	private TileStyle style;
+
+	private ClickListener clickListener = new ClickListener();
+
 	public Tile(Skin skin) {
 		this(skin.get(TileStyle.class));
 	}
@@ -58,10 +64,12 @@ public class Tile extends AbstractWidget {
 	public Tile(TileStyle tileStyle) {
 		labelContainer = new Container<Label>(label = new Label("",
 				tileStyle.labelStyle));
+		this.style = tileStyle;
 		labelContainer.setBackground(tileStyle.labelBackground);
 		labelContainer.pad(WidgetBuilder.dpToPixels(8));
 		labelContainer.left();
 		addActor(labelContainer);
+		addListener(clickListener);
 	}
 
 	public void setBackground(Actor actor) {
@@ -89,6 +97,14 @@ public class Tile extends AbstractWidget {
 	}
 
 	@Override
+	protected void drawChildren(Batch batch, float parentAlpha) {
+		super.drawChildren(batch, parentAlpha);
+		if (clickListener.isPressed() && style.pressed != null) {
+			style.pressed.draw(batch, 0, 0, getWidth(), getHeight());
+		}
+	}
+
+	@Override
 	public void layout() {
 		setBounds(background, 0, 0, getWidth(), getHeight());
 		setBounds(labelContainer, 0, 0, getWidth(),
@@ -103,6 +119,8 @@ public class Tile extends AbstractWidget {
 	public static class TileStyle {
 
 		public Drawable labelBackground;
+
+		public Drawable pressed;
 
 		public LabelStyle labelStyle;
 
