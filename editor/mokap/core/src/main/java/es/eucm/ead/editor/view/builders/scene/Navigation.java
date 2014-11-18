@@ -65,6 +65,7 @@ public class Navigation extends AbstractWidget {
 		addActor(scrollPane = new ScrollPane(scenes = new Table(), skin.get(
 				SkinConstants.STYLE_NAVIGATION, ScrollPaneStyle.class)));
 		scrollPane.setFillParent(true);
+		scrollPane.setScrollingDisabled(true, false);
 		addActor(addScene = WidgetBuilder.button(SkinConstants.STYLE_ADD,
 				NewScene.class, ""));
 		scenes.add(WidgetBuilder.button(SkinConstants.IC_HOME,
@@ -96,5 +97,4 @@ public class Navigation extends AbstractWidget {
 		setBounds(addScene, getWidth() - width - dpToPixels, dpToPixels, width,
 				getPrefHeight(addScene));
 	}
-
 }

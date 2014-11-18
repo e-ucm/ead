@@ -34,7 +34,7 @@
  *      You should have received a copy of the GNU Lesser General Public License
  *      along with eAdventure.  If not, see <http://www.gnu.org/licenses/>.
  */
-package es.eucm.ead.editor.control.transitions;
+package es.eucm.ead.engine.systems.effects.transitions;
 
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.g2d.Batch;
@@ -42,23 +42,40 @@ import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.math.Interpolation;
 import com.badlogic.gdx.math.MathUtils;
 
-import es.eucm.ead.editor.control.transitions.TransitionManager.Transition;
+import es.eucm.ead.engine.systems.effects.transitions.TransitionManager.Transition;
 
 /**
  * Scale and Fade transition between the current screen and the next screen.
  */
 public class ScaleAndFade implements Transition {
 
+	private static ScaleAndFade instance;
+
+	private Interpolation easing;
 	private float duration;
 	private boolean out;
 
-	public ScaleAndFade(float duration, boolean out) {
-		this.out = out;
-		this.duration = duration;
+	public static ScaleAndFade init(float duration, boolean out) {
+		if (instance == null) {
+			instance = new ScaleAndFade(duration, out);
+		} else {
+			instance.initialize(duration, out);
+		}
+		return instance;
 	}
 
 	public ScaleAndFade() {
 		this(MathUtils.random(.4f, .6f), MathUtils.randomBoolean());
+	}
+
+	public ScaleAndFade(float duration, boolean out) {
+		initialize(duration, out);
+	}
+
+	private void initialize(float duration, boolean out) {
+		this.out = out;
+		this.duration = duration;
+		this.easing = out ? Interpolation.circleOut : Interpolation.circleIn;
 	}
 
 	@Override
@@ -74,16 +91,16 @@ public class ScaleAndFade implements Transition {
 			TextureRegion temp = currScreen;
 			currScreen = nextScreen;
 			nextScreen = temp;
+			completion = 1 - completion;
 		}
-
-		completion = out ? Interpolation.exp5Out.apply(completion)
-				: Interpolation.exp5In.apply(1 - completion);
+		float alpha = Interpolation.fade.apply(completion);
 
 		batch.draw(currScreen, currScreenRegion.x, currScreenRegion.y,
 				currScreenRegion.w, currScreenRegion.h);
 
 		Color color = batch.getColor();
-		batch.setColor(1, 1, 1, completion);
+		batch.setColor(1, 1, 1, alpha);
+		completion = easing.apply(completion);
 		float width = nextScreenRegion.w, height = nextScreenRegion.h;
 		batch.draw(nextScreen, nextScreenRegion.x, nextScreenRegion.y,
 				width * .5f, height * .5f, width, height, completion,

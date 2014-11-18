@@ -1,0 +1,1 @@
+{"class":"modelentity","components":[{"class":"behavior","id":"initBehavior","event":{"class":"init"},"effects":[{"class":"addentity","target":"(layer sscene_content)","entityUri":"scenes/scene0.json"},{"class":"addentity","target":"(layer shud)"},{"class":"setviewport","width":640,"height":360}]}]}

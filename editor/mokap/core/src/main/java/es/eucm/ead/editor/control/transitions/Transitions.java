@@ -36,12 +36,14 @@
  */
 package es.eucm.ead.editor.control.transitions;
 
-import com.badlogic.gdx.math.Interpolation;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 
-import es.eucm.ead.editor.control.transitions.TransitionManager.Transition;
 import es.eucm.ead.editor.control.transitions.parallel.ParallelTransition;
 import es.eucm.ead.editor.control.transitions.parallel.TransitionInfo;
+import es.eucm.ead.engine.systems.effects.transitions.Fade;
+import es.eucm.ead.engine.systems.effects.transitions.ScaleAndFade;
+import es.eucm.ead.engine.systems.effects.transitions.Slide;
+import es.eucm.ead.engine.systems.effects.transitions.TransitionManager.Transition;
 
 /**
  * Class with static methods that create convenience transitions.
@@ -57,13 +59,11 @@ public class Transitions {
 			Actor slideActor, boolean in) {
 		return new ParallelTransition(TransitionInfo.init(new Fade(IN_OUT,
 				false), fadeActor), TransitionInfo.init(new Slide(IN_OUT,
-				in ? Slide.RIGHT : Slide.LEFT, !in, in ? Interpolation.pow2In
-						: Interpolation.pow2Out), slideActor));
+				in ? Slide.RIGHT : Slide.LEFT, !in, true), slideActor));
 	}
 
 	public static Transition getSlideTransition(boolean in) {
-		return new Slide(IN_OUT, in ? Slide.RIGHT : Slide.LEFT, !in,
-				in ? Interpolation.pow2In : Interpolation.pow2Out);
+		return new Slide(IN_OUT, in ? Slide.RIGHT : Slide.LEFT, !in, true);
 	}
 
 	public static Transition getFadeTransition(boolean in) {

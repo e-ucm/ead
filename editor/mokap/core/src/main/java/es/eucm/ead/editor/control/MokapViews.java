@@ -40,18 +40,20 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.Group;
 import com.badlogic.gdx.scenes.scene2d.Stage;
+import com.badlogic.gdx.scenes.scene2d.utils.Layout;
 import com.badlogic.gdx.utils.Disposable;
 import com.badlogic.gdx.utils.ObjectMap;
 
 import es.eucm.ead.editor.control.MokapController.BackListener;
 import es.eucm.ead.editor.control.actions.editor.ChangeView;
-import es.eucm.ead.editor.control.transitions.TransitionManager;
-import es.eucm.ead.editor.control.transitions.TransitionManager.Transition;
 import es.eucm.ead.editor.control.transitions.Transitions;
 import es.eucm.ead.editor.view.builders.ViewBuilder;
 import es.eucm.ead.editor.view.builders.home.HomeView;
 import es.eucm.ead.editor.view.builders.project.ProjectView;
 import es.eucm.ead.editor.view.builders.scene.SceneView;
+import es.eucm.ead.engine.systems.effects.transitions.TransitionManager;
+import es.eucm.ead.engine.systems.effects.transitions.TransitionManager.EndListener;
+import es.eucm.ead.engine.systems.effects.transitions.TransitionManager.Transition;
 
 public class MokapViews extends Views implements BackListener, Disposable {
 	private static final Transition DEFAULT_TRANSITION = Transitions
@@ -60,12 +62,19 @@ public class MokapViews extends Views implements BackListener, Disposable {
 	private TransitionManager transitionManager;
 	private ObjectMap<Class<?>, ObjectMap<Class<?>, Transition>> transitions;
 
-	public MokapViews(Controller controller, Group viewsContainer,
-			Group modalsContainer) {
-		super(controller, viewsContainer, modalsContainer);
+	public MokapViews(Controller controller, Group viewsCtr, Group modalsCtr) {
+		super(controller, viewsCtr, modalsCtr);
 		resendTouch = false;
-		transitionManager = new TransitionManager(controller, viewsContainer,
-				modalsContainer);
+		transitionManager = new TransitionManager();
+		final Group root = viewsContainer.getStage().getRoot();
+		transitionManager.addListener(new EndListener() {
+			@Override
+			public void transitionFinished() {
+				continuousRendering(false);
+				root.addActor(viewsContainer);
+				root.addActor(modalsContainer);
+			}
+		});
 
 		transitions = new ObjectMap<Class<?>, ObjectMap<Class<?>, Transition>>(
 				10);
@@ -128,11 +137,37 @@ public class MokapViews extends Views implements BackListener, Disposable {
 				if (transition == null) {
 					transition = DEFAULT_TRANSITION;
 				}
-				transitionManager.prepateTransition(transition, next);
+
+				transitionManager.takeCurrentScreenPicture(viewsContainer
+						.getStage());
+				viewsContainer.clearChildren();
+				viewsContainer.addActor(next);
+
+				if (next instanceof Layout) {
+					Layout layout = (Layout) next;
+					layout.invalidateHierarchy();
+					layout.setFillParent(true);
+				}
+				transitionManager.takeNextScreenPicture(viewsContainer
+						.getStage());
+				Stage stage = viewsContainer.getStage();
+				if (stage == null) {
+					stage = transitionManager.getStage();
+				}
+				Group root = stage.getRoot();
+				root.clearChildren();
+				transitionManager.startTransition(transition, root);
+				continuousRendering(true);
+
 				currentArgs = args;
 				viewsHistory.viewUpdated(currentView.getClass(), currentArgs);
 			}
 		}
+	}
+
+	private void continuousRendering(boolean continuous) {
+		Gdx.graphics.setContinuousRendering(continuous);
+		Gdx.graphics.requestRendering();
 	}
 
 	public void hideOnscreenKeyboard() {

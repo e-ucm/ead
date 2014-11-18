@@ -34,56 +34,27 @@
  *      You should have received a copy of the GNU Lesser General Public License
  *      along with eAdventure.  If not, see <http://www.gnu.org/licenses/>.
  */
-package es.eucm.ead.editor.control.transitions;
+package es.eucm.ead.engine.systems.effects.transitions;
 
-import com.badlogic.gdx.graphics.Color;
-import com.badlogic.gdx.graphics.g2d.Batch;
-import com.badlogic.gdx.graphics.g2d.TextureRegion;
-import com.badlogic.gdx.math.Interpolation;
 import com.badlogic.gdx.math.MathUtils;
 
-import es.eucm.ead.editor.control.transitions.TransitionManager.Transition;
+import es.eucm.ead.engine.systems.effects.transitions.TransitionManager.Transition;
 
 /**
- * Fade transition between the current screen and the next screen.
+ * A portion of the screen that a {@link Transition} affects.
  */
-public class Fade implements Transition {
+public class Region {
+	public int x, y, w, h;
 
-	private float duration;
-	private boolean fadeCurrentScreen;
-
-	public Fade(float duration, boolean fadeCurrentScreen) {
-		this.fadeCurrentScreen = fadeCurrentScreen;
-		this.duration = duration;
+	public Region(int x, int y, int w, int h) {
+		this.x = x;
+		this.y = y;
+		this.w = w;
+		this.h = h;
 	}
 
-	public Fade() {
-		this(MathUtils.random(.4f, .6f), MathUtils.randomBoolean());
-	}
-
-	@Override
-	public float getDuration() {
-		return duration;
-	}
-
-	@Override
-	public void render(Batch batch, TextureRegion currScreen,
-			Region currScreenRegion, TextureRegion nextScreen,
-			Region nextScreenRegion, float alpha) {
-		alpha = Interpolation.fade.apply(alpha);
-		Color color = batch.getColor();
-		if (fadeCurrentScreen)
-			batch.setColor(1, 1, 1, 1 - alpha);
-		batch.draw(currScreen, currScreenRegion.x, currScreenRegion.y,
-				currScreenRegion.w, currScreenRegion.h);
-		batch.setColor(1, 1, 1, alpha);
-		batch.draw(nextScreen, nextScreenRegion.x, nextScreenRegion.y,
-				nextScreenRegion.w, nextScreenRegion.h);
-		batch.setColor(color);
-	}
-
-	@Override
-	public void end() {
-
+	public Region(float x, float y, float w, float h) {
+		this(MathUtils.round(x), MathUtils.round(y), MathUtils.round(w),
+				MathUtils.round(h));
 	}
 }

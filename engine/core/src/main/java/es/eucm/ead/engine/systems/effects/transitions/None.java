@@ -34,27 +34,43 @@
  *      You should have received a copy of the GNU Lesser General Public License
  *      along with eAdventure.  If not, see <http://www.gnu.org/licenses/>.
  */
-package es.eucm.ead.editor.control.transitions;
+package es.eucm.ead.engine.systems.effects.transitions;
 
-import com.badlogic.gdx.math.MathUtils;
+import com.badlogic.gdx.graphics.g2d.Batch;
+import com.badlogic.gdx.graphics.g2d.TextureRegion;
 
-import es.eucm.ead.editor.control.transitions.TransitionManager.Transition;
+import es.eucm.ead.engine.systems.effects.transitions.TransitionManager.Transition;
 
 /**
- * A portion of the screen that a {@link Transition} affects.
+ * This transition does nothing.
  */
-public class Region {
-	public int x, y, w, h;
+public class None implements Transition {
 
-	public Region(int x, int y, int w, int h) {
-		this.x = x;
-		this.y = y;
-		this.w = w;
-		this.h = h;
+	private static None instance;
+
+	public static None init() {
+		if (instance == null) {
+			instance = new None();
+		}
+		return instance;
 	}
 
-	public Region(float x, float y, float w, float h) {
-		this(MathUtils.round(x), MathUtils.round(y), MathUtils.round(w),
-				MathUtils.round(h));
+	public None() {
+	}
+
+	@Override
+	public float getDuration() {
+		return 0;
+	}
+
+	@Override
+	public void render(Batch batch, TextureRegion currScreen,
+			Region currScreenRegion, TextureRegion nextScreen,
+			Region nextScreenRegion, float alpha) {
+	}
+
+	@Override
+	public void end() {
+
 	}
 }

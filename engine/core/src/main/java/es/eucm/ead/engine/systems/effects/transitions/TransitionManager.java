@@ -34,7 +34,7 @@
  *      You should have received a copy of the GNU Lesser General Public License
  *      along with eAdventure.  If not, see <http://www.gnu.org/licenses/>.
  */
-package es.eucm.ead.editor.control.transitions;
+package es.eucm.ead.engine.systems.effects.transitions;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.GL20;
@@ -43,43 +43,33 @@ import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.graphics.glutils.FrameBuffer;
 import com.badlogic.gdx.scenes.scene2d.Actor;
+import com.badlogic.gdx.scenes.scene2d.Event;
+import com.badlogic.gdx.scenes.scene2d.EventListener;
 import com.badlogic.gdx.scenes.scene2d.Group;
 import com.badlogic.gdx.scenes.scene2d.Stage;
-import com.badlogic.gdx.scenes.scene2d.utils.Layout;
 import com.badlogic.gdx.utils.Disposable;
+import com.badlogic.gdx.utils.Pools;
 import com.badlogic.gdx.utils.viewport.Viewport;
-
-import es.eucm.ead.editor.control.Controller;
 
 /**
  * Manages a {@link Transition} between the current screen and the next screen.
  */
 public class TransitionManager extends Actor implements Disposable {
 
-	private Actor nextScreen;
+	private Region currentScreenRegion, nextScreenRegion;
 	private FrameBuffer currFbo, nextFbo;
 	private Transition screenTransition;
-	private Group viewsContainer, modalsContainer;
 	private TextureRegion currTex;
 	private TextureRegion nexTex;
+
 	private float percentageCompletion;
-	private Region currentScreenRegion, nextScreenRegion;
 	private float time;
 
-	public TransitionManager(Controller controller, Group viewsContainer,
-			Group modalsContainer) {
-		this.viewsContainer = viewsContainer;
-		this.modalsContainer = modalsContainer;
-	}
-
-	public void prepateTransition(Transition screenTransition, Actor next) {
-		nextScreen = next;
-
-		// start new transition
-		Gdx.input.setInputProcessor(null); // disable input
-		this.screenTransition = screenTransition;
-		time = 0f;
-		Gdx.app.postRunnable(startTransition);
+	public TransitionManager() {
+		nexTex = new TextureRegion();
+		currTex = new TextureRegion();
+		currentScreenRegion = new Region(0, 0, 0, 0);
+		nextScreenRegion = currentScreenRegion;
 	}
 
 	public void act(float delta) {
@@ -96,26 +86,91 @@ public class TransitionManager extends Actor implements Disposable {
 		}
 	}
 
+	@Override
+	public void draw(Batch batch, float parentAlpha) {
+		if (time > 0) {
+			batch.setColor(1f, 1f, 1f, 1f);
+			screenTransition.render(batch, currTex, currentScreenRegion,
+					nexTex, nextScreenRegion, percentageCompletion);
+		}
+	}
+
+	public void takeCurrentScreenPicture(Stage stage) {
+		takeScreenPicture(currFbo, currTex, stage, null);
+	}
+
+	public void takeCurrentScreenPicture(Stage stage, Actor currentLayer) {
+		takeScreenPicture(currFbo, currTex, stage, currentLayer);
+	}
+
+	public void takeNextScreenPicture(Stage stage) {
+		takeScreenPicture(nextFbo, nexTex, stage, null);
+	}
+
+	public void takeNextScreenPicture(Stage stage, Actor nextLayer) {
+		takeScreenPicture(nextFbo, nexTex, stage, nextLayer);
+	}
+
+	private void takeScreenPicture(FrameBuffer fbo, TextureRegion region,
+			Stage stage, Actor actor) {
+		if (stage == null) {
+			stage = getStage();
+		}
+		if (hasParent()) {
+			endTransition();
+		}
+		Viewport viewport = stage.getViewport();
+		if (fbo == null) {
+			int w = viewport.getScreenWidth();
+			int h = viewport.getScreenHeight();
+			fbo = new FrameBuffer(Format.RGB888, w, h, false);
+			currentScreenRegion.w = w;
+			currentScreenRegion.h = h;
+		}
+
+		fbo.begin();
+		Gdx.gl20.glClear(GL20.GL_COLOR_BUFFER_BIT);
+		if (actor != null) {
+			Batch batch = stage.getBatch();
+			batch.begin();
+			actor.draw(batch, 1f);
+			batch.end();
+		} else {
+			stage.draw();
+		}
+		fbo.end(viewport.getScreenX(), viewport.getScreenY(),
+				viewport.getScreenWidth(), viewport.getScreenHeight());
+		region.setRegion(fbo.getColorBufferTexture());
+		region.flip(false, true);
+	}
+
+	public void startTransition(Transition screenTransition, Group container) {
+		this.screenTransition = screenTransition;
+		time = 0f;
+		container.addActor(this);
+	}
+
 	private void endTransition() {
 		screenTransition.end();
-		nextScreen = null;
+		dispose();
 		// transition has just finished
-		// enable input for next screen
-		Stage stage = getStage();
-		Gdx.input.setInputProcessor(stage);
 		// switch screens
 		remove();
-		stage.addActor(viewsContainer);
-		stage.addActor(modalsContainer);
-		Gdx.graphics.setContinuousRendering(false);
-		Gdx.graphics.requestRendering();
+		EndEvent event = Pools.obtain(EndEvent.class);
+		fire(event);
+		Pools.free(event);
 	}
 
 	@Override
-	public void draw(Batch batch, float parentAlpha) {
-		batch.setColor(1f, 1f, 1f, 1f);
-		screenTransition.render(batch, currTex, currentScreenRegion, nexTex,
-				nextScreenRegion, percentageCompletion);
+	public void dispose() {
+		if (currFbo != null) {
+			currFbo.dispose();
+			currFbo = null;
+		}
+		if (nextFbo != null) {
+			nextFbo.dispose();
+			nextFbo = null;
+		}
 	}
 
 	/**
@@ -132,68 +187,29 @@ public class TransitionManager extends Actor implements Disposable {
 		void end();
 	}
 
-	private final Runnable startTransition = new Runnable() {
+	/**
+	 * Base class to listen to {@link EndEvent}s produced by
+	 * {@link TransitionManager}.
+	 */
+	public static class EndListener implements EventListener {
 
 		@Override
-		public void run() {
-			Gdx.graphics.setContinuousRendering(true);
-			Stage stage = viewsContainer.getStage();
-			if (stage == null) {
-				stage = getStage();
-				stage.getRoot().clearChildren();
-				stage.addActor(viewsContainer);
-				stage.addActor(modalsContainer);
+		public boolean handle(Event event) {
+			if (event instanceof EndEvent) {
+				transitionFinished();
 			}
-			if (nextFbo == null) {
-				Viewport viewport = stage.getViewport();
-				int w = viewport.getScreenWidth();
-				int h = viewport.getScreenHeight();
-				nextFbo = new FrameBuffer(Format.RGB888, w, h, false);
-				currFbo = new FrameBuffer(Format.RGB888, w, h, false);
-				currentScreenRegion = new Region(0, 0, w, h);
-				nextScreenRegion = currentScreenRegion;
-				nexTex = new TextureRegion();
-				currTex = new TextureRegion();
-			}
-
-			Gdx.gl20.glClearColor(1f, 1f, 1f, 1f);
-			currFbo.begin();
-			Gdx.gl20.glClear(GL20.GL_COLOR_BUFFER_BIT);
-			stage.draw();
-			currFbo.end();
-			currTex.setRegion(currFbo.getColorBufferTexture());
-			currTex.flip(false, true);
-
-			viewsContainer.clearChildren();
-			viewsContainer.addActor(nextScreen);
-			if (nextScreen instanceof Layout) {
-				Layout layout = (Layout) nextScreen;
-				layout.invalidateHierarchy();
-				layout.setFillParent(true);
-			}
-
-			nextFbo.begin();
-			Gdx.gl20.glClear(GL20.GL_COLOR_BUFFER_BIT);
-			stage.draw();
-			nextFbo.end();
-			nexTex.setRegion(nextFbo.getColorBufferTexture());
-			nexTex.flip(false, true);
-
-			stage.getRoot().clearChildren();
-			stage.addActor(TransitionManager.this);
+			return true;
 		}
-	};
 
-	@Override
-	public void dispose() {
-		if (currFbo != null) {
-			currFbo.dispose();
-			currFbo = null;
-		}
-		if (nextFbo != null) {
-			nextFbo.dispose();
-			nextFbo = null;
+		/**
+		 * The transition has finished.
+		 */
+		public void transitionFinished() {
+
 		}
 	}
 
+	public static class EndEvent extends Event {
+
+	}
 }

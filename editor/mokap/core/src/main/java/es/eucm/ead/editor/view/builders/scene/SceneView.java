@@ -473,12 +473,8 @@ public class SceneView implements ViewBuilder {
 					Actor image = navigation.getScenes().findActor(fileName);
 					if (image instanceof ImageButton) {
 						ImageButton imageButton = (ImageButton) image;
-						Drawable imageUp = imageButton.getStyle().imageUp;
-						TextureRegionDrawable regionDrawable = (TextureRegionDrawable) imageUp;
-						TextureRegion region = regionDrawable.getRegion();
-						region.setRegion(asset);
-						regionDrawable.setRegion(region);
-						imageButton.getImage().invalidateHierarchy();
+						imageButton.getStyle().imageUp = new TextureRegionDrawable(
+								new TextureRegion(asset));
 					}
 				}
 			};
@@ -516,9 +512,9 @@ public class SceneView implements ViewBuilder {
 		Actor test = cells.get(1).getActor();
 		scenes.clearChildren();
 		scenes.top();
+		scenes.defaults().fillX().expandX();
 		scenes.add(project).row();
 		scenes.add(test);
-		scenes.defaults().fillX().expandX();
 
 		for (Entry<String, Resource> resource : controller.getModel()
 				.getResources(ResourceCategory.SCENE).entrySet()) {
@@ -529,8 +525,6 @@ public class SceneView implements ViewBuilder {
 					SkinConstants.STYLE_NAVIGATION_SCENE, EditScene.class,
 					resource.getKey());
 			sceneButton.setStyle(new ImageButtonStyle(sceneButton.getStyle()));
-			sceneButton.getStyle().imageUp = new TextureRegionDrawable(
-					new TextureRegion());
 			sceneButton.setName(path);
 			scenes.row();
 			scenes.add(sceneButton);

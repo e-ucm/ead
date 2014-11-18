@@ -34,46 +34,21 @@
  *      You should have received a copy of the GNU Lesser General Public License
  *      along with eAdventure.  If not, see <http://www.gnu.org/licenses/>.
  */
-package es.eucm.ead.editor.control.transitions.parallel;
+package es.eucm.ead.engine.demos;
 
-import com.badlogic.gdx.math.Vector2;
-import com.badlogic.gdx.scenes.scene2d.Actor;
-import com.badlogic.gdx.utils.Pool.Poolable;
-import com.badlogic.gdx.utils.Pools;
-
-import es.eucm.ead.engine.systems.effects.transitions.Region;
-import es.eucm.ead.engine.systems.effects.transitions.TransitionManager.Transition;
+import com.badlogic.gdx.Application;
+import com.badlogic.gdx.Gdx;
+import es.eucm.ead.engine.EngineDesktop;
 
 /**
- * Holds a {@link Transition} and a {@link Region} where the transition is
- * applied. If no region is specified the whole screen will be affected.
+ * VLC video demonstrator.
+ * 
  */
-public class TransitionInfo implements Poolable {
+public class TransitionsDemo {
 
-	private static final Vector2 TEMP = new Vector2();
-
-	Transition transition;
-	Region currentScreenRegion, nextScreenRegion;
-
-	private TransitionInfo() {
-	}
-
-	public static TransitionInfo init(Transition transition, Actor actor) {
-		TransitionInfo actorInfo = Pools.obtain(TransitionInfo.class);
-
-		actorInfo.transition = transition;
-
-		actor.localToStageCoordinates(TEMP.set(0f, 0f));
-		actorInfo.currentScreenRegion = new Region(TEMP.x, TEMP.y,
-				actor.getWidth(), actor.getHeight());
-		actorInfo.nextScreenRegion = actorInfo.currentScreenRegion;
-
-		return actorInfo;
-	}
-
-	@Override
-	public void reset() {
-		transition = null;
-		currentScreenRegion = nextScreenRegion = null;
+	public static void main(String args[]) {
+		EngineDesktop engine = new EngineDesktop(640, 360);
+		engine.run("transitionsdemo", true);
+		Gdx.app.setLogLevel(Application.LOG_DEBUG);
 	}
 }
