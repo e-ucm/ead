@@ -55,27 +55,32 @@ public class WorkerExecutorTest {
 	}
 
 	@Test
-	public void testSimpleWorker() {
+	public void testSimpleWorker() throws Throwable {
 		TestWorkerListener t1 = new TestWorkerListener();
 		TestWorkerListener t2 = new TestWorkerListener();
-		TestWorkerListener t3 = new TestWorkerListener();
 
-		assertTrue(workerExecutor.execute(TestWorker.class, t1));
-		assertFalse(workerExecutor.execute(TestWorker.class, t2));
-		try {
-			Thread.sleep(2000);
-		} catch (InterruptedException e) {
-			e.printStackTrace();
-		}
-		assertTrue(workerExecutor.execute(TestWorker.class, t3));
-		try {
-			Thread.sleep(2000);
-		} catch (InterruptedException e) {
-			e.printStackTrace();
-		}
+		workerExecutor.execute(TestWorker.class, t1);
+		workerExecutor.execute(TestWorker.class, t2);
+
+		Thread.sleep(3000);
+
 		assertTrue(t1.cancelled);
 		assertEquals(t2.counter, 10);
-		assertEquals(t3.counter, 10);
+	}
+
+	@Test
+	public void testCancelled() throws Throwable {
+
+		TestWorkerListener t1 = new TestWorkerListener();
+		TestWorkerListener t2 = new TestWorkerListener();
+		workerExecutor.execute(InfiniteWorker.class, t1);
+		workerExecutor.execute(InfiniteWorker.class, t2);
+
+		Thread.sleep(500);
+
+		assertTrue(t1.cancelled && !t1.done);
+		assertTrue(t2.done && !t2.cancelled);
+		assertFalse(workerExecutor.isWorking());
 	}
 
 	@AfterClass
@@ -85,17 +90,46 @@ public class WorkerExecutorTest {
 
 	public static class TestWorker extends Worker {
 
+		private int counter;
+
 		@Override
-		protected void runWork() {
+		protected void prepare() {
+			counter = 0;
 			try {
 				Thread.sleep(1000);
 			} catch (InterruptedException e) {
 				e.printStackTrace();
 			}
-			for (int i = 0; i < 10; i++) {
-				result();
-			}
-			done();
+		}
+
+		@Override
+		protected boolean step() {
+			counter++;
+			result();
+			return counter == 10;
+		}
+	}
+
+	public static class InfiniteWorker extends Worker {
+
+		public static int counter = 0;
+
+		private boolean infinite;
+
+		@Override
+		void setListener(WorkerListener listener) {
+			super.setListener(listener);
+			this.infinite = counter++ % 2 == 0;
+		}
+
+		@Override
+		protected void prepare() {
+
+		}
+
+		@Override
+		protected boolean step() {
+			return !infinite;
 		}
 	}
 
@@ -104,6 +138,8 @@ public class WorkerExecutorTest {
 		boolean cancelled;
 
 		int counter;
+
+		boolean done;
 
 		@Override
 		public void start() {
@@ -117,7 +153,7 @@ public class WorkerExecutorTest {
 
 		@Override
 		public void done() {
-			assertEquals(counter, 10);
+			done = true;
 		}
 
 		@Override

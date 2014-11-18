@@ -414,6 +414,7 @@ public class Controller {
 		editorGameAssets.update();
 		applicationAssets.update();
 		backgroundExecutor.act();
+		workerExecutor.act();
 		engine.update(delta);
 	}
 }

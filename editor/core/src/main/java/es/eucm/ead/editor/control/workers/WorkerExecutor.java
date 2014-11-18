@@ -37,13 +37,13 @@
 package es.eucm.ead.editor.control.workers;
 
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.ObjectMap;
 import es.eucm.ead.editor.control.Controller;
 import es.eucm.ead.editor.control.workers.Worker.WorkerListener;
 
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
-import java.util.concurrent.Future;
 import java.util.concurrent.ThreadFactory;
 
 /**
@@ -57,12 +57,12 @@ public class WorkerExecutor {
 
 	private ObjectMap<Class, Worker> workersMap;
 
-	private ObjectMap<Class, Future> futuresMap;
+	private Array<WorkerExecutorListener> listeners;
 
 	public WorkerExecutor(Controller controller) {
 		this.controller = controller;
+		listeners = new Array<WorkerExecutorListener>();
 		workersMap = new ObjectMap<Class, Worker>();
-		futuresMap = new ObjectMap<Class, Future>();
 		executorService = Executors.newFixedThreadPool(
 				Math.max(1, Runtime.getRuntime().availableProcessors() - 1),
 				new ThreadFactory() {
@@ -74,34 +74,68 @@ public class WorkerExecutor {
 	}
 
 	/**
-	 * Starts a worker
-	 * 
-	 * @return {@code false} if the previous worker was cancelled, {@code true}
-	 *         if the worker started cleanly
+	 * Runs in UI thread
 	 */
-	public <T extends Worker> boolean execute(Class<T> workerClass,
+	public void act() {
+		for (Worker worker : workersMap.values()) {
+			if (worker.isResultsInUIThread()) {
+				worker.act();
+			}
+		}
+	}
+
+	public void addListener(WorkerExecutorListener listener) {
+		listeners.add(listener);
+	}
+
+	public void removeListener(WorkerExecutorListener listener) {
+		listeners.removeValue(listener, true);
+	}
+
+	/**
+	 * Cancels all running workers
+	 */
+	public void cancellAll() {
+		for (Worker worker : workersMap.values()) {
+			worker.cancel();
+		}
+		workersMap.clear();
+	}
+
+	/**
+	 * Starts a worker and cancels any other worker of the same class
+	 */
+	public <T extends Worker> void execute(Class<T> workerClass,
 			WorkerListener workerListener) {
 		try {
 			Worker worker = workersMap.get(workerClass);
-			if (worker == null) {
-				worker = workerClass.newInstance();
-				worker.setController(controller);
-				workersMap.put(workerClass, worker);
+			if (worker != null && !worker.isDone()) {
+				worker.cancel();
 			}
 
-			boolean result = true;
-			Future future = futuresMap.get(workerClass);
-			if (future != null && !future.isDone()) {
-				future.cancel(true);
-				worker.getListener().cancelled();
-				result = false;
-			}
+			worker = workerClass.newInstance();
+			worker.setController(controller);
 			worker.setListener(workerListener);
-			future = executorService.submit(worker);
-			futuresMap.put(workerClass, future);
-			return result;
+
+			workersMap.put(workerClass, worker);
+
+			executorService.submit(worker);
+			for (WorkerExecutorListener listener : listeners) {
+				listener.executed(workerClass, worker.getListener());
+			}
 		} catch (Exception e) {
 			Gdx.app.error("WorkerExecutor", "Error submitting worker", e);
+		}
+	}
+
+	/**
+	 * @return true if there is some worker pending
+	 */
+	public boolean isWorking() {
+		for (Worker worker : workersMap.values()) {
+			if (!worker.isDone()) {
+				return true;
+			}
 		}
 		return false;
 	}
@@ -111,5 +145,21 @@ public class WorkerExecutor {
 	 */
 	public void dispose() {
 		executorService.shutdown();
+	}
+
+	/**
+	 * Listens to events inside worker executor
+	 */
+	public interface WorkerExecutorListener {
+
+		/**
+		 * Work is executed
+		 */
+		void executed(Class worker, WorkerListener listener);
+
+		/**
+		 * Work is cancelled
+		 */
+		void cancelled(Class worker, WorkerListener listener);
 	}
 }

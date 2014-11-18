@@ -36,7 +36,11 @@
  */
 package es.eucm.ead.editor.control.workers;
 
+import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.utils.Array;
 import es.eucm.ead.editor.control.Controller;
+
+import java.util.concurrent.atomic.AtomicBoolean;
 
 /**
  * A task that incrementally receives results. It will run in its own thread
@@ -45,7 +49,35 @@ public abstract class Worker implements Runnable {
 
 	protected Controller controller;
 
+	private final boolean resultsInUIThread;
+
 	private WorkerListener listener;
+
+	private AtomicBoolean cancelled = new AtomicBoolean(false);
+
+	private AtomicBoolean done = new AtomicBoolean(false);
+
+	private final Array<Object> results = new Array<Object>();
+
+	public enum Event {
+		START, DONE, CANCEL
+	}
+
+	protected Worker() {
+		this(false);
+	}
+
+	/**
+	 * @param resultsInUIThread
+	 *            if results must be notified in the UI Thread
+	 */
+	protected Worker(boolean resultsInUIThread) {
+		this.resultsInUIThread = resultsInUIThread;
+	}
+
+	public boolean isResultsInUIThread() {
+		return resultsInUIThread;
+	}
 
 	public void setController(Controller controller) {
 		this.controller = controller;
@@ -55,33 +87,137 @@ public abstract class Worker implements Runnable {
 		this.listener = listener;
 	}
 
-	protected void result(Object... args) {
-		listener.result(args);
-	}
-
 	public WorkerListener getListener() {
 		return listener;
 	}
 
-	protected void done() {
-		listener.done();
+	/**
+	 * Method that runs in the UI Thread
+	 */
+	public void act() {
+		synchronized (results) {
+			for (Object o : results) {
+				if (o instanceof Event) {
+					switch ((Event) o) {
+					case START:
+						listener.start();
+						break;
+					case DONE:
+						listener.done();
+						break;
+					case CANCEL:
+						listener.cancelled();
+						break;
+					}
+				} else if (o instanceof Throwable) {
+					listener.error((Throwable) o);
+				} else if (o != null && o.getClass().isArray()) {
+					listener.result((Object[]) o);
+				}
+			}
+			results.clear();
+		}
+	}
+
+	private void addResult(Object result) {
+		synchronized (results) {
+			results.add(result);
+		}
+	}
+
+	protected void result(Object... args) {
+		if (!cancelled.get()) {
+			if (resultsInUIThread) {
+				addResult(args);
+			} else {
+				listener.result(args);
+			}
+		}
 	}
 
 	protected void error(Throwable t) {
-		listener.error(t);
+		if (!cancelled.get()) {
+			if (resultsInUIThread) {
+				addResult(t);
+			} else {
+				listener.error(t);
+			}
+		}
+	}
+
+	protected void start() {
+		if (resultsInUIThread) {
+			addResult(Event.START);
+		} else {
+			listener.start();
+		}
+	}
+
+	protected void done() {
+		if (resultsInUIThread) {
+			addResult(Event.DONE);
+		} else {
+			listener.done();
+		}
+	}
+
+	protected void cancelled() {
+		if (resultsInUIThread) {
+			addResult(Event.CANCEL);
+		} else {
+			listener.cancelled();
+		}
 	}
 
 	@Override
 	public void run() {
-		listener.start();
-		runWork();
+		if (!cancelled.get()) {
+			start();
+			try {
+				prepare();
+				while (!cancelled.get() && !step())
+					;
+			} catch (Exception e) {
+				error(e);
+				Gdx.app.error("Worker", "Error", e);
+			}
+		}
+
+		if (!cancelled.get()) {
+			done();
+		} else {
+			cancelled();
+		}
+		done.set(true);
 	}
 
 	/**
-	 * Runs the work. This method needs to call {@link #result(Object...)} every
-	 * time a new result is found, and {@link #done()} when the work is done.
+	 * Cancels the worker
 	 */
-	protected abstract void runWork();
+	public void cancel() {
+		cancelled.set(true);
+	}
+
+	/**
+	 * @return if the worked is finished or was cancelled, and its correspondent
+	 *         thread stopped or is about to
+	 */
+	public boolean isDone() {
+		return done.get();
+	}
+
+	/**
+	 * Prepares the necessary data before starting
+	 */
+	protected abstract void prepare();
+
+	/**
+	 * Runs one step in the work. This method needs to call
+	 * {@link #result(Object...)} every time a new result is found
+	 * 
+	 * @return {@code true} if the work is done
+	 */
+	protected abstract boolean step();
 
 	public interface WorkerListener {
 
