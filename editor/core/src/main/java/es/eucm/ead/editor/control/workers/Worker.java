@@ -57,6 +57,8 @@ public abstract class Worker implements Runnable {
 
 	private AtomicBoolean done = new AtomicBoolean(false);
 
+	private final boolean cancellable;
+
 	private final Array<Object> results = new Array<Object>();
 
 	public enum Event {
@@ -64,15 +66,20 @@ public abstract class Worker implements Runnable {
 	}
 
 	protected Worker() {
-		this(false);
+		this(false, true);
+	}
+
+	protected Worker(boolean resultsInUIThread) {
+		this(resultsInUIThread, true);
 	}
 
 	/**
 	 * @param resultsInUIThread
 	 *            if results must be notified in the UI Thread
 	 */
-	protected Worker(boolean resultsInUIThread) {
+	protected Worker(boolean resultsInUIThread, boolean cancellable) {
 		this.resultsInUIThread = resultsInUIThread;
+		this.cancellable = cancellable;
 	}
 
 	public boolean isResultsInUIThread() {
@@ -200,7 +207,9 @@ public abstract class Worker implements Runnable {
 	 * Cancels the worker
 	 */
 	public void cancel() {
-		cancelled.set(true);
+		if (cancellable) {
+			cancelled.set(true);
+		}
 	}
 
 	/**
