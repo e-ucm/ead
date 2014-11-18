@@ -71,6 +71,7 @@ import java.util.Set;
  * no argument is passed along, the action uses {@link ChooseFile} to ask user
  * to select a folder in the file system
  */
+@Deprecated
 public class OpenGame extends EditorAction implements FileChooserListener,
 		AssetLoadedCallback<Object> {
 

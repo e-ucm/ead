@@ -50,9 +50,9 @@ import es.eucm.ead.editor.control.actions.EditorActionException;
  * there is no last known game.</dd>
  * </dl>
  */
-public class OpenLastGame extends EditorAction {
+public class OpenLastProject extends EditorAction {
 
-	public OpenLastGame() {
+	public OpenLastProject() {
 		super(true, true, Class.class);
 	}
 
