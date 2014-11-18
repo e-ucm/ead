@@ -39,7 +39,6 @@ package es.eucm.ead.editor.control.workers;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.utils.Array;
-import es.eucm.ead.editor.EditorTest;
 import es.eucm.ead.editor.control.actions.editor.ExecuteWorker;
 import es.eucm.ead.editor.control.workers.Worker.WorkerListener;
 import es.eucm.ead.editor.model.Q;
@@ -47,21 +46,16 @@ import es.eucm.ead.editor.platform.MockPlatform;
 import es.eucm.ead.schema.editor.components.GameData;
 import es.eucm.ead.schema.editor.components.Thumbnail;
 import es.eucm.ead.schema.entities.ModelEntity;
-import org.junit.Test;
-
-import java.util.concurrent.atomic.AtomicBoolean;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.fail;
 
-public class LoadProjectsTest extends EditorTest implements WorkerListener {
+public class LoadProjectsTest extends WorkerTest implements WorkerListener {
 
 	private Array<String> paths = new Array<String>();
 
-	private AtomicBoolean done = new AtomicBoolean(false);
-
-	@Test
-	public void test() {
+	@Override
+	public void testWorker() {
 		MockPlatform platform = (MockPlatform) controller.getPlatform();
 		FileHandle temp = Gdx.files.absolute(platform.createTempFile(true)
 				.getAbsolutePath());
@@ -70,13 +64,10 @@ public class LoadProjectsTest extends EditorTest implements WorkerListener {
 			createGame(temp, i);
 		}
 		controller.action(ExecuteWorker.class, LoadProjects.class, this);
+	}
 
-		while (!done.get()) {
-			try {
-				Thread.sleep(100);
-			} catch (InterruptedException e) {
-			}
-		}
+	@Override
+	public void asserts() {
 		assertEquals(paths.size, 0);
 	}
 
@@ -93,7 +84,6 @@ public class LoadProjectsTest extends EditorTest implements WorkerListener {
 
 	@Override
 	public void done() {
-		done.set(true);
 	}
 
 	@Override

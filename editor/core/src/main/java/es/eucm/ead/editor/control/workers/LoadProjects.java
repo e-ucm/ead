@@ -38,10 +38,11 @@ package es.eucm.ead.editor.control.workers;
 
 import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.utils.Array;
-import es.eucm.ead.editor.assets.EditorGameAssets;
+
 import es.eucm.ead.editor.control.Controller;
 import es.eucm.ead.editor.model.Q;
 import es.eucm.ead.editor.utils.ProjectUtils;
+import es.eucm.ead.engine.assets.Assets;
 import es.eucm.ead.schema.editor.components.Documentation;
 import es.eucm.ead.schema.editor.components.GameData;
 import es.eucm.ead.schema.editor.components.Thumbnail;
@@ -54,7 +55,13 @@ import es.eucm.ead.schemax.GameStructure;
  */
 public class LoadProjects extends Worker {
 
-	private EditorGameAssets assets;
+	private Assets assets;
+
+	private Array<String> projectPaths;
+
+	public LoadProjects() {
+		super(true);
+	}
 
 	@Override
 	public void setController(Controller controller) {
@@ -63,23 +70,27 @@ public class LoadProjects extends Worker {
 	}
 
 	@Override
-	protected void runWork() {
+	protected void prepare() {
 		FileHandle projectsFolder = assets.absolute(controller.getPlatform()
 				.getDefaultProjectsFolder());
 		if (projectsFolder.exists()) {
-			Array<String> projectPaths = ProjectUtils
-					.findProjects(projectsFolder);
-			for (String projectPath : projectPaths) {
-				ModelEntity game = findGame(projectPath);
-				if (game != null) {
-					result(projectPath, findTitle(game),
-							findThumbnail(game, projectPath));
-				}
-			}
-		} else {
-			projectsFolder.mkdirs();
+			projectPaths = ProjectUtils.findProjects(projectsFolder);
 		}
-		done();
+	}
+
+	@Override
+	protected boolean step() {
+		if (projectPaths == null || projectPaths.size == 0) {
+			return true;
+		}
+		String projectPath = projectPaths.removeIndex(0);
+		ModelEntity game = findGame(projectPath);
+		if (game != null) {
+			result(projectPath, findTitle(game),
+					findThumbnail(game, projectPath));
+
+		}
+		return projectPaths.size == 0;
 	}
 
 	private String findTitle(ModelEntity game) {
@@ -90,7 +101,8 @@ public class LoadProjects extends Worker {
 		String scenePath = Q.getComponent(game, GameData.class)
 				.getInitialScene();
 		ModelEntity scene = findScene(path, scenePath);
-		if (Q.hasComponent(scene, Thumbnail.class)) {
+		if (Q.hasComponent(scene, Thumbnail.class)
+				&& Q.getComponent(scene, Thumbnail.class).getPath() != null) {
 			return assets.absolute(path)
 					.child(Q.getComponent(scene, Thumbnail.class).getPath())
 					.path();
