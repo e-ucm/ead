@@ -40,6 +40,7 @@ import org.junit.After;
 import org.junit.Before;
 import org.junit.BeforeClass;
 
+import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.scenes.scene2d.Group;
 
 import es.eucm.ead.editor.control.Controller;
@@ -77,6 +78,8 @@ public abstract class EditorTest {
 	 */
 	protected Model model;
 
+	protected MockApplication app;
+
 	@BeforeClass
 	public static void setUpEditorTest() {
 		MockApplication.initStatics();
@@ -88,6 +91,7 @@ public abstract class EditorTest {
 		controller = new Controller(platform, new MockFiles(), new Group(),
 				new Group());
 		model = controller.getModel();
+		app = (MockApplication) Gdx.app;
 	}
 
 	@After
