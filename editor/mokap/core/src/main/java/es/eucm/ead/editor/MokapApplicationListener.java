@@ -38,11 +38,13 @@ package es.eucm.ead.editor;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.scenes.scene2d.ui.WidgetGroup;
+
+import com.badlogic.gdx.scenes.scene2d.utils.Align;
 import es.eucm.ead.editor.control.Controller;
 import es.eucm.ead.editor.control.MokapController;
 import es.eucm.ead.editor.control.Selection;
 import es.eucm.ead.editor.control.actions.editor.ChangeView;
-import es.eucm.ead.editor.control.actions.editor.OpenLastGame;
+import es.eucm.ead.editor.control.actions.editor.OpenLastProject;
 import es.eucm.ead.editor.control.actions.editor.Save;
 import es.eucm.ead.editor.control.actions.model.EditScene;
 import es.eucm.ead.editor.model.Model.ModelListener;
@@ -102,7 +104,8 @@ public class MokapApplicationListener extends EditorApplicationListener {
 			}
 		});
 
-		controller.action(OpenLastGame.class, HomeView.class);
+		controller.action(OpenLastProject.class, HomeView.class);
+		stage.setActionsRequestRendering(true);
 	}
 
 	@Override
