@@ -143,6 +143,7 @@ public class MockPlatform extends AbstractPlatform {
 		try {
 			File file = File.createTempFile("eadeditortest", folder ? "folder"
 					: "file");
+			file.deleteOnExit();
 			if (folder) {
 				file.delete();
 				file.mkdir();
