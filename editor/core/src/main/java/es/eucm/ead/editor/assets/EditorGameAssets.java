@@ -47,6 +47,7 @@ import com.badlogic.gdx.utils.JsonWriter.OutputType;
 
 import es.eucm.ead.engine.assets.GameAssets;
 import es.eucm.ead.schema.editor.components.Parent;
+import es.eucm.ead.schema.entities.ModelEntity;
 
 /**
  * This asset manager is meant to deal with the game's assets in the editor.
@@ -242,6 +243,20 @@ public class EditorGameAssets extends GameAssets {
 	 */
 	public <T> void addAsset(String fileName, Class<T> type, T asset) {
 		assetManager.addAsset(fileName, type, asset);
+	}
+
+	/**
+	 * @param path
+	 *            path relative to the project to save the object
+	 * @param object
+	 *            object to save
+	 */
+	public void save(String path, ModelEntity object) {
+		toJsonPath(object, path);
+	}
+
+	public FileHandle projectFileHandle() {
+		return absolute(getLoadingPath());
 	}
 
 	/**
