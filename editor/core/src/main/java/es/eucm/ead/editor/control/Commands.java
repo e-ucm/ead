@@ -72,7 +72,6 @@ public class Commands {
 		this.model = model;
 		commandListeners = new Array<CommandListener>();
 		this.commandsStacks = new Stack<CommandsStack>();
-		addCommandListener(new ResourceModifiedListener(model));
 	}
 
 	/**
