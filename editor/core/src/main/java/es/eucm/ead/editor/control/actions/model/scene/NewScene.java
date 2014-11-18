@@ -70,6 +70,7 @@ import es.eucm.ead.schemax.entities.ResourceCategory;
  * scene in the {@link SceneMap}</dd>
  * </dl>
  */
+@Deprecated
 public class NewScene extends ModelAction {
 
 	private SetSelection setSelection;
