@@ -44,6 +44,7 @@ import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.utils.Json;
 import com.badlogic.gdx.utils.JsonValue;
 import com.badlogic.gdx.utils.JsonWriter.OutputType;
+
 import es.eucm.ead.engine.assets.GameAssets;
 import es.eucm.ead.schema.editor.components.Parent;
 
@@ -157,10 +158,13 @@ public class EditorGameAssets extends GameAssets {
 	 */
 	public String copyToProjectIfNeeded(String path, Class<?> type) {
 		// If resource path is not loaded
-		if (!path.startsWith(getLoadingPath()) && !isLoaded(path, type)) {
-			return copyToProject(path, type);
+		if (isLoaded(path, type)) {
+			return path;
 		}
-		return path;
+		if (path.startsWith(getLoadingPath())) {
+			return path.substring(getLoadingPath().length());
+		}
+		return copyToProject(path, type);
 	}
 
 	/**
