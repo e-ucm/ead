@@ -123,6 +123,7 @@ public abstract class Worker implements Runnable {
 		synchronized (results) {
 			results.add(result);
 		}
+		Gdx.graphics.requestRendering();
 	}
 
 	protected void result(Object... args) {
@@ -187,6 +188,10 @@ public abstract class Worker implements Runnable {
 			done();
 		} else {
 			cancelled();
+		}
+
+		if (resultsInUIThread) {
+			Gdx.graphics.requestRendering();
 		}
 		done.set(true);
 	}
