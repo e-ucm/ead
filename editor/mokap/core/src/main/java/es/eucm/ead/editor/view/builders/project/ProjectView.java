@@ -36,6 +36,7 @@
  */
 package es.eucm.ead.editor.view.builders.project;
 
+import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 
@@ -49,6 +50,7 @@ import es.eucm.ead.editor.view.builders.ViewBuilder;
 import es.eucm.ead.editor.view.builders.home.HomeView;
 import es.eucm.ead.editor.view.widgets.MultiWidget;
 import es.eucm.ead.editor.view.widgets.WidgetBuilder;
+import es.eucm.ead.editor.view.widgets.galleries.ScenesGallery;
 import es.eucm.ead.editor.view.widgets.layouts.LinearLayout;
 import es.eucm.ead.engine.I18N;
 
@@ -70,7 +72,10 @@ public class ProjectView implements ViewBuilder, BackListener {
 		I18N i18N = controller.getApplicationAssets().getI18N();
 		view = new LinearLayout(false);
 		view.add(buildToolbar(skin, i18N)).expandX();
-		view.add(scenesGallery = buildScenesGallery()).expand(true, true).top();
+		view.add(
+				scenesGallery = new ScenesGallery(
+						Gdx.graphics.getHeight() / 2.15f, 3, controller))
+				.expand(true, true).top();
 	}
 
 	@Override
@@ -82,7 +87,7 @@ public class ProjectView implements ViewBuilder, BackListener {
 
 	@Override
 	public void release(Controller controller) {
-
+		controller.getWorkerExecutor().cancellAll();
 	}
 
 	private Actor buildToolbar(Skin skin, I18N i18N) {
@@ -95,11 +100,6 @@ public class ProjectView implements ViewBuilder, BackListener {
 
 		toolbar.addWidgets(project);
 		return toolbar;
-	}
-
-	private ScenesGallery buildScenesGallery() {
-		ScenesGallery scenesGallery = new ScenesGallery(controller);
-		return scenesGallery;
 	}
 
 	@Override
