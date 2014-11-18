@@ -112,7 +112,6 @@ public class Templates {
 	 * @return the scene created
 	 */
 	public ModelEntity createScene(String name) {
-		controller.getTracker().newScene();
 		ModelEntity scene = new ModelEntity();
 		Q.getComponent(scene, Documentation.class).setName(name);
 		Q.getComponent(scene, Date.class).setDate(
