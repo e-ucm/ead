@@ -40,6 +40,7 @@ import com.badlogic.gdx.math.Interpolation;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.actions.Actions;
 import com.badlogic.gdx.scenes.scene2d.ui.ScrollPane;
+import com.badlogic.gdx.scenes.scene2d.utils.Drawable;
 import es.eucm.ead.editor.view.widgets.AbstractWidget;
 import es.eucm.ead.editor.view.widgets.WidgetBuilder;
 
@@ -59,6 +60,7 @@ public class Gallery extends ScrollPane {
 	public Gallery(float rowHeight, int columns) {
 		super(null);
 		setWidget(container = new Grid(rowHeight, columns));
+		setScrollingDisabled(true, false);
 	}
 
 	/**
@@ -69,8 +71,14 @@ public class Gallery extends ScrollPane {
 		container.pad(pad);
 	}
 
-	public void add(Actor actor) {
-		container.addActor(new Cell(actor));
+	public void setBackground(Drawable background) {
+		getStyle().background = background;
+	}
+
+	public Cell add(Actor actor) {
+		Cell cell = new Cell(actor);
+		container.addActor(cell);
+		return cell;
 	}
 
 	@Override
@@ -94,22 +102,34 @@ public class Gallery extends ScrollPane {
 		@Override
 		public void layout() {
 			float columnWidth = (getWidth() - pad) / columns;
-			float column = 0;
-			float y = Math.max((rows() - 1) * rowHeight, getHeight()
-					- rowHeight)
-					- pad;
+			float y = Math.max(getPrefHeight(), getHeight() - rowHeight) - pad;
+			int count = 0;
+			float rowHeight = 0;
 			for (Actor actor : getChildren()) {
-				setBounds(actor, pad + column * columnWidth, y + pad,
-						columnWidth - pad, rowHeight - pad);
-				column = (column + 1) % columns;
-				if (column == 0) {
+				if (count % columns == 0) {
+					rowHeight = rowHeight(count);
 					y -= rowHeight;
 				}
+				setBounds(actor, pad + (count % columns) * columnWidth,
+						y + pad, columnWidth - pad, rowHeight - pad);
+				count++;
 			}
 		}
 
-		private int rows() {
-			return (int) (Math.ceil((float) getChildren().size / columns));
+		private float rowHeight(int fromIndex) {
+			float currentRowHeight = 0;
+			for (int i = fromIndex; i < fromIndex + columns
+					&& i < getChildren().size; i++) {
+				Cell cell = (Cell) getChildren().get(i);
+				float actorHeight;
+				if (cell.usePrefHeight) {
+					actorHeight = getPrefHeight(cell.actor);
+				} else {
+					actorHeight = rowHeight;
+				}
+				currentRowHeight = Math.max(currentRowHeight, actorHeight);
+			}
+			return currentRowHeight;
 		}
 
 		@Override
@@ -119,7 +139,26 @@ public class Gallery extends ScrollPane {
 
 		@Override
 		public float getPrefHeight() {
-			return Math.max(getParent().getHeight(), rows() * rowHeight + pad);
+			float height = 0;
+			int counter = 0;
+			float currentRowHeight = 0;
+			for (Actor cell : getChildren()) {
+				if (counter % columns == 0) {
+					height += currentRowHeight;
+					currentRowHeight = 0;
+				}
+
+				float actorHeight;
+				if (((Cell) cell).usePrefHeight) {
+					actorHeight = getPrefHeight(((Cell) cell).actor);
+				} else {
+					actorHeight = rowHeight;
+				}
+				currentRowHeight = Math.max(currentRowHeight, actorHeight);
+				counter++;
+			}
+			height += currentRowHeight;
+			return Math.max(getParent().getHeight(), height + pad);
 		}
 
 		public void pad(float pad) {
@@ -127,15 +166,21 @@ public class Gallery extends ScrollPane {
 		}
 	}
 
-	static class Cell extends AbstractWidget {
+	public static class Cell extends AbstractWidget {
 
 		private static final float DELTA_Y = cmToYPixels(0.5f);
 
 		private Actor actor;
 
+		private boolean usePrefHeight;
+
 		Cell(Actor actor) {
 			this.actor = actor;
 			addActor(actor);
+		}
+
+		public void usePrefHeight() {
+			this.usePrefHeight = true;
 		}
 
 		@Override

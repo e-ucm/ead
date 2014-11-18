@@ -70,7 +70,7 @@ public abstract class ThumbnailsGallery extends AbstractWidget implements
 
 	private ObjectMap<String, TextureDrawable> pendingTextures = new ObjectMap<String, TextureDrawable>();
 
-	private Gallery gallery;
+	protected Gallery gallery;
 
 	private Button add;
 

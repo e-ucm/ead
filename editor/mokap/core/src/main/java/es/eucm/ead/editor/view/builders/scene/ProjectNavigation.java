@@ -61,11 +61,13 @@ public class ProjectNavigation extends ScenesGallery {
 	@Override
 	public void start() {
 		super.start();
-		gallery.add(WidgetBuilder.button(SkinConstants.IC_HOME,
-				i18N.m("project"), SkinConstants.STYLE_CONTEXT,
-				ChangeView.class, ProjectView.class)).usePrefHeight();
-		gallery.add(WidgetBuilder.button(SkinConstants.IC_PLAY,
-				i18N.m("test.all"), SkinConstants.STYLE_CONTEXT)).usePrefHeight();
+		gallery.add(
+				WidgetBuilder.button(SkinConstants.IC_HOME, i18N.m("project"),
+						SkinConstants.STYLE_CONTEXT, ChangeView.class,
+						ProjectView.class)).usePrefHeight();
+		gallery.add(
+				WidgetBuilder.button(SkinConstants.IC_PLAY, i18N.m("test.all"),
+						SkinConstants.STYLE_CONTEXT)).usePrefHeight();
 	}
 
 	@Override

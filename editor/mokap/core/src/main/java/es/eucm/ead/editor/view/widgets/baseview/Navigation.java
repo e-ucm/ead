@@ -37,6 +37,7 @@
 package es.eucm.ead.editor.view.widgets.baseview;
 
 import com.badlogic.gdx.math.Interpolation;
+import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.Touchable;
@@ -62,6 +63,8 @@ class Navigation extends Panel {
 
 		addActor(background = new Container());
 		background.setBackground(style.navigationBackground);
+		background.setVisible(false);
+		background.getColor().a = 0.0f;
 
 		addListener(new DragListener() {
 
@@ -169,12 +172,13 @@ class Navigation extends Panel {
 		super.layout();
 		if (navigation != null) {
 			float height = Math.max(getPrefHeight(navigation), getHeight());
-			setBounds(navigation, -getPrefWidth(navigation), getHeight()
-					- height, getPrefWidth(navigation), height);
+			float x = MathUtils.isEqual(navigation.getWidth(),
+					getPrefWidth(navigation), 0.1f) ? navigation.getX()
+					: -getPrefWidth(navigation);
+			setBounds(navigation, x, getHeight() - height,
+					getPrefWidth(navigation), height);
 		}
 		setBounds(background, 0, 0, getWidth(), getHeight());
-		background.setVisible(false);
-		background.getColor().a = 0.0f;
 	}
 
 	@Override

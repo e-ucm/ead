@@ -39,7 +39,7 @@ package es.eucm.ead.editor.view.widgets.galleries;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 
 import es.eucm.ead.editor.control.Controller;
-import es.eucm.ead.editor.control.actions.editor.NewProject;
+import es.eucm.ead.editor.control.actions.editor.AddProject;
 import es.eucm.ead.editor.control.actions.editor.OpenProject;
 import es.eucm.ead.editor.control.workers.LoadProjects;
 import es.eucm.ead.editor.view.builders.project.ProjectView;
@@ -54,7 +54,7 @@ public class ProjectsGallery extends ThumbnailsGallery {
 
 	@Override
 	protected void prepareAddButton(Actor actor) {
-		WidgetBuilder.actionOnClick(actor, NewProject.class, ProjectView.class);
+		WidgetBuilder.actionOnClick(actor, AddProject.class, ProjectView.class);
 	}
 
 	@Override

@@ -195,6 +195,10 @@ public class BaseView extends AbstractWidget {
 		this.navigation.toggle();
 	}
 
+	public boolean isNavigationVisible() {
+		return !navigation.isHidden();
+	}
+
 	/**
 	 * Sets the toolbar actor, removing the current one (if any)
 	 */
