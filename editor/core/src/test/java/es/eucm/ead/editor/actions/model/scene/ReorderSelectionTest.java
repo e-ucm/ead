@@ -36,17 +36,18 @@
  */
 package es.eucm.ead.editor.actions.model.scene;
 
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
+
+import org.junit.Before;
+import org.junit.Test;
+
 import es.eucm.ead.editor.actions.ActionTest;
 import es.eucm.ead.editor.control.Selection;
 import es.eucm.ead.editor.control.actions.model.SetSelection;
 import es.eucm.ead.editor.control.actions.model.scene.ReorderSelection;
 import es.eucm.ead.editor.control.actions.model.scene.ReorderSelection.Type;
 import es.eucm.ead.schema.entities.ModelEntity;
-import org.junit.Before;
-import org.junit.Test;
-
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
 
 public class ReorderSelectionTest extends ActionTest {
 
@@ -113,35 +114,6 @@ public class ReorderSelectionTest extends ActionTest {
 	}
 
 	@Test
-	public void testMultipleSelectionOrdenIsIrrelevant() {
-		controller.getCommands().pushStack();
-
-		ModelEntity child9 = scene.getChildren().get(9);
-		ModelEntity child8 = scene.getChildren().get(8);
-
-		setSelection(child9, child8);
-
-		controller.action(ReorderSelection.class, Type.TO_BACK);
-		assertEquals(8, scene.getChildren().indexOf(child9, false));
-		assertEquals(7, scene.getChildren().indexOf(child8, false));
-
-		controller.action(ReorderSelection.class, Type.TO_FRONT);
-		assertEquals(9, scene.getChildren().indexOf(child9, false));
-		assertEquals(8, scene.getChildren().indexOf(child8, false));
-
-		// Change selection order, perform same operations
-		setSelection(child8, child9);
-
-		controller.action(ReorderSelection.class, Type.TO_BACK);
-		assertEquals(8, scene.getChildren().indexOf(child9, false));
-		assertEquals(7, scene.getChildren().indexOf(child8, false));
-
-		controller.action(ReorderSelection.class, Type.TO_FRONT);
-		assertEquals(9, scene.getChildren().indexOf(child9, false));
-		assertEquals(8, scene.getChildren().indexOf(child8, false));
-	}
-
-	@Test
 	public void testChildrenKeepZOrder() {
 		ModelEntity bottomChild = scene.getChildren().get(2);
 		ModelEntity topChild = scene.getChildren().get(9);
@@ -157,23 +129,6 @@ public class ReorderSelectionTest extends ActionTest {
 				scene.getChildren().indexOf(bottomChild, false));
 		assertEquals(scene.getChildren().size - 1,
 				scene.getChildren().indexOf(topChild, false));
-
-		bottomChild = scene.getChildren().get(0);
-		topChild = scene.getChildren().get(9);
-
-		// Change order of selection
-		setSelection(topChild, bottomChild);
-
-		controller.action(ReorderSelection.class, Type.SEND_TO_BACK);
-		assertEquals(0, scene.getChildren().indexOf(bottomChild, false));
-		assertEquals(1, scene.getChildren().indexOf(topChild, false));
-
-		controller.action(ReorderSelection.class, Type.BRING_TO_FRONT);
-		assertEquals(scene.getChildren().size - 2,
-				scene.getChildren().indexOf(bottomChild, false));
-		assertEquals(scene.getChildren().size - 1,
-				scene.getChildren().indexOf(topChild, false));
-
 	}
 
 	@Test
@@ -183,7 +138,7 @@ public class ReorderSelectionTest extends ActionTest {
 		ModelEntity child7 = scene.getChildren().get(currentIndex - 2);
 		ModelEntity child9 = scene.getChildren().get(currentIndex);
 
-		setSelection(child0, child9, child7);
+		setSelection(child0, child7, child9);
 
 		for (int i = 0; i < 10; i++) {
 			controller.action(ReorderSelection.class, Type.TO_BACK);
@@ -204,7 +159,7 @@ public class ReorderSelectionTest extends ActionTest {
 		ModelEntity child1 = scene.getChildren().get(currentIndex + 1);
 		ModelEntity child9 = scene.getChildren().get(9);
 
-		setSelection(child1, child0, child9);
+		setSelection(child0, child1, child9);
 
 		for (int i = 0; i < 10; i++) {
 			controller.action(ReorderSelection.class, Type.TO_FRONT);

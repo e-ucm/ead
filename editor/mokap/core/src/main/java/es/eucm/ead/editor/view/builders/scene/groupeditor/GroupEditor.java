@@ -36,6 +36,8 @@
  */
 package es.eucm.ead.editor.view.builders.scene.groupeditor;
 
+import java.util.Comparator;
+
 import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.math.Polygon;
 import com.badlogic.gdx.math.Vector2;
@@ -53,6 +55,7 @@ import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.Pools;
 import com.badlogic.gdx.utils.Timer;
 import com.badlogic.gdx.utils.Timer.Task;
+
 import es.eucm.ead.editor.utils.GeometryUtils;
 import es.eucm.ead.editor.view.builders.scene.groupeditor.GroupEditor.GroupEvent.Type;
 import es.eucm.ead.editor.view.widgets.AbstractWidget;
@@ -75,6 +78,8 @@ public class GroupEditor extends AbstractWidget {
 
 	private boolean multipleSelection;
 
+	private ActorComparator comparator;
+
 	public GroupEditor(Skin skin) {
 		this(skin.get(GroupEditorStyle.class));
 	}
@@ -86,6 +91,8 @@ public class GroupEditor extends AbstractWidget {
 				layersTouched, this);
 		selectLayerMenu.setVisible(false);
 		selectLayerMenu.setBackground(style.layersBackground);
+
+		comparator = new ActorComparator();
 
 		selectionLayer = new Group();
 		addActor(selectionLayer);
@@ -159,6 +166,7 @@ public class GroupEditor extends AbstractWidget {
 
 	void addToSelection(Actor actor, boolean addBox) {
 		selection.add(actor);
+		selection.sort(comparator);
 		if (addBox) {
 			GeometryUtils.adjustGroup(actor);
 			SelectionBox selectionBox = Pools.obtain(SelectionBox.class);
@@ -657,6 +665,14 @@ public class GroupEditor extends AbstractWidget {
 		public void exitedGroupEdition(GroupEvent groupEvent, Group parent,
 				Group oldGroup, Actor simplifiedGroup) {
 
+		}
+	}
+
+	public static class ActorComparator implements Comparator<Actor> {
+
+		@Override
+		public int compare(Actor actor, Actor actor2) {
+			return actor.getZIndex() - actor2.getZIndex();
 		}
 	}
 }

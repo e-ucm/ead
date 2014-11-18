@@ -37,6 +37,7 @@
 package es.eucm.ead.editor.control.actions.model.scene;
 
 import com.badlogic.gdx.utils.Array;
+
 import es.eucm.ead.editor.control.Controller;
 import es.eucm.ead.editor.control.Selection;
 import es.eucm.ead.editor.control.actions.model.Reorder;
@@ -44,8 +45,6 @@ import es.eucm.ead.editor.control.actions.model.scene.transform.TransformSelecti
 import es.eucm.ead.editor.control.commands.Command;
 import es.eucm.ead.editor.control.commands.CompositeCommand;
 import es.eucm.ead.schema.entities.ModelEntity;
-
-import java.util.Comparator;
 
 /**
  * Action to reorder the entities in the current selection
@@ -64,8 +63,6 @@ public class ReorderSelection extends TransformSelection {
 	private Reorder reorder;
 
 	private Array<ModelEntity> orderedSelection;
-
-	private ChildrenComparator childrenComparator = new ChildrenComparator();
 
 	public ReorderSelection() {
 		super(false, false, Type.class);
@@ -92,8 +89,6 @@ public class ReorderSelection extends TransformSelection {
 				.get(Selection.SCENE_ELEMENT)) {
 			orderedSelection.add((ModelEntity) object);
 		}
-		childrenComparator.setList(parent.getChildren());
-		orderedSelection.sort(childrenComparator);
 
 		int lastIndex = -1;
 		if (type == Type.BRING_TO_FRONT || type == Type.TO_FRONT) {
@@ -131,20 +126,5 @@ public class ReorderSelection extends TransformSelection {
 		}
 
 		return compositeCommand;
-	}
-
-	public static class ChildrenComparator implements Comparator<ModelEntity> {
-
-		private Array<ModelEntity> list;
-
-		public void setList(Array<ModelEntity> list) {
-			this.list = list;
-		}
-
-		@Override
-		public int compare(ModelEntity modelEntity, ModelEntity modelEntity2) {
-			return list.indexOf(modelEntity, false)
-					- list.indexOf(modelEntity2, false);
-		}
 	}
 }
