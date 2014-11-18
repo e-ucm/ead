@@ -34,56 +34,42 @@
  *      You should have received a copy of the GNU Lesser General Public License
  *      along with eAdventure.  If not, see <http://www.gnu.org/licenses/>.
  */
-package es.eucm.ead.editor.control.actions.editor;
+package es.eucm.ead.editor.view.builders.scene;
 
-import es.eucm.ead.editor.control.actions.EditorAction;
-import es.eucm.ead.editor.control.workers.CreateProject;
-import es.eucm.ead.editor.control.workers.Worker.WorkerListener;
+import com.badlogic.gdx.Gdx;
 
-/**
- * Open the project in the given path
- * <dl>
- * <dt><strong>Arguments</strong></dt>
- * <dd><strong>args[0]</strong> <em>{@link Class}</em> Class of the view to show
- * once the game is opened</dd>
- * </dl>
- */
-public class NewProject extends EditorAction implements WorkerListener {
+import es.eucm.ead.editor.control.Controller;
+import es.eucm.ead.editor.control.actions.editor.ChangeView;
+import es.eucm.ead.editor.view.SkinConstants;
+import es.eucm.ead.editor.view.builders.project.ProjectView;
+import es.eucm.ead.editor.view.widgets.WidgetBuilder;
+import es.eucm.ead.editor.view.widgets.galleries.ScenesGallery;
+import es.eucm.ead.engine.I18N;
 
-	private Class view;
+public class ProjectNavigation extends ScenesGallery {
 
-	public NewProject() {
-		super(true, false, Class.class);
-	}
+	private I18N i18N;
 
-	@Override
-	public void perform(Object... args) {
-		this.view = (Class) args[0];
-		controller.action(ExecuteWorker.class, CreateProject.class, this);
+	public ProjectNavigation(Controller controller) {
+		super(Gdx.graphics.getHeight() / 2.15f, 1, controller);
+		gallery.pad(0);
+		gallery.setBackground(controller.getApplicationAssets().getSkin()
+				.getDrawable(SkinConstants.DRAWABLE_PAGE_LEFT));
+		i18N = controller.getApplicationAssets().getI18N();
 	}
 
 	@Override
 	public void start() {
-
+		super.start();
+		gallery.add(WidgetBuilder.button(SkinConstants.IC_HOME,
+				i18N.m("project"), SkinConstants.STYLE_CONTEXT,
+				ChangeView.class, ProjectView.class)).usePrefHeight();
+		gallery.add(WidgetBuilder.button(SkinConstants.IC_PLAY,
+				i18N.m("test.all"), SkinConstants.STYLE_CONTEXT)).usePrefHeight();
 	}
 
 	@Override
-	public void result(Object... results) {
-		controller.action(OpenProject.class, results[0], view);
-	}
-
-	@Override
-	public void done() {
-
-	}
-
-	@Override
-	public void error(Throwable ex) {
-
-	}
-
-	@Override
-	public void cancelled() {
-
+	public float getPrefWidth() {
+		return Gdx.graphics.getHeight() - WidgetBuilder.dpToPixels(56);
 	}
 }
