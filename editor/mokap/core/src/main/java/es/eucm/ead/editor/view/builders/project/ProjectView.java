@@ -80,7 +80,8 @@ public class ProjectView implements ViewBuilder, BackListener {
 
 	@Override
 	public Actor getView(Object... args) {
-		controller.action(SetSelection.class, null, Selection.RESOURCE);
+		controller.action(SetSelection.class, Selection.PROJECT,
+				Selection.RESOURCE);
 		scenesGallery.prepare();
 		return view;
 	}

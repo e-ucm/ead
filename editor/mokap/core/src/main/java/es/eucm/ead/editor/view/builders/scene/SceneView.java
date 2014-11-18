@@ -153,12 +153,14 @@ public class SceneView implements ViewBuilder, BackListener {
 		}
 		projectNavigation.prepare();
 		sceneEditor.prepare();
+		view.hideNavigationRightAway();
 		return view;
 	}
 
 	@Override
 	public void release(Controller controller) {
-		controller.action(SetSelection.class, null, Selection.RESOURCE);
+		controller.action(SetSelection.class, Selection.PROJECT,
+				Selection.RESOURCE);
 		sceneEditor.release();
 		view.invalidate();
 	}

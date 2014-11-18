@@ -134,7 +134,7 @@ public class DeleteScene extends ModelAction {
 				if (alternateScene == null) {
 					alternateScene = findAlternateScene(id);
 				}
-				commandList.add(new SelectionCommand(model, null,
+				commandList.add(new SelectionCommand(model, Selection.PROJECT,
 						Selection.RESOURCE, alternateScene));
 				commandList.add(new SelectionCommand(model, Selection.RESOURCE,
 						Selection.SCENE, model.getResourceObject(

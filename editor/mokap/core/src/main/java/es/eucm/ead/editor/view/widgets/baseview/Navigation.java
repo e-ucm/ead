@@ -143,6 +143,15 @@ class Navigation extends Panel {
 				navigation.getY());
 	}
 
+	public void hideRightAway() {
+		background.setVisible(false);
+		background.getColor().a = 0.0f;
+		float height = Math.max(getPrefHeight(navigation), getHeight());
+		setBounds(navigation, -getPrefWidth(navigation), getHeight() - height,
+				getPrefWidth(navigation), height);
+		hidden = true;
+	}
+
 	@Override
 	public void displace(InputEvent event, float deltaX, float deltaY) {
 

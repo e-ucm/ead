@@ -199,6 +199,10 @@ public class BaseView extends AbstractWidget {
 		return !navigation.isHidden();
 	}
 
+	public void hideNavigationRightAway() {
+		navigation.hideRightAway();
+	}
+
 	/**
 	 * Sets the toolbar actor, removing the current one (if any)
 	 */

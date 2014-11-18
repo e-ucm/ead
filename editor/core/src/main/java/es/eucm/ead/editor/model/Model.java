@@ -283,9 +283,12 @@ public class Model {
 	}
 
 	public ModelEntity getGame() {
-		Resource gameRes = getResource(GameStructure.GAME_FILE,
-				ResourceCategory.GAME);
-		return gameRes == null ? null : (ModelEntity) gameRes.object;
+		ModelEntity game = (ModelEntity) selection.getSingle(Selection.PROJECT);
+		if (game == null) {
+			game = (ModelEntity) getResource(GameStructure.GAME_FILE,
+					ResourceCategory.GAME).getObject();
+		}
+		return game;
 	}
 
 	/**

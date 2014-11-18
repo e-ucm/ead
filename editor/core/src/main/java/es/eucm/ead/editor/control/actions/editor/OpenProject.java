@@ -36,7 +36,11 @@
  */
 package es.eucm.ead.editor.control.actions.editor;
 
+import es.eucm.ead.editor.control.Selection;
 import es.eucm.ead.editor.control.actions.EditorAction;
+import es.eucm.ead.editor.control.actions.model.SetSelection;
+import es.eucm.ead.engine.assets.Assets.AssetLoadedCallback;
+import es.eucm.ead.schemax.GameStructure;
 
 /**
  * Open the project in the given path
@@ -47,7 +51,10 @@ import es.eucm.ead.editor.control.actions.EditorAction;
  * once the game is opened</dd>
  * </dl>
  */
-public class OpenProject extends EditorAction {
+public class OpenProject extends EditorAction implements
+		AssetLoadedCallback<Object> {
+
+	private Class nextView;
 
 	public OpenProject() {
 		super(true, false, String.class, Class.class);
@@ -56,9 +63,16 @@ public class OpenProject extends EditorAction {
 	@Override
 	public void perform(Object... args) {
 		controller.getEditorGameAssets().setLoadingPath((String) args[0]);
+		nextView = (Class) args[1];
+		controller.getEditorGameAssets().get(GameStructure.GAME_FILE,
+				Object.class, this);
+	}
 
-		if (args[1] instanceof Class) {
-			controller.action(ChangeView.class, (Class) args[1]);
+	@Override
+	public void loaded(String fileName, Object asset) {
+		controller.action(SetSelection.class, null, Selection.PROJECT, asset);
+		if (nextView != null) {
+			controller.action(ChangeView.class, nextView);
 		}
 	}
 }

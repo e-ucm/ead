@@ -72,8 +72,8 @@ public class SetSelectedScene extends ModelAction {
 		String sceneId = (String) args[0];
 		ModelEntity scene = (ModelEntity) args[1];
 		CompositeCommand commands = new CompositeCommand();
-		commands.addCommand(setSelection.perform(null, Selection.RESOURCE,
-				sceneId));
+		commands.addCommand(setSelection.perform(Selection.PROJECT,
+				Selection.RESOURCE, sceneId));
 		commands.addCommand(setSelection.perform(Selection.RESOURCE,
 				Selection.SCENE, scene));
 		commands.addCommand(setSelection.perform(Selection.SCENE,
