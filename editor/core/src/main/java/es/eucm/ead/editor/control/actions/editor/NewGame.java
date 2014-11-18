@@ -36,10 +36,7 @@
  */
 package es.eucm.ead.editor.control.actions.editor;
 
-import java.io.FileNotFoundException;
-
 import com.badlogic.gdx.files.FileHandle;
-
 import es.eucm.ead.editor.assets.ApplicationAssets;
 import es.eucm.ead.editor.assets.EditorGameAssets;
 import es.eucm.ead.editor.control.actions.EditorAction;
@@ -53,11 +50,14 @@ import es.eucm.ead.schema.entities.ModelEntity;
 import es.eucm.ead.schemax.GameStructure;
 import es.eucm.ead.schemax.entities.ResourceCategory;
 
+import java.io.FileNotFoundException;
+
 /**
  * New game creates an empty game. Expects exactly three parameters: arg[0]: a
  * valid path to a folder where the game should be created (String) arg[1]: a
  * not null {@link ModelEntity} object
  */
+@Deprecated
 public class NewGame extends EditorAction {
 
 	public NewGame() {
