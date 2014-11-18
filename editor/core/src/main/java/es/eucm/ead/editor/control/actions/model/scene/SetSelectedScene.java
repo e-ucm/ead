@@ -34,34 +34,50 @@
  *      You should have received a copy of the GNU Lesser General Public License
  *      along with eAdventure.  If not, see <http://www.gnu.org/licenses/>.
  */
-package es.eucm.ead.editor.control.actions.model;
+package es.eucm.ead.editor.control.actions.model.scene;
 
-import es.eucm.ead.editor.control.actions.EditorAction;
-import es.eucm.ead.editor.control.actions.model.scene.SetSelectedScene;
-import es.eucm.ead.engine.assets.Assets.AssetLoadedCallback;
+import es.eucm.ead.editor.control.Controller;
+import es.eucm.ead.editor.control.Selection;
+import es.eucm.ead.editor.control.actions.ModelAction;
+import es.eucm.ead.editor.control.actions.model.SetSelection;
+import es.eucm.ead.editor.control.commands.Command;
+import es.eucm.ead.editor.control.commands.CompositeCommand;
+import es.eucm.ead.schema.entities.ModelEntity;
 
 /**
- * Changes the edited scene.
+ * Action to reorder the entities in the current selection
  * <dl>
  * <dt><strong>Arguments</strong></dt>
- * <dd><strong>args[0]</strong> <em>String</em> the identifier of edited scene</dd>
+ * <dd><strong>args[0]</strong> <em>{@link String}</em> scene id</dd>
+ * <dd><strong>args[1]</strong> <em>{@link ModelEntity}</em> model entity with
+ * the scene selected</dd>
  * </dl>
  */
-public class EditScene extends EditorAction implements
-		AssetLoadedCallback<Object> {
+public class SetSelectedScene extends ModelAction {
 
-	public EditScene() {
-		super(true, false, String.class);
+	private SetSelection setSelection;
+
+	public SetSelectedScene() {
+		super(true, false, String.class, ModelEntity.class);
 	}
 
 	@Override
-	public void perform(Object... args) {
-		controller.getEditorGameAssets().get((String) args[0], Object.class,
-				this);
+	public void initialize(Controller controller) {
+		super.initialize(controller);
+		setSelection = controller.getActions().getAction(SetSelection.class);
 	}
 
 	@Override
-	public void loaded(String fileName, Object asset) {
-		controller.action(SetSelectedScene.class, fileName, asset);
+	public Command perform(Object... args) {
+		String sceneId = (String) args[0];
+		ModelEntity scene = (ModelEntity) args[1];
+		CompositeCommand commands = new CompositeCommand();
+		commands.addCommand(setSelection.perform(null, Selection.RESOURCE,
+				sceneId));
+		commands.addCommand(setSelection.perform(Selection.RESOURCE,
+				Selection.SCENE, scene));
+		commands.addCommand(setSelection.perform(Selection.SCENE,
+				Selection.EDITED_GROUP, scene));
+		return commands;
 	}
 }

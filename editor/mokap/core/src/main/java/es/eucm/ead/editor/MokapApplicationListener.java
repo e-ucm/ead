@@ -38,27 +38,13 @@ package es.eucm.ead.editor;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.scenes.scene2d.ui.WidgetGroup;
-
-import com.badlogic.gdx.scenes.scene2d.utils.Align;
 import es.eucm.ead.editor.control.Controller;
 import es.eucm.ead.editor.control.MokapController;
-import es.eucm.ead.editor.control.Selection;
-import es.eucm.ead.editor.control.actions.editor.ChangeView;
 import es.eucm.ead.editor.control.actions.editor.OpenLastProject;
 import es.eucm.ead.editor.control.actions.editor.Save;
-import es.eucm.ead.editor.control.actions.model.EditScene;
-import es.eucm.ead.editor.model.Model.ModelListener;
-import es.eucm.ead.editor.model.Model.SelectionListener;
-import es.eucm.ead.editor.model.Q;
-import es.eucm.ead.editor.model.events.LoadEvent;
-import es.eucm.ead.editor.model.events.LoadEvent.Type;
-import es.eucm.ead.editor.model.events.SelectionEvent;
 import es.eucm.ead.editor.platform.Platform;
 import es.eucm.ead.editor.view.builders.home.HomeView;
-import es.eucm.ead.editor.view.builders.project.ProjectView;
-import es.eucm.ead.editor.view.builders.scene.SceneView;
 import es.eucm.ead.editor.view.widgets.WidgetBuilder;
-import es.eucm.ead.schema.editor.components.GameData;
 
 public class MokapApplicationListener extends EditorApplicationListener {
 
@@ -75,35 +61,6 @@ public class MokapApplicationListener extends EditorApplicationListener {
 	@Override
 	protected void initialize() {
 		super.initialize();
-		controller.getModel().addLoadListener(new ModelListener<LoadEvent>() {
-			@Override
-			public void modelChanged(LoadEvent event) {
-				if (event.getType() == Type.LOADED) {
-					controller.action(
-							EditScene.class,
-							Q.getComponent(controller.getModel().getGame(),
-									GameData.class).getInitialScene());
-					controller.action(ChangeView.class, ProjectView.class);
-				}
-			}
-		});
-
-		controller.getModel().addSelectionListener(new SelectionListener() {
-			@Override
-			public boolean listenToContext(String contextId) {
-				return true;
-			}
-
-			@Override
-			public void modelChanged(SelectionEvent event) {
-				if (event.getType() == SelectionEvent.Type.FOCUSED) {
-					if (Selection.EDITED_GROUP.equals(event.getContextId())) {
-						controller.action(ChangeView.class, SceneView.class);
-					}
-				}
-			}
-		});
-
 		controller.action(OpenLastProject.class, HomeView.class);
 		stage.setActionsRequestRendering(true);
 	}

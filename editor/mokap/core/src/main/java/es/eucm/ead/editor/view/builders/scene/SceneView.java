@@ -51,7 +51,6 @@ import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.scenes.scene2d.utils.Align;
 import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
-import com.badlogic.gdx.scenes.scene2d.utils.Drawable;
 import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable;
 import com.badlogic.gdx.utils.Array;
 import es.eucm.ead.editor.assets.EditorGameAssets;
@@ -62,7 +61,6 @@ import es.eucm.ead.editor.control.actions.editor.AddPaintedElement;
 import es.eucm.ead.editor.control.actions.editor.Copy;
 import es.eucm.ead.editor.control.actions.editor.Paste;
 import es.eucm.ead.editor.control.actions.editor.Redo;
-import es.eucm.ead.editor.control.actions.editor.Save;
 import es.eucm.ead.editor.control.actions.editor.ShowToast;
 import es.eucm.ead.editor.control.actions.editor.Undo;
 import es.eucm.ead.editor.control.actions.model.AddInteractiveZone;
@@ -167,14 +165,15 @@ public class SceneView implements ViewBuilder {
 	@Override
 	public Actor getView(Object... args) {
 		controller.getCommands().pushStack();
+		controller.action(EditScene.class, args[0]);
 		sceneEditor.prepare();
 		return view;
 	}
 
 	@Override
 	public void release(Controller controller) {
-		controller.action(Save.class);
 		controller.getCommands().popStack(false);
+		controller.action(SetSelection.class, null, Selection.RESOURCE);
 		sceneEditor.release();
 		view.invalidate();
 	}

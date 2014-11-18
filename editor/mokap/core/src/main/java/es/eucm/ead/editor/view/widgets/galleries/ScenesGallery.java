@@ -38,8 +38,10 @@ package es.eucm.ead.editor.view.widgets.galleries;
 
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import es.eucm.ead.editor.control.Controller;
+import es.eucm.ead.editor.control.actions.editor.ChangeView;
 import es.eucm.ead.editor.control.actions.model.scene.NewScene;
 import es.eucm.ead.editor.control.workers.LoadScenes;
+import es.eucm.ead.editor.view.builders.scene.SceneView;
 import es.eucm.ead.editor.view.widgets.WidgetBuilder;
 
 public class ScenesGallery extends ThumbnailsGallery {
@@ -56,5 +58,7 @@ public class ScenesGallery extends ThumbnailsGallery {
 
 	@Override
 	protected void prepareGalleryItem(Actor actor, String id) {
+		WidgetBuilder.actionOnClick(actor, ChangeView.class, SceneView.class,
+				id);
 	}
 }

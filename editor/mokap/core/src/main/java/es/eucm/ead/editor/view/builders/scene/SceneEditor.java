@@ -66,6 +66,7 @@ import es.eucm.ead.schema.components.ModelComponent;
 import es.eucm.ead.schema.editor.components.GameData;
 import es.eucm.ead.schema.entities.ModelEntity;
 import es.eucm.ead.schemax.FieldName;
+import es.eucm.ead.schemax.GameStructure;
 
 public class SceneEditor extends AbstractWidget {
 
@@ -130,8 +131,13 @@ public class SceneEditor extends AbstractWidget {
 			 * All the assets must be loaded, so all actors has their correct
 			 * width and height
 			 */
+			controller.getEditorGameAssets().load(GameStructure.GAME_FILE,
+					Object.class);
 			controller.getEditorGameAssets().finishLoading();
-			GameData gameData = Q.getComponent(model.getGame(), GameData.class);
+			GameData gameData = Q.getComponent(
+					(ModelEntity) controller.getEditorGameAssets().get(
+							GameStructure.GAME_FILE, Object.class),
+					GameData.class);
 
 			addListeners(scene.getGroup());
 
