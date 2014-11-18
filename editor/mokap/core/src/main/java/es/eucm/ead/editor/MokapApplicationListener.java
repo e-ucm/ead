@@ -65,9 +65,14 @@ public class MokapApplicationListener extends EditorApplicationListener {
 	}
 
 	@Override
+	public void create() {
+		Gdx.graphics.setContinuousRendering(false);
+		super.create();
+	}
+
+	@Override
 	protected void initialize() {
 		super.initialize();
-
 		controller.getModel().addLoadListener(new ModelListener<LoadEvent>() {
 			@Override
 			public void modelChanged(LoadEvent event) {
@@ -98,8 +103,6 @@ public class MokapApplicationListener extends EditorApplicationListener {
 		});
 
 		controller.action(OpenLastGame.class, HomeView.class);
-
-		Gdx.graphics.setContinuousRendering(false);
 	}
 
 	@Override
