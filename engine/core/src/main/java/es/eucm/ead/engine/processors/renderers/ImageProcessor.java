@@ -62,7 +62,7 @@ public class ImageProcessor extends RendererProcessor<Image> {
 					public void loaded(String fileName, Texture asset) {
 						imageComponent.setTexture(asset);
 					}
-				});
+				}, true);
 		createCollider(image, imageComponent);
 		return imageComponent;
 	}
