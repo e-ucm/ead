@@ -12,6 +12,20 @@
             },
             "description": "Id of the scene",
             "type": "string"
+        },
+        "duration": {
+            "type": "number",
+            "description": "the duration of the transition in seconds."
+        },
+        "transition": {
+		    "type": "string",
+		    "description": "The transition type.",
+		    "enum": ["none", "fadeIn", "fadeOut", "scaleDown", "scaleUp",
+        		"slideLeft", "slideRight", "slideUp", "slideDown", "slideRandom",
+        		"slideOverLeftIn", "slideOverRightIn", "slideOverUpIn", "slideOverDownIn", "slideOverRandomIn",
+        		"slideOverLeftOut", "slideOverRightOut", "slideOverUpOut", "slideOverDownOut", "slideOverRandomOut",
+        		"sliceHorizontal", "sliceVertical"],
+        	"default": "none"
         }
     },
     "type": "object"
