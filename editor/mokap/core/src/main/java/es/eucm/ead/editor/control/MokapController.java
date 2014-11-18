@@ -95,7 +95,6 @@ public class MokapController extends Controller {
 
 	private Group rootComponent;
 	private RepositoryManager repositoryManager;
-	private String mockupDpiPath;
 
 	public MokapController(Platform platform, Files files,
 			final Group rootComponent, final Group modalContainer) {
@@ -129,21 +128,8 @@ public class MokapController extends Controller {
 		getPreferences().flush();
 	}
 
-	public Group getRootComponent() {
-		return rootComponent;
-	}
-
 	public RepositoryManager getRepositoryManager() {
 		return repositoryManager;
-	}
-
-	/**
-	 * The path pointing to the Mockup folder, e.g. "skins/mockup-hdpi/"
-	 * 
-	 * @return
-	 */
-	public String getMockupDpiPath() {
-		return mockupDpiPath;
 	}
 
 	@Override
@@ -155,8 +141,8 @@ public class MokapController extends Controller {
 	@Override
 	protected ApplicationAssets createApplicationAssets(Files files) {
 		String dpi = Dpi.getDpi();
-		mockupDpiPath = "skins/mokap-" + dpi + "/";
-		return new ApplicationAssets(files, mockupDpiPath + "skin");
+		String skinPath = "skins/mokap-" + dpi + "/";
+		return new ApplicationAssets(files, skinPath + "skin");
 	}
 
 	@Override
@@ -167,12 +153,6 @@ public class MokapController extends Controller {
 	@Override
 	protected Views createViews(Group rootView, Group modalsView) {
 		return new MokapViews(this, rootView, modalsView);
-	}
-
-	@Override
-	public void exit() {
-		super.exit();
-		((MokapViews) views).dispose();
 	}
 
 	public static interface BackListener {
