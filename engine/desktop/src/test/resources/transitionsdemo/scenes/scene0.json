@@ -1,0 +1,13 @@
+{"class":"modelentity","children":[{"y":1,"originX":320,"originY":177.5,"components":[{"class":"image","uri":"images/element1.png"}, 
+			{
+                "class": "behavior",
+                "event": {
+                    "class": "touch"
+                },
+                "effects": [{
+                    "class": "goscene",
+                    "sceneId": "scenes/scene1.json",
+                    "transition": "slideOverRandomOut",
+                    "duration": "0.5"
+                }]
+            }]}]}
