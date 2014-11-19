@@ -38,6 +38,8 @@ package es.eucm.ead.editor.utils;
 
 import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.utils.Array;
+
+import es.eucm.ead.editor.model.Model;
 import es.eucm.ead.schemax.GameStructure;
 
 /**
@@ -67,12 +69,12 @@ public class ProjectUtils {
 		}
 	}
 
-	public static String newSceneId(FileHandle projectsPath) {
+	public static String newSceneId(Model model) {
 		int count = 0;
 		String id;
 		do {
 			id = GameStructure.SCENES_PATH + "scene" + count++ + ".json";
-		} while (projectsPath.child(id).exists());
+		} while (model.getResource(id) != null);
 		return id;
 	}
 }

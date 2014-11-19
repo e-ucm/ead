@@ -41,24 +41,12 @@ import es.eucm.ead.editor.control.workers.CreateProject;
 import es.eucm.ead.editor.control.workers.Worker.WorkerListener;
 
 /**
- * Open the project in the given path
- * <dl>
- * <dt><strong>Arguments</strong></dt>
- * <dd><strong>args[0]</strong> <em>{@link Class}</em> Class of the view to show
- * once the game is opened</dd>
- * </dl>
+ * Adds a project and opens it
  */
 public class AddProject extends EditorAction implements WorkerListener {
 
-	private Class view;
-
-	public AddProject() {
-		super(true, false, Class.class);
-	}
-
 	@Override
 	public void perform(Object... args) {
-		this.view = (Class) args[0];
 		controller.action(ExecuteWorker.class, CreateProject.class, this);
 	}
 
@@ -69,7 +57,7 @@ public class AddProject extends EditorAction implements WorkerListener {
 
 	@Override
 	public void result(Object... results) {
-		controller.action(OpenProject.class, results[0], view);
+		controller.action(OpenProject.class, results[0]);
 	}
 
 	@Override

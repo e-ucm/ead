@@ -56,7 +56,6 @@ import es.eucm.ead.editor.control.actions.editor.Redo;
 import es.eucm.ead.editor.control.actions.editor.ShowToast;
 import es.eucm.ead.editor.control.actions.editor.Undo;
 import es.eucm.ead.editor.control.actions.model.AddInteractiveZone;
-import es.eucm.ead.editor.control.actions.model.EditScene;
 import es.eucm.ead.editor.control.actions.model.GroupSelection;
 import es.eucm.ead.editor.control.actions.model.RemoveSelectionFromScene;
 import es.eucm.ead.editor.control.actions.model.SetSelection;
@@ -148,9 +147,6 @@ public class SceneView implements ViewBuilder, BackListener {
 
 	@Override
 	public Actor getView(Object... args) {
-		if (args.length == 1) {
-			controller.action(EditScene.class, args[0]);
-		}
 		projectNavigation.prepare();
 		sceneEditor.prepare();
 		view.hideNavigationRightAway();

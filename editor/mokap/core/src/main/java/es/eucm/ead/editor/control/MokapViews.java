@@ -41,14 +41,20 @@ import com.badlogic.gdx.scenes.scene2d.Group;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import es.eucm.ead.editor.control.MokapController.BackListener;
 import es.eucm.ead.editor.control.actions.editor.ChangeView;
+import es.eucm.ead.editor.model.Model.SelectionListener;
+import es.eucm.ead.editor.model.events.SelectionEvent;
+import es.eucm.ead.editor.model.events.SelectionEvent.Type;
 import es.eucm.ead.editor.view.builders.ViewBuilder;
 import es.eucm.ead.editor.view.builders.project.ProjectView;
+import es.eucm.ead.editor.view.builders.scene.SceneView;
 
 public class MokapViews extends Views implements BackListener {
 
 	public MokapViews(Controller controller, Group viewsCtr, Group modalsCtr) {
 		super(controller, viewsCtr, modalsCtr);
 		resendTouch = false;
+		controller.getModel()
+				.addSelectionListener(new ViewsSelectionListener());
 	}
 
 	@Override
@@ -72,6 +78,26 @@ public class MokapViews extends Views implements BackListener {
 		if (stage != null) {
 			stage.setKeyboardFocus(null);
 			stage.unfocusAll();
+		}
+	}
+
+	private class ViewsSelectionListener implements SelectionListener {
+
+		@Override
+		public boolean listenToContext(String contextId) {
+			return true;
+		}
+
+		@Override
+		public void modelChanged(SelectionEvent event) {
+			if (event.getType() == Type.FOCUSED) {
+				if (Selection.EDITED_GROUP.equals(event.getContextId())) {
+					controller.action(ChangeView.class, SceneView.class);
+				} else if (Selection.RESOURCE.equals(event.getContextId())) {
+					controller.action(ChangeView.class, ProjectView.class);
+				}
+			}
+
 		}
 	}
 }

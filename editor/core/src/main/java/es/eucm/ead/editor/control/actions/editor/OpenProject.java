@@ -49,24 +49,19 @@ import es.eucm.ead.schemax.entities.ResourceCategory;
  * <dl>
  * <dt><strong>Arguments</strong></dt>
  * <dd><strong>args[0]</strong> <em>{@link String}</em> Path of the project</dd>
- * <dd><strong>args[1]</strong> <em>{@link Class}</em> Class of the view to show
- * once the game is opened</dd>
  * </dl>
  */
 public class OpenProject extends EditorAction implements
 		AssetLoadedCallback<Object> {
 
-	private Class nextView;
-
 	public OpenProject() {
-		super(true, false, String.class, Class.class);
+		super(true, false, String.class);
 	}
 
 	@Override
 	public void perform(Object... args) {
 		controller.getEditorGameAssets().setLoadingPath((String) args[0]);
 		controller.getModel().reset();
-		nextView = (Class) args[1];
 		controller.getEditorGameAssets().get(GameStructure.GAME_FILE,
 				Object.class, this);
 	}
@@ -74,11 +69,10 @@ public class OpenProject extends EditorAction implements
 	@Override
 	public void loaded(String fileName, Object asset) {
 		controller.action(SetSelection.class, null, Selection.PROJECT, asset);
+		controller.action(SetSelection.class, Selection.PROJECT,
+				Selection.RESOURCE);
 		controller.getModel().putResource(GameStructure.GAME_FILE,
 				ResourceCategory.GAME, asset);
 		controller.action(LoadScenes.class);
-		if (nextView != null) {
-			controller.action(ChangeView.class, nextView);
-		}
 	}
 }

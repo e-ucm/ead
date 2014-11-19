@@ -82,13 +82,12 @@ public class ScenesGallery extends ThumbnailsGallery implements
 	@Override
 	protected void prepareAddButton(Actor actor) {
 		WidgetBuilder.actionOnClick(actor, AddScene.class);
-		WidgetBuilder.actionOnClick(actor, ChangeView.class, SceneView.class);
 	}
 
 	@Override
 	protected void prepareGalleryItem(Actor actor, String id) {
-		WidgetBuilder.actionOnClick(actor, ChangeView.class, SceneView.class,
-				id);
+		WidgetBuilder.actionOnClick(actor, SetSelectedScene.class, id,
+				controller.getModel().getResourceObject(id));
 	}
 
 	@Override

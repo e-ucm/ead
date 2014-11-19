@@ -37,11 +37,10 @@
 package es.eucm.ead.editor.view.builders.scene;
 
 import com.badlogic.gdx.Gdx;
-
 import es.eucm.ead.editor.control.Controller;
-import es.eucm.ead.editor.control.actions.editor.ChangeView;
+import es.eucm.ead.editor.control.Selection;
+import es.eucm.ead.editor.control.actions.model.SetSelection;
 import es.eucm.ead.editor.view.SkinConstants;
-import es.eucm.ead.editor.view.builders.project.ProjectView;
 import es.eucm.ead.editor.view.widgets.WidgetBuilder;
 import es.eucm.ead.editor.view.widgets.galleries.ScenesGallery;
 import es.eucm.ead.engine.I18N;
@@ -63,8 +62,8 @@ public class ProjectNavigation extends ScenesGallery {
 		super.clear();
 		gallery.add(
 				WidgetBuilder.button(SkinConstants.IC_HOME, i18N.m("project"),
-						SkinConstants.STYLE_CONTEXT, ChangeView.class,
-						ProjectView.class)).usePrefHeight();
+						SkinConstants.STYLE_CONTEXT, SetSelection.class,
+						Selection.PROJECT, Selection.RESOURCE)).usePrefHeight();
 		gallery.add(
 				WidgetBuilder.button(SkinConstants.IC_PLAY, i18N.m("test.all"),
 						SkinConstants.STYLE_CONTEXT)).usePrefHeight();
