@@ -350,9 +350,9 @@
                 <module>editor/schema</module>
                 <module>editor/core</module>
                 <module>editor/importer</module>
-                <!-- <module>editor/desktop</module> -->
+                <module>editor/desktop</module>
                 <module>editor/exporter</module>
-                <!-- mokcup -->
+                <!-- mokap -->
                 <module>editor/mokap/core</module>
                 <module>editor/mokap/android</module>
                 <module>editor/mokap/desktop</module>
