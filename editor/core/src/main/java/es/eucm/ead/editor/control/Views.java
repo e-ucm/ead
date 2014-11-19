@@ -53,6 +53,7 @@ import es.eucm.ead.editor.model.Model.ModelListener;
 import es.eucm.ead.editor.model.events.LoadEvent;
 import es.eucm.ead.editor.model.events.LoadEvent.Type;
 import es.eucm.ead.editor.view.Modal;
+import es.eucm.ead.editor.view.ModelView;
 import es.eucm.ead.editor.view.builders.Builder;
 import es.eucm.ead.editor.view.builders.DialogBuilder;
 import es.eucm.ead.editor.view.builders.ViewBuilder;
@@ -241,6 +242,12 @@ public class Views implements ModelListener<LoadEvent> {
 		if (currentView != null) {
 			Actor view = currentView.getView(args);
 			if (view != null) {
+				if (viewsContainer.getChildren().size == 1) {
+					releaseView(viewsContainer.getChildren().get(0));
+				}
+
+				prepareView(view);
+
 				viewsContainer.clearChildren();
 				viewsContainer.addActor(view);
 
@@ -353,6 +360,30 @@ public class Views implements ModelListener<LoadEvent> {
 	public void modelChanged(LoadEvent event) {
 		if (event.getType() == Type.UNLOADED) {
 			viewsHistory.clear();
+		}
+	}
+
+	private void releaseView(Actor view) {
+		if (view instanceof Group) {
+			for (Actor actor : ((Group) view).getChildren()) {
+				releaseView(actor);
+			}
+		}
+
+		if (view instanceof ModelView) {
+			((ModelView) view).release();
+		}
+	}
+
+	private void prepareView(Actor view) {
+		if (view instanceof ModelView) {
+			((ModelView) view).prepare();
+		}
+
+		if (view instanceof Group) {
+			for (Actor actor : ((Group) view).getChildren()) {
+				prepareView(actor);
+			}
 		}
 	}
 }
