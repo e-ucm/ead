@@ -38,9 +38,11 @@ package es.eucm.ead.editor.control.actions.editor;
 
 import es.eucm.ead.editor.control.Selection;
 import es.eucm.ead.editor.control.actions.EditorAction;
+import es.eucm.ead.editor.control.actions.editor.workers.LoadScenes;
 import es.eucm.ead.editor.control.actions.model.SetSelection;
 import es.eucm.ead.engine.assets.Assets.AssetLoadedCallback;
 import es.eucm.ead.schemax.GameStructure;
+import es.eucm.ead.schemax.entities.ResourceCategory;
 
 /**
  * Open the project in the given path
@@ -63,6 +65,7 @@ public class OpenProject extends EditorAction implements
 	@Override
 	public void perform(Object... args) {
 		controller.getEditorGameAssets().setLoadingPath((String) args[0]);
+		controller.getModel().reset();
 		nextView = (Class) args[1];
 		controller.getEditorGameAssets().get(GameStructure.GAME_FILE,
 				Object.class, this);
@@ -71,6 +74,9 @@ public class OpenProject extends EditorAction implements
 	@Override
 	public void loaded(String fileName, Object asset) {
 		controller.action(SetSelection.class, null, Selection.PROJECT, asset);
+		controller.getModel().putResource(GameStructure.GAME_FILE,
+				ResourceCategory.GAME, asset);
+		controller.action(LoadScenes.class);
 		if (nextView != null) {
 			controller.action(ChangeView.class, nextView);
 		}
