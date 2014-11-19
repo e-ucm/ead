@@ -37,19 +37,44 @@
 package es.eucm.ead.editor.view.widgets.galleries;
 
 import com.badlogic.gdx.scenes.scene2d.Actor;
-
 import es.eucm.ead.editor.control.Controller;
 import es.eucm.ead.editor.control.actions.editor.AddScene;
 import es.eucm.ead.editor.control.actions.editor.ChangeView;
-import es.eucm.ead.editor.control.workers.LoadScenes;
+import es.eucm.ead.editor.model.Model.ModelListener;
+import es.eucm.ead.editor.model.Model.Resource;
+import es.eucm.ead.editor.model.Q;
+import es.eucm.ead.editor.model.events.ResourceEvent;
 import es.eucm.ead.editor.view.builders.scene.SceneView;
 import es.eucm.ead.editor.view.widgets.WidgetBuilder;
+import es.eucm.ead.schema.editor.components.Thumbnail;
+import es.eucm.ead.schema.entities.ModelEntity;
+import es.eucm.ead.schemax.entities.ResourceCategory;
 
-public class ScenesGallery extends ThumbnailsGallery {
+import java.util.Map.Entry;
+
+public class ScenesGallery extends ThumbnailsGallery implements
+		ModelListener<ResourceEvent> {
+
+	private Controller controller;
 
 	public ScenesGallery(float rowHeight, int columns, Controller controller) {
-		super(rowHeight, columns, controller, LoadScenes.class, controller
-				.getEditorGameAssets());
+		super(rowHeight, columns, controller.getEditorGameAssets(), controller
+				.getApplicationAssets().getSkin(), controller
+				.getApplicationAssets().getI18N());
+		this.controller = controller;
+	}
+
+	public void prepare() {
+		clear();
+		controller.getModel().addResourceListener(this);
+		for (Entry<String, Resource> entry : controller.getModel()
+				.getResources(ResourceCategory.SCENE).entrySet()) {
+			addScene(entry.getKey(), (ModelEntity) entry.getValue().getObject());
+		}
+	}
+
+	public void release() {
+		controller.getModel().removeResourceListener(this);
 	}
 
 	@Override
@@ -62,5 +87,31 @@ public class ScenesGallery extends ThumbnailsGallery {
 	protected void prepareGalleryItem(Actor actor, String id) {
 		WidgetBuilder.actionOnClick(actor, ChangeView.class, SceneView.class,
 				id);
+	}
+
+	@Override
+	public void modelChanged(ResourceEvent event) {
+		if (event.getCategory() == ResourceCategory.SCENE) {
+			switch (event.getType()) {
+			case ADDED:
+				addScene(event.getId(), (ModelEntity) event.getResource());
+				break;
+			case REMOVED:
+				removeScene(event.getId());
+				break;
+			}
+		}
+	}
+
+	private void addScene(String id, ModelEntity scene) {
+		addTile(id, Q.getName(scene, ""), Q
+				.getComponent(scene, Thumbnail.class).getPath());
+	}
+
+	private void removeScene(String id) {
+		Actor tile = findActor(id);
+		if (tile != null) {
+			tile.remove();
+		}
 	}
 }

@@ -40,16 +40,27 @@ import com.badlogic.gdx.scenes.scene2d.Actor;
 
 import es.eucm.ead.editor.control.Controller;
 import es.eucm.ead.editor.control.actions.editor.AddProject;
+import es.eucm.ead.editor.control.actions.editor.ExecuteWorker;
 import es.eucm.ead.editor.control.actions.editor.OpenProject;
 import es.eucm.ead.editor.control.workers.LoadProjects;
+import es.eucm.ead.editor.control.workers.Worker.WorkerListener;
 import es.eucm.ead.editor.view.builders.project.ProjectView;
 import es.eucm.ead.editor.view.widgets.WidgetBuilder;
 
-public class ProjectsGallery extends ThumbnailsGallery {
+public class ProjectsGallery extends ThumbnailsGallery implements
+		WorkerListener {
+
+	private Controller controller;
 
 	public ProjectsGallery(float rowHeight, int columns, Controller controller) {
-		super(rowHeight, columns, controller, LoadProjects.class, controller
-				.getApplicationAssets());
+		super(rowHeight, columns, controller.getApplicationAssets(), controller
+				.getApplicationAssets().getSkin(), controller
+				.getApplicationAssets().getI18N());
+		this.controller = controller;
+	}
+
+	public void prepare() {
+		controller.action(ExecuteWorker.class, LoadProjects.class, this);
 	}
 
 	@Override
@@ -61,5 +72,30 @@ public class ProjectsGallery extends ThumbnailsGallery {
 	protected void prepareGalleryItem(Actor actor, String id) {
 		WidgetBuilder.actionOnClick(actor, OpenProject.class, id,
 				ProjectView.class);
+	}
+
+	@Override
+	public void start() {
+		clear();
+	}
+
+	@Override
+	public void result(Object... results) {
+		addTile((String) results[0], (String) results[1], (String) results[2]);
+	}
+
+	@Override
+	public void done() {
+
+	}
+
+	@Override
+	public void error(Throwable ex) {
+
+	}
+
+	@Override
+	public void cancelled() {
+
 	}
 }

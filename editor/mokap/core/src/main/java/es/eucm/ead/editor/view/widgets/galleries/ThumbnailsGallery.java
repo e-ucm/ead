@@ -40,19 +40,17 @@ import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.ui.Button;
 import com.badlogic.gdx.scenes.scene2d.ui.Image;
+import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.utils.ObjectMap;
 import com.badlogic.gdx.utils.Scaling;
 
-import es.eucm.ead.editor.control.Controller;
-import es.eucm.ead.editor.control.actions.editor.ExecuteWorker;
-import es.eucm.ead.editor.control.workers.Worker;
-import es.eucm.ead.editor.control.workers.Worker.WorkerListener;
 import es.eucm.ead.editor.view.SkinConstants;
 import es.eucm.ead.editor.view.drawables.TextureDrawable;
 import es.eucm.ead.editor.view.widgets.AbstractWidget;
 import es.eucm.ead.editor.view.widgets.Tile;
 import es.eucm.ead.editor.view.widgets.WidgetBuilder;
 import es.eucm.ead.editor.view.widgets.layouts.Gallery;
+import es.eucm.ead.engine.I18N;
 import es.eucm.ead.engine.assets.Assets;
 import es.eucm.ead.engine.assets.Assets.AssetLoadedCallback;
 
@@ -60,13 +58,13 @@ import es.eucm.ead.engine.assets.Assets.AssetLoadedCallback;
  * Created by angel on 18/11/14.
  */
 public abstract class ThumbnailsGallery extends AbstractWidget implements
-		WorkerListener, AssetLoadedCallback<Texture> {
-
-	private Controller controller;
+		AssetLoadedCallback<Texture> {
 
 	private Assets assets;
 
-	private Class<? extends Worker> workerClass;
+	private Skin skin;
+
+	private I18N i18N;
 
 	private ObjectMap<String, TextureDrawable> pendingTextures = new ObjectMap<String, TextureDrawable>();
 
@@ -74,29 +72,18 @@ public abstract class ThumbnailsGallery extends AbstractWidget implements
 
 	private Button add;
 
-	/**
-	 * @param workerClass
-	 *            a worker that runs in the UI thread and give as results an id
-	 *            {@link String}, a title {@link String}, a thumbnail path
-	 *            {@link String}
-	 */
-	public ThumbnailsGallery(float rowHeight, int columns,
-			Controller controller, Class<? extends Worker> workerClass,
-			Assets assets) {
+	public ThumbnailsGallery(float rowHeight, int columns, Assets assets,
+			Skin skin, I18N i18N) {
 		addActor(gallery = new Gallery(rowHeight, columns));
 		addActor(add = WidgetBuilder.button(SkinConstants.STYLE_ADD));
 		prepareAddButton(add);
-		this.controller = controller;
-		this.workerClass = workerClass;
 		this.assets = assets;
-	}
-
-	public void prepare() {
-		controller.action(ExecuteWorker.class, workerClass, this);
+		this.skin = skin;
+		this.i18N = i18N;
 	}
 
 	@Override
-	public void start() {
+	public void clear() {
 		gallery.clearChildren();
 		pendingTextures.clear();
 	}
@@ -109,16 +96,10 @@ public abstract class ThumbnailsGallery extends AbstractWidget implements
 				WidgetBuilder.dpToPixels(32), width, getPrefHeight(add));
 	}
 
-	@Override
-	public void result(Object... results) {
-		String id = (String) results[0];
-		String title = (String) results[1];
-		String thumbnailPath = (String) results[2];
-
+	public void addTile(String id, String title, String thumbnailPath) {
 		Image image;
 		if (thumbnailPath == null) {
-			image = new Image(controller.getApplicationAssets().getSkin(),
-					SkinConstants.DRAWABLE_LOGO);
+			image = new Image(skin, SkinConstants.DRAWABLE_LOGO);
 			image.setScaling(Scaling.fit);
 		} else {
 			TextureDrawable thumbnail = new TextureDrawable();
@@ -126,9 +107,7 @@ public abstract class ThumbnailsGallery extends AbstractWidget implements
 			pendingTextures.put(thumbnailPath, thumbnail);
 			assets.get(thumbnailPath, Texture.class, this);
 		}
-		title = title == null || "".equals(results[1]) ? controller
-				.getApplicationAssets().getI18N().m("untitled")
-				: (String) results[1];
+		title = title == null || "".equals(title) ? i18N.m("untitled") : title;
 		Tile tile = WidgetBuilder.tile(image, title);
 		prepareGalleryItem(tile, id);
 		gallery.add(tile);
@@ -137,18 +116,6 @@ public abstract class ThumbnailsGallery extends AbstractWidget implements
 	protected abstract void prepareAddButton(Actor actor);
 
 	protected abstract void prepareGalleryItem(Actor actor, String id);
-
-	@Override
-	public void done() {
-	}
-
-	@Override
-	public void error(Throwable ex) {
-	}
-
-	@Override
-	public void cancelled() {
-	}
 
 	@Override
 	public void loaded(String fileName, Texture asset) {

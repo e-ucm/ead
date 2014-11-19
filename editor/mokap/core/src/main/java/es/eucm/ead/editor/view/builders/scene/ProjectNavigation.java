@@ -59,8 +59,8 @@ public class ProjectNavigation extends ScenesGallery {
 	}
 
 	@Override
-	public void start() {
-		super.start();
+	public void clear() {
+		super.clear();
 		gallery.add(
 				WidgetBuilder.button(SkinConstants.IC_HOME, i18N.m("project"),
 						SkinConstants.STYLE_CONTEXT, ChangeView.class,
