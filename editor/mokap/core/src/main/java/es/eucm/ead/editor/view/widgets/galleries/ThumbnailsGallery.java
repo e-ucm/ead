@@ -106,9 +106,11 @@ public abstract class ThumbnailsGallery extends AbstractWidget implements
 			image = new Image(thumbnail);
 			pendingTextures.put(thumbnailPath, thumbnail);
 			assets.get(thumbnailPath, Texture.class, this);
+            image.setName(thumbnailPath);
 		}
 		title = title == null || "".equals(title) ? i18N.m("untitled") : title;
 		Tile tile = WidgetBuilder.tile(image, title);
+		tile.setName(id);
 		prepareGalleryItem(tile, id);
 		gallery.add(tile);
 	}

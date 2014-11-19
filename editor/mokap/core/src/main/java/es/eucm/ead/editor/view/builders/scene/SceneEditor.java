@@ -36,19 +36,25 @@
  */
 package es.eucm.ead.editor.view.builders.scene;
 
+import es.eucm.ead.editor.control.Commands;
+import es.eucm.ead.editor.control.Commands.CommandListener;
+import es.eucm.ead.editor.control.Commands.CommandsStack;
 import es.eucm.ead.editor.control.Controller;
 import es.eucm.ead.editor.control.Selection;
 import es.eucm.ead.editor.control.Selection.Context;
+import es.eucm.ead.editor.control.commands.Command;
 import es.eucm.ead.editor.model.Model.SelectionListener;
+import es.eucm.ead.editor.model.Q;
 import es.eucm.ead.editor.model.events.SelectionEvent;
 import es.eucm.ead.editor.view.ModelView;
 import es.eucm.ead.editor.view.builders.scene.draw.BrushStrokes;
 import es.eucm.ead.editor.view.widgets.AbstractWidget;
 import es.eucm.ead.editor.view.widgets.MultiWidget;
 import es.eucm.ead.editor.view.widgets.baseview.BaseView;
+import es.eucm.ead.schema.entities.ModelEntity;
 
 public class SceneEditor extends BaseView implements ModelView,
-		SelectionListener {
+		SelectionListener, CommandListener {
 
 	public static final int INSERT = 0, TRANSFORM = 1, PAINT = 2, FX = 3,
 			INTERACTION = 4;
@@ -90,12 +96,15 @@ public class SceneEditor extends BaseView implements ModelView,
 
 	@Override
 	public void prepare() {
+        setMode(mode);
 		controller.getModel().addSelectionListener(this);
+        controller.getCommands().addCommandListener(this);
 	}
 
 	@Override
 	public void release() {
 		controller.getModel().removeSelectionListener(this);
+        controller.getCommands().removeCommandListener(this);
 	}
 
 	@Override
@@ -131,6 +140,42 @@ public class SceneEditor extends BaseView implements ModelView,
 			toolbar.setSelectedWidget(FX);
 			break;
 		}
+	}
+
+	@Override
+	public void doCommand(Commands commands, Command command) {
+		ModelEntity scene = (ModelEntity) controller.getModel().getSelection()
+				.getSingle(Selection.SCENE);
+		if (scene != null) {
+            Q.getThumbnail(controller, scene);
+            String resource = controller.getModel().getIdFor(scene);
+            controller.getEditorGameAssets().save(resource, scene);
+		}
+	}
+
+	@Override
+	public void undoCommand(Commands commands, Command command) {
+	}
+
+	@Override
+	public void redoCommand(Commands commands, Command command) {
+	}
+
+	@Override
+	public void savePointUpdated(Commands commands, Command savePoint) {
+	}
+
+	@Override
+	public void cleared(Commands commands) {
+	}
+
+	@Override
+	public void contextPushed(Commands commands) {
+	}
+
+	@Override
+	public void contextPopped(Commands commands, CommandsStack poppedContext,
+			boolean merge) {
 	}
 
 }

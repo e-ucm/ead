@@ -43,9 +43,7 @@ import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.Scaling;
 import com.badlogic.gdx.utils.reflect.ClassReflection;
 import com.badlogic.gdx.utils.reflect.ReflectionException;
-
 import es.eucm.ead.editor.control.Controller;
-import es.eucm.ead.editor.control.actions.editor.CreateSceneThumbnailIfNeeded;
 import es.eucm.ead.editor.control.actions.editor.CreateThumbnail;
 import es.eucm.ead.engine.entities.EngineEntity;
 import es.eucm.ead.schema.components.ModelComponent;
@@ -281,7 +279,7 @@ public class Q {
 	 */
 	public static Thumbnail getThumbnail(Controller controller, Object... args) {
 
-		controller.action(CreateSceneThumbnailIfNeeded.class, args);
+		controller.action(CreateThumbnail.class, args);
 
 		return getComponent((ModelEntity) args[0], Thumbnail.class);
 	}
