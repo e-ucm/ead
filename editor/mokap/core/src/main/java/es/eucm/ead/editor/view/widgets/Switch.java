@@ -38,10 +38,10 @@ package es.eucm.ead.editor.view.widgets;
 
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.g2d.Batch;
+import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.InputListener;
 import com.badlogic.gdx.scenes.scene2d.ui.Container;
-import com.badlogic.gdx.scenes.scene2d.ui.Image;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.utils.Align;
 import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener.ChangeEvent;
@@ -53,13 +53,13 @@ import com.badlogic.gdx.utils.Pools;
  * image contained or drag it to the opposite side.
  * 
  */
-public class Switch extends Container<Image> {
+public class Switch extends Container<Actor> {
 
 	private SwitchStyle style;
 
-	private Image onImage;
+	private IconButton onImage;
 
-	private Image offImage;
+	private IconButton offImage;
 
 	private float offsetX;
 
@@ -68,6 +68,10 @@ public class Switch extends Container<Image> {
 	private Drawable background;
 
 	private boolean stateOn;
+
+	private Color circleColor;
+
+	private Color barColor;
 
 	public Switch(Skin skin, String imageOn, String imageOff) {
 		this(skin, skin.get(SwitchStyle.class), imageOn, imageOff);
@@ -86,10 +90,12 @@ public class Switch extends Container<Image> {
 
 		background = switchStyle.backgroundOff;
 
-		onImage = new Image(skin.getDrawable(imageOn));
+		onImage = new IconButton(imageOn, skin, switchStyle.iconStyle);
+		onImage.pack();
 
-		offImage = new Image(skin.getDrawable(imageOff));
-		offImage.setColor(Color.GRAY);
+		offImage = new IconButton(imageOff, skin, switchStyle.iconStyle);
+		offImage.setDisabled(true);
+		offImage.pack();
 
 		align(Align.left);
 
@@ -115,22 +121,24 @@ public class Switch extends Container<Image> {
 					offsetX = getWidth() - current.getMinWidth();
 				}
 
-				if (current != style.off
-						&& offsetX < getWidth() / 2 - current.getMinWidth() / 2) {
+				if (offsetX < (getWidth() - current.getMinWidth()) / 2) {
 					current = style.off;
 					background = style.backgroundOff;
-				} else if (current != style.on
-						&& offsetX > getWidth() / 2 - current.getMinWidth() / 2) {
+					barColor = style.barColorOff;
+					circleColor = style.circleColorOff;
+				} else if (offsetX > (getWidth() - current.getMinWidth()) / 2) {
 					current = style.on;
 					background = style.backgroundOn;
+					barColor = style.barColorOn;
+					circleColor = style.circleColorOn;
 				}
 			}
 
 			@Override
 			public void touchUp(InputEvent event, float x, float y,
 					int pointer, int button) {
-				setStateOn((current == style.on && getActor() == null)
-						|| (current == style.off && getActor() != null));
+				setStateOn((offsetX > (getWidth() - current.getMinWidth()) / 2 && getActor() == null)
+						|| (offsetX < (getWidth() - current.getMinWidth()) / 2 && getActor() != null));
 			}
 		});
 	}
@@ -143,12 +151,17 @@ public class Switch extends Container<Image> {
 					- (current.getMinWidth() - offImage.getWidth()) / 2);
 			current = style.on;
 			background = style.backgroundOn;
+			barColor = style.barColorOn;
+			circleColor = style.circleColorOn;
+
 		} else if (!isOn) {
 			offsetX = 0;
 			setActor(offImage);
 			padLeft((current.getMinWidth() - offImage.getWidth()) / 2);
 			current = style.off;
 			background = style.backgroundOff;
+			barColor = style.barColorOff;
+			circleColor = style.circleColorOff;
 		}
 
 		if (stateOn != isOn) {
@@ -166,9 +179,10 @@ public class Switch extends Container<Image> {
 	@Override
 	protected void drawBackground(Batch batch, float parentAlpha, float x,
 			float y) {
+		batch.setColor(barColor != null ? barColor : Color.WHITE);
 		background.draw(batch, x, y + (getHeight() - background.getMinHeight())
 				/ 2, background.getMinWidth(), background.getMinHeight());
-		batch.setColor(Color.WHITE);
+		batch.setColor(circleColor != null ? circleColor : Color.WHITE);
 		current.draw(batch, x + offsetX,
 				y + (getHeight() - current.getMinHeight()) / 2,
 				current.getMinWidth(), current.getMinHeight());
@@ -196,6 +210,28 @@ public class Switch extends Container<Image> {
 		public Drawable on;
 
 		public Drawable off;
+
+		public String iconStyle;
+
+		/**
+		 * Optional
+		 */
+		public Color circleColorOn;
+
+		/**
+		 * Optional
+		 */
+		public Color circleColorOff;
+
+		/**
+		 * Optional
+		 */
+		public Color barColorOn;
+
+		/**
+		 * Optional
+		 */
+		public Color barColorOff;
 
 	}
 }

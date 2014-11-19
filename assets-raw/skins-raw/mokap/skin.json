@@ -59,6 +59,12 @@
             "b": 0.1372,
             "a": 1
         },
+        "light_brown_moka": {
+            "r": 0.7176,
+            "g": 0.3529,
+            "b": 0.2392,
+            "a": 1
+        },
         "light_blue": {
             "r": 0.011764706,
             "g": 0.6627451,
@@ -173,7 +179,12 @@
     "es.eucm.ead.editor.view.widgets.IconButton$IconButtonStyle": {
         "default": {
             "disabledImageColor": "gray",
-            "enabledImageColor": "black"
+            "enabledImageColor": "black",
+        },
+        "switch": {
+            "disabledImageColor": "white",
+            "enabledImageColor": "brown_moka",
+            "up": "transparent_48_bg",
         },
         "toolbar": {
             "disabledImageColor": "gray",
@@ -250,10 +261,15 @@
     },
     "es.eucm.ead.editor.view.widgets.Switch$SwitchStyle": {
         "default": {
-            "backgroundOn": "switch_bar_on",
-            "backgroundOff": "switch_bar_off",
-            "on": "switch_on",
-            "off": "switch_off"
+            "backgroundOn": "switch_bar",
+            "backgroundOff": "switch_bar",
+            "on": "switch_circle",
+            "off": "switch_circle",
+			"iconStyle": "switch",		
+			"circleColorOn": "white",		
+			"circleColorOff": "brown_moka",
+			"barColorOn": "light_brown_moka",		
+			"barColorOff": "dark_brown_moka"
         }
     },
     "es.eucm.ead.editor.view.builders.scene.groupeditor.GroupEditor$GroupEditorStyle": {
