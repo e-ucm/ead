@@ -88,7 +88,6 @@ public class ProjectView implements ViewBuilder, BackListener {
 
 	@Override
 	public void release(Controller controller) {
-		controller.getWorkerExecutor().cancellAll();
 	}
 
 	private Actor buildToolbar(Skin skin, I18N i18N) {

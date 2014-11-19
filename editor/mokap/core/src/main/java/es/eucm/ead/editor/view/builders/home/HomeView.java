@@ -60,6 +60,7 @@ public class HomeView implements ViewBuilder, BackListener {
 
 	@Override
 	public Actor getView(Object... args) {
+		controller.getWorkerExecutor().cancellAll();
 		controller.getPreferences().putString(Preferences.LAST_OPENED_GAME, "");
 		controller.getEditorGameAssets().clear();
 		view.prepare();
