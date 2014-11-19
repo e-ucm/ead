@@ -1,17 +1,13 @@
 {
     "additionalProperties": false,
     "javaType": "es.eucm.ead.schema.editor.components.repo.RepoLibrary",
-    "extends": {
-        "$ref": "../../../engine/components/component.json"
-    },
     "properties": {
-        "path": {
-            "type": "string",
-            "description": "Relative path of the zip file in the server that contains the library"
+        "id":{
+          "type": "string",
+          "description": "A unique id for the library. Elements belonging to the library will use the id to refer to it"
         },
         "thumbnail": {
-            "type": "string",
-            "description": "Relative url where the thumbnail for this resource library is placed"
+            "$ref": "repothumbnail.json"
         },
         "author": {
             "$ref":"repoauthor.json",
@@ -20,9 +16,13 @@
         "licenses": {
             "type": "array",
             "items": {
-                "$ref": "repolicense.json",
+                "$ref": "licenses/repolicense.json",
                 "description": "Information associated to the licenses of the resources contained in the library"
             }
+        },
+        "version":{
+            "type": "string",
+            "description": "An integer value that determines the version, generated from date: YYYYMMDDHH (e.g. 2014092713)"
         },
         "numberOfElements":{
             "type": "number",

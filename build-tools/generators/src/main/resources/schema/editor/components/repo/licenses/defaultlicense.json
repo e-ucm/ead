@@ -1,0 +1,15 @@
+{
+    "additionalProperties": false,
+    "extends": {
+        "$ref": "repolicense.json"
+    },
+    "javaType": "es.eucm.ead.schema.editor.components.repo.licenses.DefaultLicenses",
+    "type": "object",
+    "properties":{
+        "license":{
+            "type": "string",
+            "description": "Common creative commons and public domain licenses.",
+            "enum": ["public-domain", "cc-by", "cc-by-nd", "cc-by-sa", "cc-by-nc", "cc-by-nd-nc", "cc-by-sa-nc", "link-author", "learning-only", "undefined"]
+        }
+    }
+}
