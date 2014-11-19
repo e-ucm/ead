@@ -36,62 +36,28 @@
  */
 package es.eucm.ead.editor.control.actions.editor;
 
-import es.eucm.ead.editor.control.actions.EditorAction;
+import es.eucm.ead.editor.control.actions.ModelAction;
 import es.eucm.ead.editor.control.actions.model.scene.SetSelectedScene;
-import es.eucm.ead.editor.control.workers.Worker;
-import es.eucm.ead.editor.control.workers.Worker.WorkerListener;
+import es.eucm.ead.editor.control.commands.Command;
+import es.eucm.ead.editor.control.commands.ResourceCommand.AddResourceCommand;
+import es.eucm.ead.editor.model.Q;
 import es.eucm.ead.editor.utils.ProjectUtils;
 import es.eucm.ead.schema.entities.ModelEntity;
+import es.eucm.ead.schemax.entities.ResourceCategory;
 
 /**
- * Addas an empty scene to the project
+ * Adds an empty scene to the project
  */
-public class AddScene extends EditorAction implements WorkerListener {
+public class AddScene extends ModelAction {
 
 	@Override
-	public void perform(Object... args) {
-		controller.action(ExecuteWorker.class, AddSceneWorker.class, this);
-	}
+	public Command perform(Object... args) {
+		ModelEntity scene = Q.createScene();
+		String sceneId = ProjectUtils.newSceneId(controller.getModel());
 
-	@Override
-	public void start() {
-	}
+		controller.action(SetSelectedScene.class, sceneId, scene);
 
-	@Override
-	public void result(Object... results) {
-		controller.action(SetSelectedScene.class, results);
-	}
-
-	@Override
-	public void done() {
-	}
-
-	@Override
-	public void error(Throwable ex) {
-	}
-
-	@Override
-	public void cancelled() {
-	}
-
-	public static class AddSceneWorker extends Worker {
-
-		public AddSceneWorker() {
-			super(true, false);
-		}
-
-		@Override
-		protected void prepare() {
-		}
-
-		@Override
-		protected boolean step() {
-			ModelEntity scene = new ModelEntity();
-			String sceneId = ProjectUtils.newSceneId(controller
-					.getEditorGameAssets().projectFileHandle());
-			controller.getEditorGameAssets().save(sceneId, scene);
-			result(sceneId, scene);
-			return true;
-		}
+		return new AddResourceCommand(controller.getModel(), sceneId, scene,
+				ResourceCategory.SCENE);
 	}
 }

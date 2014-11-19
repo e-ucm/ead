@@ -49,6 +49,7 @@ import es.eucm.ead.editor.control.actions.editor.CreateSceneThumbnailIfNeeded;
 import es.eucm.ead.editor.control.actions.editor.CreateThumbnail;
 import es.eucm.ead.engine.entities.EngineEntity;
 import es.eucm.ead.schema.components.ModelComponent;
+import es.eucm.ead.schema.editor.components.Date;
 import es.eucm.ead.schema.editor.components.Documentation;
 import es.eucm.ead.schema.editor.components.GameData;
 import es.eucm.ead.schema.editor.components.Parent;
@@ -307,5 +308,15 @@ public class Q {
 		entity.getComponents().addAll(components);
 
 		return entity;
+	}
+
+	/**
+	 * Create an scene with the current date
+	 */
+	public static ModelEntity createScene() {
+		ModelEntity scene = new ModelEntity();
+		Q.getComponent(scene, Date.class).setDate(
+				System.currentTimeMillis() + "");
+		return scene;
 	}
 }
