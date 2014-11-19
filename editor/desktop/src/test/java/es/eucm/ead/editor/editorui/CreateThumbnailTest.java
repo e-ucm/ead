@@ -87,8 +87,7 @@ public class CreateThumbnailTest extends EditorUITest {
 		child.getComponents().add(image);
 		scene.getChildren().add(child);
 		controller.getModel().putResource(id, ResourceCategory.SCENE, scene);
-		return Q.getThumbnail(controller, scene, 250, 250, scaling)
-				.getPath();
+		return Q.getThumbnail(controller, scene, 250, 250, scaling).getPath();
 	}
 
 	@Override

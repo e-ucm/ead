@@ -208,6 +208,6 @@ public class DesktopPlatform extends AbstractPlatform implements
 	@Override
 	public void getMultilineTextInput(TextInputListener listener, String title,
 			String text, I18N i18n) {
-		
+
 	}
 }
