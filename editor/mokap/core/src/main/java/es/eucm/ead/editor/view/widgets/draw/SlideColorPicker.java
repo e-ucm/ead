@@ -268,14 +268,12 @@ public class SlideColorPicker extends AbstractWidget {
 		if (huePixmap != null) {
 			int width = brightnessPixmap.getWidth();
 
-			float[] hsb = RGBtoHSB(MathUtils.round(color.r * 255f),
-					MathUtils.round(color.g * 255f),
-					MathUtils.round(color.b * 255f), tempValues);
-			float h = hsb[0];
-			float s = hsb[1];
-			float b = hsb[2];
+			float h = getValue(hueSlider);
+			float s = getValue(saturationSlider);
+			float b = getValue(brightnessSlider);
 
 			for (int i = 0; i < width; i++) {
+
 				float percentageCompletion = i / (float) width;
 
 				if (slider != hueSlider) {
@@ -324,8 +322,8 @@ public class SlideColorPicker extends AbstractWidget {
 	}
 
 	private float getValue(Slider slider) {
-		return MathUtils.clamp(slider.getValue() / slider.getMaxValue(), .05f,
-				1f);
+		return MathUtils
+				.clamp(slider.getValue() / slider.getMaxValue(), 0f, 1f);
 	}
 
 	private void setValue(Slider slider, float value) {
