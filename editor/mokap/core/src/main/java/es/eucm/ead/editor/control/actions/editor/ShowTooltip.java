@@ -36,6 +36,7 @@
  */
 package es.eucm.ead.editor.control.actions.editor;
 
+import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.math.Interpolation;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.scenes.scene2d.Actor;
@@ -100,9 +101,22 @@ public class ShowTooltip extends EditorAction {
 		position.set(0, 0);
 		actor.localToStageCoordinates(position);
 
-		tooltip.setPosition(position.x
-				+ (actor.getWidth() - tooltip.getWidth()) / 2, position.y
-				- tooltip.getHeight());
+		float positionX = position.x + (actor.getWidth() - tooltip.getWidth())
+				/ 2;
+		if (positionX < 0) {
+			positionX = 0;
+		} else if (positionX > Gdx.graphics.getWidth() - tooltip.getWidth()) {
+			positionX = Gdx.graphics.getWidth() - tooltip.getWidth();
+		}
+
+		float positionY = position.y - tooltip.getHeight();
+		if (positionY < 0) {
+			positionY = 0;
+		} else if (positionY > Gdx.graphics.getHeight() - tooltip.getHeight()) {
+			positionY = Gdx.graphics.getHeight() - tooltip.getHeight();
+		}
+
+		tooltip.setPosition(positionX, positionY);
 		tooltip.clearActions();
 		tooltip.addAction(Actions.sequence(Actions.alpha(0.0f),
 				Actions.alpha(1.0f, TOOLTIP_TIME, Interpolation.exp5Out),
