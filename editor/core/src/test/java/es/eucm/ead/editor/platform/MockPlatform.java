@@ -36,18 +36,20 @@
  */
 package es.eucm.ead.editor.platform;
 
+import java.io.File;
+import java.io.IOException;
+import java.io.InputStream;
+
 import com.badlogic.gdx.Input.TextInputListener;
+import com.badlogic.gdx.Net.HttpRequest;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.utils.Array;
+import com.badlogic.gdx.utils.ObjectMap;
 
 import es.eucm.ead.editor.control.Controller;
 import es.eucm.ead.editor.control.Tracker;
 import es.eucm.ead.engine.I18N;
 import es.eucm.ead.schema.data.Dimension;
-
-import java.io.File;
-import java.io.IOException;
-import java.io.InputStream;
 
 public class MockPlatform extends AbstractPlatform {
 
@@ -59,10 +61,13 @@ public class MockPlatform extends AbstractPlatform {
 
 	private Array<String> pathsStack;
 
+	private ObjectMap<String, Object> httpResponses;
+
 	public MockPlatform() {
 		size = new Vector2();
 		tempFiles = new Array<File>();
 		pathsStack = new Array<String>();
+		httpResponses = new ObjectMap<String, Object>();
 	}
 
 	public void setDefaultProjectsFolder(String defaultProjectsFolder) {
@@ -169,5 +174,16 @@ public class MockPlatform extends AbstractPlatform {
 	@Override
 	public void getMultilineTextInput(TextInputListener listener, String title,
 			String text, I18N i18n) {
+	}
+
+	@Override
+	public <T> T sendHttpRequest(HttpRequest httpRequest, Class<T> type)
+			throws IOException {
+
+		return (T) httpResponses.get(httpRequest.getUrl());
+	}
+
+	public void putHttpResponse(String URL, Object object) {
+		httpResponses.put(URL, object);
 	}
 }
