@@ -356,6 +356,8 @@
                 <module>editor/mokap/core</module>
                 <module>editor/mokap/android</module>
                 <module>editor/mokap/desktop</module>
+                <!-- repo -->
+                <module>repo-builder</module>
             </modules>
         </profile>
         <profile>
