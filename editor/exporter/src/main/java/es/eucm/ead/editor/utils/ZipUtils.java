@@ -117,18 +117,21 @@ public class ZipUtils {
 				FileHandle newFile = outputFolder.child(fileName);
 				if (ze.isDirectory()) {
 					newFile.mkdirs();
-				}
+				} else {
 
-				fos = newFile.write(false);
+					fos = newFile.write(false);
 
-				int len;
-				while ((len = zis.read(buffer)) > 0) {
-					fos.write(buffer, 0, len);
+					int len;
+					while ((len = zis.read(buffer)) > 0) {
+						fos.write(buffer, 0, len);
+					}
 				}
 
 				zis.closeEntry();
-				fos.flush();
-				fos.close();
+				if (fos != null) {
+					fos.flush();
+					fos.close();
+				}
 				fos = null;
 				ze = zis.getNextEntry();
 			}
@@ -167,8 +170,13 @@ public class ZipUtils {
 	 */
 	public static void mergeZipsAndDirsToFile(FileHandle destinyFile,
 			FileHandle... sources) {
-		mergeZipsAndDirsToZip(new ZipOutputStream(destinyFile.write(false)),
-				sources);
+		ZipOutputStream zos = new ZipOutputStream(destinyFile.write(false));
+		mergeZipsAndDirsToZip(zos, sources);
+		try {
+			zos.close();
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
 	}
 
 	/**
