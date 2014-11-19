@@ -38,6 +38,7 @@ package es.eucm.ead.editor.view.builders.scene;
 
 import es.eucm.ead.editor.control.Controller;
 import es.eucm.ead.editor.control.Selection;
+import es.eucm.ead.editor.control.Selection.Context;
 import es.eucm.ead.editor.model.Model.SelectionListener;
 import es.eucm.ead.editor.model.events.SelectionEvent;
 import es.eucm.ead.editor.view.ModelView;
@@ -109,11 +110,11 @@ public class SceneEditor extends BaseView implements ModelView,
 
 	public void setMode(Mode mode) {
 		this.mode = mode;
-		Object[] selection = controller.getModel().getSelection()
-				.getContext(Selection.SCENE_ELEMENT).getSelection();
 		switch (mode) {
 		case COMPOSE:
-			if (selection.length == 0) {
+			Context context = controller.getModel().getSelection()
+					.getContext(Selection.SCENE_ELEMENT);
+			if (context == null || context.getSelection().length == 0) {
 				toolbar.setSelectedWidget(INSERT);
 			} else {
 				toolbar.setSelectedWidget(TRANSFORM);
