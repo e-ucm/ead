@@ -36,7 +36,11 @@
  */
 package es.eucm.ead.editor.platform;
 
+import java.io.IOException;
+import java.io.InputStream;
+
 import com.badlogic.gdx.Input.TextInputListener;
+import com.badlogic.gdx.Net.HttpRequest;
 import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.math.Vector2;
 
@@ -44,8 +48,6 @@ import es.eucm.ead.editor.control.Controller;
 import es.eucm.ead.editor.control.Tracker;
 import es.eucm.ead.engine.I18N;
 import es.eucm.ead.schema.data.Dimension;
-
-import java.io.InputStream;
 
 /**
  * Interface to implements platform-dependent functionality.
@@ -168,4 +170,24 @@ public interface Platform {
 	 * @return the default string locale in the device
 	 */
 	String getLocale();
+
+	/**
+	 * Process the specified {@link HttpRequest} and returns the result.
+	 * 
+	 * @param httpRequest
+	 * @param type
+	 *            decides what result will be returned, currently supported
+	 *            values:
+	 *            <dl>
+	 *            <dd><strong>String.class</strong> Returns the result stream as
+	 *            a <em>String</em></dd>
+	 *            <dd><strong>byte[].class</strong> Returns the result stream as
+	 *            a <em>byte array</em></dd>
+	 *            </dl>
+	 * @return the result depending on {@code type} value.
+	 * @throws IOException
+	 *             if something went wrong.
+	 */
+	public <T> T sendHttpRequest(HttpRequest httpRequest, Class<T> type)
+			throws IOException;
 }
