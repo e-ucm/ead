@@ -67,7 +67,8 @@ public class GesturesTest extends ViewGUITest {
 		return groupEditor;
 	}
 
-	@Test
+	// @Test
+	// TODO Commented test
 	public void testRotation() {
 		Array<Actor> selection = new Array<Actor>();
 		selection.add(target);
