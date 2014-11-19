@@ -196,10 +196,9 @@ public class Commands {
 		commandListeners.add(commandListener);
 	}
 
-    public void removeCommandListener(CommandListener commandListener) {
-        commandListeners.removeValue(commandListener, true);
-    }
-
+	public void removeCommandListener(CommandListener commandListener) {
+		commandListeners.removeValue(commandListener, true);
+	}
 
 	private void fire(int type, Command command) {
 		for (CommandListener listener : commandListeners) {
@@ -252,7 +251,7 @@ public class Commands {
 		}
 	}
 
-    public class CommandsStack {
+	public class CommandsStack {
 
 		private int maxCommands;
 

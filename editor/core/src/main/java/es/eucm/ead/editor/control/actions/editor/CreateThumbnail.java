@@ -191,6 +191,7 @@ public class CreateThumbnail extends EditorAction {
 		if (editorGameAssets.isLoaded(thumbSavingPath, Texture.class)) {
 			editorGameAssets.unload(thumbSavingPath);
 		}
+		editorGameAssets.load(thumbSavingPath, Texture.class);
 
 		Resource resource = model.getResource(id);
 		if (resource != null) {

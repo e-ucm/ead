@@ -36,6 +36,7 @@
  */
 package es.eucm.ead.editor.view.widgets.galleries;
 
+import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import es.eucm.ead.editor.control.Controller;
 import es.eucm.ead.editor.control.actions.editor.AddScene;
@@ -46,6 +47,8 @@ import es.eucm.ead.editor.model.Q;
 import es.eucm.ead.editor.model.events.ResourceEvent;
 import es.eucm.ead.editor.view.ModelView;
 import es.eucm.ead.editor.view.widgets.WidgetBuilder;
+import es.eucm.ead.engine.assets.Assets;
+import es.eucm.ead.engine.assets.Assets.AssetLoadingListener;
 import es.eucm.ead.schema.editor.components.Thumbnail;
 import es.eucm.ead.schema.entities.ModelEntity;
 import es.eucm.ead.schemax.entities.ResourceCategory;
@@ -53,7 +56,7 @@ import es.eucm.ead.schemax.entities.ResourceCategory;
 import java.util.Map.Entry;
 
 public class ScenesGallery extends ThumbnailsGallery implements
-		ModelListener<ResourceEvent>, ModelView {
+		ModelListener<ResourceEvent>, ModelView, AssetLoadingListener<Texture> {
 
 	private Controller controller;
 
@@ -72,11 +75,13 @@ public class ScenesGallery extends ThumbnailsGallery implements
 				.getResources(ResourceCategory.SCENE).entrySet()) {
 			addScene(entry.getKey(), (ModelEntity) entry.getValue().getObject());
 		}
+		controller.getEditorGameAssets().addAssetListener(this);
 	}
 
 	@Override
 	public void release() {
 		controller.getModel().removeResourceListener(this);
+		controller.getEditorGameAssets().removeAssetListener(this);
 	}
 
 	@Override
@@ -114,5 +119,20 @@ public class ScenesGallery extends ThumbnailsGallery implements
 		if (tile != null) {
 			tile.remove();
 		}
+	}
+
+	@Override
+	public boolean listenTo(String fileName) {
+		return pendingTextures.containsKey(fileName);
+	}
+
+	@Override
+	public void loaded(String fileName, Texture asset, Assets assets) {
+		pendingTextures.get(fileName).setTexture(asset);
+	}
+
+	@Override
+	public void unloaded(String fileName, Assets assets) {
+		pendingTextures.get(fileName).setTexture(null);
 	}
 }

@@ -43,6 +43,7 @@ import es.eucm.ead.editor.control.Controller;
 import es.eucm.ead.editor.control.Selection;
 import es.eucm.ead.editor.control.Selection.Context;
 import es.eucm.ead.editor.control.commands.Command;
+import es.eucm.ead.editor.control.commands.SelectionCommand;
 import es.eucm.ead.editor.model.Model.SelectionListener;
 import es.eucm.ead.editor.model.Q;
 import es.eucm.ead.editor.model.events.SelectionEvent;
@@ -96,15 +97,15 @@ public class SceneEditor extends BaseView implements ModelView,
 
 	@Override
 	public void prepare() {
-        setMode(mode);
+		setMode(mode);
 		controller.getModel().addSelectionListener(this);
-        controller.getCommands().addCommandListener(this);
+		controller.getCommands().addCommandListener(this);
 	}
 
 	@Override
 	public void release() {
 		controller.getModel().removeSelectionListener(this);
-        controller.getCommands().removeCommandListener(this);
+		controller.getCommands().removeCommandListener(this);
 	}
 
 	@Override
@@ -144,12 +145,14 @@ public class SceneEditor extends BaseView implements ModelView,
 
 	@Override
 	public void doCommand(Commands commands, Command command) {
-		ModelEntity scene = (ModelEntity) controller.getModel().getSelection()
-				.getSingle(Selection.SCENE);
-		if (scene != null) {
-            Q.getThumbnail(controller, scene);
-            String resource = controller.getModel().getIdFor(scene);
-            controller.getEditorGameAssets().save(resource, scene);
+		if (!(command instanceof SelectionCommand)) {
+			ModelEntity scene = (ModelEntity) controller.getModel()
+					.getSelection().getSingle(Selection.SCENE);
+			if (scene != null) {
+				Q.getThumbnail(controller, scene);
+				String resource = controller.getModel().getIdFor(scene);
+				controller.getEditorGameAssets().save(resource, scene);
+			}
 		}
 	}
 

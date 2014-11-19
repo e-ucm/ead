@@ -66,7 +66,7 @@ public abstract class ThumbnailsGallery extends AbstractWidget implements
 
 	private I18N i18N;
 
-	private ObjectMap<String, TextureDrawable> pendingTextures = new ObjectMap<String, TextureDrawable>();
+	protected ObjectMap<String, TextureDrawable> pendingTextures = new ObjectMap<String, TextureDrawable>();
 
 	protected Gallery gallery;
 
@@ -106,7 +106,7 @@ public abstract class ThumbnailsGallery extends AbstractWidget implements
 			image = new Image(thumbnail);
 			pendingTextures.put(thumbnailPath, thumbnail);
 			assets.get(thumbnailPath, Texture.class, this);
-            image.setName(thumbnailPath);
+			image.setName(thumbnailPath);
 		}
 		title = title == null || "".equals(title) ? i18N.m("untitled") : title;
 		Tile tile = WidgetBuilder.tile(image, title);
