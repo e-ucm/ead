@@ -39,12 +39,9 @@ package es.eucm.ead.editor.view.builders.project;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
-
 import es.eucm.ead.editor.control.Controller;
 import es.eucm.ead.editor.control.MokapController.BackListener;
-import es.eucm.ead.editor.control.Selection;
 import es.eucm.ead.editor.control.actions.editor.ChangeView;
-import es.eucm.ead.editor.control.actions.model.SetSelection;
 import es.eucm.ead.editor.view.SkinConstants;
 import es.eucm.ead.editor.view.builders.ViewBuilder;
 import es.eucm.ead.editor.view.builders.home.HomeView;
@@ -63,8 +60,6 @@ public class ProjectView implements ViewBuilder, BackListener {
 
 	private LinearLayout view;
 
-	private ScenesGallery scenesGallery;
-
 	@Override
 	public void initialize(Controller controller) {
 		this.controller = controller;
@@ -73,16 +68,12 @@ public class ProjectView implements ViewBuilder, BackListener {
 		view = new LinearLayout(false);
 		view.add(buildToolbar(skin, i18N)).expandX();
 		view.add(
-				scenesGallery = new ScenesGallery(
-						Gdx.graphics.getHeight() / 2.15f, 3, controller))
-				.expand(true, true).top();
+				new ScenesGallery(Gdx.graphics.getHeight() / 2.15f, 3,
+						controller)).expand(true, true).top();
 	}
 
 	@Override
 	public Actor getView(Object... args) {
-		controller.action(SetSelection.class, Selection.PROJECT,
-				Selection.RESOURCE);
-		scenesGallery.prepare();
 		return view;
 	}
 

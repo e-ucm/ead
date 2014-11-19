@@ -39,12 +39,12 @@ package es.eucm.ead.editor.view.widgets.galleries;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import es.eucm.ead.editor.control.Controller;
 import es.eucm.ead.editor.control.actions.editor.AddScene;
-import es.eucm.ead.editor.control.actions.editor.ChangeView;
+import es.eucm.ead.editor.control.actions.model.scene.SetSelectedScene;
 import es.eucm.ead.editor.model.Model.ModelListener;
 import es.eucm.ead.editor.model.Model.Resource;
 import es.eucm.ead.editor.model.Q;
 import es.eucm.ead.editor.model.events.ResourceEvent;
-import es.eucm.ead.editor.view.builders.scene.SceneView;
+import es.eucm.ead.editor.view.ModelView;
 import es.eucm.ead.editor.view.widgets.WidgetBuilder;
 import es.eucm.ead.schema.editor.components.Thumbnail;
 import es.eucm.ead.schema.entities.ModelEntity;
@@ -53,7 +53,7 @@ import es.eucm.ead.schemax.entities.ResourceCategory;
 import java.util.Map.Entry;
 
 public class ScenesGallery extends ThumbnailsGallery implements
-		ModelListener<ResourceEvent> {
+		ModelListener<ResourceEvent>, ModelView {
 
 	private Controller controller;
 
@@ -64,6 +64,7 @@ public class ScenesGallery extends ThumbnailsGallery implements
 		this.controller = controller;
 	}
 
+	@Override
 	public void prepare() {
 		clear();
 		controller.getModel().addResourceListener(this);
@@ -73,6 +74,7 @@ public class ScenesGallery extends ThumbnailsGallery implements
 		}
 	}
 
+	@Override
 	public void release() {
 		controller.getModel().removeResourceListener(this);
 	}
