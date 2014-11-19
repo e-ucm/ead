@@ -49,6 +49,7 @@ public interface SkinConstants {
 	public static final String DRAWABLE_PAGE_LEFT = "page_left";
 	public static final String DRAWABLE_BLACK_BG = "black_bg";
 	public static final String DRAWABLE_LIGHT_GRAY_BG = "light_gray_bg";
+	public static final String DRAWABLE_TRANSPARENT_48 = "transparent_48_bg";
 
 	public static final String STYLE_DEFAULT = "default";
 	public static final String STYLE_CONTEXT = "context";

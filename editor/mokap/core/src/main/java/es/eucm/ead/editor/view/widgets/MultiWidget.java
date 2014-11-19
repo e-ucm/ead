@@ -212,12 +212,6 @@ public class MultiWidget extends Container<WidgetGroup> {
 		return this.getActor();
 	}
 
-	public void release() {
-		for (WidgetGroup widget : widgets) {
-			widget.clearActions();
-		}
-	}
-
 	public static class MultiWidgetStyle {
 
 		public Drawable background;

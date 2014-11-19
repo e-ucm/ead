@@ -124,7 +124,7 @@ public class Commands {
 				.getRedoHistory();
 	}
 
-	private void doCommand(Command command) {
+	public void doCommand(Command command) {
 		ModelEvent modelEvent = command.doCommand();
 		model.notify(modelEvent);
 	}
