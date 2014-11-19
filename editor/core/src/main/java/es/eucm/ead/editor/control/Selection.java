@@ -49,7 +49,7 @@ public class Selection {
 
 	private static final Object[] NO_SELECTION = new Object[0];
 
-	public static final String PROJECT = "selection";
+	public static final String PROJECT = "project";
 
 	public static final String RESOURCE = "resource";
 
