@@ -38,10 +38,10 @@ package es.eucm.ead.editor.demobuilder;
 
 import com.badlogic.gdx.Application;
 import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.backends.lwjgl.LwjglNativesLoader;
 import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.graphics.Pixmap;
 import com.badlogic.gdx.utils.Array;
+import com.badlogic.gdx.utils.GdxRuntimeException;
 import com.vividsolutions.jts.geom.Geometry;
 import es.eucm.ead.editor.DesktopPlatform;
 import es.eucm.ead.editor.utils.GeometryUtils;
@@ -49,13 +49,16 @@ import es.eucm.ead.editor.utils.ZipUtils;
 import es.eucm.ead.engine.EngineDesktop;
 import es.eucm.ead.engine.assets.GameAssets;
 import es.eucm.ead.engine.demobuilder.DemoBuilder;
-import es.eucm.ead.engine.mock.MockApplication;
 import es.eucm.ead.schema.data.Dimension;
 import es.eucm.ead.schema.data.shape.Polygon;
 import es.eucm.ead.schema.entities.ModelEntity;
 import es.eucm.ead.schema.renderers.Image;
+import org.im4java.core.IM4JavaException;
+import org.im4java.core.IMOperation;
+import org.im4java.core.IdentifyCmd;
+import org.im4java.process.OutputConsumer;
 
-import java.io.InputStream;
+import java.io.*;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -80,23 +83,10 @@ import java.util.Map;
  */
 public abstract class EditorDemoBuilder extends DemoBuilder {
 
-	/*
-	 * Static stuff needed to use some stuff, like Gdx.app or Pixmap. Should be
-	 * used just once
-	 */
-	private static boolean init = false;
-
-	private static void init() {
-		if (!init) {
-			LwjglNativesLoader.load();
-			MockApplication.initStatics();
-		}
-	}
-
 	protected GameAssets gameAssets;
 
 	/* To avoid building entities more than once */
-	private boolean built = false;
+	protected boolean built = false;
 
 	/* Convenient container of asset paths - no actual need to use it */
 	protected String[] assets;
@@ -112,6 +102,20 @@ public abstract class EditorDemoBuilder extends DemoBuilder {
 	// To determine image dimensions
 	protected DesktopPlatform platform;
 
+	/*
+	 * Parameter that indicates whether image magick (www.imagemagick.org)
+	 * should be used to transform png images to ensure libgdx can read them.
+	 * Before this parameter is set to true, the installation path of
+	 * imagemagick must be set by invoking the next instruction:
+	 * 
+	 * ProcessStarter.setGlobalSearchPath(imageMagickDir);
+	 * 
+	 * e.g.:
+	 * 
+	 * ProcessStarter.setGlobalSearchPath("C:\Development\ImageMagick");
+	 */
+	protected boolean convertPNGs = false;
+
 	/**
 	 * Creates the object but does not actually build the game. Just creates the
 	 * temp folder and unzips the the contents of the file specified by the
@@ -120,7 +124,6 @@ public abstract class EditorDemoBuilder extends DemoBuilder {
 	 * @param root
 	 */
 	public EditorDemoBuilder(String root) {
-		init();
 		this.gameAssets = new GameAssets(Gdx.files);
 		this.root = root;
 		platform = new DesktopPlatform();
@@ -132,19 +135,30 @@ public abstract class EditorDemoBuilder extends DemoBuilder {
 	/**
 	 * Creates a model collider for the given image
 	 */
-	private Array<Polygon> createSchemaCollider(String imageUri) {
-		Array<Polygon> collider = new Array<Polygon>();
-		Pixmap pixmap = new Pixmap(gameAssets.resolve(imageUri));
-		Array<Geometry> geometryArray = GeometryUtils
-				.findBorders(pixmap, .1, 2);
-		for (Geometry geometry : geometryArray) {
-			collider.add(GeometryUtils.jtsToSchemaPolygon(geometry));
+	protected Array<Polygon> createSchemaCollider(String imageUri) {
+
+		try {
+			Array<Polygon> collider = new Array<Polygon>();
+			Pixmap pixmap = new Pixmap(gameAssets.resolve(imageUri));
+			Array<Geometry> geometryArray = GeometryUtils.findBorders(pixmap,
+					.1, 2);
+			for (Geometry geometry : geometryArray) {
+				collider.add(GeometryUtils.jtsToSchemaPolygon(geometry));
+			}
+			pixmap.dispose();
+			return collider;
+		} catch (GdxRuntimeException e) {
+			Gdx.app.error(
+					LOG_TAG,
+					"An error occurred creating the collider for the next image: "
+							+ imageUri
+							+ ". Sometimes that's to do with unsupported PNG features. Image properties will be shown.");
+			ImgUtils.showImageProperties(gameAssets.resolve(imageUri).path());
+			return null;
 		}
-		pixmap.dispose();
-		return collider;
 	}
 
-	private Dimension getImageDimension(String imageUri) {
+	protected Dimension getImageDimension(String imageUri) {
 		return platform.getImageDimension(gameAssets.resolve(imageUri).read());
 	}
 
@@ -211,12 +225,16 @@ public abstract class EditorDemoBuilder extends DemoBuilder {
 	 * Creates the output folder and extracts contents from the zip. Needed
 	 * before building
 	 */
-	private void createOutputFolder() {
+	protected void createOutputFolder() {
 		rootFolder = FileHandle.tempDirectory(root);
 		rootFolder.mkdirs();
 
 		gameAssets.setLoadingPath("", true);
 		ZipUtils.unzip(gameAssets.resolve(root + ".zip"), rootFolder);
+
+		if (convertPNGs) {
+			ImgUtils.convertPNGs(rootFolder);
+		}
 
 		gameAssets.setLoadingPath(rootFolder.file().getAbsolutePath(), false);
 	}

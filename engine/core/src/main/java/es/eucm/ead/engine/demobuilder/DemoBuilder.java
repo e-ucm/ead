@@ -69,6 +69,8 @@ import es.eucm.ead.schema.renderers.Frame;
 import es.eucm.ead.schema.renderers.Frames;
 import es.eucm.ead.schema.renderers.Image;
 import es.eucm.ead.schema.renderers.Renderer;
+import es.eucm.ead.schema.renderers.State;
+import es.eucm.ead.schema.renderers.States;
 import es.eucm.ead.schemax.GameStructure;
 
 import java.util.HashMap;
@@ -112,6 +114,17 @@ import java.util.HashMap;
 public abstract class DemoBuilder {
 
 	protected static final String LOG_TAG = "DemoBuilder";
+
+	public static final String WALK = "walk";
+	public static final String TALK = "talk";
+	public static final String GRAB = "grab";
+	public static final String IDLE = "idle";
+	public static final String USE = "use";
+
+	public static final String UP = "up";
+	public static final String DOWN = "down";
+	public static final String LEFT = "left";
+	public static final String RIGHT = "right";
 
 	public static final String DEFAULT_SCENE_PREF = "scenes/s";
 	public static final String JSON = ".json";
@@ -259,7 +272,8 @@ public abstract class DemoBuilder {
 	 *            The entity to add this entity to to. Can be null (the entity
 	 *            is not added anywhere)
 	 * @param imageUri
-	 *            The relative uri of the image to serve as renderer
+	 *            The relative uri of the image to serve as renderer. Can be
+	 *            null (no renderer is added)
 	 * @param x
 	 *            The x coordinate for the new child entity
 	 * @param y
@@ -278,7 +292,9 @@ public abstract class DemoBuilder {
 	}
 
 	public DemoBuilder addImage(ModelEntity entity, String uri) {
-		entity.getComponents().add(createImage(uri));
+		if (uri != null) {
+			entity.getComponents().add(createImage(uri));
+		}
 		return this;
 	}
 
@@ -347,7 +363,8 @@ public abstract class DemoBuilder {
 	 * @param entityUri
 	 *            The uri to save the entity to
 	 * @param imageUri
-	 *            The relative uri of the image to serve as renderer
+	 *            The relative uri of the image to serve as renderer. If
+	 *            {@code null}, no renderer image is added to the entity7
 	 * @param x
 	 *            The x coordinate for the reusable entity
 	 * @param y
@@ -357,6 +374,59 @@ public abstract class DemoBuilder {
 			float x, float y) {
 		ModelEntity modelEntity = entity(null, imageUri, x, y).getLastEntity();
 		entities.put(entityUri, modelEntity);
+		return this;
+	}
+
+	public DemoBuilder states() {
+		return states(getLastEntity());
+	}
+
+	public DemoBuilder states(ModelEntity modelEntity) {
+		States states = new States();
+		lastComponent = states;
+
+		for (int i = 0; i < modelEntity.getComponents().size; i++) {
+			ModelComponent modelComponent = modelEntity.getComponents().get(i);
+			if (modelComponent instanceof Renderer
+					&& !(modelComponent instanceof States)) {
+				Renderer rendererComp = (Renderer) modelComponent;
+				State state = new State();
+				state.getStates().add(rendererComp.getClass().getSimpleName());
+				state.setRenderer(rendererComp);
+				states.getStates().add(state);
+				modelEntity.getComponents().removeIndex(i);
+				i--;
+			}
+		}
+
+		modelEntity.getComponents().add(states);
+		return this;
+	}
+
+	public DemoBuilder state(String... stateTags) {
+		return state(getLastEntity(), stateTags);
+	}
+
+	public DemoBuilder state(ModelEntity modelEntity, String... stateTags) {
+		States states = null;
+		for (ModelComponent modelComponent : modelEntity.getComponents()) {
+			if (modelComponent instanceof States) {
+				states = (States) modelComponent;
+				break;
+			}
+		}
+
+		if (states == null) {
+			states(modelEntity);
+		}
+
+		State state = new State();
+		lastComponent = state;
+		for (String stateTag : stateTags) {
+			state.getStates().add(stateTag);
+		}
+		state.setRenderer(null);
+		states.getStates().add(state);
 		return this;
 	}
 
@@ -416,6 +486,73 @@ public abstract class DemoBuilder {
 		lastComponent = frames;
 
 		return this;
+	}
+
+	/**
+	 * Adds a new frame to the given {@code modelEntity}. If the entity has no
+	 * frame renderer, a new frame renderer is created and added. Any previous
+	 * renderers available are converted to frames.
+	 * 
+	 * @param modelEntity
+	 *            The entity to add a frame to
+	 * @param frameUri
+	 *            The relative uri for the image of the frame
+	 * @param duration
+	 *            The frame duration
+	 */
+	public DemoBuilder frameState(States states, int nTags, float duration,
+			String... tagsAndUris) {
+		State state = null;
+		Frames frames = null;
+
+		frames = new Frames();
+		lastComponent = frames;
+		frames.setSequence(Frames.Sequence.LINEAR);
+		state = new State();
+		state.setRenderer(frames);
+		states.getStates().add(state);
+
+		for (int i = 0; i < nTags; i++) {
+			state.getStates().add(tagsAndUris[i]);
+		}
+
+		for (int i = nTags; i < tagsAndUris.length; i++) {
+			Frame frame = new Frame();
+			frame.setTime(duration);
+			String img = tagsAndUris[i];
+			if (!img.toLowerCase().endsWith(".png")
+					&& !img.toLowerCase().endsWith("jpg")
+					&& !img.toLowerCase().endsWith("jpeg")) {
+				img += ".png";
+			}
+			frame.setRenderer(createImage(img));
+			frames.getFrames().add(frame);
+		}
+
+		return this;
+	}
+
+	public DemoBuilder frameState(ModelEntity parent, int nTags,
+			float duration, String... tagsAndUris) {
+		States states = null;
+		for (ModelComponent modelComponent : parent.getComponents()) {
+			if (modelComponent instanceof States) {
+				states = (States) modelComponent;
+				break;
+			}
+		}
+
+		if (states == null) {
+			lastComponent = states = new States();
+			parent.getComponents().add(states);
+		}
+
+		return frameState(states, nTags, duration, tagsAndUris);
+	}
+
+	public DemoBuilder frameState(int nTags, float duration,
+			String... tagsAndUris) {
+		return frameState(getLastEntity(), nTags, duration, tagsAndUris);
 	}
 
 	/**
