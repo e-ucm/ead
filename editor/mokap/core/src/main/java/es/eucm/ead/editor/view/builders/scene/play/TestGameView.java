@@ -34,44 +34,39 @@
  *      You should have received a copy of the GNU Lesser General Public License
  *      along with eAdventure.  If not, see <http://www.gnu.org/licenses/>.
  */
-package es.eucm.ead.editor.view.builders.scene;
+package es.eucm.ead.editor.view.builders.scene.play;
 
-import com.badlogic.gdx.scenes.scene2d.Actor;
-import es.eucm.ead.editor.control.Controller;
-import es.eucm.ead.editor.control.MokapController.BackListener;
-import es.eucm.ead.editor.control.actions.editor.ChangeView;
-import es.eucm.ead.editor.view.builders.ViewBuilder;
-import es.eucm.ead.editor.view.builders.project.ProjectView;
+import com.badlogic.gdx.scenes.scene2d.Group;
 
-public class SceneView implements ViewBuilder, BackListener {
+import es.eucm.ead.engine.DefaultGameView;
+import es.eucm.ead.engine.GameLoop;
+import es.eucm.ead.schemax.Layer;
 
-	private Controller controller;
+public class TestGameView extends DefaultGameView {
 
-	private SceneEditor view;
-
-	@Override
-	public void initialize(Controller controller) {
-		this.controller = controller;
-		view = new SceneEditor(controller);
+	public TestGameView(GameLoop gameLoop) {
+		super(gameLoop);
+		setFillParent(true);
 	}
 
 	@Override
-	public Actor getView(Object... args) {
-		controller.getCommands().pushStack();
-		view.hideNavigationRightAway();
-		return view;
+	public void updateWorldSize(int width, int height) {
+		this.worldWidth = width;
+		this.worldHeight = height;
+		invalidate();
 	}
 
 	@Override
-	public void release(Controller controller) {
-		controller.getCommands().popStack(false);
-	}
+	public void layout() {
+		Group group = getLayer(Layer.SCENE).getGroup();
+		float scaleX = getWidth() / (float) worldWidth;
+		float scaleY = getHeight() / (float) worldHeight;
+		float scale = Math.min(scaleX, scaleY);
 
-	@Override
-	public void onBackPressed() {
-		if (!view.backPressed()) {
-			controller.action(ChangeView.class, ProjectView.class);
-		}
-	}
+		float diffX = (getWidth() - worldWidth * scale) / 2.0f;
+		float diffY = (getHeight() - worldHeight * scale) / 2.0f;
 
+		group.setPosition(diffX, diffY);
+		group.setScale(scale);
+	}
 }

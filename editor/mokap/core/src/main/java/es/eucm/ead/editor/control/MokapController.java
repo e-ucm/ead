@@ -109,7 +109,7 @@ public class MokapController extends Controller {
 			@Override
 			public boolean keyUp(InputEvent event, int keycode) {
 				if (keycode == Keys.BACK
-						|| (Gdx.app.getType() == Application.ApplicationType.Desktop && keycode == Keys.ALT_LEFT)) {
+						|| (Gdx.app.getType() == Application.ApplicationType.Desktop && (keycode == Keys.ALT_LEFT || keycode == Keys.ESCAPE))) {
 					((MokapViews) MokapController.this.views).onBackPressed();
 					return true;
 				} else if (keycode == Keys.ENTER

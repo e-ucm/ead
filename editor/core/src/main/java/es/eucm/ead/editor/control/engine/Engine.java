@@ -36,6 +36,8 @@
  */
 package es.eucm.ead.editor.control.engine;
 
+import com.badlogic.gdx.Gdx;
+
 import es.eucm.ead.editor.assets.EditorGameAssets;
 import es.eucm.ead.editor.control.Controller;
 import es.eucm.ead.engine.Accessor;
@@ -118,6 +120,7 @@ public class Engine {
 	public void play() {
 		gameView.clearAllLayers();
 		gameLoop.setPlaying(true);
+		Gdx.graphics.setContinuousRendering(true);
 	}
 
 	/**
@@ -126,5 +129,6 @@ public class Engine {
 	public void stop() {
 		gameView.clearAllLayers();
 		gameLoop.setPlaying(false);
+		Gdx.graphics.setContinuousRendering(false);
 	}
 }
