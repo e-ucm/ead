@@ -49,6 +49,8 @@ public abstract class Worker implements Runnable {
 
 	protected Controller controller;
 
+	protected Object[] args;
+
 	private final boolean resultsInUIThread;
 
 	private WorkerListener listener;
@@ -92,6 +94,10 @@ public abstract class Worker implements Runnable {
 
 	void setListener(WorkerListener listener) {
 		this.listener = listener;
+	}
+
+	public void setArguments(Object[] args) {
+		this.args = args;
 	}
 
 	public WorkerListener getListener() {

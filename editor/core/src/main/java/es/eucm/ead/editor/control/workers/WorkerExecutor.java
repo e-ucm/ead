@@ -106,7 +106,7 @@ public class WorkerExecutor {
 	 * Starts a worker and cancels any other worker of the same class
 	 */
 	public <T extends Worker> void execute(Class<T> workerClass,
-			WorkerListener workerListener) {
+			WorkerListener workerListener, Object... args) {
 		try {
 			Worker worker = workersMap.get(workerClass);
 			if (worker != null && !worker.isDone()) {
@@ -116,6 +116,7 @@ public class WorkerExecutor {
 			worker = workerClass.newInstance();
 			worker.setController(controller);
 			worker.setListener(workerListener);
+			worker.setArguments(args);
 
 			workersMap.put(workerClass, worker);
 

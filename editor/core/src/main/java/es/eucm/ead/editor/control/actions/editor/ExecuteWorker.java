@@ -48,17 +48,23 @@ import es.eucm.ead.editor.control.workers.Worker.WorkerListener;
  * <dd><strong>args[0]</strong> <em>{@link Class}</em> Worker class</dd>
  * <dd><strong>args[1]</strong> <em>{@link WorkerListener}</em> A listener for
  * the worker</dd>
+ * <dd><strong>args[2]...</strong> <em>{@link Object}</em> Arguments passed to
+ * the worker</dd>
  * </dl>
  */
 public class ExecuteWorker extends EditorAction {
 
-	public ExecuteWorker() {
-		super(true, true, Class.class, WorkerListener.class);
+	@Override
+	public boolean validate(Object... args) {
+		return args.length > 1 && args[0] instanceof Class
+				&& args[1] instanceof WorkerListener;
 	}
 
 	@Override
 	public void perform(Object... args) {
+		Object[] workerArguments = new Object[args.length - 2];
+		System.arraycopy(args, 2, workerArguments, 0, workerArguments.length);
 		controller.getWorkerExecutor().execute((Class) args[0],
-				(WorkerListener) args[1]);
+				(WorkerListener) args[1], workerArguments);
 	}
 }
