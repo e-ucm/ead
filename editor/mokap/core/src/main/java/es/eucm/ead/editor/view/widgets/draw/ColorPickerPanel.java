@@ -39,6 +39,8 @@ package es.eucm.ead.editor.view.widgets.draw;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
+import com.badlogic.gdx.scenes.scene2d.actions.Actions;
+import com.badlogic.gdx.scenes.scene2d.actions.SequenceAction;
 import com.badlogic.gdx.scenes.scene2d.ui.Cell;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
@@ -129,11 +131,25 @@ public class ColorPickerPanel extends ContextMenu {
 
 	@Override
 	public void hide(Runnable runnable) {
-		super.hide(runnable);
-		release();
+		setUpPickedColor();
+		SequenceAction hideAction = getHideAction(runnable);
+		hideAction.addAction(Actions.run(getReleaseResources()));
+		addAction(hideAction);
 	}
 
-	public void release() {
+	private Runnable releaseResources = new Runnable() {
+
+		@Override
+		public void run() {
+			picker.release();
+		}
+	};
+
+	public Runnable getReleaseResources() {
+		return releaseResources;
+	}
+
+	public void setUpPickedColor() {
 		if (!hasPickedColor()) {
 			Array<Cell> colorCells = this.colors.getCells();
 			for (int i = colorCells.size - 2; i >= 0; --i) {
@@ -143,7 +159,6 @@ public class ColorPickerPanel extends ContextMenu {
 			colors.getCells().first().getActor()
 					.setColor(picker.getPickedColor());
 		}
-		picker.release();
 	}
 
 	private boolean hasPickedColor() {

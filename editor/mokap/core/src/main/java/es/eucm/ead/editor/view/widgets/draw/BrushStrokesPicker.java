@@ -41,6 +41,8 @@ import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.scenes.scene2d.Event;
 import com.badlogic.gdx.scenes.scene2d.EventListener;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
+import com.badlogic.gdx.scenes.scene2d.actions.Actions;
+import com.badlogic.gdx.scenes.scene2d.actions.SequenceAction;
 import com.badlogic.gdx.scenes.scene2d.ui.Image;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.ui.Slider;
@@ -162,8 +164,10 @@ public class BrushStrokesPicker extends ContextMenu {
 
 	@Override
 	public void hide(Runnable runnable) {
-		super.hide(runnable);
-		colorPicker.release();
+		colorPicker.setUpPickedColor();
+		SequenceAction hideAction = getHideAction(runnable);
+		hideAction.addAction(Actions.run(colorPicker.getReleaseResources()));
+		addAction(hideAction);
 	}
 
 	@Override
