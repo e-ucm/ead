@@ -40,8 +40,10 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.math.Interpolation;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.Group;
+import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.Touchable;
 import com.badlogic.gdx.scenes.scene2d.actions.Actions;
+import com.badlogic.gdx.scenes.scene2d.utils.DragListener;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.Pools;
 import com.badlogic.gdx.utils.Predicate;
@@ -57,8 +59,10 @@ import es.eucm.ead.editor.model.events.ListEvent;
 import es.eucm.ead.editor.model.events.SelectionEvent;
 import es.eucm.ead.editor.utils.Actions2;
 import es.eucm.ead.editor.view.ModelView;
+import es.eucm.ead.editor.view.SkinConstants;
 import es.eucm.ead.editor.view.builders.scene.groupeditor.GroupEditor;
 import es.eucm.ead.editor.view.builders.scene.groupeditor.SceneListener;
+import es.eucm.ead.editor.view.builders.scene.groupeditor.SelectionBox;
 import es.eucm.ead.engine.EntitiesLoader;
 import es.eucm.ead.engine.entities.EngineEntity;
 import es.eucm.ead.schema.components.ModelComponent;
@@ -88,19 +92,42 @@ public class SceneGroupEditor extends GroupEditor implements ModelView {
 
 	private SceneSelectionListener sceneSelectionListener = new SceneSelectionListener();
 
-	public SceneGroupEditor(Controller c) {
+	public SceneGroupEditor(Controller c, final SceneEditor sceneEditor) {
 		super(c.getApplicationAssets().getSkin());
 		this.controller = c;
 		this.model = controller.getModel();
 		this.entitiesLoader = controller.getEngine().getEntitiesLoader();
 		addListener(new SceneListener(controller));
 		setBackground(controller.getApplicationAssets().getSkin()
-				.getDrawable("blank"));
+				.getDrawable(SkinConstants.DRAWABLE_BLANK));
+
+		addListener(new DragListener() {
+
+			private boolean draggingSelectBox;
+
+			@Override
+			public void dragStart(InputEvent event, float x, float y,
+					int pointer) {
+				if (event.getTarget() instanceof SelectionBox) {
+					sceneEditor.hideToolbar();
+					draggingSelectBox = true;
+				} else {
+					draggingSelectBox = false;
+				}
+
+			}
+
+			@Override
+			public void dragStop(InputEvent event, float x, float y, int pointer) {
+				if (draggingSelectBox) {
+					sceneEditor.showToolbar();
+				}
+			}
+		});
 	}
 
 	@Override
 	public void prepare() {
-		release();
 		model.addSelectionListener(sceneSelectionListener);
 		readSceneContext();
 		readEditedGroup();

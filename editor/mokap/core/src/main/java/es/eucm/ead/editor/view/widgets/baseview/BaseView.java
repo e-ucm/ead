@@ -38,8 +38,10 @@ package es.eucm.ead.editor.view.widgets.baseview;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.math.Interpolation;
+import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
+import com.badlogic.gdx.scenes.scene2d.Touchable;
 import com.badlogic.gdx.scenes.scene2d.actions.Actions;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.utils.ActorGestureListener;
@@ -203,6 +205,21 @@ public class BaseView extends AbstractWidget {
 		navigation.hideRightAway();
 	}
 
+	public void showToolbar() {
+		toolbar.clearActions();
+		toolbar.addAction(Actions.sequence(
+				Actions.touchable(Touchable.enabled), Actions.moveTo(0,
+						getHeight() - toolbar.getHeight(), 0.25f,
+						Interpolation.exp5Out)));
+	}
+
+	public void hideToolbar() {
+		toolbar.clearActions();
+		toolbar.addAction(Actions.sequence(
+				Actions.touchable(Touchable.disabled),
+				Actions.moveTo(0, getHeight(), 0.25f, Interpolation.exp5Out)));
+	}
+
 	/**
 	 * Sets the toolbar actor, removing the current one (if any)
 	 */
@@ -257,7 +274,8 @@ public class BaseView extends AbstractWidget {
 	}
 
 	private void layoutToolbar() {
-		if (toolbar != null) {
+		if (toolbar != null
+				&& !MathUtils.isEqual(toolbar.getWidth(), getWidth(), 0.1f)) {
 			setBounds(toolbar, 0, getHeight() - getPrefHeight(toolbar),
 					getWidth(), getPrefHeight(toolbar));
 		}

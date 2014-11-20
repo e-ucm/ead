@@ -55,8 +55,9 @@ import com.badlogic.gdx.utils.Pools;
 import es.eucm.ead.editor.assets.EditorGameAssets;
 import es.eucm.ead.editor.control.Controller;
 import es.eucm.ead.editor.utils.GeometryUtils;
-import es.eucm.ead.editor.view.widgets.AbstractWidget;
+import es.eucm.ead.editor.view.builders.scene.SceneEditor;
 import es.eucm.ead.editor.view.builders.scene.draw.MeshHelper.PixmapRegion;
+import es.eucm.ead.editor.view.widgets.AbstractWidget;
 import es.eucm.ead.engine.I18N;
 import es.eucm.ead.engine.entities.EngineEntity;
 import es.eucm.ead.schema.entities.ModelEntity;
@@ -92,19 +93,22 @@ public class BrushStrokes extends AbstractWidget {
 	private final MeshHelper mesh;
 	private Group container;
 	private float targetX, targetY;
+	private SceneEditor sceneEditor;
 
 	/**
 	 * Wrapper around {@link MeshHelper}. A widget that draws lines renders them
 	 * to a texture and manages the necessary {@link Pixmap pixmaps} to perform
 	 * undo/redo actions, erase and save it as a {@link ModelEntity}
 	 */
-	public BrushStrokes(Group container, Controller control) {
+	public BrushStrokes(Controller control, Group container,
+			SceneEditor sceneEditor) {
 		this.container = container;
 		this.mesh = new MeshHelper(this, control);
 		mesh.setColor(INITIAL_COLOR);
 		mesh.setMaxDrawRadius(getMaxRadius());
 		mesh.setRadius(getInitialRadius());
 		this.controller = control;
+		this.sceneEditor = sceneEditor;
 		addCaptureListener(drawListener);
 		setMode(INITIAL_MODE);
 	}
@@ -278,6 +282,7 @@ public class BrushStrokes extends AbstractWidget {
 			if (pointer == 0) {
 				event.stop();
 				mesh.touchDown(x, y);
+				sceneEditor.hideToolbar();
 			}
 			return true;
 		}
@@ -294,6 +299,7 @@ public class BrushStrokes extends AbstractWidget {
 				int button) {
 			if (pointer == 0) {
 				mesh.touchUp(x, y);
+				sceneEditor.showToolbar();
 			}
 		}
 	};
