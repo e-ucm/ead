@@ -165,15 +165,23 @@ public class IconButton extends Button implements Tooltip {
 	public void setDisabled(boolean isDisabled) {
 		super.setDisabled(isDisabled);
 		if (isDisabled) {
-			Color disabledImageColor = style.disabledImageColor;
-			if (disabledImageColor != null) {
-				iconImage.setColor(disabledImageColor);
+			if (style.disabledColor != null) {
+				iconImage.setColor(style.disabledColor);
 			}
 		} else {
-			Color enabledImageColor = style.enabledImageColor;
-			if (enabledImageColor != null) {
-				iconImage.setColor(enabledImageColor);
+			if (style.color != null) {
+				iconImage.setColor(style.color);
 			}
+		}
+	}
+
+	@Override
+	public void setChecked(boolean isChecked) {
+		super.setChecked(isChecked);
+		if (isChecked && style.checkedColor != null) {
+			iconImage.setColor(style.checkedColor);
+		} else {
+			iconImage.setColor(style.color);
 		}
 	}
 
@@ -219,18 +227,20 @@ public class IconButton extends Button implements Tooltip {
 	public static class IconButtonStyle extends ButtonStyle {
 
 		/**
-		 * {@link IconButtonStyle#disabledImageColor} is used to change the
+		 * {@link IconButtonStyle#disabledColor} is used to change the
 		 * {@link Color} of the image used in {@link IconButton} when the button
 		 * is disabled (it does not include an alternative image).
 		 */
-		public Color disabledImageColor;
+		public Color disabledColor;
 
 		/**
-		 * {@link IconButtonStyle#enabledImageColor} is used to change the
-		 * {@link Color} of the image used in {@link IconButton} when the button
-		 * is activated (it does not include an alternative image).
+		 * {@link IconButtonStyle#color} is used to change the {@link Color} of
+		 * the image used in {@link IconButton} when the button is activated (it
+		 * does not include an alternative image).
 		 */
-		public Color enabledImageColor;
+		public Color color;
+
+		public Color checkedColor;
 
 		/**
 		 * Default constructor used for reflection
@@ -238,15 +248,15 @@ public class IconButton extends Button implements Tooltip {
 		public IconButtonStyle() {
 		}
 
-		public IconButtonStyle(Color enabledImageColor, Color disabledImageColor) {
-			this.enabledImageColor = enabledImageColor;
-			this.disabledImageColor = disabledImageColor;
+		public IconButtonStyle(Color color, Color disabledColor) {
+			this.color = color;
+			this.disabledColor = disabledColor;
 		}
 
 		public IconButtonStyle(IconButtonStyle iconButtonStyle) {
 			super(iconButtonStyle);
-			this.enabledImageColor = iconButtonStyle.enabledImageColor;
-			this.disabledImageColor = iconButtonStyle.disabledImageColor;
+			this.color = iconButtonStyle.color;
+			this.disabledColor = iconButtonStyle.disabledColor;
 		}
 
 	}

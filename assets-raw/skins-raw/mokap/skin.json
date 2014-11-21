@@ -188,12 +188,12 @@
     },
     "es.eucm.ead.editor.view.widgets.IconButton$IconButtonStyle": {
         "default": {
-            "disabledImageColor": "gray",
-            "enabledImageColor": "black",
+            "disabledColor": "gray",
+            "color": "black",
         },
         "switch": {
-            "disabledImageColor": "white",
-            "enabledImageColor": "brown_moka",
+            "disabledColor": "white",
+            "color": "brown_moka",
             "up": "transparent_48_bg",
         },
         "pages": {
@@ -202,22 +202,26 @@
             "up": "transparent_48_bg",
         },
         "toolbar": {
-            "disabledImageColor": "gray",
-            "enabledImageColor": "white",
+            "disabledColor": "gray",
+            "color": "white",
             "up": "transparent_48_bg",
             "down": "pressed_48_bg"
         },
+        "edition": {
+            "color": "gray",
+            "checkedColor": "deep_orange"
+        },
         "context": {
-            "enabledImageColor": "gray",
+            "color": "gray",
             "up": "transparent_48_bg"
         },
         "drop_down": {
-            "enabledImageColor": "white",
+            "color": "white",
             "up": "drop_down_bg",
             "down": "pressed_48_bg"
         },
         "recent_color": {
-            "enabledImageColor": "white",
+            "color": "white",
             "up": "transparent_48_bg",
             "down": "pressed_48_bg"
         }
