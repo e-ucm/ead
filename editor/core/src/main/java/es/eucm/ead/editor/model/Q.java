@@ -317,4 +317,14 @@ public class Q {
 				System.currentTimeMillis() + "");
 		return scene;
 	}
+
+	public static ModelComponent getComponentById(ModelEntity sceneElement,
+			String componentId) {
+		for (ModelComponent component : sceneElement.getComponents()) {
+			if (componentId.equals(component.getId())) {
+				return component;
+			}
+		}
+		return null;
+	}
 }
