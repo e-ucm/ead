@@ -49,6 +49,7 @@ import es.eucm.ead.editor.control.Controller;
 import es.eucm.ead.editor.control.Selection;
 import es.eucm.ead.editor.control.actions.editor.AddLabel;
 import es.eucm.ead.editor.control.actions.editor.AddPaintedElement;
+import es.eucm.ead.editor.control.actions.editor.AddSceneElementFromResource;
 import es.eucm.ead.editor.control.actions.editor.Copy;
 import es.eucm.ead.editor.control.actions.editor.Paste;
 import es.eucm.ead.editor.control.actions.editor.Redo;
@@ -168,6 +169,9 @@ public class GroupEditorToolbar extends MultiWidget implements ModelView {
 				i18N.m("redo"), true, Redo.class));
 
 		compose.addSpace();
+
+		compose.add(WidgetBuilder.toolbarIcon(SkinConstants.IC_CLOUD,
+				i18N.m("gallery"), true, AddSceneElementFromResource.class));
 
 		compose.add(WidgetBuilder.toolbarIcon(SkinConstants.IC_PASTE,
 				i18N.m("paste"), true, Paste.class));
