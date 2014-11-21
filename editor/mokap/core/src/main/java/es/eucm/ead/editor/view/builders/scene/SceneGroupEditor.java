@@ -65,7 +65,6 @@ import es.eucm.ead.editor.model.events.ListEvent;
 import es.eucm.ead.editor.model.events.SelectionEvent;
 import es.eucm.ead.editor.utils.Actions2;
 import es.eucm.ead.editor.view.ModelView;
-import es.eucm.ead.editor.view.SkinConstants;
 import es.eucm.ead.editor.view.builders.scene.groupeditor.GroupEditor;
 import es.eucm.ead.editor.view.builders.scene.groupeditor.SceneListener;
 import es.eucm.ead.editor.view.builders.scene.groupeditor.SelectionBox;
@@ -128,9 +127,6 @@ public class SceneGroupEditor extends GroupEditor implements ModelView {
 				}
 			}
 		});
-		setBackground(controller.getApplicationAssets().getSkin()
-				.getDrawable(SkinConstants.DRAWABLE_BLANK));
-
 		addListener(new DragListener() {
 
 			private boolean draggingSelectBox;
@@ -138,8 +134,9 @@ public class SceneGroupEditor extends GroupEditor implements ModelView {
 			@Override
 			public void dragStart(InputEvent event, float x, float y,
 					int pointer) {
-				if (event.getTarget() instanceof SelectionBox) {
-					sceneEditor.hideToolbar();
+				if (event.getTarget() instanceof SelectionBox
+						&& !isOnlySelection()) {
+					sceneEditor.enterFullScreen();
 					draggingSelectBox = true;
 				} else {
 					draggingSelectBox = false;
@@ -150,7 +147,7 @@ public class SceneGroupEditor extends GroupEditor implements ModelView {
 			@Override
 			public void dragStop(InputEvent event, float x, float y, int pointer) {
 				if (draggingSelectBox) {
-					sceneEditor.showToolbar();
+					sceneEditor.exitFullscreen();
 				}
 			}
 		});
