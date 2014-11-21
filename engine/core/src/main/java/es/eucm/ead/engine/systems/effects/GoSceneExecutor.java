@@ -97,6 +97,11 @@ public class GoSceneExecutor extends EffectExecutor<GoScene> {
 		}
 
 		gameLoop.setPlaying(false);
+		if (effect.getSceneId() == null) {
+			Gdx.app.error("GoSceneExecutor",
+					"Scene id set to null. Effect was skipped");
+			return;
+		}
 		entitiesLoader.loadEntity(effect.getSceneId(),
 				new EntitiesLoader.EntityLoadedCallback() {
 					@Override
