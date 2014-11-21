@@ -48,13 +48,15 @@ public interface SkinConstants {
 	public static final String DRAWABLE_SEMI_BLANK = "blank75";
 	public static final String DRAWABLE_PAGE = "page";
 	public static final String DRAWABLE_PAGE_LEFT = "page_left";
+	public static final String DRAWABLE_PAGE_RIGHT = "page_right";
 	public static final String DRAWABLE_BLACK_BG = "black_bg";
 	public static final String DRAWABLE_LIGHT_GRAY_BG = "light_gray_bg";
 	public static final String DRAWABLE_TRANSPARENT_48 = "transparent_48_bg";
 
 	public static final String STYLE_DEFAULT = "default";
 	public static final String STYLE_CONTEXT = "context";
-	public static final String STYLE_TOOLBAR_ICON = "toolbar";
+	public static final String STYLE_EDITION = "edition";
+	public static final String STYLE_TOOLBAR = "toolbar";
 	public static final String STYLE_DROP_DOWN = "drop_down";
 	public static final String STYLE_ADD = "add";
 	public static final String STYLE_SCENE = "scene";
@@ -62,6 +64,7 @@ public interface SkinConstants {
 	public static final String STYLE_NAVIGATION_SCENE = "navigation_scene";
 	public static final String STYLE_NAVIGATION = "navigation";
 	public static final String STYLE_SLIDER_PAGES = "pages";
+	public static final String STYLE_CHECK = "check";
 
 	public static final String TABLET_GAME = "tablet_game";
 	public static final String TABLET_CARD = "tablet_card";
@@ -121,4 +124,5 @@ public interface SkinConstants {
 	public static final String IC_REDO = "ic_redo";
 	public static final String IC_GO = "ic_go";
 	public static final String IC_TOUCH = "ic_touch";
+	public static final String IC_LINK = "ic_link";
 }

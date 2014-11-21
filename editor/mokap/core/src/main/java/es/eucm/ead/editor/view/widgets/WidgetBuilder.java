@@ -64,7 +64,7 @@ public class WidgetBuilder {
 	 * This represents 0.76 cm (48px) in MDPI, the size for the buttons that we
 	 * want in all devices.
 	 */
-	private static float UNIT_SIZE = 48;
+	public static float UNIT_SIZE = 48;
 
 	private static Controller controller;
 
@@ -98,8 +98,8 @@ public class WidgetBuilder {
 
 	public static IconButton toolbarIcon(String icon, String tooltip,
 			Class action, Object... args) {
-		IconButton iconButton = icon(icon, SkinConstants.STYLE_TOOLBAR_ICON,
-				action, args);
+		IconButton iconButton = icon(icon, SkinConstants.STYLE_TOOLBAR, action,
+				args);
 		if (tooltip != null) {
 			iconButton.setTooltip(tooltip);
 			iconButton.addListener(TOOLTIP_LISTENER);
@@ -264,14 +264,17 @@ public class WidgetBuilder {
 	}
 
 	public static Tile tile(Actor background, String text) {
-		Tile tile = new Tile(controller.getApplicationAssets().getSkin());
+		Tile tile = new Tile(skin);
 		tile.setBackground(background);
 		tile.setText(text);
 		return tile;
 	}
 
 	public static Image image(String drawable) {
-		return new Image(controller.getApplicationAssets().getSkin(), drawable);
+		return new Image(skin, drawable);
 	}
 
+	public static Label label(String label, String styleEdition) {
+		return new Label(label, skin, styleEdition);
+	}
 }
