@@ -56,7 +56,7 @@ public class MultiWidget extends Container<WidgetGroup> {
 
 	private Array<WidgetGroup> widgets;
 
-	private float maxHeight;
+	protected float maxHeight;
 
 	private WidgetGroup toHide;
 
