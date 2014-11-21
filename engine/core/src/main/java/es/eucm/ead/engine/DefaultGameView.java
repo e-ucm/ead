@@ -249,9 +249,12 @@ public class DefaultGameView extends WidgetGroup implements GameView {
 
 		private void process(Actor actor, Type type) {
 			if (gameLoop.isPlaying()) {
-				TouchedComponent component = gameLoop.addAndGetComponent(
-						getActorEntity(actor), TouchedComponent.class);
-				component.event(type);
+				EngineEntity entity = getActorEntity(actor);
+				if (entity != null) {
+					TouchedComponent component = gameLoop.addAndGetComponent(
+							entity, TouchedComponent.class);
+					component.event(type);
+				}
 			}
 		}
 	}

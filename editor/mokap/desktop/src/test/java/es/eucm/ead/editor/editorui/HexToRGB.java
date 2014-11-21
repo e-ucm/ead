@@ -45,7 +45,7 @@ public class HexToRGB {
 
 	public static void main(String args[]) {
 		String hex = args[0] + "ff";
-		Color color = new Color(Integer.parseInt(hex, 16));
+		Color color = Color.valueOf(hex);
 		System.out.println("            \"r\": " + color.r + ",\n"
 				+ "            \"g\": " + color.g + ",\n"
 				+ "            \"b\": " + color.b + ",\n"
