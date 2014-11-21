@@ -59,7 +59,7 @@ public class GalleryTest extends UITest {
 
 	@Override
 	protected Actor buildUI(Skin skin, I18N i18n) {
-		gallery = new Gallery(Gdx.graphics.getHeight() / 2.25f, 3);
+		gallery = new Gallery(Gdx.graphics.getHeight() / 2.25f, 3, skin);
 
 		for (int i = 0; i < 3; i++) {
 			addItem();
