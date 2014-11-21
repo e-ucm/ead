@@ -282,7 +282,7 @@ public class BrushStrokes extends AbstractWidget {
 			if (pointer == 0) {
 				event.stop();
 				mesh.touchDown(x, y);
-				sceneEditor.hideToolbar();
+				sceneEditor.enterFullScreen();
 			}
 			return true;
 		}
@@ -299,7 +299,7 @@ public class BrushStrokes extends AbstractWidget {
 				int button) {
 			if (pointer == 0) {
 				mesh.touchUp(x, y);
-				sceneEditor.showToolbar();
+				sceneEditor.exitFullscreen();
 			}
 		}
 	};
