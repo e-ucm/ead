@@ -64,93 +64,93 @@ public class MultiToolbarTest extends UITest {
 		LinearLayout insertBar = new LinearLayout(true);
 
 		IconButton redo = new IconButton(SkinConstants.IC_REDO, 0, skin,
-				SkinConstants.STYLE_TOOLBAR_ICON);
+				SkinConstants.STYLE_TOOLBAR);
 		insertBar.add(redo);
 
 		IconButton undo = new IconButton(SkinConstants.IC_UNDO, 0, skin,
-				SkinConstants.STYLE_TOOLBAR_ICON);
+				SkinConstants.STYLE_TOOLBAR);
 		insertBar.add(undo);
 
 		IconButton compose = new IconButton(SkinConstants.IC_COMPOSE, 0, skin,
-				SkinConstants.STYLE_TOOLBAR_ICON);
+				SkinConstants.STYLE_TOOLBAR);
 		insertBar.add(compose);
 
 		IconButton menu = new IconButton(SkinConstants.IC_MENU, 0, skin,
-				SkinConstants.STYLE_TOOLBAR_ICON);
+				SkinConstants.STYLE_TOOLBAR);
 		insertBar.add(menu);
 
 		insertBar.addSpace();
 
 		IconButton paste = new IconButton(SkinConstants.IC_PASTE, 0, skin,
-				SkinConstants.STYLE_TOOLBAR_ICON);
+				SkinConstants.STYLE_TOOLBAR);
 		insertBar.add(paste);
 
 		IconButton add = new IconButton(SkinConstants.IC_ADD, 0, skin,
-				SkinConstants.STYLE_TOOLBAR_ICON);
+				SkinConstants.STYLE_TOOLBAR);
 		insertBar.add(add);
 
 		LinearLayout transformBar = new LinearLayout(true);
 
 		IconButton redo2 = new IconButton(SkinConstants.IC_REDO, 0, skin,
-				SkinConstants.STYLE_TOOLBAR_ICON);
+				SkinConstants.STYLE_TOOLBAR);
 		transformBar.add(redo2);
 
 		IconButton undo2 = new IconButton(SkinConstants.IC_UNDO, 0, skin,
-				SkinConstants.STYLE_TOOLBAR_ICON);
+				SkinConstants.STYLE_TOOLBAR);
 		transformBar.add(undo2);
 
 		IconButton check = new IconButton(SkinConstants.IC_CHECK, 0, skin,
-				SkinConstants.STYLE_TOOLBAR_ICON);
+				SkinConstants.STYLE_TOOLBAR);
 		transformBar.add(check);
 
 		transformBar.addSpace();
 
 		IconButton group = new IconButton(SkinConstants.IC_GROUP, 0, skin,
-				SkinConstants.STYLE_TOOLBAR_ICON);
+				SkinConstants.STYLE_TOOLBAR);
 		transformBar.add(group);
 
 		IconButton edit = new IconButton(SkinConstants.IC_EDIT, 0, skin,
-				SkinConstants.STYLE_TOOLBAR_ICON);
+				SkinConstants.STYLE_TOOLBAR);
 		transformBar.add(edit);
 
 		IconButton toBack = new IconButton(SkinConstants.IC_TO_BACK, 0, skin,
-				SkinConstants.STYLE_TOOLBAR_ICON);
+				SkinConstants.STYLE_TOOLBAR);
 		transformBar.add(toBack);
 
 		IconButton toFront = new IconButton(SkinConstants.IC_TO_FRONT, 0, skin,
-				SkinConstants.STYLE_TOOLBAR_ICON);
+				SkinConstants.STYLE_TOOLBAR);
 		transformBar.add(toFront);
 
 		IconButton moreTrans = new IconButton(SkinConstants.IC_MORE, 0, skin,
-				SkinConstants.STYLE_TOOLBAR_ICON);
+				SkinConstants.STYLE_TOOLBAR);
 		transformBar.add(moreTrans);
 
 		LinearLayout paintBar = new LinearLayout(true);
 
 		IconButton redo3 = new IconButton(SkinConstants.IC_REDO, 0, skin,
-				SkinConstants.STYLE_TOOLBAR_ICON);
+				SkinConstants.STYLE_TOOLBAR);
 		paintBar.add(redo3);
 
 		IconButton undo3 = new IconButton(SkinConstants.IC_UNDO, 0, skin,
-				SkinConstants.STYLE_TOOLBAR_ICON);
+				SkinConstants.STYLE_TOOLBAR);
 		paintBar.add(undo3);
 
 		IconButton circle = new IconButton(SkinConstants.IC_CIRCLE, 0, skin,
-				SkinConstants.STYLE_TOOLBAR_ICON);
+				SkinConstants.STYLE_TOOLBAR);
 		paintBar.add(circle);
 
 		IconButton brush = new IconButton(SkinConstants.IC_BRUSH, 0, skin,
-				SkinConstants.STYLE_TOOLBAR_ICON);
+				SkinConstants.STYLE_TOOLBAR);
 		paintBar.add(brush);
 
 		IconButton save = new IconButton(SkinConstants.IC_CHECK, 0, skin,
-				SkinConstants.STYLE_TOOLBAR_ICON);
+				SkinConstants.STYLE_TOOLBAR);
 		paintBar.add(save);
 
 		paintBar.addSpace();
 
 		IconButton cancel = new IconButton(SkinConstants.IC_CLOSE, 0, skin,
-				SkinConstants.STYLE_TOOLBAR_ICON);
+				SkinConstants.STYLE_TOOLBAR);
 		paintBar.add(cancel);
 
 		multiTop.addWidgets(insertBar, transformBar, paintBar);
