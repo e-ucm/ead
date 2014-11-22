@@ -42,38 +42,43 @@ import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.Group;
 import com.badlogic.gdx.scenes.scene2d.utils.Drawable;
+import es.eucm.ead.editor.view.builders.scene.groupeditor.GroupEditor.GroupEditorStyle;
 
 /**
  * Actor to represent the selection box over the selected objects
  */
 public class SelectionBox extends Group {
 
-	private static final Color pressedColor = new Color(0.5f, 0.5f, 0.5f, 0.3f);
-
-	private static final Color selectedColor = new Color(0, 1, 1, 0.3f);
-
-	private static final Color movingColor = new Color(0, 0, 1, 0.3f);
-
-	private static final int PRESSED = 0, SELECTED = 1, MOVING = 2;
+	public static enum State {
+		PRESSED, SELECTED, MOVING
+	}
 
 	private Actor target;
 
-	private int state;
+	private State state;
 
-	private Drawable selectionBackground;
+	private Drawable selectedBackground;
 
 	private float initialPinchRotation;
 
 	private float initialRotation;
 
+	private GroupEditor groupEditor;
+
+	private GroupEditorStyle style;
+
 	public Actor getTarget() {
 		return target;
 	}
 
-	public void setTarget(Actor target, Drawable selectionBackground) {
+	public void setTarget(Actor target, GroupEditor groupEditor,
+			GroupEditorStyle style) {
+		this.groupEditor = groupEditor;
 		this.target = target;
-		this.selectionBackground = selectionBackground;
-		this.state = PRESSED;
+		this.style = style;
+		this.state = State.PRESSED;
+		this.selectedBackground = style.selectedBackground;
+		setUserObject(target);
 		readTargetBounds();
 	}
 
@@ -98,24 +103,24 @@ public class SelectionBox extends Group {
 	}
 
 	public void selected() {
-		this.state = SELECTED;
+		this.state = State.SELECTED;
 	}
 
 	public void moving() {
 		Gdx.input.vibrate(50);
-		this.state = MOVING;
+		this.state = State.MOVING;
 	}
 
 	public boolean isPressed() {
-		return state == PRESSED;
+		return state == State.PRESSED;
 	}
 
 	public boolean isSelected() {
-		return state == SELECTED;
+		return state == State.SELECTED;
 	}
 
 	public boolean isMoving() {
-		return state == MOVING;
+		return state == State.MOVING;
 	}
 
 	public void updateRotation(float degrees) {
@@ -132,18 +137,23 @@ public class SelectionBox extends Group {
 
 	@Override
 	protected void drawChildren(Batch batch, float parentAlpha) {
+		Color color = null;
 		switch (state) {
 		case PRESSED:
-			batch.setColor(pressedColor);
+			color = style.pressedColor;
 			break;
 		case SELECTED:
-			batch.setColor(selectedColor);
+			color = groupEditor.isOnlySelection() ? style.onlySelectionColor
+					: groupEditor.isMultipleSelection() ? style.multiSelectedColor
+							: style.selectedColor;
 			break;
 		case MOVING:
-			batch.setColor(movingColor);
+			color = groupEditor.isMultipleSelection() ? style.multiMovingColor
+					: style.movingColor;
 			break;
 		}
-		selectionBackground.draw(batch, 0, 0, getWidth(), getHeight());
+		batch.setColor(color.r, color.g, color.b, style.alpha);
+		selectedBackground.draw(batch, 0, 0, getWidth(), getHeight());
 		batch.setColor(Color.WHITE);
 		super.drawChildren(batch, parentAlpha);
 	}

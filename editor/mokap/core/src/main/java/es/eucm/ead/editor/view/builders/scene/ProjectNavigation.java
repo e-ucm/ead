@@ -37,12 +37,16 @@
 package es.eucm.ead.editor.view.builders.scene;
 
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.scenes.scene2d.Actor;
+
 import es.eucm.ead.editor.control.Controller;
 import es.eucm.ead.editor.control.Selection;
+import es.eucm.ead.editor.control.Selection.Context;
 import es.eucm.ead.editor.control.actions.model.SetSelection;
 import es.eucm.ead.editor.view.SkinConstants;
 import es.eucm.ead.editor.view.widgets.WidgetBuilder;
 import es.eucm.ead.editor.view.widgets.galleries.ScenesGallery;
+import es.eucm.ead.editor.view.widgets.layouts.Gallery.Cell;
 import es.eucm.ead.engine.I18N;
 
 public class ProjectNavigation extends ScenesGallery {
@@ -50,11 +54,41 @@ public class ProjectNavigation extends ScenesGallery {
 	private I18N i18N;
 
 	public ProjectNavigation(Controller controller) {
-		super(Gdx.graphics.getHeight() / 2.15f, 1, controller);
+		super(Gdx.graphics.getHeight() / 2.15f, 1, controller,
+				SkinConstants.STYLE_NAVIGATION);
 		gallery.pad(0);
-		gallery.setBackground(controller.getApplicationAssets().getSkin()
-				.getDrawable(SkinConstants.DRAWABLE_PAGE_LEFT));
 		i18N = controller.getApplicationAssets().getI18N();
+	}
+
+	@Override
+	public Cell addTile(String id, String title, String thumbnailPath) {
+		Cell cell = super.addTile(id, title, thumbnailPath);
+		cell.setName(id);
+		return cell;
+	}
+
+	@Override
+	public void prepare() {
+		super.prepare();
+
+		for (Actor actor : gallery.getChildren()) {
+			if (actor instanceof Cell) {
+				((Cell) actor).setChecked(false);
+			}
+		}
+
+		Context context = controller.getModel().getSelection()
+				.getContext(Selection.SCENE);
+		if (context != null && context.getSelection().length > 0) {
+			String sceneId = controller.getModel().getIdFor(
+					context.getSelection()[0]);
+			if (sceneId != null) {
+				Actor actor = gallery.findActor(sceneId);
+				if (actor instanceof Cell) {
+					((Cell) actor).setChecked(true);
+				}
+			}
+		}
 	}
 
 	@Override

@@ -36,8 +36,7 @@
  */
 package es.eucm.ead.editor.view.builders.scene.groupeditor;
 
-import java.util.Comparator;
-
+import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.math.Polygon;
 import com.badlogic.gdx.math.Vector2;
@@ -48,35 +47,43 @@ import com.badlogic.gdx.scenes.scene2d.Group;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.ui.Button.ButtonStyle;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
-import com.badlogic.gdx.scenes.scene2d.utils.ActorGestureListener;
 import com.badlogic.gdx.scenes.scene2d.utils.DragListener;
 import com.badlogic.gdx.scenes.scene2d.utils.Drawable;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.Pools;
 import com.badlogic.gdx.utils.Timer;
 import com.badlogic.gdx.utils.Timer.Task;
-
 import es.eucm.ead.editor.utils.GeometryUtils;
 import es.eucm.ead.editor.view.builders.scene.groupeditor.GroupEditor.GroupEvent.Type;
+import es.eucm.ead.editor.view.listeners.GestureListener;
 import es.eucm.ead.editor.view.widgets.AbstractWidget;
+
+import java.util.Comparator;
 
 public class GroupEditor extends AbstractWidget {
 
 	public static final float NEAR_CM = 1.0f;
 
-	private Drawable background;
+	private GroupEditorStyle style;
+
+	private Drawable selectedBackground;
+
+	/**
+	 * Actors in the current selection
+	 */
+	private Array<Actor> selection;
+
+	private boolean multipleSelection;
 
 	private Group rootGroup;
 
-	private Group selectionLayer;
-
-	private Array<Actor> selection;
+	private SelectionGroup selectionGroup;
 
 	private Array<Actor> layersTouched;
 
 	private SelectLayerMenu selectLayerMenu;
 
-	private boolean multipleSelection;
+	private boolean onlySelection;
 
 	private ActorComparator comparator;
 
@@ -85,6 +92,7 @@ public class GroupEditor extends AbstractWidget {
 	}
 
 	public GroupEditor(GroupEditorStyle style) {
+		this.style = style;
 		selection = new Array<Actor>();
 		layersTouched = new Array<Actor>();
 		selectLayerMenu = new SelectLayerMenu(style.layerButtonStyle,
@@ -94,8 +102,8 @@ public class GroupEditor extends AbstractWidget {
 
 		comparator = new ActorComparator();
 
-		selectionLayer = new Group();
-		addActor(selectionLayer);
+		selectionGroup = new SelectionGroup(this, style);
+		addActor(selectionGroup);
 		addActor(selectLayerMenu);
 
 		TouchRepresentation touchRepresentation = new TouchRepresentation(
@@ -110,7 +118,7 @@ public class GroupEditor extends AbstractWidget {
 			@Override
 			public void drag(InputEvent event, float x, float y, int pointer) {
 				if (pointer == 0) {
-					for (Actor actor : selectionLayer.getChildren()) {
+					for (Actor actor : selectionGroup.getChildren()) {
 						if (actor instanceof SelectionBox) {
 							SelectionBox selectionBox = (SelectionBox) actor;
 							if (selectionBox.isMoving()) {
@@ -123,14 +131,23 @@ public class GroupEditor extends AbstractWidget {
 				}
 			}
 		});
+		this.selectedBackground = style.selectedBackground;
 	}
 
 	public void setMultipleSelection(boolean multipleSelection) {
 		this.multipleSelection = multipleSelection;
 	}
 
-	public void setBackground(Drawable background) {
-		this.background = background;
+	public boolean isMultipleSelection() {
+		return multipleSelection;
+	}
+
+	public boolean isOnlySelection() {
+		return onlySelection;
+	}
+
+	public void setOnlySelection(boolean onlySelection) {
+		this.onlySelection = onlySelection;
 	}
 
 	/**
@@ -151,8 +168,8 @@ public class GroupEditor extends AbstractWidget {
 
 	@Override
 	protected void drawChildren(Batch batch, float parentAlpha) {
-		if (background != null) {
-			background.draw(batch, 0, 0, getWidth(), getHeight());
+		if (selectedBackground != null) {
+			selectedBackground.draw(batch, 0, 0, getWidth(), getHeight());
 		}
 		super.drawChildren(batch, parentAlpha);
 	}
@@ -170,9 +187,9 @@ public class GroupEditor extends AbstractWidget {
 		if (addBox) {
 			GeometryUtils.adjustGroup(actor);
 			SelectionBox selectionBox = Pools.obtain(SelectionBox.class);
-			selectionBox.setTarget(actor, background);
+			selectionBox.setTarget(actor, this, style);
 			selectionBox.selected();
-			selectionLayer.addActor(selectionBox);
+			selectionGroup.addActor(selectionBox);
 		}
 	}
 
@@ -181,10 +198,10 @@ public class GroupEditor extends AbstractWidget {
 	 */
 	public void clearSelection() {
 		selection.clear();
-		for (Actor selectionBox : selectionLayer.getChildren()) {
+		for (Actor selectionBox : selectionGroup.getChildren()) {
 			Pools.free(selectionBox);
 		}
-		selectionLayer.clearChildren();
+		selectionGroup.clearChildren();
 	}
 
 	private Actor getDirectChild(Group parent, Actor child) {
@@ -200,14 +217,14 @@ public class GroupEditor extends AbstractWidget {
 	}
 
 	public void refreshSelectionBox() {
-		for (Actor actor : selectionLayer.getChildren()) {
+		for (Actor actor : selectionGroup.getChildren()) {
 			if (actor instanceof SelectionBox) {
 				((SelectionBox) actor).readTargetBounds();
 			}
 		}
 	}
 
-	public class GroupEditorListener extends ActorGestureListener {
+	public class GroupEditorListener extends GestureListener {
 
 		private TouchDownTask task = new TouchDownTask();
 
@@ -218,45 +235,32 @@ public class GroupEditor extends AbstractWidget {
 		private boolean resetAngle = true;
 
 		@Override
-		public void touchDown(InputEvent event, float x, float y, int pointer,
-				int button) {
-
-			if (event.isStopped()) {
-				// If the event is stopped, long press must be cancelled
-				getGestureDetector().cancel();
-			}
-
+		public boolean touchDown(InputEvent event, float x, float y,
+				int pointer, int button) {
 			if (!event.isHandled() && pointer == 0) {
-
-				if (selectionLayer.getChildren().size > 0) {
-					// Event is processed by the selection layer. We don't want
-					// any other listener processing this touchDown
-					event.stop();
-				}
-
-				Actor target = getDirectChild(selectionLayer, event.getTarget());
+				Actor target = getDirectChild(selectionGroup, event.getTarget());
 				if (target instanceof SelectionBox) {
-					for (Actor actor : selectionLayer.getChildren()) {
+					for (Actor actor : selectionGroup.getChildren()) {
 						((SelectionBox) actor).moving();
 					}
 				} else {
 					task.cancel();
 					task.eventTarget = event.getTarget();
-					if (selectionLayer.getChildren().size == 0) {
+					if (selectionGroup.getChildren().size == 0) {
 						task.run();
 					} else {
 						Timer.schedule(task, 0.5f);
 					}
 				}
 			}
+			return true;
 		}
 
 		@Override
-		public void pan(InputEvent event, float x, float y, float deltaX,
-				float deltaY) {
+		public void pan(float x, float y, float deltaX, float deltaY) {
 			// If panning, cancel selection process, removing the pressed
 			// selection box
-			for (Actor selectionBox : selectionLayer.getChildren()) {
+			for (Actor selectionBox : selectionGroup.getChildren()) {
 				if (((SelectionBox) selectionBox).isPressed()) {
 					selectionBox.remove();
 					Pools.free(selectionBox);
@@ -265,29 +269,31 @@ public class GroupEditor extends AbstractWidget {
 		}
 
 		@Override
-		public void pinch(InputEvent event, Vector2 initialPointer1,
-				Vector2 initialPointer2, Vector2 pointer1, Vector2 pointer2) {
+		public void pinch(Vector2 initialPointer1, Vector2 initialPointer2,
+				Vector2 pointer1, Vector2 pointer2) {
 			task.cancel();
-			float angle = tmp.set(pointer1.x - pointer2.x,
-					pointer1.y - pointer2.y).angle();
-			for (Actor selectionBox : selectionLayer.getChildren()) {
-				if (selectionBox instanceof SelectionBox
-						&& !((SelectionBox) selectionBox).isPressed()) {
-					((SelectionBox) selectionBox).selected();
-					if (resetAngle) {
-						((SelectionBox) selectionBox)
-								.setInitialPinchRotation(angle);
-					} else {
-						((SelectionBox) selectionBox).updateRotation(angle);
+			if (!isOnlySelection()) {
+				float angle = tmp.set(pointer1.x - pointer2.x,
+						pointer1.y - pointer2.y).angle();
+				for (Actor selectionBox : selectionGroup.getChildren()) {
+					if (selectionBox instanceof SelectionBox
+							&& !((SelectionBox) selectionBox).isPressed()) {
+						((SelectionBox) selectionBox).selected();
+						if (resetAngle) {
+							((SelectionBox) selectionBox)
+									.setInitialPinchRotation(angle);
+						} else {
+							((SelectionBox) selectionBox).updateRotation(angle);
+						}
 					}
 				}
+				pinching = true;
+				resetAngle = false;
 			}
-			pinching = true;
-			resetAngle = false;
 		}
 
 		@Override
-		public boolean longPress(Actor actor, float x, float y) {
+		public boolean longPress(float x, float y) {
 			if (!multipleSelection) {
 				clearSelection();
 				fireSelection();
@@ -312,22 +318,19 @@ public class GroupEditor extends AbstractWidget {
 					task.run();
 					task.cancel();
 				}
-				Actor target = selectionLayer.hit(x, y, true);
+				Actor target = selectionGroup.hit(x, y, true);
 				if (target instanceof SelectionBox) {
 					if (((SelectionBox) target).isPressed()) {
 						addToSelection(((SelectionBox) target).getTarget(),
 								false);
 						fireSelection();
 					} else if (((SelectionBox) target).isMoving()) {
-						for (Actor actor : selectionLayer.getChildren()) {
+						for (Actor actor : selectionGroup.getChildren()) {
 							((SelectionBox) actor).selected();
 						}
 						fireTransformed();
 					}
 					((SelectionBox) target).selected();
-				} else if (!multipleSelection) {
-					clearSelection();
-					fireSelection();
 				}
 			}
 		}
@@ -345,8 +348,8 @@ public class GroupEditor extends AbstractWidget {
 					clearSelection();
 				}
 				SelectionBox selectionBox = Pools.obtain(SelectionBox.class);
-				selectionBox.setTarget(target, background);
-				selectionLayer.addActor(selectionBox);
+				selectionBox.setTarget(target, GroupEditor.this, style);
+				selectionGroup.addActor(selectionBox);
 			}
 		}
 	}
@@ -418,6 +421,8 @@ public class GroupEditor extends AbstractWidget {
 
 	public static class GroupEditorStyle {
 
+		public Drawable selectedBackground;
+
 		/**
 		 * Background for layer selector
 		 */
@@ -426,6 +431,21 @@ public class GroupEditor extends AbstractWidget {
 		public ButtonStyle layerButtonStyle;
 
 		public Drawable touch;
+
+		public Color pressedColor;
+
+		public Color selectedColor;
+
+		public Color movingColor;
+
+		public Color multiSelectedColor;
+
+		public Color multiMovingColor;
+
+		public Color onlySelectionColor;
+
+		public float alpha;
+
 	}
 
 	public static class GroupEvent extends Event {
