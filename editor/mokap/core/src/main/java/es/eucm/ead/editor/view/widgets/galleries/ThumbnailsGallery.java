@@ -50,6 +50,8 @@ import es.eucm.ead.editor.view.widgets.AbstractWidget;
 import es.eucm.ead.editor.view.widgets.Tile;
 import es.eucm.ead.editor.view.widgets.WidgetBuilder;
 import es.eucm.ead.editor.view.widgets.layouts.Gallery;
+import es.eucm.ead.editor.view.widgets.layouts.Gallery.Cell;
+import es.eucm.ead.editor.view.widgets.layouts.Gallery.GalleryStyle;
 import es.eucm.ead.engine.I18N;
 import es.eucm.ead.engine.assets.Assets;
 import es.eucm.ead.engine.assets.Assets.AssetLoadedCallback;
@@ -74,12 +76,28 @@ public abstract class ThumbnailsGallery extends AbstractWidget implements
 
 	public ThumbnailsGallery(float rowHeight, int columns, Assets assets,
 			Skin skin, I18N i18N) {
-		addActor(gallery = new Gallery(rowHeight, columns));
+		this(rowHeight, columns, assets, skin, i18N, skin
+				.get(GalleryStyle.class));
+	}
+
+	public ThumbnailsGallery(float rowHeight, int columns, Assets assets,
+			Skin skin, I18N i18N, String galleryStyle) {
+		this(rowHeight, columns, assets, skin, i18N, skin.get(galleryStyle,
+				GalleryStyle.class));
+	}
+
+	public ThumbnailsGallery(float rowHeight, int columns, Assets assets,
+			Skin skin, I18N i18N, GalleryStyle galleryStyle) {
+		addActor(gallery = new Gallery(rowHeight, columns, galleryStyle));
 		addActor(add = WidgetBuilder.button(SkinConstants.STYLE_ADD));
 		prepareAddButton(add);
 		this.assets = assets;
 		this.skin = skin;
 		this.i18N = i18N;
+	}
+
+	public Gallery getGallery() {
+		return gallery;
 	}
 
 	@Override
@@ -96,7 +114,7 @@ public abstract class ThumbnailsGallery extends AbstractWidget implements
 				WidgetBuilder.dpToPixels(32), width, getPrefHeight(add));
 	}
 
-	public void addTile(String id, String title, String thumbnailPath) {
+	public Cell addTile(String id, String title, String thumbnailPath) {
 		Image image;
 		if (thumbnailPath == null) {
 			image = new Image(skin, SkinConstants.DRAWABLE_LOGO);
@@ -112,7 +130,7 @@ public abstract class ThumbnailsGallery extends AbstractWidget implements
 		Tile tile = WidgetBuilder.tile(image, title);
 		tile.setName(id);
 		prepareGalleryItem(tile, id);
-		gallery.add(tile);
+		return gallery.add(tile);
 	}
 
 	protected abstract void prepareAddButton(Actor actor);

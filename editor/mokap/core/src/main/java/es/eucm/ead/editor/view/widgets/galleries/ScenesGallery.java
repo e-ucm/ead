@@ -58,7 +58,15 @@ import java.util.Map.Entry;
 public class ScenesGallery extends ThumbnailsGallery implements
 		ModelListener<ResourceEvent>, ModelView, AssetLoadingListener<Texture> {
 
-	private Controller controller;
+	protected Controller controller;
+
+	public ScenesGallery(float rowHeight, int columns, Controller controller,
+			String galleryStyle) {
+		super(rowHeight, columns, controller.getEditorGameAssets(), controller
+				.getApplicationAssets().getSkin(), controller
+				.getApplicationAssets().getI18N(), galleryStyle);
+		this.controller = controller;
+	}
 
 	public ScenesGallery(float rowHeight, int columns, Controller controller) {
 		super(rowHeight, columns, controller.getEditorGameAssets(), controller
