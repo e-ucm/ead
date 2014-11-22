@@ -40,8 +40,11 @@ import es.eucm.ead.editor.control.Commands;
 import es.eucm.ead.editor.control.Commands.CommandListener;
 import es.eucm.ead.editor.control.Commands.CommandsStack;
 import es.eucm.ead.editor.control.Controller;
+import es.eucm.ead.editor.control.Preferences;
 import es.eucm.ead.editor.control.Selection;
 import es.eucm.ead.editor.control.Selection.Context;
+import es.eucm.ead.editor.control.actions.editor.ShowInfoPanel;
+import es.eucm.ead.editor.control.actions.editor.ShowInfoPanel.TypePanel;
 import es.eucm.ead.editor.control.actions.editor.ShowToast;
 import es.eucm.ead.editor.control.actions.model.SetSelection;
 import es.eucm.ead.editor.control.commands.Command;
@@ -188,6 +191,9 @@ public class SceneEditor extends BaseView implements ModelView,
 			} else {
 				toolbar.setSelectedWidget(TRANSFORM);
 			}
+
+			controller.action(ShowInfoPanel.class, TypePanel.COMPOSE,
+					Preferences.HELP_MODE_COMPOSE);
 			break;
 		case DRAW:
 			toolbar.setSelectedWidget(PAINT);
@@ -213,6 +219,9 @@ public class SceneEditor extends BaseView implements ModelView,
 
 			controller.action(ShowToast.class, controller
 					.getApplicationAssets().getI18N().m("play.back"));
+
+			controller.action(ShowInfoPanel.class, TypePanel.PLAY,
+					Preferences.HELP_MODE_PLAY);
 			break;
 		}
 	}

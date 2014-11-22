@@ -38,17 +38,23 @@ package es.eucm.ead.editor.view.builders.scene;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.math.Interpolation;
+import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.Group;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.Touchable;
 import com.badlogic.gdx.scenes.scene2d.actions.Actions;
+import com.badlogic.gdx.scenes.scene2d.utils.ActorGestureListener;
 import com.badlogic.gdx.scenes.scene2d.utils.DragListener;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.Pools;
 import com.badlogic.gdx.utils.Predicate;
+
 import es.eucm.ead.editor.control.Controller;
+import es.eucm.ead.editor.control.Preferences;
 import es.eucm.ead.editor.control.Selection;
+import es.eucm.ead.editor.control.actions.editor.ShowInfoPanel;
+import es.eucm.ead.editor.control.actions.editor.ShowInfoPanel.TypePanel;
 import es.eucm.ead.editor.model.Model;
 import es.eucm.ead.editor.model.Model.FieldListener;
 import es.eucm.ead.editor.model.Model.ModelListener;
@@ -63,6 +69,7 @@ import es.eucm.ead.editor.view.SkinConstants;
 import es.eucm.ead.editor.view.builders.scene.groupeditor.GroupEditor;
 import es.eucm.ead.editor.view.builders.scene.groupeditor.SceneListener;
 import es.eucm.ead.editor.view.builders.scene.groupeditor.SelectionBox;
+import es.eucm.ead.editor.view.widgets.AbstractWidget;
 import es.eucm.ead.engine.EntitiesLoader;
 import es.eucm.ead.engine.entities.EngineEntity;
 import es.eucm.ead.schema.components.ModelComponent;
@@ -98,6 +105,29 @@ public class SceneGroupEditor extends GroupEditor implements ModelView {
 		this.model = controller.getModel();
 		this.entitiesLoader = controller.getEngine().getEntitiesLoader();
 		addListener(new SceneListener(controller));
+		addListener(new ActorGestureListener() {
+
+			private final float DISTANCE_HELP_X = AbstractWidget
+					.cmToXPixels(0.7f);
+			private final float DISTANCE_HELP_Y = AbstractWidget
+					.cmToYPixels(0.7f);
+
+			private Rectangle lastTap = new Rectangle();
+
+			@Override
+			public void tap(InputEvent event, float x, float y, int count,
+					int button) {
+				if (count == 1) {
+					if (lastTap.contains(x, y)) {
+						controller.action(ShowInfoPanel.class,
+								TypePanel.ACCURATE_SELECTION,
+								Preferences.HELP_ACCURATE_SELECTION);
+					}
+					lastTap.set(x - DISTANCE_HELP_X / 2, y - DISTANCE_HELP_Y
+							/ 2, DISTANCE_HELP_X, DISTANCE_HELP_Y);
+				}
+			}
+		});
 		setBackground(controller.getApplicationAssets().getSkin()
 				.getDrawable(SkinConstants.DRAWABLE_BLANK));
 

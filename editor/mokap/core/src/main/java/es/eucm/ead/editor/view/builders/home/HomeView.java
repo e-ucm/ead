@@ -43,6 +43,8 @@ import es.eucm.ead.editor.control.Controller;
 import es.eucm.ead.editor.control.MokapController.BackListener;
 import es.eucm.ead.editor.control.Preferences;
 import es.eucm.ead.editor.control.actions.editor.Exit;
+import es.eucm.ead.editor.control.actions.editor.ShowInfoPanel;
+import es.eucm.ead.editor.control.actions.editor.ShowInfoPanel.TypePanel;
 import es.eucm.ead.editor.view.builders.ViewBuilder;
 import es.eucm.ead.editor.view.widgets.galleries.ProjectsGallery;
 
@@ -64,6 +66,8 @@ public class HomeView implements ViewBuilder, BackListener {
 		controller.getPreferences().putString(Preferences.LAST_OPENED_GAME, "");
 		controller.getEditorGameAssets().clear();
 		view.prepare();
+		controller.action(ShowInfoPanel.class, TypePanel.INTRODUCTION,
+				Preferences.HELP_INTRODUCTION);
 		return view;
 	}
 
