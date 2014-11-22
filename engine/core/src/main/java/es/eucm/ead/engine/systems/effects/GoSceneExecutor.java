@@ -74,6 +74,7 @@ public class GoSceneExecutor extends EffectExecutor<GoScene> {
 		transitionManager.addListener(new EndListener() {
 			@Override
 			public void transitionFinished() {
+				gameView.clearLayer(Layer.SCENE_CONTENT, true);
 				gameView.addEntityToLayer(Layer.SCENE_CONTENT, nextScreen);
 				gameLoop.setPlaying(true);
 			}

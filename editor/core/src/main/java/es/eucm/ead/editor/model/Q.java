@@ -262,6 +262,10 @@ public class Q {
 		}
 	}
 
+	public static String getThumbnailPath(ModelEntity scene) {
+		return Q.getComponent(scene, Thumbnail.class).getPath();
+	}
+
 	/**
 	 * Returns a new Entity positioned in the center of the device
 	 */

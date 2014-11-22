@@ -400,7 +400,7 @@
             "checked": "deep_orange_semi_bg"
         }
     },
-    "es.eucm.ead.editor.view.builders.scene.GroupContext$GroupContextStyle": {
+    "es.eucm.ead.editor.view.builders.scene.context.GroupContext$GroupContextStyle": {
         "default": {
             "background": "blank",
             "iconsBackground": "semi_transparent_bg",
