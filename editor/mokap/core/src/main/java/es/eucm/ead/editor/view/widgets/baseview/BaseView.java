@@ -44,9 +44,8 @@ import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.Touchable;
 import com.badlogic.gdx.scenes.scene2d.actions.Actions;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
-import com.badlogic.gdx.scenes.scene2d.utils.ActorGestureListener;
-import com.badlogic.gdx.scenes.scene2d.utils.DragListener;
 import com.badlogic.gdx.scenes.scene2d.utils.Drawable;
+import es.eucm.ead.editor.view.listeners.GestureListener;
 import es.eucm.ead.editor.view.widgets.AbstractWidget;
 
 /**
@@ -90,74 +89,32 @@ public class BaseView extends AbstractWidget {
 		addActor(navigation = new Navigation(style));
 
 		// Listens for fling gestures to quickly show hidden panels
-		addListener(new ActorGestureListener() {
-
-			private int area;
-
-			@Override
-			public void touchDown(InputEvent event, float x, float y,
-					int pointer, int button) {
-				area = event.isStopped() || pointer != 0 ? -1 : area(x, y);
-				super.touchDown(event, x, y, pointer, button);
-			}
-
-			@Override
-			public void fling(InputEvent event, float velocityX,
-					float velocityY, int button) {
-				if (!event.isStopped()) {
-					switch (area) {
-					case NAVIGATION_AREA:
-						if (velocityX > cmToXPixels(FLING_MIN_VELOCITY_CM)) {
-							navigation.show();
-							event.stop();
-						}
-						break;
-					case SELECTION_CONTEXT_AREA:
-						if (velocityX < cmToXPixels(FLING_MIN_VELOCITY_CM)) {
-							selectionContext.show();
-							event.stop();
-						}
-						break;
-					case -1:
-						if (velocityX > cmToXPixels(FLING_MIN_VELOCITY_CM)) {
-							selectionContext.hide();
-							event.stop();
-						}
-						break;
-					}
-				}
-			}
-		});
-
-		// Listens for drag to slowly show hidden panels
-		addListener(new DragListener() {
+		addListener(new GestureListener() {
 
 			private int area;
 
 			@Override
 			public boolean touchDown(InputEvent event, float x, float y,
 					int pointer, int button) {
-				area = area(x, y);
+				area = pointer != 0 ? -1 : area(x, y);
 				return super.touchDown(event, x, y, pointer, button);
 			}
 
 			@Override
-			public void drag(InputEvent event, float x, float y, int pointer) {
-				if (!event.isStopped()) {
-					switch (area) {
-					case NAVIGATION_AREA:
-						navigation.displace(event, getDeltaX(), 0);
-						break;
-					case SELECTION_CONTEXT_AREA:
-						selectionContext.displace(event, getDeltaX(), 0);
-						break;
-					}
+			public void pan(float x, float y, float deltaX, float deltaY) {
+				switch (area) {
+				case NAVIGATION_AREA:
+					navigation.displace(deltaX, 0);
+					break;
+				case SELECTION_CONTEXT_AREA:
+					selectionContext.displace(deltaX, 0);
+					break;
 				}
 			}
 
 			@Override
-			public void dragStop(InputEvent event, float x, float y, int pointer) {
-				if (!event.isStopped()) {
+			public void panStop(float x, float y, int pointer, int button) {
+				if (pointer == 0) {
 					switch (area) {
 					case NAVIGATION_AREA:
 						navigation.dragStop();
@@ -168,6 +125,28 @@ public class BaseView extends AbstractWidget {
 					}
 				}
 			}
+
+			@Override
+			public void fling(float velocityX, float velocityY, int button) {
+				switch (area) {
+				case NAVIGATION_AREA:
+					if (velocityX > cmToXPixels(FLING_MIN_VELOCITY_CM)) {
+						navigation.show();
+					}
+					break;
+				case SELECTION_CONTEXT_AREA:
+					if (velocityX < cmToXPixels(FLING_MIN_VELOCITY_CM)) {
+						selectionContext.show();
+					}
+					break;
+				case -1:
+					if (velocityX > cmToXPixels(FLING_MIN_VELOCITY_CM)) {
+						selectionContext.hide();
+					}
+					break;
+				}
+			}
+
 		});
 	}
 

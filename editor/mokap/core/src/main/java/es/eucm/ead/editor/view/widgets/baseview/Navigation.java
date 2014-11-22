@@ -153,19 +153,9 @@ class Navigation extends Panel {
 	}
 
 	@Override
-	public void displace(InputEvent event, float deltaX, float deltaY) {
-
-		// Panel does not scroll if the background is the target being dragged
-		if (event != null && event.getTarget() == background) {
-			deltaY = 0;
-		}
-
-		navigation.setX(Math.max(Math.min(0, navigation.getX() - deltaX),
+	public void displace(float deltaX, float deltaY) {
+		navigation.setX(Math.max(Math.min(0, navigation.getX() + deltaX),
 				-navigation.getWidth()));
-		navigation.setY(Math.min(
-				0,
-				Math.max(getHeight() - navigation.getHeight(),
-						navigation.getY() - deltaY)));
 
 		background.setVisible(true);
 		background.getColor().a = Math.max(
@@ -203,11 +193,5 @@ class Navigation extends Panel {
 	@Override
 	public boolean hasContent() {
 		return navigation != null;
-	}
-
-	@Override
-	protected boolean isVelocityToScroll(InputEvent event, float vy) {
-		return event.getTarget() != background
-				&& super.isVelocityToScroll(event, vy);
 	}
 }

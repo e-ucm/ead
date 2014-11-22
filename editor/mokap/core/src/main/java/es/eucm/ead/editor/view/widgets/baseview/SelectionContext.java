@@ -36,8 +36,8 @@
  */
 package es.eucm.ead.editor.view.widgets.baseview;
 
+import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.scenes.scene2d.Actor;
-import com.badlogic.gdx.scenes.scene2d.InputEvent;
 
 /**
  * Right panel in base view
@@ -51,17 +51,16 @@ public class SelectionContext extends Panel {
 			this.selectionContext.remove();
 		}
 		this.selectionContext = selectionContext;
-		addActor(selectionContext);
+		if (selectionContext != null) {
+			addActor(selectionContext);
+		}
 	}
 
 	@Override
-	public void displace(InputEvent event, float deltaX, float deltaY) {
+	public void displace(float deltaX, float deltaY) {
 		selectionContext.setX(Math.min(Math.max(
 				getWidth() - selectionContext.getWidth(),
-				selectionContext.getX() - deltaX), getWidth()));
-		selectionContext.setY(Math.min(0, Math.max(getHeight()
-				- selectionContext.getHeight(), selectionContext.getY()
-				- deltaY)));
+				selectionContext.getX() + deltaX), getWidth()));
 	}
 
 	@Override
@@ -103,10 +102,13 @@ public class SelectionContext extends Panel {
 	public void layout() {
 		super.layout();
 		if (selectionContext != null) {
-			float height = Math.max(getPrefHeight(selectionContext),
-					getHeight());
-			setBounds(selectionContext, getWidth(), getHeight() - height,
-					getPrefWidth(selectionContext), height);
+			float newWidth = getPrefWidth(selectionContext);
+			if (!MathUtils.isEqual(newWidth, selectionContext.getWidth(), 0.1f)) {
+				float height = Math.max(getPrefHeight(selectionContext),
+						getHeight());
+				setBounds(selectionContext, getWidth(), getHeight() - height,
+						getPrefWidth(selectionContext), height);
+			}
 		}
 	}
 }

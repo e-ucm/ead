@@ -38,9 +38,8 @@ package es.eucm.ead.editor.view.widgets.baseview;
 
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.Touchable;
-import com.badlogic.gdx.scenes.scene2d.utils.ActorGestureListener;
-import com.badlogic.gdx.scenes.scene2d.utils.DragListener;
 
+import es.eucm.ead.editor.view.listeners.GestureListener;
 import es.eucm.ead.editor.view.widgets.AbstractWidget;
 
 /**
@@ -48,65 +47,58 @@ import es.eucm.ead.editor.view.widgets.AbstractWidget;
  */
 abstract class Panel extends AbstractWidget {
 
-	public static final float FLING_TIME = 1.0f;
-
 	protected boolean hidden;
-
-	private float velocityY;
-
-	private float flingTimer;
 
 	public Panel() {
 		setTouchable(Touchable.childrenOnly);
-		addListener(new DragListener() {
+		addListener(new GestureListener() {
+
+			private boolean dragStarted;
 
 			private boolean xLocked;
 
-			@Override
-			public void dragStart(InputEvent event, float x, float y,
-					int pointer) {
-				xLocked = Math.abs(getTouchDownX() - x) < Math
-						.abs(getTouchDownY() - y);
+			private float touchDownX;
+
+			private float touchDownY;
+
+			public void dragStart(float x, float y) {
+				xLocked = Math.abs(touchDownX - x) < Math.abs(touchDownY - y);
 			}
 
 			@Override
-			public void drag(InputEvent event, float x, float y, int pointer) {
-				Panel.this.displace(event, xLocked ? 0 : getDeltaX(),
-						xLocked ? getDeltaY() : 0);
+			public boolean touchDown(InputEvent event, float x, float y,
+					int pointer, int button) {
+				if (pointer == 0) {
+					dragStarted = false;
+					touchDownX = x;
+					touchDownY = y;
+				}
+				return super.touchDown(event, x, y, pointer, button);
 			}
 
 			@Override
-			public void dragStop(InputEvent event, float x, float y, int pointer) {
-				Panel.this.dragStop();
+			public void pan(float x, float y, float deltaX, float deltaY) {
+				if (!dragStarted) {
+					dragStart(x, y);
+					dragStarted = true;
+				}
+				Panel.this.displace(xLocked ? 0 : deltaX, xLocked ? deltaY : 0);
 			}
 
-		});
-
-		addListener(new ActorGestureListener() {
 			@Override
-			public void fling(InputEvent event, float vx, float vy, int button) {
+			public void panStop(float x, float y, int pointer, int button) {
+				if (dragStarted && pointer == 0) {
+					Panel.this.dragStop();
+				}
+			}
+
+			@Override
+			public void fling(float vx, float vy, int button) {
 				if (isVelocityToHide(vx, vy)) {
 					hide();
-				} else if (isVelocityToScroll(event, vy)) {
-					flingTimer = FLING_TIME;
-					velocityY = -vy;
 				}
 			}
 		});
-	}
-
-	@Override
-	public void act(float delta) {
-		super.act(delta);
-		if (flingTimer > 0) {
-			float alpha = flingTimer / FLING_TIME;
-			displace(null, 0, velocityY * alpha * delta);
-
-			flingTimer -= delta;
-			if (flingTimer <= 0) {
-				velocityY = 0;
-			}
-		}
 	}
 
 	public boolean isHidden() {
@@ -137,11 +129,7 @@ abstract class Panel extends AbstractWidget {
 	/**
 	 * The panel has been dragged the given deltaX and deltaY
 	 */
-	public abstract void displace(InputEvent event, float deltaX, float deltaY);
-
-	protected boolean isVelocityToScroll(InputEvent event, float vy) {
-		return Math.abs(vy) > cmToYPixels(BaseView.FLING_MIN_VELOCITY_CM);
-	}
+	public abstract void displace(float deltaX, float deltaY);
 
 	public abstract boolean isVelocityToHide(float velocityX, float velocityY);
 
