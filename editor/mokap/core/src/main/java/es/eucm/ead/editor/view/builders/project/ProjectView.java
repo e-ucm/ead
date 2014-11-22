@@ -39,10 +39,12 @@ package es.eucm.ead.editor.view.builders.project;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
+
 import es.eucm.ead.editor.control.Controller;
 import es.eucm.ead.editor.control.MokapController.BackListener;
 import es.eucm.ead.editor.control.actions.editor.ChangeView;
 import es.eucm.ead.editor.view.SkinConstants;
+import es.eucm.ead.editor.view.builders.PlayView;
 import es.eucm.ead.editor.view.builders.ViewBuilder;
 import es.eucm.ead.editor.view.builders.home.HomeView;
 import es.eucm.ead.editor.view.widgets.MultiWidget;
@@ -86,6 +88,8 @@ public class ProjectView implements ViewBuilder, BackListener {
 		project.add(WidgetBuilder.toolbarIcon(SkinConstants.IC_GO, null,
 				ChangeView.class, HomeView.class));
 		project.addSpace();
+		project.add(WidgetBuilder.toolbarIcon(SkinConstants.IC_PLAY, null,
+				ChangeView.class, PlayView.class));
 
 		toolbar.addWidgets(project);
 		return toolbar;

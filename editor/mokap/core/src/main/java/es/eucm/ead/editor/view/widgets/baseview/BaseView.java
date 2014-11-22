@@ -97,7 +97,7 @@ public class BaseView extends AbstractWidget {
 			public boolean touchDown(InputEvent event, float x, float y,
 					int pointer, int button) {
 				area = pointer != 0 ? -1 : area(x, y);
-				if (event.getTarget().isDescendantOf(content) && area != -1){
+				if (event.getTarget().isDescendantOf(content) && area != -1) {
 					event.stop();
 				}
 				return super.touchDown(event, x, y, pointer, button);
