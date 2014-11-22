@@ -117,7 +117,7 @@ public class GroupEditor extends AbstractWidget {
 
 			@Override
 			public void drag(InputEvent event, float x, float y, int pointer) {
-				if (pointer == 0) {
+				if (pointer == 0 && !isOnlySelection()) {
 					for (Actor actor : selectionGroup.getChildren()) {
 						if (actor instanceof SelectionBox) {
 							SelectionBox selectionBox = (SelectionBox) actor;
@@ -237,7 +237,7 @@ public class GroupEditor extends AbstractWidget {
 		@Override
 		public boolean touchDown(InputEvent event, float x, float y,
 				int pointer, int button) {
-			if (!event.isHandled() && pointer == 0) {
+			if (pointer == 0) {
 				Actor target = getDirectChild(selectionGroup, event.getTarget());
 				if (target instanceof SelectionBox) {
 					for (Actor actor : selectionGroup.getChildren()) {
@@ -306,9 +306,9 @@ public class GroupEditor extends AbstractWidget {
 		public void touchUp(InputEvent event, float x, float y, int pointer,
 				int button) {
 			super.touchUp(event, x, y, pointer, button);
-			if (!event.isHandled() && pinching && pointer == 1) {
+			if (pinching && pointer == 1) {
 				resetAngle = true;
-			} else if (!event.isHandled() && pointer == 0) {
+			} else if (pointer == 0) {
 				if (pinching) {
 					pinching = false;
 					resetAngle = true;

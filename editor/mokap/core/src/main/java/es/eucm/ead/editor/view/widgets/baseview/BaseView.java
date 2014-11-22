@@ -89,7 +89,7 @@ public class BaseView extends AbstractWidget {
 		addActor(navigation = new Navigation(style));
 
 		// Listens for fling gestures to quickly show hidden panels
-		addListener(new GestureListener() {
+		addCaptureListener(new GestureListener() {
 
 			private int area;
 
@@ -97,6 +97,9 @@ public class BaseView extends AbstractWidget {
 			public boolean touchDown(InputEvent event, float x, float y,
 					int pointer, int button) {
 				area = pointer != 0 ? -1 : area(x, y);
+				if (event.getTarget().isDescendantOf(content) && area != -1){
+					event.stop();
+				}
 				return super.touchDown(event, x, y, pointer, button);
 			}
 
@@ -146,7 +149,6 @@ public class BaseView extends AbstractWidget {
 					break;
 				}
 			}
-
 		});
 	}
 
