@@ -253,7 +253,7 @@ public class GroupEditor extends AbstractWidget {
 					}
 				}
 			}
-			return true;
+			return super.touchDown(event, x, y, pointer, button);
 		}
 
 		@Override

@@ -200,15 +200,15 @@
     },
     "com.badlogic.gdx.scenes.scene2d.ui.TextButton$TextButtonStyle": {
         "default": {
-        	"up": "button_up",
+            "up": "button_up",
             "down": "button_down",
-            "font": default_font,
-	        "fontColor": "white", 
-	        "downFontColor": "white",   
-	        "disabledFontColor": "gray" 
+            "font": "default_font",
+            "fontColor": "white",
+            "downFontColor": "white",
+            "disabledFontColor": "gray"
         }
     },
-   	"com.badlogic.gdx.scenes.scene2d.ui.ImageButton$ImageButtonStyle": {
+    "com.badlogic.gdx.scenes.scene2d.ui.ImageButton$ImageButtonStyle": {
         "scene": {
             "up": "page",
             "down": "page_pressed"
@@ -262,8 +262,8 @@
             "up": "transparent_48_bg",
         },
         "pages": {
-            "disabledImageColor": "black",
-            "enabledImageColor": "brown_moka",
+            "disabledColor": "black",
+            "color": "brown_moka",
             "up": "transparent_48_bg",
         },
         "toolbar": {
