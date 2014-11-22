@@ -46,6 +46,7 @@ import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 
 import es.eucm.ead.editor.control.Controller;
+import es.eucm.ead.editor.control.Preferences;
 import es.eucm.ead.editor.control.Selection;
 import es.eucm.ead.editor.control.actions.editor.AddLabel;
 import es.eucm.ead.editor.control.actions.editor.AddPaintedElement;
@@ -53,6 +54,8 @@ import es.eucm.ead.editor.control.actions.editor.AddSceneElementFromResource;
 import es.eucm.ead.editor.control.actions.editor.Copy;
 import es.eucm.ead.editor.control.actions.editor.Paste;
 import es.eucm.ead.editor.control.actions.editor.Redo;
+import es.eucm.ead.editor.control.actions.editor.ShowInfoPanel;
+import es.eucm.ead.editor.control.actions.editor.ShowInfoPanel.TypePanel;
 import es.eucm.ead.editor.control.actions.editor.ShowToast;
 import es.eucm.ead.editor.control.actions.editor.Undo;
 import es.eucm.ead.editor.control.actions.model.AddInteractiveZone;
@@ -206,6 +209,9 @@ public class GroupEditorToolbar extends MultiWidget implements ModelView {
 				}
 			}
 		});
+		WidgetBuilder.actionOnClick(multiSelection, ShowInfoPanel.class,
+				TypePanel.MULTIPLE_SELECTION,
+				Preferences.HELP_MULTIPLE_SELECTION);
 
 		transform.addSpace();
 
@@ -248,6 +254,8 @@ public class GroupEditorToolbar extends MultiWidget implements ModelView {
 
 		Button zone = WidgetBuilder.button(SkinConstants.IC_ZONE,
 				i18n.m("interactive.zone"), style, AddInteractiveZone.class);
+		WidgetBuilder.actionOnClick(zone, ShowInfoPanel.class, TypePanel.ZONES,
+				Preferences.HELP_ZONES);
 
 		Button paint = WidgetBuilder.button(SkinConstants.IC_BRUSH,
 				i18n.m("drawing"), style);
