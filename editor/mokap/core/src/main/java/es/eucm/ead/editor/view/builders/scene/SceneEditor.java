@@ -36,6 +36,7 @@
  */
 package es.eucm.ead.editor.view.builders.scene;
 
+import com.badlogic.gdx.Gdx;
 import es.eucm.ead.editor.control.Commands;
 import es.eucm.ead.editor.control.Commands.CommandListener;
 import es.eucm.ead.editor.control.Commands.CommandsStack;
@@ -44,6 +45,7 @@ import es.eucm.ead.editor.control.Preferences;
 import es.eucm.ead.editor.control.Selection;
 import es.eucm.ead.editor.control.Selection.Context;
 import es.eucm.ead.editor.control.actions.editor.ShowInfoPanel;
+import es.eucm.ead.editor.control.actions.editor.CreateThumbnail;
 import es.eucm.ead.editor.control.actions.editor.ShowInfoPanel.TypePanel;
 import es.eucm.ead.editor.control.actions.editor.ShowToast;
 import es.eucm.ead.editor.control.actions.model.SetSelection;
@@ -54,9 +56,11 @@ import es.eucm.ead.editor.model.Q;
 import es.eucm.ead.editor.model.events.SelectionEvent;
 import es.eucm.ead.editor.view.ModelView;
 import es.eucm.ead.editor.view.builders.scene.draw.BrushStrokes;
+import es.eucm.ead.editor.view.builders.scene.interaction.InteractionContext;
 import es.eucm.ead.editor.view.builders.scene.play.TestGameView;
 import es.eucm.ead.editor.view.widgets.AbstractWidget;
 import es.eucm.ead.editor.view.widgets.MultiWidget;
+import es.eucm.ead.editor.view.widgets.WidgetBuilder;
 import es.eucm.ead.editor.view.widgets.baseview.BaseView;
 import es.eucm.ead.engine.EntitiesLoader;
 import es.eucm.ead.schema.editor.components.GameData;
@@ -91,6 +95,8 @@ public class SceneEditor extends BaseView implements ModelView,
 
 	private BrushStrokes brushStrokes;
 
+	private InteractionContext interactionContext;
+
 	public SceneEditor(Controller controller) {
 		super(controller.getApplicationAssets().getSkin());
 		this.controller = controller;
@@ -114,6 +120,9 @@ public class SceneEditor extends BaseView implements ModelView,
 		setToolbar(toolbar = new GroupEditorToolbar(controller, this,
 				brushStrokes));
 		setContent(container);
+
+		interactionContext = new InteractionContext(controller, controller
+				.getApplicationAssets().getSkin());
 	}
 
 	public SceneGroupEditor getGroupEditor() {
@@ -172,14 +181,7 @@ public class SceneEditor extends BaseView implements ModelView,
 	}
 
 	public void setMode(Mode mode) {
-		if (this.mode == Mode.PLAY && mode != Mode.PLAY) {
-			controller.getEngine().stop();
-			showToolbar();
-			gameView.setVisible(false);
-			sceneGroupEditor.setVisible(true);
-			sceneGroupEditor.prepare();
-		}
-
+		unsetMode(this.mode);
 		this.oldMode = this.mode;
 		this.mode = mode;
 		switch (mode) {
@@ -191,7 +193,7 @@ public class SceneEditor extends BaseView implements ModelView,
 			} else {
 				toolbar.setSelectedWidget(TRANSFORM);
 			}
-
+			sceneGroupEditor.setOnlySelection(false);
 			controller.action(ShowInfoPanel.class, TypePanel.COMPOSE,
 					Preferences.HELP_MODE_COMPOSE);
 			break;
@@ -200,13 +202,17 @@ public class SceneEditor extends BaseView implements ModelView,
 			brushStrokes.show();
 			break;
 		case INTERACTION:
+			controller.getCommands().pushStack();
+			interactionContext.prepare();
 			toolbar.setSelectedWidget(INTERACTION);
+			setSelectionContext(interactionContext);
+			sceneGroupEditor.setOnlySelection(true);
 			break;
 		case FX:
 			toolbar.setSelectedWidget(FX);
 			break;
 		case PLAY:
-			hideToolbar();
+			enterFullScreen();
 			gameView.setVisible(true);
 			sceneGroupEditor.setVisible(false);
 			controller.getEngine().play();
@@ -214,7 +220,8 @@ public class SceneEditor extends BaseView implements ModelView,
 
 			ModelEntity scene = (ModelEntity) controller.getModel()
 					.getSelection().getSingle(Selection.SCENE);
-			gameView.addEntityToLayer(Layer.SCENE,
+			gameView.clearLayer(Layer.SCENE_CONTENT, true);
+			gameView.addEntityToLayer(Layer.SCENE_CONTENT,
 					entitiesLoader.toEngineEntity(scene));
 
 			controller.action(ShowToast.class, controller
@@ -226,13 +233,33 @@ public class SceneEditor extends BaseView implements ModelView,
 		}
 	}
 
+	private void unsetMode(Mode mode) {
+		switch (mode) {
+		case PLAY:
+			controller.getEngine().stop();
+			exitFullscreen();
+			gameView.setVisible(false);
+			sceneGroupEditor.setVisible(true);
+			sceneGroupEditor.prepare();
+			break;
+		case INTERACTION:
+			controller.getCommands().popStack(false);
+			setSelectionContext(null);
+			interactionContext.release();
+			break;
+		}
+	}
+
 	@Override
 	public void doCommand(Commands commands, Command command) {
 		if (!(command instanceof SelectionCommand)) {
 			ModelEntity scene = (ModelEntity) controller.getModel()
 					.getSelection().getSingle(Selection.SCENE);
+
+			controller.action(CreateThumbnail.class, scene, (int) (Gdx.graphics
+					.getHeight() - WidgetBuilder.dpToPixels(56)),
+					(int) (Gdx.graphics.getHeight() / 2.15f));
 			if (scene != null) {
-				Q.getThumbnail(controller, scene);
 				String resource = controller.getModel().getIdFor(scene);
 				if (resource != null) {
 					controller.getEditorGameAssets().save(resource, scene);
@@ -243,10 +270,12 @@ public class SceneEditor extends BaseView implements ModelView,
 
 	@Override
 	public void undoCommand(Commands commands, Command command) {
+		doCommand(commands, command);
 	}
 
 	@Override
 	public void redoCommand(Commands commands, Command command) {
+		doCommand(commands, command);
 	}
 
 	@Override
@@ -264,6 +293,14 @@ public class SceneEditor extends BaseView implements ModelView,
 	@Override
 	public void contextPopped(Commands commands, CommandsStack poppedContext,
 			boolean merge) {
+	}
+
+	@Override
+	protected void layoutSelectionContext() {
+		super.layoutSelectionContext();
+		float height = getHeight() + toolbar.getBackground().getBottomHeight()
+				- (toolbar == null ? 0 : getPrefHeight(toolbar));
+		selectionContext.setHeight(height);
 	}
 
 }
