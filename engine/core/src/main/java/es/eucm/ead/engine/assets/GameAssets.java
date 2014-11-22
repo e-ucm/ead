@@ -80,7 +80,6 @@ public class GameAssets extends Assets implements GameStructure {
 	 */
 	public void setLoadingPath(String loadingPath) {
 		setLoadingPath(loadingPath, isGamePathInternal());
-		loadSkin(GameLoader.DEFAULT_SKIN);
 	}
 
 	/**
@@ -99,6 +98,7 @@ public class GameAssets extends Assets implements GameStructure {
 		this.loadingPath = convertNameToPath(loadingPath, "", false, true);
 		this.gamePathInternal = internal;
 		clear();
+		loadSkin(GameLoader.DEFAULT_SKIN);
 	}
 
 	/**
