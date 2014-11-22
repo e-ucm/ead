@@ -45,59 +45,46 @@ import com.badlogic.gdx.scenes.scene2d.actions.Actions;
 import com.badlogic.gdx.scenes.scene2d.ui.Container;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
-import com.badlogic.gdx.scenes.scene2d.ui.WidgetGroup;
 import com.badlogic.gdx.scenes.scene2d.utils.Align;
 import com.badlogic.gdx.scenes.scene2d.utils.Drawable;
 import com.badlogic.gdx.utils.Array;
 
-public class MultiWidget extends Container<WidgetGroup> {
+public class MultiWidget extends Container<Actor> {
 
 	private static final float ANIM_TIME = 0.15f;
 
-	private Array<WidgetGroup> widgets;
+	private Array<Actor> widgets;
 
 	protected float maxHeight;
 
-	private WidgetGroup toHide;
+	private Actor toHide;
 
-	protected WidgetGroup toShow;
+	protected Actor toShow;
 
 	private Runnable actionAddActor;
 
-	private MultiWidgetStyle style;
-
 	public MultiWidget() {
-		initialize(null);
+		this((MultiWidgetStyle) null);
 	}
 
 	public MultiWidget(Skin skin) {
-		initialize(skin.get(MultiWidgetStyle.class));
+		this(skin.get(MultiWidgetStyle.class));
 	}
 
 	public MultiWidget(MultiWidgetStyle style) {
-		initialize(style);
-	}
-
-	private void initialize(MultiWidgetStyle style) {
-		this.style = style;
-
 		if (style != null) {
 			setBackground(style.background);
 			if (style.color != null) {
 				setColor(style.color);
 			}
 		}
-
-		widgets = new Array<WidgetGroup>();
-		maxHeight = 0;
+		widgets = new Array<Actor>();
 		fill();
-
 		actionAddActor = new Runnable() {
 			@Override
 			public void run() {
 
 				float timeShow = ANIM_TIME * (1 - Math.abs(toShow.getScaleY()));
-
 				setActor(toShow);
 				toShow.addAction(Actions.sequence(Actions.parallel(
 						Actions.scaleTo(1, 1, timeShow, Interpolation.sineIn),
@@ -107,56 +94,29 @@ public class MultiWidget extends Container<WidgetGroup> {
 		};
 	}
 
-	public void addWidgets(WidgetGroup... w) {
-		for (WidgetGroup widget : w) {
-			widget.setTouchable(Touchable.disabled);
+	public void addWidgets(Actor... actors) {
+		for (Actor actor : actors) {
+			actor.setTouchable(Touchable.disabled);
 
-			if (widget instanceof Table) {
-				((Table) widget).setTransform(true);
+			if (actor instanceof Table) {
+				((Table) actor).setTransform(true);
 			}
-			widgets.add(widget);
-			if (maxHeight < widget.getPrefHeight()) {
-				maxHeight = widget.getPrefHeight();
-			}
+			widgets.add(actor);
 		}
 
 		if (getActor() == null) {
-			setActor(w[0]);
-			toShow = w[0];
-			w[0].setTouchable(Touchable.enabled);
-		}
-	}
-
-	/**
-	 * Set the default Widget, without animation.
-	 * 
-	 */
-	public void showSimple() {
-		showSimple(0);
-	}
-
-	/**
-	 * Set the Widget in index position, without animation.
-	 * 
-	 */
-	public void showSimple(int index) {
-		if (index < widgets.size) {
-			WidgetGroup widget = widgets.get(index);
-			widget.setTouchable(Touchable.enabled);
-			widget.getColor().a = 1;
-			widget.setScaleY(1);
-			setActor(widget);
-			toShow = widget;
-			toHide = null;
+			setActor(actors[0]);
+			toShow = actors[0];
+			actors[0].setTouchable(Touchable.enabled);
 		}
 	}
 
 	public void setSelectedWidget(int index) {
 		if (widgets.size > index) {
-			WidgetGroup newBar = widgets.get(index);
+			Actor newBar = widgets.get(index);
 
 			if (newBar != toShow) {
-				for (WidgetGroup widget : widgets) {
+				for (Actor widget : widgets) {
 					widget.clearActions();
 				}
 
@@ -169,7 +129,7 @@ public class MultiWidget extends Container<WidgetGroup> {
 
 				toShow = newBar;
 
-				toHide = (WidgetGroup) current;
+				toHide = current;
 				toHide.setOrigin(Align.center);
 
 				if (toShow.getScaleY() == 1) {
@@ -194,22 +154,8 @@ public class MultiWidget extends Container<WidgetGroup> {
 		}
 	}
 
-	@Override
-	public float getPrefHeight() {
-		float backgroungPadding = 0;
-		if (getBackground() != null) {
-			backgroungPadding = getBackground().getBottomHeight()
-					+ getBackground().getTopHeight();
-		}
-		return maxHeight + backgroungPadding;
-	}
-
-	public Array<WidgetGroup> getWidgets() {
+	public Array<Actor> getWidgets() {
 		return widgets;
-	}
-
-	public WidgetGroup getCurrentWidget() {
-		return this.getActor();
 	}
 
 	public static class MultiWidgetStyle {
