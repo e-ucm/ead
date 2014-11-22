@@ -142,7 +142,17 @@
             "down": "circle_pressed"
         }
     },
-    "com.badlogic.gdx.scenes.scene2d.ui.ImageButton$ImageButtonStyle": {
+    "com.badlogic.gdx.scenes.scene2d.ui.TextButton$TextButtonStyle": {
+        "default": {
+        	"up": "button_up",
+            "down": "button_down",
+            "font": default_font,
+	        "fontColor": "white", 
+	        "downFontColor": "white",   
+	        "disabledFontColor": "gray" 
+        }
+    },
+   	"com.badlogic.gdx.scenes.scene2d.ui.ImageButton$ImageButtonStyle": {
         "scene": {
             "up": "page",
             "down": "page_pressed"
@@ -183,6 +193,11 @@
         },
         "switch": {
             "disabledImageColor": "white",
+            "enabledImageColor": "brown_moka",
+            "up": "transparent_48_bg",
+        },
+        "pages": {
+            "disabledImageColor": "black",
             "enabledImageColor": "brown_moka",
             "up": "transparent_48_bg",
         },

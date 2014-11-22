@@ -45,6 +45,7 @@ public interface SkinConstants {
 
 	public static final String DRAWABLE_LOGO = "logo";
 	public static final String DRAWABLE_BLANK = "blank";
+	public static final String DRAWABLE_SEMI_BLANK = "blank75";
 	public static final String DRAWABLE_PAGE = "page";
 	public static final String DRAWABLE_PAGE_LEFT = "page_left";
 	public static final String DRAWABLE_BLACK_BG = "black_bg";
@@ -60,6 +61,23 @@ public interface SkinConstants {
 	public static final String STYLE_CIRCLE = "circle";
 	public static final String STYLE_NAVIGATION_SCENE = "navigation_scene";
 	public static final String STYLE_NAVIGATION = "navigation";
+	public static final String STYLE_SLIDER_PAGES = "pages";
+
+	public static final String TABLET_GAME = "tablet_game";
+	public static final String TABLET_CARD = "tablet_card";
+	public static final String TABLET_PRESENTATION = "tablet_presentation";
+	public static final String TABLET_ACCURATE_SELECT = "tablet_accurate_selection";
+	public static final String TABLET_INSERT = "tablet_insert";
+	public static final String TABLET_ZONE = "tablet_zone";
+	public static final String TABLET_MULTIPLE_SELECT = "tablet_multiple_selection";
+	public static final String TABLET_PRAY = "tablet_play";
+
+	public static final String MOKAP_LOGO = "mokap_logo";
+	public static final String MOKAP_ACCURATE_SELECT = "mokap_accurate_selection";
+	public static final String MOKAP_COMPOSE = "mokap_compose";
+	public static final String MOKAP_ZONE = "mokap_zone";
+	public static final String MOKAP_MULTIPLE_SELECT = "mokap_multiple";
+	public static final String MOKAP_CUP = "mokap_cup";
 
 	public static final String IC_MENU = "ic_menu";
 	public static final String IC_ADD = "ic_add";

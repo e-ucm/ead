@@ -79,6 +79,16 @@ public class Preferences {
 	 */
 	public static final String ENABLE_HELP_MSGS = "enableHelpMsg";
 
+	/**
+	 * The properties to show the help panels the first time.
+	 */
+	public static final String HELP_INTRODUCTION = "helpIntroduction";
+	public static final String HELP_MODE_COMPOSE = "helpModeCompose";
+	public static final String HELP_MODE_PLAY = "helpModePlay";
+	public static final String HELP_ZONES = "helpZones";
+	public static final String HELP_MULTIPLE_SELECTION = "helpMultipleSelect";
+	public static final String HELP_ACCURATE_SELECTION = "helpAccurateSelect";
+
 	private com.badlogic.gdx.Preferences innerPreferences;
 
 	private Map<String, Array<PreferenceListener>> preferenceListeners;
