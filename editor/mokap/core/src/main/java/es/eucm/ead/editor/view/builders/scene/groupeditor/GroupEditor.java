@@ -305,6 +305,7 @@ public class GroupEditor extends AbstractWidget {
 		@Override
 		public void touchUp(InputEvent event, float x, float y, int pointer,
 				int button) {
+			super.touchUp(event, x, y, pointer, button);
 			if (!event.isHandled() && pinching && pointer == 1) {
 				resetAngle = true;
 			} else if (!event.isHandled() && pointer == 0) {
