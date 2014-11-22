@@ -100,11 +100,15 @@ public class WidgetBuilder {
 			Class action, Object... args) {
 		IconButton iconButton = icon(icon, SkinConstants.STYLE_TOOLBAR, action,
 				args);
-		if (tooltip != null) {
-			iconButton.setTooltip(tooltip);
-			iconButton.addListener(TOOLTIP_LISTENER);
-		}
+		tooltip(iconButton, tooltip);
 		return iconButton;
+	}
+
+	public static void tooltip(Actor actor, String tooltip) {
+		if (tooltip != null && actor instanceof Tooltip) {
+			((Tooltip) actor).setTooltip(tooltip);
+			actor.addListener(TOOLTIP_LISTENER);
+		}
 	}
 
 	public static IconButton toolbarIcon(String icon, String tooltip,
@@ -142,7 +146,13 @@ public class WidgetBuilder {
 	}
 
 	public static IconButton icon(String icon, String style) {
-		return icon(icon, style, null);
+		return icon(icon, style, (Class) null);
+	}
+
+	public static IconButton icon(String icon, String tooltip, String style) {
+		IconButton iconButton = icon(icon, style);
+		tooltip(iconButton, tooltip);
+		return iconButton;
 	}
 
 	public static IconButton icon(String icon, String style, Class action,

@@ -66,7 +66,6 @@ import es.eucm.ead.editor.model.events.SelectionEvent;
 import es.eucm.ead.editor.utils.Actions2;
 import es.eucm.ead.editor.view.ModelView;
 import es.eucm.ead.editor.view.builders.scene.groupeditor.GroupEditor;
-import es.eucm.ead.editor.view.builders.scene.groupeditor.SceneListener;
 import es.eucm.ead.editor.view.builders.scene.groupeditor.SelectionBox;
 import es.eucm.ead.editor.view.widgets.AbstractWidget;
 import es.eucm.ead.engine.EntitiesLoader;

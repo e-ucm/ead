@@ -34,28 +34,36 @@
  *      You should have received a copy of the GNU Lesser General Public License
  *      along with eAdventure.  If not, see <http://www.gnu.org/licenses/>.
  */
-package es.eucm.ead.editor.view.tooltips;
+package es.eucm.ead.editor.control.actions.model.generic;
 
-public interface Tooltip {
+import com.badlogic.gdx.utils.Array;
 
-	/**
-	 * @return the tooltip text
-	 */
-	String getTooltip();
+import es.eucm.ead.editor.control.actions.ModelAction;
+import es.eucm.ead.editor.control.commands.Command;
+import es.eucm.ead.editor.control.commands.ListCommand.RemoveFromListCommand;
 
-	void setTooltip(String tooltip);
+/**
+ * Adds an element to an array
+ * <dl>
+ * <dt><strong>Arguments</strong></dt>
+ * <dd><strong>args[0]</strong> <em>{@link Object}</em> Parent of the list</dd>
+ * <dd><strong>args[1]</strong> <em>{@link com.badlogic.gdx.utils.Array}</em>
+ * The list</dd>
+ * <dd><strong>args[2]</strong> <em>{@link Object}</em> the element to be
+ * removed from the list</dd>
+ * </dl>
+ */
+public class RemoveFromArray extends ModelAction {
 
-	/**
-	 * @return x offset of the tooltip. This factor will be multiplied by the
-	 *         widget width. The tooltip will be displaced this quantity from
-	 *         the widget position
-	 */
-	float getXOffset();
+	public RemoveFromArray() {
+		super(true, false, Object.class, Array.class, Object.class);
+	}
 
-	/**
-	 * @return y offset of the tooltip. This factor will be multiplied by the
-	 *         widget height. The tooltip will be displaced this quantity from
-	 *         the widget position
-	 */
-	float getYOffset();
+	@Override
+	public Command perform(Object... args) {
+		Object parent = args[0];
+		Array array = (Array) args[1];
+		Object item = args[2];
+		return new RemoveFromListCommand(parent, array, item);
+	}
 }

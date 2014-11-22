@@ -56,6 +56,7 @@ public interface SkinConstants {
 	public static final String STYLE_DEFAULT = "default";
 	public static final String STYLE_CONTEXT = "context";
 	public static final String STYLE_EDITION = "edition";
+	public static final String STYLE_COMPONENT = "component";
 	public static final String STYLE_TOOLBAR = "toolbar";
 	public static final String STYLE_DROP_DOWN = "drop_down";
 	public static final String STYLE_ADD = "add";
@@ -65,6 +66,7 @@ public interface SkinConstants {
 	public static final String STYLE_NAVIGATION = "navigation";
 	public static final String STYLE_SLIDER_PAGES = "pages";
 	public static final String STYLE_CHECK = "check";
+	public static final String STYLE_GRAY = "gray";
 
 	public static final String TABLET_GAME = "tablet_game";
 	public static final String TABLET_CARD = "tablet_card";

@@ -165,15 +165,6 @@ public class FieldName {
 	 */
 	DURATION = "duration",
 
-	/**
-	 * Refers to {@link es.eucm.ead.schema.editor.components.LockProperty#lock}
-	 */
-	LOCK = "lock",
-
-	/**
-	 * Refers to
-	 * {@link es.eucm.ead.schema.editor.components.InvisibilityProperty#invisible}
-	 */
-	INVISIBLE = "invisible";
+	SCENE_ID = "sceneId";
 
 }

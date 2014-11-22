@@ -17,6 +17,12 @@
             "g": 0.5,
             "b": 0.5
         },
+        "black_semi": {
+            "a": 0.5,
+            "r": 0.0,
+            "g": 0.0,
+            "b": 0.0
+        },
         "white": {
             "r": 1,
             "g": 1,
@@ -69,7 +75,37 @@
             "r": 0.011764706,
             "g": 0.6627451,
             "b": 0.95686275,
+            "a": 1.0
+        },
+        "light_blue_semi": {
+            "r": 0.011764706,
+            "g": 0.6627451,
+            "b": 0.95686275,
             "a": 0.5
+        },
+        "light_blue_900": {
+            "r": 0.003921569,
+            "g": 0.34117648,
+            "b": 0.60784316,
+            "a": 1
+        },
+        "deep_orange": {
+            "r": 1.0,
+            "g": 0.34117648,
+            "b": 0.13333334,
+            "a": 1.0
+        },
+        "deep_orange_semi": {
+            "r": 1.0,
+            "g": 0.34117648,
+            "b": 0.13333334,
+            "a": 0.5
+        },
+        "deep_orange_900": {
+            "r": 0.7490196,
+            "g": 0.21176471,
+            "b": 0.047058824,
+            "a": 1
         }
     },
     "com.badlogic.gdx.scenes.scene2d.ui.Skin$TintedDrawable": {
@@ -81,6 +117,10 @@
             "name": "blank",
             "color": "transparent"
         },
+        "black_semi_bg": {
+            "name": "blank",
+            "color": "black_semi"
+        },
         "semi_transparent_bg": {
             "name": "blank",
             "color": "semi_transparent"
@@ -89,9 +129,9 @@
             "name": "blank",
             "color": "light_gray"
         },
-        "light_blue_bg": {
+        "light_blue_semi_bg": {
             "name": "blank",
-            "color": "light_blue"
+            "color": "light_blue_semi"
         },
         "transparent_48_bg": {
             "name": "bg48",
@@ -100,6 +140,10 @@
         "pressed_48_bg": {
             "name": "bg48",
             "color": "dark_brown_moka"
+        },
+        "edition_pressed_48_bg": {
+            "name": "bg48",
+            "color": "semi_transparent"
         },
         "page_pressed": {
             "name": "page",
@@ -112,6 +156,10 @@
         "page_semi_transparent": {
             "name": "page",
             "color": "semi_transparent"
+        },
+        "deep_orange_semi_bg": {
+            "name": "blank_grey_border",
+            "color": "deep_orange_semi"
         }
     },
     "com.badlogic.gdx.scenes.scene2d.ui.Label$LabelStyle": {
@@ -126,6 +174,14 @@
         "toast": {
             "font": "default_font",
             "fontColor": "white",
+        },
+        "toolbar": {
+            "font": "default_font",
+            "fontColor": "white"
+        },
+        "edition": {
+            "font": "default_font",
+            "fontColor": "gray"
         }
     },
     "com.badlogic.gdx.scenes.scene2d.ui.Button$ButtonStyle": {
@@ -161,6 +217,11 @@
             "up": "page",
             "down": "page_pressed",
             "checked": "page_checked"
+        },
+        "check": {
+            "up": "circle",
+            "down": "circle_pressed",
+            "imageUp": "ic_check"
         }
     },
     "com.badlogic.gdx.scenes.scene2d.ui.Slider$SliderStyle": {
@@ -191,6 +252,10 @@
             "disabledColor": "gray",
             "color": "black",
         },
+        "gray": {
+            "color": "gray",
+            "up": "transparent_48_bg",
+        },
         "switch": {
             "disabledColor": "white",
             "color": "brown_moka",
@@ -209,7 +274,14 @@
         },
         "edition": {
             "color": "gray",
-            "checkedColor": "deep_orange"
+            "up": "transparent_48_bg",
+            "down": "edition_pressed_48_bg"
+        },
+        "component": {
+            "color": "gray",
+            "checkedColor": "deep_orange",
+            "down": "edition_pressed_48_bg",
+            "up": "transparent_48_bg"
         },
         "context": {
             "color": "gray",
@@ -284,11 +356,11 @@
             "backgroundOff": "switch_bar",
             "on": "switch_circle",
             "off": "switch_circle",
-			"iconStyle": "switch",		
-			"circleColorOn": "white",		
-			"circleColorOff": "brown_moka",
-			"barColorOn": "light_brown_moka",		
-			"barColorOff": "dark_brown_moka"
+            "iconStyle": "switch",
+            "circleColorOn": "white",
+            "circleColorOff": "brown_moka",
+            "barColorOn": "light_brown_moka",
+            "barColorOff": "dark_brown_moka"
         }
     },
     "es.eucm.ead.editor.view.builders.scene.groupeditor.GroupEditor$GroupEditorStyle": {
@@ -297,7 +369,15 @@
             "layerButtonStyle": {
                 "down": "light_gray_bg"
             },
-            "touch": "touch"
+            "selectedBackground": "blank_grey_border",
+            "touch": "touch",
+            "pressedColor": "gray",
+            "selectedColor": "light_blue",
+            "movingColor": "light_blue_900",
+            "multiSelectedColor": "deep_orange",
+            "multiMovingColor": "deep_orange_900",
+            "onlySelectionColor": "white",
+            "alpha": 0.3
         }
     },
     "es.eucm.ead.editor.view.widgets.Tile$TileStyle": {
@@ -307,7 +387,26 @@
                 "font": "default_font",
                 "fontColor": "white"
             },
-            "pressed": "light_blue_bg"
+            "pressed": "light_blue_semi_bg"
+        }
+    },
+    "es.eucm.ead.editor.view.widgets.layouts.Gallery$GalleryStyle": {
+        "default": {
+            "background": "blank",
+            "checked": "light_blue_semi_bg"
+        },
+        "navigation": {
+            "background": "page_left",
+            "checked": "deep_orange_semi_bg"
+        }
+    },
+    "es.eucm.ead.editor.view.builders.scene.GroupContext$GroupContextStyle": {
+        "default": {
+            "background": "blank",
+            "iconsBackground": "semi_transparent_bg",
+            "galleryStyle": {
+                "background": "blank"
+            }
         }
     }
 }

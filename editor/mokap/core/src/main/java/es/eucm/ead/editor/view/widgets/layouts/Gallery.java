@@ -74,6 +74,10 @@ public class Gallery extends ScrollPane {
 		setScrollingDisabled(true, false);
 	}
 
+	public Grid getGrid() {
+		return grid;
+	}
+
 	/**
 	 * @param pad
 	 *            pad between items
@@ -112,7 +116,7 @@ public class Gallery extends ScrollPane {
 		}
 	}
 
-	static class Grid extends AbstractWidget {
+	public static class Grid extends AbstractWidget {
 
 		private int columns;
 

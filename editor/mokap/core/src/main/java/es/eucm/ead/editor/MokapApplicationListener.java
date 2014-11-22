@@ -38,10 +38,12 @@ package es.eucm.ead.editor;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.scenes.scene2d.ui.WidgetGroup;
+
 import es.eucm.ead.editor.control.Controller;
 import es.eucm.ead.editor.control.MokapController;
 import es.eucm.ead.editor.control.actions.editor.OpenLastProject;
 import es.eucm.ead.editor.control.actions.editor.Save;
+import es.eucm.ead.editor.model.Q;
 import es.eucm.ead.editor.platform.Platform;
 import es.eucm.ead.editor.view.builders.home.HomeView;
 import es.eucm.ead.editor.view.widgets.WidgetBuilder;
@@ -83,6 +85,7 @@ public class MokapApplicationListener extends EditorApplicationListener {
 		MokapController controller = new MokapController(this.platform,
 				Gdx.files, viewContainer, modalContainer);
 		WidgetBuilder.setController(controller);
+		Q.setController(controller);
 		return controller;
 	}
 

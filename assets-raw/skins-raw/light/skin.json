@@ -241,8 +241,8 @@
             "over": "bg-light",
             "down": "bg-dark",
             "disabled": "bg-transparent",
-            "disabledImageColor": "black-semitransparent",
-            "enabledImageColor": "white"
+            "disabledColor": "black-semitransparent",
+            "color": "white"
         },
         "white": {
             "up": "bg-transparent",
@@ -253,8 +253,8 @@
             "over": "bg-transparent",
             "down": "bg-transparent",
             "disabled": "bg-transparent",
-            "enabledImageColor": "white",
-            "disabledImageColor": "white"
+            "color": "white",
+            "disabledColor": "white"
         }
     },
     "com.badlogic.gdx.scenes.scene2d.ui.TextButton$TextButtonStyle": {

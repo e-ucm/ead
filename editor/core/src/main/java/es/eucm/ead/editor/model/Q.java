@@ -37,14 +37,14 @@
 package es.eucm.ead.editor.model;
 
 import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.math.MathUtils;
+import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.utils.Array;
-import com.badlogic.gdx.utils.Scaling;
 import com.badlogic.gdx.utils.reflect.ClassReflection;
 import com.badlogic.gdx.utils.reflect.ReflectionException;
+
 import es.eucm.ead.editor.control.Controller;
-import es.eucm.ead.editor.control.actions.editor.CreateThumbnail;
+import es.eucm.ead.engine.assets.Assets.AssetLoadedCallback;
 import es.eucm.ead.engine.entities.EngineEntity;
 import es.eucm.ead.schema.components.ModelComponent;
 import es.eucm.ead.schema.editor.components.Date;
@@ -61,8 +61,11 @@ import es.eucm.ead.schema.entities.ModelEntity;
  */
 public class Q {
 
-	private static final float THUMBNAIL_HEIGHT = .2F;
-	private static final float THUMBNAIL_WIDTH = .2F;
+	private static Controller controller;
+
+	public static void setController(Controller controller) {
+		Q.controller = controller;
+	}
 
 	/**
 	 * Returns the component for the class. If the element has no component of
@@ -248,50 +251,19 @@ public class Q {
 		return null;
 	}
 
-	/**
-	 * Invokes {@link #getThumbnail(Controller, Object...)} with a percentage of
-	 * {@value #THUMBNAIL_WIDTH} width, {@value #THUMBNAIL_HEIGHT} height and
-	 * {@link Scaling#fill}.
-	 * 
-	 * @param controller
-	 * @param entity
-	 * @return
-	 */
-	public static Thumbnail getThumbnail(Controller controller,
-			ModelEntity entity) {
-		GameData gameData = Q.getComponent(controller.getModel().getGame(),
-				GameData.class);
-		return getThumbnail(controller, entity,
-				MathUtils.round(gameData.getWidth() * THUMBNAIL_WIDTH),
-				MathUtils.round(gameData.getHeight() * THUMBNAIL_HEIGHT),
-				Scaling.stretch);
-	}
-
-	/**
-	 * Assures that the returned thumbnail has a valid path pointing to an
-	 * image.
-	 * 
-	 * @param controller
-	 * @param args
-	 *            the arguments used to create the thumbnail in case it wasn't
-	 *            already created. See {@link CreateThumbnail} for more info.
-	 * @return
-	 */
-	public static Thumbnail getThumbnail(Controller controller, Object... args) {
-
-		controller.action(CreateThumbnail.class, args);
-
-		return getComponent((ModelEntity) args[0], Thumbnail.class);
+	public static void getThumbnailTexture(ModelEntity entity,
+			AssetLoadedCallback<Texture> callback) {
+		if (hasComponent(entity, Thumbnail.class)) {
+			String path = getComponent(entity, Thumbnail.class).getPath();
+			if (path != null) {
+				controller.getEditorGameAssets().get(path, Texture.class,
+						callback);
+			}
+		}
 	}
 
 	/**
 	 * Returns a new Entity positioned in the center of the device
-	 * 
-	 * @param controller
-	 * @param height
-	 * @param width
-	 * @param components
-	 * @return
 	 */
 	public static ModelEntity createCenteredEntity(Controller controller,
 			float height, float width, ModelComponent... components) {
@@ -327,4 +299,5 @@ public class Q {
 		}
 		return null;
 	}
+
 }

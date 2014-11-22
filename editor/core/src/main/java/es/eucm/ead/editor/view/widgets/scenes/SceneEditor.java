@@ -90,8 +90,6 @@ public abstract class SceneEditor extends AbstractWidget {
 
 	private TransformationFieldListener transformationListener = new TransformationFieldListener();
 
-	private ElementStateFieldListener elementStateListener = new ElementStateFieldListener();
-
 	private ChildrenListListener childrenListListener = new ChildrenListListener();
 
 	private ModelEntityPredicate entityPredicate = new ModelEntityPredicate();
@@ -273,9 +271,6 @@ public abstract class SceneEditor extends AbstractWidget {
 		ModelEntity entity = Q.getModelEntity(actor);
 		if (entity != null) {
 			model.addFieldListener(entity, transformationListener);
-			model.addFieldListener(
-					Q.getComponent(entity, ElementEditState.class),
-					elementStateListener);
 			model.addListListener(entity.getChildren(), childrenListListener);
 
 			if (actor instanceof Group) {
@@ -384,34 +379,6 @@ public abstract class SceneEditor extends AbstractWidget {
 			else if (FieldName.SCALE_Y.equals(event.getField()))
 				actor.setScaleY(value);
 			groupEditor.refresh();
-		}
-	}
-
-	/**
-	 * Handles transformation in children
-	 */
-	public class ElementStateFieldListener implements FieldListener {
-
-		private boolean isLock;
-
-		@Override
-		public boolean listenToField(String fieldName) {
-			isLock = FieldName.LOCK.equals(fieldName);
-			return isLock || FieldName.INVISIBLE.equals(fieldName);
-		}
-
-		@Override
-		public void modelChanged(FieldEvent event) {
-			componentPredicate.setComponent((ElementEditState) event
-					.getTarget());
-			Actor actor = findActor(scene.getGroup(), componentPredicate);
-
-			boolean value = (Boolean) event.getValue();
-			if (isLock)
-				actor.setTouchable(value ? Touchable.disabled
-						: Touchable.enabled);
-			else
-				actor.setVisible(!value);
 		}
 	}
 

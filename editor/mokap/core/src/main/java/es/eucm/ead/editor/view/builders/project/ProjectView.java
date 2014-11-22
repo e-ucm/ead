@@ -49,7 +49,6 @@ import es.eucm.ead.editor.view.widgets.MultiWidget;
 import es.eucm.ead.editor.view.widgets.WidgetBuilder;
 import es.eucm.ead.editor.view.widgets.galleries.ScenesGallery;
 import es.eucm.ead.editor.view.widgets.layouts.LinearLayout;
-import es.eucm.ead.engine.I18N;
 
 /**
  * Project view. A list with the scenes of the project
@@ -64,9 +63,8 @@ public class ProjectView implements ViewBuilder, BackListener {
 	public void initialize(Controller controller) {
 		this.controller = controller;
 		Skin skin = controller.getApplicationAssets().getSkin();
-		I18N i18N = controller.getApplicationAssets().getI18N();
 		view = new LinearLayout(false);
-		view.add(buildToolbar(skin, i18N)).expandX();
+		view.add(buildToolbar(skin)).expandX();
 		view.add(
 				new ScenesGallery(Gdx.graphics.getHeight() / 2.15f, 3,
 						controller)).expand(true, true).top();
@@ -81,7 +79,7 @@ public class ProjectView implements ViewBuilder, BackListener {
 	public void release(Controller controller) {
 	}
 
-	private Actor buildToolbar(Skin skin, I18N i18N) {
+	private Actor buildToolbar(Skin skin) {
 		MultiWidget toolbar = new MultiWidget(skin);
 
 		LinearLayout project = new LinearLayout(true);
