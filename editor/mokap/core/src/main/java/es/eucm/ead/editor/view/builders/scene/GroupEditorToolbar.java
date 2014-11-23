@@ -102,7 +102,8 @@ public class GroupEditorToolbar extends MultiWidget implements ModelView {
 
 	public GroupEditorToolbar(Controller controller, SceneEditor sceneEditor,
 			BrushStrokes brushStrokes) {
-		super(controller.getApplicationAssets().getSkin());
+		super(controller.getApplicationAssets().getSkin()
+				.get(SkinConstants.STYLE_TOOLBAR, MultiWidgetStyle.class));
 		this.controller = controller;
 		this.sceneEditor = sceneEditor;
 		this.brushStrokes = brushStrokes;
@@ -110,10 +111,13 @@ public class GroupEditorToolbar extends MultiWidget implements ModelView {
 		Skin skin = controller.getApplicationAssets().getSkin();
 		Actor modeSelector = buildModeContextMenu(i18N);
 		addWidgets(buildComposeToolbar(i18N, modeSelector),
-				buildTransformToolbar(skin, i18N),
+				buildTransformToolbar(skin, i18N, modeSelector),
 				buildDrawToolbar(skin, i18N),
 				buildFxToolbar(i18N, modeSelector),
-				buildInteractionToolbar(i18N, modeSelector));
+				buildFxSelectionToolbar(i18N, modeSelector),
+				buildInteractionToolbar(i18N, modeSelector),
+				buildInteractionSelectionToolbar(i18N, modeSelector));
+
 	}
 
 	@Override
@@ -184,14 +188,18 @@ public class GroupEditorToolbar extends MultiWidget implements ModelView {
 		return compose;
 	}
 
-	private LinearLayout buildTransformToolbar(Skin skin, I18N i18N) {
+	private LinearLayout buildTransformToolbar(Skin skin, I18N i18N,
+			Actor modeSelector) {
 		LinearLayout transform = new LinearLayout(true);
 		transform.setComputeInvisibles(true);
 		transform.add(WidgetBuilder.toolbarIcon(SkinConstants.IC_CHECK,
 				i18N.m("clear.selection"), SetSelection.class,
 				Selection.EDITED_GROUP, Selection.SCENE_ELEMENT));
-		transform.add(WidgetBuilder
-				.image(SkinConstants.DRAWABLE_TRANSPARENT_48));
+		IconButton mode = WidgetBuilder.icon(SkinConstants.IC_COMPOSE,
+				SkinConstants.STYLE_DROP_DOWN);
+		WidgetBuilder.launchContextMenu(mode, modeSelector);
+
+		transform.add(mode);
 		transform.add(WidgetBuilder.toolbarIcon(SkinConstants.IC_UNDO,
 				i18N.m("undo"), true, Undo.class));
 		transform.add(WidgetBuilder.toolbarIcon(SkinConstants.IC_REDO,
@@ -428,6 +436,31 @@ public class GroupEditorToolbar extends MultiWidget implements ModelView {
 		WidgetBuilder.launchContextMenu(mode, modeSelector);
 		fx.add(mode);
 		return fx;
+	}
+
+	private LinearLayout buildFxSelectionToolbar(I18N i18N, Actor modeSelector) {
+		LinearLayout fxSelection = new LinearLayout(true);
+		fxSelection.add(WidgetBuilder.toolbarIcon(SkinConstants.IC_CHECK,
+				i18N.m("clear.selection"), SetSelection.class,
+				Selection.EDITED_GROUP, Selection.SCENE_ELEMENT));
+		IconButton mode = WidgetBuilder.icon(SkinConstants.IC_FX,
+				SkinConstants.STYLE_DROP_DOWN);
+		WidgetBuilder.launchContextMenu(mode, modeSelector);
+		fxSelection.add(mode);
+		return fxSelection;
+	}
+
+	private LinearLayout buildInteractionSelectionToolbar(I18N i18N,
+			Actor modeSelector) {
+		LinearLayout fxSelection = new LinearLayout(true);
+		fxSelection.add(WidgetBuilder.toolbarIcon(SkinConstants.IC_CHECK,
+				i18N.m("clear.selection"), SetSelection.class,
+				Selection.EDITED_GROUP, Selection.SCENE_ELEMENT));
+		IconButton mode = WidgetBuilder.icon(SkinConstants.IC_TOUCH,
+				SkinConstants.STYLE_DROP_DOWN);
+		WidgetBuilder.launchContextMenu(mode, modeSelector);
+		fxSelection.add(mode);
+		return fxSelection;
 	}
 
 	private LinearLayout buildInteractionToolbar(I18N i18N, Actor modeSelector) {

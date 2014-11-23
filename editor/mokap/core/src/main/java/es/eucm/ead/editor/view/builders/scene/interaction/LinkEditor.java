@@ -82,7 +82,7 @@ public class LinkEditor extends ComponentEditor<Behavior> implements
 
 	public LinkEditor(Controller controller) {
 		super(SkinConstants.IC_LINK, controller.getApplicationAssets()
-				.getI18N().m("link"), "", controller);
+				.getI18N().m("link"), "_link", controller);
 
 		sceneSelector = new SceneSelector(controller);
 		sceneSelector.setBounds(Gdx.graphics.getWidth(), 0,

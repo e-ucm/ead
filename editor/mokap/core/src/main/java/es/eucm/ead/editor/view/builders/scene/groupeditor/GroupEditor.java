@@ -240,8 +240,10 @@ public class GroupEditor extends AbstractWidget {
 			if (pointer == 0) {
 				Actor target = getDirectChild(selectionGroup, event.getTarget());
 				if (target instanceof SelectionBox) {
-					for (Actor actor : selectionGroup.getChildren()) {
-						((SelectionBox) actor).moving();
+					if (!isOnlySelection()) {
+						for (Actor actor : selectionGroup.getChildren()) {
+							((SelectionBox) actor).moving();
+						}
 					}
 				} else {
 					task.cancel();
@@ -308,7 +310,8 @@ public class GroupEditor extends AbstractWidget {
 			super.touchUp(event, x, y, pointer, button);
 			if (pinching && pointer == 1) {
 				resetAngle = true;
-			} else if (pointer == 0) {
+			} else if (pointer == 0
+					&& !isTouchCancelled(event.getTarget(), x, y)) {
 				if (pinching) {
 					pinching = false;
 					resetAngle = true;
@@ -332,6 +335,10 @@ public class GroupEditor extends AbstractWidget {
 						fireTransformed();
 					}
 					((SelectionBox) target).selected();
+				}
+			} else {
+				if (task.isScheduled()) {
+					task.cancel();
 				}
 			}
 		}

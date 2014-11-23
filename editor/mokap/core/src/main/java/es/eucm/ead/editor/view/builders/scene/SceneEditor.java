@@ -44,8 +44,8 @@ import es.eucm.ead.editor.control.Controller;
 import es.eucm.ead.editor.control.Preferences;
 import es.eucm.ead.editor.control.Selection;
 import es.eucm.ead.editor.control.Selection.Context;
-import es.eucm.ead.editor.control.actions.editor.ShowInfoPanel;
 import es.eucm.ead.editor.control.actions.editor.CreateThumbnail;
+import es.eucm.ead.editor.control.actions.editor.ShowInfoPanel;
 import es.eucm.ead.editor.control.actions.editor.ShowInfoPanel.TypePanel;
 import es.eucm.ead.editor.control.actions.editor.ShowToast;
 import es.eucm.ead.editor.control.actions.model.SetSelection;
@@ -55,7 +55,9 @@ import es.eucm.ead.editor.model.Model.SelectionListener;
 import es.eucm.ead.editor.model.Q;
 import es.eucm.ead.editor.model.events.SelectionEvent;
 import es.eucm.ead.editor.view.ModelView;
+import es.eucm.ead.editor.view.builders.scene.context.SceneElementContext;
 import es.eucm.ead.editor.view.builders.scene.draw.BrushStrokes;
+import es.eucm.ead.editor.view.builders.scene.fx.FxContext;
 import es.eucm.ead.editor.view.builders.scene.interaction.InteractionContext;
 import es.eucm.ead.editor.view.builders.scene.play.TestGameView;
 import es.eucm.ead.editor.view.widgets.AbstractWidget;
@@ -70,8 +72,7 @@ import es.eucm.ead.schemax.Layer;
 public class SceneEditor extends BaseView implements ModelView,
 		SelectionListener, CommandListener {
 
-	public static final int INSERT = 0, TRANSFORM = 1, PAINT = 2, FX = 3,
-			INTERACTION = 4;
+	public static final int INSERT = 0, PAINT = 2, FX = 3, INTERACTION = 5;
 
 	public enum Mode {
 		COMPOSE, FX, INTERACTION, PLAY, DRAW,
@@ -94,6 +95,8 @@ public class SceneEditor extends BaseView implements ModelView,
 	private TestGameView gameView;
 
 	private BrushStrokes brushStrokes;
+
+	private FxContext fxContext;
 
 	private InteractionContext interactionContext;
 
@@ -123,6 +126,8 @@ public class SceneEditor extends BaseView implements ModelView,
 
 		interactionContext = new InteractionContext(controller, controller
 				.getApplicationAssets().getSkin());
+		fxContext = new FxContext(controller, controller.getApplicationAssets()
+				.getSkin());
 	}
 
 	public SceneGroupEditor getGroupEditor() {
@@ -184,15 +189,13 @@ public class SceneEditor extends BaseView implements ModelView,
 		unsetMode(this.mode);
 		this.oldMode = this.mode;
 		this.mode = mode;
+		Context context = controller.getModel().getSelection()
+				.getContext(Selection.SCENE_ELEMENT);
+		boolean selection = context != null
+				&& context.getSelection().length > 0;
 		switch (mode) {
 		case COMPOSE:
-			Context context = controller.getModel().getSelection()
-					.getContext(Selection.SCENE_ELEMENT);
-			if (context == null || context.getSelection().length == 0) {
-				toolbar.setSelectedWidget(INSERT);
-			} else {
-				toolbar.setSelectedWidget(TRANSFORM);
-			}
+			toolbar.setSelectedWidget(INSERT + (selection ? 1 : 0));
 			sceneGroupEditor.setOnlySelection(false);
 			controller.action(ShowInfoPanel.class, TypePanel.COMPOSE,
 					Preferences.HELP_MODE_COMPOSE);
@@ -202,14 +205,12 @@ public class SceneEditor extends BaseView implements ModelView,
 			brushStrokes.show();
 			break;
 		case INTERACTION:
-			controller.getCommands().pushStack();
-			interactionContext.prepare();
-			toolbar.setSelectedWidget(INTERACTION);
-			setSelectionContext(interactionContext);
-			sceneGroupEditor.setOnlySelection(true);
+			toolbar.setSelectedWidget(INTERACTION + (selection ? 1 : 0));
+			setContext(interactionContext);
 			break;
 		case FX:
-			toolbar.setSelectedWidget(FX);
+			toolbar.setSelectedWidget(FX + (selection ? 1 : 0));
+			setContext(fxContext);
 			break;
 		case PLAY:
 			enterFullScreen();
@@ -248,6 +249,13 @@ public class SceneEditor extends BaseView implements ModelView,
 			interactionContext.release();
 			break;
 		}
+	}
+
+	private void setContext(SceneElementContext context) {
+		controller.getCommands().pushStack();
+		context.prepare();
+		setSelectionContext(context);
+		sceneGroupEditor.setOnlySelection(true);
 	}
 
 	@Override

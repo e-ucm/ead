@@ -82,7 +82,7 @@ public class ProjectView implements ViewBuilder, BackListener {
 	}
 
 	private Actor buildToolbar(Skin skin) {
-		MultiWidget toolbar = new MultiWidget(skin);
+		MultiWidget toolbar = new MultiWidget(skin, SkinConstants.STYLE_TOOLBAR);
 
 		LinearLayout project = new LinearLayout(true);
 		project.add(WidgetBuilder.toolbarIcon(SkinConstants.IC_GO, null,

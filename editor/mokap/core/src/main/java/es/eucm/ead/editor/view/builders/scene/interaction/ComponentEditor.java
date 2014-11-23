@@ -39,8 +39,8 @@ package es.eucm.ead.editor.view.builders.scene.interaction;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
-
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
+
 import es.eucm.ead.editor.control.Controller;
 import es.eucm.ead.editor.control.Selection;
 import es.eucm.ead.editor.control.actions.model.generic.RemoveFromArray;
@@ -48,6 +48,7 @@ import es.eucm.ead.editor.control.actions.model.scene.AddComponent;
 import es.eucm.ead.editor.model.Q;
 import es.eucm.ead.editor.view.ModelView;
 import es.eucm.ead.editor.view.SkinConstants;
+import es.eucm.ead.editor.view.builders.scene.context.SceneElementContext;
 import es.eucm.ead.editor.view.widgets.IconButton;
 import es.eucm.ead.editor.view.widgets.WidgetBuilder;
 import es.eucm.ead.editor.view.widgets.layouts.LinearLayout;
@@ -96,7 +97,7 @@ public abstract class ComponentEditor<T extends ModelComponent> extends
 						getComponentId());
 				controller.action(RemoveFromArray.class, modelEntity,
 						modelEntity.getComponents(), component);
-				((InteractionContext) getParent()).closeEditor();
+				((SceneElementContext) getParent()).closeEditor();
 			}
 		});
 

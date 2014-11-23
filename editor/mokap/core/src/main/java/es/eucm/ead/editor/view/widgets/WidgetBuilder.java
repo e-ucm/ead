@@ -127,7 +127,7 @@ public class WidgetBuilder {
 	}
 
 	public static MultiWidget multiToolbarIcon(IconButton... buttons) {
-		MultiWidget multiButton = new MultiWidget();
+		MultiWidget multiButton = new MultiWidget(skin);
 		for (IconButton button : buttons) {
 			multiButton.addWidgets(button);
 		}

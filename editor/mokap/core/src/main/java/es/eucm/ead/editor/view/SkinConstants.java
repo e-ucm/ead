@@ -127,4 +127,7 @@ public interface SkinConstants {
 	public static final String IC_GO = "ic_go";
 	public static final String IC_TOUCH = "ic_touch";
 	public static final String IC_LINK = "ic_link";
+	public static final String IC_BLUR_LINEAR = "ic_blur_linear";
+
+	public static final String COLOR_GRAY = "gray";
 }

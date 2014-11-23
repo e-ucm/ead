@@ -144,6 +144,7 @@ public class BaseView extends AbstractWidget {
 					break;
 				case -1:
 					if (velocityX > cmToXPixels(FLING_MIN_VELOCITY_CM)) {
+						getStage().cancelTouchFocusExcept(this, BaseView.this);
 						selectionContext.hide();
 					}
 					break;

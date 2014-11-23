@@ -53,32 +53,32 @@ public class MultiWidget extends Container<Actor> {
 
 	private static final float ANIM_TIME = 0.15f;
 
+	private MultiWidgetStyle style;
+
 	private Array<Actor> widgets;
 
-	protected float maxHeight;
-
-	private Actor toHide;
+	private Array<Color> colors;
 
 	protected Actor toShow;
 
 	private Runnable actionAddActor;
 
-	public MultiWidget() {
-		this((MultiWidgetStyle) null);
-	}
-
 	public MultiWidget(Skin skin) {
 		this(skin.get(MultiWidgetStyle.class));
 	}
 
+	public MultiWidget(Skin skin, String style) {
+		this(skin.get(style, MultiWidgetStyle.class));
+	}
+
 	public MultiWidget(MultiWidgetStyle style) {
-		if (style != null) {
-			setBackground(style.background);
-			if (style.color != null) {
-				setColor(style.color);
-			}
+		this.style = style;
+		setBackground(style.background);
+		if (style.color != null) {
+			setColor(style.color);
 		}
 		widgets = new Array<Actor>();
+		colors = new Array<Color>();
 		fill();
 		actionAddActor = new Runnable() {
 			@Override
@@ -96,18 +96,25 @@ public class MultiWidget extends Container<Actor> {
 
 	public void addWidgets(Actor... actors) {
 		for (Actor actor : actors) {
-			actor.setTouchable(Touchable.disabled);
-
-			if (actor instanceof Table) {
-				((Table) actor).setTransform(true);
-			}
-			widgets.add(actor);
+			addWidget(actor, null);
 		}
 
+	}
+
+	public void addWidget(Actor actor, Color color) {
+		actor.setTouchable(Touchable.disabled);
+
+		if (actor instanceof Table) {
+			((Table) actor).setTransform(true);
+		}
+		widgets.add(actor);
+		colors.add(color);
+
 		if (getActor() == null) {
-			setActor(actors[0]);
-			toShow = actors[0];
-			actors[0].setTouchable(Touchable.enabled);
+			setActor(actor);
+			setColor(color == null ? style.color : color);
+			toShow = actor;
+			actor.setTouchable(Touchable.enabled);
 		}
 	}
 
@@ -116,6 +123,9 @@ public class MultiWidget extends Container<Actor> {
 			Actor newBar = widgets.get(index);
 
 			if (newBar != toShow) {
+				Color color = colors.get(index);
+				setColor(color == null ? style.color : color);
+
 				for (Actor widget : widgets) {
 					widget.clearActions();
 				}
@@ -129,7 +139,7 @@ public class MultiWidget extends Container<Actor> {
 
 				toShow = newBar;
 
-				toHide = current;
+				Actor toHide = current;
 				toHide.setOrigin(Align.center);
 
 				if (toShow.getScaleY() == 1) {
