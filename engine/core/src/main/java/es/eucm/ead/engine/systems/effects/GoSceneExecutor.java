@@ -74,9 +74,9 @@ public class GoSceneExecutor extends EffectExecutor<GoScene> {
 		transitionManager.addListener(new EndListener() {
 			@Override
 			public void transitionFinished() {
+				gameLoop.setPlaying(true);
 				gameView.clearLayer(Layer.SCENE_CONTENT, true);
 				gameView.addEntityToLayer(Layer.SCENE_CONTENT, nextScreen);
-				gameLoop.setPlaying(true);
 			}
 		});
 	}
@@ -97,7 +97,6 @@ public class GoSceneExecutor extends EffectExecutor<GoScene> {
 			}
 		}
 
-		gameLoop.setPlaying(false);
 		if (effect.getSceneId() == null) {
 			Gdx.app.error("GoSceneExecutor",
 					"Scene id set to null. Effect was skipped");
@@ -108,10 +107,13 @@ public class GoSceneExecutor extends EffectExecutor<GoScene> {
 					@Override
 					public void loaded(String path, EngineEntity engineEntity) {
 						nextScreen = engineEntity;
+						gameLoop.update(0);
 						transitionManager.takeNextScreenPicture(
 								layer.getStage(), engineEntity.getGroup());
-						transitionManager.startTransition(
-								getTransition(effect), layer);
+						gameLoop.setPlaying(false);
+						layer.addActor(transitionManager);
+						transitionManager
+								.startTransition(getTransition(effect));
 					}
 
 					@Override

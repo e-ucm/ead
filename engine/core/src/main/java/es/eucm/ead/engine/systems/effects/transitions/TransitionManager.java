@@ -45,7 +45,6 @@ import com.badlogic.gdx.graphics.glutils.FrameBuffer;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.Event;
 import com.badlogic.gdx.scenes.scene2d.EventListener;
-import com.badlogic.gdx.scenes.scene2d.Group;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.utils.Disposable;
 import com.badlogic.gdx.utils.Pools;
@@ -88,11 +87,9 @@ public class TransitionManager extends Actor implements Disposable {
 
 	@Override
 	public void draw(Batch batch, float parentAlpha) {
-		if (time > 0) {
-			batch.setColor(1f, 1f, 1f, 1f);
-			screenTransition.render(batch, currTex, currentScreenRegion,
-					nexTex, nextScreenRegion, percentageCompletion);
-		}
+		batch.setColor(1f, 1f, 1f, 1f);
+		screenTransition.render(batch, currTex, currentScreenRegion, nexTex,
+				nextScreenRegion, percentageCompletion);
 	}
 
 	public void takeCurrentScreenPicture(Stage stage) {
@@ -144,18 +141,18 @@ public class TransitionManager extends Actor implements Disposable {
 		region.flip(false, true);
 	}
 
-	public void startTransition(Transition screenTransition, Group container) {
+	public void startTransition(Transition screenTransition) {
 		this.screenTransition = screenTransition;
 		time = 0f;
-		container.addActor(this);
+		percentageCompletion = 0;
 	}
 
 	private void endTransition() {
+		remove();
 		screenTransition.end();
 		dispose();
 		// transition has just finished
 		// switch screens
-		remove();
 		EndEvent event = Pools.obtain(EndEvent.class);
 		fire(event);
 		Pools.free(event);

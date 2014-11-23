@@ -81,7 +81,6 @@ abstract class Panel extends AbstractWidget {
 				if (!dragStarted) {
 					dragStart(x, y);
 					dragStarted = true;
-					getStage().cancelTouchFocusExcept(this, Panel.this);
 				}
 				Panel.this.displace(xLocked ? 0 : deltaX, xLocked ? deltaY : 0);
 			}
