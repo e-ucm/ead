@@ -64,7 +64,7 @@ public class SceneSelector extends LinearLayout implements Selector<String> {
 		I18N i18N = controller.getApplicationAssets().getI18N();
 		background(skin.getDrawable(SkinConstants.DRAWABLE_BLANK));
 
-		MultiWidget toolbar = new MultiWidget(skin);
+		MultiWidget toolbar = new MultiWidget(skin, SkinConstants.STYLE_TOOLBAR);
 		LinearLayout buttons = new LinearLayout(true);
 		toolbar.addWidgets(buttons);
 
