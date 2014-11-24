@@ -62,7 +62,7 @@ import es.eucm.ead.engine.assets.Assets.AssetLoadedCallback;
 public abstract class ThumbnailsGallery extends AbstractWidget implements
 		AssetLoadedCallback<Texture> {
 
-	private Assets assets;
+	protected Assets assets;
 
 	private Skin skin;
 

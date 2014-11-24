@@ -41,6 +41,7 @@ import java.io.InputStream;
 
 import com.badlogic.gdx.Input.TextInputListener;
 import com.badlogic.gdx.Net.HttpRequest;
+import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.math.Vector2;
 
@@ -190,4 +191,22 @@ public interface Platform {
 	 */
 	public <T> T sendHttpRequest(HttpRequest httpRequest, Class<T> type)
 			throws IOException;
+
+	/**
+	 * Creates a scaled image given a source {@code imageFile}. The
+	 * implementation may vary with the platform.
+	 * 
+	 * @param imageFile
+	 *            the image that we want to scale.
+	 * @param maxWidth
+	 *            the maximum width of the resulting image.
+	 * @param maxHeight
+	 *            the maximum height of the resulting image.
+	 * @param resultImage
+	 *            a {@link FileHandle} to the resulting scaled image or null if
+	 *            you want to override the source {@code imageFile}.
+	 * @return false if something went wrong, true if the scaling succeeded.
+	 */
+	public boolean scaleImage(FileHandle imageFile, int maxWidth,
+			int maxHeight, FileHandle resultImage);
 }
