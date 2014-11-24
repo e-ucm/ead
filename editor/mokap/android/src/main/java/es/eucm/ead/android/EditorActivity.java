@@ -45,6 +45,7 @@ import com.google.android.gms.analytics.GoogleAnalytics;
 import com.google.android.gms.analytics.Tracker;
 import es.eucm.ead.editor.MokapApplicationListener;
 import es.eucm.ead.editor.platform.MokapPlatform;
+import es.eucm.mokap.R;
 
 import java.util.HashMap;
 import java.util.Map;
