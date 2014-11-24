@@ -42,6 +42,7 @@ import java.io.InputStream;
 
 import com.badlogic.gdx.Input.TextInputListener;
 import com.badlogic.gdx.Net.HttpRequest;
+import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.ObjectMap;
@@ -185,5 +186,11 @@ public class MockPlatform extends AbstractPlatform {
 
 	public void putHttpResponse(String URL, Object object) {
 		httpResponses.put(URL, object);
+	}
+
+	@Override
+	public boolean scaleImage(FileHandle imageFile, int maxWidth,
+			int maxHeight, FileHandle resultImage) {
+		return false;
 	}
 }

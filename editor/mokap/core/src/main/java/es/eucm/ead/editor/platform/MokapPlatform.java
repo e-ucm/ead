@@ -36,7 +36,6 @@
  */
 package es.eucm.ead.editor.platform;
 
-import java.io.File;
 import java.io.InputStream;
 
 import com.badlogic.gdx.Gdx;
@@ -121,7 +120,7 @@ public abstract class MokapPlatform extends AbstractPlatform {
 		return null;
 	}
 
-	public abstract void captureImage(File photoFile,
+	public abstract void captureImage(FileHandle photoFile,
 			ImageCapturedListener listener);
 
 	public interface ImageCapturedListener {
