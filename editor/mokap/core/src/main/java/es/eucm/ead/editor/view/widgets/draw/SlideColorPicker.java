@@ -40,6 +40,7 @@ import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.Pixmap;
 import com.badlogic.gdx.graphics.Pixmap.Format;
 import com.badlogic.gdx.graphics.Texture;
+import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.scenes.scene2d.Event;
@@ -197,6 +198,18 @@ public class SlideColorPicker extends AbstractWidget {
 			saturationPixmap = new Pixmap(width, height, Format.RGBA8888);
 			brightnessPixmap = new Pixmap(width, height, Format.RGBA8888);
 
+			float saturation = 1f, brightness = 1f;
+			int minWidth = getClearColorWidth();
+			int colorMaxPosition = width - minWidth;
+			float colorWidth = width - minWidth * 2f;
+			for (int i = minWidth; i < colorMaxPosition; ++i) {
+				float percentageCompletion = (i - minWidth) / colorWidth;
+				float[] rgb = HSBtoRGB(percentageCompletion, saturation,
+						brightness, tempValues);
+
+				drawColor(huePixmap, i, rgb[0], rgb[1], rgb[2], 1f);
+			}
+
 			hueTexture = new Texture(huePixmap);
 			saturationTexture = new Texture(saturationPixmap);
 			brightnessTexture = new Texture(brightnessPixmap);
@@ -208,21 +221,6 @@ public class SlideColorPicker extends AbstractWidget {
 							saturationPixmap)));
 			brightnessSlider.getStyle().background = new TextureRegionDrawable(
 					new TextureRegion(brightnessTexture));
-
-			int minWidth = getClearColorWidth();
-			int colorMaxPosition = width - minWidth;
-			// left transparent padding
-			for (int i = 0; i < minWidth; ++i) {
-				drawColor(huePixmap, i, 0f, 0f, 0f, 0f);
-				drawColor(saturationPixmap, i, 0f, 0f, 0f, 0f);
-				drawColor(brightnessPixmap, i, 0f, 0f, 0f, 0f);
-			}
-			// right transparent padding
-			for (int i = colorMaxPosition; i < width; ++i) {
-				drawColor(huePixmap, i, 0f, 0f, 0f, 0f);
-				drawColor(saturationPixmap, i, 0f, 0f, 0f, 0f);
-				drawColor(brightnessPixmap, i, 0f, 0f, 0f, 0f);
-			}
 
 			invalidateHierarchy();
 			updateAllTexturesExcept(null);
@@ -246,6 +244,12 @@ public class SlideColorPicker extends AbstractWidget {
 		float[] rgb = HSBtoRGB(getValue(hueSlider), getValue(saturationSlider),
 				getValue(brightnessSlider), tempValues);
 		color.set(rgb[0], rgb[1], rgb[2], 1f);
+	}
+
+	@Override
+	public void draw(Batch batch, float parentAlpha) {
+		super.draw(batch, parentAlpha);
+		batch.setColor(1f, 1f, 1f, 1f);
 	}
 
 	/**
@@ -292,12 +296,6 @@ public class SlideColorPicker extends AbstractWidget {
 
 			for (int i = minWidth; i < colorMaxPosition; ++i) {
 				float percentageCompletion = (i - minWidth) / colorWidth;
-				if (slider != hueSlider) {
-					float[] rgb = HSBtoRGB(percentageCompletion, s, b,
-							tempValues);
-
-					drawColor(huePixmap, i, rgb[0], rgb[1], rgb[2], 1f);
-				}
 
 				if (slider != saturationSlider) {
 					float[] rgb = HSBtoRGB(h, percentageCompletion, b,
@@ -313,9 +311,6 @@ public class SlideColorPicker extends AbstractWidget {
 				}
 			}
 
-			if (slider != hueSlider) {
-				hueTexture.draw(huePixmap, 0, 0);
-			}
 			if (slider != saturationSlider) {
 				saturationTexture.draw(saturationPixmap, 0, 0);
 			}
