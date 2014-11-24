@@ -40,38 +40,36 @@ import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.Group;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
-import com.badlogic.gdx.scenes.scene2d.Touchable;
 import com.badlogic.gdx.scenes.scene2d.ui.Button;
-import com.badlogic.gdx.scenes.scene2d.ui.Button.ButtonStyle;
 import com.badlogic.gdx.scenes.scene2d.ui.Container;
+import com.badlogic.gdx.scenes.scene2d.ui.ScrollPane;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.utils.Array;
-
+import es.eucm.ead.editor.view.builders.scene.groupeditor.GroupEditor.GroupEditorStyle;
 import es.eucm.ead.editor.view.widgets.AbstractWidget;
 import es.eucm.ead.editor.view.widgets.ContextMenu;
+import es.eucm.ead.editor.view.widgets.layouts.LinearLayout;
 
-public class SelectLayerMenu extends ContextMenu {
+public class LayerSelector extends ContextMenu {
 
 	private GroupEditor groupEditor;
 
-	private Array<Actor> layersSelected;
+	private GroupEditorStyle style;
 
-	private ButtonStyle style;
+	private ScrollPane scrollPane;
 
-	public SelectLayerMenu(ButtonStyle style, Array<Actor> layersSelected,
-			GroupEditor groupeditor) {
+	private LinearLayout layers;
+
+	public LayerSelector(GroupEditor groupeditor, GroupEditorStyle style) {
 		super();
 		this.style = style;
 		this.groupEditor = groupeditor;
-		this.layersSelected = layersSelected;
+		scrollPane = new ScrollPane(layers = new LinearLayout(true));
+		scrollPane.setScrollingDisabled(false, true);
+		scrollPane.setOverscroll(false, false);
+		add(scrollPane).fillX();
+		setBackground(style.layersBackground);
 		this.addListener(new ClickListener() {
-
-			@Override
-			public boolean touchDown(InputEvent event, float x, float y,
-					int pointer, int button) {
-				event.stop();
-				return super.touchDown(event, x, y, pointer, button);
-			}
 
 			@Override
 			public void clicked(InputEvent event, float x, float y) {
@@ -80,43 +78,27 @@ public class SelectLayerMenu extends ContextMenu {
 					groupEditor.addToSelection(((Layer) target).actor, true);
 					groupEditor.fireSelection();
 				}
-				setTouchable(Touchable.disabled);
-				hide(new Runnable() {
-					@Override
-					public void run() {
-						setVisible(false);
-					}
-				});
 			}
 		});
 	}
 
 	@Override
-	public void show() {
-		setTouchable(Touchable.enabled);
-		clearChildren();
-		layersSelected.reverse();
-		for (Actor layer : layersSelected) {
-			Layer layerWidget = new Layer(style);
-			layerWidget.setActor(layer);
-			add(layerWidget).fillX();
-		}
-		pack();
-		setX(Math.min(getX(), getParent().getWidth() - getWidth()));
-		boolean nearTop = getY() + getHeight() > getParent().getHeight() / 2.0f;
-		if (nearTop) {
-			setY(getY() - getHeight());
-		}
-		super.show();
+	public float getPrefWidth() {
+		return Math.min(layers.getPrefWidth(), getParent().getWidth());
 	}
 
-	@Override
-	public Actor hit(float x, float y, boolean touchable) {
-		if (getTouchable() == Touchable.disabled) {
-			return null;
+	public void prepare(Array<Actor> layersTouched) {
+		scrollPane.setScrollPercentX(0.0f);
+		layers.clearChildren();
+		layersTouched.reverse();
+		for (Actor layer : layersTouched) {
+			Layer layerWidget = new Layer(style.layerButtonStyle);
+			layerWidget.setChecked(groupEditor.getSelection().contains(layer,
+					true));
+			layerWidget.setActor(layer);
+			layers.add(layerWidget);
 		}
-		Actor actor = super.hit(x, y, touchable);
-		return actor == null ? this : actor;
+		layers.pack();
 	}
 
 	public static class Layer extends Button {
