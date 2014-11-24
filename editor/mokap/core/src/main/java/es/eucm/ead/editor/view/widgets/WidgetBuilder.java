@@ -284,7 +284,9 @@ public class WidgetBuilder {
 		return new Image(skin, drawable);
 	}
 
-	public static Label label(String label, String styleEdition) {
-		return new Label(label, skin, styleEdition);
+	public static Label label(String text, String styleEdition) {
+		Label label = new Label(text, skin, styleEdition);
+		label.setEllipsis(true);
+		return label;
 	}
 }

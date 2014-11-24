@@ -39,8 +39,8 @@ package es.eucm.ead.editor.view.builders.scene.interaction;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
+import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
-
 import es.eucm.ead.editor.control.Controller;
 import es.eucm.ead.editor.control.Selection;
 import es.eucm.ead.editor.control.actions.model.generic.RemoveFromArray;
@@ -79,12 +79,13 @@ public abstract class ComponentEditor<T extends ModelComponent> extends
 		this.componentId = componentId;
 		background(controller.getApplicationAssets().getSkin()
 				.getDrawable(SkinConstants.DRAWABLE_PAGE_RIGHT));
-		LinearLayout header = new LinearLayout(true);
-		header.defaultWidgetsMargin(WidgetBuilder.dpToPixels(8),
-				WidgetBuilder.dpToPixels(8), 0, 0);
+
+		Table header = new Table();
+		header.pad(WidgetBuilder.dpToPixels(8), WidgetBuilder.dpToPixels(8), 0,
+				0);
 		header.add(WidgetBuilder.icon(icon, SkinConstants.STYLE_GRAY));
-		header.add(WidgetBuilder.label(label, SkinConstants.STYLE_EDITION));
-		header.addSpace();
+		header.add(WidgetBuilder.label(label, SkinConstants.STYLE_EDITION))
+				.expandX().width(0).fillX();
 
 		IconButton delete = WidgetBuilder.icon(SkinConstants.IC_DELETE,
 				SkinConstants.STYLE_EDITION);
@@ -101,7 +102,8 @@ public abstract class ComponentEditor<T extends ModelComponent> extends
 			}
 		});
 
-		header.add(delete).margin(0, 0, WidgetBuilder.dpToPixels(8), 0);
+		header.add(delete).padRight(WidgetBuilder.dpToPixels(8));
+
 		add(header).expandX();
 		buildContent();
 
