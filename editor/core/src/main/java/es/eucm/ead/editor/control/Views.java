@@ -36,9 +36,6 @@
  */
 package es.eucm.ead.editor.control;
 
-import java.util.HashMap;
-import java.util.Map;
-
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.scenes.scene2d.Actor;
@@ -50,7 +47,6 @@ import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.scenes.scene2d.utils.Layout;
 import com.badlogic.gdx.utils.reflect.ClassReflection;
 import com.badlogic.gdx.utils.reflect.ReflectionException;
-
 import es.eucm.ead.editor.control.ViewsHistory.ViewUpdate;
 import es.eucm.ead.editor.control.actions.editor.ChangeView;
 import es.eucm.ead.editor.model.Model.ModelListener;
@@ -62,6 +58,9 @@ import es.eucm.ead.editor.view.builders.Builder;
 import es.eucm.ead.editor.view.builders.DialogBuilder;
 import es.eucm.ead.editor.view.builders.ViewBuilder;
 import es.eucm.ead.editor.view.widgets.Dialog;
+
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  * Controls all the views
@@ -288,19 +287,19 @@ public class Views implements ModelListener<LoadEvent> {
 	 * Show the given modal in the given coordinates
 	 */
 	public void showModal(Actor modal, float x, float y) {
-		if (modal instanceof WidgetGroup) {
-			((WidgetGroup) modal).pack();
+		if (currentModal != null) {
+			currentModal.remove();
+		}
+
+		modalsContainer.addActor(modal);
+		if (modal instanceof Layout) {
+			((Layout) modal).pack();
 		}
 
 		modal.setPosition(
 				Math.min(x, modalsContainer.getWidth() - modal.getWidth()), y
 						- modal.getHeight());
 
-		if (currentModal != null) {
-			currentModal.remove();
-		}
-
-		modalsContainer.addActor(modal);
 		modalsContainer.setTouchable(Touchable.enabled);
 
 		if (modal instanceof Modal) {
