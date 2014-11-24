@@ -50,7 +50,7 @@ import es.eucm.ead.editor.control.Preferences;
 import es.eucm.ead.editor.control.Selection;
 import es.eucm.ead.editor.control.actions.editor.AddLabel;
 import es.eucm.ead.editor.control.actions.editor.AddPaintedElement;
-import es.eucm.ead.editor.control.actions.editor.AddSceneElementFromResource;
+import es.eucm.ead.editor.control.actions.editor.ChangeView;
 import es.eucm.ead.editor.control.actions.editor.Copy;
 import es.eucm.ead.editor.control.actions.editor.Paste;
 import es.eucm.ead.editor.control.actions.editor.Redo;
@@ -68,10 +68,11 @@ import es.eucm.ead.editor.control.actions.model.scene.ReorderSelection;
 import es.eucm.ead.editor.control.actions.model.scene.transform.MirrorSelection;
 import es.eucm.ead.editor.view.ModelView;
 import es.eucm.ead.editor.view.SkinConstants;
+import es.eucm.ead.editor.view.builders.FileView;
+import es.eucm.ead.editor.view.builders.scene.SceneEditor.Mode;
 import es.eucm.ead.editor.view.builders.scene.draw.BrushStrokes;
 import es.eucm.ead.editor.view.builders.scene.draw.BrushStrokes.ModeEvent;
 import es.eucm.ead.editor.view.builders.scene.draw.BrushStrokes.ModeListener;
-import es.eucm.ead.editor.view.builders.scene.SceneEditor.Mode;
 import es.eucm.ead.editor.view.widgets.ContextMenu;
 import es.eucm.ead.editor.view.widgets.IconButton;
 import es.eucm.ead.editor.view.widgets.MultiWidget;
@@ -177,9 +178,6 @@ public class GroupEditorToolbar extends MultiWidget implements ModelView {
 
 		compose.addSpace();
 
-		compose.add(WidgetBuilder.toolbarIcon(SkinConstants.IC_CLOUD,
-				i18N.m("gallery"), true, AddSceneElementFromResource.class));
-
 		compose.add(WidgetBuilder.toolbarIcon(SkinConstants.IC_PASTE,
 				i18N.m("paste"), true, Paste.class));
 
@@ -275,8 +273,11 @@ public class GroupEditorToolbar extends MultiWidget implements ModelView {
 			}
 		});
 
-		ContextMenu contextMenu = WidgetBuilder.iconLabelContextPanel(picture,
-				text, zone, paint);
+		Button gallery = WidgetBuilder.button(SkinConstants.IC_CLOUD,
+				i18n.m("gallery"), style, ChangeView.class, FileView.class);
+
+		ContextMenu contextMenu = WidgetBuilder.iconLabelContextPanel(gallery,
+				picture, text, zone, paint);
 
 		contextMenu.pack();
 		contextMenu.setOriginX(contextMenu.getWidth());

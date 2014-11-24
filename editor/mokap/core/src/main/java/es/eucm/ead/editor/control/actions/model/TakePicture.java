@@ -38,13 +38,14 @@ package es.eucm.ead.editor.control.actions.model;
 
 import com.badlogic.gdx.files.FileHandle;
 
+import es.eucm.ead.editor.assets.EditorGameAssets;
 import es.eucm.ead.editor.control.actions.EditorAction;
 import es.eucm.ead.editor.control.background.BackgroundExecutor;
 import es.eucm.ead.editor.control.background.BackgroundExecutor.BackgroundTaskListener;
 import es.eucm.ead.editor.control.background.BackgroundTask;
 import es.eucm.ead.editor.platform.MokapPlatform;
 import es.eucm.ead.editor.platform.MokapPlatform.ImageCapturedListener;
-import es.eucm.ead.engine.assets.Assets;
+import es.eucm.ead.editor.utils.ProjectUtils;
 import es.eucm.ead.schema.entities.ModelEntity;
 import es.eucm.ead.schemax.GameStructure;
 
@@ -75,17 +76,16 @@ public class TakePicture extends EditorAction {
 		String pictureString = controller.getApplicationAssets().getI18N()
 				.m("picture");
 
-		int i = 0;
-
 		pictureFile = null;
-		Assets assets = controller.getEditorGameAssets();
+		EditorGameAssets assets = controller.getEditorGameAssets();
 
-		String picRootPath = GameStructure.IMAGES_FOLDER + pictureString;
-		do {
-			pictureFile = assets.resolve(picRootPath + (++i) + ".jpg");
-		} while (pictureFile.exists());
+		FileHandle picRootPath = assets.absolute(assets.getLoadingPath()
+				+ GameStructure.IMAGES_FOLDER);
 
-		platform.captureImage(pictureFile.file(), importListener);
+		pictureFile = ProjectUtils.getNonExistentFile(picRootPath,
+				pictureString, ".jpg");
+
+		platform.captureImage(pictureFile, importListener);
 	}
 
 	private final ImageCapturedListener importListener = new ImageCapturedListener() {

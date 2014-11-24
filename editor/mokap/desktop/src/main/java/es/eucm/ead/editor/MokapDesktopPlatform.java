@@ -39,7 +39,6 @@ package es.eucm.ead.editor;
 import java.awt.FlowLayout;
 import java.awt.event.WindowEvent;
 import java.awt.event.WindowFocusListener;
-import java.io.File;
 
 import javax.swing.JDialog;
 import javax.swing.JOptionPane;
@@ -50,6 +49,7 @@ import javax.swing.SwingUtilities;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input.TextInputListener;
 import com.badlogic.gdx.backends.lwjgl.LwjglFrame;
+import com.badlogic.gdx.files.FileHandle;
 
 import es.eucm.ead.editor.control.Controller;
 import es.eucm.ead.editor.platform.MokapPlatform;
@@ -77,8 +77,14 @@ public class MokapDesktopPlatform extends MokapPlatform {
 		Gdx.input.getTextInput(new TextInputListener() {
 
 			@Override
-			public void input(String text) {
-				listener.fileChosen(text);
+			public void input(final String text) {
+				Gdx.app.postRunnable(new Runnable() {
+					@Override
+					public void run() {
+						listener.fileChosen(text);
+
+					}
+				});
 			}
 
 			@Override
@@ -106,7 +112,7 @@ public class MokapDesktopPlatform extends MokapPlatform {
 	}
 
 	@Override
-	public void captureImage(File photoFile,
+	public void captureImage(FileHandle photoFile,
 			final ImageCapturedListener listener) {
 		Gdx.app.postRunnable(new Runnable() {
 
@@ -178,5 +184,12 @@ public class MokapDesktopPlatform extends MokapPlatform {
 
 			}
 		});
+	}
+
+	@Override
+	public boolean scaleImage(FileHandle imageFile, int maxWidth,
+			int maxHeight, FileHandle resultImage) {
+		imageFile.copyTo(resultImage);
+		return true;
 	}
 }

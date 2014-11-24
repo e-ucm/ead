@@ -36,6 +36,10 @@
  */
 package es.eucm.ead.android;
 
+import java.io.IOException;
+import java.io.InputStream;
+import java.util.List;
+
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.ProgressDialog;
@@ -50,33 +54,24 @@ import android.content.pm.PackageManager;
 import android.content.pm.PackageManager.NameNotFoundException;
 import android.content.pm.ResolveInfo;
 import android.database.Cursor;
-import android.graphics.Bitmap;
-import android.graphics.Bitmap.CompressFormat;
-import android.graphics.BitmapFactory;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.provider.MediaStore;
 import android.text.InputType;
 import android.widget.EditText;
+
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input.TextInputListener;
 import com.badlogic.gdx.files.FileHandle;
 import com.google.android.gms.analytics.Tracker;
+
 import es.eucm.ead.android.EditorActivity.ActivityResultListener;
 import es.eucm.ead.editor.control.Controller;
 import es.eucm.ead.editor.platform.MokapPlatform;
 import es.eucm.ead.editor.platform.MokapPlatform.ImageCapturedListener.Result;
+import es.eucm.ead.editor.utils.ProjectUtils;
 import es.eucm.ead.engine.I18N;
 import es.eucm.ead.schema.data.Dimension;
-
-import java.io.Closeable;
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.io.InputStream;
-import java.util.List;
 
 public class AndroidPlatform extends MokapPlatform {
 
@@ -145,7 +140,8 @@ public class AndroidPlatform extends MokapPlatform {
 									String path = getStringFromIntent(activity,
 											data, MediaStore.Images.Media.DATA);
 									if (path != null) {
-										File file = new File(path);
+										FileHandle file = Gdx.files
+												.absolute(path);
 										if (file.exists()) {
 											new DecodePictureTask(listener,
 													file).execute();
@@ -401,7 +397,7 @@ public class AndroidPlatform extends MokapPlatform {
 	}
 
 	@Override
-	public void captureImage(final File photoFile,
+	public void captureImage(final FileHandle photoFile,
 			final ImageCapturedListener listener) {
 		final EditorActivity activity = (EditorActivity) Gdx.app;
 		if (activity.getPackageManager().hasSystemFeature(
@@ -414,9 +410,9 @@ public class AndroidPlatform extends MokapPlatform {
 				// We need to create an empty file if it doesn't exist in order
 				// to avoid a known bug in some devices with the camera intent
 				if (!photoFile.exists()) {
-					photoFile.getParentFile().mkdirs();
+					photoFile.parent().mkdirs();
 					try {
-						photoFile.createNewFile();
+						photoFile.file().createNewFile();
 					} catch (IOException ioex) {
 						listener.imageCaptured(Result.UNKOWN);
 						Gdx.app.error(PLATFORM_TAG,
@@ -426,7 +422,7 @@ public class AndroidPlatform extends MokapPlatform {
 					}
 				}
 				takePictureIntent.putExtra(MediaStore.EXTRA_OUTPUT,
-						Uri.fromFile(photoFile));
+						Uri.fromFile(photoFile.file()));
 				activity.startActivityForResult(takePictureIntent,
 						CAPTURE_PHOTO, new ActivityResultListener() {
 
@@ -455,14 +451,14 @@ public class AndroidPlatform extends MokapPlatform {
 		private ProgressDialog mPleaseWaitDialog = null;
 		private ImageCapturedListener captureListener;
 		private FileChooserListener fileListener;
-		private File file;
+		private FileHandle file;
 
-		public DecodePictureTask(FileChooserListener listener, File file) {
+		public DecodePictureTask(FileChooserListener listener, FileHandle file) {
 			this.fileListener = listener;
 			this.file = file;
 		}
 
-		public DecodePictureTask(ImageCapturedListener listener, File file) {
+		public DecodePictureTask(ImageCapturedListener listener, FileHandle file) {
 			this.captureListener = listener;
 			this.file = file;
 		}
@@ -509,7 +505,10 @@ public class AndroidPlatform extends MokapPlatform {
 					}
 					captureListener.imageCaptured(result);
 				} else if (fileListener != null) {
-					fileListener.fileChosen(file.getAbsolutePath());
+					fileListener.fileChosen(file.file().getAbsolutePath());
+					if (file.exists()) {
+						file.delete();
+					}
 				}
 				captureListener = null;
 				fileListener = null;
@@ -525,109 +524,16 @@ public class AndroidPlatform extends MokapPlatform {
 
 		@Override
 		protected Boolean doInBackground(Void... args) {
-
-			return decodeFile(Gdx.graphics.getWidth(),
-					Gdx.graphics.getHeight(), captureListener == null);
-		}
-
-		/**
-		 * Decodes image and scales it to reduce memory consumption.
-		 */
-		private boolean decodeFile(int targetWidth, int targetHeight,
-				boolean replaceSrc) {
-			boolean success = false;
-			FileInputStream decodedFis = null;
-			FileInputStream scaledFis = null;
-			FileOutputStream savedFos = null;
-			Bitmap retBmap = null;
-			try {
-
-				// Decode image size
-				BitmapFactory.Options bmOptions = new BitmapFactory.Options();
-				bmOptions.inJustDecodeBounds = true;
-				decodedFis = new FileInputStream(file);
-				BitmapFactory.decodeStream(decodedFis, null, bmOptions);
-
-				if (bmOptions.outWidth > targetWidth
-						|| bmOptions.outHeight > targetHeight) {
-					// Find the correct scale value. It should be the power of
-					// 2.
-					int scale = 1;
-					while (bmOptions.outWidth / scale >= targetWidth
-							&& bmOptions.outHeight / scale >= targetHeight) {
-						scale *= 2;
-					}
-
-					if (scale != 1) {
-						// Decode with inSampleSize
-						bmOptions.inJustDecodeBounds = false;
-						bmOptions.inSampleSize = scale;
-						bmOptions.inPurgeable = true;
-						scaledFis = new FileInputStream(file);
-						retBmap = BitmapFactory.decodeStream(scaledFis, null,
-								bmOptions);
-
-						if (replaceSrc) {
-							String absolutePath = file.getParentFile()
-									.getAbsolutePath();
-							if (!absolutePath.endsWith(File.separator)) {
-								absolutePath += File.separator;
-							}
-							String name = file.getName();
-							int i = 1;
-							do {
-								file = new File(absolutePath + +(++i) + name);
-							} while (file.exists());
-						}
-						savedFos = new FileOutputStream(file);
-						retBmap.compress(CompressFormat.JPEG, 90, savedFos);
-						savedFos.flush();
-						Gdx.app.error(PLATFORM_TAG,
-								"Scaling image, scalingFactor:  " + scale);
-					}
-				}
-
-				success = true;
-				Gdx.app.error(PLATFORM_TAG,
-						"New image saved! " + file.getAbsolutePath());
-			} catch (FileNotFoundException fnfex) {
-				deleteFile(file);
-				Gdx.app.error(PLATFORM_TAG, "File not found! ", fnfex);
-			} catch (IOException ioex) {
-				deleteFile(file);
-				Gdx.app.error(PLATFORM_TAG, "File not saved! ", ioex);
-			} finally {
-				if (retBmap != null) {
-					retBmap.recycle();
-					retBmap = null;
-				}
-				close(decodedFis);
-				close(scaledFis);
-				close(savedFos);
+			FileHandle sourceImage = file;
+			file = null;
+			if (captureListener == null) {
+				file = ProjectUtils.getNonExistentFile(sourceImage.parent(),
+						sourceImage.nameWithoutExtension(),
+						sourceImage.extension());
 			}
-			return success;
-		}
 
-		private void close(Closeable closeable) {
-			if (closeable != null) {
-				try {
-					closeable.close();
-				} catch (Exception ex) {
-					Gdx.app.log(PLATFORM_TAG,
-							"Something went wrong closing the stream "
-									+ closeable.toString(), ex);
-					// Ignore ...
-					// any significant errors should already have been
-					// reported via an IOException from the final flush.
-				}
-				closeable = null;
-			}
-		}
-
-		private void deleteFile(File file) {
-			if (file != null && file.exists()) {
-				file.delete();
-			}
+			return ImageUtils.decodeFile(sourceImage, Gdx.graphics.getWidth(),
+					Gdx.graphics.getHeight(), file);
 		}
 	};
 
@@ -735,5 +641,12 @@ public class AndroidPlatform extends MokapPlatform {
 		} else {
 			listener.projectSent(false);
 		}
+	}
+
+	@Override
+	public boolean scaleImage(FileHandle imageFile, int targetWidth,
+			int targetHeight, FileHandle resultImage) {
+		return ImageUtils.decodeFile(imageFile, targetWidth, targetHeight,
+				resultImage);
 	}
 }
