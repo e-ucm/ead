@@ -51,6 +51,7 @@ import com.badlogic.gdx.scenes.scene2d.utils.Align;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 
 import es.eucm.ead.editor.control.Controller;
+import es.eucm.ead.editor.control.Preferences;
 import es.eucm.ead.editor.control.actions.EditorAction;
 import es.eucm.ead.editor.view.SkinConstants;
 import es.eucm.ead.editor.view.widgets.IconButton;
@@ -70,6 +71,8 @@ public class ShowInfoPanel extends EditorAction {
 
 	private I18N i18n;
 
+	private Preferences preferences;
+
 	ClickListener skipListener;
 
 	public static enum TypePanel {
@@ -85,6 +88,7 @@ public class ShowInfoPanel extends EditorAction {
 		super.initialize(controller);
 		skin = controller.getApplicationAssets().getSkin();
 		i18n = controller.getApplicationAssets().getI18N();
+		preferences = controller.getPreferences();
 
 		skipListener = new ClickListener() {
 			@Override
@@ -210,8 +214,9 @@ public class ShowInfoPanel extends EditorAction {
 		TypePanel type = (TypePanel) args[0];
 		String preference = (String) args[1];
 
-		if (controller.getPreferences().getBoolean(preference, true)) {
-			controller.getPreferences().putBoolean(preference, false);
+		if (preferences.getBoolean(preference, true)) {
+			preferences.putBoolean(preference, false);
+			preferences.flush();
 
 			Actor actor = null;
 			if (type.equals(TypePanel.ACCURATE_SELECTION)) {
