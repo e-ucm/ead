@@ -101,6 +101,11 @@ public class SelectionGroup extends AbstractWidget {
 		Pools.free(selectionBox);
 	}
 
+	public void unselect(Actor actor) {
+		SelectionBox selectionBox = findSelectionBox(actor);
+		removeSelectionBox(selectionBox);
+	}
+
 	public static class SelectionBoxPredicate implements Predicate<Actor> {
 
 		private Actor actor;

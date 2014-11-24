@@ -79,9 +79,9 @@ public class GroupEditor extends AbstractWidget {
 
 	private SelectionGroup selectionGroup;
 
-	private Array<Actor> layersTouched;
+	protected Array<Actor> layersTouched;
 
-	private SelectLayerMenu selectLayerMenu;
+	protected LayerSelector layerSelector;
 
 	private boolean onlySelection;
 
@@ -95,16 +95,13 @@ public class GroupEditor extends AbstractWidget {
 		this.style = style;
 		selection = new Array<Actor>();
 		layersTouched = new Array<Actor>();
-		selectLayerMenu = new SelectLayerMenu(style.layerButtonStyle,
-				layersTouched, this);
-		selectLayerMenu.setVisible(false);
-		selectLayerMenu.setBackground(style.layersBackground);
+		layerSelector = new LayerSelector(this, style);
 
 		comparator = new ActorComparator();
 
 		selectionGroup = new SelectionGroup(this, style);
 		addActor(selectionGroup);
-		addActor(selectLayerMenu);
+		addActor(layerSelector);
 
 		TouchRepresentation touchRepresentation = new TouchRepresentation(
 				style.touch);
@@ -178,6 +175,10 @@ public class GroupEditor extends AbstractWidget {
 		super.drawChildren(batch, parentAlpha);
 	}
 
+	public Array<Actor> getSelection() {
+		return selection;
+	}
+
 	public void setSelection(Iterable<Actor> selection) {
 		clearSelection();
 		for (Actor actor : selection) {
@@ -186,14 +187,19 @@ public class GroupEditor extends AbstractWidget {
 	}
 
 	void addToSelection(Actor actor, boolean addBox) {
-		selection.add(actor);
-		selection.sort(comparator);
-		if (addBox) {
-			GeometryUtils.adjustGroup(actor);
-			SelectionBox selectionBox = Pools.obtain(SelectionBox.class);
-			selectionBox.setTarget(actor, this, style);
-			selectionBox.selected();
-			selectionGroup.addActor(selectionBox);
+		if (selection.contains(actor, true)) {
+			selection.removeValue(actor, true);
+			selectionGroup.unselect(actor);
+		} else {
+			selection.add(actor);
+			selection.sort(comparator);
+			if (addBox) {
+				GeometryUtils.adjustGroup(actor);
+				SelectionBox selectionBox = Pools.obtain(SelectionBox.class);
+				selectionBox.setTarget(actor, this, style);
+				selectionBox.selected();
+				selectionGroup.addActor(selectionBox);
+			}
 		}
 	}
 
@@ -224,6 +230,15 @@ public class GroupEditor extends AbstractWidget {
 		for (Actor actor : selectionGroup.getChildren()) {
 			if (actor instanceof SelectionBox) {
 				((SelectionBox) actor).readTargetBounds();
+			}
+		}
+	}
+
+	private void removePressed() {
+		for (Actor selectionBox : selectionGroup.getChildren()) {
+			if (((SelectionBox) selectionBox).isPressed()) {
+				selectionBox.remove();
+				Pools.free(selectionBox);
 			}
 		}
 	}
@@ -266,12 +281,7 @@ public class GroupEditor extends AbstractWidget {
 		public void pan(float x, float y, float deltaX, float deltaY) {
 			// If panning, cancel selection process, removing the pressed
 			// selection box
-			for (Actor selectionBox : selectionGroup.getChildren()) {
-				if (((SelectionBox) selectionBox).isPressed()) {
-					selectionBox.remove();
-					Pools.free(selectionBox);
-				}
-			}
+			removePressed();
 		}
 
 		@Override
@@ -300,11 +310,12 @@ public class GroupEditor extends AbstractWidget {
 
 		@Override
 		public boolean longPress(float x, float y) {
+			removePressed();
 			if (!multipleSelection) {
 				clearSelection();
 				fireSelection();
 			}
-			showLayersSelector(x, y);
+			selectLayer(x, y);
 			return true;
 		}
 
@@ -368,7 +379,7 @@ public class GroupEditor extends AbstractWidget {
 
 	float[] points = new float[8];
 
-	private void showLayersSelector(float x, float y) {
+	private void selectLayer(float x, float y) {
 		layersTouched.clear();
 		Vector2 tmp = Pools.obtain(Vector2.class);
 		Polygon polygon = Pools.obtain(Polygon.class);
@@ -398,10 +409,15 @@ public class GroupEditor extends AbstractWidget {
 		Pools.free(polygon);
 		Pools.free(tmp);
 		if (layersTouched.size > 0) {
-			selectLayerMenu.setPosition(x, y);
-			selectLayerMenu.setVisible(true);
-			selectLayerMenu.show();
+			showLayerSelector(x, y);
 		}
+	}
+
+	protected void showLayerSelector(float x, float y) {
+		layerSelector.prepare(layersTouched);
+		layerSelector.setPosition(x, y);
+		addActor(layerSelector);
+		layerSelector.show();
 	}
 
 	private boolean nearEnough(float x1, float y1, float x2, float y2) {

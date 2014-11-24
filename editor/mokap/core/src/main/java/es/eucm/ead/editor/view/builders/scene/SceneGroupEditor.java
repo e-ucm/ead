@@ -55,6 +55,7 @@ import es.eucm.ead.editor.control.Preferences;
 import es.eucm.ead.editor.control.Selection;
 import es.eucm.ead.editor.control.actions.editor.ShowInfoPanel;
 import es.eucm.ead.editor.control.actions.editor.ShowInfoPanel.TypePanel;
+import es.eucm.ead.editor.control.actions.editor.ShowModal;
 import es.eucm.ead.editor.model.Model;
 import es.eucm.ead.editor.model.Model.FieldListener;
 import es.eucm.ead.editor.model.Model.ModelListener;
@@ -150,6 +151,12 @@ public class SceneGroupEditor extends GroupEditor implements ModelView {
 				}
 			}
 		});
+	}
+
+	@Override
+	protected void showLayerSelector(float x, float y) {
+		layerSelector.prepare(layersTouched);
+		controller.action(ShowModal.class, layerSelector, x, y);
 	}
 
 	@Override

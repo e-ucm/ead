@@ -376,7 +376,8 @@
         "default": {
             "layersBackground": "page_semi_transparent",
             "layerButtonStyle": {
-                "down": "light_gray_bg"
+                "down": "light_gray_bg",
+                "checked": "blank_grey_border"
             },
             "selectedBackground": "blank_grey_border",
             "touch": "touch",
