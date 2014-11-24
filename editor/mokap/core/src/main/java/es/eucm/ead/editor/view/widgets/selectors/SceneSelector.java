@@ -98,7 +98,7 @@ public class SceneSelector extends LinearLayout implements Selector<String> {
 		if (args.length > 0 && args[0] != null) {
 			Actor actor = findActor((String) args[0]);
 			if (actor instanceof Cell) {
-				((Cell) actor).setChecked(true);
+				((Cell) actor).checked(true);
 			}
 		}
 	}
@@ -129,7 +129,7 @@ public class SceneSelector extends LinearLayout implements Selector<String> {
 				public void clicked(InputEvent event, float x, float y) {
 					gallery.uncheckAll();
 					Cell cell = (Cell) event.getListenerActor().getParent();
-					cell.setChecked(true);
+					cell.checked(true);
 					selectorListener.selected(id);
 				}
 			});

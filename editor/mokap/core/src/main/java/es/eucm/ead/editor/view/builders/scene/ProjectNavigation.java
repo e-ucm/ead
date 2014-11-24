@@ -75,7 +75,7 @@ public class ProjectNavigation extends ScenesGallery {
 
 		for (Actor actor : gallery.getChildren()) {
 			if (actor instanceof Cell) {
-				((Cell) actor).setChecked(false);
+				((Cell) actor).checked(false);
 			}
 		}
 
@@ -87,7 +87,7 @@ public class ProjectNavigation extends ScenesGallery {
 			if (sceneId != null) {
 				Actor actor = gallery.findActor(sceneId);
 				if (actor instanceof Cell) {
-					((Cell) actor).setChecked(true);
+					((Cell) actor).checked(true);
 				}
 			}
 		}

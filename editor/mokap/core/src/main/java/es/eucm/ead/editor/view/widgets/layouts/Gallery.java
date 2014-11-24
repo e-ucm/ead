@@ -218,12 +218,14 @@ public class Gallery extends ScrollPane {
 			return checked;
 		}
 
-		public void setChecked(boolean checked) {
+		public Cell checked(boolean checked) {
 			this.checked = checked;
+			return this;
 		}
 
-		public void usePrefHeight() {
+		public Cell usePrefHeight() {
 			this.usePrefHeight = true;
+			return this;
 		}
 
 		@Override
@@ -245,6 +247,14 @@ public class Gallery extends ScrollPane {
 	}
 
 	public static class GalleryStyle {
+
+		public GalleryStyle() {
+		}
+
+		public GalleryStyle(Drawable background, Drawable checked) {
+			this.background = background;
+			this.checked = checked;
+		}
 
 		/**
 		 * Background for the gallery
