@@ -49,7 +49,6 @@ import com.badlogic.gdx.scenes.scene2d.utils.DragListener;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.Pools;
 import com.badlogic.gdx.utils.Predicate;
-
 import es.eucm.ead.editor.control.Controller;
 import es.eucm.ead.editor.control.Preferences;
 import es.eucm.ead.editor.control.Selection;
@@ -268,11 +267,14 @@ public class SceneGroupEditor extends GroupEditor implements ModelView {
 
 		@Override
 		public void modelChanged(ListEvent event) {
+			// If parent not in the scene, return
 			entityPredicate.setEntity((ModelEntity) event.getParent());
 			Actor actor = findActor(scene.getGroup(), entityPredicate);
 			if (actor == null) {
 				return;
 			}
+
+			ModelEntity sceneElement = (ModelEntity) event.getElement();
 			switch (event.getType()) {
 			case ADDED:
 				ModelEntity added = (ModelEntity) event.getElement();
@@ -287,7 +289,7 @@ public class SceneGroupEditor extends GroupEditor implements ModelView {
 				((Group) actor).addActorAt(event.getIndex(), addedActor);
 				addedActor.clearActions();
 				addedActor.setTouchable(Touchable.disabled);
-				float y = addedActor.getY();
+				float y = sceneElement.getY();
 				float alpha = addedActor.getColor().a;
 				addedActor.setY(Gdx.graphics.getHeight());
 				addedActor.getColor().a = 0.0f;
@@ -300,9 +302,8 @@ public class SceneGroupEditor extends GroupEditor implements ModelView {
 				addListeners(addedActor);
 				break;
 			case REMOVED:
-				ModelEntity removed = (ModelEntity) event.getElement();
-				removeListeners(removed);
-				entityPredicate.setEntity(removed);
+				removeListeners(sceneElement);
+				entityPredicate.setEntity(sceneElement);
 
 				Actor removedActor = findActor(scene.getGroup(),
 						entityPredicate);
