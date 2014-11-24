@@ -36,6 +36,7 @@
  */
 package es.eucm.ead.editor.view.builders.scene;
 
+import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.ui.Button;
@@ -337,8 +338,12 @@ public class GroupEditorToolbar extends MultiWidget implements ModelView {
 
 		draw.add(mode);
 
-		IconButton picker = WidgetBuilder.icon(SkinConstants.IC_CIRCLE,
-				SkinConstants.STYLE_DROP_DOWN);
+		IconButton picker = new IconButton(SkinConstants.IC_CIRCLE, skin,
+				SkinConstants.STYLE_DROP_DOWN) {
+			@Override
+			public void setChecked(boolean isChecked) {
+			}
+		};
 		WidgetBuilder.launchContextMenu(picker,
 				buildBrushStrokesColorPicker(skin, picker.getIcon()));
 		brushStrokes.addListener(new ModeListener() {
@@ -389,8 +394,9 @@ public class GroupEditorToolbar extends MultiWidget implements ModelView {
 		colorPickerPanel.addListener(new ColorListener() {
 			@Override
 			public void colorChanged(ColorEvent event) {
-				pickerIcon.setColor(event.getColor());
-				brushStrokes.setColor(event.getColor());
+				Color color = event.getColor();
+				pickerIcon.setColor(color);
+				brushStrokes.setColor(color);
 				brushStrokes.setMode(BrushStrokes.Mode.DRAW);
 			}
 		});

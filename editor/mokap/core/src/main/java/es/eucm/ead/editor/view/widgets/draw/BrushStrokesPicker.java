@@ -100,8 +100,12 @@ public class BrushStrokesPicker extends ContextMenu {
 		});
 		slider.setValue((MAX_SIZE - MIN_SIZE) * .5f);
 
-		IconButton iconButton = WidgetBuilder.icon(SkinConstants.IC_CIRCLE,
-				SkinConstants.STYLE_TOOLBAR);
+		IconButton iconButton = new IconButton(SkinConstants.IC_CIRCLE, skin,
+				SkinConstants.STYLE_TOOLBAR) {
+			@Override
+			public void setChecked(boolean isChecked) {
+			}
+		};
 		final Image icon = iconButton.getIcon();
 		icon.setOrigin(Align.center);
 

@@ -206,6 +206,7 @@ public class BrushStrokes extends AbstractWidget {
 			controller.getCommands().pushStack(MAX_COMMANDS);
 			setBounds(0, 0, container.getWidth(), container.getHeight());
 			mesh.initializeRenderingResources();
+			setMode(Mode.DRAW);
 
 			if (imageEntity != null) {
 				toEdit = imageEntity;
