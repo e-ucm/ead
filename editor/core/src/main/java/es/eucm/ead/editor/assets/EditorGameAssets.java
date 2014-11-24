@@ -45,6 +45,7 @@ import com.badlogic.gdx.utils.Json;
 import com.badlogic.gdx.utils.JsonValue;
 import com.badlogic.gdx.utils.JsonWriter.OutputType;
 
+import es.eucm.ead.editor.utils.ProjectUtils;
 import es.eucm.ead.engine.assets.GameAssets;
 import es.eucm.ead.schema.editor.components.Parent;
 import es.eucm.ead.schema.entities.ModelEntity;
@@ -129,21 +130,13 @@ public class EditorGameAssets extends GameAssets {
 		}
 		String folderPath = getFolder(type);
 		FileHandle folder = absolute(getLoadingPath() + folderPath);
-		String extension = path.extension();
-		if (!"".equals(extension)) {
-			extension = "." + extension;
-		}
-		String name = path.nameWithoutExtension();
-		String fileName = name + extension;
-		int count = 1;
-		FileHandle dst;
-		while (checkFileExistence(dst = folder.child(fileName))) {
-			fileName = name + count++ + extension;
-		}
+
+		FileHandle dst = ProjectUtils.getNonExistentFile(folder,
+				path.nameWithoutExtension(), path.extension());
 
 		path.copyTo(dst);
 
-		return folderPath + fileName;
+		return folderPath + dst.name();
 	}
 
 	/**

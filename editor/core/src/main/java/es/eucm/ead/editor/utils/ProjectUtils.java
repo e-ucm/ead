@@ -47,6 +47,9 @@ import es.eucm.ead.schemax.GameStructure;
  */
 public class ProjectUtils {
 
+	private static final Array<String> IMAGE_EXTENSIONS = new Array<String>(
+			new String[] { "jpg", "jpeg", "png", "gif", "bmp" });
+
 	/**
 	 * @return an array with paths of all the projects inside the given folder
 	 */
@@ -71,10 +74,55 @@ public class ProjectUtils {
 
 	public static String newSceneId(Model model) {
 		int count = 0;
+		String prefix = GameStructure.SCENES_PATH + "scene";
 		String id;
 		do {
-			id = GameStructure.SCENES_PATH + "scene" + count++ + ".json";
+			id = prefix + count++ + ".json";
 		} while (model.getResource(id) != null);
 		return id;
+	}
+
+	/**
+	 * @param directory
+	 *            the directory where we want to search the new file.
+	 * @return the first {@link FileHandle} that doesn't exist. Note that the
+	 *         result will probably end with an index. E.g. {@code file} name:
+	 *         "image", extension: ".jpg" => result: "image4.jpg" if that is the
+	 *         first found file that doesn't exist.
+	 */
+	public static FileHandle getNonExistentFile(FileHandle directory,
+			String name, String extension) {
+
+		if (!extension.isEmpty() && !extension.startsWith(".")) {
+			extension = "." + extension;
+		}
+
+		FileHandle result;
+		result = directory.child(name + extension);
+		if (result.exists()) {
+			int count = 2;
+			do {
+				result = directory.child(name + count++ + extension);
+			} while (result.exists());
+		}
+
+		return result;
+	}
+
+	/**
+	 * 
+	 * @return true if the file is a supported image that can be loaded.
+	 */
+	public static boolean isSupportedImage(FileHandle file) {
+		if (file.isDirectory()) {
+			return false;
+		}
+		String fileName = file.name();
+		for (String imageExtension : IMAGE_EXTENSIONS) {
+			if (fileName.endsWith(imageExtension)) {
+				return true;
+			}
+		}
+		return false;
 	}
 }
