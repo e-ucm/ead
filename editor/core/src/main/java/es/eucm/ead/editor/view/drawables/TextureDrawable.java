@@ -74,28 +74,7 @@ public class TextureDrawable extends BaseDrawable {
 	}
 
 	private void updateRegion(float width, float height) {
-		float textureWidth = texture.getWidth();
-		float textureHeight = texture.getHeight();
-
-		float diffWidth = textureWidth - width;
-		float diffHeight = textureHeight - height;
-
-		float regionWidth;
-		float regionHeight;
-
-		boolean fillY = diffHeight < 0.0f && diffWidth > 0.0f;
-
-		if (!fillY) {
-			regionWidth = textureWidth;
-			float scale = regionWidth / width;
-			regionHeight = height * scale;
-		} else {
-			regionHeight = textureHeight;
-			float scale = regionHeight / height;
-			regionWidth = width * scale;
-		}
-
-		textureRegion.setRegion(0, 0, (int) regionWidth, (int) regionHeight);
+		textureRegion.setRegion(0, 0, (int) width, (int) height);
 	}
 
 }
