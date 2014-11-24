@@ -135,6 +135,10 @@ public class GroupEditor extends AbstractWidget {
 	}
 
 	public void setMultipleSelection(boolean multipleSelection) {
+		if (this.multipleSelection && !multipleSelection) {
+			clearSelection();
+			fireSelection();
+		}
 		this.multipleSelection = multipleSelection;
 	}
 
