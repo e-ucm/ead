@@ -6,24 +6,24 @@
           "type": "string",
           "description": "A unique id for the library. Elements belonging to the library will use the id to refer to it"
         },
-        "thumbnail": {
-            "$ref": "repothumbnail.json"
+        "authorName":{
+            "type":"string",
+            "description":"The name of the person or organizations that created the library. For crediting and licensing."
         },
-        "author": {
-            "$ref":"repoauthor.json",
-            "description": "Information for the author (or authors) that created the resources of the library"
+        "authorUrl":{
+            "type":"string",
+            "description":"URL associated to the author of the library. Can be used for author recognition"
         },
-        "licenses": {
-            "type": "array",
-            "items": {
-                "$ref": "licenses/repolicense.json",
-                "description": "Information associated to the licenses of the resources contained in the library"
-            }
+        "publisher":{
+            "type":"string",
+            "description":"Organization that published the library (e.g. mokap, freepik, openclipart)"
         },
         "version":{
-            "type": "string",
-            "description": "An integer value that determines the version, generated from date: YYYYMMDDHH (e.g. 2014092713)"
+            "type":"string",
+            "description":"An integer value that determines the version, generated from date: YYYYMMDDHH (e.g. 2014092713)."
         },
+
+
         "numberOfElements":{
             "type": "number",
             "description": "The number of resources (objects, characters, etc.) the library contains"
@@ -32,22 +32,97 @@
             "type": "number",
             "description": "The downloadable amount of mega bytes of the zip file associated to the library. If -1, the size is unknown"
         },
-        "description": {
-            "$ref":"i18nstrings.json",
-            "description": "A brief description of the library"
-        },
-        "name":{
-            "$ref":"i18nstrings.json",
-            "description": "A name for the library"
-        },
-        "tags":{
-            "type": "array",
+
+        "licenseNameList":{
+            "type":"array",
             "items":{
-                "$ref":"i18nstrings.json"
+                "type":"string"
             },
-            "description": "A list of tags - useful for searching and grouping resources"
+            "description":"List of license names that apply to elements in this library. "
+        },
+        "licensePriceList":{
+            "type":"array",
+            "items":{
+                "type":"string"
+            },
+            "description":"List of float values representing the fee the customer has to pay for items in this library. Only applies if a custom license is used"
+        },
+        "licenseTermsList":{
+            "type":"array",
+            "items":{
+                "type":"string"
+            },
+            "description":"List of strings representing the legal text associated to the license. Only applies if a custom license is used."
+        },
+
+        "categoryList":{
+            "type":"array",
+            "items":{
+                "$ref":"repocategories.json"
+            },
+            "description":"An array with the categories this element should be listed on."
+        },
+
+        "tagList":{
+            "type":"array",
+            "items":{
+                "type":"string"
+            },
+            "description":"A list of tags. Useful for searching"
+        },
+
+        "descriptionList":{
+            "type":"array",
+            "items":{
+                "type":"string"
+            },
+            "description":"List with descriptions (Strings). Each description is a brief description of the resource, including what kind of contents it has, and how many (e.g. number of animations, frames, etc.), in a different language. The language of each description is specified in param {@link #descriptionI18nList}."
+        },
+        "descriptionI18nList":{
+            "type":"array",
+            "items":{
+                "type":"string"
+            },
+            "description":"List with language codes (Strings) for the descriptions defined in {@link #descriptionList}. Example: [es_ES,en_EN] indicates that the first element in descriptionList is in Spanish, while the second is in English."
+        },
+
+        "nameList":{
+            "type":"array",
+            "items":{
+                "type":"string"
+            },
+            "description":"List with names (Strings). Each name is provided in a different language. The language of each name is specified in param {@link #nameI18nList}."
+        },
+        "nameI18nList":{
+            "type":"array",
+            "items":{
+                "type":"string"
+            },
+            "description":"List with language codes (Strings) for the names defined in {@link #nameList}. "
+        },
+
+        "thumbnailPathList":{
+            "type":"array",
+            "items":{
+                "type":"string"
+            },
+            "description":"List with relative paths to the thumbnails this element has. Deprecated. Temporarily used for backwards-compatibility."
+        },
+        "thumbnailWidthList":{
+            "type":"array",
+            "items":{
+                "type":"number"
+            },
+            "description":"List with the width of the thumbnails. Deprecated. Temporarily used for backwards-compatibility."
+        },
+        "thumbnailHeightList":{
+            "type":"array",
+            "items":{
+                "type":"number"
+            },
+            "description":"List with the height of the thumbnails. Deprecated. Temporarily used for backwards-compatibility."
         }
     },
     "type": "object",
-    "description": "A simple editor component to describe libraries of elements that are meant to be shared together and reused through the repository."
+    "description": "A simple object to describe libraries of elements that are meant to be shared together and reused through the repository."
 }
