@@ -374,10 +374,8 @@ public class VectorCharacters extends RepoLibraryBuilder {
 	}
 
 	public static void main(String[] args) {
-		String[] argsForBuilder = new String[] { "-out",
-				args[0], "-libs",
-				VectorCharacters.class.getName(), "-imagemagick",
-				args[1] };
+		String[] argsForBuilder = new String[] { "-out", args[0], "-libs",
+				VectorCharacters.class.getName(), "-imagemagick", args[1] };
 		BuildRepoLibs.main(argsForBuilder);
 	}
 }

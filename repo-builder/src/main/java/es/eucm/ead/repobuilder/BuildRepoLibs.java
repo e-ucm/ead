@@ -65,7 +65,7 @@ public class BuildRepoLibs {
 		String outDir = null;
 		String[] librariesToExport = null;
 		String imageMagickDir = null;
-        String engineLib = null;
+		String engineLib = null;
 
 		for (int i = 0; i < args.length; i++) {
 			if (args[i] == null) {
@@ -94,9 +94,9 @@ public class BuildRepoLibs {
 				librariesToExport = LIBRARIES_IN_REPO;
 			} else if (arg.equals("-imagemagick") && i < args.length - 1) {
 				imageMagickDir = args[i + 1];
-			} else if (arg.equals("-engine-lib") && i < args.length -1 ){
-                engineLib = args[i+1];
-            }
+			} else if (arg.equals("-engine-lib") && i < args.length - 1) {
+				engineLib = args[i + 1];
+			}
 		}
 
 		if (outDir == null) {
@@ -144,7 +144,8 @@ public class BuildRepoLibs {
 						.newInstance());
 				libBuilder.setCommonProperty(RepoLibraryBuilder.VERSION,
 						version);
-                libBuilder.setCommonProperty(RepoLibraryBuilder.ENGINE_JAR_FOR_PREVIEW, engineLib);
+				libBuilder.setCommonProperty(
+						RepoLibraryBuilder.ENGINE_JAR_FOR_PREVIEW, engineLib);
 				long time = System.currentTimeMillis();
 
 				System.out.println("Exporting library " + (i + 1) + "/"
@@ -201,7 +202,8 @@ public class BuildRepoLibs {
 		System.out.println("\t\tE.g.: \"C:\\ImageMagick\\\"");
 		System.out
 				.println("\t\tImageMagick is a free image conversion software this app uses for thumbnail creation and more. If you don't have it installed, you can download it for free at http://www.imagemagick.org/");
-        System.out.println("\t\t PATH_TO_ENGINE_JAR_WITH_DEPENDENCIES is an optional parameter. If specified, it should point to the path of the engine jar-with-dependencies file that the exporter needs. If it is provided, a runnable jar file will be produced to preview the elements created for each library.");
+		System.out
+				.println("\t\t PATH_TO_ENGINE_JAR_WITH_DEPENDENCIES is an optional parameter. If specified, it should point to the path of the engine jar-with-dependencies file that the exporter needs. If it is provided, a runnable jar file will be produced to preview the elements created for each library.");
 	}
 
 	private static String version() {

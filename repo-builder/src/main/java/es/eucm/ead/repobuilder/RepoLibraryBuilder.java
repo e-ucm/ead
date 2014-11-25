@@ -131,9 +131,9 @@ public abstract class RepoLibraryBuilder extends EditorDemoBuilder {
 
 	public static final String PREVIEW_HEIGHT = "PreviewHeight";
 
-    public static final String ENGINE_JAR_FOR_PREVIEW = "EngineJarWithDependencies";
+	public static final String ENGINE_JAR_FOR_PREVIEW = "EngineJarWithDependencies";
 
-    protected Map<String, String> properties = new HashMap<String, String>();
+	protected Map<String, String> properties = new HashMap<String, String>();
 
 	protected RepoLibrary lastLibrary;
 
@@ -217,30 +217,29 @@ public abstract class RepoLibraryBuilder extends EditorDemoBuilder {
 			}
 		}
 
-        if (properties.get(ENGINE_JAR_FOR_PREVIEW)!=null){
-            exporter.exportAsJar(
-                    destiny.path(),
-                    tempFolder.path(),
-                    properties.get(ENGINE_JAR_FOR_PREVIEW),
-                    allEntities.entrySet(), new ExportCallback() {
-                        @Override
-                        public void error(String errorMessage) {
+		if (properties.get(ENGINE_JAR_FOR_PREVIEW) != null) {
+			exporter.exportAsJar(destiny.path(), tempFolder.path(),
+					properties.get(ENGINE_JAR_FOR_PREVIEW),
+					allEntities.entrySet(), new ExportCallback() {
+						@Override
+						public void error(String errorMessage) {
 
-                        }
+						}
 
-                        @Override
-                        public void progress(int percentage, String currentTask) {
+						@Override
+						public void progress(int percentage, String currentTask) {
 
-                        }
+						}
 
-                        @Override
-                        public void complete(String completionMessage) {
+						@Override
+						public void complete(String completionMessage) {
 
-                        }
-                    });
-        }else{
-            System.err.println("The path to the engine jar with dependencies file was not set. Jar previewer will not be produced");
-        }
+						}
+					});
+		} else {
+			System.err
+					.println("The path to the engine jar with dependencies file was not set. Jar previewer will not be produced");
+		}
 	}
 
 	public FileHandle createPreviewGame() {
@@ -770,9 +769,9 @@ public abstract class RepoLibraryBuilder extends EditorDemoBuilder {
 
 	public RepoLibraryBuilder authorUrl(String authorUrl) {
 		if (lastLibrary != null) {
-			lastLibrary.setAuthorUrl("'"+authorUrl+"'");
+			lastLibrary.setAuthorUrl("'" + authorUrl + "'");
 		} else if (lastElement != null) {
-			lastElement.setAuthorUrl("'"+authorUrl+"'");
+			lastElement.setAuthorUrl("'" + authorUrl + "'");
 		}
 		return this;
 	}
@@ -886,7 +885,7 @@ public abstract class RepoLibraryBuilder extends EditorDemoBuilder {
 		}
 
 		if (properties.get(AUTHOR_URL) != null) {
-			repoElement.setAuthorUrl("'"+properties.get(AUTHOR_URL)+"'");
+			repoElement.setAuthorUrl("'" + properties.get(AUTHOR_URL) + "'");
 		}
 
 		// Add default tags, if any
@@ -963,7 +962,7 @@ public abstract class RepoLibraryBuilder extends EditorDemoBuilder {
 			}
 		}
 		repoLibrary.setAuthorName(uniqueAuthors.toString());
-		repoLibrary.setAuthorUrl("'"+uniqueUrls.toString()+"'");
+		repoLibrary.setAuthorUrl("'" + uniqueUrls.toString() + "'");
 		for (String license : uniqueLicenses) {
 			repoLibrary.getLicenseNameList().add(license);
 		}
