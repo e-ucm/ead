@@ -47,7 +47,6 @@ import es.eucm.ead.repobuilder.libs.Monejos;
 import es.eucm.ead.repobuilder.libs.VectorCharacters;
 import es.eucm.ead.schema.editor.components.repo.Library;
 import es.eucm.ead.schema.editor.components.repo.Repo;
-import org.im4java.process.ProcessStarter;
 
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -177,7 +176,7 @@ public class BuildRepoLibs {
 		json.toJson(repo, Repo.class,
 				new FileHandle(outDir).child("libraries.json"));
 		System.out.println("Export complete!!! " + nitems
-				+ " elements in the repository. Opening previewer...");
+				+ " elements in the repository. Opening previewer ...");
 		LibPreview.main(new String[] { outDir });
 	}
 
