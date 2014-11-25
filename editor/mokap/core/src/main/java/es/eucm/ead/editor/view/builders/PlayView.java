@@ -45,8 +45,10 @@ import es.eucm.ead.editor.control.actions.editor.ShowToast;
 import es.eucm.ead.editor.control.actions.model.SetSelection;
 import es.eucm.ead.editor.control.engine.Engine;
 import es.eucm.ead.editor.exporter.Exporter;
+import es.eucm.ead.editor.model.Q;
 import es.eucm.ead.editor.view.widgets.EnginePlayer;
 import es.eucm.ead.engine.assets.GameAssets;
+import es.eucm.ead.schema.editor.components.GameData;
 import es.eucm.ead.schema.entities.ModelEntity;
 
 /**
@@ -76,22 +78,14 @@ public class PlayView implements ViewBuilder {
 				.getI18N().m("play.back"));
 		controller.action(SetSelection.class, Selection.EDITED_GROUP,
 				Selection.SCENE_ELEMENT);
-		String gameString = GameAssets.GAME_FILE;
 
-		if (args.length == 1 && args[0] instanceof String) {
-			String play = (String) args[0];
-			if (play.equals(GameAssets.GAME_DEBUG)) {
-				ModelEntity currentScene = (ModelEntity) controller.getModel()
-						.getSelection().getSingle(Selection.SCENE);
-				String currentSceneId = controller.getModel().getIdFor(
-						currentScene);
-				ModelEntity game = controller.getModel().getGame();
-				Exporter.createInitComponent(game, currentSceneId);
-				controller.getEditorGameAssets().toJsonPath(game,
-						GameAssets.GAME_DEBUG);
-				gameString = GameAssets.GAME_DEBUG;
-			}
-		}
+		String currentSceneId = Q.getComponent(controller.getModel().getGame(),
+				GameData.class).getInitialScene();
+		ModelEntity game = controller.getModel().getGame();
+		Exporter.createInitComponent(game, currentSceneId);
+		controller.getEditorGameAssets()
+				.toJsonPath(game, GameAssets.GAME_DEBUG);
+		String gameString = GameAssets.GAME_DEBUG;
 
 		Engine engine = controller.getEngine();
 		engine.getGameLoader().loaded(gameString,
