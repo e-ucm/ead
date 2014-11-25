@@ -52,6 +52,7 @@ import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 
 import es.eucm.ead.editor.control.Controller;
 import es.eucm.ead.editor.control.Preferences;
+import es.eucm.ead.editor.control.MokapController.BackListener;
 import es.eucm.ead.editor.control.actions.EditorAction;
 import es.eucm.ead.editor.view.SkinConstants;
 import es.eucm.ead.editor.view.widgets.IconButton;
@@ -95,27 +96,14 @@ public class ShowInfoPanel extends EditorAction {
 			public void clicked(InputEvent event, float x, float y) {
 				Actor actor = event.getListenerActor();
 				final Actor root = (Actor) actor.getUserObject();
-				Runnable hidePanel = new Runnable() {
-					@Override
-					public void run() {
-						root.remove();
-					}
-				};
-				root.addAction(Actions.sequence(Actions.alpha(0.0f,
-						ANIMATION_TIME, Interpolation.exp5Out), Actions
-						.run(hidePanel)));
+				hide(root);
 			}
 		};
 	}
 
 	private Actor createIntroduction() {
 
-		Table introduction = new Table(skin) {
-			@Override
-			public float getPrefWidth() {
-				return Gdx.graphics.getWidth();
-			}
-		};
+		ModalTable introduction = new ModalTable(skin);
 		introduction.setWidth(Gdx.graphics.getWidth());
 		introduction.align(Align.top);
 
@@ -151,10 +139,13 @@ public class ShowInfoPanel extends EditorAction {
 				close.getHeight());
 		sliderPages.addActor(close);
 
+		introduction.setBackObjetive(sliderPages);
+
 		return sliderPages;
 	}
 
 	private Actor createPage(String text, String image) {
+
 		Table page = new Table(skin) {
 			@Override
 			public float getPrefWidth() {
@@ -175,7 +166,7 @@ public class ShowInfoPanel extends EditorAction {
 	}
 
 	private Actor createInfo(String mainImage, String text, String... images) {
-		Table panel = new Table(skin);
+		Table panel = new ModalTable(skin);
 		panel.setTouchable(Touchable.enabled);
 		panel.setFillParent(true);
 		panel.setBackground(skin.getDrawable(SkinConstants.DRAWABLE_SEMI_BLANK));
@@ -247,6 +238,44 @@ public class ShowInfoPanel extends EditorAction {
 			actor.addAction(Actions.sequence(Actions.alpha(0.0f),
 					Actions.alpha(1.0f, ANIMATION_TIME, Interpolation.exp5Out)));
 			controller.getViews().addToModalsContainer(actor);
+		}
+
+	}
+
+	private void hide(final Actor actor) {
+		Runnable hidePanel = new Runnable() {
+			@Override
+			public void run() {
+				actor.remove();
+			}
+		};
+		actor.addAction(Actions.sequence(
+				Actions.alpha(0.0f, ANIMATION_TIME, Interpolation.exp5Out),
+				Actions.run(hidePanel)));
+	}
+
+	private class ModalTable extends Table implements BackListener {
+
+		private Actor backObjetive;
+
+		public ModalTable(Skin skin) {
+			super(skin);
+			backObjetive = this;
+		}
+
+		@Override
+		public boolean onBackPressed() {
+			hide(backObjetive);
+			return true;
+		}
+
+		@Override
+		public float getPrefWidth() {
+			return Gdx.graphics.getWidth();
+		}
+
+		public void setBackObjetive(Actor actor) {
+			backObjetive = actor;
 		}
 	}
 }

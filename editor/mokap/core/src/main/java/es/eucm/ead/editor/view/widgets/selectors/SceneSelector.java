@@ -44,6 +44,7 @@ import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 
 import es.eucm.ead.editor.control.Controller;
+import es.eucm.ead.editor.control.MokapController.BackListener;
 import es.eucm.ead.editor.view.SkinConstants;
 import es.eucm.ead.editor.view.widgets.MultiWidget;
 import es.eucm.ead.editor.view.widgets.WidgetBuilder;
@@ -52,7 +53,8 @@ import es.eucm.ead.editor.view.widgets.layouts.Gallery.Cell;
 import es.eucm.ead.editor.view.widgets.layouts.LinearLayout;
 import es.eucm.ead.engine.I18N;
 
-public class SceneSelector extends LinearLayout implements Selector<String> {
+public class SceneSelector extends LinearLayout implements Selector<String>,
+		BackListener {
 
 	private SelectorListener<String> selectorListener;
 
@@ -134,5 +136,12 @@ public class SceneSelector extends LinearLayout implements Selector<String> {
 				}
 			});
 		}
+	}
+
+	@Override
+	public boolean onBackPressed() {
+		selectorListener.cancelled();
+		return true;
+
 	}
 }

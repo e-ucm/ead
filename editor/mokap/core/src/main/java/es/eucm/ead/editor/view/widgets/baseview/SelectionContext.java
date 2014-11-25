@@ -39,10 +39,12 @@ package es.eucm.ead.editor.view.widgets.baseview;
 import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 
+import es.eucm.ead.editor.control.MokapController.BackListener;
+
 /**
  * Right panel in base view
  */
-public class SelectionContext extends Panel {
+public class SelectionContext extends Panel implements BackListener {
 
 	private Actor selectionContext;
 
@@ -110,5 +112,14 @@ public class SelectionContext extends Panel {
 						getPrefWidth(selectionContext), height);
 			}
 		}
+	}
+
+	@Override
+	public boolean onBackPressed() {
+		if (!hidden) {
+			hide();
+			return true;
+		}
+		return false;
 	}
 }

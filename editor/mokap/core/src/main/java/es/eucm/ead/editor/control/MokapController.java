@@ -159,6 +159,6 @@ public class MokapController extends Controller {
 		/**
 		 * Called when the Back key was pressed in Android.
 		 */
-		void onBackPressed();
+		boolean onBackPressed();
 	}
 }

@@ -48,6 +48,7 @@ import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.utils.ObjectMap;
 
 import es.eucm.ead.editor.control.Controller;
+import es.eucm.ead.editor.control.MokapController.BackListener;
 import es.eucm.ead.editor.control.Selection;
 import es.eucm.ead.editor.model.Model.ModelListener;
 import es.eucm.ead.editor.model.Model.SelectionListener;
@@ -63,7 +64,7 @@ import es.eucm.ead.schema.components.ModelComponent;
 import es.eucm.ead.schema.entities.ModelEntity;
 
 public abstract class SceneElementContext extends GroupContext implements
-		ModelView, SelectionListener {
+		ModelView, SelectionListener, BackListener {
 
 	protected Controller controller;
 
@@ -130,6 +131,7 @@ public abstract class SceneElementContext extends GroupContext implements
 					.addAction(Actions.sequence(Actions
 							.touchable(Touchable.disabled), Actions.moveTo(
 							getWidth(), 0, 0.27f, Interpolation.exp5Out)));
+			currentComponentEditor = null;
 		}
 	}
 
@@ -249,4 +251,13 @@ public abstract class SceneElementContext extends GroupContext implements
 		}
 	}
 
+	@Override
+	public boolean onBackPressed() {
+		if (currentComponentEditor != null) {
+			closeEditor();
+			return true;
+		}
+
+		return false;
+	}
 }
