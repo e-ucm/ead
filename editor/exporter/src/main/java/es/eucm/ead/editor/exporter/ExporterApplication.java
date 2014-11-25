@@ -39,6 +39,7 @@ package es.eucm.ead.editor.exporter;
 import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.utils.Json;
 import com.badlogic.gdx.utils.SerializationException;
+import es.eucm.ead.editor.utils.ZipUtils;
 import es.eucm.ead.schema.entities.ModelEntity;
 import es.eucm.ead.schemax.JsonExtension;
 
@@ -179,8 +180,6 @@ public class ExporterApplication {
 	 */
 	public static void main(String[] args) {
 
-		printUsage();
-
 		String engineLibPath = null;
 
 		String projectPath = null;
@@ -263,8 +262,25 @@ public class ExporterApplication {
 			} else {
 
 				for (int i = 0; i < projects.size(); i++) {
-					ExporterApplication.exportAsJar(projects.get(i),
-							engineLibPath, targets.get(i));
+					FileHandle fh = new FileHandle(projects.get(i));
+					String path = null;
+					if (!fh.isDirectory()
+							&& fh.extension().toLowerCase().equals("zip")) {
+						FileHandle dir = FileHandle
+								.tempDirectory("eadexportapp");
+						dir.mkdirs();
+						ZipUtils.unzip(fh, dir);
+						path = dir.path();
+					} else if (fh.isDirectory()) {
+						path = projects.get(i);
+					} else {
+						throw new RuntimeException(
+								"[Error] Unsupported source path: \""
+										+ projects.get(i)
+										+ "\" is neither a folder or a zip file!");
+					}
+					ExporterApplication.exportAsJar(path, engineLibPath,
+							targets.get(i));
 				}
 
 			}

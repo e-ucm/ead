@@ -332,7 +332,7 @@ public class Exporter {
 			FileHandle entityFile = destiny.child(currentEntry.getKey());
 			entityFile.parent().mkdirs();
 			// Save
-			json.toJson(currentEntity, entityFile);
+			json.toJson(currentEntity, null, entityFile);
 		}
 	}
 
