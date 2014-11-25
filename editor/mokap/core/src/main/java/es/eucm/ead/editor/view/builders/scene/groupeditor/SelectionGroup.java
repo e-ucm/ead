@@ -37,8 +37,10 @@
 package es.eucm.ead.editor.view.builders.scene.groupeditor;
 
 import com.badlogic.gdx.scenes.scene2d.Actor;
+import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.Pools;
 import com.badlogic.gdx.utils.Predicate;
+
 import es.eucm.ead.editor.view.builders.scene.groupeditor.GroupEditor.GroupEditorStyle;
 import es.eucm.ead.editor.view.widgets.AbstractWidget;
 
@@ -50,23 +52,51 @@ public class SelectionGroup extends AbstractWidget {
 
 	private SelectionBoxPredicate findSelectBox = new SelectionBoxPredicate();
 
+	private Array<Actor> selection = new Array<Actor>();
+
 	public SelectionGroup(GroupEditor groupEditor, GroupEditorStyle style) {
 		this.groupEditor = groupEditor;
 		this.style = style;
 	}
 
 	public void pressed(Actor actor) {
-		SelectionBox selectionBox = findOrCreateSelectionBox(actor);
-		if (selectionBox.isSelected()) {
-			selectionBox.moving();
+		findOrCreateSelectionBox(actor);
+	}
+
+	public void select(Actor actor) {
+		if (!groupEditor.isMultipleSelection()) {
+			clearChildren();
+		}
+
+		if (groupEditor.isMultipleSelection()
+				&& selection.contains(actor, true)) {
+			removeFromSelection(actor);
+		} else {
+			SelectionBox selectionBox = findOrCreateSelectionBox(actor);
+			if (selectionBox != null) {
+				selection.add(actor);
+				selectionBox.selected();
+			}
 		}
 	}
 
-	public void selected(Actor actor) {
+	public void removeFromSelection(Actor actor) {
+		selection.removeValue(actor, true);
 		SelectionBox selectionBox = findSelectionBox(actor);
-		if (selectionBox != null && selectionBox.isPressed()) {
-			selectionBox.selected();
+		if (selectionBox != null) {
+			remove(selectionBox);
 		}
+	}
+
+	@Override
+	public void clearChildren() {
+		Actor[] actors = getChildren().begin();
+		for (int i = 0, n = getChildren().size; i < n; i++) {
+			removeActor(actors[i]);
+		}
+		getChildren().end();
+		getChildren().clear();
+		selection.clear();
 	}
 
 	private SelectionBox findOrCreateSelectionBox(Actor target) {
@@ -88,22 +118,23 @@ public class SelectionGroup extends AbstractWidget {
 
 	public void move(float deltaX, float deltaY) {
 		for (Actor selectionBox : getChildren()) {
-			if (((SelectionBox) selectionBox).isMoving()) {
-				selectionBox.moveBy(deltaX, deltaY);
-			} else if (((SelectionBox) selectionBox).isPressed()) {
-				removeSelectionBox(selectionBox);
-			}
+			selectionBox.moveBy(deltaX, deltaY);
 		}
 	}
 
-	private void removeSelectionBox(Actor selectionBox) {
+	private void remove(Actor selectionBox) {
 		selectionBox.remove();
 		Pools.free(selectionBox);
 	}
 
-	public void unselect(Actor actor) {
-		SelectionBox selectionBox = findSelectionBox(actor);
-		removeSelectionBox(selectionBox);
+	public Array<Actor> getSelection() {
+		return selection;
+	}
+
+	public void refreshSelectionBoxes() {
+		for (Actor selectionBox : getChildren()) {
+			((SelectionBox) selectionBox).readTargetBounds();
+		}
 	}
 
 	public static class SelectionBoxPredicate implements Predicate<Actor> {

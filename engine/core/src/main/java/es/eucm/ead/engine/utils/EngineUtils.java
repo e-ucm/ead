@@ -37,6 +37,8 @@
 package es.eucm.ead.engine.utils;
 
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
+import com.badlogic.gdx.scenes.scene2d.Actor;
+import com.badlogic.gdx.scenes.scene2d.Group;
 import com.badlogic.gdx.utils.Array;
 
 import es.eucm.ead.engine.assets.Assets;
@@ -114,5 +116,21 @@ public class EngineUtils {
 			}
 		}
 		return currentLine;
+	}
+
+	/**
+	 * @return Returns a direct child of parent in the hierarchy of the given
+	 *         actor. Null if actor is not a descendant of parent
+	 */
+	public static Actor getDirectChild(Group parent, Actor actor) {
+		if (actor == null || !actor.isDescendantOf(parent)) {
+			return null;
+		}
+
+		Actor firstChild = actor;
+		while (firstChild != null && firstChild.getParent() != parent) {
+			firstChild = firstChild.getParent();
+		}
+		return firstChild;
 	}
 }

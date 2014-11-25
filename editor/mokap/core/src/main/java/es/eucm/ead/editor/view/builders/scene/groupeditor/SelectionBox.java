@@ -136,6 +136,11 @@ public class SelectionBox extends Group {
 	}
 
 	@Override
+	protected void positionChanged() {
+		target.setPosition(getX(), getY());
+	}
+
+	@Override
 	protected void drawChildren(Batch batch, float parentAlpha) {
 		Color color = null;
 		switch (state) {

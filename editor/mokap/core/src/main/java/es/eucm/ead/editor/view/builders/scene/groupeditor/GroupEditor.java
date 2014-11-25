@@ -37,25 +37,20 @@
 package es.eucm.ead.editor.view.builders.scene.groupeditor;
 
 import com.badlogic.gdx.graphics.Color;
-import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.math.Polygon;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.Event;
 import com.badlogic.gdx.scenes.scene2d.EventListener;
 import com.badlogic.gdx.scenes.scene2d.Group;
-import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.ui.Button.ButtonStyle;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
-import com.badlogic.gdx.scenes.scene2d.utils.DragListener;
 import com.badlogic.gdx.scenes.scene2d.utils.Drawable;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.Pools;
-import com.badlogic.gdx.utils.Timer;
-import com.badlogic.gdx.utils.Timer.Task;
 import es.eucm.ead.editor.utils.GeometryUtils;
 import es.eucm.ead.editor.view.builders.scene.groupeditor.GroupEditor.GroupEvent.Type;
-import es.eucm.ead.editor.view.listeners.GestureListener;
+import es.eucm.ead.editor.view.builders.scene.groupeditor.input.EditStateMachine;
 import es.eucm.ead.editor.view.widgets.AbstractWidget;
 
 import java.util.Comparator;
@@ -65,13 +60,6 @@ public class GroupEditor extends AbstractWidget {
 	public static final float NEAR_CM = 1.0f;
 
 	private GroupEditorStyle style;
-
-	private Drawable selectedBackground;
-
-	/**
-	 * Actors in the current selection
-	 */
-	private Array<Actor> selection;
 
 	private boolean multipleSelection;
 
@@ -93,7 +81,6 @@ public class GroupEditor extends AbstractWidget {
 
 	public GroupEditor(GroupEditorStyle style) {
 		this.style = style;
-		selection = new Array<Actor>();
 		layersTouched = new Array<Actor>();
 		layerSelector = new LayerSelector(this, style);
 
@@ -107,35 +94,11 @@ public class GroupEditor extends AbstractWidget {
 				style.touch);
 		addActor(touchRepresentation);
 
-		addListener(new GroupEditorListener());
+		addListener(new EditStateMachine(this, selectionGroup));
 		addListener(touchRepresentation);
-		// Drags moving objects
-		addListener(new DragListener() {
-
-			@Override
-			public void drag(InputEvent event, float x, float y, int pointer) {
-				if (pointer == 0 && !isOnlySelection()) {
-					for (Actor actor : selectionGroup.getChildren()) {
-						if (actor instanceof SelectionBox) {
-							SelectionBox selectionBox = (SelectionBox) actor;
-							if (selectionBox.isMoving()) {
-								selectionBox.setPosition(selectionBox.getX()
-										- getDeltaX(), selectionBox.getY()
-										- getDeltaY());
-							}
-						}
-					}
-				}
-			}
-		});
-		this.selectedBackground = style.selectedBackground;
 	}
 
 	public void setMultipleSelection(boolean multipleSelection) {
-		if (this.multipleSelection && !multipleSelection) {
-			clearSelection();
-			fireSelection();
-		}
 		this.multipleSelection = multipleSelection;
 	}
 
@@ -167,219 +130,39 @@ public class GroupEditor extends AbstractWidget {
 		}
 	}
 
-	@Override
-	protected void drawChildren(Batch batch, float parentAlpha) {
-		if (selectedBackground != null) {
-			selectedBackground.draw(batch, 0, 0, getWidth(), getHeight());
-		}
-		super.drawChildren(batch, parentAlpha);
-	}
-
 	public Array<Actor> getSelection() {
-		return selection;
+		return selectionGroup.getSelection();
 	}
 
 	public void setSelection(Iterable<Actor> selection) {
-		clearSelection();
+		selectionGroup.clearChildren();
 		for (Actor actor : selection) {
-			addToSelection(actor, true);
+			addToSelection(actor);
 		}
 	}
 
-	void addToSelection(Actor actor, boolean addBox) {
-		if (selection.contains(actor, true)) {
-			selection.removeValue(actor, true);
-			selectionGroup.unselect(actor);
-		} else {
-			selection.add(actor);
-			selection.sort(comparator);
-			if (addBox) {
-				GeometryUtils.adjustGroup(actor);
-				SelectionBox selectionBox = Pools.obtain(SelectionBox.class);
-				selectionBox.setTarget(actor, this, style);
-				selectionBox.selected();
-				selectionGroup.addActor(selectionBox);
-			}
-		}
+	void addToSelection(Actor actor) {
+		selectionGroup.select(actor);
 	}
 
 	/**
 	 * Clears the current selection
 	 */
 	public void clearSelection() {
-		selection.clear();
-		for (Actor selectionBox : selectionGroup.getChildren()) {
-			Pools.free(selectionBox);
-		}
 		selectionGroup.clearChildren();
 	}
 
-	private Actor getDirectChild(Group parent, Actor child) {
-		if (child == null || !child.isDescendantOf(parent)) {
-			return null;
-		}
-
-		Actor firstChild = child;
-		while (firstChild != null && firstChild.getParent() != parent) {
-			firstChild = firstChild.getParent();
-		}
-		return firstChild;
-	}
-
 	public void refreshSelectionBox() {
-		for (Actor actor : selectionGroup.getChildren()) {
-			if (actor instanceof SelectionBox) {
-				((SelectionBox) actor).readTargetBounds();
-			}
-		}
+		selectionGroup.refreshSelectionBoxes();
 	}
 
-	private void removePressed() {
-		for (Actor selectionBox : selectionGroup.getChildren()) {
-			if (((SelectionBox) selectionBox).isPressed()) {
-				selectionBox.remove();
-				Pools.free(selectionBox);
-			}
-		}
-	}
-
-	public class GroupEditorListener extends GestureListener {
-
-		private TouchDownTask task = new TouchDownTask();
-
-		private Vector2 tmp = new Vector2();
-
-		private boolean pinching = false;
-
-		private boolean resetAngle = true;
-
-		@Override
-		public boolean touchDown(InputEvent event, float x, float y,
-				int pointer, int button) {
-			if (pointer == 0) {
-				Actor target = getDirectChild(selectionGroup, event.getTarget());
-				if (target instanceof SelectionBox) {
-					if (!isOnlySelection()) {
-						for (Actor actor : selectionGroup.getChildren()) {
-							((SelectionBox) actor).moving();
-						}
-					}
-				} else {
-					task.cancel();
-					task.eventTarget = event.getTarget();
-					if (selectionGroup.getChildren().size == 0) {
-						task.run();
-					} else {
-						Timer.schedule(task, 0.5f);
-					}
-				}
-			}
-			return super.touchDown(event, x, y, pointer, button);
-		}
-
-		@Override
-		public void pan(float x, float y, float deltaX, float deltaY) {
-			// If panning, cancel selection process, removing the pressed
-			// selection box
-			removePressed();
-		}
-
-		@Override
-		public void pinch(Vector2 initialPointer1, Vector2 initialPointer2,
-				Vector2 pointer1, Vector2 pointer2) {
-			task.cancel();
-			if (!isOnlySelection()) {
-				float angle = tmp.set(pointer1.x - pointer2.x,
-						pointer1.y - pointer2.y).angle();
-				for (Actor selectionBox : selectionGroup.getChildren()) {
-					if (selectionBox instanceof SelectionBox
-							&& !((SelectionBox) selectionBox).isPressed()) {
-						((SelectionBox) selectionBox).selected();
-						if (resetAngle) {
-							((SelectionBox) selectionBox)
-									.setInitialPinchRotation(angle);
-						} else {
-							((SelectionBox) selectionBox).updateRotation(angle);
-						}
-					}
-				}
-				pinching = true;
-				resetAngle = false;
-			}
-		}
-
-		@Override
-		public boolean longPress(float x, float y) {
-			removePressed();
-			if (!multipleSelection) {
-				clearSelection();
-				fireSelection();
-			}
-			selectLayer(x, y);
-			return true;
-		}
-
-		@Override
-		public void touchUp(InputEvent event, float x, float y, int pointer,
-				int button) {
-			super.touchUp(event, x, y, pointer, button);
-			if (pinching && pointer == 1) {
-				resetAngle = true;
-			} else if (pointer == 0
-					&& !isTouchCancelled(event.getTarget(), x, y)) {
-				if (pinching) {
-					pinching = false;
-					resetAngle = true;
-					fireTransformed();
-					return;
-				}
-				if (task.isScheduled()) {
-					task.run();
-					task.cancel();
-				}
-				Actor target = selectionGroup.hit(x, y, true);
-				if (target instanceof SelectionBox) {
-					if (((SelectionBox) target).isPressed()) {
-						addToSelection(((SelectionBox) target).getTarget(),
-								false);
-						fireSelection();
-					} else if (((SelectionBox) target).isMoving()) {
-						for (Actor actor : selectionGroup.getChildren()) {
-							((SelectionBox) actor).selected();
-						}
-						fireTransformed();
-					}
-					((SelectionBox) target).selected();
-				}
-			} else {
-				if (task.isScheduled()) {
-					task.cancel();
-				}
-			}
-		}
-	}
-
-	public class TouchDownTask extends Task {
-
-		private Actor eventTarget;
-
-		@Override
-		public void run() {
-			Actor target = getDirectChild(rootGroup, eventTarget);
-			if (target != null) {
-				if (!multipleSelection) {
-					clearSelection();
-				}
-				SelectionBox selectionBox = Pools.obtain(SelectionBox.class);
-				selectionBox.setTarget(target, GroupEditor.this, style);
-				selectionGroup.addActor(selectionBox);
-			}
-		}
+	public Group getRootGroup() {
+		return rootGroup;
 	}
 
 	float[] points = new float[8];
 
-	private void selectLayer(float x, float y) {
+	public void selectLayer(float x, float y) {
 		layersTouched.clear();
 		Vector2 tmp = Pools.obtain(Vector2.class);
 		Polygon polygon = Pools.obtain(Polygon.class);
@@ -428,10 +211,10 @@ public class GroupEditor extends AbstractWidget {
 	/**
 	 * Fires some actors has been transformed
 	 */
-	private void fireTransformed() {
+	public void fireTransformed() {
 		GroupEvent groupEvent = Pools.obtain(GroupEvent.class);
 		groupEvent.setType(Type.transformed);
-		groupEvent.setSelection(selection);
+		groupEvent.setSelection(selectionGroup.getSelection());
 		fire(groupEvent);
 		Pools.free(groupEvent);
 	}
@@ -439,10 +222,10 @@ public class GroupEditor extends AbstractWidget {
 	/**
 	 * Notifies current selection has been updated
 	 */
-	void fireSelection() {
+	public void fireSelection() {
 		GroupEvent groupEvent = Pools.obtain(GroupEvent.class);
 		groupEvent.setType(Type.selected);
-		groupEvent.setSelection(selection);
+		groupEvent.setSelection(selectionGroup.getSelection());
 		fire(groupEvent);
 		Pools.free(groupEvent);
 	}

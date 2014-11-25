@@ -75,7 +75,7 @@ public class LayerSelector extends ContextMenu {
 			public void clicked(InputEvent event, float x, float y) {
 				Actor target = event.getTarget();
 				if (target instanceof Layer) {
-					groupEditor.addToSelection(((Layer) target).actor, true);
+					groupEditor.addToSelection(((Layer) target).actor);
 					groupEditor.fireSelection();
 				}
 			}
