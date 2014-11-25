@@ -54,6 +54,7 @@ import es.eucm.ead.editor.control.commands.SelectionCommand;
 import es.eucm.ead.editor.model.Model.SelectionListener;
 import es.eucm.ead.editor.model.Q;
 import es.eucm.ead.editor.model.events.SelectionEvent;
+import es.eucm.ead.editor.model.events.SelectionEvent.Type;
 import es.eucm.ead.editor.view.ModelView;
 import es.eucm.ead.editor.view.builders.scene.context.SceneElementContext;
 import es.eucm.ead.editor.view.builders.scene.draw.BrushStrokes;
@@ -148,18 +149,32 @@ public class SceneEditor extends BaseView implements ModelView,
 
 	@Override
 	public void release() {
+
 		controller.getModel().removeSelectionListener(this);
 		controller.getCommands().removeCommandListener(this);
 	}
 
 	@Override
 	public boolean listenToContext(String contextId) {
-		return Selection.SCENE_ELEMENT.equals(contextId);
+		return Selection.SCENE_ELEMENT.equals(contextId)
+				|| Selection.SCENE.equals(contextId);
 	}
 
 	@Override
 	public void modelChanged(SelectionEvent event) {
-		setMode(mode);
+		if (event.getType() == Type.REMOVED
+				&& event.getContextId().equals(Selection.SCENE)
+				&& event.getSelection().length > 0) {
+			ModelEntity scene = (ModelEntity) event.getSelection()[0];
+			if (scene != null) {
+				controller.action(CreateThumbnail.class, scene,
+						(int) (Gdx.graphics.getHeight() - WidgetBuilder
+								.dpToPixels(56)), (int) (Gdx.graphics
+								.getHeight() / 2.15f));
+			}
+		} else {
+			setMode(mode);
+		}
 	}
 
 	/**
@@ -263,10 +278,6 @@ public class SceneEditor extends BaseView implements ModelView,
 		if (!(command instanceof SelectionCommand)) {
 			ModelEntity scene = (ModelEntity) controller.getModel()
 					.getSelection().getSingle(Selection.SCENE);
-
-			controller.action(CreateThumbnail.class, scene, (int) (Gdx.graphics
-					.getHeight() - WidgetBuilder.dpToPixels(56)),
-					(int) (Gdx.graphics.getHeight() / 2.15f));
 			if (scene != null) {
 				String resource = controller.getModel().getIdFor(scene);
 				if (resource != null) {
