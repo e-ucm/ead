@@ -38,30 +38,21 @@
 package es.eucm.ead.repobuilder;
 
 import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.assets.loaders.SkinLoader;
 import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.utils.Array;
-import com.badlogic.gdx.utils.reflect.ClassReflection;
 import es.eucm.ead.editor.demobuilder.EditorDemoBuilder;
 import es.eucm.ead.editor.demobuilder.ImgUtils;
+import es.eucm.ead.editor.exporter.ExportCallback;
+import es.eucm.ead.editor.exporter.Exporter;
 import es.eucm.ead.editor.utils.ZipUtils;
-import es.eucm.ead.engine.EngineDesktop;
 import es.eucm.ead.schema.components.ModelComponent;
-import es.eucm.ead.schema.components.behaviors.Behavior;
-import es.eucm.ead.schema.components.behaviors.events.Init;
-import es.eucm.ead.schema.components.controls.Button;
-import es.eucm.ead.schema.components.controls.TextButton;
 import es.eucm.ead.schema.data.Dimension;
 import es.eucm.ead.schema.data.shape.Circle;
 import es.eucm.ead.schema.data.shape.Rectangle;
 import es.eucm.ead.schema.editor.components.Thumbnail;
 import es.eucm.ead.schema.editor.components.repo.*;
-import es.eucm.ead.schema.editor.components.repo.licenses.CustomLicense;
 import es.eucm.ead.schema.editor.components.repo.licenses.DefaultLicenses;
-import es.eucm.ead.schema.editor.components.repo.licenses.RepoLicense;
-import es.eucm.ead.schema.effects.AddEntity;
 import es.eucm.ead.schema.effects.GoScene;
-import es.eucm.ead.schema.effects.SetViewport;
 import es.eucm.ead.schema.entities.ModelEntity;
 import es.eucm.ead.schema.renderers.*;
 
@@ -91,6 +82,12 @@ public abstract class RepoLibraryBuilder extends EditorDemoBuilder {
 	private static final String DEFAULT_THUMBNAILS_FOLDER = "thumbnails/";
 
 	private static final String DEFAULT_RESOURCES_FOLDER = "resources/";
+
+	private static final String ZIP_THUMBNAILS_SUBPATH = "thumbnails/";
+
+	private static final String ZIP_DESCRIPTOR_SUBPATH = "descriptor.json";
+
+	private static final String ZIP_CONTENTS_SUBPATH = "contents.zip";
 
 	private static final String ENTITIES_JSON = "entities.json";
 
@@ -134,7 +131,9 @@ public abstract class RepoLibraryBuilder extends EditorDemoBuilder {
 
 	public static final String PREVIEW_HEIGHT = "PreviewHeight";
 
-	protected Map<String, String> properties = new HashMap<String, String>();
+    public static final String ENGINE_JAR_FOR_PREVIEW = "EngineJarWithDependencies";
+
+    protected Map<String, String> properties = new HashMap<String, String>();
 
 	protected RepoLibrary lastLibrary;
 
@@ -173,9 +172,75 @@ public abstract class RepoLibraryBuilder extends EditorDemoBuilder {
 		return repoEntities.size();
 	}
 
+	public String resource(String resource) {
+		return resource.startsWith(properties.get(RESOURCES)) ? resource
+				: properties.get(RESOURCES) + resource;
+	}
+
 	public RepoLibraryBuilder frame(String frameUri, float duration) {
-		return (RepoLibraryBuilder) super.frame(properties.get(RESOURCES)
-				+ frameUri, duration);
+		return (RepoLibraryBuilder) super.frame(resource(frameUri), duration);
+	}
+
+	public RepoLibraryBuilder frame(ModelEntity modelEntity, String frameUri,
+			float duration, Frames.Sequence sequence) {
+		return (RepoLibraryBuilder) super.frame(modelEntity,
+				resource(frameUri), duration, sequence);
+	}
+
+	public RepoLibraryBuilder blinkFrameAnimation(String... frames) {
+		for (int i = 0; i < frames.length; i++) {
+			frames[i] = resource(frames[i]);
+		}
+		return (RepoLibraryBuilder) super.blinkFrameAnimation(frames);
+	}
+
+	public void createJarBundle(FileHandle destiny, FileHandle previewZip) {
+		Exporter exporter = new Exporter(gameAssets);
+		FileHandle tempFolder = FileHandle.tempDirectory("jarbundle");
+		tempFolder.mkdirs();
+		ZipUtils.unzip(previewZip, tempFolder);
+		Map<String, Object> allEntities = new HashMap<String, Object>();
+		for (String key : entities.keySet()) {
+			allEntities.put(key, entities.get(key));
+		}
+		for (ModelEntity entity : repoEntities) {
+			String key = null;
+			for (ModelComponent component : entity.getComponents()) {
+				if (component instanceof RepoElement) {
+					if (component.getId() != null) {
+						allEntities.put(
+								component.getId().endsWith(".json") ? component
+										.getId() : component.getId() + ".json",
+								entity);
+					}
+				}
+			}
+		}
+
+        if (properties.get(ENGINE_JAR_FOR_PREVIEW)!=null){
+            exporter.exportAsJar(
+                    destiny.path(),
+                    tempFolder.path(),
+                    properties.get(ENGINE_JAR_FOR_PREVIEW),
+                    allEntities.entrySet(), new ExportCallback() {
+                        @Override
+                        public void error(String errorMessage) {
+
+                        }
+
+                        @Override
+                        public void progress(int percentage, String currentTask) {
+
+                        }
+
+                        @Override
+                        public void complete(String completionMessage) {
+
+                        }
+                    });
+        }else{
+            System.err.println("The path to the engine jar with dependencies file was not set. Jar previewer will not be produced");
+        }
 	}
 
 	public FileHandle createPreviewGame() {
@@ -306,21 +371,37 @@ public abstract class RepoLibraryBuilder extends EditorDemoBuilder {
 		for (ModelEntity modelEntity : repoEntities) {
 			entityTempFolders.add(exportElement(modelEntity, outputFH));
 		}
-		entityTempFolders.add(createPreviewGame());
+
+		exportRepoLibrary(lastLibrary, outputFH);
+		FileHandle previewGameFH = null;
+		entityTempFolders.add(previewGameFH = createPreviewGame());
 
 		// Create preview game
 		FileHandle previewZip = outputFH.child(PREVIEW_GAMES_SUBFOLDER).child(
 				root + ".zip");
 		previewZip.parent().mkdirs();
-		ZipUtils.mergeZipsAndDirsToFile(previewZip,
-				entityTempFolders.toArray(new FileHandle[] {}));
+
+		FileHandle[] sourcesForPreviewGame = new FileHandle[entityTempFolders
+				.size()];
+		for (int i = 0; i < entityTempFolders.size(); i++) {
+			FileHandle fh = entityTempFolders.get(i);
+			if (fh == previewGameFH) {
+				sourcesForPreviewGame[i] = fh;
+			} else {
+				sourcesForPreviewGame[i] = fh.child(ZIP_CONTENTS_SUBPATH);
+			}
+		}
+		ZipUtils.mergeZipsAndDirsToFile(previewZip, sourcesForPreviewGame);
+
+		// Create jar bundle
+		FileHandle exportFolder = outputFH.child("export/");
+		exportFolder.mkdirs();
+		createJarBundle(exportFolder.child(root + ".jar"), previewZip);
 
 		// Delete temp folders
 		for (FileHandle temp : entityTempFolders) {
 			temp.deleteDirectory();
 		}
-
-		exportRepoLibrary(lastLibrary, outputFH);
 
 		return previewZip;
 	}
@@ -339,19 +420,37 @@ public abstract class RepoLibraryBuilder extends EditorDemoBuilder {
 		}
 		// Update version code in entity and get id
 		String id = null;
+		RepoElement repoElement = null;
 		for (ModelComponent modelComponent : modelEntity.getComponents()) {
 			if (modelComponent instanceof RepoElement) {
-				((RepoElement) modelComponent).setVersion(properties
-						.get(VERSION));
-				id = ((RepoElement) modelComponent).getId();
+				repoElement = (RepoElement) modelComponent;
+				repoElement.setVersion(properties.get(VERSION));
+				id = modelComponent.getId();
 			}
 		}
 		// Write model entity to json, if id is not null
-		if (id != null) {
+		if (repoElement != null) {
 			FileHandle fh = tempFolder.child(id + ".json");
 			Gdx.app.debug(LOG_TAG, "Saving " + id + " to: "
 					+ fh.file().getAbsolutePath());
 			gameAssets.toJson(modelEntity, null, fh);
+
+			// Zip contents
+			FileHandle contentsZip = FileHandle.tempFile(id);
+			ZipUtils.zip(tempFolder, contentsZip);
+			// Clear temp folder
+			tempFolder.emptyDirectory();
+			// Move contents back to temp file
+			contentsZip.moveTo(tempFolder.child(ZIP_CONTENTS_SUBPATH));
+			// Write descriptor
+			gameAssets.toJson(repoElement, null,
+					tempFolder.child(ZIP_DESCRIPTOR_SUBPATH));
+			// Copy thumbnail paths
+			FileHandle zipThumbnails = tempFolder.child(ZIP_THUMBNAILS_SUBPATH);
+			zipThumbnails.mkdirs();
+			for (FileHandle thumbnail : rootFolder.child(id).list()) {
+				thumbnail.moveTo(zipThumbnails);
+			}
 
 			// Zip temp folder to destiny
 			FileHandle entitiesFolder = outputFH.child(ELEMENTS_SUBFOLDER);
@@ -371,16 +470,9 @@ public abstract class RepoLibraryBuilder extends EditorDemoBuilder {
 		// Update version for library
 		repoLibrary.setVersion(properties.get(VERSION));
 
-		// Make a list of all binaries referenced by this repoLibrary
-		List<String> binaryPaths = new ArrayList<String>();
-		listRefBinaries(repoLibrary, null, binaryPaths);
-		// Copy all binaries to a temp folder
+		// Make temp folder
 		FileHandle tempFolder = FileHandle.tempDirectory("repolibrary");
 		tempFolder.mkdirs();
-		for (String binary : binaryPaths) {
-			FileHandle destinyFH = tempFolder.child(binary);
-			rootFolder.child(binary).copyTo(destinyFH);
-		}
 		// Update version code in entity and get id
 		String id = repoLibrary.getId();
 		// Write model entity to json, if id is not null
@@ -389,6 +481,13 @@ public abstract class RepoLibraryBuilder extends EditorDemoBuilder {
 			Gdx.app.debug(LOG_TAG, "Saving " + id + " to: "
 					+ fh.file().getAbsolutePath());
 			gameAssets.toJson(repoLibrary, null, fh);
+
+			// Copy thumbnail paths
+			FileHandle zipThumbnails = tempFolder.child(ZIP_THUMBNAILS_SUBPATH);
+			zipThumbnails.mkdirs();
+			for (FileHandle thumbnail : rootFolder.child(id).list()) {
+				thumbnail.moveTo(zipThumbnails);
+			}
 
 			// Zip temp folder to destiny
 			FileHandle libsFolder = outputFH.child(LIBRARIES_SUBFOLDER);
@@ -402,6 +501,22 @@ public abstract class RepoLibraryBuilder extends EditorDemoBuilder {
 		}
 		// Delete temp folder
 		tempFolder.deleteDirectory();
+	}
+
+	private HashMap<String, Object> toMap(RepoElement repoElement) {
+		HashMap<String, Object> map = new HashMap<String, Object>();
+		for (Field field : RepoElement.class.getDeclaredFields()) {
+			field.setAccessible(true);
+			try {
+				Object value = field.get(repoElement);
+				if (value != null) {
+					map.put(field.getName(), value);
+				}
+			} catch (IllegalAccessException e) {
+				e.printStackTrace();
+			}
+		}
+		return map;
 	}
 
 	private void listRefBinaries(Object object, Class clazz,
@@ -492,9 +607,23 @@ public abstract class RepoLibraryBuilder extends EditorDemoBuilder {
 			String descriptionEn, String descriptionEs, String thumbnail) {
 		lastLibrary = makeRepoLibrary(nameEn, nameEs, descriptionEn,
 				descriptionEs, thumbnail);
+		String libraryId = null;
 		if (properties.get(AUTO_IDS) != null) {
-			lastLibrary.setId(makeLibraryId());
+			libraryId = makeLibraryId();
+		} else {
+			libraryId = nameEn;
 		}
+		lastLibrary.setId(libraryId);
+
+		if (thumbnail == null) {
+			thumbnail = root + ".png";
+		}
+		// Copy thumbnail source file to temp folder
+		FileHandle libraryFolder = rootFolder.child(makeLibraryId());
+		libraryFolder.mkdirs();
+		gameAssets.resolve(thumbnail).copyTo(rootFolder);
+		getThumbnailPaths(rootFolder, thumbnail, libraryFolder);
+
 		return this;
 	}
 
@@ -520,16 +649,18 @@ public abstract class RepoLibraryBuilder extends EditorDemoBuilder {
 				.getLastEntity();
 		repoEntities.add(parent);
 		lastElement = makeRepoElement(nameEn, nameEs, descriptionEn,
-				descriptionEs,
-				thumbnail == null ? null : properties.get(THUMBNAILS)
-						+ thumbnail, categories);
+				descriptionEs, categories);
 		parent.getComponents().add(lastElement);
 
 		// Create default id, based on library name, if the option is selected
+		String id = null;
 		if (properties.get(AUTO_IDS) != null) {
 			String libraryId = makeLibraryId();
-			lastElement.setId(libraryId + repoEntities.size());
-			lastElement.setLibrary(libraryId);
+			id = libraryId + repoEntities.size();
+			lastElement.setId(id);
+			lastElement.setLibraryId(libraryId);
+		} else {
+			id = nameEn;
 		}
 		// Add publisher, if present
 		if (properties.get(PUBLISHER) != null) {
@@ -537,6 +668,13 @@ public abstract class RepoLibraryBuilder extends EditorDemoBuilder {
 		}
 
 		adjustEntity(parent);
+
+		// Write thumbnails
+		FileHandle thumbnailsTempPathForElement = rootFolder.child(id + "/");
+		thumbnailsTempPathForElement.mkdirs();
+		getThumbnailPaths(rootFolder,
+				thumbnail == null ? null : properties.get(THUMBNAILS)
+						+ thumbnail, thumbnailsTempPathForElement);
 		return this;
 	}
 
@@ -623,39 +761,37 @@ public abstract class RepoLibraryBuilder extends EditorDemoBuilder {
 
 	public RepoLibraryBuilder authorName(String name) {
 		if (lastLibrary != null) {
-			if (lastLibrary.getAuthor() == null) {
-				lastLibrary.setAuthor(new RepoAuthor());
-			}
-			lastLibrary.getAuthor().setName(name);
+			lastLibrary.setAuthorName(name);
 		} else if (lastElement != null) {
-			if (lastElement.getAuthor() == null) {
-				lastElement.setAuthor(new RepoAuthor());
-			}
-			lastElement.getAuthor().setName(name);
+			lastElement.setAuthorName(name);
 		}
 		return this;
 	}
 
 	public RepoLibraryBuilder authorUrl(String authorUrl) {
 		if (lastLibrary != null) {
-			if (lastLibrary.getAuthor() == null) {
-				lastLibrary.setAuthor(new RepoAuthor());
-			}
-			lastLibrary.getAuthor().setUrl(authorUrl);
+			lastLibrary.setAuthorUrl("'"+authorUrl+"'");
 		} else if (lastElement != null) {
-			if (lastElement.getAuthor() == null) {
-				lastElement.setAuthor(new RepoAuthor());
-			}
-			lastElement.getAuthor().setUrl(authorUrl);
+			lastElement.setAuthorUrl("'"+authorUrl+"'");
 		}
 		return this;
 	}
 
 	public RepoLibraryBuilder tag(String tagEn, String tagEs) {
 		if (lastLibrary != null) {
-			lastLibrary.getTags().add(enEsString(tagEn, tagEs));
+			if (!lastLibrary.getTagList().contains(tagEn, false)) {
+				lastLibrary.getTagList().add(tagEn);
+			}
+			if (!lastLibrary.getTagList().contains(tagEs, false)) {
+				lastLibrary.getTagList().add(tagEs);
+			}
 		} else if (lastElement != null) {
-			lastElement.getTags().add(enEsString(tagEn, tagEs));
+			if (!lastElement.getTagList().contains(tagEn, false)) {
+				lastElement.getTagList().add(tagEn);
+			}
+			if (!lastElement.getTagList().contains(tagEs, false)) {
+				lastElement.getTagList().add(tagEs);
+			}
 		}
 		return this;
 	}
@@ -674,22 +810,16 @@ public abstract class RepoLibraryBuilder extends EditorDemoBuilder {
 		return tag("character", "personaje");
 	}
 
-	public RepoLibraryBuilder license(CustomLicense license) {
-		if (lastLibrary != null) {
-			lastLibrary.getLicenses().add(license);
-		} else if (lastElement != null) {
-			lastElement.setLicense(license);
-		}
-		return this;
-	}
-
 	public RepoLibraryBuilder license(String strLicense) {
 		DefaultLicenses license = StaticLicenses.get(strLicense);
 		if (license != null) {
 			if (lastLibrary != null) {
-				lastLibrary.getLicenses().add(license);
+				if (!lastLibrary.getLicenseNameList().contains(strLicense,
+						false)) {
+					lastLibrary.getLicenseNameList().add(strLicense);
+				}
 			} else if (lastElement != null) {
-				lastElement.setLicense(license);
+				lastElement.setLicenseName(strLicense);
 			}
 		} else {
 			System.err.println("Invalid license: " + strLicense);
@@ -698,8 +828,14 @@ public abstract class RepoLibraryBuilder extends EditorDemoBuilder {
 	}
 
 	public RepoLibraryBuilder category(RepoCategories category) {
-		if (lastElement != null) {
-			lastElement.getCategories().add(category);
+		if (lastLibrary != null) {
+			if (!lastLibrary.getCategoryList().contains(category, false)) {
+				lastLibrary.getCategoryList().add(category);
+			}
+		} else if (lastElement != null) {
+			if (!lastElement.getCategoryList().contains(category, false)) {
+				lastElement.getCategoryList().add(category);
+			}
 		}
 		return this;
 	}
@@ -707,9 +843,7 @@ public abstract class RepoLibraryBuilder extends EditorDemoBuilder {
 	public RepoLibraryBuilder category(String strCategory) {
 		try {
 			RepoCategories category = RepoCategories.fromValue(strCategory);
-			if (lastElement != null) {
-				lastElement.getCategories().add(category);
-			}
+			return category(category);
 		} catch (IllegalArgumentException e) {
 			System.err.println("Invalid category: " + strCategory);
 		}
@@ -717,8 +851,7 @@ public abstract class RepoLibraryBuilder extends EditorDemoBuilder {
 	}
 
 	public RepoElement makeRepoElement(String nameEn, String nameEs,
-			String descriptionEn, String descriptionEs, String thumbnail,
-			String categories) {
+			String descriptionEn, String descriptionEs, String categories) {
 		// Infer w,h
 		int width = 0, height = 0;
 		ModelEntity modelEntity = getLastEntity();
@@ -731,36 +864,29 @@ public abstract class RepoLibraryBuilder extends EditorDemoBuilder {
 		}
 
 		return makeRepoElement(nameEn, nameEs, descriptionEn, descriptionEs,
-				thumbnail, categories, width, height);
+				categories, width, height);
 	}
 
 	public RepoElement makeRepoElement(String nameEn, String nameEs,
-			String descriptionEn, String descriptionEs, String thumbnail,
-			String categories, int width, int height) {
+			String descriptionEn, String descriptionEs, String categories,
+			int width, int height) {
 		// Create repo element with default options, if necessary
 		RepoElement repoElement = lastElement = new RepoElement();
-		repoElement.setName(enEsString(nameEn, nameEs));
-		if (thumbnail != null) {
-			repoElement.setThumbnail(getThumbnailPaths(rootFolder, thumbnail,
-					rootFolder));
-		}
-		repoElement.setDescription(enEsString(descriptionEn, descriptionEs));
+		enEsString(lastElement.getNameList(), lastElement.getNameI18nList(),
+				nameEn, nameEs);
+		enEsString(repoElement.getDescriptionList(),
+				repoElement.getDescriptionI18nList(), descriptionEn,
+				descriptionEs);
 		repoElement.setWidth(width);
 		repoElement.setHeight(height);
 
 		// Add default author, if any
 		if (properties.get(AUTHOR_NAME) != null) {
-			if (repoElement.getAuthor() == null) {
-				repoElement.setAuthor(new RepoAuthor());
-			}
-			repoElement.getAuthor().setName(properties.get(AUTHOR_NAME));
+			repoElement.setAuthorName(properties.get(AUTHOR_NAME));
 		}
 
 		if (properties.get(AUTHOR_URL) != null) {
-			if (repoElement.getAuthor() == null) {
-				repoElement.setAuthor(new RepoAuthor());
-			}
-			repoElement.getAuthor().setUrl(properties.get(AUTHOR_URL));
+			repoElement.setAuthorUrl("'"+properties.get(AUTHOR_URL)+"'");
 		}
 
 		// Add default tags, if any
@@ -770,7 +896,12 @@ public abstract class RepoLibraryBuilder extends EditorDemoBuilder {
 				String en = tag.split(";")[0];
 				String es = tag.split(";").length > 1 ? tag.split(";")[1] : tag
 						.split(";")[0];
-				repoElement.getTags().add(enEsString(en, es));
+				if (!repoElement.getTagList().contains(en, false)) {
+					repoElement.getTagList().add(en);
+				}
+				if (!repoElement.getTagList().contains(es, false)) {
+					repoElement.getTagList().add(es);
+				}
 			}
 		}
 
@@ -798,57 +929,46 @@ public abstract class RepoLibraryBuilder extends EditorDemoBuilder {
 	public RepoLibrary makeRepoLibrary(String nameEn, String nameEs,
 			String descriptionEn, String descriptionEs, String thumbnail) {
 		RepoLibrary repoLibrary = new RepoLibrary();
-		repoLibrary.setName(enEsString(nameEn, nameEs));
-		// repoLibrary.setPath(root);
-		repoLibrary.setThumbnail(new RepoThumbnail());
-
-		if (thumbnail == null) {
-			thumbnail = root + ".png";
-		}
-		// Copy thumbnail source file to temp folder
-		gameAssets.resolve(thumbnail).copyTo(rootFolder);
-		repoLibrary.setThumbnail(getThumbnailPaths(rootFolder, thumbnail,
-				rootFolder));
-		repoLibrary.setDescription(enEsString(descriptionEn, descriptionEs));
+		enEsString(repoLibrary.getNameList(), repoLibrary.getNameI18nList(),
+				nameEn, nameEs);
+		enEsString(repoLibrary.getDescriptionList(),
+				repoLibrary.getDescriptionI18nList(), descriptionEn,
+				descriptionEs);
 
 		// Collect license & author info, number of elements
 		NoRepetitionList<String> uniqueAuthors = new NoRepetitionList<String>();
-		NoRepetitionList<RepoLicense> uniqueLicenses = new NoRepetitionList<RepoLicense>();
+		NoRepetitionList<String> uniqueUrls = new NoRepetitionList<String>();
+		NoRepetitionList<String> uniqueLicenses = new NoRepetitionList<String>();
+		NoRepetitionList<RepoCategories> uniqueCategories = new NoRepetitionList<RepoCategories>();
 		int nItems = 0;
 		for (ModelEntity entity : repoEntities) {
 			for (ModelComponent component : entity.getComponents()) {
 				if (component instanceof RepoElement) {
 					nItems++;
 					RepoElement repoElement = (RepoElement) component;
-					if (repoElement.getAuthor() != null
-							&& repoElement.getAuthor().getName() != null) {
-						uniqueAuthors.add(repoElement.getAuthor().getName());
+					if (repoElement.getAuthorName() != null) {
+						uniqueAuthors.add(repoElement.getAuthorName());
 					}
-					if (repoElement.getLicense() != null) {
-						uniqueLicenses.add(repoElement.getLicense());
+					if (repoElement.getAuthorUrl() != null) {
+						uniqueUrls.add(repoElement.getAuthorUrl());
+					}
+					if (repoElement.getLicenseName() != null) {
+						uniqueLicenses.add(repoElement.getLicenseName());
+					}
+					for (RepoCategories repoCat : repoElement.getCategoryList()) {
+						uniqueCategories.add(repoCat);
 					}
 					break;
 				}
 			}
 		}
-		String authorList = "";
-		for (int i = 0; i < uniqueAuthors.size(); i++) {
-			if (i < uniqueAuthors.size() - 1) {
-				authorList += uniqueAuthors.get(i) + ", ";
-			} else {
-				authorList += uniqueAuthors.get(i);
-			}
+		repoLibrary.setAuthorName(uniqueAuthors.toString());
+		repoLibrary.setAuthorUrl("'"+uniqueUrls.toString()+"'");
+		for (String license : uniqueLicenses) {
+			repoLibrary.getLicenseNameList().add(license);
 		}
-
-		if (authorList != "") {
-			if (repoLibrary.getAuthor() == null) {
-				repoLibrary.setAuthor(new RepoAuthor());
-			}
-			repoLibrary.getAuthor().setName(authorList);
-		}
-
-		for (RepoLicense license : uniqueLicenses) {
-			repoLibrary.getLicenses().add(license);
+		for (RepoCategories repoCategory : uniqueCategories) {
+			repoLibrary.getCategoryList().add(repoCategory);
 		}
 
 		// Set number of elements
@@ -857,20 +977,23 @@ public abstract class RepoLibraryBuilder extends EditorDemoBuilder {
 		// repoLibrary.setPath(root);
 		// Set default tags, if any
 		if (properties.get(TAGS) != null) {
-			for (I18NStrings parsedTag : parseI18NTag(properties.get(TAGS))) {
-				repoLibrary.getTags().add(parsedTag);
+			for (String parsedTag : parseI18NTag(properties.get(TAGS))) {
+				if (!repoLibrary.getTagList().contains(parsedTag, false)) {
+					repoLibrary.getTagList().add(parsedTag);
+				}
 			}
 		}
 		return repoLibrary;
 	}
 
-	protected List<I18NStrings> parseI18NTag(String string) {
-		List<I18NStrings> parsedTags = new ArrayList<I18NStrings>();
+	protected List<String> parseI18NTag(String string) {
+		List<String> parsedTags = new ArrayList<String>();
 		for (String tag : string.split(",")) {
 			String en = tag.split(";")[0];
 			String es = tag.split(";").length > 1 ? tag.split(";")[1] : tag
 					.split(";")[0];
-			parsedTags.add(enEsString(en, es));
+			parsedTags.add(en);
+			parsedTags.add(es);
 		}
 		return parsedTags;
 	}
@@ -938,27 +1061,22 @@ public abstract class RepoLibraryBuilder extends EditorDemoBuilder {
 		return path;
 	}
 
-	private String[] enEquivalents = { "en", "EN", "en_EN", "en_US", "en_UK" };
-	private String[] esEquivalents = { "es", "ES", "es_ES" };
+	private String[] enEquivalents = { "en", "en_EN", "en_US", "en_UK" };
+	private String[] esEquivalents = { "es", "es_ES" };
 
-	protected I18NStrings enEsString(String en, String es) {
-		I18NStrings i18NStrings = new I18NStrings();
+	protected void enEsString(Array<String> values, Array<String> langs,
+			String enValue, String esValue) {
 		for (String enLang : enEquivalents) {
-			I18NString enStr = new I18NString();
-			enStr.setLang(enLang);
-			enStr.setValue(en);
-			i18NStrings.getStrings().add(enStr);
+			values.add(enValue);
+			langs.add(enLang);
 		}
 		for (String esLang : esEquivalents) {
-			I18NString esStr = new I18NString();
-			esStr.setLang(esLang);
-			esStr.setValue(es);
-			i18NStrings.getStrings().add(esStr);
+			values.add(esValue);
+			langs.add(esLang);
 		}
-		return i18NStrings;
 	}
 
-	private RepoThumbnail getThumbnailPaths(FileHandle sourceDir,
+	private/* RepoThumbnail */void getThumbnailPaths(FileHandle sourceDir,
 			String thumbnailPath, FileHandle targetDir) {
 		if (!thumbnailPath.contains(".")) {
 			thumbnailPath += ".png";
@@ -979,7 +1097,7 @@ public abstract class RepoLibraryBuilder extends EditorDemoBuilder {
 					+ thumbnailPath);
 		}
 
-		RepoThumbnail repoThumbnail = new RepoThumbnail();
+		// RepoThumbnail repoThumbnail = new RepoThumbnail();
 
 		if (originalWidth == -1) {
 			Thumbnail thumbnail = new Thumbnail();
@@ -998,39 +1116,47 @@ public abstract class RepoLibraryBuilder extends EditorDemoBuilder {
 
 				String path;
 				if (width == originalWidth) {
-					path = thumbnailPath;
+					// path = thumbnailPath;
+					path = originalWidth + "x" + originalHeight + ".png";
 					if (!targetDir.child(path).exists()) {
 						origin.copyTo(targetDir.child(path));
 					}
 				} else {
-					targetDir.child(quality).mkdirs();
-					path = quality + "/" + thumbnailPath;
+					// targetDir.child(quality).mkdirs();
+					// path = quality + "/" + thumbnailPath;
+					path = width + "x" + height + ".png";
 					String originPath = origin.path();
 					String outputPath = targetDir.child(path).path();
 					targetDir.child(path).parent().mkdirs();
 					ImgUtils.thumbnail(originPath, outputPath, width, height);
 				}
 
-				Thumbnail thumbnail = new Thumbnail();
-				thumbnail.setWidth(width);
-				thumbnail.setHeight(height);
-				thumbnail.setPath(path);
-
-				repoThumbnail.getThumbnails().add(thumbnail);
+				/*
+				 * Thumbnail thumbnail = new Thumbnail();
+				 * thumbnail.setWidth(width); thumbnail.setHeight(height);
+				 * thumbnail.setPath(path);
+				 * 
+				 * repoThumbnail.getThumbnails().add(thumbnail);
+				 */
 
 			}
 
-			if (repoThumbnail.getThumbnails().size == 0) {
-				Thumbnail thumbnail = new Thumbnail();
-				thumbnail.setWidth(originalWidth);
-				thumbnail.setHeight(originalHeight);
-				thumbnail.setPath(thumbnailPath);
-
-				repoThumbnail.getThumbnails().add(thumbnail);
+			if (targetDir.list().length == 0) {
+				origin.copyTo(targetDir.child(originalWidth + "x"
+						+ originalHeight + ".png"));
 			}
+
+			/*
+			 * if (repoThumbnail.getThumbnails().size == 0) { Thumbnail
+			 * thumbnail = new Thumbnail(); thumbnail.setWidth(originalWidth);
+			 * thumbnail.setHeight(originalHeight);
+			 * thumbnail.setPath(thumbnailPath);
+			 * 
+			 * repoThumbnail.getThumbnails().add(thumbnail); }
+			 */
 		}
 
-		return repoThumbnail;
+		// return repoThumbnail;
 	}
 
 	private static class NoRepetitionList<T> extends ArrayList<T> {
@@ -1045,6 +1171,17 @@ public abstract class RepoLibraryBuilder extends EditorDemoBuilder {
 				return super.add(t);
 			}
 			return false;
+		}
+
+		public String toString() {
+			String str = "";
+			for (T t : this) {
+				str += t.toString() + ",";
+			}
+			if (str.endsWith(",")) {
+				str = str.substring(0, str.length() - 1);
+			}
+			return str;
 		}
 	}
 }
