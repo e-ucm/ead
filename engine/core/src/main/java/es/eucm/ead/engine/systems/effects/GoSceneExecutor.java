@@ -102,26 +102,33 @@ public class GoSceneExecutor extends EffectExecutor<GoScene> {
 					"Scene id set to null. Effect was skipped");
 			return;
 		}
-		entitiesLoader.loadEntity(effect.getSceneId(),
-				new EntitiesLoader.EntityLoadedCallback() {
-					@Override
-					public void loaded(String path, EngineEntity engineEntity) {
-						nextScreen = engineEntity;
-						gameLoop.update(0);
-						transitionManager.takeNextScreenPicture(
-								layer.getStage(), engineEntity.getGroup());
-						gameLoop.setPlaying(false);
-						layer.addActor(transitionManager);
-						transitionManager
-								.startTransition(getTransition(effect));
-					}
+		Gdx.app.postRunnable(new Runnable() {
+			@Override
+			public void run() {
+				entitiesLoader.loadEntity(effect.getSceneId(),
+						new EntitiesLoader.EntityLoadedCallback() {
+							@Override
+							public void loaded(String path,
+									EngineEntity engineEntity) {
+								nextScreen = engineEntity;
+								gameLoop.update(0);
+								transitionManager.takeNextScreenPicture(
+										layer.getStage(),
+										engineEntity.getGroup());
+								gameLoop.setPlaying(false);
+								layer.addActor(transitionManager);
+								transitionManager
+										.startTransition(getTransition(effect));
+							}
 
-					@Override
-					public void pathNotFound(String path) {
-						gameLoop.setPlaying(true);
-						sceneNotFound(path);
-					}
-				});
+							@Override
+							public void pathNotFound(String path) {
+								gameLoop.setPlaying(true);
+								sceneNotFound(path);
+							}
+						});
+			}
+		});
 	}
 
 	protected void sceneNotFound(String path) {
