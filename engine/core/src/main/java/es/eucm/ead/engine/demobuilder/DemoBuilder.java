@@ -431,12 +431,109 @@ public abstract class DemoBuilder {
 	}
 
 	/**
+	 * Adds a blink animation to the last added entity. Equivalent to:
+	 * blinkFrameAnimation(getLastEntity(), 4F, 0.1F, frames);
+	 * 
+	 * @param frames
+	 *            The list with the frameUris pointing to the images. Cannot be
+	 *            null or zero-length (exception thrown)
+	 */
+	public DemoBuilder blinkFrameAnimation(String... frames) {
+		return blinkFrameAnimation(getLastEntity(), 4F, 0.1F, frames);
+	}
+
+	/**
+	 * Adds a blink animation to the given parent. Equivalent to:
+	 * blinkFrameAnimation(parent, 4F, 0.1F, frames);
+	 * 
+	 * @param parent
+	 *            Entity to add the frames to
+	 * @param frames
+	 *            The list with the frameUris pointing to the images. Cannot be
+	 *            null or zero-length (exception thrown)
+	 */
+	public DemoBuilder blinkFrameAnimation(ModelEntity parent, String... frames) {
+		return blinkFrameAnimation(parent, 4F, 0.1F, frames);
+	}
+
+	/**
+	 * Adds a frame animation to the last entity added. Equivalent to:
+	 * blinkFrameAnimation(getLastEntity(), firstFrameDuration,
+	 * otherFramesDuration,frames);
+	 * 
+	 * The first frame is given a different (longer expected) duration than the
+	 * others. When the animation reaches the last frame, it "rewinds" to the
+	 * first one (yoyo). This method is useful for creating idle animations
+	 * where the character stays still most of the time (first frame), while
+	 * from time to time it does something simple like blinking or shaking a
+	 * hand (other frames).
+	 * 
+	 * @param firstFrameDuration
+	 *            The duration of the first frame (longer expected), in seconds.
+	 * @param otherFramesDuration
+	 *            The duration of the other frames, in seconds
+	 * @param frames
+	 *            The list with the frameUris pointing to the images. Cannot be
+	 *            null or zero-length (exception thrown)
+	 */
+	public DemoBuilder blinkFrameAnimation(float firstFrameDuration,
+			float otherFramesDuration, String... frames) {
+		return blinkFrameAnimation(getLastEntity(), firstFrameDuration,
+				otherFramesDuration, frames);
+	}
+
+	/**
+	 * Adds a frame animation to the given parent with the given frames. The
+	 * first frame is given a different (longer expected) duration than the
+	 * others. When the animation reaches the last frame, it "rewinds" to the
+	 * first one (yoyo). This method is useful for creating idle animations
+	 * where the character stays still most of the time (first frame), while
+	 * from time to time it does something simple like blinking or shaking a
+	 * hand (other frames).
+	 * 
+	 * @param parent
+	 *            Entity to add the frames to
+	 * @param firstFrameDuration
+	 *            The duration of the first frame (longer expected), in seconds.
+	 * @param otherFramesDuration
+	 *            The duration of the other frames, in seconds
+	 * @param frames
+	 *            The list with the frameUris pointing to the images. Cannot be
+	 *            null or zero-length (exception thrown)
+	 */
+	public DemoBuilder blinkFrameAnimation(ModelEntity parent,
+			float firstFrameDuration, float otherFramesDuration,
+			String... frames) {
+		if (frames == null || frames.length == 0) {
+			throw new RuntimeException("frames cannot be null or zero length");
+		}
+
+		frame(parent, frames[0], firstFrameDuration);
+		for (int i = 1; i < frames.length; i++) {
+			frame(parent, frames[i], otherFramesDuration);
+		}
+		for (int i = frames.length - 2; i >= 1; i--) {
+			frame(parent, frames[i], otherFramesDuration);
+		}
+		return this;
+	}
+
+	/**
 	 * Adds a new frame to the last entity added to {@link #entities}. See
 	 * {@link #frame(es.eucm.ead.schema.entities.ModelEntity, String, float)}
 	 * for more details.
 	 */
 	public DemoBuilder frame(String frameUri, float duration) {
 		return frame(getLastEntity(), frameUri, duration);
+	}
+
+	/**
+	 * Adds a new frame to the given entity. Equivalent to: frame(modelEntity,
+	 * frameUri, Frames.Sequence.LINEAR);
+	 */
+	public DemoBuilder frame(ModelEntity modelEntity, String frameUri,
+			float duration) {
+		return frame(modelEntity, frameUri, duration, Frames.Sequence.LINEAR);
 	}
 
 	/**
@@ -450,9 +547,12 @@ public abstract class DemoBuilder {
 	 *            The relative uri for the image of the frame
 	 * @param duration
 	 *            The frame duration
+	 * @param sequence
+	 *            The {@link es.eucm.ead.schema.renderers.Frames.Sequence} to
+	 *            use (e.g. yoyo, linear, random)
 	 */
 	public DemoBuilder frame(ModelEntity modelEntity, String frameUri,
-			float duration) {
+			float duration, Frames.Sequence sequence) {
 		Frames frames = null;
 
 		Frame frame = new Frame();
@@ -464,7 +564,7 @@ public abstract class DemoBuilder {
 				frames = ((Frames) modelComponent);
 			} else if (modelComponent instanceof Renderer) {
 				frames = new Frames();
-				frames.setSequence(Frames.Sequence.LINEAR);
+				frames.setSequence(sequence);
 				Frame prevFrame = new Frame();
 				prevFrame.setRenderer((Renderer) modelComponent);
 				prevFrame.setTime(duration);
@@ -477,7 +577,7 @@ public abstract class DemoBuilder {
 
 		if (frames == null) {
 			frames = new Frames();
-			frames.setSequence(Frames.Sequence.LINEAR);
+			frames.setSequence(sequence);
 			modelEntity.getComponents().add(frames);
 		}
 
