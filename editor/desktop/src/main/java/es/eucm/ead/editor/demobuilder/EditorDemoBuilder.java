@@ -42,6 +42,7 @@ import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.graphics.Pixmap;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.GdxRuntimeException;
+import com.badlogic.gdx.utils.Json;
 import com.vividsolutions.jts.geom.Geometry;
 import es.eucm.ead.editor.DesktopPlatform;
 import es.eucm.ead.editor.utils.GeometryUtils;
@@ -217,7 +218,7 @@ public abstract class EditorDemoBuilder extends DemoBuilder {
 				fh.parent().mkdirs();
 			}
 			Gdx.app.debug(LOG_TAG, "Saving to: " + fh.file().getAbsolutePath());
-			gameAssets.toJson(entry.getValue(), null, fh);
+			new Json().toJson(entry.getValue(), null, fh);
 		}
 	}
 
