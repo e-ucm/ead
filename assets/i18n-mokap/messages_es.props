@@ -10,6 +10,7 @@
 accept = Aceptar
 animation.in = Animaciones de entrada
 application.title = Mokap
+big = Grande
 bring.to.front = Traer al frente
 cancel = Cancelar
 clear.selection = Quitar selección
@@ -49,6 +50,7 @@ redo = Rehacer
 select.scene = Selecciona una escena
 scene.none_selected = Ninguna escena seleccionada
 send.to.back = Enviar detrás
+small = Pequeño
 test = Probar
 test.all = Probar todo
 text = Texto

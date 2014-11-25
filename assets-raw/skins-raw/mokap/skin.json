@@ -191,7 +191,9 @@
         }
     },
     "com.badlogic.gdx.scenes.scene2d.ui.Button$ButtonStyle": {
-        "default": {},
+        "default": {
+        
+        },
         "context": {
             "down": "light_gray_bg"
         },
@@ -245,14 +247,36 @@
             "slider": "colorPicker"
         }
     },
+    "com.badlogic.gdx.scenes.scene2d.ui.List$ListStyle": {
+		"default": {
+            "font": "default_font",
+            "fontColorSelected": "black",
+            "selection": "transparent_bg",
+            "fontColorUnselected": "black"
+        }
+	},
     "com.badlogic.gdx.scenes.scene2d.ui.ScrollPane$ScrollPaneStyle": {
         "default": {
 
         },
         "navigation": {
             "background": "page_left"
+        },
+        "pane": {
+        	"background": "page"
         }
     },
+    "com.badlogic.gdx.scenes.scene2d.ui.SelectBox$SelectBoxStyle": {
+		"default": {
+			"background": "spinner_default", 
+			"backgroundOver": "spinner_default", 
+			"backgroundOpen": "spinner_default", 
+			"font": "default_font", 
+			"fontColor": "black",
+			"scrollStyle": "pane",
+			"listStyle": "default"
+		}
+	},
     "es.eucm.ead.editor.view.widgets.IconButton$IconButtonStyle": {
         "default": {
             "disabledColor": "gray",
@@ -331,6 +355,12 @@
             "sizeSliderStyleName": "default_horizontal",
             "colorPickerStyle": "default_no_background",
             "sizeSliderPad": 12
+        }
+    },
+    "es.eucm.ead.editor.view.widgets.TextFontColorPicker$TextFontColorPickerStyle": {
+        "default": {
+            "background": "page",
+            "colorPickerStyle": "default_no_background"
         }
     },
     "es.eucm.ead.editor.view.widgets.baseview.BaseView$BaseViewStyle": {
