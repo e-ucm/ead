@@ -36,6 +36,7 @@
  */
 package es.eucm.ead.editor.control.actions.model;
 
+import es.eucm.ead.editor.control.Selection;
 import es.eucm.ead.editor.control.actions.EditorActionException;
 import es.eucm.ead.editor.control.actions.ModelAction;
 import es.eucm.ead.editor.control.commands.Command;
@@ -65,26 +66,28 @@ import es.eucm.ead.schemax.entities.ResourceCategory;
 public class ChangeInitialScene extends ModelAction {
 
 	public ChangeInitialScene() {
-		super(true, false, String.class);
+		super(true, false, new Class[] {}, new Class[] { String.class });
 	}
 
 	@Override
 	public Command perform(Object... args) {
+		String sceneId = (String) (args.length == 0 ? controller.getModel()
+				.getSelection().getSingle(Selection.RESOURCE) : args[0]);
 
-		if (!controller.getModel().getResources(ResourceCategory.SCENE)
-				.containsKey(args[0])) {
+		if (sceneId == null
+				|| !controller.getModel().getResources(ResourceCategory.SCENE)
+						.containsKey(sceneId)) {
 			throw new EditorActionException(
 					"Error in action "
 							+ this.getClass().getCanonicalName()
-							+ ": The sceneId provided as the first argument (args[0]) does not match any of the scenes of this game.");
+							+ ": The sceneId provided does not match any of the scenes of this game.");
 		}
 
 		GameData gameData = Q.getComponent(controller.getModel().getGame(),
 				GameData.class);
 		String currentInitialSceneId = gameData.getInitialScene();
-		if ((currentInitialSceneId == null && args[0] != null)
-				|| !currentInitialSceneId.equals(args[0])) {
-			return new FieldCommand(gameData, FieldName.INITIAL_SCENE, args[0],
+		if (!sceneId.equals(currentInitialSceneId)) {
+			return new FieldCommand(gameData, FieldName.INITIAL_SCENE, sceneId,
 					false);
 		}
 		return null;

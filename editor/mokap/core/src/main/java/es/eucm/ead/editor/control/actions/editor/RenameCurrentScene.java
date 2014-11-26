@@ -36,28 +36,41 @@
  */
 package es.eucm.ead.editor.control.actions.editor;
 
-import es.eucm.ead.editor.control.actions.ModelAction;
-import es.eucm.ead.editor.control.actions.model.scene.SetEditedScene;
-import es.eucm.ead.editor.control.commands.Command;
-import es.eucm.ead.editor.control.commands.ResourceCommand.AddResourceCommand;
-import es.eucm.ead.editor.model.Q;
-import es.eucm.ead.editor.utils.ProjectUtils;
-import es.eucm.ead.schema.entities.ModelEntity;
-import es.eucm.ead.schemax.entities.ResourceCategory;
+import com.badlogic.gdx.Input.TextInputListener;
 
-/**
- * Adds an empty scene to the project
- */
-public class AddScene extends ModelAction {
+import es.eucm.ead.editor.control.Selection;
+import es.eucm.ead.editor.control.actions.EditorAction;
+import es.eucm.ead.editor.control.actions.model.generic.SetField;
+import es.eucm.ead.editor.model.Q;
+import es.eucm.ead.engine.I18N;
+import es.eucm.ead.schema.editor.components.Documentation;
+import es.eucm.ead.schema.entities.ModelEntity;
+import es.eucm.ead.schemax.FieldName;
+
+public class RenameCurrentScene extends EditorAction implements
+		TextInputListener {
+
+	private ModelEntity scene;
 
 	@Override
-	public Command perform(Object... args) {
-		ModelEntity scene = Q.createScene();
-		String sceneId = ProjectUtils.newSceneId(controller.getModel());
+	public void perform(Object... args) {
+		scene = (ModelEntity) controller.getModel().getSelection()
+				.getSingle(Selection.SCENE);
+		if (scene != null) {
+			I18N i18n = controller.getApplicationAssets().getI18N();
+			controller.getPlatform().getMultilineTextInput(this,
+					i18n.m("scene.change_title"), Q.getName(scene, ""), i18n);
+		}
+	}
 
-		controller.action(SetEditedScene.class, sceneId, scene);
+	@Override
+	public void input(String text) {
+		Documentation doc = Q.getComponent(scene, Documentation.class);
+		controller.action(SetField.class, doc, FieldName.NAME, text);
+	}
 
-		return new AddResourceCommand(controller.getModel(), sceneId, scene,
-				ResourceCategory.SCENE);
+	@Override
+	public void canceled() {
+
 	}
 }

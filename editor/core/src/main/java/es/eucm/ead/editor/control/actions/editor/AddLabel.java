@@ -40,12 +40,10 @@ import com.badlogic.gdx.Input;
 import com.badlogic.gdx.graphics.g2d.BitmapFont.TextBounds;
 import com.badlogic.gdx.scenes.scene2d.ui.Label.LabelStyle;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
-
 import es.eucm.ead.editor.control.Controller;
 import es.eucm.ead.editor.control.actions.EditorAction;
 import es.eucm.ead.editor.control.actions.model.AddSceneElement;
 import es.eucm.ead.editor.model.Q;
-import es.eucm.ead.editor.platform.Platform;
 import es.eucm.ead.engine.I18N;
 import es.eucm.ead.schema.components.controls.Label;
 import es.eucm.ead.schema.data.Color;
@@ -88,7 +86,7 @@ public class AddLabel extends EditorAction implements Input.TextInputListener {
 	public void perform(Object... args) {
 		if (args.length == 0) {
 			I18N i18n = controller.getApplicationAssets().getI18N();
-			((Platform) controller.getPlatform()).getMultilineTextInput(this,
+			controller.getPlatform().getMultilineTextInput(this,
 					i18n.m("toolbar.text.input"), "", i18n);
 		} else {
 			addText((Label) args[0], (args.length == 2 && (Boolean) args[1]));

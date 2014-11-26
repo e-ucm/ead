@@ -51,6 +51,8 @@ import es.eucm.ead.schema.entities.ModelEntity;
  * <dd><strong>args[0]</strong> <em>{@link String}</em> scene id</dd>
  * <dd><strong>args[1]</strong> <em>{@link ModelEntity}</em> model entity with
  * the scene selected</dd>
+ * <dd><strong>args[2]</strong> <em>{@link Boolean} (Optional)</em> if the
+ * context {@link Selection#EDITED_GROUP} also must be set with the scene</dd>
  * </dl>
  */
 public class SetEditedScene extends ModelAction {
@@ -58,7 +60,8 @@ public class SetEditedScene extends ModelAction {
 	private SetSelection setSelection;
 
 	public SetEditedScene() {
-		super(true, false, String.class, ModelEntity.class);
+		super(true, false, new Class[] { String.class, ModelEntity.class },
+				new Class[] { String.class, ModelEntity.class, Boolean.class });
 	}
 
 	@Override
@@ -71,13 +74,16 @@ public class SetEditedScene extends ModelAction {
 	public Command perform(Object... args) {
 		String sceneId = (String) args[0];
 		ModelEntity scene = (ModelEntity) args[1];
+		boolean setEditedGroup = args.length == 3 ? (Boolean) args[2] : true;
 		CompositeCommand commands = new CompositeCommand();
 		commands.addCommand(setSelection.perform(Selection.PROJECT,
 				Selection.RESOURCE, sceneId));
 		commands.addCommand(setSelection.perform(Selection.RESOURCE,
 				Selection.SCENE, scene));
-		commands.addCommand(setSelection.perform(Selection.SCENE,
-				Selection.EDITED_GROUP, scene));
+		if (setEditedGroup) {
+			commands.addCommand(setSelection.perform(Selection.SCENE,
+					Selection.EDITED_GROUP, scene));
+		}
 		return commands;
 	}
 }

@@ -68,11 +68,11 @@ public class OpenProject extends EditorAction implements
 
 	@Override
 	public void loaded(String fileName, Object asset) {
+		controller.getModel().putResource(GameStructure.GAME_FILE,
+				ResourceCategory.GAME, asset);
 		controller.action(SetSelection.class, null, Selection.PROJECT, asset);
 		controller.action(SetSelection.class, Selection.PROJECT,
 				Selection.RESOURCE);
-		controller.getModel().putResource(GameStructure.GAME_FILE,
-				ResourceCategory.GAME, asset);
 		controller.action(LoadScenes.class);
 	}
 }
