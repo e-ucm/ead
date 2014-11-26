@@ -39,8 +39,14 @@ package es.eucm.ead.editor.utils;
 import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.utils.Array;
 
+import com.badlogic.gdx.utils.reflect.ClassReflection;
+import com.badlogic.gdx.utils.reflect.Field;
+import com.badlogic.gdx.utils.reflect.ReflectionException;
 import es.eucm.ead.editor.model.Model;
 import es.eucm.ead.schemax.GameStructure;
+
+import java.util.List;
+import java.util.Map;
 
 /**
  * Some useful methods to deal with file system and projects
@@ -49,6 +55,10 @@ public class ProjectUtils {
 
 	private static final Array<String> IMAGE_EXTENSIONS = new Array<String>(
 			new String[] { "jpg", "jpeg", "png", "gif", "bmp" });
+
+	// To detect sound and video extensions
+	private static final Array<String> BINARY_EXTENSIONS = new Array<String>(
+			new String[] { "midi", "mp3", "wav", "ogg", "mpg", "mpeg", "avi" });
 
 	/**
 	 * @return an array with paths of all the projects inside the given folder
@@ -69,6 +79,127 @@ public class ProjectUtils {
 					findProjects(child, projects);
 				}
 			}
+		}
+	}
+
+	/**
+	 * Searches for any reference to binary files (images, sounds and videos) in
+	 * the given
+	 * 
+	 * @param object
+	 *            . Search is performed recursively using reflection, so it can
+	 *            be used to search for references in any piece of the model,
+	 *            entity or component. The method takes into account for
+	 *            recursive search maps, libgdx's arrays, and lists. Also fields
+	 *            in any superclasses of the object are searched. It is
+	 *            considered a reference to a binary file any String field which
+	 *            value ends with any of the supported binary formats (see
+	 *            {@link #IMAGE_EXTENSIONS} and {@link #BINARY_EXTENSIONS}),
+	 *            either lowercase or uppercase.
+	 * 
+	 * @param object
+	 *            The object to search binary references in.
+	 */
+	public static Array<String> listRefBinaries(Object object) {
+		Array<String> binaryPaths = new Array<String>();
+		listRefBinaries(object, null, binaryPaths);
+		return binaryPaths;
+	}
+
+	private static void listRefBinaries(Object object, Class clazz,
+			Array<String> binaryPaths) {
+		if (clazz == null) {
+			clazz = object.getClass();
+		}
+
+		// If the object is from primitive type, do not search
+		if (clazz.isEnum() || clazz == Float.class || clazz == Double.class
+				|| clazz == Boolean.class || clazz == Integer.class
+				|| clazz == Byte.class || clazz == Character.class
+				|| clazz == Long.class || clazz == Short.class) {
+			return;
+		}
+
+		// If the object is a String (leaf)
+		// Leaf: String
+		if (ClassReflection.isAssignableFrom(String.class, clazz)) {
+			String strValue = ((String) object).toLowerCase();
+			boolean hasBinaryExtension = false;
+			for (String imageExtension : IMAGE_EXTENSIONS) {
+				if (strValue.endsWith("." + imageExtension.toLowerCase())) {
+					hasBinaryExtension = true;
+					break;
+				}
+			}
+			if (!hasBinaryExtension) {
+				for (String binaryExtension : BINARY_EXTENSIONS) {
+					if (strValue.endsWith("." + binaryExtension.toLowerCase())) {
+						hasBinaryExtension = true;
+						break;
+					}
+				}
+			}
+			// Avoid adding the same reference twice
+			if (hasBinaryExtension && !binaryPaths.contains(strValue, false)) {
+				binaryPaths.add(strValue);
+			}
+		}
+
+		// Iterate through fields
+		for (Field field : ClassReflection.getDeclaredFields(clazz)) {
+			field.setAccessible(true);
+
+			Object value = null;
+			try {
+				value = field.get(object);
+			} catch (ReflectionException e) {
+				e.printStackTrace();
+			}
+			if (value == null) {
+				continue;
+			}
+
+			// Recursive search: array, list, map,
+			if (ClassReflection.isAssignableFrom(Array.class, field.getType())) {
+				Array array = (Array) value;
+				for (Object child : array) {
+					if (child == null) {
+						continue;
+					}
+					listRefBinaries(child, child.getClass(), binaryPaths);
+				}
+			}
+
+			else if (ClassReflection.isAssignableFrom(List.class,
+					field.getType())) {
+				List list = (List) value;
+				for (Object child : list) {
+					if (child == null) {
+						continue;
+					}
+					listRefBinaries(child, child.getClass(), binaryPaths);
+				}
+			}
+
+			else if (ClassReflection.isAssignableFrom(Map.class,
+					field.getType())) {
+				Map map = (Map) value;
+				for (Object child : map.values()) {
+					if (child == null) {
+						continue;
+					}
+					listRefBinaries(child, child.getClass(), binaryPaths);
+				}
+			}
+
+			// Recursive search
+			else {
+				listRefBinaries(value, value.getClass(), binaryPaths);
+			}
+		}
+
+		if (clazz.getSuperclass() != null) {
+			listRefBinaries(object, clazz.getSuperclass(), binaryPaths);
 		}
 	}
 

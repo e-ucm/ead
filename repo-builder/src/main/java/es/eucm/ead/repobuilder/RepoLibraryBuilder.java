@@ -44,6 +44,7 @@ import es.eucm.ead.editor.demobuilder.EditorDemoBuilder;
 import es.eucm.ead.editor.demobuilder.ImgUtils;
 import es.eucm.ead.editor.exporter.ExportCallback;
 import es.eucm.ead.editor.exporter.Exporter;
+import es.eucm.ead.editor.utils.ProjectUtils;
 import es.eucm.ead.engine.utils.ZipUtils;
 import es.eucm.ead.schema.components.ModelComponent;
 import es.eucm.ead.schema.data.Dimension;
@@ -59,7 +60,6 @@ import es.eucm.ead.schema.renderers.*;
 import javax.imageio.ImageIO;
 import java.awt.image.BufferedImage;
 import java.io.IOException;
-import java.lang.reflect.Field;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.HashMap;
@@ -408,8 +408,7 @@ public abstract class RepoLibraryBuilder extends EditorDemoBuilder {
 	private FileHandle exportElement(ModelEntity modelEntity,
 			FileHandle outputFH) {
 		// Make a list of all binaries referenced by this modelEntity
-		List<String> binaryPaths = new ArrayList<String>();
-		listRefBinaries(modelEntity, null, binaryPaths);
+		Array<String> binaryPaths = ProjectUtils.listRefBinaries(modelEntity);
 		// Copy all binaries to a temp folder
 		FileHandle tempFolder = FileHandle.tempDirectory("modelentity");
 		tempFolder.mkdirs();
@@ -500,101 +499,6 @@ public abstract class RepoLibraryBuilder extends EditorDemoBuilder {
 		}
 		// Delete temp folder
 		tempFolder.deleteDirectory();
-	}
-
-	private HashMap<String, Object> toMap(RepoElement repoElement) {
-		HashMap<String, Object> map = new HashMap<String, Object>();
-		for (Field field : RepoElement.class.getDeclaredFields()) {
-			field.setAccessible(true);
-			try {
-				Object value = field.get(repoElement);
-				if (value != null) {
-					map.put(field.getName(), value);
-				}
-			} catch (IllegalAccessException e) {
-				e.printStackTrace();
-			}
-		}
-		return map;
-	}
-
-	private void listRefBinaries(Object object, Class clazz,
-			List<String> binaryPaths) {
-		if (clazz == null) {
-			clazz = object.getClass();
-		}
-
-		if (clazz.isEnum() || clazz == Float.class || clazz == Double.class
-				|| clazz == Boolean.class || clazz == Integer.class
-				|| clazz == Byte.class || clazz == Character.class
-				|| clazz == Long.class || clazz == Short.class) {
-			return;
-		}
-
-		for (Field field : clazz.getDeclaredFields()) {
-			field.setAccessible(true);
-
-			Object value = null;
-			try {
-				value = field.get(object);
-			} catch (IllegalAccessException e) {
-				e.printStackTrace();
-			}
-			if (value == null) {
-				continue;
-			}
-
-			if (Array.class.isAssignableFrom(field.getType())) {
-				Array array = (Array) value;
-				for (Object child : array) {
-					if (child == null) {
-						continue;
-					}
-					listRefBinaries(child, child.getClass(), binaryPaths);
-				}
-			}
-
-			else if (List.class.isAssignableFrom(field.getType())) {
-				List list = (List) value;
-				for (Object child : list) {
-					if (child == null) {
-						continue;
-					}
-					listRefBinaries(child, child.getClass(), binaryPaths);
-				}
-			}
-
-			else if (Map.class.isAssignableFrom(field.getType())) {
-				Map map = (Map) value;
-				for (Object child : map.values()) {
-					if (child == null) {
-						continue;
-					}
-					listRefBinaries(child, child.getClass(), binaryPaths);
-				}
-			}
-
-			else if (String.class.isAssignableFrom(field.getType())) {
-				String strValue = ((String) value).toLowerCase();
-				if (strValue.endsWith(".png") || strValue.endsWith(".jpg")
-						|| strValue.endsWith(".jpeg")
-						|| strValue.endsWith(".mp3")
-						|| strValue.endsWith(".wav")
-						|| strValue.endsWith(".midi")) {
-					if (!binaryPaths.contains(strValue)) {
-						binaryPaths.add(strValue);
-					}
-				}
-			}
-
-			else {
-				listRefBinaries(value, value.getClass(), binaryPaths);
-			}
-		}
-
-		if (clazz.getSuperclass() != null) {
-			listRefBinaries(object, clazz.getSuperclass(), binaryPaths);
-		}
 	}
 
 	public RepoLibraryBuilder setCommonProperty(String property, String value) {
