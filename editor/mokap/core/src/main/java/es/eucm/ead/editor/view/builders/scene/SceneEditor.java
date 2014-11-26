@@ -201,7 +201,9 @@ public class SceneEditor extends BaseView implements ModelView,
 	}
 
 	public void setMode(Mode mode) {
-		unsetMode(this.mode);
+		if (this.mode != mode) {
+			unsetMode(this.mode);
+		}
 		this.oldMode = this.mode;
 		this.mode = mode;
 		Context context = controller.getModel().getSelection()
@@ -263,14 +265,21 @@ public class SceneEditor extends BaseView implements ModelView,
 			setSelectionContext(null);
 			interactionContext.release();
 			break;
+		case FX:
+			controller.getCommands().popStack(false);
+			setSelectionContext(null);
+			fxContext.release();
+			break;
 		}
 	}
 
 	private void setContext(SceneElementContext context) {
-		controller.getCommands().pushStack();
-		context.prepare();
-		setSelectionContext(context);
-		sceneGroupEditor.setOnlySelection(true);
+		if (this.mode != this.oldMode) {
+			controller.getCommands().pushStack();
+			context.prepare();
+			setSelectionContext(context);
+			sceneGroupEditor.setOnlySelection(true);
+		}
 	}
 
 	@Override

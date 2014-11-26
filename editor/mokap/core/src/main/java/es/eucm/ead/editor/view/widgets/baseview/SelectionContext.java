@@ -36,9 +36,11 @@
  */
 package es.eucm.ead.editor.view.widgets.baseview;
 
+import com.badlogic.gdx.math.Interpolation;
 import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 
+import com.badlogic.gdx.scenes.scene2d.actions.Actions;
 import es.eucm.ead.editor.control.MokapController.BackListener;
 
 /**
@@ -50,7 +52,9 @@ public class SelectionContext extends Panel implements BackListener {
 
 	public void setSelectionContext(Actor selectionContext) {
 		if (this.selectionContext != null) {
-			this.selectionContext.remove();
+			this.selectionContext.addAction(Actions.sequence(
+					Actions.moveTo(getWidth(), 0, 0.2f, Interpolation.exp5Out),
+					Actions.removeActor()));
 		}
 		this.selectionContext = selectionContext;
 		if (selectionContext != null) {
