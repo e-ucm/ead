@@ -20,10 +20,8 @@
         </dependency>
         <dependency>
             <groupId>es.eucm.eadventure</groupId>
-            <artifactId>eadventure-loader</artifactId>
+            <artifactId>legacy-loader</artifactId>
             <version>1.5</version>
-            <scope>system</scope>
-            <systemPath>${project.basedir}/libs/eadventure-loader.jar</systemPath>
         </dependency>
     </dependencies>
 </project>
