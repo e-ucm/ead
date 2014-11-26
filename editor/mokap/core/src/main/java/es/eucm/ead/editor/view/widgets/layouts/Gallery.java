@@ -42,6 +42,7 @@ import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.actions.Actions;
 import com.badlogic.gdx.scenes.scene2d.ui.ScrollPane;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
+import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.scenes.scene2d.utils.Drawable;
 
 import es.eucm.ead.editor.view.widgets.AbstractWidget;
@@ -87,7 +88,7 @@ public class Gallery extends ScrollPane {
 	}
 
 	public Cell add(Actor actor) {
-		Cell cell = new Cell(actor, style.checked);
+		Cell cell = new Cell(actor, style);
 		grid.addActor(cell);
 		return cell;
 	}
@@ -206,12 +207,18 @@ public class Gallery extends ScrollPane {
 
 		private boolean checked;
 
+		private Drawable pressedForeground;
+
 		private Drawable checkedForeground;
 
-		Cell(Actor actor, Drawable checkedForeground) {
+		private ClickListener clickListener = new ClickListener();
+
+		Cell(Actor actor, GalleryStyle galleryStyle) {
 			this.actor = actor;
-			this.checkedForeground = checkedForeground;
+			this.checkedForeground = galleryStyle.checked;
+			this.pressedForeground = galleryStyle.pressed;
 			addActor(actor);
+			addListener(clickListener);
 		}
 
 		public boolean isChecked() {
@@ -228,10 +235,16 @@ public class Gallery extends ScrollPane {
 			return this;
 		}
 
+		public Actor getActor() {
+			return actor;
+		}
+
 		@Override
 		protected void drawChildren(Batch batch, float parentAlpha) {
 			super.drawChildren(batch, parentAlpha);
-			if (checked && checkedForeground != null) {
+			if (pressedForeground != null && clickListener.isPressed()) {
+				pressedForeground.draw(batch, 0, 0, getWidth(), getHeight());
+			} else if (checked && checkedForeground != null) {
 				checkedForeground.draw(batch, 0, 0, getWidth(), getHeight());
 			}
 		}
@@ -260,6 +273,11 @@ public class Gallery extends ScrollPane {
 		 * Background for the gallery
 		 */
 		public Drawable background;
+
+		/**
+		 * Foreground when the cell is pressed
+		 */
+		public Drawable pressed;
 
 		/**
 		 * Foreground when the cell is selected
