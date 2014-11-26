@@ -67,6 +67,8 @@ import es.eucm.ead.editor.control.actions.model.TakePicture;
 import es.eucm.ead.editor.control.actions.model.UngroupSelection;
 import es.eucm.ead.editor.control.actions.model.scene.ReorderSelection;
 import es.eucm.ead.editor.control.actions.model.scene.transform.MirrorSelection;
+import es.eucm.ead.editor.model.Model.SelectionListener;
+import es.eucm.ead.editor.model.events.SelectionEvent;
 import es.eucm.ead.editor.view.ModelView;
 import es.eucm.ead.editor.view.SkinConstants;
 import es.eucm.ead.editor.view.builders.FileView;
@@ -78,6 +80,7 @@ import es.eucm.ead.editor.view.widgets.ContextMenu;
 import es.eucm.ead.editor.view.widgets.IconButton;
 import es.eucm.ead.editor.view.widgets.MultiWidget;
 import es.eucm.ead.editor.view.widgets.Switch;
+import es.eucm.ead.editor.view.widgets.TextFontContextMenu;
 import es.eucm.ead.editor.view.widgets.WidgetBuilder;
 import es.eucm.ead.editor.view.widgets.draw.BrushStrokesPicker;
 import es.eucm.ead.editor.view.widgets.draw.BrushStrokesPicker.SizeEvent;
@@ -229,10 +232,39 @@ public class GroupEditorToolbar extends MultiWidget implements ModelView {
 		transform.add(WidgetBuilder.toolbarIcon(SkinConstants.IC_UNGROUP,
 				i18N.m("ungroup"), true, UngroupSelection.class));
 
-		final MultiWidget multiButton = WidgetBuilder
-				.multiToolbarIcon(WidgetBuilder.toolbarIcon(
-						SkinConstants.IC_GROUP, i18N.m("group.create"), false,
-						GroupSelection.class));
+		final TextFontContextMenu textFontPane = new TextFontContextMenu(skin,
+				controller);
+		IconButton edit = WidgetBuilder.toolbarIconWithMenu(
+				SkinConstants.IC_EDIT, textFontPane);
+		edit.addListener(new ClickListener() {
+			@Override
+			public void clicked(InputEvent event, float x, float y) {
+				textFontPane.prepare(sceneEditor);
+			}
+		});
+
+		final MultiWidget multiButton = WidgetBuilder.multiToolbarIcon(
+				edit,
+				WidgetBuilder.toolbarIcon(SkinConstants.IC_GROUP,
+						i18N.m("group.create"), false, GroupSelection.class));
+
+		controller.getModel().addSelectionListener(new SelectionListener() {
+
+			@Override
+			public void modelChanged(SelectionEvent event) {
+				if (controller.getModel().getSelection()
+						.get(Selection.SCENE_ELEMENT).length > 1) {
+					multiButton.setSelectedWidget(1);
+				} else {
+					multiButton.setSelectedWidget(0);
+				}
+			}
+
+			@Override
+			public boolean listenToContext(String contextId) {
+				return contextId.equals(Selection.SCENE_ELEMENT);
+			}
+		});
 
 		transform.add(multiButton);
 
