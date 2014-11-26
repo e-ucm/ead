@@ -1,0 +1,7 @@
+{
+    "additionalProperties": false,
+    "javaType": "es.eucm.ead.schema.editor.components.repo.RepoCategories",
+    "type": "string",
+    "description": "Categories and subcatories supported by the mokap repo. Subcategories are denoted by strings containing dashes. Eg scenes-backgrounds means the subcategory 'backgrounds' in 'scenes'",
+    "enum": ["scenes", "scenes-backgrounds", "scene-menus", "effects", "elements", "elements-objects", "elements-characters", "elements-controls", "sounds", "sounds-music", "sounds-effects"]
+}

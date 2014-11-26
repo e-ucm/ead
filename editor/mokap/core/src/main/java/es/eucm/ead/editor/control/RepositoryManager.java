@@ -62,10 +62,13 @@ import es.eucm.ead.editor.model.Q;
 import es.eucm.ead.engine.I18N;
 import es.eucm.ead.engine.assets.Assets;
 import es.eucm.ead.schema.editor.components.GameData;
+import es.eucm.ead.schema.editor.components.Thumbnail;
 import es.eucm.ead.schema.editor.components.repo.I18NString;
 import es.eucm.ead.schema.editor.components.repo.I18NStrings;
+import es.eucm.ead.schema.editor.components.repo.Repo;
 import es.eucm.ead.schema.editor.components.repo.RepoElement;
 import es.eucm.ead.schema.editor.components.repo.RepoLibrary;
+import es.eucm.ead.schema.editor.components.repo.RepoThumbnail;
 import es.eucm.ead.schema.entities.ModelEntity;
 import es.eucm.ead.schemax.GameStructure;
 
@@ -77,7 +80,7 @@ import es.eucm.ead.schemax.GameStructure;
  * <pre>
  * |libraries.json	<- A file listing the available libraries in the repository. This file is <strong>required</strong>.
  * |{library1}.zip	<- A file with all the resources in that library.
- * |{library1}.png  <- A thumbnail for previewing the library (the actual path of the thumbnail is is specified in {@link RepoLibrary#thumbnail}).
+ * |{library1}.png  <- A thumbnail for previewing the library (the actual path of the thumbnail is is specified in RepoLibrary#thumbnail).
  * |{library1}.json <- A file with general metadata of the library for previewing (see {@link RepoLibrary}).
  * |{library2}.zip
  * ...
@@ -120,7 +123,7 @@ public class RepositoryManager {
 	/**
 	 * Is the root URL of our repository.
 	 */
-	private static final String ROOT_URL = "http://e-adventure.e-ucm.es/repo";
+	private static final String ROOT_URL = "http://e-adventure.e-ucm.es/repo/test";
 
 	/**
 	 * Located at the root folder of our server: {@link #ROOT_URL}. The
@@ -201,7 +204,7 @@ public class RepositoryManager {
 	 *            Object that determines current app settings
 	 * @return The value in the current language, or "" if nothing available
 	 */
-	public static final String i18nString(I18NStrings strings, I18N i18N) {
+	public static String i18nString(I18NStrings strings, I18N i18N) {
 		for (I18NString i18NString : strings.getStrings()) {
 			if (i18NString.getLang().equals(i18N.getLang())) {
 				return i18NString.getValue();
@@ -213,6 +216,62 @@ public class RepositoryManager {
 		}
 
 		return "";
+	}
+
+	public static String thumbnailPath(Array<String> paths,
+			Array<Float> widths, Array<Float> heights) {
+		Thumbnail selectedThumbnail = thumbnail(paths, widths, heights);
+		if (selectedThumbnail != null) {
+			return selectedThumbnail.getPath();
+		} else {
+			return null;
+		}
+	}
+
+	public static Thumbnail thumbnail(Array<String> paths, Array<Float> widths,
+			Array<Float> heights) {
+		MokapController.Dpi dpi = MokapController.Dpi.getDpi();
+		int max = 512;
+		if (dpi == MokapController.Dpi.XHDPI) {
+			max = 512;
+		} else if (dpi == MokapController.Dpi.HDPI) {
+			max = 256;
+		} else if (dpi == MokapController.Dpi.MDPI) {
+			max = 150;
+		} else if (dpi == MokapController.Dpi.LDPI) {
+			max = 150;
+		}
+
+		Thumbnail selectedThumbnail = null;
+		int selectedThumbnailWidth = -1;
+		int arrayLength = Math.min(paths.size,
+				Math.min(widths.size, heights.size));
+		// for (Thumbnail thumbnail : repoThumbnail.getThumbnails()) {
+		for (int i = 0; i < arrayLength; i++) {
+			String path = paths.get(i);
+			float width = widths.get(i);
+			float height = heights.get(i);
+			if (width < max && path != null && path.length() > 0
+					&& width > selectedThumbnailWidth) {
+				selectedThumbnail = makeThumbnail(path, width, height);
+				selectedThumbnailWidth = Math.round(width);
+			}
+		}
+
+		if (selectedThumbnail == null && arrayLength > 0) {
+			selectedThumbnail = makeThumbnail(paths.get(0), widths.get(0),
+					heights.get(0));
+		}
+
+		return selectedThumbnail;
+	}
+
+	private static Thumbnail makeThumbnail(String path, float w, float h) {
+		Thumbnail thumbnail = new Thumbnail();
+		thumbnail.setPath(path);
+		thumbnail.setHeight(h);
+		thumbnail.setWidth(w);
+		return thumbnail;
 	}
 
 	/**
@@ -247,8 +306,7 @@ public class RepositoryManager {
 	}
 
 	/**
-	 * @return An Array with all the libraries available, ordered by
-	 *         {@link RepoLibrary#name}
+	 * @return An Array with all the libraries available, ordered by name
 	 */
 	public Array<RepoLibrary> getRepoLibraries() {
 		// First, order them by name
@@ -265,8 +323,11 @@ public class RepositoryManager {
 			if (j == pivot) {
 				continue;
 			}
-			int comparison = libraries.get(j).getPath()
-					.compareTo(libraries.get(pivot).getPath());
+
+			// TODO This comparison used to take into account paths, not i18n
+			// names
+			int comparison = libraries.get(j).getNameList().get(0)
+					.compareTo(libraries.get(pivot).getNameList().get(0));
 			if (comparison > 0 && j < pivot) {
 				libraries.add(libraries.removeIndex(j));
 				pivot--;
@@ -345,7 +406,14 @@ public class RepositoryManager {
 		}
 		if (elem != null && copyThumbnailToProject) {
 			RepoElement repoElem = Q.getComponent(elem, RepoElement.class);
-			String thumbnailName = repoElem.getThumbnail();
+			Thumbnail selectedThumbnail = thumbnail(
+					repoElem.getThumbnailPathList(),
+					repoElem.getThumbnailWidthList(),
+					repoElem.getThumbnailHeightList());
+			String thumbnailName = thumbnailPath(
+					repoElem.getThumbnailPathList(),
+					repoElem.getThumbnailWidthList(),
+					repoElem.getThumbnailHeightList());
 			if (thumbnailName != null && !thumbnailName.isEmpty()) {
 				// We also must copy the thumbnail from the online
 				// repository to our project
@@ -374,7 +442,14 @@ public class RepositoryManager {
 								+ child.extension());
 					}
 
-					repoElem.setThumbnail(child.name());
+					repoElem.getThumbnailPathList().clear();
+					repoElem.getThumbnailPathList().add(child.name());
+					repoElem.getThumbnailWidthList().clear();
+					repoElem.getThumbnailWidthList().add(
+							selectedThumbnail.getWidth());
+					repoElem.getThumbnailHeightList().clear();
+					repoElem.getThumbnailHeightList().add(
+							selectedThumbnail.getHeight());
 
 					thumbnail.copyTo(child);
 				}
@@ -669,7 +744,10 @@ public class RepositoryManager {
 			Controller controller) {
 		EditorGameAssets gameAssets = controller.getEditorGameAssets();
 
-		String libThumbnail = library.getThumbnail();
+		String libThumbnail = thumbnailPath(library.getThumbnailPathList(),
+				library.getThumbnailWidthList(),
+				library.getThumbnailHeightList());
+		;
 
 		if (libThumbnail == null) {
 			listener.thumbnailAvailable(null, controller);
@@ -739,11 +817,11 @@ public class RepositoryManager {
 	 */
 	public interface OnThumbnailAvailableListener {
 		/**
-		 * Invoked when the thumbnail is locally available.
+		 * Invoked when the thumbnailPath is locally available.
 		 * 
 		 * @param thumbnailPath
-		 *            (absolute path to the thumbnail) may be null, if something
-		 *            went wrong.
+		 *            (absolute path to the thumbnailPath) may be null, if
+		 *            something went wrong.
 		 * @param controller
 		 */
 		void thumbnailAvailable(String thumbnailPath, Controller controller);
@@ -839,14 +917,13 @@ public class RepositoryManager {
 			final Controller controller, String jsonString,
 			final EditorGameAssets gameAssets) {
 		try {
-			final Array<String> libraryPaths = gameAssets.fromJson(Array.class,
-					jsonString);
+			final Repo repo = gameAssets.fromJson(Repo.class, jsonString);
 			libraries.clear();
 			final boolean[] failed = { false };
 			final int[] nProcessed = { 0 };
 
-			for (int i = 0; i < libraryPaths.size; i++) {
-				final String libraryPath = libraryPaths.get(i);
+			for (int i = 0; i < repo.getLibraries().size; i++) {
+				final String libraryPath = repo.getLibraries().get(i).getPath();
 				if (!loadLibraryMetadataFromLocal(controller, libraryPath)) {
 					String libraryJsonUrl = libraryPath.startsWith("/")
 							|| libraryPath.startsWith("\\") ? ROOT_URL
@@ -892,7 +969,8 @@ public class RepositoryManager {
 											libraryMetadata, libraryPath,
 											gameAssets)) {
 										nProcessed[0] = nProcessed[0] + 1;
-										if (nProcessed[0] >= libraryPaths.size) {
+										if (nProcessed[0] >= repo
+												.getLibraries().size) {
 											progressListener.finished(
 													!failed[0], controller);
 										}
@@ -910,7 +988,7 @@ public class RepositoryManager {
 												t);
 									failed[0] = true;
 									nProcessed[0] = nProcessed[0] + 1;
-									if (nProcessed[0] >= libraryPaths.size) {
+									if (nProcessed[0] >= repo.getLibraries().size) {
 										progressListener.finished(!failed[0],
 												controller);
 									}
@@ -923,7 +1001,7 @@ public class RepositoryManager {
 											"HTTP request cancelled-library not retrieved");
 									failed[0] = true;
 									nProcessed[0] = nProcessed[0] + 1;
-									if (nProcessed[0] >= libraryPaths.size) {
+									if (nProcessed[0] >= repo.getLibraries().size) {
 										progressListener.finished(!failed[0],
 												controller);
 									}
@@ -932,7 +1010,7 @@ public class RepositoryManager {
 							});
 				} else {
 					nProcessed[0] = nProcessed[0] + 1;
-					if (nProcessed[0] >= libraryPaths.size) {
+					if (nProcessed[0] >= repo.getLibraries().size) {
 						progressListener.finished(!failed[0], controller);
 					}
 				}
@@ -947,7 +1025,7 @@ public class RepositoryManager {
 
 	/**
 	 * 
-	 * @param library
+	 * @param libraryPath
 	 * @return
 	 */
 	public FileHandle getRepoLibraryFile(String libraryPath, Assets assets) {
@@ -963,7 +1041,9 @@ public class RepositoryManager {
 	 * @return true if the given {@link RepoLibrary} has been downloaded.
 	 */
 	public boolean isDownloaded(RepoLibrary lib, Assets assets) {
-		return assets.absolute(REPOSITORY_FOLDER_PATH + "/" + lib.getPath())
+		// TODO Paths were used instead of i18n names
+		return assets.absolute(
+				REPOSITORY_FOLDER_PATH + "/" + lib.getNameList().get(0))
 				.exists();
 	}
 
@@ -1002,7 +1082,8 @@ public class RepositoryManager {
 		try {
 			RepoLibrary repoLibrary = gameAssets.fromJson(RepoLibrary.class,
 					libraryMetadata);
-			if (repoLibrary == null || repoLibrary.getPath() == null) {
+			// TODO Paths were used instead of names
+			if (repoLibrary == null || repoLibrary.getNameList().get(0) == null) {
 				return false;
 			}
 			libraries.add(repoLibrary);

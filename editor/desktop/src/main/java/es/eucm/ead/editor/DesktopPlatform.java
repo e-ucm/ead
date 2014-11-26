@@ -206,8 +206,15 @@ public class DesktopPlatform extends AbstractPlatform implements
 	}
 
 	@Override
+	public boolean scaleImage(FileHandle imageFile, int maxWidth,
+			int maxHeight, FileHandle resultImage) {
+		// TODO
+		return false;
+	}
+
+	@Override
 	public void getMultilineTextInput(TextInputListener listener, String title,
 			String text, I18N i18n) {
-		
+
 	}
 }

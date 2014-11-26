@@ -1,0 +1,6 @@
+{
+    "additionalProperties": false,
+    "javaType": "es.eucm.ead.schema.editor.components.repo.licenses.RepoLicense",
+    "type": "object",
+    "description": "Information associated to a license applicable to this resource or library"
+}

@@ -1,0 +1,24 @@
+{
+    "additionalProperties": false,
+    "javaType": "es.eucm.ead.schema.editor.components.repo.Repo",
+    "properties": {
+        "libraries": {
+            "type": "array",
+            "items": {
+                "type":"object",
+                "properties":{
+                    "path":{
+                        "type":"string",
+                        "description":"The relative location of the library in the repo, with no extension (e.g. eadventure)"
+                    },
+                    "version":{
+                        "type": "string",
+                        "description": "An integer value that determines the version, generated from date: YYYYMMDDHH (e.g. 2014092713)"
+                    }
+                }
+            },
+            "description": "A list with the available libraries in the repo, and the latest version"
+        }
+    },
+    "type": "object"
+}

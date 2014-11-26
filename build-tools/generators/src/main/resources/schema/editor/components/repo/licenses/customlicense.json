@@ -1,0 +1,22 @@
+{
+    "additionalProperties": false,
+    "extends": {
+        "$ref": "repolicense.json"
+    },
+    "javaType": "es.eucm.ead.schema.editor.components.repo.licenses.CustomLicense",
+    "type": "object",
+    "properties":{
+        "name":{
+            "type": "string",
+            "description": "The name of the license (e.g., Paid license)"
+        },
+        "price":{
+            "type": "number",
+            "description": "Fee the customer has to pay for the item"
+        },
+        "terms":{
+            "type": "string",
+            "description": "Legal text associated to the license"
+        }
+    }
+}
