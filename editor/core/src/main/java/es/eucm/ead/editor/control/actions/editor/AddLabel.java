@@ -41,6 +41,7 @@ import com.badlogic.gdx.graphics.g2d.BitmapFont.TextBounds;
 import com.badlogic.gdx.scenes.scene2d.ui.Label.LabelStyle;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 
+import es.eucm.ead.editor.control.Controller;
 import es.eucm.ead.editor.control.actions.EditorAction;
 import es.eucm.ead.editor.control.actions.model.AddSceneElement;
 import es.eucm.ead.editor.model.Q;
@@ -54,13 +55,33 @@ import es.eucm.ead.schema.entities.ModelEntity;
  * 
  * <p>
  * A text is requested to create a {@link Label} in the current scene.
+ * <dl>
+ * <dt><strong>Arguments</strong></dt>
+ * <dd><strong>args[0] (Optional)</strong> <em>{@link Label}</em> The
+ * {@link Label} to add.</dd>
+ * <dd><strong>args[1] (Optional)</strong> <em>boolean</em> false to set the
+ * default font.</dd>
+ * </dl>
  * </p>
  * 
  */
 public class AddLabel extends EditorAction implements Input.TextInputListener {
 
+	private Color color;
+
 	public AddLabel() {
-		super(true, false, new Class[] {}, new Class[] { Label.class });
+		super(true, false, new Class[] {}, new Class[] { Label.class },
+				new Class[] { Label.class, Boolean.class });
+	}
+
+	@Override
+	public void initialize(Controller controller) {
+		super.initialize(controller);
+		color = new Color();
+		color.setR(0);
+		color.setG(0);
+		color.setB(0);
+		color.setA(1);
 	}
 
 	@Override
@@ -70,13 +91,16 @@ public class AddLabel extends EditorAction implements Input.TextInputListener {
 			((Platform) controller.getPlatform()).getMultilineTextInput(this,
 					i18n.m("toolbar.text.input"), "", i18n);
 		} else {
-			addText((Label) args[0]);
+			addText((Label) args[0], (args.length == 2 && (Boolean) args[1]));
 		}
 	}
 
-	private void addText(Label label) {
+	private void addText(Label label, boolean keepStyle) {
 
 		Skin skin = controller.getEditorGameAssets().getSkin();
+		if (!keepStyle) {
+			setDefultFont(label);
+		}
 
 		LabelStyle labelStyle = skin.get(label.getStyle(), LabelStyle.class);
 
@@ -93,19 +117,17 @@ public class AddLabel extends EditorAction implements Input.TextInputListener {
 		if (text != null && !text.replace(" ", "").isEmpty()) {
 			Label label = new Label();
 			label.setText(text);
-			Color c = new Color();
-			c.setR(0);
-			c.setG(0);
-			c.setB(0);
-			c.setA(1);
-			label.setColor(c);
-			label.setStyle("roboto-small"); // default style
-			addText(label);
+			addText(label, false);
 		}
 	}
 
 	@Override
 	public void canceled() {
 
+	}
+
+	private void setDefultFont(Label label) {
+		label.setColor(color);
+		label.setStyle("roboto-small"); // default style
 	}
 }

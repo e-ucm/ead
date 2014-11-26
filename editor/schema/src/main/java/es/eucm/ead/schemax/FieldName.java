@@ -161,6 +161,16 @@ public class FieldName {
 	TEXT = "text",
 
 	/**
+	 * Refers to {@link es.eucm.ead.schema.components.controls.Label#text}
+	 */
+	COLOR = "color",
+
+	/**
+	 * Refers to {@link es.eucm.ead.schema.components.controls.Label#text}
+	 */
+	STYLE = "style",
+
+	/**
 	 * Refers to {@link es.eucm.ead.schema.effects.AnimationEffect#duration}
 	 */
 	DURATION = "duration",

@@ -40,12 +40,12 @@
         default: { font: roboto-regular-big, fontColor: white },
         bubble: { font: roboto-regular-big, fontColor: white, background: speakbubble },
         speaker: { font: roboto-regular-big, fontColor: black, background: speaker },
-        roboto-big: { font: roboto-regular-big, fontColor: blue },
-        roboto-small: { font: roboto-regular-small, fontColor: blue },
-        comfortaa-big: { font: comfortaa-regular-big, fontColor: blue },
-        comfortaa-small: { font: comfortaa-regular-small, fontColor: blue },
-        rabanera-big: { font: rabanera-big, fontColor: blue },
-        rabanera-small: { font: rabanera-small, fontColor: blue }
+        roboto-big: { font: roboto-regular-big, fontColor: white },
+        roboto-small: { font: roboto-regular-small, fontColor: white },
+        comfortaa-big: { font: comfortaa-regular-big, fontColor: white },
+        comfortaa-small: { font: comfortaa-regular-small, fontColor: white },
+        rabanera-big: { font: rabanera-big, fontColor: white },
+        rabanera-small: { font: rabanera-small, fontColor: white }
     },
     com.badlogic.gdx.scenes.scene2d.ui.TextField$TextFieldStyle: {
         welcome: { font: roboto-regular-big, fontColor: blue }
