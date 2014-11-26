@@ -53,11 +53,11 @@ import es.eucm.ead.schema.entities.ModelEntity;
  * the scene selected</dd>
  * </dl>
  */
-public class SetSelectedScene extends ModelAction {
+public class SetEditedScene extends ModelAction {
 
 	private SetSelection setSelection;
 
-	public SetSelectedScene() {
+	public SetEditedScene() {
 		super(true, false, String.class, ModelEntity.class);
 	}
 
