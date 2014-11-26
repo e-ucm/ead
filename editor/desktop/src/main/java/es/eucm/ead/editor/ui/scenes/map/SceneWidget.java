@@ -87,9 +87,8 @@ public class SceneWidget extends FocusButton {
 
 		final Image image = new Image();
 		image.setScaling(Scaling.fit);
-		controller.getEditorGameAssets().get(
-				Q.getThumbnail(controller, scene).getPath(), Texture.class,
-				new AssetLoadedCallback<Texture>() {
+		controller.getEditorGameAssets().get(Q.getThumbnailPath(scene),
+				Texture.class, new AssetLoadedCallback<Texture>() {
 
 					@Override
 					public void loaded(String fileName, Texture asset) {

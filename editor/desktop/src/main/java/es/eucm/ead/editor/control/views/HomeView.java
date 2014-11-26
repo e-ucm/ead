@@ -124,7 +124,7 @@ public class HomeView implements ViewBuilder {
 					}
 					thumbnailComp.setPath(null);
 				}
-				Q.getThumbnail(controller, modelEntity);
+				Q.getThumbnailPath(modelEntity);
 			}
 		}
 		editorGameAssets.finishLoading();
