@@ -43,12 +43,13 @@ import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.utils.Array;
 
 import es.eucm.ead.editor.control.Controller;
-import es.eucm.ead.editor.control.actions.editor.AddSceneElementFromResource;
 import es.eucm.ead.editor.control.actions.editor.ChangeView;
+import es.eucm.ead.editor.control.actions.editor.ChooseFile;
 import es.eucm.ead.editor.control.actions.editor.ExecuteWorker;
 import es.eucm.ead.editor.control.actions.model.AddSceneElement;
 import es.eucm.ead.editor.control.workers.LoadFiles;
 import es.eucm.ead.editor.control.workers.Worker.WorkerListener;
+import es.eucm.ead.editor.platform.Platform.FileChooserListener;
 import es.eucm.ead.editor.view.ModelView;
 import es.eucm.ead.editor.view.builders.scene.SceneView;
 import es.eucm.ead.editor.view.widgets.WidgetBuilder;
@@ -56,7 +57,7 @@ import es.eucm.ead.schema.entities.ModelEntity;
 import es.eucm.ead.schemax.GameStructure;
 
 public class FileGallery extends ThumbnailsGallery implements WorkerListener,
-		ModelView {
+		ModelView, FileChooserListener {
 
 	private Array<String> loadedThumbnails = new Array<String>();
 	private Controller controller;
@@ -85,7 +86,7 @@ public class FileGallery extends ThumbnailsGallery implements WorkerListener,
 
 	@Override
 	protected void prepareAddButton(Actor actor) {
-		WidgetBuilder.actionOnClick(actor, AddSceneElementFromResource.class);
+		WidgetBuilder.actionOnClick(actor, ChooseFile.class, false, this);
 	}
 
 	@Override
@@ -96,7 +97,6 @@ public class FileGallery extends ThumbnailsGallery implements WorkerListener,
 				ModelEntity element = controller.getTemplates()
 						.createSceneElement(id);
 				controller.action(AddSceneElement.class, element);
-				controller.action(ChangeView.class, SceneView.class);
 			}
 		});
 	}
@@ -126,5 +126,15 @@ public class FileGallery extends ThumbnailsGallery implements WorkerListener,
 	@Override
 	public void cancelled() {
 
+	}
+
+	@Override
+	public void fileChosen(String path) {
+		if (path != null && !path.trim().isEmpty()) {
+			ModelEntity sceneElement = controller.getTemplates()
+					.createSceneElement(path);
+			controller.action(AddSceneElement.class, sceneElement);
+			controller.action(ChangeView.class, SceneView.class);
+		}
 	}
 }
