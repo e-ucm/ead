@@ -44,7 +44,7 @@ import es.eucm.ead.editor.demobuilder.EditorDemoBuilder;
 import es.eucm.ead.editor.demobuilder.ImgUtils;
 import es.eucm.ead.editor.exporter.ExportCallback;
 import es.eucm.ead.editor.exporter.Exporter;
-import es.eucm.ead.editor.utils.ZipUtils;
+import es.eucm.ead.engine.utils.ZipUtils;
 import es.eucm.ead.schema.components.ModelComponent;
 import es.eucm.ead.schema.data.Dimension;
 import es.eucm.ead.schema.data.shape.Circle;

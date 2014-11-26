@@ -40,7 +40,7 @@ import com.badlogic.gdx.Application;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.utils.Array;
-import es.eucm.ead.editor.utils.ZipUtils;
+import es.eucm.ead.engine.utils.ZipUtils;
 import es.eucm.ead.engine.EngineDesktop;
 import es.eucm.ead.engine.utils.SwingEDTUtils;
 
