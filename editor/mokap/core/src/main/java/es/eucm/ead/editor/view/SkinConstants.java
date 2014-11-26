@@ -67,6 +67,7 @@ public interface SkinConstants {
 	public static final String STYLE_SLIDER_PAGES = "pages";
 	public static final String STYLE_CHECK = "check";
 	public static final String STYLE_GRAY = "gray";
+	public static final String STYLE_MARKER = "marker";
 
 	public static final String TABLET_GAME = "tablet_game";
 	public static final String TABLET_CARD = "tablet_card";
@@ -129,6 +130,8 @@ public interface SkinConstants {
 	public static final String IC_LINK = "ic_link";
 	public static final String IC_SEARCH = "ic_search";
 	public static final String IC_BLUR_LINEAR = "ic_blur_linear";
+
+	public static final String IC_ONE = "ic_one";
 
 	public static final String COLOR_GRAY = "gray";
 }

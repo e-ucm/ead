@@ -169,6 +169,17 @@ public class Model {
 		return null;
 	}
 
+	public ResourceCategory getResourceCategory(String id) {
+		for (ResourceCategory resourceCategory : ResourceCategory.values()) {
+			Resource resource = getResource(id, resourceCategory);
+			if (resource != null) {
+				return resourceCategory;
+			}
+		}
+		Gdx.app.error("Model", "No resource with id " + id);
+		return null;
+	}
+
 	/**
 	 * Returns the resource object with the given id.
 	 * 
@@ -561,6 +572,10 @@ public class Model {
 	public void removeListenerFromAllTargets(ModelListener listener) {
 		for (Array<ModelListener> listeners : this.listeners.values()) {
 			listeners.removeValue(listener, true);
+		}
+		removeResourceListener(listener);
+		if (listener instanceof SelectionListener) {
+			removeSelectionListener((SelectionListener) listener);
 		}
 	}
 

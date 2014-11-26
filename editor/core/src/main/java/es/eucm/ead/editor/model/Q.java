@@ -80,6 +80,9 @@ public class Q {
 	@SuppressWarnings("unchecked")
 	public static <T extends ModelComponent> T getComponent(
 			ModelEntity element, Class<T> componentClass) {
+		if (element == null) {
+			return null;
+		}
 		for (ModelComponent component : element.getComponents()) {
 			if (component.getClass() == componentClass) {
 				return (T) component;
@@ -304,4 +307,11 @@ public class Q {
 		return null;
 	}
 
+	public static String getDate(ModelEntity entity) {
+		Date date = Q.getComponent(entity, Date.class);
+		if (date != null) {
+			return date.getDate();
+		}
+		return null;
+	}
 }
