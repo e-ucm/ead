@@ -59,8 +59,14 @@ public class ContextMenu extends Table implements Modal {
 
 	protected static final float HIDE_OFFSET = .05F;
 
+	private Array<Runnable> hideRunnables = new Array<Runnable>();
+
 	public ContextMenu() {
 		setTransform(true);
+	}
+
+	public void addHideRunnable(Runnable runnable) {
+		hideRunnables.add(runnable);
 	}
 
 	/**
@@ -105,6 +111,10 @@ public class ContextMenu extends Table implements Modal {
 	}
 
 	protected SequenceAction getHideAction(Runnable runnable) {
+		SequenceAction preHide = Actions.sequence();
+		for (Runnable r : hideRunnables) {
+			preHide.addAction(Actions.run(r));
+		}
 		SequenceAction hide = Actions.sequence(Actions.parallel(Actions
 				.fadeOut(FADE, Interpolation.fade), Actions.moveBy(0f,
 				getHeight() * HIDE_OFFSET, FADE, Interpolation.exp5Out)));
@@ -112,7 +122,8 @@ public class ContextMenu extends Table implements Modal {
 		if (runnable != null) {
 			hide.addAction(Actions.run(runnable));
 		}
-		return hide;
+		preHide.addAction(hide);
+		return preHide;
 	}
 
 	@Override

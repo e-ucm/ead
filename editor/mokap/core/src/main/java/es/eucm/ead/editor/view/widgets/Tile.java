@@ -49,6 +49,8 @@ public class Tile extends AbstractWidget {
 
 	private Actor background;
 
+	private Actor marker;
+
 	private Label label;
 
 	private Container<Label> labelContainer;
@@ -82,6 +84,17 @@ public class Tile extends AbstractWidget {
 		this.background = actor;
 	}
 
+	public void setMarker(Actor actor) {
+		if (this.marker != null) {
+			this.marker.remove();
+		}
+
+		if (actor != null) {
+			addActor(actor);
+		}
+		this.marker = actor;
+	}
+
 	public void setText(String text) {
 		label.setText(text);
 	}
@@ -109,6 +122,12 @@ public class Tile extends AbstractWidget {
 		setBounds(background, 0, 0, getWidth(), getHeight());
 		setBounds(labelContainer, 0, 0, getWidth(),
 				getPrefHeight(labelContainer));
+		if (marker != null) {
+			float width = getPrefWidth(marker);
+			float height = getPrefHeight(marker);
+			setBounds(marker, getWidth() - width, getHeight() - height, width,
+					height);
+		}
 	}
 
 	@Override

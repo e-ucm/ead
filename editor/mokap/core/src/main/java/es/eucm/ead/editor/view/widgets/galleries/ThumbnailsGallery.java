@@ -64,9 +64,9 @@ public abstract class ThumbnailsGallery extends AbstractWidget implements
 
 	protected Assets assets;
 
-	private Skin skin;
+	protected Skin skin;
 
-	private I18N i18N;
+	protected I18N i18N;
 
 	protected ObjectMap<String, TextureDrawable> pendingTextures = new ObjectMap<String, TextureDrawable>();
 

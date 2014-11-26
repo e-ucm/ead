@@ -109,7 +109,7 @@ public class SceneEditor extends BaseView implements ModelView,
 
 		mode = Mode.COMPOSE;
 
-		setNavigation(new ProjectNavigation(controller));
+		setNavigation(new NavigationGallery(controller));
 
 		AbstractWidget container = new AbstractWidget();
 		sceneGroupEditor = new SceneGroupEditor(controller, this);
