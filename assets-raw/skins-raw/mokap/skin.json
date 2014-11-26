@@ -230,6 +230,9 @@
             "up": "circle",
             "down": "circle_pressed",
             "imageUp": "ic_check"
+        },
+        "marker": {
+            "up": "semi_transparent_bg"
         }
     },
     "com.badlogic.gdx.scenes.scene2d.ui.Slider$SliderStyle": {
@@ -426,18 +429,19 @@
             "labelStyle": {
                 "font": "default_font",
                 "fontColor": "white"
-            },
-            "pressed": "light_blue_semi_bg"
+            }
         }
     },
     "es.eucm.ead.editor.view.widgets.layouts.Gallery$GalleryStyle": {
         "default": {
             "background": "blank",
-            "checked": "light_blue_semi_bg"
+            "checked": "light_blue_semi_bg",
+            "pressed": "semi_transparent_bg"
         },
         "navigation": {
             "background": "page_left",
-            "checked": "deep_orange_semi_bg"
+            "checked": "deep_orange_semi_bg",
+            "pressed": "light_blue_semi_bg"
         }
     },
     "es.eucm.ead.editor.view.builders.scene.context.GroupContext$GroupContextStyle": {
