@@ -36,6 +36,8 @@
  */
 package es.eucm.ead.editor.view.builders.scene.groupeditor;
 
+import java.util.Comparator;
+
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.Pools;
@@ -54,9 +56,12 @@ public class SelectionGroup extends AbstractWidget {
 
 	private Array<Actor> selection = new Array<Actor>();
 
+	private ActorComparator comparator;
+
 	public SelectionGroup(GroupEditor groupEditor, GroupEditorStyle style) {
 		this.groupEditor = groupEditor;
 		this.style = style;
+		this.comparator = new ActorComparator();
 	}
 
 	public void pressed(Actor actor) {
@@ -75,6 +80,7 @@ public class SelectionGroup extends AbstractWidget {
 			SelectionBox selectionBox = findOrCreateSelectionBox(actor);
 			if (selectionBox != null) {
 				selection.add(actor);
+				selection.sort(comparator);
 				selectionBox.selected();
 			}
 		}
@@ -148,6 +154,14 @@ public class SelectionGroup extends AbstractWidget {
 		@Override
 		public boolean evaluate(Actor selectionBox) {
 			return selectionBox.getUserObject() == actor;
+		}
+	}
+
+	public static class ActorComparator implements Comparator<Actor> {
+
+		@Override
+		public int compare(Actor actor, Actor actor2) {
+			return actor.getZIndex() - actor2.getZIndex();
 		}
 	}
 
