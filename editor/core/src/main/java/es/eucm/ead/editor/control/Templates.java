@@ -136,6 +136,7 @@ public class Templates {
 
 	/**
 	 * Creates an element.
+	 * 
 	 * @param imagePath
 	 * @param x
 	 *            the center x coordinate of the scene element
@@ -178,10 +179,11 @@ public class Templates {
 				sceneElement.setOriginY(texture.getHeight() * .5f);
 
 				if (filled) {
-					GameData data = Q.getComponent(controller.getModel().getGame(),
-							GameData.class);
+					GameData data = Q.getComponent(controller.getModel()
+							.getGame(), GameData.class);
 					Vector2 vector = Scaling.fill.apply(texture.getWidth(),
-							texture.getHeight(), data.getWidth(), data.getHeight());
+							texture.getHeight(), data.getWidth(),
+							data.getHeight());
 					sceneElement.setScaleX(vector.x / texture.getWidth());
 					sceneElement.setScaleY(vector.y / texture.getHeight());
 				}

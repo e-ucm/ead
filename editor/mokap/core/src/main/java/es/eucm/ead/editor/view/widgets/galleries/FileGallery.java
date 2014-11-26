@@ -132,7 +132,7 @@ public class FileGallery extends ThumbnailsGallery implements WorkerListener,
 	public void fileChosen(String path) {
 		if (path != null && !path.trim().isEmpty()) {
 			ModelEntity sceneElement = controller.getTemplates()
-					.createSceneElement(path);
+					.createSceneElement(path, false);
 			controller.action(AddSceneElement.class, sceneElement);
 			controller.action(ChangeView.class, SceneView.class);
 		}
