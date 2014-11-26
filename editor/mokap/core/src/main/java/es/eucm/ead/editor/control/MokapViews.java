@@ -37,8 +37,10 @@
 package es.eucm.ead.editor.control;
 
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.Group;
 import com.badlogic.gdx.scenes.scene2d.Stage;
+
 import es.eucm.ead.editor.control.MokapController.BackListener;
 import es.eucm.ead.editor.control.actions.editor.ChangeView;
 import es.eucm.ead.editor.model.Model.SelectionListener;
@@ -58,8 +60,9 @@ public class MokapViews extends Views implements BackListener {
 	}
 
 	@Override
-	public void onBackPressed() {
-		if (!hideModalIfNeeded()) {
+	public boolean onBackPressed() {
+		if (!hideModalIfNeeded() && !hideChildIfNeeded(modalsContainer)
+				&& !hideChildIfNeeded(viewsContainer)) {
 			if (currentView instanceof BackListener) {
 				((BackListener) currentView).onBackPressed();
 			} else {
@@ -70,6 +73,21 @@ public class MokapViews extends Views implements BackListener {
 				}
 			}
 		}
+
+		return true;
+	}
+
+	protected boolean hideChildIfNeeded(Group parent) {
+		for (Actor child : parent.getChildren()) {
+			if (child instanceof Group) {
+				if (hideChildIfNeeded((Group) child)) {
+					return true;
+				} else if (child instanceof BackListener) {
+					return ((BackListener) child).onBackPressed();
+				}
+			}
+		}
+		return false;
 	}
 
 	public void hideOnscreenKeyboard() {
