@@ -231,7 +231,7 @@
         }
     },
     "com.badlogic.gdx.scenes.scene2d.ui.Slider$SliderStyle": {
-        "default_horizontal": {
+        "default-horizontal": {
             "background": "knob_after",
             "knob": "knob",
             "knobBefore": "knob_before"
@@ -328,7 +328,7 @@
     "es.eucm.ead.editor.view.widgets.draw.BrushStrokesPicker$BrushStrokesPickerStyle": {
         "default": {
             "background": "page",
-            "sizeSliderStyleName": "default_horizontal",
+            "sizeSliderStyleName": "default-horizontal",
             "colorPickerStyle": "default_no_background",
             "sizeSliderPad": 12
         }
