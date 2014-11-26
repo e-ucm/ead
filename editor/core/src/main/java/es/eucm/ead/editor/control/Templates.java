@@ -38,6 +38,8 @@ package es.eucm.ead.editor.control;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Texture;
+import com.badlogic.gdx.math.Vector2;
+import com.badlogic.gdx.utils.Scaling;
 import com.badlogic.gdx.utils.reflect.ClassReflection;
 import com.badlogic.gdx.utils.reflect.ReflectionException;
 
@@ -125,28 +127,43 @@ public class Templates {
 	 * @param imagePath
 	 * @return
 	 */
-	public ModelEntity createSceneElement(String imagePath) {
+	public ModelEntity createSceneElement(String imagePath, boolean filled) {
 		GameData data = Q.getComponent(controller.getModel().getGame(),
 				GameData.class);
 		return createSceneElement(imagePath, data.getWidth() * .5f,
-				data.getHeight() * .5f);
+				data.getHeight() * .5f, filled);
 	}
 
 	/**
-	 * Creates a scene element with a image as renderer. Calculates the origin
-	 * at the center, sets scale to 1 and rotation to 0
-	 * 
+	 * Creates an element.
 	 * @param imagePath
-	 *            the path to the image. If the image is not contained by the
-	 *            game assets, is copied to them and then loaded
 	 * @param x
 	 *            the center x coordinate of the scene element
 	 * @param y
 	 *            the center y coordinate of the scene element
+	 */
+	public ModelEntity createSceneElement(String imagePath, float x, float y) {
+		return createSceneElement(imagePath, x, y, false);
+	}
+
+	/**
+	 * Creates a scene element with a image as renderer. Calculates the origin
+	 * at the center.
+	 * 
+	 * @param imagePath
+	 *            the path to the image. If the image is not contained by the
+	 *            game assets, is copied to them and then loaded.
+	 * @param x
+	 *            the center x coordinate of the scene element
+	 * @param y
+	 *            the center y coordinate of the scene element
+	 * @param filled
+	 *            if the element should be filled
 	 * @return the scene element created
 	 */
-	public ModelEntity createSceneElement(String imagePath, final float x,
-			final float y) {
+	public ModelEntity createSceneElement(String imagePath, float x, float y,
+			final boolean filled) {
+
 		EditorGameAssets assets = controller.getEditorGameAssets();
 
 		String newPath = assets.copyToProjectIfNeeded(imagePath, Texture.class);
@@ -155,9 +172,19 @@ public class Templates {
 		assets.get(newPath, Texture.class, new AssetLoadedCallback<Texture>() {
 			@Override
 			public void loaded(String fileName, Texture texture) {
+
 				// Center the origin
 				sceneElement.setOriginX(texture.getWidth() * .5f);
 				sceneElement.setOriginY(texture.getHeight() * .5f);
+
+				if (filled) {
+					GameData data = Q.getComponent(controller.getModel().getGame(),
+							GameData.class);
+					Vector2 vector = Scaling.fill.apply(texture.getWidth(),
+							texture.getHeight(), data.getWidth(), data.getHeight());
+					sceneElement.setScaleX(vector.x / texture.getWidth());
+					sceneElement.setScaleY(vector.y / texture.getHeight());
+				}
 			}
 		}, true);
 		sceneElement.setX(x - sceneElement.getOriginX());

@@ -94,7 +94,7 @@ public class TakePicture extends EditorAction {
 		public void imageCaptured(Result result) {
 			if (result.equals(Result.SUCCES)) {
 				sceneElement = controller.getTemplates().createSceneElement(
-						pictureFile.path());
+						pictureFile.path(), true);
 				controller.getBackgroundExecutor().submit(importElemTask,
 						dummyListener);
 			}

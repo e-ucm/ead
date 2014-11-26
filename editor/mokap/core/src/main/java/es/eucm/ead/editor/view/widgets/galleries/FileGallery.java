@@ -95,7 +95,7 @@ public class FileGallery extends ThumbnailsGallery implements WorkerListener,
 			@Override
 			public void clicked(InputEvent event, float x, float y) {
 				ModelEntity element = controller.getTemplates()
-						.createSceneElement(id);
+						.createSceneElement(id, false);
 				controller.action(AddSceneElement.class, element);
 			}
 		});
