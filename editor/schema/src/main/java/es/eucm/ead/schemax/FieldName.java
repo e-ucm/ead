@@ -175,6 +175,7 @@ public class FieldName {
 	 */
 	DURATION = "duration",
 
-	SCENE_ID = "sceneId";
+	SCENE_ID = "sceneId",
 
+	TRANSITION = "transition";
 }

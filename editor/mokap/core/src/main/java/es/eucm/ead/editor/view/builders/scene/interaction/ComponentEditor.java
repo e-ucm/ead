@@ -38,9 +38,11 @@ package es.eucm.ead.editor.view.builders.scene.interaction;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
+import com.badlogic.gdx.scenes.scene2d.ui.ScrollPane;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
+
 import es.eucm.ead.editor.control.Controller;
 import es.eucm.ead.editor.control.Selection;
 import es.eucm.ead.editor.control.actions.model.generic.RemoveFromArray;
@@ -57,7 +59,7 @@ import es.eucm.ead.schema.components.ModelComponent;
 import es.eucm.ead.schema.entities.ModelEntity;
 
 public abstract class ComponentEditor<T extends ModelComponent> extends
-		LinearLayout implements ModelView {
+		ScrollPane implements ModelView {
 
 	protected Controller controller;
 
@@ -69,15 +71,19 @@ public abstract class ComponentEditor<T extends ModelComponent> extends
 
 	private String icon;
 
+	protected LinearLayout list;
+
 	public ComponentEditor(String icon, String label, String componentId,
 			Controller cont) {
-		super(false);
+		super(new LinearLayout(false));
+		setScrollingDisabled(true, false);
+		list = (LinearLayout) getWidget();
 		this.icon = icon;
 		this.controller = cont;
 		this.i18N = controller.getApplicationAssets().getI18N();
 		this.skin = controller.getApplicationAssets().getSkin();
 		this.componentId = componentId;
-		background(controller.getApplicationAssets().getSkin()
+		list.background(controller.getApplicationAssets().getSkin()
 				.getDrawable(SkinConstants.DRAWABLE_PAGE_RIGHT));
 
 		Table header = new Table();
@@ -104,10 +110,10 @@ public abstract class ComponentEditor<T extends ModelComponent> extends
 
 		header.add(delete).padRight(WidgetBuilder.dpToPixels(8));
 
-		add(header).expandX();
+		list.add(header).expandX();
 		buildContent();
 
-		addSpace();
+		list.addSpace();
 	}
 
 	@Override

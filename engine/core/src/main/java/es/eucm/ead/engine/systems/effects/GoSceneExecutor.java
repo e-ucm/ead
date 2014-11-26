@@ -102,6 +102,7 @@ public class GoSceneExecutor extends EffectExecutor<GoScene> {
 					"Scene id set to null. Effect was skipped");
 			return;
 		}
+
 		Gdx.app.postRunnable(new Runnable() {
 			@Override
 			public void run() {
@@ -118,7 +119,9 @@ public class GoSceneExecutor extends EffectExecutor<GoScene> {
 								gameLoop.setPlaying(false);
 								layer.addActor(transitionManager);
 								transitionManager
-										.startTransition(getTransition(effect));
+										.startTransition(getTransition(
+												effect.getTransition(),
+												effect.getDuration(), false));
 							}
 
 							@Override
@@ -135,78 +138,99 @@ public class GoSceneExecutor extends EffectExecutor<GoScene> {
 		Gdx.app.error("GoSceneExecutor", "No scene found in " + path);
 	}
 
-	private Transition getTransition(GoScene effect) {
-		float duration = effect.getDuration();
+	public static Transition getTransition(GoScene.Transition modelTransition,
+			float duration, boolean memAlloc) {
 		Transition transition = null;
-		switch (effect.getTransition()) {
+		switch (modelTransition) {
 		case FADE_IN:
-			transition = Fade.init(duration, false);
+			transition = memAlloc ? new Fade(duration, false) : Fade.init(
+					duration, false);
 			break;
 		case FADE_OUT:
-			transition = Fade.init(duration, true);
+			transition = memAlloc ? new Fade(duration, true) : Fade.init(
+					duration, true);
 			break;
 		case NONE:
-			transition = None.init();
+			transition = memAlloc ? new None(duration) : None.init(duration);
 			break;
 		case SCALE_DOWN:
-			transition = ScaleAndFade.init(duration, false);
+			transition = memAlloc ? new ScaleAndFade(duration, false)
+					: ScaleAndFade.init(duration, false);
 			break;
 		case SCALE_UP:
-			transition = ScaleAndFade.init(duration, true);
+			transition = memAlloc ? new ScaleAndFade(duration, true)
+					: ScaleAndFade.init(duration, true);
 			break;
 		case SLICE_HORIZONTAL:
-			transition = Slice.init(duration, true, Slice.UP_DOWN, 6);
+			transition = memAlloc ? new Slice(duration, true, Slice.UP_DOWN, 6)
+					: Slice.init(duration, true, Slice.UP_DOWN, 6);
 			break;
 		case SLICE_VERTICAL:
-			transition = Slice.init(duration, false, Slice.UP_DOWN, 10);
+			transition = memAlloc ? new Slice(duration, false, Slice.UP_DOWN,
+					10) : Slice.init(duration, false, Slice.UP_DOWN, 10);
 			break;
 		case SLIDE_DOWN:
-			transition = Slide.init(duration, Slide.DOWN, false, false);
+			transition = memAlloc ? new Slide(duration, Slide.DOWN, false,
+					false) : Slide.init(duration, Slide.DOWN, false, false);
 			break;
 		case SLIDE_LEFT:
-			transition = Slide.init(duration, Slide.LEFT, false, false);
+			transition = memAlloc ? new Slide(duration, Slide.LEFT, false,
+					false) : Slide.init(duration, Slide.LEFT, false, false);
 			break;
 		case SLIDE_RANDOM:
-			transition = Slide.init(duration, Slide.RANDOM, false, false);
+			transition = memAlloc ? new Slide(duration, Slide.RANDOM, false,
+					false) : Slide.init(duration, Slide.RANDOM, false, false);
 			break;
 		case SLIDE_RIGHT:
-			transition = Slide.init(duration, Slide.RIGHT, false, false);
+			transition = memAlloc ? new Slide(duration, Slide.RIGHT, false,
+					false) : Slide.init(duration, Slide.RIGHT, false, false);
 			break;
 		case SLIDE_UP:
-			transition = Slide.init(duration, Slide.UP, false, false);
+			transition = memAlloc ? new Slide(duration, Slide.UP, false, false)
+					: Slide.init(duration, Slide.UP, false, false);
 			break;
 		case SLIDE_OVER_DOWN_IN:
-			transition = Slide.init(duration, Slide.DOWN, false, true);
+			transition = memAlloc ? new Slide(duration, Slide.DOWN, false, true)
+					: Slide.init(duration, Slide.DOWN, false, true);
 			break;
 		case SLIDE_OVER_DOWN_OUT:
-			transition = Slide.init(duration, Slide.DOWN, true, true);
+			transition = memAlloc ? new Slide(duration, Slide.DOWN, true, true)
+					: Slide.init(duration, Slide.DOWN, true, true);
 			break;
 		case SLIDE_OVER_LEFT_IN:
-			transition = Slide.init(duration, Slide.LEFT, false, true);
+			transition = memAlloc ? new Slide(duration, Slide.LEFT, false, true)
+					: Slide.init(duration, Slide.LEFT, false, true);
 			break;
 		case SLIDE_OVER_LEFT_OUT:
-			transition = Slide.init(duration, Slide.LEFT, true, true);
+			transition = memAlloc ? new Slide(duration, Slide.LEFT, true, true)
+					: Slide.init(duration, Slide.LEFT, true, true);
 			break;
 		case SLIDE_OVER_RANDOM_IN:
-			transition = Slide.init(duration, Slide.RANDOM, false, true);
+			transition = memAlloc ? new Slide(duration, Slide.RANDOM, false,
+					true) : Slide.init(duration, Slide.RANDOM, false, true);
 			break;
 		case SLIDE_OVER_RANDOM_OUT:
-			transition = Slide.init(duration, Slide.RANDOM, true, true);
+			transition = memAlloc ? new Slide(duration, Slide.RANDOM, true,
+					true) : Slide.init(duration, Slide.RANDOM, true, true);
 			break;
 		case SLIDE_OVER_RIGHT_IN:
-			transition = Slide.init(duration, Slide.RIGHT, false, true);
+			transition = memAlloc ? new Slide(duration, Slide.RIGHT, false,
+					true) : Slide.init(duration, Slide.RIGHT, false, true);
 			break;
 		case SLIDE_OVER_RIGHT_OUT:
-			transition = Slide.init(duration, Slide.RIGHT, true, true);
+			transition = memAlloc ? new Slide(duration, Slide.RIGHT, true, true)
+					: Slide.init(duration, Slide.RIGHT, true, true);
 			break;
 		case SLIDE_OVER_UP_IN:
-			transition = Slide.init(duration, Slide.UP, false, true);
+			transition = memAlloc ? new Slide(duration, Slide.UP, false, true)
+					: Slide.init(duration, Slide.UP, false, true);
 			break;
 		case SLIDE_OVER_UP_OUT:
-			transition = Slide.init(duration, Slide.UP, true, true);
+			transition = memAlloc ? new Slide(duration, Slide.UP, true, true)
+					: Slide.init(duration, Slide.UP, true, true);
 			break;
 		default:
-			transition = None.init();
+			transition = memAlloc ? new None(duration) : None.init(duration);
 			break;
 		}
 		return transition;
