@@ -213,7 +213,7 @@ public abstract class EditorUITest implements ApplicationListener {
 			@Override
 			public void fileChosen(String path) {
 				ModelEntity sceneElemenet = controller.getTemplates()
-						.createSceneElement(path);
+						.createSceneElement(path, false);
 				controller.action(AddSceneElement.class, sceneElemenet);
 			}
 		});
