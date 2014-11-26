@@ -96,7 +96,8 @@ public class ProjectView implements ViewBuilder, BackListener {
 	}
 
 	@Override
-	public void onBackPressed() {
+	public boolean onBackPressed() {
 		controller.action(ChangeView.class, HomeView.class);
+		return true;
 	}
 }

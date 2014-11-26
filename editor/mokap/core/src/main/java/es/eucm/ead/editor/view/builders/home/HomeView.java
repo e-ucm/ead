@@ -75,8 +75,9 @@ public class HomeView implements ViewBuilder, BackListener {
 	}
 
 	@Override
-	public void onBackPressed() {
+	public boolean onBackPressed() {
 		controller.action(Exit.class, false);
+		return true;
 	}
 
 }

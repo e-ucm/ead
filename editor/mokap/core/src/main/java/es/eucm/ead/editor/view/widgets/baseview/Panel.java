@@ -113,11 +113,6 @@ abstract class Panel extends AbstractWidget {
 		hidden = true;
 	}
 
-	@Override
-	public void layout() {
-		hidden = true;
-	}
-
 	void dragStop() {
 		if (isHalfShown()) {
 			show();
