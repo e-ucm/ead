@@ -109,16 +109,18 @@ public class Slice implements Transition {
 	public void render(Batch batch, TextureRegion currScreen,
 			Region currScreenRegion, TextureRegion nextScreen,
 			Region nextScreenRegion, float completion) {
-		batch.draw(currScreen, currScreenRegion.x, currScreenRegion.y);
-		float w = currScreenRegion.w;
-		float h = currScreenRegion.h;
-		float x = currScreenRegion.x;
-		float y = currScreenRegion.y;
+		batch.draw(currScreen, currScreenRegion.x, currScreenRegion.y,
+				(float) currScreenRegion.w, currScreenRegion.h);
+		float w = nextScreenRegion.w;
+		float h = nextScreenRegion.h;
+		float x = nextScreenRegion.x;
+		float y = nextScreenRegion.y;
 
 		if (horizontal) {
-			int nextScreenW = nextScreenRegion.w;
-			int sliceHeight = (int) (h / sliceIndex.size);
+
 			Texture nextTex = nextScreen.getTexture();
+			float sliceHeight = (h / sliceIndex.size);
+			int sliceTexelHeight = (int) (nextTex.getHeight() / sliceIndex.size);
 			completion = easing.apply(completion);
 			for (int i = 0; i < sliceIndex.size; ++i) {
 				// current slice/column
@@ -143,13 +145,14 @@ public class Slice implements Transition {
 					break;
 				}
 				batch.draw(nextTex, x, y, 0, 0, w, sliceHeight, 1, 1, 0, 0, i
-						* sliceHeight, nextScreenW, sliceHeight, false, true);
+						* sliceTexelHeight, nextTex.getWidth(),
+						sliceTexelHeight, false, true);
 			}
 		} else {
 
-			int nextScreenH = nextScreenRegion.h;
-			int sliceWidth = (int) (w / sliceIndex.size);
 			Texture nextTex = nextScreen.getTexture();
+			float sliceWidth = (w / sliceIndex.size);
+			int sliceTexelWidth = (int) (nextTex.getWidth() / sliceIndex.size);
 			completion = easing.apply(completion);
 			for (int i = 0; i < sliceIndex.size; ++i) {
 				// current slice/column
@@ -174,7 +177,8 @@ public class Slice implements Transition {
 					break;
 				}
 				batch.draw(nextTex, x, y, 0, 0, sliceWidth, h, 1, 1, 0, i
-						* sliceWidth, 0, sliceWidth, nextScreenH, false, true);
+						* sliceTexelWidth, 0, sliceTexelWidth,
+						nextTex.getHeight(), false, true);
 			}
 		}
 	}

@@ -48,25 +48,35 @@ public class None implements Transition {
 
 	private static None instance;
 
-	public static None init() {
+	private float duration;
+
+	public static None init(float duration) {
 		if (instance == null) {
-			instance = new None();
+			instance = new None(duration);
 		}
 		return instance;
 	}
 
-	public None() {
+	public None(float duration) {
+		this.duration = duration;
 	}
 
 	@Override
 	public float getDuration() {
-		return 0;
+		return duration;
 	}
 
 	@Override
 	public void render(Batch batch, TextureRegion currScreen,
 			Region currScreenRegion, TextureRegion nextScreen,
 			Region nextScreenRegion, float alpha) {
+		if (alpha < .5f) {
+			batch.draw(currScreen, (float) currScreenRegion.x,
+					currScreenRegion.y, currScreenRegion.w, currScreenRegion.h);
+		} else {
+			batch.draw(nextScreen, (float) nextScreenRegion.x,
+					nextScreenRegion.y, nextScreenRegion.w, nextScreenRegion.h);
+		}
 	}
 
 	@Override
