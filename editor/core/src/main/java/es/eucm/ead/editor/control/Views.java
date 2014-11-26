@@ -297,8 +297,12 @@ public class Views implements ModelListener<LoadEvent> {
 		}
 
 		modal.setPosition(
-				Math.min(x, modalsContainer.getWidth() - modal.getWidth()), y
-						- modal.getHeight());
+				Math.max(
+						0,
+						Math.min(x,
+								modalsContainer.getWidth() - modal.getWidth())),
+				Math.min(Math.max(0, y),
+						modalsContainer.getHeight() - modal.getHeight()));
 
 		modalsContainer.setTouchable(Touchable.enabled);
 
