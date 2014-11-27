@@ -65,26 +65,31 @@ public class TextFontContextMenu extends TextFontColorPicker implements
 
 	private Label labelActor;
 
+	private Skin skinEditorGame;
+
 	public TextFontContextMenu(final Skin skin, Controller c) {
 		super(skin, c.getApplicationAssets().getI18N());
 
 		this.controller = c;
-		final Skin sk = controller.getEditorGameAssets().getSkin();
+		skinEditorGame = controller.getEditorGameAssets().getSkin();
 
 		top.addListener(new ClickListener() {
 			@Override
 			public void clicked(InputEvent event, float x, float y) {
 				((Platform) controller.getPlatform()).getMultilineTextInput(
 						TextFontContextMenu.this, i18n.m("toolbar.text.input"),
-						"", i18n);
+						labelActor.getText().toString(), i18n);
 			}
 		});
 
 		addListener(new ColorListener() {
 			@Override
 			public void colorChanged(ColorEvent event) {
-				labelActor.setColor(event.getColor());
-				controller.action(ChangeSelectionText.class, event.getColor());
+				if (!event.getColor().equals(labelActor.getColor())) {
+					labelActor.setColor(event.getColor());
+					controller.action(ChangeSelectionText.class,
+							event.getColor());
+				}
 			}
 		});
 
@@ -92,12 +97,18 @@ public class TextFontContextMenu extends TextFontColorPicker implements
 			@Override
 			public void changed(ChangeEvent event, Actor actor) {
 				if (event.getTarget() instanceof SelectBox) {
-					labelActor.setStyle(sk.get(getStyle(), LabelStyle.class));
-					controller.action(ChangeSelectionText.class, getStyle(),
-							false);
+					if (labelActor.getStyle() != skinEditorGame.get(getStyle(),
+							LabelStyle.class)) {
+						labelActor.setStyle(skinEditorGame.get(getStyle(),
+								LabelStyle.class));
+						controller.action(ChangeSelectionText.class,
+								getStyle(), false);
+					}
 				}
 			}
 		});
+
+		pack();
 	}
 
 	@Override
@@ -134,6 +145,9 @@ public class TextFontContextMenu extends TextFontColorPicker implements
 			color.r = modelLabel.getColor().getR();
 			color.g = modelLabel.getColor().getG();
 			color.b = modelLabel.getColor().getB();
+			labelActor.setColor(color);
+			labelActor.setStyle(skinEditorGame.get(modelLabel.getStyle(),
+					LabelStyle.class));
 			updatePaneText(modelLabel.getText(), color);
 			updateSelectedStyle(modelLabel.getStyle());
 		}

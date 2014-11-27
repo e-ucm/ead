@@ -42,6 +42,7 @@ import com.badlogic.gdx.scenes.scene2d.actions.SequenceAction;
 import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.scenes.scene2d.ui.SelectBox;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
+import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.scenes.scene2d.utils.Drawable;
 import com.badlogic.gdx.utils.Array;
 
@@ -59,6 +60,8 @@ public class TextFontColorPicker extends ContextMenu {
 	private ColorPickerPanel colorPicker;
 
 	private Label label;
+
+	private String text;
 
 	protected I18N i18n;
 
@@ -78,8 +81,16 @@ public class TextFontColorPicker extends ContextMenu {
 
 		this.i18n = i18n;
 
-		label = new Label("", skin, SkinConstants.STYLE_TOOLBAR);
 		final IconButton editLabel = new IconButton(SkinConstants.IC_EDIT, skin);
+		text = " ";
+		label = new Label(text, skin, SkinConstants.STYLE_TOOLBAR);
+		label.setEllipsis(true);
+		Table textContainer = new Table();
+		Color color = skin.getColor(SkinConstants.COLOR_SEMI_BLACK);
+		textContainer.setBackground(skin
+				.getDrawable(SkinConstants.DRAWABLE_TEXT_FIELD));
+		textContainer.setColor(color);
+		textContainer.add(label).expandX().fillX().width(0);
 
 		colorPicker = new ColorPickerPanel(skin, style.colorPickerStyle);
 		colorPicker.addListener(new ColorListener() {
@@ -93,7 +104,7 @@ public class TextFontColorPicker extends ContextMenu {
 
 		top = new LinearLayout(true);
 		top.add(editLabel).margin(0, 0, pad * 0.5f, 0);
-		top.add(label);
+		top.add(textContainer).expandX();
 
 		selectTypo = new SelectBox<String>(skin);
 		Array<String> typo = new Array<String>();
@@ -112,7 +123,7 @@ public class TextFontColorPicker extends ContextMenu {
 		fontOptions.add(selectTypo);
 		fontOptions.add(selectSize);
 
-		add(top).expandX().fillX().pad(pad, pad, pad * 0.5f, pad);
+		add(top).expandX().fillX().pad(0, pad, 0, pad);
 		row();
 		add(fontOptions);
 		row();
@@ -167,7 +178,12 @@ public class TextFontColorPicker extends ContextMenu {
 	}
 
 	public void updatePaneText(String text, Color color) {
-		label.setText(text);
+		this.text = text;
+		String[] lines = text.split("\n");
+		if (lines.length > 1) {
+			lines[0] += "...";
+		}
+		label.setText(lines[0]);
 		label.setColor(color);
 		colorPicker.setPickedColor(color);
 	}

@@ -350,6 +350,15 @@
             "columns": 4,
             "sliderSpace": 12,
             "pad": 12
+        }, 
+        "color_reduced" : {
+        	"recentColorIcon": "color_picker_recent_color",
+            "recentColorStyle": "recent_color",
+            "slider": "colorPicker",
+            "maxColors": 8,
+            "columns": 4,
+            "sliderSpace": 12,
+            "pad": 12
         }
     },
     "es.eucm.ead.editor.view.widgets.draw.BrushStrokesPicker$BrushStrokesPickerStyle": {
@@ -363,7 +372,7 @@
     "es.eucm.ead.editor.view.widgets.TextFontColorPicker$TextFontColorPickerStyle": {
         "default": {
             "background": "page",
-            "colorPickerStyle": "default_no_background"
+            "colorPickerStyle": "color_reduced"
         }
     },
     "es.eucm.ead.editor.view.widgets.baseview.BaseView$BaseViewStyle": {
