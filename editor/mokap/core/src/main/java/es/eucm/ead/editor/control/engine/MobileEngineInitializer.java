@@ -38,12 +38,14 @@ package es.eucm.ead.editor.control.engine;
 
 import es.eucm.ead.editor.control.Controller;
 import es.eucm.ead.editor.processors.EditorEmptyRendererProcessor;
+import es.eucm.ead.editor.processors.EditorFramesProcessor;
 import es.eucm.ead.engine.ComponentLoader;
 import es.eucm.ead.engine.DefaultEngineInitializer;
 import es.eucm.ead.engine.GameLoop;
 import es.eucm.ead.engine.assets.GameAssets;
 import es.eucm.ead.engine.variables.VariablesManager;
 import es.eucm.ead.schema.renderers.EmptyRenderer;
+import es.eucm.ead.schema.renderers.Frames;
 
 public class MobileEngineInitializer extends DefaultEngineInitializer {
 
@@ -62,6 +64,10 @@ public class MobileEngineInitializer extends DefaultEngineInitializer {
 				EmptyRenderer.class,
 				new EditorEmptyRendererProcessor(gameLoop, controller
 						.getApplicationAssets()));
+		componentLoader
+				.registerComponentProcessor(Frames.class,
+						new EditorFramesProcessor(gameLoop, gameAssets,
+								componentLoader));
 	}
 
 }

@@ -34,20 +34,28 @@
  *      You should have received a copy of the GNU Lesser General Public License
  *      along with eAdventure.  If not, see <http://www.gnu.org/licenses/>.
  */
-package es.eucm.ead.engine.processors.renderers;
+package es.eucm.ead.editor.components;
 
+import com.badlogic.gdx.graphics.g2d.Batch;
 import es.eucm.ead.engine.GameLoop;
-import es.eucm.ead.engine.assets.GameAssets;
-import es.eucm.ead.engine.processors.ComponentProcessor;
-import es.eucm.ead.schema.renderers.Renderer;
+import es.eucm.ead.engine.components.renderers.frames.FramesComponent;
 
-public abstract class RendererProcessor<T extends Renderer> extends
-		ComponentProcessor<T> {
+public class EditorFramesComponent extends FramesComponent {
 
-	protected GameAssets gameAssets;
+	private GameLoop gameLoop;
 
-	public RendererProcessor(GameLoop gameLoop, GameAssets gameAssets) {
-		super(gameLoop);
-		this.gameAssets = gameAssets;
+	public void setGameLoop(GameLoop gameLoop) {
+		this.gameLoop = gameLoop;
+	}
+
+	@Override
+	public void draw(Batch batch) {
+		if (gameLoop.isPlaying()) {
+			super.draw(batch);
+		} else {
+			if (frames.size > 0) {
+				frames.get(0).draw(batch);
+			}
+		}
 	}
 }

@@ -34,20 +34,27 @@
  *      You should have received a copy of the GNU Lesser General Public License
  *      along with eAdventure.  If not, see <http://www.gnu.org/licenses/>.
  */
-package es.eucm.ead.engine.processors.renderers;
+package es.eucm.ead.editor.processors;
 
+import es.eucm.ead.editor.components.EditorFramesComponent;
+import es.eucm.ead.engine.ComponentLoader;
 import es.eucm.ead.engine.GameLoop;
 import es.eucm.ead.engine.assets.GameAssets;
-import es.eucm.ead.engine.processors.ComponentProcessor;
-import es.eucm.ead.schema.renderers.Renderer;
+import es.eucm.ead.engine.components.renderers.frames.FramesComponent;
+import es.eucm.ead.engine.processors.renderers.FramesProcessor;
 
-public abstract class RendererProcessor<T extends Renderer> extends
-		ComponentProcessor<T> {
+public class EditorFramesProcessor extends FramesProcessor {
 
-	protected GameAssets gameAssets;
+	public EditorFramesProcessor(GameLoop engine, GameAssets gameAssets,
+			ComponentLoader componentLoader) {
+		super(engine, gameAssets, componentLoader);
+	}
 
-	public RendererProcessor(GameLoop gameLoop, GameAssets gameAssets) {
-		super(gameLoop);
-		this.gameAssets = gameAssets;
+	@Override
+	protected FramesComponent createComponent() {
+		EditorFramesComponent component = gameLoop
+				.createComponent(EditorFramesComponent.class);
+		component.setGameLoop(gameLoop);
+		return component;
 	}
 }
