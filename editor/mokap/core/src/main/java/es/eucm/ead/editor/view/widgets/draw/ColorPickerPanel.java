@@ -96,6 +96,10 @@ public class ColorPickerPanel extends ContextMenu {
 		for (int i = 0; i < maxColors; ++i) {
 			IconButton image = new IconButton(recentColorDrawable, skin,
 					buttonStyleName) {
+				@Override
+				public void setChecked(boolean isChecked) {
+				}
+
 				public void setColor(Color color) {
 					super.setColor(color);
 					getIcon().setColor(color);
