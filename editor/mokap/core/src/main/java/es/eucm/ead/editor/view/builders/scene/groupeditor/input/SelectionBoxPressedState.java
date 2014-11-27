@@ -82,7 +82,7 @@ public class SelectionBoxPressedState extends InputState {
 	public void touchUp1(InputEvent event, float x, float y) {
 		if (moving) {
 			stateMachine.fireTransformed();
-		} else if (stateMachine.isMultiSelection()) {
+		} else {
 			stateMachine.selectActor();
 		}
 		stateMachine.setState(NoPointersState.class);
