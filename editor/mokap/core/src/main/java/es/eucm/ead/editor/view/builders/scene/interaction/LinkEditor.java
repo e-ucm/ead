@@ -45,9 +45,10 @@ import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.actions.Actions;
 import com.badlogic.gdx.scenes.scene2d.ui.Image;
 import com.badlogic.gdx.scenes.scene2d.ui.Label;
-import com.badlogic.gdx.scenes.scene2d.ui.Slider;
+import com.badlogic.gdx.scenes.scene2d.ui.SelectBox;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
+import com.badlogic.gdx.utils.Array;
 
 import es.eucm.ead.editor.control.Controller;
 import es.eucm.ead.editor.control.Selection;
@@ -57,6 +58,7 @@ import es.eucm.ead.editor.view.SkinConstants;
 import es.eucm.ead.editor.view.drawables.TextureDrawable;
 import es.eucm.ead.editor.view.widgets.Tile;
 import es.eucm.ead.editor.view.widgets.WidgetBuilder;
+import es.eucm.ead.editor.view.widgets.layouts.LinearLayout;
 import es.eucm.ead.editor.view.widgets.selectors.SceneSelector;
 import es.eucm.ead.editor.view.widgets.selectors.Selector.SelectorListener;
 import es.eucm.ead.editor.view.widgets.selectors.TransitionDrawable;
@@ -94,7 +96,7 @@ public class LinkEditor extends ComponentEditor<Behavior> implements
 
 	private TransitionSelector transitionSelector;
 
-	private Slider duration;
+	private SelectBox<String> duration;
 
 	private AssetLoadedCallback<Texture> currentThumbnail = new AssetLoadedCallback<Texture>() {
 
@@ -144,12 +146,15 @@ public class LinkEditor extends ComponentEditor<Behavior> implements
 		transitionHeader.add(WidgetBuilder.label(i18N.m("transition"),
 				SkinConstants.STYLE_EDITION));
 		list.add(transitionHeader);
-		Table table = new Table(skin);
-		table.add(i18N.m("fast"));
-		table.add(i18N.m("normal")).expand();
-		table.add(i18N.m("slow"));
-		list.add(table).expandX();
-		duration = new Slider(0f, 2f, 1f, false, skin);
+
+		LinearLayout velTable = new LinearLayout(true);
+
+		Array<String> velOptions = new Array<String>();
+		velOptions.add(i18N.m("fast"));
+		velOptions.add(i18N.m("normal"));
+		velOptions.add(i18N.m("slow"));
+		duration = new SelectBox<String>(skin);
+		duration.setItems(velOptions);
 		duration.addListener(new com.badlogic.gdx.scenes.scene2d.utils.ChangeListener() {
 
 			@Override
@@ -160,7 +165,12 @@ public class LinkEditor extends ComponentEditor<Behavior> implements
 						duration);
 			}
 		});
-		list.add(duration).expandX();
+		velTable.add(new Label(i18N.m("speed") + ":", skin)).expandX()
+				.margin(WidgetBuilder.dpToPixels(16), 0, 0, 0);
+		velTable.add(duration).expandX()
+				.margin(0, 0, WidgetBuilder.dpToPixels(16), 0);
+
+		list.add(velTable).expandX();
 
 		transitionTile = new Tile(controller.getApplicationAssets().getSkin()) {
 			@Override
@@ -239,18 +249,18 @@ public class LinkEditor extends ComponentEditor<Behavior> implements
 
 	private void updateDurationSlider(float time) {
 		if (time <= .5f) {
-			duration.setValue(.0f);
+			duration.setSelected(i18N.m("slow"));
 		} else if (time <= .8f) {
-			duration.setValue(1f);
+			duration.setSelected(i18N.m("normal"));
 		} else {
-			duration.setValue(2f);
+			duration.setSelected(i18N.m("fast"));
 		}
 	}
 
 	private float getDuration() {
-		if (duration.getValue() == 0f) {
+		if (duration.getSelected().equals(i18N.m("slow"))) {
 			return .4f;
-		} else if (duration.getValue() == 1f) {
+		} else if (duration.getSelected().equals(i18N.m("normal"))) {
 			return .8f;
 		} else {
 			return 1.6f;
