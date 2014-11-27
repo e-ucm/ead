@@ -49,6 +49,7 @@ import com.badlogic.gdx.utils.Array;
 
 import es.eucm.ead.editor.control.Controller;
 import es.eucm.ead.editor.control.Selection;
+import es.eucm.ead.editor.control.MokapController.BackListener;
 import es.eucm.ead.editor.model.Model;
 import es.eucm.ead.editor.model.Q;
 import es.eucm.ead.editor.view.SkinConstants;
@@ -68,7 +69,7 @@ import es.eucm.ead.schema.entities.ModelEntity;
 import es.eucm.ead.schemax.entities.ResourceCategory;
 
 public class TransitionSelector extends LinearLayout implements
-		Selector<String> {
+		Selector<String>, BackListener {
 
 	private SelectorListener<String> selectorListener;
 
@@ -240,5 +241,11 @@ public class TransitionSelector extends LinearLayout implements
 			gallery.clearChildren();
 			pendingCurrentTextures.clear();
 		}
+	}
+
+	@Override
+	public boolean onBackPressed() {
+		selectorListener.cancelled();
+		return true;
 	}
 }
