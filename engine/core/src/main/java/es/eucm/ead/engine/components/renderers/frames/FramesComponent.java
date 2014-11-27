@@ -49,7 +49,7 @@ import es.eucm.ead.engine.components.renderers.frames.sequences.Sequence;
  */
 public class FramesComponent extends RendererComponent implements Poolable {
 
-	private Array<Frame> frames;
+	protected Array<Frame> frames;
 	private int currentFrameIndex;
 	private Frame currentFrame;
 	private Sequence function;

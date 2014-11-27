@@ -53,8 +53,8 @@ public class EmptyRendererProcessor extends RendererProcessor<EmptyRenderer> {
 
 	protected static final int N_SIDES_FOR_CIRCLE = 30;
 
-	public EmptyRendererProcessor(GameLoop engine) {
-		super(engine, null);
+	public EmptyRendererProcessor(GameLoop gameLoop) {
+		super(gameLoop, null);
 	}
 
 	@Override
