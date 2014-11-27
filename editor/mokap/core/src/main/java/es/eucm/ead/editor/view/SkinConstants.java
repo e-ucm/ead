@@ -43,6 +43,8 @@ public interface SkinConstants {
 
 	public static final String ENGINE_DEFAULT_FONT = "roboto-small";
 
+	public static final String COLOR_SEMI_BLACK = "black_semi";
+
 	public static final String DRAWABLE_LOGO = "logo";
 	public static final String DRAWABLE_BLANK = "blank";
 	public static final String DRAWABLE_SEMI_BLANK = "blank75";
@@ -52,6 +54,7 @@ public interface SkinConstants {
 	public static final String DRAWABLE_BLACK_BG = "black_bg";
 	public static final String DRAWABLE_LIGHT_GRAY_BG = "light_gray_bg";
 	public static final String DRAWABLE_TRANSPARENT_48 = "transparent_48_bg";
+	public static final String DRAWABLE_TEXT_FIELD = "text_field";
 
 	public static final String STYLE_DEFAULT = "default";
 	public static final String STYLE_CONTEXT = "context";
@@ -68,6 +71,7 @@ public interface SkinConstants {
 	public static final String STYLE_CHECK = "check";
 	public static final String STYLE_GRAY = "gray";
 	public static final String STYLE_MARKER = "marker";
+	public static final String STYLE_COLOR_REDUCED = "color_reduced";
 
 	public static final String TABLET_GAME = "tablet_game";
 	public static final String TABLET_CARD = "tablet_card";

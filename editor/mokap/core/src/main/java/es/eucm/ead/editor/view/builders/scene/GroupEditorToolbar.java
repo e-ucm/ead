@@ -279,6 +279,11 @@ public class GroupEditorToolbar extends MultiWidget implements ModelView {
 		transform.add(WidgetBuilder.toolbarIconWithMenu(SkinConstants.IC_MORE,
 				buildTransformContextMenu(i18N)));
 
+		transform.pack();
+		textFontPane.setOrigin(textFontPane.getWidth()
+				- (transform.getWidth() - multiButton.getX()),
+				textFontPane.getHeight());
+
 		return transform;
 	}
 
