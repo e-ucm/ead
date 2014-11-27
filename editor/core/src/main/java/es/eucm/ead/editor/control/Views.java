@@ -251,6 +251,8 @@ public class Views implements ModelListener<LoadEvent> {
 				prepareView(view);
 
 				viewsContainer.clearChildren();
+				// Cancel all touches
+				viewsContainer.getStage().cancelTouchFocus();
 				viewsContainer.addActor(view);
 
 				if (view instanceof Layout) {

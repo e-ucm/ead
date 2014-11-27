@@ -71,13 +71,17 @@ public class ProjectScenesGallery extends ScenesGallery {
 		addListener(new LongPressListener() {
 			@Override
 			public void longPress(float x, float y) {
-				getStage().cancelTouchFocus();
-				Actor actor = EngineUtils.getDirectChild(gallery.getGrid(),
-						hit(x, y, true));
-				if (actor instanceof Cell) {
-					Tile tile = (Tile) ((Cell) actor).getActor();
-					controller.action(EditScene.class, tile.getName(), false);
-					controller.action(ShowModal.class, sceneActions, x, y);
+				// If the view is still visible
+				if (getStage() != null) {
+					getStage().cancelTouchFocus();
+					Actor actor = EngineUtils.getDirectChild(gallery.getGrid(),
+							hit(x, y, true));
+					if (actor instanceof Cell) {
+						Tile tile = (Tile) ((Cell) actor).getActor();
+						controller.action(EditScene.class, tile.getName(),
+								false);
+						controller.action(ShowModal.class, sceneActions, x, y);
+					}
 				}
 			}
 		});
