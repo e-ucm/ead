@@ -40,6 +40,7 @@ import ashley.core.Component;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.Group;
+import com.badlogic.gdx.scenes.scene2d.ui.Container;
 import com.badlogic.gdx.utils.Pools;
 import com.badlogic.gdx.utils.SerializationException;
 import com.badlogic.gdx.utils.reflect.ClassReflection;
@@ -232,9 +233,7 @@ public class ComponentLoader {
 					if (control instanceof Group) {
 						entity.setGroup((Group) control);
 					} else {
-						Group controlContainer = new Group();
-						controlContainer.addActor(control);
-						entity.setGroup(controlContainer);
+						entity.setGroup(new Container<Actor>(control).fill());
 					}
 				}
 

@@ -59,10 +59,6 @@ public class SelectionBox extends Group {
 
 	private Drawable selectedBackground;
 
-	private float initialPinchRotation;
-
-	private float initialRotation;
-
 	private GroupEditor groupEditor;
 
 	private GroupEditorStyle style;
@@ -91,15 +87,9 @@ public class SelectionBox extends Group {
 	}
 
 	@Override
-	public void act(float delta) {
-		if (target.getActions().size > 0) {
-			readTargetBounds();
-		}
-	}
-
-	public void setInitialPinchRotation(float initialPinchRotation) {
-		this.initialPinchRotation = initialPinchRotation;
-		this.initialRotation = getRotation();
+	public void draw(Batch batch, float parentAlpha) {
+		readTargetBounds();
+		super.draw(batch, parentAlpha);
 	}
 
 	public void selected() {
@@ -121,12 +111,6 @@ public class SelectionBox extends Group {
 
 	public boolean isMoving() {
 		return state == State.MOVING;
-	}
-
-	public void updateRotation(float degrees) {
-		super.setRotation(initialRotation + (degrees - initialPinchRotation)
-				* 2.0f);
-		target.setRotation(getRotation());
 	}
 
 	@Override

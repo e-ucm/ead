@@ -48,8 +48,6 @@ import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.utils.Drawable;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.Pools;
-
-import es.eucm.ead.editor.utils.GeometryUtils;
 import es.eucm.ead.editor.view.builders.scene.groupeditor.GroupEditor.GroupEvent.Type;
 import es.eucm.ead.editor.view.builders.scene.groupeditor.input.EditStateMachine;
 import es.eucm.ead.editor.view.widgets.AbstractWidget;
@@ -118,9 +116,6 @@ public class GroupEditor extends AbstractWidget {
 		}
 		this.rootGroup = rootGroup;
 		if (rootGroup != null) {
-			for (Actor actor : rootGroup.getChildren()) {
-				GeometryUtils.adjustGroup(actor);
-			}
 			addActorAt(0, rootGroup);
 		}
 	}

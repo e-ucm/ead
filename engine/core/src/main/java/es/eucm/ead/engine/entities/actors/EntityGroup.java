@@ -36,7 +36,10 @@
  */
 package es.eucm.ead.engine.entities.actors;
 
+import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.Group;
+import com.badlogic.gdx.scenes.scene2d.ui.WidgetGroup;
+import com.badlogic.gdx.scenes.scene2d.utils.Layout;
 import es.eucm.ead.engine.entities.EngineEntity;
 
 /**
@@ -46,35 +49,10 @@ import es.eucm.ead.engine.entities.EngineEntity;
  * 
  * Created by Javier Torrente on 4/07/14.
  */
-public class EntityGroup extends Group {
+public class EntityGroup extends WidgetGroup {
 
 	@Override
-	public void setX(float x) {
-		if (x != getX()) {
-			super.setX(x);
-			updateBoundingArea();
-		}
-	}
-
-	@Override
-	public void setY(float y) {
-		if (y != getY()) {
-			super.setY(y);
-			updateBoundingArea();
-		}
-	}
-
-	@Override
-	public void setPosition(float x, float y) {
-		if (x != getX() || y != getY()) {
-			super.setPosition(x, y);
-			updateBoundingArea();
-		}
-	}
-
-	@Override
-	public void moveBy(float x, float y) {
-		super.moveBy(x, y);
+	protected void positionChanged() {
 		updateBoundingArea();
 	}
 
@@ -165,6 +143,15 @@ public class EntityGroup extends Group {
 	@Override
 	protected void childrenChanged() {
 		updateBoundingArea();
+	}
+
+	@Override
+	public void layout() {
+		for (Actor a : getChildren()) {
+			if (a instanceof Layout) {
+				((Layout) a).pack();
+			}
+		}
 	}
 
 	/*
