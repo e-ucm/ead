@@ -1,0 +1,35 @@
+{
+    "additionalProperties": false,
+    "javaType": "es.eucm.ead.schema.editor.components.repo.response.SearchResponse",
+    "properties": {
+
+        "message":{
+            "type":"string",
+            "description":"Error message, in case anything fails"
+        },
+
+        "searchCursor":{
+            "type":"string",
+            "description":"Web safe version of AppEngine's cursor ({@link https://cloud.google.com/appengine/docs/java/javadoc/com/google/appengine/api/datastore/Cursor}). Used for paginated result retrieval"
+        },
+
+        "count":{
+            "type":"integer",
+            "description":"The number of results returned in this response. Equivalent to results.size()"
+        },
+        "total":{
+            "type":"number",
+            "description":"Total number of results contained in the query. Can be greater or equals than {@link #count}."
+        },
+
+        "results":{
+            "type":"array",
+            "items":{
+                "$ref":"../repoelement.json"
+            },
+            "description":"List of elements contained in the response provided by the backend"
+        }
+    },
+    "type": "object",
+    "description": "Object containing the response to a search query"
+}
