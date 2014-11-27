@@ -361,6 +361,15 @@ public class GroupEditorToolbar extends MultiWidget implements ModelView {
 		IconButton save = WidgetBuilder.toolbarIcon(SkinConstants.IC_CHECK,
 				i18N.m("drawing.save"));
 
+		save.addListener(new ClickListener() {
+			@Override
+			public void clicked(InputEvent event, float x, float y) {
+				sceneEditor.setMode(Mode.COMPOSE);
+				controller.action(AddPaintedElement.class, brushStrokes);
+				brushStrokes.hide(false);
+			}
+		});
+
 		draw.add(save);
 
 		IconButton mode = WidgetBuilder.icon(SkinConstants.IC_BRUSH,
@@ -401,20 +410,14 @@ public class GroupEditorToolbar extends MultiWidget implements ModelView {
 
 		draw.add(close);
 
-		draw.addListener(new ClickListener() {
+		close.addListener(new ClickListener() {
 			@Override
 			public void clicked(InputEvent event, float x, float y) {
-				String name = event.getTarget().getName();
-				if (SkinConstants.IC_CHECK.equals(name)) {
-					sceneEditor.setMode(Mode.COMPOSE);
-					controller.action(AddPaintedElement.class, brushStrokes);
-					brushStrokes.hide(false);
-				} else if (SkinConstants.IC_CLOSE.equals(name)) {
-					sceneEditor.setMode(Mode.COMPOSE);
-					brushStrokes.hide(true);
-				}
+				sceneEditor.setMode(Mode.COMPOSE);
+				brushStrokes.hide(true);
 			}
 		});
+
 		return draw;
 	}
 
