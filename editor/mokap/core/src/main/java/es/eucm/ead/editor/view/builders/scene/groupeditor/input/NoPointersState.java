@@ -56,7 +56,9 @@ public class NoPointersState extends InputState {
 			stateMachine.unsetActors();
 		} else if (target instanceof SelectionBox) {
 			stateMachine.setSelectionBox((SelectionBox) target);
-			stateMachine.setState(SelectionBoxPressedState.class);
+			if (!stateMachine.isOnlySelection()) {
+				stateMachine.setState(SelectionBoxPressedState.class);
+			}
 		} else {
 			stateMachine.setActor(target);
 			stateMachine.setState(ActorPressedState.class);
@@ -74,5 +76,10 @@ public class NoPointersState extends InputState {
 			stateMachine.clearSelection();
 			stateMachine.fireSelection();
 		}
+	}
+
+	@Override
+	public void longPress(float x, float y) {
+		stateMachine.showLayerSelector(x, y);
 	}
 }

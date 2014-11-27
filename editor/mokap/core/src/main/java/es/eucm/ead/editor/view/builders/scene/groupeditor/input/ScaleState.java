@@ -96,7 +96,8 @@ public class ScaleState extends InputState {
 	public void enter() {
 		pointers = 2;
 		rotationCancelled = false;
-		if (stateMachine.getSelection().size == 0) {
+		if (stateMachine.getSelection().size == 0
+				|| stateMachine.isOnlySelection()) {
 			stateMachine.setState(NoPointersState.class);
 		} else {
 			Actor actor = stateMachine.getSelection().get(0);

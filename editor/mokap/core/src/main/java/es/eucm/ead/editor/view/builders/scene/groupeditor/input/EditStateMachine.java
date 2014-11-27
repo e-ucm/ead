@@ -90,6 +90,10 @@ public class EditStateMachine extends InputStateMachine {
 		return groupEditor.isMultipleSelection();
 	}
 
+	public boolean isOnlySelection() {
+		return groupEditor.isOnlySelection();
+	}
+
 	void setSelectionBox(SelectionBox selectionBox) {
 		this.selectionBox = selectionBox;
 		this.actor = selectionBox.getTarget();
