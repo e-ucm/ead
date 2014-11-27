@@ -36,8 +36,11 @@
  */
 package es.eucm.ead.editor.view.widgets.baseview;
 
+import com.badlogic.gdx.scenes.scene2d.Actor;
+import com.badlogic.gdx.scenes.scene2d.Group;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.Touchable;
+import com.badlogic.gdx.scenes.scene2d.ui.ScrollPane;
 
 import es.eucm.ead.editor.view.listeners.GestureListener;
 import es.eucm.ead.editor.view.widgets.AbstractWidget;
@@ -63,6 +66,16 @@ abstract class Panel extends AbstractWidget {
 
 			public void dragStart(float x, float y) {
 				xLocked = Math.abs(touchDownX - x) < Math.abs(touchDownY - y);
+				if (xLocked) {
+					getStage().cancelTouchFocus(Panel.this);
+					ScrollPane scrollPane = findScrollPane(Panel.this);
+					if (scrollPane != null) {
+						getStage().cancelTouchFocusExcept(
+								scrollPane.getListeners().first(), scrollPane);
+					}
+				} else {
+					getStage().cancelTouchFocusExcept(this, Panel.this);
+				}
 			}
 
 			@Override
@@ -99,6 +112,22 @@ abstract class Panel extends AbstractWidget {
 				}
 			}
 		});
+	}
+
+	private ScrollPane findScrollPane(Group root) {
+		for (int i = root.getChildren().size - 1; i >= 0; i--) {
+			Actor actor = root.getChildren().get(i);
+			if (actor instanceof Group) {
+				ScrollPane scrollPane = findScrollPane((Group) actor);
+				if (scrollPane != null) {
+					return scrollPane;
+				}
+			}
+		}
+		if (root instanceof ScrollPane) {
+			return (ScrollPane) root;
+		}
+		return null;
 	}
 
 	public boolean isHidden() {

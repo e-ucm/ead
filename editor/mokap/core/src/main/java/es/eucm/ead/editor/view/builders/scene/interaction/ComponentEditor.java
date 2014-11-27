@@ -77,6 +77,7 @@ public abstract class ComponentEditor<T extends ModelComponent> extends
 			Controller cont) {
 		super(new LinearLayout(false));
 		setScrollingDisabled(true, false);
+		setCancelTouchFocus(false);
 		list = (LinearLayout) getWidget();
 		this.icon = icon;
 		this.controller = cont;
