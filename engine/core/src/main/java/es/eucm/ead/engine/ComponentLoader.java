@@ -233,7 +233,10 @@ public class ComponentLoader {
 					if (control instanceof Group) {
 						entity.setGroup((Group) control);
 					} else {
-						entity.setGroup(new Container<Actor>(control).fill());
+						Container<Actor> container = new Container<Actor>(
+								control).fill();
+						container.setTransform(true);
+						entity.setGroup(container);
 					}
 				}
 
