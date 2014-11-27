@@ -37,16 +37,19 @@
 package es.eucm.ead.engine.utils;
 
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
+import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.Group;
 import com.badlogic.gdx.utils.Array;
-
 import es.eucm.ead.engine.assets.Assets;
 import es.eucm.ead.engine.variables.VariablesManager;
 import es.eucm.ead.schema.data.Parameter;
 import es.eucm.ead.schema.data.Parameters;
 
 public class EngineUtils {
+
+	private static final Vector2 tmp1 = new Vector2(), tmp2 = new Vector2(),
+			tmp3 = new Vector2(), tmp4 = new Vector2();
 
 	public static <T extends Parameters> T buildWithParameters(Assets assets,
 			VariablesManager variablesManager, T parameters) {
@@ -132,5 +135,94 @@ public class EngineUtils {
 			firstChild = firstChild.getParent();
 		}
 		return firstChild;
+	}
+
+	/**
+	 * Calculate the bounds of the given actors as a group
+	 *
+	 * @param actors
+	 *            the actors
+	 * @param resultOrigin
+	 *            result origin of the bounds
+	 * @param resultSize
+	 *            result size of the bounds
+	 */
+	public static void calculateBounds(Array<Actor> actors,
+			Vector2 resultOrigin, Vector2 resultSize) {
+		resultOrigin.set(0, 0);
+		resultSize.set(0, 0);
+		if (actors.size == 0) {
+			return;
+		}
+
+		float minX = Float.POSITIVE_INFINITY;
+		float minY = Float.POSITIVE_INFINITY;
+		float maxX = Float.NEGATIVE_INFINITY;
+		float maxY = Float.NEGATIVE_INFINITY;
+		for (Actor actor : actors) {
+			tmp1.set(0, 0);
+			tmp2.set(actor.getWidth(), 0);
+			tmp3.set(0, actor.getHeight());
+			tmp4.set(actor.getWidth(), actor.getHeight());
+			actor.localToParentCoordinates(tmp1);
+			actor.localToParentCoordinates(tmp2);
+			actor.localToParentCoordinates(tmp3);
+			actor.localToParentCoordinates(tmp4);
+
+			minX = Math.min(minX, Math.min(tmp1.x,
+					Math.min(tmp2.x, Math.min(tmp3.x, tmp4.x))));
+			minY = Math.min(minY, Math.min(tmp1.y,
+					Math.min(tmp2.y, Math.min(tmp3.y, tmp4.y))));
+			maxX = Math.max(maxX, Math.max(tmp1.x,
+					Math.max(tmp2.x, Math.max(tmp3.x, tmp4.x))));
+			maxY = Math.max(maxY, Math.max(tmp1.y,
+					Math.max(tmp2.y, Math.max(tmp3.y, tmp4.y))));
+		}
+		resultOrigin.set(minX, minY);
+		resultSize.set(maxX - minX, maxY - minY);
+	}
+
+	/**
+	 * Adjusts the position and size of the given group to its children
+	 */
+	public static void adjustGroup(Actor root) {
+		if (!(root instanceof Group)) {
+			return;
+		}
+
+		Group group = (Group) root;
+		if (group.getChildren().size == 0) {
+			return;
+		}
+
+		for (Actor actor : group.getChildren()) {
+			if (actor instanceof Group) {
+				adjustGroup(actor);
+			}
+		}
+
+		calculateBounds(group.getChildren(), tmp1, tmp2);
+
+		if (tmp1.x != 0 || tmp1.y != 0 || tmp2.x != group.getWidth()
+				|| tmp2.y != group.getHeight()) {
+			/*
+			 * minX and minY are the new origin (new 0, 0), so everything inside
+			 * the group must be translated that much.
+			 */
+			for (Actor actor : group.getChildren()) {
+				actor.setPosition(actor.getX() - tmp1.x, actor.getY() - tmp1.y);
+			}
+
+			/*
+			 * Now, we calculate the current origin (0, 0) and the new origin
+			 * (minX, minY), and group is translated by that difference.
+			 */
+			group.localToParentCoordinates(tmp3.set(0, 0));
+			group.localToParentCoordinates(tmp4.set(tmp1.x, tmp1.y));
+			tmp4.sub(tmp3);
+			group.setBounds(group.getX() + tmp4.x, group.getY() + tmp4.y,
+					tmp2.x, tmp2.y);
+			group.setOrigin(group.getWidth() / 2.0f, group.getHeight() / 2.0f);
+		}
 	}
 }

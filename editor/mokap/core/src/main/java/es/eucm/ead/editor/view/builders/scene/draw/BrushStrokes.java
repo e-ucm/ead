@@ -51,15 +51,14 @@ import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.InputListener;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.Pools;
-
 import es.eucm.ead.editor.assets.EditorGameAssets;
 import es.eucm.ead.editor.control.Controller;
-import es.eucm.ead.editor.utils.GeometryUtils;
 import es.eucm.ead.editor.view.builders.scene.SceneEditor;
 import es.eucm.ead.editor.view.builders.scene.draw.MeshHelper.PixmapRegion;
 import es.eucm.ead.editor.view.widgets.AbstractWidget;
 import es.eucm.ead.engine.I18N;
 import es.eucm.ead.engine.entities.EngineEntity;
+import es.eucm.ead.engine.utils.EngineUtils;
 import es.eucm.ead.schema.entities.ModelEntity;
 import es.eucm.ead.schemax.GameStructure;
 
@@ -228,7 +227,7 @@ public class BrushStrokes extends AbstractWidget {
 
 			actors.clear();
 			actors.add(engineGroup);
-			GeometryUtils.calculateBounds(actors, resultOrigin, resultSize);
+			EngineUtils.calculateBounds(actors, resultOrigin, resultSize);
 
 			engineGroup.remove();
 

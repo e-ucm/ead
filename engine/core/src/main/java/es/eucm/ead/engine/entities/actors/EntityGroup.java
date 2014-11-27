@@ -39,8 +39,8 @@ package es.eucm.ead.engine.entities.actors;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.Group;
 import com.badlogic.gdx.scenes.scene2d.ui.WidgetGroup;
-import com.badlogic.gdx.scenes.scene2d.utils.Layout;
 import es.eucm.ead.engine.entities.EngineEntity;
+import es.eucm.ead.engine.utils.EngineUtils;
 
 /**
  * Convenient extension of {@link Group} that regenerates the holding entity's
@@ -149,9 +149,7 @@ public class EntityGroup extends WidgetGroup {
 	@Override
 	public void layout() {
 		for (Actor a : getChildren()) {
-			if (a instanceof Layout) {
-				((Layout) a).pack();
-			}
+			EngineUtils.adjustGroup(a);
 		}
 	}
 
