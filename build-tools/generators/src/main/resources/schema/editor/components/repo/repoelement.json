@@ -5,6 +5,17 @@
         "$ref": "../../../engine/components/component.json"
     },
     "properties": {
+
+        "entityRef":{
+            "type":"string",
+            "description":"Number provided by the backend that uniquely identifies each element. Should only filled by the backend."
+        },
+
+        "contentsUrl":{
+            "type":"string",
+            "description":"Absolute url pointing to the zip with the contents of the element. Should be filled in by the backend when building a response, who knows how to store and retrieve binary files for elements."
+        },
+
         "authorName":{
             "type":"string",
             "description":"The name of the person or organizations that created the resource. For crediting and licensing."
@@ -99,21 +110,30 @@
             "items":{
                 "type":"string"
             },
-            "description":"List with relative paths to the thumbnails this element has. Deprecated. Temporarily used for backwards-compatibility."
+            "description":"List with relative paths to the thumbnails this element has. Deprecated. Temporarily used for backwards-compatibility. {@link #thumbnailUrlList} should be used instead."
         },
+
+        "thumbnailUrlList":{
+            "type":"array",
+            "items":{
+                "type":"string"
+            },
+            "description":"List with absolute urls pointing to the different versions of the thumbnails available for this element. This information should be added at runtime by the backend, who knows how to retrieve binary files associated to a given element."
+        },
+
         "thumbnailWidthList":{
             "type":"array",
             "items":{
                 "type":"number"
             },
-            "description":"List with the width of the thumbnails. Deprecated. Temporarily used for backwards-compatibility."
+            "description":"List with the width of the thumbnails. Should be filled in by the backend when building the response."
         },
         "thumbnailHeightList":{
             "type":"array",
             "items":{
                 "type":"number"
             },
-            "description":"List with the height of the thumbnails. Deprecated. Temporarily used for backwards-compatibility."
+            "description":"List with the height of the thumbnails. Should be filled in by the backend when building the response."
         }
 
     },
