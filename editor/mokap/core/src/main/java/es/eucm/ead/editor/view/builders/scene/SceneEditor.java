@@ -37,6 +37,7 @@
 package es.eucm.ead.editor.view.builders.scene;
 
 import com.badlogic.gdx.Gdx;
+
 import es.eucm.ead.editor.control.Commands;
 import es.eucm.ead.editor.control.Commands.CommandListener;
 import es.eucm.ead.editor.control.Commands.CommandsStack;
@@ -191,8 +192,7 @@ public class SceneEditor extends BaseView implements ModelView,
 			setMode(Mode.COMPOSE);
 			brushStrokes.hide(true);
 			return true;
-		} else if (mode == Mode.COMPOSE
-				&& selection.get(Selection.SCENE_ELEMENT).length > 0) {
+		} else if (selection.get(Selection.SCENE_ELEMENT).length > 0) {
 			controller.action(SetSelection.class, Selection.EDITED_GROUP,
 					Selection.SCENE_ELEMENT);
 			return true;

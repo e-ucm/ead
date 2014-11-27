@@ -75,6 +75,13 @@ public class LayerSelector extends ContextMenu {
 			public void clicked(InputEvent event, float x, float y) {
 				Actor target = event.getTarget();
 				if (target instanceof Layer) {
+					if (!groupEditor.isMultipleSelection()) {
+						for (Actor layer : layers.getChildren()) {
+							if (layer != target) {
+								((Layer) layer).setChecked(false);
+							}
+						}
+					}
 					groupEditor.addToSelection(((Layer) target).actor);
 					groupEditor.fireSelection();
 				}
