@@ -83,7 +83,7 @@ public class SelectionBox extends Group {
 				target.getHeight());
 		setScale(target.getScaleX(), target.getScaleY());
 		setRotation(target.getRotation());
-		setOrigin(target.getWidth() / 2.0f, target.getHeight() / 2.0f);
+		setOrigin(target.getOriginX(), target.getOriginY());
 	}
 
 	@Override

@@ -281,6 +281,8 @@ public class Q {
 
 		entity.setX((gameData.getWidth() - width) / 2);
 		entity.setY((gameData.getHeight() - height) / 2);
+		entity.setOriginX(width / 2.0f);
+		entity.setOriginY(height / 2.0f);
 
 		entity.getComponents().addAll(components);
 

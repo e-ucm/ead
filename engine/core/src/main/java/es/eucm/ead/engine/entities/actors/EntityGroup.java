@@ -143,6 +143,7 @@ public class EntityGroup extends WidgetGroup {
 	@Override
 	protected void childrenChanged() {
 		updateBoundingArea();
+		super.childrenChanged();
 	}
 
 	@Override

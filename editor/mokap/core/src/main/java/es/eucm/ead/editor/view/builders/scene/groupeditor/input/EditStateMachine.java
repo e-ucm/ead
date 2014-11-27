@@ -106,7 +106,8 @@ public class EditStateMachine extends InputStateMachine {
 
 	void setActor(Actor actor) {
 		this.selectionBox = null;
-		this.actor = actor;
+		this.actor = EngineUtils.getDirectChild(groupEditor.getRootGroup(),
+				actor);
 	}
 
 	void pressActor() {
