@@ -6,12 +6,12 @@
 #
 # Each '{}' will be interpreted as a placeholder for the next argument
 
-
 accept = Aceptar
 animation.in = Animaciones de entrada
 application.title = Mokap
 big = Grande
 bring.to.front = Traer al frente
+brush = Pincel
 cancel = Cancelar
 clear.selection = Quitar selección
 continue = Continuar
@@ -43,7 +43,6 @@ link = Enlace
 mirror.horizontal = Reflejo horizontal
 mirror.vertical = Reflejo vertical
 paste = Pegar
-paint = Pintar
 play.back = Pulsa botón 'Back' para salir
 picture = Fotografía
 project = Proyecto

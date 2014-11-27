@@ -450,7 +450,7 @@ public class GroupEditorToolbar extends MultiWidget implements ModelView {
 
 	private Actor buildDrawModeContextMenu(I18N i18N) {
 		ContextMenu contextMenu = WidgetBuilder.iconLabelContextPanel(
-				SkinConstants.IC_BRUSH, i18N.m("paint"),
+				SkinConstants.IC_BRUSH, i18N.m("brush"),
 				SkinConstants.IC_RUBBER, i18N.m("erase"));
 		contextMenu.pack();
 		contextMenu.setOriginY(contextMenu.getHeight());
