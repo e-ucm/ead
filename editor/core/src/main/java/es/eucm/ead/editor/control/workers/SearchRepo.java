@@ -37,6 +37,7 @@
 package es.eucm.ead.editor.control.workers;
 
 import java.io.IOException;
+import java.util.List;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Net;
@@ -127,7 +128,10 @@ public class SearchRepo extends Worker {
 		}
 		RepoElement elem = repoElems.removeIndex(0);
 
-		String thumbnailURL = elem.getThumbnail();
+		Array<String> thumbnailPaths = elem.getThumbnailPathList();
+
+		String thumbnailURL = (thumbnailPaths == null || thumbnailPaths.size == 0) ? null
+				: thumbnailPaths.first();
 
 		byte[] httpResponse = null;
 		try {

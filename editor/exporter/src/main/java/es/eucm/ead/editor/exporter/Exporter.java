@@ -50,7 +50,7 @@ import com.badlogic.gdx.utils.reflect.ClassReflection;
 import com.badlogic.gdx.utils.reflect.Field;
 import com.badlogic.gdx.utils.reflect.ReflectionException;
 
-import es.eucm.ead.editor.utils.ZipUtils;
+import es.eucm.ead.engine.utils.ZipUtils;
 import es.eucm.ead.schema.components.ModelComponent;
 import es.eucm.ead.schema.components.behaviors.Behavior;
 import es.eucm.ead.schema.components.behaviors.events.Init;
@@ -332,7 +332,7 @@ public class Exporter {
 			FileHandle entityFile = destiny.child(currentEntry.getKey());
 			entityFile.parent().mkdirs();
 			// Save
-			json.toJson(currentEntity, entityFile);
+			json.toJson(currentEntity, null, entityFile);
 		}
 	}
 

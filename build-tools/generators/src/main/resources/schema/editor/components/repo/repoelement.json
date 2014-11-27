@@ -5,39 +5,117 @@
         "$ref": "../../../engine/components/component.json"
     },
     "properties": {
-        "thumbnail": {
-            "type": "string",
-            "description": "Relative url where the thumbnail for this element is placed"
+        "authorName":{
+            "type":"string",
+            "description":"The name of the person or organizations that created the resource. For crediting and licensing."
         },
-        "author": {
-            "$ref":"repoauthor.json",
-            "description": "Information for the author that created the resource"
+        "authorUrl":{
+            "type":"string",
+            "description":"URL associated to the author of the resource. Can be used for author recognition"
         },
-        "license": {
-            "$ref": "repolicense.json",
-            "description": "Information associated to the license of the resource, as provided by the author. Only creative commons and public domain licenses supported."
+        "publisher":{
+            "type":"string",
+            "description":"Organization that published the element (e.g. mokap, freepik, openclipart)"
         },
+        "libraryId":{
+            "type":"string",
+            "description":"Id of the library this element belongs to. Useful to retrieve similar items."
+        },
+        "version":{
+            "type":"string",
+            "description":"An integer value that determines the version, generated from date: YYYYMMDDHH (e.g. 2014092713)."
+        },
+        "licenseName":{
+            "type":"string",
+            "description":"String value representing the name of the license that applies to this element. Can either be one of the default common open licenses specified in {@link es.eucm.ead.schema.editor.components.repo.licenses.DefaultLicenses}, or a custom name. If a default license (eg. cc-by) is used, fields {@link #licensePrice} and {@link #licenseTerms} do not apply and should not be filled in."
+        },
+        "licensePrice":{
+            "type":"string",
+            "description":"Float value representing the fee the customer has to pay for the item. Only applies if a custom license is used"
+        },
+        "licenseTerms":{
+            "type":"string",
+            "description":"String representing the legal text associated to the license. Only applies if a custom license is used."
+        },
+
+
         "width":{
-            "type": "number"
+            "type":"number",
+            "description":"Float value representing the width of the element on screen"
         },
         "height":{
-            "type": "number"
+            "type":"number",
+            "description":"Float value representing the height of the element on screen"
         },
-        "description": {
-            "$ref":"i18nstrings.json",
-            "description": "A brief description of the resource, including what kind of contents it has, and how many (e.g. number of animations, frames, etc.)"
-        },
-        "name":{
-            "$ref":"i18nstrings.json",
-            "description": "A name for the item, if necessary"
-        },
-        "tags":{
-            "type": "array",
+
+        "categoryList":{
+            "type":"array",
             "items":{
-                "$ref":"i18nstrings.json"
+                "$ref":"repocategories.json"
             },
-            "description": "A list of tags - useful for searching and grouping resources"
+            "description":"An array with the categories this element should be listed on."
+        },
+
+        "tagList":{
+            "type":"array",
+            "items":{
+                "type":"string"
+            },
+            "description":"A list of tags. Useful for searching"
+        },
+
+        "descriptionList":{
+            "type":"array",
+            "items":{
+                "type":"string"
+            },
+            "description":"List with descriptions (Strings). Each description is a brief description of the resource, including what kind of contents it has, and how many (e.g. number of animations, frames, etc.), in a different language. The language of each description is specified in param {@link #descriptionI18nList}."
+        },
+        "descriptionI18nList":{
+            "type":"array",
+            "items":{
+                "type":"string"
+            },
+            "description":"List with language codes (Strings) for the descriptions defined in {@link #descriptionList}. Example: [es_ES,en_EN] indicates that the first element in descriptionList is in Spanish, while the second is in English."
+        },
+
+        "nameList":{
+            "type":"array",
+            "items":{
+                "type":"string"
+            },
+            "description":"List with names (Strings). Each name is provided in a different language. The language of each name is specified in param {@link #nameI18nList}."
+        },
+        "nameI18nList":{
+            "type":"array",
+            "items":{
+                "type":"string"
+            },
+            "description":"List with language codes (Strings) for the names defined in {@link #nameList}. "
+        },
+
+        "thumbnailPathList":{
+            "type":"array",
+            "items":{
+                "type":"string"
+            },
+            "description":"List with relative paths to the thumbnails this element has. Deprecated. Temporarily used for backwards-compatibility."
+        },
+        "thumbnailWidthList":{
+            "type":"array",
+            "items":{
+                "type":"number"
+            },
+            "description":"List with the width of the thumbnails. Deprecated. Temporarily used for backwards-compatibility."
+        },
+        "thumbnailHeightList":{
+            "type":"array",
+            "items":{
+                "type":"number"
+            },
+            "description":"List with the height of the thumbnails. Deprecated. Temporarily used for backwards-compatibility."
         }
+
     },
     "type": "object",
     "description": "A simple editor component for elements that are meant to be shared and reused through the repository."

@@ -73,7 +73,7 @@ public class MokapController extends Controller {
 			return maxDpi;
 		}
 
-		private static String getDpi() {
+		public static Dpi getDpi() {
 			float ppcX = Gdx.graphics.getPpcX();
 			Gdx.app.error("PX", ppcX + "ppc");
 
@@ -89,7 +89,11 @@ public class MokapController extends Controller {
 			} else if (ppcX <= 84.0f) {
 				dpi = XXHDPI;
 			}
-			return dpi.dpi;
+			return dpi;
+		}
+
+		public static String getDpiString() {
+			return getDpi().dpi;
 		}
 	}
 
@@ -140,7 +144,7 @@ public class MokapController extends Controller {
 
 	@Override
 	protected ApplicationAssets createApplicationAssets(Files files) {
-		String dpi = Dpi.getDpi();
+		String dpi = Dpi.getDpiString();
 		String skinPath = "skins/mokap-" + dpi + "/";
 		return new ApplicationAssets(files, skinPath + "skin");
 	}

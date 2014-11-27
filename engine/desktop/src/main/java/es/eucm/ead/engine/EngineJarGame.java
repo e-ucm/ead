@@ -36,6 +36,7 @@
  */
 package es.eucm.ead.engine;
 
+import com.badlogic.gdx.Application;
 import com.badlogic.gdx.Gdx;
 
 import javax.imageio.ImageIO;
@@ -94,6 +95,7 @@ public class EngineJarGame {
 		}
 		// Run the game
 		engine.run(GAME_PATH, true);
+		Gdx.app.setLogLevel(Application.LOG_DEBUG);
 	}
 
 	/**

@@ -36,7 +36,9 @@
  */
 package es.eucm.ead.engine.demos;
 
+import com.badlogic.gdx.backends.lwjgl.LwjglNativesLoader;
 import es.eucm.ead.editor.demobuilder.EditorDemoBuilder;
+import es.eucm.ead.engine.mock.MockApplication;
 import es.eucm.ead.engine.utils.SwingEDTUtils;
 
 import javax.imageio.ImageIO;
@@ -190,6 +192,9 @@ public class DemoLauncher extends JFrame {
 	}
 
 	public static void main(String[] args) {
+		LwjglNativesLoader.load();
+		MockApplication.initStatics();
 		DemoLauncher launcher = new DemoLauncher();
+
 	}
 }

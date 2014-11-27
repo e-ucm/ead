@@ -77,9 +77,10 @@ public class SearchRepoTest extends WorkerTest implements WorkerListener {
 		repoElems = new Array<RepoElement>();
 		for (int i = 0; i < ELEMS; ++i) {
 			RepoElement elem = new RepoElement();
-			elem.setThumbnail(i + ".png");
+			String currentThumbnail = i + ".png";
+			elem.getThumbnailPathList().add(currentThumbnail);
 			repoElems.add(elem);
-			platform.putHttpResponse(elem.getThumbnail(), bytes);
+			platform.putHttpResponse(currentThumbnail, bytes);
 		}
 
 		platform.putHttpResponse(URL, gameAssets.toJson(repoElems, Array.class));
@@ -102,8 +103,8 @@ public class SearchRepoTest extends WorkerTest implements WorkerListener {
 
 	@Override
 	public void result(Object... results) {
-		assertEquals(repoElems.removeIndex(0).getThumbnail(),
-				((RepoElement) results[0]).getThumbnail());
+		assertEquals(repoElems.removeIndex(0).getThumbnailPathList().first(),
+				((RepoElement) results[0]).getThumbnailPathList().first());
 		assertTrue((results[1] instanceof Pixmap));
 	}
 
