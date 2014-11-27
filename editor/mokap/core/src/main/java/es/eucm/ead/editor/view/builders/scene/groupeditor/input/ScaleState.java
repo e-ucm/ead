@@ -36,11 +36,12 @@
  */
 package es.eucm.ead.editor.view.builders.scene.groupeditor.input;
 
-import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
+import com.badlogic.gdx.utils.Array;
+
 import es.eucm.ead.editor.view.builders.scene.groupeditor.inputstatemachine.InputState;
 import es.eucm.ead.editor.view.widgets.WidgetBuilder;
 
@@ -66,27 +67,13 @@ public class ScaleState extends InputState {
 
 	private boolean rotationCancelled;
 
-	// Scale
-
-	private float signumX;
-
-	private float signumY;
-
-	private float scale1X;
-
-	private float scale1Y;
+	private int pointers = 0;
 
 	private float distance1;
 
-	private float size;
-
-	private float aspectRatio;
-
-	private float denominator;
-
 	private float initialPointerRotation;
 
-	private int pointers = 0;
+	private Array<ActorTransformation> transformations = new Array<ActorTransformation>();
 
 	public ScaleState(EditStateMachine stateMachine) {
 		this.stateMachine = stateMachine;
@@ -100,44 +87,28 @@ public class ScaleState extends InputState {
 				|| stateMachine.isOnlySelection()) {
 			stateMachine.setState(NoPointersState.class);
 		} else {
-			Actor actor = stateMachine.getSelection().get(0);
-			float scaleX = actor.getScaleX();
-			float scaleY = actor.getScaleY();
-			float width = actor.getWidth();
-			float height = actor.getHeight();
-
 			initialPointerRotation = temp.set(stateMachine.initialPointer1)
 					.sub(stateMachine.initialPointer2).angle();
 			scale = calculateState(stateMachine.initialPointer2,
 					stateMachine.initialPointer1);
 			switch (scale) {
 			case HORIZONTAL:
-				this.signumX = Math.signum(scaleX);
-				this.scale1X = Math.abs(scaleX);
 				distance1 = Math.abs(stateMachine.initialPointer2.x
 						- stateMachine.initialPointer1.x);
-				this.size = width;
 				break;
 			case VERTICAL:
-				this.signumY = Math.signum(scaleY);
-				this.scale1Y = Math.abs(scaleY);
 				distance1 = Math.abs(stateMachine.initialPointer2.y
 						- stateMachine.initialPointer1.y);
-				this.size = height;
 				break;
 			case DIAGONAL:
-				this.signumX = Math.signum(scaleX);
-				this.signumY = Math.signum(scaleY);
 				this.distance1 = temp.set(stateMachine.initialPointer2)
 						.sub(stateMachine.initialPointer1).len();
-				size = temp.set(width * scaleX, height * scaleY).len();
-				aspectRatio = Math.abs(scaleX / scaleY);
-				denominator = (float) Math.sqrt(width * width * aspectRatio
-						* aspectRatio + height * height);
 				break;
 			}
-			Gdx.app.debug("State", scale + "");
-
+			transformations.clear();
+			for (Actor actor : stateMachine.getSelection()) {
+				transformations.add(new ActorTransformation(actor));
+			}
 		}
 	}
 
@@ -183,10 +154,9 @@ public class ScaleState extends InputState {
 		}
 	}
 
-	public void updateTransformation() {
+	private void updateTransformation() {
 		Vector2 pointer1 = stateMachine.pointer1;
 		Vector2 pointer2 = stateMachine.pointer2;
-		Actor actor = stateMachine.getSelection().get(0);
 		if (Math.abs(distance1 - temp.set(pointer1).sub(pointer2).len()) > DISTANCE_CANCEL) {
 			rotationCancelled = true;
 		}
@@ -201,25 +171,10 @@ public class ScaleState extends InputState {
 			}
 		}
 
-		switch (scale) {
-		case HORIZONTAL:
-			actor.setScaleX(signumX
-					* (Math.abs(pointer2.x - pointer1.x) - distance1 + size
-							* scale1X) / size);
-			break;
-		case VERTICAL:
-			actor.setScaleY(signumY
-					* (Math.abs(pointer2.y - pointer1.y) - distance1 + size
-							* scale1Y) / size);
-			break;
-		case DIAGONAL:
-			float scaleY = Math.abs((size
-					+ temp.set(pointer1).sub(pointer2).len() - distance1)
-					/ denominator);
-			float scaleX = aspectRatio * scaleY;
-			actor.setScale(scaleX * signumX, scaleY * signumY);
-			break;
+		for (ActorTransformation actorTransformation : transformations) {
+			actorTransformation.updateTransformation();
 		}
+
 	}
 
 	private Scale calculateState(Vector2 initalPointer2, Vector2 initialPointer1) {
@@ -231,6 +186,78 @@ public class ScaleState extends InputState {
 			return Scale.VERTICAL;
 		}
 		return Scale.DIAGONAL;
+	}
+
+	public class ActorTransformation {
+
+		private Actor actor;
+
+		private float signumX;
+
+		private float signumY;
+
+		private float scale1X;
+
+		private float scale1Y;
+
+		private float size;
+
+		private float aspectRatio;
+
+		private float denominator;
+
+		public ActorTransformation(Actor actor) {
+			this.actor = actor;
+			float scaleX = actor.getScaleX();
+			float scaleY = actor.getScaleY();
+			float width = actor.getWidth();
+			float height = actor.getHeight();
+
+			switch (scale) {
+			case HORIZONTAL:
+				this.signumX = Math.signum(scaleX);
+				this.scale1X = Math.abs(scaleX);
+				this.size = width;
+				break;
+			case VERTICAL:
+				this.signumY = Math.signum(scaleY);
+				this.scale1Y = Math.abs(scaleY);
+				this.size = height;
+				break;
+			case DIAGONAL:
+				this.signumX = Math.signum(scaleX);
+				this.signumY = Math.signum(scaleY);
+				size = temp.set(width * scaleX, height * scaleY).len();
+				aspectRatio = Math.abs(scaleX / scaleY);
+				denominator = (float) Math.sqrt(width * width * aspectRatio
+						* aspectRatio + height * height);
+				break;
+			}
+		}
+
+		public void updateTransformation() {
+			Vector2 pointer1 = stateMachine.pointer1;
+			Vector2 pointer2 = stateMachine.pointer2;
+			switch (scale) {
+			case HORIZONTAL:
+				actor.setScaleX(signumX
+						* (Math.abs(pointer2.x - pointer1.x) - distance1 + size
+								* scale1X) / size);
+				break;
+			case VERTICAL:
+				actor.setScaleY(signumY
+						* (Math.abs(pointer2.y - pointer1.y) - distance1 + size
+								* scale1Y) / size);
+				break;
+			case DIAGONAL:
+				float scaleY = Math.abs((size
+						+ temp.set(pointer1).sub(pointer2).len() - distance1)
+						/ denominator);
+				float scaleX = aspectRatio * scaleY;
+				actor.setScale(scaleX * signumX, scaleY * signumY);
+				break;
+			}
+		}
 	}
 
 }

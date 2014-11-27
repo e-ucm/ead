@@ -37,7 +37,9 @@
 package es.eucm.ead.editor.view.builders.scene.groupeditor.input;
 
 import com.badlogic.gdx.math.Vector2;
+import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
+import com.badlogic.gdx.utils.Array;
 import es.eucm.ead.editor.view.builders.scene.groupeditor.inputstatemachine.InputState;
 
 public class RotateState extends InputState {
@@ -46,9 +48,9 @@ public class RotateState extends InputState {
 
 	private Vector2 temp = new Vector2();
 
-	private float actorRotation;
-
 	private float initialPointerRotation;
+
+	private Array<ActorRotation> actorRotations = new Array<ActorRotation>();
 
 	public RotateState(EditStateMachine stateMachine) {
 		this.stateMachine = stateMachine;
@@ -58,7 +60,11 @@ public class RotateState extends InputState {
 	public void enter() {
 		initialPointerRotation = temp.set(stateMachine.initialPointer1)
 				.sub(stateMachine.initialPointer2).angle();
-		actorRotation = stateMachine.getSelection().get(0).getRotation();
+
+		actorRotations.clear();
+		for (Actor actor : stateMachine.getSelection()) {
+			actorRotations.add(new ActorRotation(actor));
+		}
 	}
 
 	@Override
@@ -85,11 +91,29 @@ public class RotateState extends InputState {
 		float angle = temp.set(stateMachine.pointer1)
 				.sub(stateMachine.pointer2).angle()
 				- initialPointerRotation;
-		stateMachine.getSelection().get(0).setRotation(actorRotation + angle);
+		for (ActorRotation actorRotation : actorRotations) {
+			actorRotation.update(angle);
+		}
 	}
 
 	@Override
 	public void touchUp1(InputEvent event, float x, float y) {
 		stateMachine.setState(NoPointersState.class);
+	}
+
+	public class ActorRotation {
+
+		private Actor actor;
+
+		private float rotation;
+
+		public ActorRotation(Actor actor) {
+			this.actor = actor;
+			this.rotation = actor.getRotation();
+		}
+
+		public void update(float angle) {
+			actor.setRotation(rotation + angle);
+		}
 	}
 }
