@@ -43,10 +43,13 @@ import com.badlogic.gdx.scenes.scene2d.Stage;
 
 import es.eucm.ead.editor.control.MokapController.BackListener;
 import es.eucm.ead.editor.control.actions.editor.ChangeView;
+import es.eucm.ead.editor.model.Model.ModelListener;
 import es.eucm.ead.editor.model.Model.SelectionListener;
+import es.eucm.ead.editor.model.events.LoadEvent;
 import es.eucm.ead.editor.model.events.SelectionEvent;
 import es.eucm.ead.editor.model.events.SelectionEvent.Type;
 import es.eucm.ead.editor.view.builders.ViewBuilder;
+import es.eucm.ead.editor.view.builders.home.HomeView;
 import es.eucm.ead.editor.view.builders.project.ProjectView;
 import es.eucm.ead.editor.view.builders.scene.SceneView;
 
@@ -57,6 +60,7 @@ public class MokapViews extends Views implements BackListener {
 		resendTouch = false;
 		controller.getModel()
 				.addSelectionListener(new ViewsSelectionListener());
+		controller.getModel().addLoadListener(new LoadListener());
 	}
 
 	@Override
@@ -118,6 +122,16 @@ public class MokapViews extends Views implements BackListener {
 				}
 			}
 
+		}
+	}
+
+	private class LoadListener implements ModelListener<LoadEvent> {
+
+		@Override
+		public void modelChanged(LoadEvent event) {
+			if (event.getType() == LoadEvent.Type.UNLOADED) {
+				controller.action(ChangeView.class, HomeView.class);
+			}
 		}
 	}
 }

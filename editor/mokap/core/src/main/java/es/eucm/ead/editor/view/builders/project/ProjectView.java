@@ -42,10 +42,10 @@ import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import es.eucm.ead.editor.control.Controller;
 import es.eucm.ead.editor.control.MokapController.BackListener;
 import es.eucm.ead.editor.control.actions.editor.ChangeView;
+import es.eucm.ead.editor.control.actions.editor.CloseProject;
 import es.eucm.ead.editor.view.SkinConstants;
 import es.eucm.ead.editor.view.builders.PlayView;
 import es.eucm.ead.editor.view.builders.ViewBuilder;
-import es.eucm.ead.editor.view.builders.home.HomeView;
 import es.eucm.ead.editor.view.widgets.MultiWidget;
 import es.eucm.ead.editor.view.widgets.WidgetBuilder;
 import es.eucm.ead.editor.view.widgets.layouts.LinearLayout;
@@ -84,7 +84,7 @@ public class ProjectView implements ViewBuilder, BackListener {
 
 		LinearLayout project = new LinearLayout(true);
 		project.add(WidgetBuilder.toolbarIcon(SkinConstants.IC_GO, null,
-				ChangeView.class, HomeView.class));
+				CloseProject.class));
 		project.addSpace();
 		project.add(WidgetBuilder.toolbarIcon(SkinConstants.IC_PLAY, null,
 				ChangeView.class, PlayView.class));
@@ -95,7 +95,7 @@ public class ProjectView implements ViewBuilder, BackListener {
 
 	@Override
 	public boolean onBackPressed() {
-		controller.action(ChangeView.class, HomeView.class);
+		controller.action(CloseProject.class);
 		return true;
 	}
 }

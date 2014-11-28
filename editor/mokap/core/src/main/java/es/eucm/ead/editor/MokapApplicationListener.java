@@ -36,8 +36,11 @@
  */
 package es.eucm.ead.editor;
 
+import com.badlogic.gdx.Application;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.scenes.scene2d.ui.WidgetGroup;
+import com.badlogic.gdx.utils.Timer;
+import com.badlogic.gdx.utils.Timer.Task;
 
 import es.eucm.ead.editor.control.Controller;
 import es.eucm.ead.editor.control.MokapController;
@@ -50,6 +53,8 @@ import es.eucm.ead.editor.view.widgets.WidgetBuilder;
 
 public class MokapApplicationListener extends EditorApplicationListener {
 
+	private SaveTask saveTask = new SaveTask();
+
 	public MokapApplicationListener(Platform platform) {
 		super(platform);
 	}
@@ -57,6 +62,7 @@ public class MokapApplicationListener extends EditorApplicationListener {
 	@Override
 	public void create() {
 		Gdx.graphics.setContinuousRendering(false);
+		Timer.schedule(saveTask, 20, 20);
 		super.create();
 	}
 
@@ -99,8 +105,35 @@ public class MokapApplicationListener extends EditorApplicationListener {
 	}
 
 	@Override
+	public void resume() {
+		if (!saveTask.isScheduled()) {
+			Timer.schedule(saveTask, 20, 20);
+		}
+		super.resume();
+	}
+
+	@Override
 	public void pause() {
+		saveTask.cancel();
 		((MokapController) controller).pause();
 		controller.action(Save.class);
+	}
+
+	public class SaveTask extends Task {
+
+		private Runnable runnable = new Runnable() {
+			@Override
+			public void run() {
+				controller.action(Save.class);
+			}
+		};
+
+		@Override
+		public void run() {
+			Gdx.app.setLogLevel(Application.LOG_DEBUG);
+			Gdx.app.log("Save", "Saved.");
+			Gdx.app.postRunnable(runnable);
+			Gdx.graphics.requestRendering();
+		}
 	}
 }
