@@ -50,7 +50,7 @@ import es.eucm.ead.editor.view.widgets.AbstractWidget;
  */
 abstract class Panel extends AbstractWidget {
 
-	protected boolean hidden;
+	protected boolean hidden = true;
 
 	public Panel() {
 		setTouchable(Touchable.childrenOnly);

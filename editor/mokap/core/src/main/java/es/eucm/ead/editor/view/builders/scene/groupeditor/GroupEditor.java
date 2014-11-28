@@ -81,7 +81,6 @@ public class GroupEditor extends AbstractWidget {
 
 		selectionGroup = new SelectionGroup(this, style);
 		addActor(selectionGroup);
-		addActor(layerSelector);
 
 		TouchRepresentation touchRepresentation = new TouchRepresentation(
 				style.touch);

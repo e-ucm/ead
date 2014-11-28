@@ -45,8 +45,15 @@ public class NoPointersState extends InputState {
 
 	private EditStateMachine stateMachine;
 
+	private boolean dragged;
+
 	public NoPointersState(EditStateMachine stateMachine) {
 		this.stateMachine = stateMachine;
+	}
+
+	@Override
+	public void enter() {
+		dragged = false;
 	}
 
 	@Override
@@ -66,16 +73,23 @@ public class NoPointersState extends InputState {
 	}
 
 	@Override
+	public void dragStart1(InputEvent event, float x, float y) {
+		dragged = true;
+	}
+
+	@Override
 	public void touchDown2(InputEvent event, float x, float y) {
 		stateMachine.setState(ScaleState.class);
 	}
 
 	@Override
 	public void touchUp1(InputEvent event, float x, float y) {
-		if (stateMachine.actor == null) {
+		if (!stateMachine.isMultiSelection() && stateMachine.actor == null
+				&& !dragged && !isTouchCancelled(event, x, y)) {
 			stateMachine.clearSelection();
 			stateMachine.fireSelection();
 		}
+		dragged = false;
 	}
 
 	@Override

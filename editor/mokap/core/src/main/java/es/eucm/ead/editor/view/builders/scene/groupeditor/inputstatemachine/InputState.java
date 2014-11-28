@@ -36,6 +36,7 @@
  */
 package es.eucm.ead.editor.view.builders.scene.groupeditor.inputstatemachine;
 
+import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 
 public abstract class InputState {
@@ -82,5 +83,11 @@ public abstract class InputState {
 
 	public void longPress(float x, float y) {
 
+	}
+
+	protected boolean isTouchCancelled(InputEvent event, float x, float y) {
+		Actor actor = event.getTarget();
+		Actor hit = actor.hit(x, y, true);
+		return !(hit == actor || hit.isDescendantOf(actor));
 	}
 }
