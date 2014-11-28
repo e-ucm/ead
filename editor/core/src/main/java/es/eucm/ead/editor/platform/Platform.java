@@ -182,16 +182,6 @@ public interface Platform {
 	<T> T sendHttpGetRequest(String URL, Class<T> type) throws IOException;
 
 	/**
-	 * Sends an HTTP request appending {@code '?' + content} to the URL.
-	 * 
-	 * @throws IOException
-	 * @see {@link Platform#sendHttpRequest(HttpRequest, Class)}
-	 * 
-	 */
-	<T> T sendHttpGetRequest(String URL, String content, Class<T> type)
-			throws IOException;
-
-	/**
 	 * Process the specified {@link HttpRequest} and returns the result.
 	 * 
 	 * @param httpRequest

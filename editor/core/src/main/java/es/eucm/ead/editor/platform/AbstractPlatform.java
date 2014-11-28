@@ -113,15 +113,8 @@ public abstract class AbstractPlatform implements Platform {
 	@Override
 	public <T> T sendHttpGetRequest(String URL, Class<T> type)
 			throws IOException {
-		return sendHttpGetRequest(URL, null, type);
-	}
-
-	@Override
-	public <T> T sendHttpGetRequest(String URL, String content, Class<T> type)
-			throws IOException {
 		HttpRequest httpRequest = Pools.obtain(HttpRequest.class);
 		httpRequest.setMethod(Net.HttpMethods.GET);
-		httpRequest.setContent(content);
 		httpRequest.setTimeOut(TIMEOUT);
 		httpRequest.setUrl(URL);
 		try {
