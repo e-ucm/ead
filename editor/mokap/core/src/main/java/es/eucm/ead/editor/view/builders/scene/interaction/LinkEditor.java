@@ -249,16 +249,16 @@ public class LinkEditor extends ComponentEditor<Behavior> implements
 
 	private void updateDurationSlider(float time) {
 		if (time <= .5f) {
-			duration.setSelected(i18N.m("slow"));
+			duration.setSelected(i18N.m("fast"));
 		} else if (time <= .8f) {
 			duration.setSelected(i18N.m("normal"));
 		} else {
-			duration.setSelected(i18N.m("fast"));
+			duration.setSelected(i18N.m("slow"));
 		}
 	}
 
 	private float getDuration() {
-		if (duration.getSelected().equals(i18N.m("slow"))) {
+		if (duration.getSelected().equals(i18N.m("fast"))) {
 			return .4f;
 		} else if (duration.getSelected().equals(i18N.m("normal"))) {
 			return .8f;
