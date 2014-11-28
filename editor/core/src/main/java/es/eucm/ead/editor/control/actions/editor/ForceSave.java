@@ -48,6 +48,11 @@ package es.eucm.ead.editor.control.actions.editor;
 public class ForceSave extends Save {
 
 	@Override
+	public void perform(Object... args) {
+		save();
+	}
+
+	@Override
 	public boolean isEnabled() {
 		return true;
 	}

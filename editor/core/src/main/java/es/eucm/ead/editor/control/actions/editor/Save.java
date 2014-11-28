@@ -38,12 +38,7 @@ package es.eucm.ead.editor.control.actions.editor;
 
 import com.badlogic.gdx.files.FileHandle;
 import es.eucm.ead.editor.assets.EditorGameAssets;
-import es.eucm.ead.editor.control.Commands;
-import es.eucm.ead.editor.control.Commands.CommandListener;
-import es.eucm.ead.editor.control.Commands.CommandsStack;
-import es.eucm.ead.editor.control.Controller;
 import es.eucm.ead.editor.control.actions.EditorAction;
-import es.eucm.ead.editor.control.commands.Command;
 import es.eucm.ead.editor.exporter.Exporter;
 import es.eucm.ead.editor.model.Model.Resource;
 import es.eucm.ead.editor.model.Q;
@@ -62,7 +57,7 @@ import java.util.Map;
  * <dd>None</dd>
  * </dl>
  */
-public class Save extends EditorAction implements CommandListener {
+public class Save extends EditorAction {
 
 	/**
 	 * The suffix appended to the files that are being replaced by the newer
@@ -78,19 +73,12 @@ public class Save extends EditorAction implements CommandListener {
 	public static final String MODEL_API_VERSION = "1.0";
 
 	public Save() {
-		super(false, false);
-	}
-
-	@Override
-	public void initialize(Controller controller) {
-		super.initialize(controller);
-		updateEnable(controller.getCommands());
-		controller.getCommands().addCommandListener(this);
+		super(true, false);
 	}
 
 	@Override
 	public void perform(Object... args) {
-		synchronized (controller) {
+		if (controller.getModel().getGame() != null) {
 			save();
 		}
 	}
@@ -110,7 +98,7 @@ public class Save extends EditorAction implements CommandListener {
 	 * resources to disk.</li>
 	 * </ol>
 	 */
-	private void save() {
+	protected void save() {
 		updateGameVersions();
 		deleteRemovedResources();
 		EditorGameAssets gameAssets = controller.getEditorGameAssets();
@@ -137,6 +125,7 @@ public class Save extends EditorAction implements CommandListener {
 				if (oldFileExists) {
 					tmpFile.delete();
 				}
+				resource.setModified(false);
 			}
 		}
 		controller.getCommands().updateSavePoint();
@@ -162,51 +151,5 @@ public class Save extends EditorAction implements CommandListener {
 		Versions versions = Q.getComponent(game, Versions.class);
 		versions.setAppVersion(appVersion);
 		versions.setModelVersion(MODEL_API_VERSION);
-	}
-
-	@Override
-	public void doCommand(Commands commands, Command command) {
-
-		updateEnable(commands);
-	}
-
-	@Override
-	public void undoCommand(Commands commands, Command command) {
-
-		updateEnable(commands);
-	}
-
-	@Override
-	public void redoCommand(Commands commands, Command command) {
-
-		updateEnable(commands);
-	}
-
-	@Override
-	public void savePointUpdated(Commands commands, Command savePoint) {
-
-		updateEnable(commands);
-	}
-
-	@Override
-	public void cleared(Commands commands) {
-
-		updateEnable(commands);
-	}
-
-	@Override
-	public void contextPushed(Commands commands) {
-
-		updateEnable(commands);
-	}
-
-	@Override
-	public void contextPopped(Commands commands, CommandsStack poppedContext,
-			boolean merge) {
-		updateEnable(commands);
-	}
-
-	private void updateEnable(Commands commands) {
-		setEnabled(commands.commandsPendingToSave());
 	}
 }

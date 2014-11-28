@@ -36,20 +36,7 @@
  */
 package es.eucm.ead.editor.actions;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertTrue;
-import static org.junit.Assert.fail;
-
-import java.io.File;
-import java.io.IOException;
-import java.util.Map.Entry;
-
-import org.junit.Test;
-
 import com.badlogic.gdx.utils.ObjectMap;
-
 import es.eucm.ead.editor.assets.EditorGameAssets;
 import es.eucm.ead.editor.control.actions.editor.ForceSave;
 import es.eucm.ead.editor.control.actions.editor.OpenGame;
@@ -67,6 +54,17 @@ import es.eucm.ead.schema.editor.components.Parent;
 import es.eucm.ead.schema.editor.components.Versions;
 import es.eucm.ead.schema.entities.ModelEntity;
 import es.eucm.ead.schemax.entities.ResourceCategory;
+import org.junit.Test;
+
+import java.io.File;
+import java.io.IOException;
+import java.util.Map.Entry;
+
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.fail;
 
 /**
  * This class is meant to test {@link Save} action . This is the action invoked
@@ -83,18 +81,15 @@ public class SaveGameTest extends ActionTest {
 	 * This test put special emphasis on checking this aspect.
 	 */
 	public void test() {
-		// Create a temp directory for the project. This directory will be
-		// initially empty
-		String gameFolderPath = null;
 		File tempDirPath = platform.createTempFile(true);
-		gameFolderPath = tempDirPath.getAbsolutePath();
+		String gameFolderPath = tempDirPath.getAbsolutePath();
 		new File(gameFolderPath).mkdirs();
 		EditorGameAssets editorGameAssets = controller.getEditorGameAssets();
-		editorGameAssets.setLoadingPath(gameFolderPath);
+		editorGameAssets.setLoadingPath(gameFolderPath, false);
 
 		// Make initialization of the model
 		model.putResource(ResourceCategory.GAME.getCategoryPrefix(),
-				new ModelEntity());
+				new ModelEntity()).setModified(true);
 
 		// Make dummy additions to game model
 		for (int j = 0; j < 5; j++) {
@@ -104,8 +99,9 @@ public class SaveGameTest extends ActionTest {
 				ModelEntity sceneElement = new ModelEntity();
 				scene.getChildren().add(sceneElement);
 			}
-			model.putResource(EditorGameAssets.SCENES_PATH + "scene" + j
-					+ ".json", scene);
+			model.putResource(
+					EditorGameAssets.SCENES_PATH + "scene" + j + ".json", scene)
+					.setModified(true);
 			if (j == 0) {
 				Q.getComponent(model.getGame(), GameData.class)
 						.setInitialScene(
@@ -153,7 +149,8 @@ public class SaveGameTest extends ActionTest {
 		Q.getComponent(scene2, Documentation.class).setName("XXX");
 		ModelEntity sceneElement = new ModelEntity();
 		scene2.getChildren().add(sceneElement);
-		model.putResource(EditorGameAssets.SCENES_PATH + "scene2.json", scene2);
+		model.putResource(EditorGameAssets.SCENES_PATH + "scene2.json", scene2)
+				.setModified(true);
 
 		// To test save() does not remove files that have extension != .json,
 		// create an empty image file
@@ -170,7 +167,8 @@ public class SaveGameTest extends ActionTest {
 		}
 
 		// Let's test that the modified resources are correctly overridden.
-		model.putResource(EditorGameAssets.SCENES_PATH + "scene6.json", scene2);
+		model.putResource(EditorGameAssets.SCENES_PATH + "scene6.json", scene2)
+				.setModified(true);
 		model.getResource(EditorGameAssets.SCENES_PATH + "scene6.json")
 				.setModified(false);
 
@@ -282,12 +280,13 @@ public class SaveGameTest extends ActionTest {
 		controller.getEditorGameAssets().setLoadingPath(
 				folder.getAbsolutePath());
 
-		model.putResource("game.json", new ModelEntity());
+		model.putResource("game.json", new ModelEntity()).setModified(true);
 
 		ModelEntity modelEntity = new ModelEntity();
 		Q.getComponent(modelEntity, Parent.class).setParent(null);
 
-		model.putResource("scenes/myentity.json", modelEntity);
+		model.putResource("scenes/myentity.json", modelEntity)
+				.setModified(true);
 
 		controller.action(ForceSave.class);
 

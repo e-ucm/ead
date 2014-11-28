@@ -36,26 +36,13 @@
  */
 package es.eucm.ead.editor.control;
 
-import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.utils.SerializationException;
-
 import es.eucm.ead.editor.EditorTest;
-import es.eucm.ead.editor.assets.EditorGameAssets;
 import es.eucm.ead.editor.control.actions.ArgumentsValidationException;
 import es.eucm.ead.editor.control.actions.EditorAction;
-import es.eucm.ead.editor.control.actions.editor.NewGame;
-import es.eucm.ead.editor.control.actions.model.DeleteScene;
-import es.eucm.ead.editor.control.actions.model.EditScene;
-import es.eucm.ead.editor.control.actions.model.scene.NewScene;
-import es.eucm.ead.schema.entities.ModelEntity;
-
 import org.junit.Before;
 import org.junit.Test;
 
-import java.io.File;
-
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.fail;
 
 public class ActionsTest extends EditorTest {
@@ -166,33 +153,6 @@ public class ActionsTest extends EditorTest {
 			fail("Exception should be launched");
 		} catch (ArgumentsValidationException e) {
 
-		}
-	}
-
-	@Test
-	/**
-	 * Tests the serialization of actions for bug reporting purposes.
-	 * {@link Actions#getEditorActionsLog()}
-	 */
-	public void testActionSerialization() {
-		File file = platform.createTempFile(true);
-		controller.action(NewGame.class, file.getAbsolutePath(),
-				new ModelEntity());
-		controller.action(NewScene.class, "");
-		controller.action(NewScene.class, "");
-		controller.action(NewScene.class, "");
-		controller.action(DeleteScene.class, EditorGameAssets.SCENES_PATH
-				+ "scene2.json");
-		controller.action(EditScene.class, "scene3");
-		try {
-			String json = controller.getApplicationAssets()
-					.toJson(controller.getActions().getLoggedActions(
-							Integer.MAX_VALUE));
-			Gdx.app.debug(this.getClass().getCanonicalName(),
-					"Stack of serialized actions: " + json);
-			assertNotNull(json);
-		} catch (SerializationException e) {
-			fail("The stack of actions could not be serialized");
 		}
 	}
 

@@ -44,6 +44,7 @@ import es.eucm.ead.editor.control.commands.FieldCommand;
 import es.eucm.ead.editor.model.Q;
 import es.eucm.ead.schema.editor.components.GameData;
 import es.eucm.ead.schemax.FieldName;
+import es.eucm.ead.schemax.GameStructure;
 import es.eucm.ead.schemax.entities.ResourceCategory;
 
 /**
@@ -87,8 +88,10 @@ public class ChangeInitialScene extends ModelAction {
 				GameData.class);
 		String currentInitialSceneId = gameData.getInitialScene();
 		if (!sceneId.equals(currentInitialSceneId)) {
-			return new FieldCommand(gameData, FieldName.INITIAL_SCENE, sceneId,
-					false);
+			FieldCommand fieldCommand = new FieldCommand(gameData,
+					FieldName.INITIAL_SCENE, sceneId, false);
+			fieldCommand.setResourceModified(GameStructure.GAME_FILE);
+			return fieldCommand;
 		}
 		return null;
 	}

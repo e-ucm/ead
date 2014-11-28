@@ -97,8 +97,9 @@ public abstract class ActionTest extends EditorTest {
 		ModelEntity scene = new ModelEntity();
 		Q.getComponent(scene, Note.class);
 		Q.getComponent(scene, Documentation.class).setName(SCENE0);
-		model.putResource(ResourceCategory.GAME.getCategoryPrefix(), game);
-		model.putResource(SCENE0, scene);
+		model.putResource(ResourceCategory.GAME.getCategoryPrefix(), game)
+				.setModified(true);
+		model.putResource(SCENE0, scene).setModified(true);
 
 		// Create the cell in the map for the scene 0
 		SceneMap sceneMap = Q.getComponent(game, SceneMap.class);

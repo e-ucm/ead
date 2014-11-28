@@ -37,10 +37,6 @@
 package es.eucm.ead.editor.view.builders.scene;
 
 import com.badlogic.gdx.Gdx;
-
-import es.eucm.ead.editor.control.Commands;
-import es.eucm.ead.editor.control.Commands.CommandListener;
-import es.eucm.ead.editor.control.Commands.CommandsStack;
 import es.eucm.ead.editor.control.Controller;
 import es.eucm.ead.editor.control.Preferences;
 import es.eucm.ead.editor.control.Selection;
@@ -50,8 +46,6 @@ import es.eucm.ead.editor.control.actions.editor.ShowInfoPanel;
 import es.eucm.ead.editor.control.actions.editor.ShowInfoPanel.TypePanel;
 import es.eucm.ead.editor.control.actions.editor.ShowToast;
 import es.eucm.ead.editor.control.actions.model.SetSelection;
-import es.eucm.ead.editor.control.commands.Command;
-import es.eucm.ead.editor.control.commands.SelectionCommand;
 import es.eucm.ead.editor.model.Model.SelectionListener;
 import es.eucm.ead.editor.model.Q;
 import es.eucm.ead.editor.model.events.SelectionEvent;
@@ -72,7 +66,7 @@ import es.eucm.ead.schema.entities.ModelEntity;
 import es.eucm.ead.schemax.Layer;
 
 public class SceneEditor extends BaseView implements ModelView,
-		SelectionListener, CommandListener {
+		SelectionListener {
 
 	public static final int INSERT = 0, PAINT = 2, FX = 3, INTERACTION = 5;
 
@@ -141,7 +135,6 @@ public class SceneEditor extends BaseView implements ModelView,
 		setMode(mode);
 		controller.getEngine().setGameView(gameView);
 		controller.getModel().addSelectionListener(this);
-		controller.getCommands().addCommandListener(this);
 
 		GameData gameData = Q.getComponent(controller.getModel().getGame(),
 				GameData.class);
@@ -150,9 +143,7 @@ public class SceneEditor extends BaseView implements ModelView,
 
 	@Override
 	public void release() {
-
 		controller.getModel().removeSelectionListener(this);
-		controller.getCommands().removeCommandListener(this);
 	}
 
 	@Override
@@ -280,47 +271,6 @@ public class SceneEditor extends BaseView implements ModelView,
 			setSelectionContext(context);
 			sceneGroupEditor.setOnlySelection(true);
 		}
-	}
-
-	@Override
-	public void doCommand(Commands commands, Command command) {
-		if (!(command instanceof SelectionCommand)) {
-			ModelEntity scene = (ModelEntity) controller.getModel()
-					.getSelection().getSingle(Selection.SCENE);
-			if (scene != null) {
-				String resource = controller.getModel().getIdFor(scene);
-				if (resource != null) {
-					controller.getEditorGameAssets().save(resource, scene);
-				}
-			}
-		}
-	}
-
-	@Override
-	public void undoCommand(Commands commands, Command command) {
-		doCommand(commands, command);
-	}
-
-	@Override
-	public void redoCommand(Commands commands, Command command) {
-		doCommand(commands, command);
-	}
-
-	@Override
-	public void savePointUpdated(Commands commands, Command savePoint) {
-	}
-
-	@Override
-	public void cleared(Commands commands) {
-	}
-
-	@Override
-	public void contextPushed(Commands commands) {
-	}
-
-	@Override
-	public void contextPopped(Commands commands, CommandsStack poppedContext,
-			boolean merge) {
 	}
 
 	@Override

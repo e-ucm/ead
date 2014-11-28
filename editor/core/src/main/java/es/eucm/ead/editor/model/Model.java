@@ -256,21 +256,24 @@ public class Model {
 	 * @param resource
 	 *            The resource to be placed.
 	 */
-	public void putResource(String id, Object resource) {
+	public Resource putResource(String id, Object resource) {
 		ResourceCategory category;
 		if ((category = ResourceCategory.getCategoryOf(id)) != null) {
-			putResource(id, category, resource);
+			return putResource(id, category, resource);
 		}
+		return null;
 	}
 
 	/**
 	 * Puts the given resource in the given category with the given id
 	 */
-	public void putResource(String id, ResourceCategory category,
+	public Resource putResource(String id, ResourceCategory category,
 			Object resource) {
+		Resource r = new Resource(resource);
 		removedResources.removeValue(id, false);
-		resourcesMap.get(category).put(id, new Resource(resource));
+		resourcesMap.get(category).put(id, r);
 		gameAssets.addAsset(id, Object.class, resource);
+		return r;
 	}
 
 	/**
@@ -294,8 +297,9 @@ public class Model {
 	}
 
 	public ModelEntity getGame() {
-		return (ModelEntity) getResource(GameStructure.GAME_FILE,
-				ResourceCategory.GAME).getObject();
+		Resource resource = getResource(GameStructure.GAME_FILE,
+				ResourceCategory.GAME);
+		return resource == null ? null : (ModelEntity) resource.getObject();
 	}
 
 	/**
@@ -636,7 +640,7 @@ public class Model {
 		 * Creates a modified resource.
 		 */
 		public Resource(Object object) {
-			this(object, true);
+			this(object, false);
 		}
 
 		public Resource(Object object, boolean modified) {
