@@ -51,39 +51,69 @@ import static org.junit.Assert.assertEquals;
  */
 public class ProjectUtilsTest {
 
-	private static Array<String> URIS = new Array<String>(new String[] {
-			"images/image1.png", "images/image2.JPEG", "videos/video1.mpg",
-			"video2.avi", "sounds/sound1.mp3", "sounds/sound2.WAV",
-			"icons/icon1.bmp", "icons/icon2.jpg" });
+	private static Array<String> buildUris() {
+		return new Array<String>(new String[] { "images/image1.png",
+				"images/image2.JPEG", "videos/video1.mpg", "video2.avi",
+				"sounds/sound1.mp3", "sounds/sound2.WAV", "icons/icon1.bmp",
+				"icons/icon2.jpg" });
+	}
 
 	@Test
 	/**
 	 * Tests {@link es.eucm.ead.editor.utils.ProjectUtils#listRefBinaries(Object)}
 	 */
 	public void testBinaryReferencesSearch() {
+		Array<String> uris = buildUris();
 		// Create a simple object
-		BinRefContainer binRefContainer = new BinRefContainer();
+		BinRefContainer binRefContainer = new BinRefContainer(uris);
 		Array<String> binaryReferences = ProjectUtils
 				.listRefBinaries(binRefContainer);
-		for (int i = 0; i < URIS.size; i++) {
-			String current = URIS.get(i);
+		for (int i = 0; i < uris.size; i++) {
+			String current = uris.get(i);
 			for (int j = 0; j < binaryReferences.size; j++) {
 				if (current.toLowerCase().equals(
 						binaryReferences.get(j).toLowerCase())) {
-					URIS.removeIndex(i);
+					uris.removeIndex(i);
 					binaryReferences.removeIndex(j);
 					i--;
 					j--;
 				}
 			}
 		}
-		assertEquals(0, URIS.size);
+		assertEquals(0, uris.size);
 		assertEquals(0, binaryReferences.size);
 	}
 
+	@Test
+	/**
+	 * Tests {@link es.eucm.ead.editor.utils.ProjectUtils#replaceBinaryRef(Object, String, String)}
+	 */
+	public void testReplaceBinaryRef() {
+		Array<String> uris = buildUris();
+		// Create a simple object
+		BinRefContainer binRefContainer = new BinRefContainer(uris);
+		ProjectUtils
+				.replaceBinaryRef(binRefContainer, "A test", "Another test");
+		assertEquals(binRefContainer.notAnUri, "Another test");
+		String str = "simple test";
+		ProjectUtils.replaceBinaryRef(binRefContainer, uris.get(2), str);
+		ProjectUtils.replaceBinaryRef(binRefContainer, uris.get(3), str);
+		ProjectUtils.replaceBinaryRef(binRefContainer, uris.get(4), str);
+		ProjectUtils.replaceBinaryRef(binRefContainer, uris.get(5), str);
+		ProjectUtils.replaceBinaryRef(binRefContainer, uris.get(6), str);
+		assertEquals(binRefContainer.refHolder.uri, str);
+		assertEquals(binRefContainer.list.get(0).uri, str);
+		assertEquals(binRefContainer.list.get(1).uri, str);
+		assertEquals(binRefContainer.array.get(0).uri, str);
+		assertEquals(binRefContainer.array.get(1).uri, uris.get(0));
+		assertEquals(binRefContainer.uriMap.get("uri1"), str);
+		assertEquals(binRefContainer.uriMap.get("uri2"), uris.get(7));
+	}
+
 	private static class BinRefContainer extends RefContainer {
+
 		private float aFloat = 0.3F;
-		private String uriRef2 = URIS.get(1).toLowerCase();
+		private String uriRef2;
 		private String notAnUri = "A test";
 		private String aNull = null;
 
@@ -93,19 +123,20 @@ public class ProjectUtilsTest {
 		private SimpleRefHolder refHolder;
 		private Object anotherNull = null;
 
-		public BinRefContainer() {
-			refHolder = new SimpleRefHolder(URIS.get(2));
-			list.add(new SimpleRefHolder(URIS.get(3)));
-			list.add(new SimpleRefHolder(URIS.get(4)));
-			array.add(new SimpleRefHolder(URIS.get(5)));
-			array.add(new SimpleRefHolder(URIS.get(0)));
-			uriMap.put("uri1", URIS.get(6));
-			uriMap.put("uri2", URIS.get(7));
+		public BinRefContainer(Array<String> uris) {
+			uriRef2 = uris.get(1).toLowerCase();
+			refHolder = new SimpleRefHolder(uris.get(2));
+			list.add(new SimpleRefHolder(uris.get(3)));
+			list.add(new SimpleRefHolder(uris.get(4)));
+			array.add(new SimpleRefHolder(uris.get(5)));
+			array.add(new SimpleRefHolder(uris.get(0)));
+			uriMap.put("uri1", uris.get(6));
+			uriMap.put("uri2", uris.get(7));
 		}
 	}
 
 	private static class RefContainer {
-		private String uriRef1 = URIS.get(0);
+		private String uriRef1 = buildUris().get(0);
 	}
 
 	private static class SimpleRefHolder {
