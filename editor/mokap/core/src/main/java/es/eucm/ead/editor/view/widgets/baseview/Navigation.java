@@ -44,6 +44,7 @@ import com.badlogic.gdx.scenes.scene2d.Touchable;
 import com.badlogic.gdx.scenes.scene2d.actions.Actions;
 import com.badlogic.gdx.scenes.scene2d.ui.Container;
 import com.badlogic.gdx.scenes.scene2d.utils.DragListener;
+
 import es.eucm.ead.editor.view.widgets.baseview.BaseView.BaseViewStyle;
 
 /**
@@ -128,7 +129,7 @@ class Navigation extends Panel {
 				.touchable(Touchable.enabled), Actions.show(), Actions.alpha(
 				style.navigationBackgroundAlpha, BaseView.HIDE_TIME,
 				Interpolation.exp5Out)));
-		BaseView.moveTo(navigation, 0, navigation.getY());
+		BaseView.moveToAndShow(navigation, 0, navigation.getY());
 	}
 
 	@Override
@@ -139,12 +140,13 @@ class Navigation extends Panel {
 				Actions.touchable(Touchable.disabled),
 				Actions.alpha(0.0f, BaseView.HIDE_TIME, Interpolation.exp5Out),
 				Actions.hide()));
-		BaseView.moveTo(navigation, -getPrefWidth(navigation),
+		BaseView.moveToAndHide(navigation, -getPrefWidth(navigation),
 				navigation.getY());
 	}
 
 	public void hideRightAway() {
 		background.setVisible(false);
+		setVisible(false);
 		background.getColor().a = 0.0f;
 		float height = Math.max(getPrefHeight(navigation), getHeight());
 		setBounds(navigation, -getPrefWidth(navigation), getHeight() - height,
@@ -154,6 +156,9 @@ class Navigation extends Panel {
 
 	@Override
 	public void displace(float deltaX, float deltaY) {
+		if (!isVisible()) {
+			setVisible(true);
+		}
 		navigation.setX(Math.max(Math.min(0, navigation.getX() + deltaX),
 				-navigation.getWidth()));
 

@@ -48,6 +48,7 @@ import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 
+import es.eucm.ead.editor.assets.EditorGameAssets;
 import es.eucm.ead.editor.control.Controller;
 import es.eucm.ead.editor.control.Selection;
 import es.eucm.ead.editor.control.actions.model.ChangeSelectionText;
@@ -58,26 +59,26 @@ import es.eucm.ead.editor.view.widgets.draw.SlideColorPicker.ColorEvent;
 import es.eucm.ead.editor.view.widgets.draw.SlideColorPicker.ColorListener;
 import es.eucm.ead.schema.entities.ModelEntity;
 
-public class TextFontContextMenu extends TextFontColorPicker implements
+public class LabelTextEditor extends TextEditor implements
 		Input.TextInputListener {
 
 	private Controller controller;
 
 	private Label labelActor;
 
-	private Skin skinEditorGame;
+	private EditorGameAssets editorGameAssets;
 
-	public TextFontContextMenu(final Skin skin, Controller c) {
+	public LabelTextEditor(final Skin skin, Controller c) {
 		super(skin, c.getApplicationAssets().getI18N());
 
 		this.controller = c;
-		skinEditorGame = controller.getEditorGameAssets().getSkin();
+		this.editorGameAssets = c.getEditorGameAssets();
 
 		top.addListener(new ClickListener() {
 			@Override
 			public void clicked(InputEvent event, float x, float y) {
 				((Platform) controller.getPlatform()).getMultilineTextInput(
-						TextFontContextMenu.this, i18n.m("toolbar.text.input"),
+						LabelTextEditor.this, i18n.m("toolbar.text.input"),
 						labelActor.getText().toString(), i18n);
 			}
 		});
@@ -87,8 +88,10 @@ public class TextFontContextMenu extends TextFontColorPicker implements
 			public void colorChanged(ColorEvent event) {
 				if (!event.getColor().equals(labelActor.getColor())) {
 					labelActor.setColor(event.getColor());
-					controller.action(ChangeSelectionText.class,
-							event.getColor());
+					if (!event.isDragging()) {
+						controller.action(ChangeSelectionText.class,
+								event.getColor());
+					}
 				}
 			}
 		});
@@ -97,10 +100,10 @@ public class TextFontContextMenu extends TextFontColorPicker implements
 			@Override
 			public void changed(ChangeEvent event, Actor actor) {
 				if (event.getTarget() instanceof SelectBox) {
-					if (labelActor.getStyle() != skinEditorGame.get(getStyle(),
-							LabelStyle.class)) {
-						labelActor.setStyle(skinEditorGame.get(getStyle(),
-								LabelStyle.class));
+					if (labelActor.getStyle() != editorGameAssets.getSkin()
+							.get(getStyle(), LabelStyle.class)) {
+						labelActor.setStyle(editorGameAssets.getSkin().get(
+								getStyle(), LabelStyle.class));
 						controller.action(ChangeSelectionText.class,
 								getStyle(), false);
 					}
@@ -146,8 +149,8 @@ public class TextFontContextMenu extends TextFontColorPicker implements
 			color.g = modelLabel.getColor().getG();
 			color.b = modelLabel.getColor().getB();
 			labelActor.setColor(color);
-			labelActor.setStyle(skinEditorGame.get(modelLabel.getStyle(),
-					LabelStyle.class));
+			labelActor.setStyle(editorGameAssets.getSkin().get(
+					modelLabel.getStyle(), LabelStyle.class));
 			updatePaneText(modelLabel.getText(), color);
 			updateSelectedStyle(modelLabel.getStyle());
 		}

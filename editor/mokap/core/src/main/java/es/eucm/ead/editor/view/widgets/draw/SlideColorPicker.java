@@ -89,8 +89,17 @@ public class SlideColorPicker extends AbstractWidget {
 						.getUserObject();
 				picker.updateColor();
 				picker.updateAllTexturesExcept(slider);
-				picker.fireColorChanged();
+				picker.fireColorChanged(true);
 			}
+		};
+
+		public void touchUp(InputEvent event, float x, float y, int pointer,
+				int button) {
+			Slider slider = (Slider) event.getListenerActor();
+			SlideColorPicker picker = (SlideColorPicker) slider.getUserObject();
+			picker.updateColor();
+			picker.updateAllTexturesExcept(slider);
+			picker.fireColorChanged(false);
 		};
 	};
 
@@ -266,7 +275,7 @@ public class SlideColorPicker extends AbstractWidget {
 
 		updateAllTexturesExcept(null);
 
-		fireColorChanged();
+		fireColorChanged(false);
 	}
 
 	private void updateSlidersPosition() {
@@ -335,9 +344,10 @@ public class SlideColorPicker extends AbstractWidget {
 		return MathUtils.round(hueSlider.getStyle().knob.getMinWidth() * .5f);
 	}
 
-	private void fireColorChanged() {
+	private void fireColorChanged(boolean isDragging) {
 		ColorEvent event = Pools.obtain(ColorEvent.class);
 		event.color = color;
+		event.dragging = isDragging;
 		fire(event);
 		Pools.free(event);
 	}
@@ -565,6 +575,8 @@ public class SlideColorPicker extends AbstractWidget {
 
 		private Color color;
 
+		private boolean dragging;
+
 		public Color getColor() {
 			return color;
 		}
@@ -573,6 +585,10 @@ public class SlideColorPicker extends AbstractWidget {
 		public void reset() {
 			super.reset();
 			this.color = null;
+		}
+
+		public boolean isDragging() {
+			return dragging;
 		}
 	}
 

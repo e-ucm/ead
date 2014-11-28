@@ -43,8 +43,10 @@ import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.Touchable;
 import com.badlogic.gdx.scenes.scene2d.actions.Actions;
+import com.badlogic.gdx.scenes.scene2d.actions.MoveByAction;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.utils.Drawable;
+
 import es.eucm.ead.editor.view.listeners.GestureListener;
 import es.eucm.ead.editor.view.widgets.AbstractWidget;
 
@@ -266,14 +268,30 @@ public class BaseView extends AbstractWidget {
 		}
 	}
 
+	private static MoveByAction move(Actor actor, float targetX, float targetY) {
+		return Actions.moveBy(targetX - actor.getX(), targetY - actor.getY(),
+				HIDE_TIME, Interpolation.exp5Out);
+	}
+
 	/**
 	 * Moves with the default time and interpolation the given actor to the
 	 * given coordinates
 	 */
 	public static void moveTo(Actor actor, float targetX, float targetY) {
 		actor.clearActions();
-		actor.addAction(Actions.moveBy(targetX - actor.getX(),
-				targetY - actor.getY(), HIDE_TIME, Interpolation.exp5Out));
+		actor.addAction(move(actor, targetX, targetY));
+	}
+
+	public static void moveToAndHide(Actor actor, float targetX, float targetY) {
+		actor.clearActions();
+		actor.addAction(Actions.sequence(move(actor, targetX, targetY),
+				Actions.visible(false)));
+	}
+
+	public static void moveToAndShow(Actor actor, float targetX, float targetY) {
+		actor.clearActions();
+		actor.addAction(Actions.sequence(Actions.visible(true),
+				move(actor, targetX, targetY)));
 	}
 
 	public static class BaseViewStyle {
