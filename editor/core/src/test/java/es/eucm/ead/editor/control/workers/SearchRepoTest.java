@@ -40,8 +40,6 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 
-import java.util.concurrent.atomic.AtomicBoolean;
-
 import org.junit.Before;
 
 import com.badlogic.gdx.files.FileHandle;
@@ -51,8 +49,10 @@ import com.badlogic.gdx.utils.Array;
 import es.eucm.ead.editor.assets.EditorGameAssets;
 import es.eucm.ead.editor.control.actions.editor.ExecuteWorker;
 import es.eucm.ead.editor.control.workers.Worker.WorkerListener;
+import es.eucm.ead.editor.model.Q;
 import es.eucm.ead.editor.platform.MockPlatform;
 import es.eucm.ead.schema.editor.components.repo.RepoElement;
+import es.eucm.ead.schema.editor.components.repo.response.SearchResponse;
 
 public class SearchRepoTest extends WorkerTest implements WorkerListener {
 
@@ -60,8 +60,7 @@ public class SearchRepoTest extends WorkerTest implements WorkerListener {
 	private static final int ELEMS = 10;
 
 	private Array<RepoElement> repoElems = new Array<RepoElement>();
-
-	private AtomicBoolean done = new AtomicBoolean(false);
+	private SearchResponse response;
 
 	@Before
 	public void buildElems() {
@@ -78,17 +77,23 @@ public class SearchRepoTest extends WorkerTest implements WorkerListener {
 		for (int i = 0; i < ELEMS; ++i) {
 			RepoElement elem = new RepoElement();
 			String currentThumbnail = i + ".png";
-			elem.getThumbnailPathList().add(currentThumbnail);
+			elem.getThumbnailUrlList().add(currentThumbnail);
 			repoElems.add(elem);
 			platform.putHttpResponse(currentThumbnail, bytes);
 		}
 
-		platform.putHttpResponse(URL, gameAssets.toJson(repoElems, Array.class));
+		response = new SearchResponse();
+		response.setCount(ELEMS);
+		response.setTotal(ELEMS);
+		response.setResults(repoElems);
+
+		String json = gameAssets.toJson(response, SearchResponse.class);
+		platform.putHttpResponse(URL, json);
 	}
 
 	@Override
 	public void testWorker() {
-		controller.action(ExecuteWorker.class, SearchRepo.class, this);
+		controller.action(ExecuteWorker.class, SearchRepo.class, this, URL);
 	}
 
 	@Override
@@ -103,14 +108,22 @@ public class SearchRepoTest extends WorkerTest implements WorkerListener {
 
 	@Override
 	public void result(Object... results) {
-		assertEquals(repoElems.removeIndex(0).getThumbnailPathList().first(),
-				((RepoElement) results[0]).getThumbnailPathList().first());
-		assertTrue((results[1] instanceof Pixmap));
+		Object firstResult = results[0];
+		if (firstResult instanceof SearchResponse) {
+			SearchResponse mockResponse = (SearchResponse) firstResult;
+			assertEquals(response.getCount(), mockResponse.getCount());
+			assertTrue(response.getTotal() == mockResponse.getTotal());
+		} else {
+			String expectedUrl = Q.getRepoElementThumbnailUrl(repoElems
+					.removeIndex(0));
+			assertEquals(expectedUrl,
+					Q.getRepoElementThumbnailUrl((RepoElement) firstResult));
+			assertTrue((results[1] instanceof Pixmap));
+		}
 	}
 
 	@Override
 	public void done() {
-		done.set(true);
 	}
 
 	@Override

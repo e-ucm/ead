@@ -36,14 +36,21 @@
  */
 package es.eucm.ead.editor.model;
 
+import java.io.IOException;
+
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.Net;
+import com.badlogic.gdx.Net.HttpRequest;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.utils.Array;
+import com.badlogic.gdx.utils.Pools;
 import com.badlogic.gdx.utils.reflect.ClassReflection;
 import com.badlogic.gdx.utils.reflect.ReflectionException;
 
 import es.eucm.ead.editor.control.Controller;
+import es.eucm.ead.editor.platform.Platform;
+import es.eucm.ead.engine.I18N;
 import es.eucm.ead.engine.assets.Assets.AssetLoadedCallback;
 import es.eucm.ead.engine.entities.EngineEntity;
 import es.eucm.ead.schema.components.ModelComponent;
@@ -53,6 +60,7 @@ import es.eucm.ead.schema.editor.components.GameData;
 import es.eucm.ead.schema.editor.components.Parent;
 import es.eucm.ead.schema.editor.components.SceneMap;
 import es.eucm.ead.schema.editor.components.Thumbnail;
+import es.eucm.ead.schema.editor.components.repo.RepoElement;
 import es.eucm.ead.schema.editor.data.Cell;
 import es.eucm.ead.schema.entities.ModelEntity;
 
@@ -315,5 +323,34 @@ public class Q {
 			return date.getDate();
 		}
 		return null;
+	}
+
+	public static String getRepoElementName(RepoElement elem) {
+		I18N i18N = controller.getApplicationAssets().getI18N();
+		Array<String> nameI18nList = elem.getNameI18nList();
+		int langIdx = nameI18nList.indexOf(i18N.getLang(), false);
+		if (langIdx < 0) {
+			langIdx = 0;
+		}
+
+		String name = null;
+		Array<String> nameList = elem.getNameList();
+		if (nameList.size > langIdx) {
+			name = nameList.get(langIdx);
+		} else if (nameList.size > 0) {
+			name = nameList.first();
+		}
+		if (name == null || name.trim().isEmpty()) {
+			name = i18N.m("untitled");
+		}
+		return name;
+	}
+
+	public static String getRepoElementThumbnailUrl(RepoElement elem) {
+		Array<String> thumbnailUrlList = elem.getThumbnailUrlList();
+		if (thumbnailUrlList.size == 0) {
+			return "";
+		}
+		return thumbnailUrlList.peek();
 	}
 }

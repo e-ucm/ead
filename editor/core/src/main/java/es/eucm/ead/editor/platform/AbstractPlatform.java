@@ -46,10 +46,12 @@ import java.util.Locale;
 import java.util.Map;
 
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.Net;
 import com.badlogic.gdx.Net.HttpMethods;
 import com.badlogic.gdx.Net.HttpRequest;
 import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.net.HttpStatus;
+import com.badlogic.gdx.utils.Pools;
 import com.badlogic.gdx.utils.StreamUtils;
 
 import es.eucm.ead.editor.control.Controller;
@@ -57,6 +59,8 @@ import es.eucm.ead.editor.control.Tracker;
 
 public abstract class AbstractPlatform implements Platform {
 
+	private static final String ABSTRACT_PLATFORM_TAG = "AbstractPlatform";
+	private static final int TIMEOUT = 25000;
 	private Batch batch;
 
 	protected AbstractPlatform() {
@@ -107,21 +111,46 @@ public abstract class AbstractPlatform implements Platform {
 	}
 
 	@Override
+	public <T> T sendHttpGetRequest(String URL, Class<T> type)
+			throws IOException {
+		return sendHttpGetRequest(URL, null, type);
+	}
+
+	@Override
+	public <T> T sendHttpGetRequest(String URL, String content, Class<T> type)
+			throws IOException {
+		HttpRequest httpRequest = Pools.obtain(HttpRequest.class);
+		httpRequest.setMethod(Net.HttpMethods.GET);
+		httpRequest.setContent(content);
+		httpRequest.setTimeOut(TIMEOUT);
+		httpRequest.setUrl(URL);
+		try {
+			return sendHttpRequest(httpRequest, type);
+		} finally {
+			Pools.free(httpRequest);
+		}
+	}
+
+	@Override
 	public <T> T sendHttpRequest(HttpRequest httpRequest, Class<T> type)
 			throws IOException {
-
 		String method = httpRequest.getMethod();
-		URL url;
 
+		URL url;
+		String queryUrl;
 		if (method.equalsIgnoreCase(HttpMethods.GET)) {
 			String queryString = "";
 			String value = httpRequest.getContent();
 			if (value != null && !"".equals(value))
 				queryString = "?" + value;
-			url = new URL(httpRequest.getUrl() + queryString);
+			queryUrl = httpRequest.getUrl() + queryString;
 		} else {
-			url = new URL(httpRequest.getUrl());
+			queryUrl = httpRequest.getUrl();
 		}
+		url = new URL(queryUrl);
+
+		Gdx.app.log(ABSTRACT_PLATFORM_TAG, "Sending HTTP " + method
+				+ " request to " + queryUrl);
 
 		HttpURLConnection connection = (HttpURLConnection) url.openConnection();
 		// should be enabled to upload data.
@@ -175,8 +204,11 @@ public abstract class AbstractPlatform implements Platform {
 			throw new IOException("Http stauts code: " + status);
 		}
 
-		try {
+		if (type == HttpURLConnection.class) {
+			return (T) connection;
+		}
 
+		try {
 			InputStream input = null;
 			input = connection.getInputStream();
 
@@ -200,5 +232,4 @@ public abstract class AbstractPlatform implements Platform {
 			connection.disconnect();
 		}
 	}
-
 }

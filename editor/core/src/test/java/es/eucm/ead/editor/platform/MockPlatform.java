@@ -181,7 +181,8 @@ public class MockPlatform extends AbstractPlatform {
 	public <T> T sendHttpRequest(HttpRequest httpRequest, Class<T> type)
 			throws IOException {
 
-		return (T) httpResponses.get(httpRequest.getUrl());
+		Object ret = httpResponses.get(httpRequest.getUrl());
+		return (T) ret;
 	}
 
 	public void putHttpResponse(String URL, Object object) {

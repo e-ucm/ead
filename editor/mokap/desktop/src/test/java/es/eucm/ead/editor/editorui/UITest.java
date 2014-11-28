@@ -36,6 +36,8 @@
  */
 package es.eucm.ead.editor.editorui;
 
+import java.util.Map;
+
 import com.badlogic.gdx.Application;
 import com.badlogic.gdx.ApplicationListener;
 import com.badlogic.gdx.Gdx;
@@ -63,11 +65,10 @@ import es.eucm.ead.editor.control.actions.editor.Undo;
 import es.eucm.ead.editor.control.actions.model.EditScene;
 import es.eucm.ead.editor.model.Model;
 import es.eucm.ead.editor.model.Model.Resource;
+import es.eucm.ead.editor.model.Q;
 import es.eucm.ead.editor.view.widgets.WidgetBuilder;
 import es.eucm.ead.engine.I18N;
 import es.eucm.ead.schemax.entities.ResourceCategory;
-
-import java.util.Map;
 
 /**
  * <p>
@@ -111,6 +112,7 @@ public abstract class UITest implements ApplicationListener {
 				Gdx.files, viewContainer, modalContainer);
 		controller.getCommands().pushStack();
 		WidgetBuilder.setController(controller);
+		Q.setController(controller);
 		platform.setBatch(stage.getBatch());
 		Gdx.input.setInputProcessor(stage);
 		ApplicationAssets assets = controller.getApplicationAssets();

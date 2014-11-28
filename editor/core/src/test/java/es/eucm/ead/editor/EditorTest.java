@@ -45,6 +45,7 @@ import com.badlogic.gdx.scenes.scene2d.Group;
 
 import es.eucm.ead.editor.control.Controller;
 import es.eucm.ead.editor.model.Model;
+import es.eucm.ead.editor.model.Q;
 import es.eucm.ead.editor.platform.MockPlatform;
 import es.eucm.ead.engine.mock.MockApplication;
 import es.eucm.ead.engine.mock.MockFiles;
@@ -91,6 +92,7 @@ public abstract class EditorTest {
 		controller = new Controller(platform, new MockFiles(), new Group(),
 				new Group());
 		model = controller.getModel();
+		Q.setController(controller);
 		app = (MockApplication) Gdx.app;
 	}
 

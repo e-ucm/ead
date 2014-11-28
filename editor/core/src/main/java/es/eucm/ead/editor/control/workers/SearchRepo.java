@@ -37,64 +37,58 @@
 package es.eucm.ead.editor.control.workers;
 
 import java.io.IOException;
-import java.util.List;
 
 import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.Net;
-import com.badlogic.gdx.Net.HttpRequest;
 import com.badlogic.gdx.graphics.Pixmap;
 import com.badlogic.gdx.utils.Array;
-import com.badlogic.gdx.utils.Pools;
 import com.badlogic.gdx.utils.SerializationException;
 
-import es.eucm.ead.editor.platform.Platform;
+import es.eucm.ead.editor.model.Q;
 import es.eucm.ead.schema.editor.components.repo.RepoElement;
+import es.eucm.ead.schema.editor.components.repo.response.SearchResponse;
 
 /**
- * Load all the projects and their associated thumbnails. Thumbnails path are
- * absolute and can be null
+ * Sends an HTTP request from a given URL and returns the search result and the
+ * resulting elements with their thumbnails.
+ * <dl>
+ * <dt><strong>The input arguments are</strong></dt>
+ * <dd><strong>args[0]</strong> <em>String</em> URL to do the search.
+ * </dl>
+ * <dl>
+ * <dt><strong>The result arguments are</strong></dt>
+ * <strong>First result:</strong>
+ * <dd>
+ * <strong>args[0]</strong> <em>{@link SearchResponse}</em> with all the
+ * results.
+ * </dl>
+ * <strong>Rest of results:</strong> <dd>
+ * <strong>args[0]</strong> <em>RepoElement</em> the element. <dd>
+ * <strong>args[1]</strong> <em>String</em> pixmap of the thmbnail of the
+ * element.</dd> </dl>
  */
 public class SearchRepo extends Worker {
 
 	private static final String SEARCH_REPO_TAG = "SearchRepoWorker";
 
-	/**
-	 * 25 s.
-	 */
-	private static final int TIMEOUT = 25000;
+	private SearchResponse response;
 
 	private Array<RepoElement> repoElems;
 
-	/**
-	 * Sends an HTTP request and returns the response. See also:
-	 * {@link Platform#sendHttpRequest(HttpRequest, Class)}
-	 * 
-	 * @throws IOException
-	 * 
-	 */
-	private <T> T sendHTTPRequest(String URL, Class<T> type) throws IOException {
-		Gdx.app.log(SEARCH_REPO_TAG, "Sending HTTP request to " + URL);
-		HttpRequest httpRequest = Pools.obtain(HttpRequest.class);
-		httpRequest.setMethod(Net.HttpMethods.GET);
-		httpRequest.setUrl(URL);
-		httpRequest.setContent(null);
-		httpRequest.setTimeOut(TIMEOUT);
-		try {
-			return controller.getPlatform().sendHttpRequest(httpRequest, type);
-		} finally {
-			Pools.free(httpRequest);
-		}
+	public SearchRepo() {
+		super(true);
 	}
 
 	@Override
 	protected void prepare() {
 
-		String URL = "";
+		response = null;
 		repoElems = null;
 		String httpResponse = null;
+		String URL = (String) args[0];
 
 		try {
-			httpResponse = sendHTTPRequest(URL, String.class);
+			httpResponse = controller.getPlatform().sendHttpGetRequest(URL,
+					String.class);
 		} catch (IOException e) {
 			Gdx.app.error(SEARCH_REPO_TAG,
 					"Failed to perform the HTTP request. ", e);
@@ -102,10 +96,22 @@ public class SearchRepo extends Worker {
 			return;
 		}
 
+		if (httpResponse == null || httpResponse.trim().isEmpty()) {
+			IOException ioe = new IOException(
+					"Invalid http response (null or empty)");
+			Gdx.app.error(SEARCH_REPO_TAG, "", ioe);
+			error(ioe);
+			return;
+		}
+
 		try {
-			repoElems = getRepoElementsFromResult(httpResponse);
+			response = getRepoElementsFromResult(httpResponse);
+			result(response);
+			repoElems = response.getResults();
 		} catch (SerializationException se) {
 			Gdx.app.log(SEARCH_REPO_TAG, "Error parsing JSON result.", se);
+			repoElems = null;
+			response = null;
 			error(se);
 		}
 	}
@@ -113,12 +119,13 @@ public class SearchRepo extends Worker {
 	/**
 	 * 
 	 * @param result
-	 *            a correctly formatted .json as an {@link Array} of
-	 *            {@link RepoElement}s.
-	 * @return an {@link Array} of {@link RepoElement}s.
+	 *            a correctly formatted .json as an {@link SearchResponse}.
+	 * @return a {@link SearchResponse}.
+	 * @see {@link SearchResponse}
 	 */
-	private Array<RepoElement> getRepoElementsFromResult(String result) {
-		return controller.getEditorGameAssets().fromJson(Array.class, result);
+	private SearchResponse getRepoElementsFromResult(String result) {
+		return controller.getEditorGameAssets().fromJson(SearchResponse.class,
+				result);
 	}
 
 	@Override
@@ -128,24 +135,25 @@ public class SearchRepo extends Worker {
 		}
 		RepoElement elem = repoElems.removeIndex(0);
 
-		Array<String> thumbnailPaths = elem.getThumbnailPathList();
+		String thumbnailURL = Q.getRepoElementThumbnailUrl(elem);
 
-		String thumbnailURL = (thumbnailPaths == null || thumbnailPaths.size == 0) ? null
-				: thumbnailPaths.first();
+		if (!thumbnailURL.isEmpty()) {
 
-		byte[] httpResponse = null;
-		try {
-			httpResponse = sendHTTPRequest(thumbnailURL, byte[].class);
+			byte[] httpResponse = null;
+			try {
+				httpResponse = controller.getPlatform().sendHttpGetRequest(
+						thumbnailURL, byte[].class);
 
-			Pixmap pixmap = new Pixmap(httpResponse, 0, httpResponse.length);
+				Pixmap pixmap = new Pixmap(httpResponse, 0, httpResponse.length);
 
-			if (pixmap != null) {
-				result(elem, pixmap);
+				if (pixmap != null) {
+					result(elem, pixmap);
+				}
+			} catch (Exception e) {
+				Gdx.app.error(SEARCH_REPO_TAG,
+						"Failed to perform the HTTP request. ", e);
+
 			}
-		} catch (Exception e) {
-			Gdx.app.error(SEARCH_REPO_TAG,
-					"Failed to perform the HTTP request. ", e);
-
 		}
 		return repoElems.size == 0;
 	}
