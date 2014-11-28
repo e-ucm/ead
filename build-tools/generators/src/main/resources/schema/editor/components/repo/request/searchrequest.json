@@ -1,0 +1,19 @@
+{
+    "additionalProperties": false,
+    "javaType": "es.eucm.ead.schema.editor.components.repo.request.SearchRequest",
+    "extends":{
+        "$ref":"reporequest.json"
+    },
+    "properties": {
+        "q":{
+            "type":"string",
+            "description":"The string to search for"
+        },
+        "c":{
+            "type":"string",
+            "description":"Web safe version of AppEngine's cursor ({@link https://cloud.google.com/appengine/docs/java/javadoc/com/google/appengine/api/datastore/Cursor}). Used for paginated result retrieval. If null, the backend assumes the first page of results must be returned."
+        }
+    },
+    "type": "object",
+    "description": "Encapsulates fields for creating search requests"
+}

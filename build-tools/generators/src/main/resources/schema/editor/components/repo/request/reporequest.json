@@ -1,0 +1,12 @@
+{
+    "additionalProperties": false,
+    "javaType": "es.eucm.ead.schema.editor.components.repo.request.RepoRequest",
+    "properties": {
+        "k":{
+            "type":"string",
+            "description":"API Key of the application that is making a request to the backend. Only mokap administrators know these api keys! (API keys cannot be public)"
+        }
+    },
+    "type": "object",
+    "description": "Abstract class representing the parameters of any request that is sent to the backend. This class is not intended to be instantiated, but to serve as superclass for specific request types (e.g. SearchRequest). Child classes should be named using the convention ServicenameRequest."
+}
