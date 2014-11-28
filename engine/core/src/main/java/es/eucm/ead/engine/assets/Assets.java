@@ -106,7 +106,7 @@ public abstract class Assets extends Json implements FileHandleResolver,
 	/**
 	 * Current skin to create widgets
 	 */
-	private Skin skin;
+	protected Skin skin;
 
 	private Array<AssetLoadingListener> listeners;
 
@@ -451,8 +451,9 @@ public abstract class Assets extends Json implements FileHandleResolver,
 	 */
 
 	/**
-	 * Clear and disposes all loaded assets. This method is only used from
-	 * {@link GameAssets} right now.
+	 * Clear and disposes all loaded assets. This method is used from
+	 * {@link GameAssets} and also to dispose the loaded thumbnails from
+	 * {@link AplicationAssets}.
 	 */
 	public void clear() {
 		Gdx.app.debug(this.getClass().getCanonicalName(), "Clearing "
