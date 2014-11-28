@@ -36,8 +36,8 @@
  */
 package es.eucm.ead.editor.control.actions.model;
 
+import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.utils.Array;
-
 import es.eucm.ead.editor.control.Selection;
 import es.eucm.ead.editor.control.actions.ModelAction;
 import es.eucm.ead.editor.control.commands.Command;
@@ -45,11 +45,8 @@ import es.eucm.ead.editor.control.commands.CompositeCommand;
 import es.eucm.ead.editor.control.commands.FieldCommand;
 import es.eucm.ead.editor.control.commands.ListCommand;
 import es.eucm.ead.editor.control.commands.ResourceCommand.RemoveResourceCommand;
-import es.eucm.ead.editor.control.commands.SelectionCommand;
 import es.eucm.ead.editor.model.Model;
 import es.eucm.ead.editor.model.Q;
-import es.eucm.ead.editor.view.builders.classic.dialogs.InfoDialogBuilder;
-import es.eucm.ead.engine.I18N;
 import es.eucm.ead.schema.editor.components.EditState;
 import es.eucm.ead.schema.editor.components.GameData;
 import es.eucm.ead.schema.editor.components.SceneMap;
@@ -73,7 +70,11 @@ import es.eucm.ead.schemax.entities.ResourceCategory;
  * 
  * Created by Javier Torrente on 3/03/14.
  */
-public class DeleteScene extends ModelAction {
+public class BaseDeleteScene extends ModelAction {
+
+	public BaseDeleteScene() {
+		super(true, false, new Class[] {}, new Class[] { String.class });
+	}
 
 	@Override
 	public boolean validate(Object... args) {
@@ -82,63 +83,30 @@ public class DeleteScene extends ModelAction {
 
 	@Override
 	public Command perform(Object... args) {
-		String id = (String) args[0];
-		// This is a hotfix for avoiding show information when actions are
-		// called
-		// from test
-		boolean verbose = true;
+		String id = (String) (args.length == 0 ? controller.getModel()
+				.getSelection().getSingle(Selection.RESOURCE) : args[0]);
 
-		if (args.length > 1 && args[1] instanceof Boolean) {
-			verbose = (Boolean) args[1];
-
+		if (controller.getModel().getResourceCategory(id) != ResourceCategory.SCENE) {
+			Gdx.app.error("DeleteScene", id
+					+ "is not a scene, and cannot be removed.");
+			return null;
 		}
 
-		// If there's only one scene, then this action cannot be done and
-		// the
-		// user must be warned.
 		if (controller.getModel().getResources(ResourceCategory.SCENE).size() == 1) {
-
-			if (verbose) {
-				// Select InfoDialogBuilder as dialog for showing a message
-				// explaining why this scene won't be deleted
-				I18N i18n = controller.getApplicationAssets().getI18N();
-				controller.getViews().showDialog(InfoDialogBuilder.class,
-						i18n.m("scene.delete"),
-						i18n.m("scene.delete.error-message"));
-			}
-		}
-		// There are more than only one scene
-		else {
+			notifyIsLastScene();
+		} else {
 			Model model = controller.getModel();
 			ModelEntity game = model.getGame();
 			Array<Command> commandList = new Array<Command>();
-			// The action of deleting an scene involves the next commands:
 			String alternateScene = null;
 			EditState editState = Q.getComponent(game, EditState.class);
 
 			// 2) If the scene is the "initialscene", change the initial one
 			GameData gameData = Q.getComponent(game, GameData.class);
 			if (gameData.getInitialScene().equals(id)) {
-				if (alternateScene == null) {
-					alternateScene = findAlternateScene(id);
-				}
+				alternateScene = findAlternateScene(id);
 				commandList.add(new FieldCommand(gameData,
 						FieldName.INITIAL_SCENE, alternateScene, false));
-			}
-
-			// 3) If the scene is also the selection, change the selection to
-			// another one
-			Object selection = model.getSelection().getSingle(Selection.SCENE);
-			if (selection == model
-					.getResourceObject(id, ResourceCategory.SCENE)) {
-				if (alternateScene == null) {
-					alternateScene = findAlternateScene(id);
-				}
-				commandList.add(new SelectionCommand(model, Selection.PROJECT,
-						Selection.RESOURCE, alternateScene));
-				commandList.add(new SelectionCommand(model, Selection.RESOURCE,
-						Selection.SCENE, model.getResourceObject(
-								alternateScene, ResourceCategory.SCENE)));
 			}
 
 			// 3) Delete the scene properly speaking
@@ -187,5 +155,9 @@ public class DeleteScene extends ModelAction {
 			}
 		}
 		return alternateScene;
+	}
+
+	protected void notifyIsLastScene() {
+
 	}
 }

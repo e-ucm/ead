@@ -40,17 +40,17 @@ import static org.junit.Assert.assertEquals;
 
 import java.util.Map;
 
+import es.eucm.ead.editor.control.actions.model.BaseDeleteScene;
 import org.junit.Before;
 import org.junit.Test;
 
-import es.eucm.ead.editor.control.actions.model.DeleteScene;
 import es.eucm.ead.editor.model.Model.Resource;
 import es.eucm.ead.editor.model.Q;
 import es.eucm.ead.schema.editor.components.GameData;
 import es.eucm.ead.schema.entities.ModelEntity;
 import es.eucm.ead.schemax.entities.ResourceCategory;
 
-public class DeleteSceneTest extends ActionTest {
+public class BaseDeleteSceneTest extends ActionTest {
 
 	@Override
 	@Before
@@ -70,11 +70,11 @@ public class DeleteSceneTest extends ActionTest {
 		model.putResource("initial", ResourceCategory.SCENE, new ModelEntity());
 
 		// Not delete: only one scene in the game
-		controller.action(DeleteScene.class, "initial", false);
+		controller.action(BaseDeleteScene.class, "initial", false);
 		assertEquals(scenes.size(), 1);
 
 		model.putResource("second", ResourceCategory.SCENE, new ModelEntity());
-		controller.action(DeleteScene.class, "second", false);
+		controller.action(BaseDeleteScene.class, "second", false);
 		assertEquals(scenes.size(), 1);
 
 		// Assure the initial scene changes to another scene when it is removed
@@ -82,7 +82,7 @@ public class DeleteSceneTest extends ActionTest {
 				new ModelEntity());
 		Q.getComponent(model.getGame(), GameData.class).setInitialScene(
 				"initial");
-		controller.action(DeleteScene.class, "initial", false);
+		controller.action(BaseDeleteScene.class, "initial", false);
 		assertEquals("newInitial",
 				Q.getComponent(model.getGame(), GameData.class)
 						.getInitialScene());
@@ -91,6 +91,6 @@ public class DeleteSceneTest extends ActionTest {
 	@Test
 	public void testDeleteUnknownScene() {
 		// Assure nothing bad happens removing an non-existing scene
-		controller.action(DeleteScene.class, "ñor", false);
+		controller.action(BaseDeleteScene.class, "ñor", false);
 	}
 }

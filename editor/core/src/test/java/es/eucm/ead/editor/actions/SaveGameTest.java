@@ -42,7 +42,7 @@ import es.eucm.ead.editor.control.actions.editor.ForceSave;
 import es.eucm.ead.editor.control.actions.editor.OpenGame;
 import es.eucm.ead.editor.control.actions.editor.Save;
 import es.eucm.ead.editor.control.actions.editor.Undo;
-import es.eucm.ead.editor.control.actions.model.DeleteScene;
+import es.eucm.ead.editor.control.actions.model.BaseDeleteScene;
 import es.eucm.ead.editor.control.actions.model.RenameScene;
 import es.eucm.ead.editor.control.actions.model.scene.NewScene;
 import es.eucm.ead.editor.model.Model.Resource;
@@ -140,7 +140,7 @@ public class SaveGameTest extends ActionTest {
 		// new scene2 will be created with 1 scene element.
 		for (int i = 0; i < 5; i++) {
 			if (i != 3) {
-				controller.action(DeleteScene.class,
+				controller.action(BaseDeleteScene.class,
 						EditorGameAssets.SCENES_PATH + "scene" + i + ".json");
 			}
 		}

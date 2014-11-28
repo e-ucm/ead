@@ -42,8 +42,8 @@ import com.badlogic.gdx.scenes.scene2d.InputListener;
 
 import es.eucm.ead.editor.control.Controller;
 import es.eucm.ead.editor.control.actions.editor.ShowContextMenu;
+import es.eucm.ead.editor.control.actions.model.BaseDeleteScene;
 import es.eucm.ead.editor.control.actions.model.ChangeInitialScene;
-import es.eucm.ead.editor.control.actions.model.DeleteScene;
 import es.eucm.ead.editor.ui.DisplayableContextMenu;
 import es.eucm.ead.editor.ui.scenes.map.SceneWidget;
 import es.eucm.ead.editor.view.widgets.menu.ContextMenu;
@@ -77,7 +77,7 @@ public class SceneContextMenu extends DisplayableContextMenu<SceneWidget> {
 					int pointer, int button) {
 				Actor listenerActor = event.getListenerActor();
 				if (listenerActor == deleteScene) {
-					controller.action(DeleteScene.class,
+					controller.action(BaseDeleteScene.class,
 							sceneWidget.getSceneId());
 					sceneWidget.setChecked(true);
 				} else if (listenerActor == makeInitial) {

@@ -36,12 +36,10 @@
  */
 package es.eucm.ead.editor;
 
-import com.badlogic.gdx.Application;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.scenes.scene2d.ui.WidgetGroup;
 import com.badlogic.gdx.utils.Timer;
 import com.badlogic.gdx.utils.Timer.Task;
-
 import es.eucm.ead.editor.control.Controller;
 import es.eucm.ead.editor.control.MokapController;
 import es.eucm.ead.editor.control.actions.editor.OpenLastProject;
@@ -130,8 +128,6 @@ public class MokapApplicationListener extends EditorApplicationListener {
 
 		@Override
 		public void run() {
-			Gdx.app.setLogLevel(Application.LOG_DEBUG);
-			Gdx.app.log("Save", "Saved.");
 			Gdx.app.postRunnable(runnable);
 			Gdx.graphics.requestRendering();
 		}
