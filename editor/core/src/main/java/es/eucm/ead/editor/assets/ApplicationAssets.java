@@ -39,11 +39,14 @@ package es.eucm.ead.editor.assets;
 import com.badlogic.gdx.Files;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.files.FileHandle;
+import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.badlogic.gdx.utils.Json;
 import com.badlogic.gdx.utils.ObjectMap;
+
 import es.eucm.ead.editor.control.Preferences;
 import es.eucm.ead.editor.control.appdata.ReleaseInfo;
 import es.eucm.ead.engine.assets.Assets;
+import es.eucm.ead.engine.assets.loaders.ExtendedSkin;
 
 /**
  * This asset manager is meant to deal with the editor's own assets. That is,
@@ -111,6 +114,24 @@ public class ApplicationAssets extends Assets {
 		releaseFile = RELEASE_FILE;
 		// Set editor loaders
 		loadSkin(skin);
+	}
+
+	/**
+	 * The skin is not loaded via {@link com.badlogic.gdx.assets.AssetManager}
+	 * because we need a more flexible way to clear disposable assets (e.g.
+	 * thumbnail textures).
+	 */
+	@Override
+	public void loadSkin(String pathWithoutExtension) {
+		if (skin == null) {
+			String skinJson = pathWithoutExtension + ".json";
+			FileHandle skinFile = files.internal(skinJson);
+			FileHandle atlasFile = skinFile.sibling(skinFile
+					.nameWithoutExtension() + ".atlas");
+			TextureAtlas atlas = new TextureAtlas(atlasFile);
+			skin = new ExtendedSkin(this, atlas);
+			skin.load(skinFile);
+		}
 	}
 
 	@Override
@@ -223,5 +244,11 @@ public class ApplicationAssets extends Assets {
 			setReleaseType(ReleaseType.NIGHTLY);
 			setDev(false);
 		}
+	}
+
+	@Override
+	public synchronized void dispose() {
+		super.dispose();
+		skin.dispose();
 	}
 }

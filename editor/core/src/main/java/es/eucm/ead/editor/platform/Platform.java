@@ -38,6 +38,7 @@ package es.eucm.ead.editor.platform;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.net.HttpURLConnection;
 
 import com.badlogic.gdx.Input.TextInputListener;
 import com.badlogic.gdx.Net.HttpRequest;
@@ -173,6 +174,14 @@ public interface Platform {
 	String getLocale();
 
 	/**
+	 * Sends an HTTP request and returns the response. *
+	 * 
+	 * @throws IOException
+	 * @see {@link Platform#sendHttpRequest(HttpRequest, Class)}
+	 */
+	<T> T sendHttpGetRequest(String URL, Class<T> type) throws IOException;
+
+	/**
 	 * Process the specified {@link HttpRequest} and returns the result.
 	 * 
 	 * @param httpRequest
@@ -184,12 +193,15 @@ public interface Platform {
 	 *            a <em>String</em></dd>
 	 *            <dd><strong>byte[].class</strong> Returns the result stream as
 	 *            a <em>byte array</em></dd>
+	 *            <dd><strong>HttpURLConnection.class</strong> Returns the
+	 *            <em>connection</em>. Note that you must disconnect when you've
+	 *            finished via {@link HttpURLConnection#disconnect()}.</dd>
 	 *            </dl>
 	 * @return the result depending on {@code type} value.
 	 * @throws IOException
 	 *             if something went wrong.
 	 */
-	public <T> T sendHttpRequest(HttpRequest httpRequest, Class<T> type)
+	<T> T sendHttpRequest(HttpRequest httpRequest, Class<T> type)
 			throws IOException;
 
 	/**
@@ -207,6 +219,6 @@ public interface Platform {
 	 *            you want to override the source {@code imageFile}.
 	 * @return false if something went wrong, true if the scaling succeeded.
 	 */
-	public boolean scaleImage(FileHandle imageFile, int maxWidth,
-			int maxHeight, FileHandle resultImage);
+	boolean scaleImage(FileHandle imageFile, int maxWidth, int maxHeight,
+			FileHandle resultImage);
 }

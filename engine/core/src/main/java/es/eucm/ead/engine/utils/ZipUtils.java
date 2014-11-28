@@ -93,9 +93,12 @@ public class ZipUtils {
 
 	/**
 	 * Unzips the given {@code sourceZip} to the given {@code outputFolder}
+	 * 
+	 * @return success
 	 */
-	public static void unzip(FileHandle sourceZip, FileHandle outputFolder) {
+	public static boolean unzip(FileHandle sourceZip, FileHandle outputFolder) {
 
+		boolean success = true;
 		byte[] buffer = new byte[1024];
 
 		ZipInputStream zis = null;
@@ -140,6 +143,7 @@ public class ZipUtils {
 			Gdx.app.error("Unzipping", "IOException while unzipping "
 					+ sourceZip.file().getAbsolutePath() + " to "
 					+ outputFolder.file().getAbsolutePath(), ex);
+			success = false;
 		} finally {
 			try {
 				if (fos != null) {
@@ -153,6 +157,7 @@ public class ZipUtils {
 				// already
 			}
 		}
+		return success;
 	}
 
 	/**

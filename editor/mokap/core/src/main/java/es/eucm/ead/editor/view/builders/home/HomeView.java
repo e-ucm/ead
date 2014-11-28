@@ -72,6 +72,7 @@ public class HomeView implements ViewBuilder, BackListener {
 
 	@Override
 	public void release(Controller controller) {
+		controller.getApplicationAssets().clear();
 	}
 
 	@Override

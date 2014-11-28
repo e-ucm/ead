@@ -38,8 +38,8 @@ package es.eucm.ead.engine.assets.loaders;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.files.FileHandle;
-import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
+import com.badlogic.gdx.graphics.g2d.BitmapFont.BitmapFontData;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.graphics.g2d.freetype.FreeTypeFontGenerator;
@@ -50,9 +50,8 @@ import com.badlogic.gdx.utils.Json.ReadOnlySerializer;
 import com.badlogic.gdx.utils.Json.Serializer;
 import com.badlogic.gdx.utils.JsonValue;
 import com.badlogic.gdx.utils.SerializationException;
-import es.eucm.ead.engine.assets.Assets;
 
-import static com.badlogic.gdx.graphics.g2d.BitmapFont.BitmapFontData;
+import es.eucm.ead.engine.assets.Assets;
 
 /**
  * Extension of skin to load some custom resources

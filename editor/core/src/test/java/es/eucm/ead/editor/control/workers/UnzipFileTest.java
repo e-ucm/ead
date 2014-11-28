@@ -36,69 +36,49 @@
  */
 package es.eucm.ead.editor.control.workers;
 
-import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 
+import java.io.IOException;
+import java.io.InputStream;
+import java.net.HttpURLConnection;
+
 import org.junit.Before;
 
+import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.files.FileHandle;
-import com.badlogic.gdx.graphics.Pixmap;
-import com.badlogic.gdx.utils.Array;
 
 import es.eucm.ead.editor.assets.EditorGameAssets;
 import es.eucm.ead.editor.control.actions.editor.ExecuteWorker;
 import es.eucm.ead.editor.control.workers.Worker.WorkerListener;
-import es.eucm.ead.editor.model.Q;
-import es.eucm.ead.editor.platform.MockPlatform;
-import es.eucm.ead.schema.editor.components.repo.RepoElement;
-import es.eucm.ead.schema.editor.components.repo.response.SearchResponse;
 
-public class SearchRepoTest extends WorkerTest implements WorkerListener {
+public class UnzipFileTest extends WorkerTest implements WorkerListener {
 
-	private static final String URL = "";
-	private static final int ELEMS = 10;
+	private FileHandle sourceZip;
 
-	private Array<RepoElement> repoElems = new Array<RepoElement>();
-	private SearchResponse response;
+	private FileHandle outputFolder;
 
 	@Before
-	public void buildElems() {
+	public void buildInputStream() {
 
 		EditorGameAssets gameAssets = controller.getEditorGameAssets();
-
-		// Prepare some images...
 		gameAssets.setLoadingPath("", true);
-		FileHandle image = gameAssets.resolve("blank.png");
-		byte[] bytes = image.readBytes();
-
-		MockPlatform platform = (MockPlatform) controller.getPlatform();
-		repoElems = new Array<RepoElement>();
-		for (int i = 0; i < ELEMS; ++i) {
-			RepoElement elem = new RepoElement();
-			String currentThumbnail = i + ".png";
-			elem.getThumbnailUrlList().add(currentThumbnail);
-			repoElems.add(elem);
-			platform.putHttpResponse(currentThumbnail, bytes);
-		}
-
-		response = new SearchResponse();
-		response.setCount(ELEMS);
-		response.setTotal(ELEMS);
-		response.setResults(repoElems);
-
-		String json = gameAssets.toJson(response, SearchResponse.class);
-		platform.putHttpResponse(URL, json);
+		sourceZip = gameAssets.resolve("blank.zip");
+		outputFolder = Gdx.files.external("");
 	}
 
 	@Override
 	public void testWorker() {
-		controller.action(ExecuteWorker.class, SearchRepo.class, this, URL);
+		controller.action(ExecuteWorker.class, UnzipFile.class, this,
+				sourceZip, outputFolder);
 	}
 
 	@Override
 	public void asserts() {
-		assertEquals(repoElems.size, 0);
+		FileHandle child = outputFolder.child(sourceZip.nameWithoutExtension()
+				+ ".png");
+		assertTrue(child.exists());
+		child.delete();
 	}
 
 	@Override
@@ -108,18 +88,7 @@ public class SearchRepoTest extends WorkerTest implements WorkerListener {
 
 	@Override
 	public void result(Object... results) {
-		Object firstResult = results[0];
-		if (firstResult instanceof SearchResponse) {
-			SearchResponse mockResponse = (SearchResponse) firstResult;
-			assertEquals(response.getCount(), mockResponse.getCount());
-			assertTrue(response.getTotal() == mockResponse.getTotal());
-		} else {
-			String expectedUrl = Q.getRepoElementThumbnailUrl(repoElems
-					.removeIndex(0));
-			assertEquals(expectedUrl,
-					Q.getRepoElementThumbnailUrl((RepoElement) firstResult));
-			assertTrue((results[1] instanceof Pixmap));
-		}
+		assertTrue((Boolean) results[0]);
 	}
 
 	@Override

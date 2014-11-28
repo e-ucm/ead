@@ -139,7 +139,7 @@ public class EngineUtils {
 
 	/**
 	 * Calculate the bounds of the given actors as a group
-	 *
+	 * 
 	 * @param actors
 	 *            the actors
 	 * @param resultOrigin

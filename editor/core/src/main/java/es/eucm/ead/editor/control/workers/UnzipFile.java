@@ -34,47 +34,39 @@
  *      You should have received a copy of the GNU Lesser General Public License
  *      along with eAdventure.  If not, see <http://www.gnu.org/licenses/>.
  */
-package es.eucm.ead.engine.assets.loaders;
+package es.eucm.ead.editor.control.workers;
 
-import com.badlogic.gdx.assets.AssetManager;
-import com.badlogic.gdx.assets.loaders.SkinLoader;
 import com.badlogic.gdx.files.FileHandle;
-import com.badlogic.gdx.graphics.g2d.TextureAtlas;
-import com.badlogic.gdx.scenes.scene2d.ui.Skin;
-import com.badlogic.gdx.utils.ObjectMap;
-import com.badlogic.gdx.utils.ObjectMap.Entry;
 
-import es.eucm.ead.engine.assets.Assets;
+import es.eucm.ead.editor.assets.ApplicationAssets;
+import es.eucm.ead.engine.utils.ZipUtils;
 
-public class ExtendedSkinLoader extends SkinLoader {
+/**
+ * Uncompresses a given .zip file.
+ * <dl>
+ * <dt><strong>The input arguments are</strong></dt>
+ * <dd><strong>args[0]</strong> <em>FileHandle</em> FileHandle to the compressed
+ * (.zip) file.
+ * <dd><strong>args[1]</strong> <em>FileHandle</em> FileHandle to the
+ * destination (output) folder.</dd>
+ * </dl>
+ * <dl>
+ * <dt><strong>The result argument is</strong></dt>
+ * <dd><strong>args[0]</strong> <em>Boolean</em> success.
+ * </dl>
+ */
+public class UnzipFile extends Worker {
 
-	private final Assets assets;
+	@Override
+	protected void prepare() {
 
-	public ExtendedSkinLoader(Assets resolver) {
-		super(resolver);
-		this.assets = resolver;
 	}
 
 	@Override
-	public Skin loadSync(AssetManager manager, String fileName,
-			FileHandle file, SkinParameter parameter) {
-		String textureAtlasPath;
-		ObjectMap<String, Object> resources;
-		if (parameter == null) {
-			textureAtlasPath = file.pathWithoutExtension() + ".atlas";
-			resources = null;
-		} else {
-			textureAtlasPath = parameter.textureAtlasPath;
-			resources = parameter.resources;
-		}
-		TextureAtlas atlas = manager.get(textureAtlasPath, TextureAtlas.class);
-		Skin skin = new ExtendedSkin(assets, atlas);
-		if (resources != null) {
-			for (Entry<String, Object> entry : resources.entries()) {
-				skin.add(entry.key, entry.value);
-			}
-		}
-		skin.load(file);
-		return skin;
+	protected boolean step() {
+		FileHandle sourceZip = (FileHandle) args[0];
+		FileHandle outputFolder = (FileHandle) args[1];
+		result(ZipUtils.unzip(sourceZip, outputFolder));
+		return true;
 	}
 }

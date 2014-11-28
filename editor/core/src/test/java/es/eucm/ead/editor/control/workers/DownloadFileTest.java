@@ -40,65 +40,52 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 
+import java.io.IOException;
+import java.io.InputStream;
+import java.net.HttpURLConnection;
+
 import org.junit.Before;
 
+import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.files.FileHandle;
-import com.badlogic.gdx.graphics.Pixmap;
-import com.badlogic.gdx.utils.Array;
 
 import es.eucm.ead.editor.assets.EditorGameAssets;
 import es.eucm.ead.editor.control.actions.editor.ExecuteWorker;
 import es.eucm.ead.editor.control.workers.Worker.WorkerListener;
-import es.eucm.ead.editor.model.Q;
-import es.eucm.ead.editor.platform.MockPlatform;
-import es.eucm.ead.schema.editor.components.repo.RepoElement;
-import es.eucm.ead.schema.editor.components.repo.response.SearchResponse;
+import es.eucm.ead.editor.utils.ProjectUtils;
 
-public class SearchRepoTest extends WorkerTest implements WorkerListener {
+public class DownloadFileTest extends WorkerTest implements WorkerListener {
 
 	private static final String URL = "";
-	private static final int ELEMS = 10;
 
-	private Array<RepoElement> repoElems = new Array<RepoElement>();
-	private SearchResponse response;
+	private FileHandle image;
+
+	private FileHandle dstFile;
 
 	@Before
-	public void buildElems() {
+	public void buildInputStream() {
 
 		EditorGameAssets gameAssets = controller.getEditorGameAssets();
-
-		// Prepare some images...
 		gameAssets.setLoadingPath("", true);
-		FileHandle image = gameAssets.resolve("blank.png");
-		byte[] bytes = image.readBytes();
+		image = gameAssets.resolve("blank.png");
 
-		MockPlatform platform = (MockPlatform) controller.getPlatform();
-		repoElems = new Array<RepoElement>();
-		for (int i = 0; i < ELEMS; ++i) {
-			RepoElement elem = new RepoElement();
-			String currentThumbnail = i + ".png";
-			elem.getThumbnailUrlList().add(currentThumbnail);
-			repoElems.add(elem);
-			platform.putHttpResponse(currentThumbnail, bytes);
-		}
-
-		response = new SearchResponse();
-		response.setCount(ELEMS);
-		response.setTotal(ELEMS);
-		response.setResults(repoElems);
-
-		String json = gameAssets.toJson(response, SearchResponse.class);
-		platform.putHttpResponse(URL, json);
+		platform.putHttpResponse(URL, new MockConnection(image.read()));
 	}
 
 	@Override
 	public void testWorker() {
-		controller.action(ExecuteWorker.class, SearchRepo.class, this, URL);
+		FileHandle directory = Gdx.files.external("");
+		dstFile = ProjectUtils.getNonExistentFile(directory,
+				image.nameWithoutExtension(), image.extension());
+		controller.action(ExecuteWorker.class, DownloadFile.class, this, URL,
+				dstFile.file().getAbsolutePath());
 	}
 
 	@Override
 	public void asserts() {
-		assertEquals(repoElems.size, 0);
+		assertTrue(dstFile.exists());
+		assertEquals(dstFile.length(), image.length());
+		dstFile.delete();
 	}
 
 	@Override
@@ -108,18 +95,7 @@ public class SearchRepoTest extends WorkerTest implements WorkerListener {
 
 	@Override
 	public void result(Object... results) {
-		Object firstResult = results[0];
-		if (firstResult instanceof SearchResponse) {
-			SearchResponse mockResponse = (SearchResponse) firstResult;
-			assertEquals(response.getCount(), mockResponse.getCount());
-			assertTrue(response.getTotal() == mockResponse.getTotal());
-		} else {
-			String expectedUrl = Q.getRepoElementThumbnailUrl(repoElems
-					.removeIndex(0));
-			assertEquals(expectedUrl,
-					Q.getRepoElementThumbnailUrl((RepoElement) firstResult));
-			assertTrue((results[1] instanceof Pixmap));
-		}
+		assertTrue((Boolean) results[0]);
 	}
 
 	@Override
@@ -134,5 +110,34 @@ public class SearchRepoTest extends WorkerTest implements WorkerListener {
 	@Override
 	public void cancelled() {
 
+	}
+
+	public static class MockConnection extends HttpURLConnection {
+
+		private InputStream stream;
+
+		protected MockConnection(InputStream stream) {
+			super(null);
+			this.stream = stream;
+		}
+
+		@Override
+		public InputStream getInputStream() throws IOException {
+			return stream;
+		}
+
+		@Override
+		public void disconnect() {
+		}
+
+		@Override
+		public boolean usingProxy() {
+			return false;
+		}
+
+		@Override
+		public void connect() throws IOException {
+
+		}
 	}
 }

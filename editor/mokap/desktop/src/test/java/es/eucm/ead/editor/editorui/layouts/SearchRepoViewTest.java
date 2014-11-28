@@ -34,105 +34,71 @@
  *      You should have received a copy of the GNU Lesser General Public License
  *      along with eAdventure.  If not, see <http://www.gnu.org/licenses/>.
  */
-package es.eucm.ead.editor.control.workers;
+package es.eucm.ead.editor.editorui.layouts;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
-import static org.junit.Assert.fail;
-
-import org.junit.Before;
-
+import com.badlogic.gdx.backends.lwjgl.LwjglApplication;
+import com.badlogic.gdx.backends.lwjgl.LwjglApplicationConfiguration;
 import com.badlogic.gdx.files.FileHandle;
-import com.badlogic.gdx.graphics.Pixmap;
+import com.badlogic.gdx.scenes.scene2d.Actor;
+import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.utils.Array;
 
 import es.eucm.ead.editor.assets.EditorGameAssets;
-import es.eucm.ead.editor.control.actions.editor.ExecuteWorker;
-import es.eucm.ead.editor.control.workers.Worker.WorkerListener;
-import es.eucm.ead.editor.model.Q;
-import es.eucm.ead.editor.platform.MockPlatform;
+import es.eucm.ead.editor.editorui.MockPlatform;
+import es.eucm.ead.editor.editorui.UITest;
+import es.eucm.ead.editor.view.builders.SearchView;
+import es.eucm.ead.engine.I18N;
 import es.eucm.ead.schema.editor.components.repo.RepoElement;
 import es.eucm.ead.schema.editor.components.repo.response.SearchResponse;
 
-public class SearchRepoTest extends WorkerTest implements WorkerListener {
+public class SearchRepoViewTest extends UITest {
 
 	private static final String URL = "";
 	private static final int ELEMS = 10;
 
-	private Array<RepoElement> repoElems = new Array<RepoElement>();
-	private SearchResponse response;
+	@Override
+	protected Actor buildUI(Skin skin, I18N i18n) {
 
-	@Before
-	public void buildElems() {
+		prepareLocalAssets();
 
+		SearchView repoView = new SearchView();
+		repoView.initialize(controller);
+
+		return repoView.getView();
+	}
+
+	private void prepareLocalAssets() {
+		MockPlatform platform = ((MockPlatform) controller.getPlatform());
 		EditorGameAssets gameAssets = controller.getEditorGameAssets();
 
 		// Prepare some images...
 		gameAssets.setLoadingPath("", true);
-		FileHandle image = gameAssets.resolve("blank.png");
+		FileHandle image = gameAssets.resolve("thumbnail.png");
 		byte[] bytes = image.readBytes();
 
-		MockPlatform platform = (MockPlatform) controller.getPlatform();
-		repoElems = new Array<RepoElement>();
+		Array<RepoElement> repoElems = new Array<RepoElement>();
 		for (int i = 0; i < ELEMS; ++i) {
 			RepoElement elem = new RepoElement();
+			elem.getNameList().add("RepoElem " + i);
 			String currentThumbnail = i + ".png";
 			elem.getThumbnailUrlList().add(currentThumbnail);
 			repoElems.add(elem);
 			platform.putHttpResponse(currentThumbnail, bytes);
 		}
 
-		response = new SearchResponse();
+		SearchResponse response = new SearchResponse();
 		response.setCount(ELEMS);
 		response.setTotal(ELEMS);
 		response.setResults(repoElems);
-
 		String json = gameAssets.toJson(response, SearchResponse.class);
 		platform.putHttpResponse(URL, json);
+		platform.putDefaultHttpResponse(json);
 	}
 
-	@Override
-	public void testWorker() {
-		controller.action(ExecuteWorker.class, SearchRepo.class, this, URL);
-	}
-
-	@Override
-	public void asserts() {
-		assertEquals(repoElems.size, 0);
-	}
-
-	@Override
-	public void start() {
-
-	}
-
-	@Override
-	public void result(Object... results) {
-		Object firstResult = results[0];
-		if (firstResult instanceof SearchResponse) {
-			SearchResponse mockResponse = (SearchResponse) firstResult;
-			assertEquals(response.getCount(), mockResponse.getCount());
-			assertTrue(response.getTotal() == mockResponse.getTotal());
-		} else {
-			String expectedUrl = Q.getRepoElementThumbnailUrl(repoElems
-					.removeIndex(0));
-			assertEquals(expectedUrl,
-					Q.getRepoElementThumbnailUrl((RepoElement) firstResult));
-			assertTrue((results[1] instanceof Pixmap));
-		}
-	}
-
-	@Override
-	public void done() {
-	}
-
-	@Override
-	public void error(Throwable ex) {
-		fail("Exception thrown" + ex);
-	}
-
-	@Override
-	public void cancelled() {
-
+	public static void main(String[] args) {
+		LwjglApplicationConfiguration config = new LwjglApplicationConfiguration();
+		config.width = 600;
+		config.height = 350;
+		new LwjglApplication(new SearchRepoViewTest(), config);
 	}
 }
