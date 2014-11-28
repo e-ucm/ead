@@ -252,7 +252,8 @@ public class LinearLayout extends AbstractWidget {
 		if (background != null) {
 			Color color = batch.getColor();
 			batch.setColor(backgroundColor.r, backgroundColor.g,
-					backgroundColor.b, backgroundColor.a * parentAlpha);
+					backgroundColor.b, backgroundColor.a * parentAlpha
+							* getColor().a);
 			background.draw(batch, 0, 0, getWidth(), getHeight());
 			batch.setColor(color);
 		}
@@ -370,16 +371,14 @@ public class LinearLayout extends AbstractWidget {
 		switch (verticalAlign(c)) {
 		case Align.top:
 		case Align.right:
-			return (containerHeight() - height - paddingTop() - marginTop(c))
-					- (background == null ? 0 : background.getTopHeight());
+			return (containerHeight() - height - paddingTop() - marginTop(c));
 		case Align.left:
 		case Align.bottom:
-			return paddingBottom() + marginBottom(c)
-					+ (background == null ? 0 : background.getBottomHeight());
+			return paddingBottom() + marginBottom(c);
 		default:
 			// Align.center
 			float offset = paddingBottom() + marginBottom(c);
-			float containerHeight = containerHeight() - backgroundHeight();
+			float containerHeight = containerHeight() - paddingHeight();
 			return (containerHeight - height) / 2 + offset;
 		}
 
