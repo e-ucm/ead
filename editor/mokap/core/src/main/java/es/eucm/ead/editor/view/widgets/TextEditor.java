@@ -55,7 +55,7 @@ import es.eucm.ead.editor.view.widgets.draw.SlideColorPicker.ColorListener;
 import es.eucm.ead.editor.view.widgets.layouts.LinearLayout;
 import es.eucm.ead.engine.I18N;
 
-public class TextFontColorPicker extends ContextMenu {
+public class TextEditor extends ContextMenu {
 
 	private ColorPickerPanel colorPicker;
 
@@ -71,12 +71,11 @@ public class TextFontColorPicker extends ContextMenu {
 
 	protected LinearLayout top;
 
-	public TextFontColorPicker(Skin skin, I18N i18n) {
-		this(skin, skin.get(TextFontColorPickerStyle.class), i18n);
+	public TextEditor(Skin skin, I18N i18n) {
+		this(skin, skin.get(TextEditorStyle.class), i18n);
 	}
 
-	public TextFontColorPicker(Skin skin, TextFontColorPickerStyle style,
-			I18N i18n) {
+	public TextEditor(Skin skin, TextEditorStyle style, I18N i18n) {
 		setBackground(style.background);
 
 		this.i18n = i18n;
@@ -188,22 +187,22 @@ public class TextFontColorPicker extends ContextMenu {
 		colorPicker.setPickedColor(color);
 	}
 
-	static public class TextFontColorPickerStyle {
+	static public class TextEditorStyle {
 
 		public ColorPickerPanelStyle colorPickerStyle;
 
 		/** Optional */
 		public Drawable background;
 
-		public TextFontColorPickerStyle() {
+		public TextEditorStyle() {
 		}
 
-		public TextFontColorPickerStyle(BrushStrokesPickerStyle style) {
+		public TextEditorStyle(BrushStrokesPickerStyle style) {
 			this.colorPickerStyle = style.colorPickerStyle;
 			this.background = style.background;
 		}
 
-		public TextFontColorPickerStyle(ColorPickerPanelStyle colorPickerStyle,
+		public TextEditorStyle(ColorPickerPanelStyle colorPickerStyle,
 				Drawable background) {
 			this.colorPickerStyle = colorPickerStyle;
 			this.background = background;

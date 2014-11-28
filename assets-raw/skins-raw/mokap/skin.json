@@ -379,7 +379,7 @@
             "sizeSliderPad": 12
         }
     },
-    "es.eucm.ead.editor.view.widgets.TextFontColorPicker$TextFontColorPickerStyle": {
+    "es.eucm.ead.editor.view.widgets.TextEditor$TextEditorStyle": {
         "default": {
             "background": "page",
             "colorPickerStyle": "color_reduced"
