@@ -90,13 +90,11 @@ public class FileGallery extends ThumbnailsGallery implements WorkerListener,
 	}
 
 	@Override
-	protected void prepareGalleryItem(Actor actor, final String id) {
+	protected void prepareGalleryItem(Actor actor, final String elemPath) {
 		actor.addListener(new ClickListener() {
 			@Override
 			public void clicked(InputEvent event, float x, float y) {
-				ModelEntity element = controller.getTemplates()
-						.createSceneElement(id, false);
-				controller.action(AddSceneElement.class, element);
+				addElementAndChangeView(elemPath);
 			}
 		});
 	}
@@ -131,10 +129,14 @@ public class FileGallery extends ThumbnailsGallery implements WorkerListener,
 	@Override
 	public void fileChosen(String path) {
 		if (path != null && !path.trim().isEmpty()) {
-			ModelEntity sceneElement = controller.getTemplates()
-					.createSceneElement(path, false);
-			controller.action(AddSceneElement.class, sceneElement);
-			controller.action(ChangeView.class, SceneView.class);
+			addElementAndChangeView(path);
 		}
+	}
+
+	private void addElementAndChangeView(String elemPath) {
+		ModelEntity sceneElement = controller.getTemplates()
+				.createSceneElement(elemPath, false);
+		controller.action(AddSceneElement.class, sceneElement);
+		controller.action(ChangeView.class, SceneView.class);
 	}
 }
