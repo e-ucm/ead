@@ -124,12 +124,13 @@ class Navigation extends Panel {
 	@Override
 	public void show() {
 		super.show();
+		setVisible(true);
 		background.clearActions();
 		background.addAction(Actions.sequence(Actions
 				.touchable(Touchable.enabled), Actions.show(), Actions.alpha(
 				style.navigationBackgroundAlpha, BaseView.HIDE_TIME,
 				Interpolation.exp5Out)));
-		BaseView.moveToAndShow(navigation, 0, navigation.getY());
+		BaseView.moveTo(navigation, 0, navigation.getY());
 	}
 
 	@Override
@@ -140,7 +141,7 @@ class Navigation extends Panel {
 				Actions.touchable(Touchable.disabled),
 				Actions.alpha(0.0f, BaseView.HIDE_TIME, Interpolation.exp5Out),
 				Actions.hide()));
-		BaseView.moveToAndHide(navigation, -getPrefWidth(navigation),
+		BaseView.moveTo(navigation, -getPrefWidth(navigation),
 				navigation.getY());
 	}
 

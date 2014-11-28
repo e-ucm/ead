@@ -282,18 +282,6 @@ public class BaseView extends AbstractWidget {
 		actor.addAction(move(actor, targetX, targetY));
 	}
 
-	public static void moveToAndHide(Actor actor, float targetX, float targetY) {
-		actor.clearActions();
-		actor.addAction(Actions.sequence(move(actor, targetX, targetY),
-				Actions.visible(false)));
-	}
-
-	public static void moveToAndShow(Actor actor, float targetX, float targetY) {
-		actor.clearActions();
-		actor.addAction(Actions.sequence(Actions.visible(true),
-				move(actor, targetX, targetY)));
-	}
-
 	public static class BaseViewStyle {
 
 		public Drawable navigationBackground;

@@ -88,6 +88,6 @@ public abstract class InputState {
 	protected boolean isTouchCancelled(InputEvent event, float x, float y) {
 		Actor actor = event.getTarget();
 		Actor hit = actor.hit(x, y, true);
-		return !(hit == actor || hit.isDescendantOf(actor));
+		return !(hit == actor || (hit != null && hit.isDescendantOf(actor)));
 	}
 }
