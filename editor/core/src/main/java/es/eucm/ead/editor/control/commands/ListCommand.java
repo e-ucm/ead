@@ -181,6 +181,11 @@ public abstract class ListCommand extends Command {
 		return false;
 	}
 
+	@Override
+	public boolean modifiesResource() {
+		return true;
+	}
+
 	public static class AddToListCommand extends ListCommand {
 
 		/**

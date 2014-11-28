@@ -195,6 +195,11 @@ public class CommandsTest extends CommandTest {
 		}
 
 		@Override
+		public boolean modifiesResource() {
+			return false;
+		}
+
+		@Override
 		public boolean combine(Command other) {
 			return false;
 		}
@@ -215,6 +220,11 @@ public class CommandsTest extends CommandTest {
 		@Override
 		public ModelEvent undoCommand() {
 			return null;
+		}
+
+		@Override
+		public boolean modifiesResource() {
+			return false;
 		}
 
 		@Override

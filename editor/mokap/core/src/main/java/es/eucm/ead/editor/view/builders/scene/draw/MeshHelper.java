@@ -36,8 +36,6 @@
  */
 package es.eucm.ead.editor.view.builders.scene.draw;
 
-import java.io.IOException;
-
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.graphics.Camera;
@@ -66,7 +64,6 @@ import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.Disposable;
 import com.badlogic.gdx.utils.GdxRuntimeException;
 import com.badlogic.gdx.utils.ScreenUtils;
-
 import es.eucm.ead.editor.control.Actions;
 import es.eucm.ead.editor.control.Controller;
 import es.eucm.ead.editor.control.actions.editor.Redo;
@@ -74,6 +71,8 @@ import es.eucm.ead.editor.control.actions.editor.Undo;
 import es.eucm.ead.editor.control.commands.Command;
 import es.eucm.ead.editor.model.events.ModelEvent;
 import es.eucm.ead.editor.view.listeners.ActionListener;
+
+import java.io.IOException;
 
 /**
  * Handles all the necessary data required to draw brush strokes, undo/redo and
@@ -901,6 +900,11 @@ public class MeshHelper {
 					flusher.y);
 
 			return this.dummyEvent;
+		}
+
+		@Override
+		public boolean modifiesResource() {
+			return false;
 		}
 
 		@Override

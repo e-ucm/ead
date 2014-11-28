@@ -36,6 +36,7 @@
  */
 package es.eucm.ead.editor.control;
 
+import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.utils.Array;
 import es.eucm.ead.editor.control.commands.Command;
 import es.eucm.ead.editor.model.Model;
@@ -126,6 +127,22 @@ public class Commands {
 
 	public void doCommand(Command command) {
 		ModelEvent modelEvent = command.doCommand();
+		if (command.modifiesResource()) {
+			String resourceModified = command.getResourceModified();
+			if (resourceModified == null) {
+				resourceModified = (String) model.getSelection().getSingle(
+						Selection.RESOURCE);
+			}
+
+			if (resourceModified != null
+					&& model.getResource(resourceModified) != null) {
+				model.getResource(resourceModified).setModified(true);
+			} else {
+				Gdx.app.error("Commands",
+						"Command didn't change any known resource: "
+								+ resourceModified);
+			}
+		}
 		model.notify(modelEvent);
 	}
 

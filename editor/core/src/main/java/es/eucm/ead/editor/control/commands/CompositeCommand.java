@@ -113,6 +113,16 @@ public class CompositeCommand extends Command {
 	}
 
 	@Override
+	public boolean modifiesResource() {
+		for (Command command : commandList) {
+			if (command.modifiesResource()) {
+				return true;
+			}
+		}
+		return false;
+	}
+
+	@Override
 	public boolean canUndo() {
 		// A composite command can only be undone if all its subcommands can be
 		// undone.

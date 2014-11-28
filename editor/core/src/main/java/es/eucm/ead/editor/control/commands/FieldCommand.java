@@ -137,6 +137,11 @@ public class FieldCommand extends Command {
 	}
 
 	@Override
+	public boolean modifiesResource() {
+		return true;
+	}
+
+	@Override
 	public boolean combine(Command other) {
 		if (other instanceof FieldCommand) {
 			FieldCommand o = (FieldCommand) other;

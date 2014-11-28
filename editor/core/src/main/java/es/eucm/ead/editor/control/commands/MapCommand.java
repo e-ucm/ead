@@ -162,6 +162,11 @@ public abstract class MapCommand extends Command {
 		return false;
 	}
 
+	@Override
+	public boolean modifiesResource() {
+		return true;
+	}
+
 	public static class PutToMapCommand extends MapCommand {
 
 		/**

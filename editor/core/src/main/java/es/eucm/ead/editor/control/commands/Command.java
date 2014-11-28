@@ -44,6 +44,8 @@ import es.eucm.ead.editor.model.events.ModelEvent;
  */
 public abstract class Command {
 
+	private String resourceModified;
+
 	/**
 	 * Do the actual work. Returns a model event if it could be performed, null
 	 * in other case.
@@ -68,6 +70,11 @@ public abstract class Command {
 	public abstract ModelEvent undoCommand();
 
 	/**
+	 * @return true if this command directly modifies a resource in the game
+	 */
+	public abstract boolean modifiesResource();
+
+	/**
 	 * Combines this action with other similar action (if possible). Useful for
 	 * combining simple changes such as characters typed in the same field.
 	 * 
@@ -88,4 +95,16 @@ public abstract class Command {
 		return false;
 	}
 
+	/**
+	 * @return the id of the resource modified. If {@code null} is returned, it
+	 *         modifies the resource in
+	 *         {@link es.eucm.ead.editor.control.Selection#RESOURCE}
+	 */
+	public String getResourceModified() {
+		return resourceModified;
+	}
+
+	public void setResourceModified(String resourceModified) {
+		this.resourceModified = resourceModified;
+	}
 }

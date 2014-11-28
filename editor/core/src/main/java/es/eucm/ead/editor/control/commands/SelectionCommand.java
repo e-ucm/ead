@@ -147,6 +147,11 @@ public class SelectionCommand extends Command {
 	}
 
 	@Override
+	public boolean modifiesResource() {
+		return false;
+	}
+
+	@Override
 	public boolean combine(Command other) {
 		return false;
 	}

@@ -84,6 +84,11 @@ public class MultipleFieldsCommand extends Command {
 	}
 
 	@Override
+	public boolean modifiesResource() {
+		return true;
+	}
+
+	@Override
 	public boolean combine(Command other) {
 		if (combine && other instanceof MultipleFieldsCommand) {
 			MultipleFieldsCommand c = (MultipleFieldsCommand) other;

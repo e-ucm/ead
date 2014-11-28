@@ -68,6 +68,7 @@ public class LoadScenes extends EditorAction implements WorkerListener {
 		ModelEntity scene = (ModelEntity) results[1];
 		AddResourceCommand addScene = new AddResourceCommand(
 				controller.getModel(), id, scene, ResourceCategory.SCENE);
+		addScene.setCreateResourceModified(false);
 		controller.getCommands().doCommand(addScene);
 	}
 

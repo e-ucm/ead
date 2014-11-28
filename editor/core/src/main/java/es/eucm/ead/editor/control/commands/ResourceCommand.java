@@ -37,6 +37,7 @@
 package es.eucm.ead.editor.control.commands;
 
 import es.eucm.ead.editor.model.Model;
+import es.eucm.ead.editor.model.Model.Resource;
 import es.eucm.ead.editor.model.events.ResourceEvent;
 import es.eucm.ead.editor.model.events.ResourceEvent.Type;
 import es.eucm.ead.editor.model.events.ModelEvent;
@@ -47,6 +48,8 @@ import es.eucm.ead.schemax.entities.ResourceCategory;
  * Commands to add/remove entities pending directly from the {@link Model}
  */
 public class ResourceCommand extends Command {
+
+	private boolean createResourceModified = true;
 
 	private Model model;
 
@@ -67,10 +70,15 @@ public class ResourceCommand extends Command {
 		this.add = add;
 	}
 
+	public void setCreateResourceModified(boolean createResourceModified) {
+		this.createResourceModified = createResourceModified;
+	}
+
 	@Override
 	public ModelEvent doCommand() {
 		if (add) {
-			model.putResource(id, category, modelEntity);
+			Resource resource = model.putResource(id, category, modelEntity);
+			resource.setModified(createResourceModified);
 		} else {
 			modelEntity = (ModelEntity) model.removeResource(id, category)
 					.getObject();
@@ -89,10 +97,16 @@ public class ResourceCommand extends Command {
 		if (add) {
 			model.removeResource(id, category);
 		} else {
-			model.putResource(id, category, modelEntity);
+			Resource resource = model.putResource(id, category, modelEntity);
+			resource.setModified(true);
 		}
 		return new ResourceEvent(add ? Type.REMOVED : Type.ADDED, model, id,
 				modelEntity, category);
+	}
+
+	@Override
+	public boolean modifiesResource() {
+		return false;
 	}
 
 	@Override
