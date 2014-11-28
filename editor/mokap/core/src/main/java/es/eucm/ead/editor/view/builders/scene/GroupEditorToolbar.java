@@ -39,6 +39,8 @@ package es.eucm.ead.editor.view.builders.scene;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
+import com.badlogic.gdx.scenes.scene2d.Touchable;
+import com.badlogic.gdx.scenes.scene2d.actions.Actions;
 import com.badlogic.gdx.scenes.scene2d.ui.Button;
 import com.badlogic.gdx.scenes.scene2d.ui.Image;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
@@ -68,6 +70,7 @@ import es.eucm.ead.editor.control.actions.model.UngroupSelection;
 import es.eucm.ead.editor.control.actions.model.scene.ReorderSelection;
 import es.eucm.ead.editor.control.actions.model.scene.transform.MirrorSelection;
 import es.eucm.ead.editor.model.Model.SelectionListener;
+import es.eucm.ead.editor.model.Q;
 import es.eucm.ead.editor.model.events.SelectionEvent;
 import es.eucm.ead.editor.view.ModelView;
 import es.eucm.ead.editor.view.SkinConstants;
@@ -89,6 +92,8 @@ import es.eucm.ead.editor.view.widgets.draw.SlideColorPicker.ColorEvent;
 import es.eucm.ead.editor.view.widgets.draw.SlideColorPicker.ColorListener;
 import es.eucm.ead.editor.view.widgets.layouts.LinearLayout;
 import es.eucm.ead.engine.I18N;
+import es.eucm.ead.schema.components.controls.Label;
+import es.eucm.ead.schema.entities.ModelEntity;
 
 public class GroupEditorToolbar extends MultiWidget implements ModelView {
 
@@ -250,13 +255,26 @@ public class GroupEditorToolbar extends MultiWidget implements ModelView {
 
 		controller.getModel().addSelectionListener(new SelectionListener() {
 
+			private float ANIM_TIME = 0.3f;
+
 			@Override
 			public void modelChanged(SelectionEvent event) {
 				if (controller.getModel().getSelection()
 						.get(Selection.SCENE_ELEMENT).length > 1) {
+					multiButton.addAction(Actions.fadeIn(ANIM_TIME));
+					multiButton.setTouchable(Touchable.enabled);
 					multiButton.setSelectedWidget(1);
 				} else {
-					multiButton.setSelectedWidget(0);
+					ModelEntity entity = (ModelEntity) controller.getModel()
+							.getSelection().getSingle(Selection.SCENE_ELEMENT);
+					if (Q.hasComponent(entity, Label.class)) {
+						multiButton.addAction(Actions.fadeIn(ANIM_TIME));
+						multiButton.setTouchable(Touchable.enabled);
+						multiButton.setSelectedWidget(0);
+					} else {
+						multiButton.setTouchable(Touchable.disabled);
+						multiButton.addAction(Actions.fadeOut(ANIM_TIME));
+					}
 				}
 			}
 
