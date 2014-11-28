@@ -36,6 +36,8 @@
  */
 package es.eucm.ead.editor;
 
+import com.badlogic.gdx.Application;
+import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.backends.lwjgl.LwjglApplication;
 import com.badlogic.gdx.backends.lwjgl.LwjglApplicationConfiguration;
 
@@ -50,5 +52,6 @@ public class MokapDesktop {
 
 		new LwjglApplication(new MokapApplicationListener(
 				new MokapDesktopPlatform()), config);
+		Gdx.app.setLogLevel(Application.LOG_DEBUG);
 	}
 }
