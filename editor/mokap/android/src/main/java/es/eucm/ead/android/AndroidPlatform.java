@@ -39,6 +39,7 @@ package es.eucm.ead.android;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.List;
+import java.util.Locale;
 
 import android.app.Activity;
 import android.app.AlertDialog;
@@ -648,5 +649,10 @@ public class AndroidPlatform extends MokapPlatform {
 			int targetHeight, FileHandle resultImage) {
 		return ImageUtils.decodeFile(imageFile, targetWidth, targetHeight,
 				resultImage);
+	}
+
+	@Override
+	public String getLocale() {
+		return Locale.getDefault().toString();
 	}
 }
