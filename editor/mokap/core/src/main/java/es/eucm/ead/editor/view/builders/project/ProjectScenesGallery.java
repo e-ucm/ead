@@ -38,11 +38,13 @@ package es.eucm.ead.editor.view.builders.project;
 
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.ui.Button;
+
 import es.eucm.ead.editor.control.Controller;
 import es.eucm.ead.editor.control.Selection;
 import es.eucm.ead.editor.control.actions.editor.RenameCurrentScene;
 import es.eucm.ead.editor.control.actions.editor.ShowModal;
 import es.eucm.ead.editor.control.actions.model.ChangeInitialScene;
+import es.eucm.ead.editor.control.actions.model.DeleteScene;
 import es.eucm.ead.editor.control.actions.model.EditScene;
 import es.eucm.ead.editor.control.actions.model.SetSelection;
 import es.eucm.ead.editor.model.Model.SelectionListener;
@@ -96,8 +98,12 @@ public class ProjectScenesGallery extends ScenesGallery {
 				i18N.m("rename"), SkinConstants.STYLE_CONTEXT,
 				RenameCurrentScene.class);
 
-		sceneActions = WidgetBuilder.iconLabelContextPanel(edit, initial,
-				rename);
+		Button delete = WidgetBuilder.button(SkinConstants.IC_DELETE,
+				i18N.m("delete"), SkinConstants.STYLE_CONTEXT,
+				DeleteScene.class);
+
+		sceneActions = WidgetBuilder.iconLabelContextPanel(edit, rename,
+				initial, delete);
 		sceneActions.addHideRunnable(new Runnable() {
 			@Override
 			public void run() {

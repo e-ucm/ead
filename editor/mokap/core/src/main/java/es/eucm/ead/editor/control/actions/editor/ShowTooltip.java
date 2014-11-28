@@ -62,7 +62,6 @@ import es.eucm.ead.editor.view.widgets.WidgetBuilder;
 public class ShowTooltip extends EditorAction {
 
 	private static final float TOOLTIP_HEIGHT = 14;
-	private static final float TOOLTIP_LETERAL_PAD = 16f;
 
 	private static final String STYLE_TOOLTIP = "tooltip";
 
@@ -80,15 +79,9 @@ public class ShowTooltip extends EditorAction {
 	public void initialize(Controller controller) {
 		super.initialize(controller);
 		Skin skin = controller.getApplicationAssets().getSkin();
-
-		tooltip = new Toast(skin, STYLE_TOOLTIP,
-				WidgetBuilder.dpToPixels(TOOLTIP_HEIGHT));
+		tooltip = new Toast(skin, STYLE_TOOLTIP);
 		tooltip.setTouchable(Touchable.disabled);
-
-		float pad = WidgetBuilder.dpToPixels(TOOLTIP_LETERAL_PAD);
-		tooltip.padRight(pad);
-		tooltip.padLeft(pad);
-
+		tooltip.pad(WidgetBuilder.dpToPixels(8));
 	}
 
 	@Override

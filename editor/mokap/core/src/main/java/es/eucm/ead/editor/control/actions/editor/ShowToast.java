@@ -38,12 +38,16 @@ package es.eucm.ead.editor.control.actions.editor;
 
 import com.badlogic.gdx.math.Interpolation;
 import com.badlogic.gdx.scenes.scene2d.Group;
+import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.Touchable;
 import com.badlogic.gdx.scenes.scene2d.actions.Actions;
+import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
+import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 
 import es.eucm.ead.editor.control.Controller;
 import es.eucm.ead.editor.control.actions.EditorAction;
+import es.eucm.ead.editor.view.SkinConstants;
 import es.eucm.ead.editor.view.widgets.Toast;
 import es.eucm.ead.editor.view.widgets.WidgetBuilder;
 
@@ -54,18 +58,22 @@ import es.eucm.ead.editor.view.widgets.WidgetBuilder;
  * <dl>
  * <dt><strong>Arguments</strong></dt>
  * <dd><strong>args[0]</strong> <em>String</em> The toast text</dd>
+ * <dd><strong>args[1]</strong>
+ * <em>{@link Boolean} (Optional, default = false)</em> If undo option must
+ * appear in the toast</dd>
  * </dl>
  */
 public class ShowToast extends EditorAction {
-
-	private static final float TOAST_LETERAL_PAD = 24f;
 
 	private static final float TOAST_TIME = 1.0f;
 
 	private Toast toast;
 
+	private Label undo;
+
 	public ShowToast() {
-		super(true, true, String.class);
+		super(true, true, new Class[] { String.class }, new Class[] {
+				String.class, Boolean.class });
 	}
 
 	@Override
@@ -73,18 +81,31 @@ public class ShowToast extends EditorAction {
 		super.initialize(controller);
 		Skin skin = controller.getApplicationAssets().getSkin();
 		toast = new Toast(skin);
-		toast.setTouchable(Touchable.disabled);
+		toast.setTouchable(Touchable.childrenOnly);
+		toast.pad(WidgetBuilder.dpToPixels(8));
+		toast.setComputeInvisibles(false);
 
-		float pad = WidgetBuilder.dpToPixels(TOAST_LETERAL_PAD);
-		toast.padRight(pad);
-		toast.padLeft(pad);
+		undo = WidgetBuilder.label(controller.getApplicationAssets().getI18N()
+				.m("undo").toUpperCase(), SkinConstants.STYLE_TOAST_ACTION);
+		undo.addListener(new ClickListener() {
+			@Override
+			public void clicked(InputEvent event, float x, float y) {
+				ShowToast.this.controller.action(Undo.class);
+				toast.remove();
+			}
+		});
+		toast.add(undo).margin(
+				WidgetBuilder.dpToPixels(WidgetBuilder.UNIT_SIZE), 0, 0, 0);
 	}
 
 	@Override
 	public void perform(Object... args) {
 		toast.setText((String) args[0]);
-		toast.pack();
 
+		boolean showUndo = args.length == 2 ? (Boolean) args[1] : false;
+		undo.setVisible(showUndo);
+
+		toast.pack();
 		Group modalsContainer = controller.getViews().getViewsContainer();
 		float x = modalsContainer.getWidth() / 2.0f - toast.getWidth() / 2.0f;
 		float y = modalsContainer.getHeight() / 10.0f;
@@ -92,7 +113,7 @@ public class ShowToast extends EditorAction {
 		toast.clearActions();
 		toast.addAction(Actions.sequence(Actions.alpha(0.0f),
 				Actions.alpha(1.0f, TOAST_TIME, Interpolation.exp5Out),
-				Actions.delay(TOAST_TIME),
+				Actions.delay(TOAST_TIME * (showUndo ? 10 : 1)),
 				Actions.alpha(0.0f, TOAST_TIME, Interpolation.exp5Out),
 				Actions.removeActor()));
 		controller.getViews().addToModalsContainer(toast);

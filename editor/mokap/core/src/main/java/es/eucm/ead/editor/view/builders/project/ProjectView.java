@@ -72,11 +72,13 @@ public class ProjectView implements ViewBuilder, BackListener {
 
 	@Override
 	public Actor getView(Object... args) {
+		controller.getCommands().pushStack();
 		return view;
 	}
 
 	@Override
 	public void release(Controller controller) {
+		controller.getCommands().popStack(false);
 	}
 
 	private Actor buildToolbar(Skin skin) {

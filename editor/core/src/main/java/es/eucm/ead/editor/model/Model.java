@@ -170,6 +170,9 @@ public class Model {
 	}
 
 	public ResourceCategory getResourceCategory(String id) {
+		if (id == null) {
+			return null;
+		}
 		for (ResourceCategory resourceCategory : ResourceCategory.values()) {
 			Resource resource = getResource(id, resourceCategory);
 			if (resource != null) {
@@ -544,6 +547,17 @@ public class Model {
 		Array<ModelListener> listeners = this.listeners.get(target);
 		if (listeners != null) {
 			listeners.removeValue(listener, true);
+		}
+	}
+
+	public void removeListenersFrom(Object target) {
+		if (target == null) {
+			return;
+		}
+
+		Array<ModelListener> listeners = this.listeners.get(target);
+		if (listeners != null) {
+			listeners.clear();
 		}
 	}
 

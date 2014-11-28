@@ -72,6 +72,7 @@ public interface SkinConstants {
 	public static final String STYLE_GRAY = "gray";
 	public static final String STYLE_MARKER = "marker";
 	public static final String STYLE_COLOR_REDUCED = "color_reduced";
+	public static final String STYLE_TOAST_ACTION = "toast_action";
 
 	public static final String TABLET_GAME = "tablet_game";
 	public static final String TABLET_CARD = "tablet_card";
