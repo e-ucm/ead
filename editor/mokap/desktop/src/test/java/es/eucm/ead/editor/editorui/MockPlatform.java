@@ -39,13 +39,18 @@ package es.eucm.ead.editor.editorui;
 import java.io.File;
 import java.io.IOException;
 
+import com.badlogic.gdx.Net.HttpRequest;
 import com.badlogic.gdx.utils.Array;
+import com.badlogic.gdx.utils.ObjectMap;
 
 import es.eucm.ead.editor.MokapDesktopPlatform;
 
 public class MockPlatform extends MokapDesktopPlatform {
 
+	private static final String DEFAULT_RESPONSE = "default";
+
 	private Array<File> tempFiles = new Array();
+	private ObjectMap<String, Object> httpResponses = new ObjectMap<String, Object>();
 
 	public File createTempFile(boolean folder) {
 		try {
@@ -61,5 +66,24 @@ public class MockPlatform extends MokapDesktopPlatform {
 			e.printStackTrace();
 			return null;
 		}
+	}
+
+	@Override
+	public <T> T sendHttpRequest(HttpRequest httpRequest, Class<T> type)
+			throws IOException {
+
+		Object ret = httpResponses.get(httpRequest.getUrl());
+		if (ret == null) {
+			ret = httpResponses.get(DEFAULT_RESPONSE);
+		}
+		return (T) ret;
+	}
+
+	public void putHttpResponse(String URL, Object object) {
+		httpResponses.put(URL, object);
+	}
+
+	public void putDefaultHttpResponse(Object object) {
+		httpResponses.put(DEFAULT_RESPONSE, object);
 	}
 }
