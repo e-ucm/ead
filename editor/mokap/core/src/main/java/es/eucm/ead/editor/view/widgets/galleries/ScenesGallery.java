@@ -181,9 +181,17 @@ public class ScenesGallery extends ThumbnailsGallery implements
 
 	private void removeScene(String id) {
 		Actor tile = findActor(id);
-		if (tile != null) {
+		ModelEntity scene = null;
+		if (tile instanceof Tile) {
+			scene = (ModelEntity) tile.getParent().getUserObject();
+			tile.getParent().remove();
+		} else if (tile instanceof Cell) {
 			tile.remove();
+			scene = (ModelEntity) tile.getUserObject();
 		}
+		controller.getModel().removeListenersFrom(
+				Q.getComponent(scene, Documentation.class));
+		sortScenes();
 	}
 
 	private void readInitialScene() {
