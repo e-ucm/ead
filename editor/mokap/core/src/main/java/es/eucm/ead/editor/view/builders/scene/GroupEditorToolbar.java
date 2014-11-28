@@ -83,7 +83,7 @@ import es.eucm.ead.editor.view.widgets.ContextMenu;
 import es.eucm.ead.editor.view.widgets.IconButton;
 import es.eucm.ead.editor.view.widgets.MultiWidget;
 import es.eucm.ead.editor.view.widgets.Switch;
-import es.eucm.ead.editor.view.widgets.TextFontContextMenu;
+import es.eucm.ead.editor.view.widgets.LabelTextEditor;
 import es.eucm.ead.editor.view.widgets.WidgetBuilder;
 import es.eucm.ead.editor.view.widgets.draw.BrushStrokesPicker;
 import es.eucm.ead.editor.view.widgets.draw.BrushStrokesPicker.SizeEvent;
@@ -237,7 +237,7 @@ public class GroupEditorToolbar extends MultiWidget implements ModelView {
 		transform.add(WidgetBuilder.toolbarIcon(SkinConstants.IC_UNGROUP,
 				i18N.m("ungroup"), true, UngroupSelection.class));
 
-		final TextFontContextMenu textFontPane = new TextFontContextMenu(skin,
+		final LabelTextEditor textFontPane = new LabelTextEditor(skin,
 				controller);
 		IconButton edit = WidgetBuilder.toolbarIconWithMenu(
 				SkinConstants.IC_EDIT, textFontPane);
