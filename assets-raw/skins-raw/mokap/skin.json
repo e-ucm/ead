@@ -188,11 +188,15 @@
         "edition": {
             "font": "default_font",
             "fontColor": "gray"
+        },
+        "toast_action": {
+            "font": "default_font",
+            "fontColor": "deep_orange"
         }
     },
     "com.badlogic.gdx.scenes.scene2d.ui.Button$ButtonStyle": {
         "default": {
-        
+
         },
         "context": {
             "down": "light_gray_bg"
@@ -251,13 +255,13 @@
         }
     },
     "com.badlogic.gdx.scenes.scene2d.ui.List$ListStyle": {
-		"default": {
+        "default": {
             "font": "default_font",
             "fontColorSelected": "black",
             "selection": "transparent_bg",
             "fontColorUnselected": "black"
         }
-	},
+    },
     "com.badlogic.gdx.scenes.scene2d.ui.ScrollPane$ScrollPaneStyle": {
         "default": {
 
@@ -266,26 +270,26 @@
             "background": "page_left"
         },
         "pane": {
-        	"background": "page"
+            "background": "page"
         }
     },
     "com.badlogic.gdx.scenes.scene2d.ui.SelectBox$SelectBoxStyle": {
-		"default": {
-			"background": "spinner_default", 
-			"backgroundOver": "spinner_default", 
-			"backgroundOpen": "spinner_default", 
-			"font": "default_font", 
-			"fontColor": "black",
-			"scrollStyle": "pane",
-			"listStyle": "default"
-		}
-	},
-	com.badlogic.gdx.scenes.scene2d.ui.TextField$TextFieldStyle: {
-		default: { 
-			font: default_font, 
-			fontColor: white
-		}
-	},
+        "default": {
+            "background": "spinner_default",
+            "backgroundOver": "spinner_default",
+            "backgroundOpen": "spinner_default",
+            "font": "default_font",
+            "fontColor": "black",
+            "scrollStyle": "pane",
+            "listStyle": "default"
+        }
+    },
+    "com.badlogic.gdx.scenes.scene2d.ui.TextField$TextFieldStyle": {
+        "default": {
+            "font": "default_font",
+            "fontColor": "white"
+        }
+    },
     "es.eucm.ead.editor.view.widgets.IconButton$IconButtonStyle": {
         "default": {
             "disabledColor": "gray",
@@ -356,9 +360,9 @@
             "columns": 4,
             "sliderSpace": 12,
             "pad": 12
-        }, 
-        "color_reduced" : {
-        	"recentColorIcon": "color_picker_recent_color",
+        },
+        "color_reduced": {
+            "recentColorIcon": "color_picker_recent_color",
             "recentColorStyle": "recent_color",
             "slider": "colorPicker",
             "maxColors": 8,
@@ -402,7 +406,7 @@
             "label": "toast"
         },
         "tooltip": {
-            "background": "page90",
+            "background": "page",
             "color": "dark_gray",
             "label": "toast"
         }

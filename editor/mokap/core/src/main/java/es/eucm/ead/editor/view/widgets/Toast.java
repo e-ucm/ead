@@ -37,53 +37,37 @@
 package es.eucm.ead.editor.view.widgets;
 
 import com.badlogic.gdx.graphics.Color;
-import com.badlogic.gdx.graphics.g2d.Batch;
-import com.badlogic.gdx.scenes.scene2d.ui.Container;
+import com.badlogic.gdx.scenes.scene2d.Touchable;
 import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.scenes.scene2d.ui.Label.LabelStyle;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.utils.Drawable;
+import es.eucm.ead.editor.view.widgets.layouts.LinearLayout;
 
-public class Toast extends Container<Label> {
+public class Toast extends LinearLayout {
 
-	Label label;
-
-	private float height;
+	private Label label;
 
 	public Toast(Skin skin) {
-		this(skin.get(ToastStyle.class), -1);
+		this(skin.get(ToastStyle.class));
 	}
 
-	public Toast(Skin skin, float height) {
-		this(skin.get(ToastStyle.class), height);
+	public Toast(Skin skin, String style) {
+		this(skin.get(style, ToastStyle.class));
 	}
 
-	public Toast(Skin skin, String style, float height) {
-		this(skin.get(style, ToastStyle.class), height);
-	}
-
-	public Toast(ToastStyle style, float height) {
-		super(new Label("", style.label));
-		this.setBackground(style.background);
+	public Toast(ToastStyle style) {
+		super(true);
+		add(label = new Label("", style.label)).centerY().centerX();
+		setTouchable(Touchable.enabled);
+		background(style.background);
+		backgroundColor(style.color);
 		Color g = style.color;
 		this.setColor(g);
-		this.height(height);
-	}
-
-	@Override
-	protected void drawBackground(Batch batch, float parentAlpha, float x,
-			float y) {
-		super.drawBackground(batch, parentAlpha, x, y);
-		batch.setColor(Color.WHITE);
 	}
 
 	public void setText(String text) {
-		getActor().setText(text);
-	}
-
-	@Override
-	public float getPrefHeight() {
-		return height > 0 ? height : super.getPrefHeight();
+		label.setText(text);
 	}
 
 	public static class ToastStyle {
