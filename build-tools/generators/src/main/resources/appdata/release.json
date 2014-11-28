@@ -43,6 +43,18 @@
         "engineLibPath":{
             "type": "string",
             "description": "The relative or absolute path of the engine.jar library that is used for exporting the games from the editor. This path changes depending on whether you are on an actual release or on a development environment. In an actual release, this is expected to be in lib/engine.jar while in a development environment this will point to a local Maven repo"
+        },
+        "backendApiKey":{
+            "type":"string",
+            "description": "String with the API Key that is to be used when querying the backend. This value should never be made public!"
+        },
+        "backendURL":{
+            "type":"string",
+            "description": "URL where the mokap backend is expected to live (e.g. api.mokap.es)"
+        },
+        "backendSearchServlet":{
+            "type":"string",
+            "description":"Servlet that receives searching requests in the mokap backend (e.g. backend). The field name matches the convention backendServicenameServlet."
         }
     },
       "type": "object",

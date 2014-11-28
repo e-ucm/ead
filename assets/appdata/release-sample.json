@@ -4,5 +4,8 @@
     "dev": false,
     "os": "multiplatform",
     "updateURL": "http://sourceforge.net/projects/e-adventure/files/RELEASE_CHANNEL/update.json/download",
-    "engineLibPath": "ABSOLUTE PATH TO THE ENGINE LIBRARY WITH DEPENDENCIES"
+    "engineLibPath": "ABSOLUTE PATH TO THE ENGINE LIBRARY WITH DEPENDENCIES",
+    "backendApiKey": "YOUR_API_KEY_HERE",
+    "backendURL":"api.mokap.es",
+    "backendSearchServlet":"backend"
 }

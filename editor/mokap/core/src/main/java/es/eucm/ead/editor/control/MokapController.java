@@ -98,13 +98,11 @@ public class MokapController extends Controller {
 	}
 
 	private Group rootComponent;
-	private RepositoryManager repositoryManager;
 
 	public MokapController(Platform platform, Files files,
 			final Group rootComponent, final Group modalContainer) {
 		super(platform, files, rootComponent, modalContainer);
 		this.rootComponent = rootComponent;
-		repositoryManager = new RepositoryManager();
 
 		// This allows us to catch events related with
 		// the back key in Android.
@@ -130,10 +128,6 @@ public class MokapController extends Controller {
 
 	public void pause() {
 		getPreferences().flush();
-	}
-
-	public RepositoryManager getRepositoryManager() {
-		return repositoryManager;
 	}
 
 	@Override
