@@ -43,8 +43,10 @@ import com.badlogic.gdx.graphics.Pixmap;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.SerializationException;
 
+import es.eucm.ead.editor.control.repo.RepoRequestFactory;
 import es.eucm.ead.editor.model.Q;
 import es.eucm.ead.schema.editor.components.repo.RepoElement;
+import es.eucm.ead.schema.editor.components.repo.request.SearchRequest;
 import es.eucm.ead.schema.editor.components.repo.response.SearchResponse;
 
 /**
@@ -52,7 +54,10 @@ import es.eucm.ead.schema.editor.components.repo.response.SearchResponse;
  * resulting elements with their thumbnails.
  * <dl>
  * <dt><strong>The input arguments are</strong></dt>
- * <dd><strong>args[0]</strong> <em>String</em> URL to do the search.
+ * <dd><strong>args[0]</strong> <em>String</em> The string to search for (q
+ * param). E.g.: "tree".
+ * <dd><strong>args[1]</strong> (Optional) <em>String</em> The cursor provided
+ * by the backend for paginated searching (c param)
  * </dl>
  * <dl>
  * <dt><strong>The result arguments are</strong></dt>
@@ -66,7 +71,7 @@ import es.eucm.ead.schema.editor.components.repo.response.SearchResponse;
  * <strong>args[1]</strong> <em>String</em> pixmap of the thmbnail of the
  * element.</dd> </dl>
  */
-public class SearchRepo extends Worker {
+public class SearchRepo extends RepoWorker {
 
 	private static final String SEARCH_REPO_TAG = "SearchRepoWorker";
 
@@ -74,17 +79,12 @@ public class SearchRepo extends Worker {
 
 	private Array<RepoElement> repoElems;
 
-	public SearchRepo() {
-		super(true);
-	}
-
 	@Override
-	protected void prepare() {
+	protected void doPrepare(String URL) {
 
 		response = null;
 		repoElems = null;
 		String httpResponse = null;
-		String URL = (String) args[0];
 
 		try {
 			httpResponse = controller.getPlatform().sendHttpGetRequest(URL,
@@ -156,5 +156,15 @@ public class SearchRepo extends Worker {
 			}
 		}
 		return repoElems.size == 0;
+	}
+
+	@Override
+	protected String buildUrl(String[] args, RepoRequestFactory requestFactory) {
+		SearchRequest searchRequest = new SearchRequest();
+		searchRequest.setQ(args[0]);
+		if (args.length > 1) {
+			searchRequest.setC(args[1]);
+		}
+		return requestFactory.buildRequestURL(searchRequest);
 	}
 }

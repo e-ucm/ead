@@ -235,6 +235,19 @@ public class ApplicationAssets extends Assets {
 			releaseInfo.setAppVersion("0.0.0");
 		}
 
+		// Backend properties
+		if (releaseInfo.getBackendURL() == null) {
+			releaseInfo.setBackendURL("api.mokap.es");
+		}
+
+		if (releaseInfo.getBackendApiKey() == null) {
+			releaseInfo.setBackendApiKey("API_KEY_NOT_PRESENT");
+		}
+
+		if (releaseInfo.getBackendSearchServlet() == null) {
+			releaseInfo.setBackendSearchServlet("search");
+		}
+
 		return releaseInfo;
 	}
 

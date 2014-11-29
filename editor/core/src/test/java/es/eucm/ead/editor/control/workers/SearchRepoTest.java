@@ -56,7 +56,8 @@ import es.eucm.ead.schema.editor.components.repo.response.SearchResponse;
 
 public class SearchRepoTest extends WorkerTest implements WorkerListener {
 
-	private static final String URL = "";
+	private static String URL = "";
+	private static final String TEXT_STRING = "text";
 	private static final int ELEMS = 10;
 
 	private Array<RepoElement> repoElems = new Array<RepoElement>();
@@ -88,12 +89,17 @@ public class SearchRepoTest extends WorkerTest implements WorkerListener {
 		response.setResults(repoElems);
 
 		String json = gameAssets.toJson(response, SearchResponse.class);
+		URL = "http://" + controller.getReleaseInfo().getBackendURL() + "/"
+				+ controller.getReleaseInfo().getBackendSearchServlet() + "?q="
+				+ TEXT_STRING + "&k="
+				+ controller.getReleaseInfo().getBackendApiKey();
 		platform.putHttpResponse(URL, json);
 	}
 
 	@Override
 	public void testWorker() {
-		controller.action(ExecuteWorker.class, SearchRepo.class, this, URL);
+		controller.action(ExecuteWorker.class, SearchRepo.class, this,
+				TEXT_STRING);
 	}
 
 	@Override
