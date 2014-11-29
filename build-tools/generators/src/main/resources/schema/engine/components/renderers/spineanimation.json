@@ -1,0 +1,17 @@
+{
+    "additionalProperties": false,
+    "javaType": "es.eucm.ead.schema.renderers.SpineAnimation",
+    "type": "object",
+    "extends": {
+        "$ref": "renderer.json"
+    },
+    "description": "A spine animation",
+    "properties": {
+        "uri": {
+            "type": "string"
+        },
+        "initialState": {
+            "type": "string"
+        }
+    }
+}
