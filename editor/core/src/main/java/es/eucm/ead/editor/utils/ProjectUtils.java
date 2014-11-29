@@ -36,6 +36,7 @@
  */
 package es.eucm.ead.editor.utils;
 
+import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.utils.Array;
 
@@ -104,6 +105,15 @@ public class ProjectUtils {
 		Array<String> binaryPaths = new Array<String>();
 		listRefBinaries(object, null, binaryPaths);
 		return binaryPaths;
+	}
+
+	/**
+	 * Utility that searches all string fields in the given object recursively,
+	 * and replaces any occurrences of the oldRef param by the newRef Param
+	 */
+	public static void replaceBinaryRef(Object object, String oldRef,
+			String newRef) {
+		replaceBinaryRef(object, null, oldRef, newRef);
 	}
 
 	private static void listRefBinaries(Object object, Class clazz,
@@ -200,6 +210,114 @@ public class ProjectUtils {
 
 		if (clazz.getSuperclass() != null) {
 			listRefBinaries(object, clazz.getSuperclass(), binaryPaths);
+		}
+	}
+
+	private static void replaceBinaryRef(Object object, Class clazz,
+			String oldRef, String newRef) {
+		if (clazz == null) {
+			clazz = object.getClass();
+		}
+
+		// If the object is from primitive type or null, do not search
+		if (object == null || clazz.isEnum() || clazz == Float.class
+				|| clazz == Double.class || clazz == Boolean.class
+				|| clazz == Integer.class || clazz == Byte.class
+				|| clazz == Character.class || clazz == Long.class
+				|| clazz == Short.class) {
+			return;
+		}
+
+		// Iterate through fields
+		for (Field field : ClassReflection.getDeclaredFields(clazz)) {
+			field.setAccessible(true);
+
+			Object value = null;
+			try {
+				value = field.get(object);
+			} catch (ReflectionException e) {
+				e.printStackTrace();
+			}
+			if (value == null) {
+				continue;
+			}
+
+			// Recursive search: array, list, map,
+			if (ClassReflection.isAssignableFrom(Array.class, field.getType())) {
+				Array array = (Array) value;
+				for (int i = 0; i < array.size; i++) {
+					Object child = array.get(i);
+					if (child == null) {
+						continue;
+					} else if (child instanceof String) {
+						String strValue = (String) child;
+						if (strValue.toLowerCase().equals(oldRef.toLowerCase())) {
+							array.set(i, newRef);
+						}
+					} else {
+						replaceBinaryRef(child, child.getClass(), oldRef,
+								newRef);
+					}
+				}
+			}
+
+			else if (ClassReflection.isAssignableFrom(List.class,
+					field.getType())) {
+				List list = (List) value;
+				for (int i = 0; i < list.size(); i++) {
+					Object child = list.get(i);
+					if (child == null) {
+						continue;
+					} else if (child instanceof String) {
+						String strValue = (String) child;
+						if (strValue.toLowerCase().equals(oldRef.toLowerCase())) {
+							list.set(i, newRef);
+						}
+					} else {
+						replaceBinaryRef(child, child.getClass(), oldRef,
+								newRef);
+					}
+				}
+			}
+
+			else if (ClassReflection.isAssignableFrom(Map.class,
+					field.getType())) {
+				Map map = (Map) value;
+				for (Object key : map.keySet()) {
+					Object child = map.get(key);
+					if (child == null) {
+						continue;
+					} else if (child instanceof String) {
+						String strValue = (String) child;
+						if (strValue.toLowerCase().equals(oldRef.toLowerCase())) {
+							map.put(key, newRef);
+						}
+					} else {
+						replaceBinaryRef(child, child.getClass(), oldRef,
+								newRef);
+					}
+				}
+			} else if (ClassReflection.isAssignableFrom(String.class,
+					field.getType())) {
+				String strValue = (String) value;
+				// Check if value matches oldRef
+				if (strValue.toLowerCase().equals(oldRef.toLowerCase())) {
+					try {
+						field.set(object, newRef);
+					} catch (ReflectionException e) {
+						Gdx.app.error("Error setting binary ref in field "
+								+ field.getName(), "", e);
+					}
+				}
+			}
+			// Recursive search
+			else {
+				replaceBinaryRef(value, value.getClass(), oldRef, newRef);
+			}
+		}
+
+		if (clazz.getSuperclass() != null) {
+			replaceBinaryRef(object, clazz.getSuperclass(), oldRef, newRef);
 		}
 	}
 
