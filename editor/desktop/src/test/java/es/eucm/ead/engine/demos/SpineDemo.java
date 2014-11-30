@@ -50,6 +50,11 @@ public class SpineDemo extends EditorDemoBuilder {
 	}
 
 	@Override
+	public String getDescription() {
+		return "Simple demo that demonstrates how spine animations work.\nMore details can be found at:\nhttp://es.esotericsoftware.com/spine-using-runtimes";
+	}
+
+	@Override
 	protected void doBuild() {
 		ModelEntity scene = singleSceneGame(null, 800, 600).getLastScene();
 
