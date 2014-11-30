@@ -51,7 +51,6 @@ import es.eucm.ead.editor.control.actions.editor.ChangeView;
 import es.eucm.ead.editor.control.actions.editor.ExecuteWorker;
 import es.eucm.ead.editor.control.workers.SearchRepo;
 import es.eucm.ead.editor.view.SkinConstants;
-import es.eucm.ead.editor.view.builders.scene.SceneView;
 import es.eucm.ead.editor.view.widgets.IconButton;
 import es.eucm.ead.editor.view.widgets.MultiWidget;
 import es.eucm.ead.editor.view.widgets.WidgetBuilder;
@@ -84,6 +83,8 @@ public class SearchView implements ViewBuilder {
 
 	@Override
 	public Actor getView(Object... args) {
+		controller.action(ExecuteWorker.class, SearchRepo.class, searchGallery,
+				"");
 		return view;
 	}
 
@@ -96,10 +97,10 @@ public class SearchView implements ViewBuilder {
 
 		LinearLayout project = new LinearLayout(true);
 		project.add(WidgetBuilder.toolbarIcon(SkinConstants.IC_GO, null,
-				ChangeView.class, SceneView.class));
+				ChangeView.class, FileView.class));
 		project.addSpace();
 		IconButton search = WidgetBuilder.toolbarIcon(SkinConstants.IC_SEARCH,
-				null);
+				i18N.m("search"));
 		project.add(search);
 
 		final TextField textField = new TextField("", skin);

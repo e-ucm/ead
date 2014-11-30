@@ -58,6 +58,7 @@ scene.deleted = Scene deleted
 scene.initial = Initial scene
 scene.last_scene_deleted = You can't delete the last scene in your mokap
 scene.none_selected = No scene selected
+search = Search
 select.scene = Select a scene
 select.transition = Select a transition
 send.to.back = Send to back

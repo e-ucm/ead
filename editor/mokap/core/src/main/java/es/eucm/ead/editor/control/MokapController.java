@@ -97,12 +97,9 @@ public class MokapController extends Controller {
 		}
 	}
 
-	private Group rootComponent;
-
 	public MokapController(Platform platform, Files files,
 			final Group rootComponent, final Group modalContainer) {
 		super(platform, files, rootComponent, modalContainer);
-		this.rootComponent = rootComponent;
 
 		// This allows us to catch events related with
 		// the back key in Android.
