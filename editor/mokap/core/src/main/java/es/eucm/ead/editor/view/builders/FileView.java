@@ -84,7 +84,8 @@ public class FileView implements ViewBuilder {
 		project.add(WidgetBuilder.toolbarIcon(SkinConstants.IC_GO, null,
 				ChangeView.class, SceneView.class));
 		project.addSpace();
-		project.add(WidgetBuilder.toolbarIcon(SkinConstants.IC_SEARCH, null));
+		project.add(WidgetBuilder.toolbarIcon(SkinConstants.IC_SEARCH,
+				i18N.m("search"), ChangeView.class, SearchView.class));
 
 		toolbar.addWidgets(project);
 		return toolbar;

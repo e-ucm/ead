@@ -34,51 +34,47 @@
  *      You should have received a copy of the GNU Lesser General Public License
  *      along with eAdventure.  If not, see <http://www.gnu.org/licenses/>.
  */
-package es.eucm.ead.editor.actions;
+package es.eucm.ead.editor.view.listeners.workers;
 
-import es.eucm.ead.editor.control.actions.editor.ImportEntityResources;
-import es.eucm.ead.schema.entities.ModelEntity;
-import es.eucm.ead.schema.renderers.Image;
-import org.junit.Test;
+import com.badlogic.gdx.files.FileHandle;
 
-import java.io.File;
-import java.net.URISyntaxException;
+import es.eucm.ead.editor.control.workers.Worker.WorkerListener;
 
-import static org.junit.Assert.assertTrue;
+public abstract class UnzipFileListener implements WorkerListener {
 
-public class ImportEntityResourcesTest extends ActionTest {
+	private FileHandle outputFolder;
 
-	@Test
-	public void test() {
-		openEmpty();
-
-		// We create an entity whose renderer doesn't point to
-		// GamseStructure.IMAGES_FOLDER
-		ModelEntity myElement = new ModelEntity();
-		Image renderer = new Image();
-		renderer.setUri("medic.png");
-		myElement.getComponents().add(renderer);
-		File file = null;
-
-		try {
-			file = new File(ClassLoader.getSystemResource(
-					"import_entity/medic.png").toURI());
-		} catch (URISyntaxException e) {
-			e.printStackTrace();
-		}
-		String elemResourcesFolder = controller.getEditorGameAssets()
-				.absolute(file.getParentFile().getAbsolutePath()).file()
-				.getAbsolutePath();
-
-		// After this action, the renderer's URI should correctly point to
-		// GamseStructure.IMAGES_FOLDER.
-		controller.action(ImportEntityResources.class, myElement,
-				elemResourcesFolder);
-
-		boolean success = renderer.getUri().equals("images/medic.png");
-		assertTrue("The entity's resources weren't imported correctly!",
-				success);
-
-		clearEmpty();
+	public UnzipFileListener(FileHandle outputFolder) {
+		this.outputFolder = outputFolder;
 	}
+
+	@Override
+	public void start() {
+	}
+
+	@Override
+	public void result(Object... results) {
+		if ((Boolean) results[0]) {
+			unzipped();
+		} else {
+			cancelled();
+		}
+	}
+
+	public abstract void unzipped();
+
+	@Override
+	public void error(Throwable ex) {
+		cancelled();
+	}
+
+	@Override
+	public void done() {
+	}
+
+	@Override
+	public void cancelled() {
+		outputFolder.deleteDirectory();
+	}
+
 }
