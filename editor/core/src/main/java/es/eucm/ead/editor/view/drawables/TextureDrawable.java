@@ -38,14 +38,16 @@ package es.eucm.ead.editor.view.drawables;
 
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Batch;
-import com.badlogic.gdx.graphics.g2d.TextureRegion;
+import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.scenes.scene2d.utils.BaseDrawable;
+import com.badlogic.gdx.utils.Scaling;
+
+import es.eucm.ead.engine.systems.effects.transitions.Region;
 
 public class TextureDrawable extends BaseDrawable {
 
 	private Texture texture;
-
-	private TextureRegion textureRegion = new TextureRegion();
+	private Region region;
 
 	public TextureDrawable() {
 		this(null);
@@ -60,21 +62,21 @@ public class TextureDrawable extends BaseDrawable {
 		if (texture != null) {
 			setMinWidth(texture.getWidth());
 			setMinHeight(texture.getHeight());
-			textureRegion.setTexture(texture);
 		}
-
 	}
 
 	@Override
 	public void draw(Batch batch, float x, float y, float width, float height) {
 		if (texture != null) {
-			updateRegion(width, height);
-			batch.draw(textureRegion, 0, 0, width, height);
+			if (region == null) {
+				Vector2 fill = Scaling.fit.apply(width, height,
+						texture.getWidth(), texture.getHeight());
+				region = new Region((texture.getWidth() - fill.x) * .5f,
+						(texture.getHeight() - fill.y) * .5f, fill.x, fill.y);
+			}
+
+			batch.draw(texture, x, y, width, height, region.x, region.y,
+					region.w, region.h, false, false);
 		}
 	}
-
-	private void updateRegion(float width, float height) {
-		textureRegion.setRegion(0, 0, (int) width, (int) height);
-	}
-
 }
