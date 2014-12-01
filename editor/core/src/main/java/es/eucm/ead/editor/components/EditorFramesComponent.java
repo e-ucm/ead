@@ -36,7 +36,6 @@
  */
 package es.eucm.ead.editor.components;
 
-import com.badlogic.gdx.graphics.g2d.Batch;
 import es.eucm.ead.engine.GameLoop;
 import es.eucm.ead.engine.components.renderers.frames.FramesComponent;
 
@@ -49,13 +48,12 @@ public class EditorFramesComponent extends FramesComponent {
 	}
 
 	@Override
-	public void draw(Batch batch) {
-		if (gameLoop.isPlaying()) {
-			super.draw(batch);
-		} else {
+	protected Frame getCurrentFrame() {
+		if (!gameLoop.isPlaying()) {
 			if (frames.size > 0) {
-				frames.get(0).draw(batch);
+				return frames.get(0);
 			}
 		}
+		return super.getCurrentFrame();
 	}
 }

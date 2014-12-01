@@ -40,7 +40,6 @@ import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.math.Polygon;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.Pool.Poolable;
-
 import es.eucm.ead.engine.components.renderers.RendererComponent;
 import es.eucm.ead.engine.components.renderers.frames.sequences.Sequence;
 
@@ -62,32 +61,37 @@ public class FramesComponent extends RendererComponent implements Poolable {
 		return currentFrameIndex;
 	}
 
+	protected Frame getCurrentFrame() {
+		return currentFrame;
+	}
+
 	@Override
 	public void draw(Batch batch) {
-		if (currentFrame != null) {
-			currentFrame.draw(batch);
+		if (getCurrentFrame() != null) {
+			getCurrentFrame().draw(batch);
 		}
 	}
 
 	@Override
 	public Array<Polygon> getCollider() {
+		Frame currentFrame = getCurrentFrame();
 		return currentFrame == null ? null : currentFrame.getRenderer()
 				.getCollider();
 	}
 
 	@Override
 	public boolean hit(float x, float y) {
-		return currentFrame != null && currentFrame.hit(x, y);
+		return getCurrentFrame() != null && getCurrentFrame().hit(x, y);
 	}
 
 	@Override
 	public float getWidth() {
-		return currentFrame == null ? 0 : currentFrame.getWidth();
+		return getCurrentFrame() == null ? 0 : getCurrentFrame().getWidth();
 	}
 
 	@Override
 	public float getHeight() {
-		return currentFrame == null ? 0 : currentFrame.getHeight();
+		return getCurrentFrame() == null ? 0 : getCurrentFrame().getHeight();
 	}
 
 	public void setSequence(Sequence sequence) {
