@@ -58,4 +58,11 @@ public class EditorFramesComponent extends FramesComponent {
 			}
 		}
 	}
+
+	@Override
+	public void act(float delta) {
+		if (gameLoop.isPlaying()) {
+			super.act(delta);
+		}
+	}
 }
