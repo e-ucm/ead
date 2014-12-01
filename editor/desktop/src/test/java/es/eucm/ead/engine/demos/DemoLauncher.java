@@ -42,11 +42,24 @@ import es.eucm.ead.engine.mock.MockApplication;
 import es.eucm.ead.engine.utils.SwingEDTUtils;
 
 import javax.imageio.ImageIO;
-import javax.swing.*;
-import java.awt.*;
+import javax.swing.BorderFactory;
+import javax.swing.DefaultComboBoxModel;
+import javax.swing.ImageIcon;
+import javax.swing.JButton;
+import javax.swing.JComboBox;
+import javax.swing.JFrame;
+import javax.swing.JLabel;
+import javax.swing.JPanel;
+import javax.swing.JTextArea;
+import java.awt.BorderLayout;
+import java.awt.Dimension;
+import java.awt.GridLayout;
+import java.awt.Image;
+import java.awt.Toolkit;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.IOException;
+import java.io.InputStream;
 import java.util.HashMap;
 
 /**
@@ -149,6 +162,7 @@ public class DemoLauncher extends JFrame {
 	private void registerDemos() {
 		registerDemo(new PlanesDemo());
 		registerDemo(new MeetingAFriendDemo());
+		registerDemo(new SpineDemo());
 	}
 
 	private void registerDemo(EditorDemoBuilder demoBuilder) {
@@ -167,7 +181,12 @@ public class DemoLauncher extends JFrame {
 
 	private Image loadSnapshot(EditorDemoBuilder demoBuilder) {
 		try {
-			return ImageIO.read(demoBuilder.getSnapshotInputStream());
+			InputStream inputStream = demoBuilder.getSnapshotInputStream();
+			if (inputStream != null) {
+				return ImageIO.read(inputStream);
+			} else {
+				return null;
+			}
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
@@ -183,9 +202,12 @@ public class DemoLauncher extends JFrame {
 			description.setText("");
 			run.setEnabled(false);
 		} else {
-			ImageIcon imageIcon = new ImageIcon(loadSnapshot(demoBuilder));
-			snapshotImage.setIcon(imageIcon);
-			snapshotImage.setText(null);
+			Image image = loadSnapshot(demoBuilder);
+			if (image != null) {
+				ImageIcon imageIcon = new ImageIcon(loadSnapshot(demoBuilder));
+				snapshotImage.setIcon(imageIcon);
+				snapshotImage.setText(null);
+			}
 			description.setText(demoBuilder.getDescription());
 			run.setEnabled(true);
 		}

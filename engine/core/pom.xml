@@ -35,6 +35,12 @@
             <artifactId>tweenengine-api</artifactId>
             <version>1</version>
         </dependency>
+        <!-- Spine animatinos -->
+        <dependency>
+            <groupId>com.esotericsoftware.spine</groupId>
+            <artifactId>spine-libgdx</artifactId>
+            <version>1.0.0</version>
+        </dependency>
         <!-- TESTS -->
         <dependency>
             <groupId>junit</groupId>

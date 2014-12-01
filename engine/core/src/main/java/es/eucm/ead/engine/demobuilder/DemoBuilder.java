@@ -349,7 +349,9 @@ public abstract class DemoBuilder {
 	 */
 	public DemoBuilder scene(String imageUri) {
 		lastScene = entity().getLastEntity();
-		lastScene.getChildren().add(entity(imageUri, 0, 0).getLastEntity());
+		if (imageUri != null) {
+			lastScene.getChildren().add(entity(imageUri, 0, 0).getLastEntity());
+		}
 		String sceneId = DEFAULT_SCENE_PREF + (sceneCount++) + JSON;
 		entities.put(sceneId, lastScene);
 		return this;

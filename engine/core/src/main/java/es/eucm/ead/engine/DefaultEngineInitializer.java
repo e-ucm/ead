@@ -64,6 +64,7 @@ import es.eucm.ead.engine.processors.renderers.EmptyRendererProcessor;
 import es.eucm.ead.engine.processors.renderers.FramesProcessor;
 import es.eucm.ead.engine.processors.renderers.ImageProcessor;
 import es.eucm.ead.engine.processors.renderers.ShapeRendererProcessor;
+import es.eucm.ead.engine.processors.renderers.SpineAnimationProcessor;
 import es.eucm.ead.engine.processors.renderers.StatesProcessor;
 import es.eucm.ead.engine.processors.tweens.TweensProcessor;
 import es.eucm.ead.engine.systems.EffectsSystem;
@@ -183,6 +184,7 @@ import es.eucm.ead.schema.renderers.EmptyRenderer;
 import es.eucm.ead.schema.renderers.Frames;
 import es.eucm.ead.schema.renderers.Image;
 import es.eucm.ead.schema.renderers.ShapeRenderer;
+import es.eucm.ead.schema.renderers.SpineAnimation;
 import es.eucm.ead.schema.renderers.States;
 
 /**
@@ -405,6 +407,8 @@ public class DefaultEngineInitializer implements EngineInitializer {
 
 		componentLoader.registerComponentProcessor(Conversation.class,
 				new ConversationProcessor(gameLoop));
+		componentLoader.registerComponentProcessor(SpineAnimation.class,
+				new SpineAnimationProcessor(gameLoop, gameAssets));
 	}
 
 	private static class LanguageVariableListener implements
