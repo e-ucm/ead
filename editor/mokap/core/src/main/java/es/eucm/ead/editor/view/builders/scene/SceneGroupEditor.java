@@ -37,6 +37,7 @@
 package es.eucm.ead.editor.view.builders.scene;
 
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.math.Interpolation;
 import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.scenes.scene2d.Actor;
@@ -44,11 +45,15 @@ import com.badlogic.gdx.scenes.scene2d.Group;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.Touchable;
 import com.badlogic.gdx.scenes.scene2d.actions.Actions;
+import com.badlogic.gdx.scenes.scene2d.ui.Container;
+import com.badlogic.gdx.scenes.scene2d.ui.Label;
+import com.badlogic.gdx.scenes.scene2d.ui.Label.LabelStyle;
 import com.badlogic.gdx.scenes.scene2d.utils.ActorGestureListener;
 import com.badlogic.gdx.scenes.scene2d.utils.DragListener;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.Pools;
 import com.badlogic.gdx.utils.Predicate;
+
 import es.eucm.ead.editor.control.Controller;
 import es.eucm.ead.editor.control.Preferences;
 import es.eucm.ead.editor.control.Selection;
@@ -93,7 +98,11 @@ public class SceneGroupEditor extends GroupEditor implements ModelView {
 
 	private ChildrenListListener childrenListListener = new ChildrenListListener();
 
+	private LabelFieldListener labelListener = new LabelFieldListener();
+
 	private ModelEntityPredicate entityPredicate = new ModelEntityPredicate();
+
+	private ComponentPredicate componentPredicate = new ComponentPredicate();
 
 	private SceneSelectionListener sceneSelectionListener = new SceneSelectionListener();
 
@@ -170,6 +179,7 @@ public class SceneGroupEditor extends GroupEditor implements ModelView {
 	public void release() {
 		model.removeListenerFromAllTargets(transformationListener);
 		model.removeListenerFromAllTargets(childrenListListener);
+		model.removeListenerFromAllTargets(labelListener);
 		if (scene != null) {
 			removeListeners(Q.getModelEntity(scene.getGroup()));
 		}
@@ -246,6 +256,13 @@ public class SceneGroupEditor extends GroupEditor implements ModelView {
 
 			if (actor instanceof Group) {
 				for (Actor child : ((Group) actor).getChildren()) {
+					if (child instanceof Label) {
+						model.addFieldListener(
+								Q.getComponent(
+										entity,
+										es.eucm.ead.schema.components.controls.Label.class),
+								labelListener);
+					}
 					addListeners(child);
 				}
 			}
@@ -255,6 +272,12 @@ public class SceneGroupEditor extends GroupEditor implements ModelView {
 	private void removeListeners(ModelEntity entity) {
 		model.removeListener(entity, transformationListener);
 		model.removeListener(entity.getChildren(), childrenListListener);
+		if (Q.hasComponent(entity,
+				es.eucm.ead.schema.components.controls.Label.class)) {
+			model.removeListener(Q.getComponent(entity,
+					es.eucm.ead.schema.components.controls.Label.class),
+					labelListener);
+		}
 		for (ModelEntity child : entity.getChildren()) {
 			removeListeners(child);
 		}
@@ -364,6 +387,41 @@ public class SceneGroupEditor extends GroupEditor implements ModelView {
 		}
 	}
 
+	public class LabelFieldListener implements FieldListener {
+
+		private final Array<String> TRANSFORMATION_FIELDS = new Array<String>(
+				new String[] { FieldName.TEXT, FieldName.COLOR, FieldName.STYLE });
+
+		@Override
+		public boolean listenToField(String fieldName) {
+			return TRANSFORMATION_FIELDS.contains(fieldName, false);
+		}
+
+		@Override
+		public void modelChanged(FieldEvent event) {
+			componentPredicate.setComponent((ModelComponent) event.getTarget());
+			Actor actor = findActor(scene.getGroup(), componentPredicate);
+			Label label = (Label) ((Container) actor).getActor();
+			Object value = (Object) event.getValue();
+
+			if (FieldName.TEXT.equals(event.getField())) {
+				label.setText((String) value);
+			} else if (FieldName.COLOR.equals(event.getField())) {
+				es.eucm.ead.schema.data.Color modelColor = (es.eucm.ead.schema.data.Color) value;
+				Color color = new Color();
+				color.a = modelColor.getA();
+				color.r = modelColor.getR();
+				color.g = modelColor.getG();
+				color.b = modelColor.getB();
+				label.setColor(color);
+			} else if (FieldName.STYLE.equals(event.getField())) {
+				label.setStyle(controller.getEditorGameAssets().getSkin()
+						.get((String) value, LabelStyle.class));
+			}
+			refreshSelectionBox();
+		}
+	}
+
 	private class SceneSelectionListener implements SelectionListener {
 
 		private final Array<String> CONTEXTS = new Array<String>(new String[] {
@@ -412,8 +470,12 @@ public class SceneGroupEditor extends GroupEditor implements ModelView {
 
 		@Override
 		public boolean evaluate(Actor actor) {
-			return Q.getModelEntity(actor).getComponents()
-					.contains(component, true);
+			if (Q.getModelEntity(actor) != null) {
+				return Q.getModelEntity(actor).getComponents()
+						.contains(component, true);
+			} else {
+				return false;
+			}
 		}
 	}
 }
