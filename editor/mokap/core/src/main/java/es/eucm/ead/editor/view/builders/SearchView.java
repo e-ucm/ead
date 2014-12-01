@@ -47,6 +47,7 @@ import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 
 import es.eucm.ead.editor.assets.ApplicationAssets;
 import es.eucm.ead.editor.control.Controller;
+import es.eucm.ead.editor.control.MokapController.BackListener;
 import es.eucm.ead.editor.control.actions.editor.ChangeView;
 import es.eucm.ead.editor.control.actions.editor.ExecuteWorker;
 import es.eucm.ead.editor.control.workers.SearchRepo;
@@ -61,11 +62,12 @@ import es.eucm.ead.engine.I18N;
 /**
  * File view. A list with the children of a given file.
  */
-public class SearchView implements ViewBuilder {
+public class SearchView implements ViewBuilder, BackListener {
 
 	private LinearLayout view;
 	private SearchGallery searchGallery;
 	private Controller controller;
+	private TextField textField;
 
 	@Override
 	public void initialize(Controller controller) {
@@ -84,7 +86,7 @@ public class SearchView implements ViewBuilder {
 	@Override
 	public Actor getView(Object... args) {
 		controller.action(ExecuteWorker.class, SearchRepo.class, searchGallery,
-				"");
+				textField.getText());
 		return view;
 	}
 
@@ -96,14 +98,20 @@ public class SearchView implements ViewBuilder {
 		MultiWidget toolbar = new MultiWidget(skin, SkinConstants.STYLE_TOOLBAR);
 
 		LinearLayout project = new LinearLayout(true);
-		project.add(WidgetBuilder.toolbarIcon(SkinConstants.IC_GO, null,
-				ChangeView.class, FileView.class));
+		IconButton back = WidgetBuilder.toolbarIcon(SkinConstants.IC_GO, null);
+		project.add(back);
+		back.addListener(new ClickListener() {
+			@Override
+			public void clicked(InputEvent event, float x, float y) {
+				onBackPressed();
+			}
+		});
 		project.addSpace();
 		IconButton search = WidgetBuilder.toolbarIcon(SkinConstants.IC_SEARCH,
 				i18N.m("search"));
 		project.add(search);
 
-		final TextField textField = new TextField("", skin);
+		textField = new TextField("", skin);
 		textField.setVisible(false);
 		textField.addListener(new InputListener() {
 			@Override
@@ -111,9 +119,8 @@ public class SearchView implements ViewBuilder {
 				if (keycode == Keys.ENTER) {
 					controller.action(ExecuteWorker.class, SearchRepo.class,
 							searchGallery, textField.getText());
-					textField.setVisible(false);
-					textField.getStage().unfocus(textField);
-					textField.invalidateHierarchy();
+					hideTextField();
+					return true;
 				}
 				return false;
 			}
@@ -132,5 +139,21 @@ public class SearchView implements ViewBuilder {
 
 		toolbar.addWidgets(project);
 		return toolbar;
+	}
+
+	private void hideTextField() {
+		textField.setVisible(false);
+		textField.getStage().unfocus(textField);
+		textField.invalidateHierarchy();
+	}
+
+	@Override
+	public boolean onBackPressed() {
+		if (textField.isVisible()) {
+			hideTextField();
+		} else {
+			controller.action(ChangeView.class, FileView.class);
+		}
+		return true;
 	}
 }
