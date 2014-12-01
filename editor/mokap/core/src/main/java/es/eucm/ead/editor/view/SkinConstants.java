@@ -128,6 +128,7 @@ public interface SkinConstants {
 
 	public static final String IC_CHECK = "ic_check";
 	public static final String IC_CLOSE = "ic_close";
+	public static final String IC_CLONE = "ic_clone";
 	public static final String IC_UNDO = "ic_undo";
 	public static final String IC_REDO = "ic_redo";
 	public static final String IC_GO = "ic_go";
