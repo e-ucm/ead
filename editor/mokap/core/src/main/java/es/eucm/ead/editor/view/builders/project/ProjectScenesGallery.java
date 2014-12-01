@@ -44,6 +44,7 @@ import es.eucm.ead.editor.control.Selection;
 import es.eucm.ead.editor.control.actions.editor.RenameCurrentScene;
 import es.eucm.ead.editor.control.actions.editor.ShowModal;
 import es.eucm.ead.editor.control.actions.model.ChangeInitialScene;
+import es.eucm.ead.editor.control.actions.model.CloneScene;
 import es.eucm.ead.editor.control.actions.model.DeleteScene;
 import es.eucm.ead.editor.control.actions.model.EditScene;
 import es.eucm.ead.editor.control.actions.model.SetSelection;
@@ -91,18 +92,23 @@ public class ProjectScenesGallery extends ScenesGallery {
 		Button edit = WidgetBuilder.button(SkinConstants.IC_EDIT,
 				i18N.m("edit"), SkinConstants.STYLE_CONTEXT, EditScene.class);
 
-		Button initial = WidgetBuilder.button(SkinConstants.IC_ONE,
-				i18N.m("scene.initial"), SkinConstants.STYLE_CONTEXT,
-				ChangeInitialScene.class);
 		Button rename = WidgetBuilder.button(SkinConstants.IC_TEXT,
 				i18N.m("rename"), SkinConstants.STYLE_CONTEXT,
 				RenameCurrentScene.class);
+
+		Button clone = WidgetBuilder.button(SkinConstants.IC_CLONE,
+				i18N.m("scene.clone"), SkinConstants.STYLE_CONTEXT,
+				CloneScene.class);
+
+		Button initial = WidgetBuilder.button(SkinConstants.IC_ONE,
+				i18N.m("scene.initial"), SkinConstants.STYLE_CONTEXT,
+				ChangeInitialScene.class);
 
 		Button delete = WidgetBuilder.button(SkinConstants.IC_DELETE,
 				i18N.m("delete"), SkinConstants.STYLE_CONTEXT,
 				DeleteScene.class);
 
-		sceneActions = WidgetBuilder.iconLabelContextPanel(edit, rename,
+		sceneActions = WidgetBuilder.iconLabelContextPanel(edit, rename, clone,
 				initial, delete);
 		sceneActions.addHideRunnable(new Runnable() {
 			@Override
