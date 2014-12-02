@@ -106,6 +106,7 @@ public class TextEditor extends ContextMenu {
 		top.add(textContainer).expandX();
 
 		selectTypo = new SelectBox<String>(skin);
+		selectTypo.getSelection().setProgrammaticChangeEvents(false);
 		Array<String> typo = new Array<String>();
 		typo.add("roboto");
 		typo.add("comfortaa");
@@ -113,6 +114,7 @@ public class TextEditor extends ContextMenu {
 		selectTypo.setItems(typo);
 
 		selectSize = new SelectBox<String>(skin);
+		selectSize.getSelection().setProgrammaticChangeEvents(false);
 		Array<String> size = new Array<String>();
 		size.add(i18n.m("small"));
 		size.add(i18n.m("big"));

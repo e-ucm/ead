@@ -68,6 +68,8 @@ public class LabelTextEditor extends TextEditor implements
 
 	private EditorGameAssets editorGameAssets;
 
+	private es.eucm.ead.schema.components.controls.Label modelLabel;
+
 	public LabelTextEditor(final Skin skin, Controller c) {
 		super(skin, c.getApplicationAssets().getI18N());
 
@@ -86,7 +88,8 @@ public class LabelTextEditor extends TextEditor implements
 		addListener(new ColorListener() {
 			@Override
 			public void colorChanged(ColorEvent event) {
-				if (!event.getColor().equals(labelActor.getColor())) {
+				if (!event.getColor().equals(
+						Q.toLibgdxColor(modelLabel.getColor()))) {
 					labelActor.setColor(event.getColor());
 					if (!event.isDragging()) {
 						controller.action(ChangeSelectionText.class,
@@ -100,10 +103,7 @@ public class LabelTextEditor extends TextEditor implements
 			@Override
 			public void changed(ChangeEvent event, Actor actor) {
 				if (event.getTarget() instanceof SelectBox) {
-					if (labelActor.getStyle() != editorGameAssets.getSkin()
-							.get(getStyle(), LabelStyle.class)) {
-						labelActor.setStyle(editorGameAssets.getSkin().get(
-								getStyle(), LabelStyle.class));
+					if (!modelLabel.getStyle().equals(getStyle())) {
 						controller.action(ChangeSelectionText.class,
 								getStyle(), false);
 					}
@@ -133,9 +133,8 @@ public class LabelTextEditor extends TextEditor implements
 				.getSelection().getSingle(Selection.SCENE_ELEMENT);
 		if (Q.hasComponent(element,
 				es.eucm.ead.schema.components.controls.Label.class)) {
-			es.eucm.ead.schema.components.controls.Label modelLabel = Q
-					.getComponent(element,
-							es.eucm.ead.schema.components.controls.Label.class);
+			modelLabel = Q.getComponent(element,
+					es.eucm.ead.schema.components.controls.Label.class);
 			for (Actor actor : ((Group) sceneEditor.getGroupEditor().findActor(
 					element)).getChildren()) {
 				if (actor instanceof Label) {
@@ -143,11 +142,7 @@ public class LabelTextEditor extends TextEditor implements
 					break;
 				}
 			}
-			Color color = new Color();
-			color.a = modelLabel.getColor().getA();
-			color.r = modelLabel.getColor().getR();
-			color.g = modelLabel.getColor().getG();
-			color.b = modelLabel.getColor().getB();
+			Color color = Q.toLibgdxColor(modelLabel.getColor());
 			labelActor.setColor(color);
 			labelActor.setStyle(editorGameAssets.getSkin().get(
 					modelLabel.getStyle(), LabelStyle.class));

@@ -76,15 +76,12 @@ public class SlideColorPicker extends AbstractWidget {
 	private static final float HEIGHT_TIMES_KNOB = 1.1f;
 	private static final float WIDTH_TIMES_KNOB = 8f;
 
-	private static final InputListener listener = new ClickListener() {
+	private static final InputListener listener = new InputListener() {
 
-		public void clicked(InputEvent event, float x, float y) {
-			Slider slider = (Slider) event.getListenerActor();
-			SlideColorPicker picker = (SlideColorPicker) slider.getUserObject();
-			picker.updateColor();
-			picker.updateAllTexturesExcept(slider);
-			picker.fireColorChanged(false);
-		}
+		public boolean touchDown(InputEvent event, float x, float y,
+				int pointer, int button) {
+			return true;
+		};
 
 		public void touchDragged(InputEvent event, float x, float y, int pointer) {
 			if (pointer == 0) {
@@ -96,6 +93,15 @@ public class SlideColorPicker extends AbstractWidget {
 				picker.fireColorChanged(true);
 			}
 		}
+
+		public void touchUp(InputEvent event, float x, float y, int pointer,
+				int button) {
+			Slider slider = (Slider) event.getListenerActor();
+			SlideColorPicker picker = (SlideColorPicker) slider.getUserObject();
+			picker.updateColor();
+			picker.updateAllTexturesExcept(slider);
+			picker.fireColorChanged(false);
+		};
 	};
 
 	private final float[] tempValues = new float[3];
