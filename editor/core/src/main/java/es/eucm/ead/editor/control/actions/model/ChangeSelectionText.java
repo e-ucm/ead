@@ -37,10 +37,14 @@
 package es.eucm.ead.editor.control.actions.model;
 
 import com.badlogic.gdx.graphics.Color;
+import com.badlogic.gdx.graphics.g2d.BitmapFont.TextBounds;
+import com.badlogic.gdx.scenes.scene2d.ui.Label.LabelStyle;
+import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 
 import es.eucm.ead.editor.control.Selection;
 import es.eucm.ead.editor.control.actions.ModelAction;
 import es.eucm.ead.editor.control.commands.Command;
+import es.eucm.ead.editor.control.commands.CompositeCommand;
 import es.eucm.ead.editor.control.commands.FieldCommand;
 import es.eucm.ead.editor.model.Q;
 import es.eucm.ead.schema.components.controls.Label;
@@ -75,6 +79,12 @@ public class ChangeSelectionText extends ModelAction {
 
 		Label label = Q.getComponent(element, Label.class);
 
+		Skin skin = controller.getEditorGameAssets().getSkin();
+		LabelStyle newLabelStyle = skin.get(label.getStyle(), LabelStyle.class);
+		String newText = label.getText();
+
+		CompositeCommand command = new CompositeCommand();
+
 		if (args.length == 1) {
 			if (args[0] instanceof Color) {
 				Color color = (Color) args[0];
@@ -85,19 +95,32 @@ public class ChangeSelectionText extends ModelAction {
 				schemaColor.setA(color.a);
 				return new FieldCommand(label, FieldName.COLOR, schemaColor);
 			} else {
-				return new FieldCommand(label, FieldName.TEXT,
-						args[0].toString());
+				newText = args[0].toString();
+				command.addCommand(new FieldCommand(label, FieldName.TEXT,
+						newText));
+
 			}
 		} else {
 			if ((Boolean) args[1]) {
-				return new FieldCommand(label, FieldName.TEXT,
-						args[0].toString());
+				newText = args[0].toString();
+				command.addCommand(new FieldCommand(label, FieldName.TEXT,
+						newText));
 			} else {
-				return new FieldCommand(label, FieldName.STYLE,
-						args[0].toString());
+				newLabelStyle = skin.get(args[0].toString(), LabelStyle.class);
+				command.addCommand(new FieldCommand(label, FieldName.STYLE,
+						args[0].toString()));
 			}
 		}
 
+		// Actualize origin
+		TextBounds bounds = newLabelStyle.font.getMultiLineBounds(newText);
+
+		command.addCommand(new FieldCommand(element, FieldName.ORIGIN_X,
+				bounds.width * 0.5f));
+		command.addCommand(new FieldCommand(element, FieldName.ORIGIN_Y,
+				bounds.height * 0.5f));
+
+		return command;
 	}
 
 }

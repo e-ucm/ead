@@ -36,20 +36,15 @@
  */
 package es.eucm.ead.editor.model;
 
-import java.io.IOException;
-
 import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.Net;
-import com.badlogic.gdx.Net.HttpRequest;
+import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.utils.Array;
-import com.badlogic.gdx.utils.Pools;
 import com.badlogic.gdx.utils.reflect.ClassReflection;
 import com.badlogic.gdx.utils.reflect.ReflectionException;
 
 import es.eucm.ead.editor.control.Controller;
-import es.eucm.ead.editor.platform.Platform;
 import es.eucm.ead.engine.I18N;
 import es.eucm.ead.engine.assets.Assets.AssetLoadedCallback;
 import es.eucm.ead.engine.entities.EngineEntity;
@@ -352,5 +347,15 @@ public class Q {
 			return "";
 		}
 		return thumbnailUrlList.peek();
+	}
+
+	public static Color toLibgdxColor(es.eucm.ead.schema.data.Color modelColor) {
+		Color color = new Color();
+		color.a = modelColor.getA();
+		color.r = modelColor.getR();
+		color.g = modelColor.getG();
+		color.b = modelColor.getB();
+
+		return color;
 	}
 }
