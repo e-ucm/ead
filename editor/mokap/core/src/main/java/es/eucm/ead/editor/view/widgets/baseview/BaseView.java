@@ -82,6 +82,8 @@ public class BaseView extends AbstractWidget {
 
 	private Actor content;
 
+	private boolean lockPanels;
+
 	public BaseView(Skin skin) {
 		this(skin.get(BaseViewStyle.class));
 	}
@@ -89,7 +91,8 @@ public class BaseView extends AbstractWidget {
 	public BaseView(BaseViewStyle style) {
 		addActor(selectionContext = new SelectionContext());
 		addActor(navigation = new Navigation(style));
-
+		lockPanels = false;
+		
 		// Listens for fling gestures to quickly show hidden panels
 		addCaptureListener(new GestureListener() {
 
@@ -156,14 +159,16 @@ public class BaseView extends AbstractWidget {
 	}
 
 	private int area(float x, float y) {
-		if (navigation.hasContent() && x < cmToXPixels(FLING_AREA_CM)) {
-			return NAVIGATION_AREA;
-		} else if (selectionContext.hasContent()
-				&& x > Gdx.graphics.getWidth() - cmToXPixels(FLING_AREA_CM)) {
-			return SELECTION_CONTEXT_AREA;
-		} else {
-			return -1;
+		if (!lockPanels) {
+			if (navigation.hasContent() && x < cmToXPixels(FLING_AREA_CM)) {
+				return NAVIGATION_AREA;
+			} else if (selectionContext.hasContent()
+					&& x > Gdx.graphics.getWidth() - cmToXPixels(FLING_AREA_CM)) {
+				return SELECTION_CONTEXT_AREA;
+			}
 		}
+
+		return -1;
 	}
 
 	/**
@@ -297,6 +302,10 @@ public class BaseView extends AbstractWidget {
 		public BaseViewStyle(Drawable navigationBackground) {
 			this.navigationBackground = navigationBackground;
 		}
+	}
+
+	public void lockPanels(boolean lockPanels) {
+		this.lockPanels = lockPanels;
 	}
 
 }

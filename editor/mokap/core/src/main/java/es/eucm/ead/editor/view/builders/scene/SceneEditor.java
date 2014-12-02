@@ -203,24 +203,29 @@ public class SceneEditor extends BaseView implements ModelView,
 				&& context.getSelection().length > 0;
 		switch (mode) {
 		case COMPOSE:
+			lockPanels(false);
 			toolbar.setSelectedWidget(INSERT + (selection ? 1 : 0));
 			sceneGroupEditor.setOnlySelection(false);
 			controller.action(ShowInfoPanel.class, TypePanel.COMPOSE,
 					Preferences.HELP_MODE_COMPOSE);
 			break;
 		case DRAW:
+			lockPanels(true);
 			toolbar.setSelectedWidget(PAINT);
 			brushStrokes.show();
 			break;
 		case INTERACTION:
+			lockPanels(false);
 			toolbar.setSelectedWidget(INTERACTION + (selection ? 1 : 0));
 			setContext(interactionContext);
 			break;
 		case FX:
+			lockPanels(false);
 			toolbar.setSelectedWidget(FX + (selection ? 1 : 0));
 			setContext(fxContext);
 			break;
 		case PLAY:
+			lockPanels(true);
 			enterFullScreen();
 			gameView.setVisible(true);
 			sceneGroupEditor.setVisible(false);
