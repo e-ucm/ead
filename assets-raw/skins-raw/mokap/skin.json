@@ -431,7 +431,7 @@
                 "down": "light_gray_bg",
                 "checked": "blank_grey_border"
             },
-            "selectedBackground": "blank_grey_border",
+            "selectedBackground": "blank",
             "touch": "touch",
             "pressedColor": "gray",
             "selectedColor": "light_blue",
