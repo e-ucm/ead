@@ -34,27 +34,44 @@
  *      You should have received a copy of the GNU Lesser General Public License
  *      along with eAdventure.  If not, see <http://www.gnu.org/licenses/>.
  */
-package es.eucm.ead.editor;
+package es.eucm.ead.editor.control.actions.editor;
 
-import com.badlogic.gdx.Application;
-import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.backends.lwjgl.LwjglApplication;
-import com.badlogic.gdx.backends.lwjgl.LwjglApplicationConfiguration;
+import es.eucm.ead.editor.control.actions.EditorAction;
+import es.eucm.ead.editor.platform.MokapPlatform;
+import es.eucm.ead.editor.platform.Platform;
+import es.eucm.ead.editor.utils.ProjectUtils;
+import es.eucm.ead.editor.view.builders.home.HomeView;
 
-import es.eucm.ead.editor.platform.AbstractPlatform;
+/**
+ * <p>
+ * Tries to open the last opened game or
+ * {@link Platform#getApplicationArguments()}[0] if any.
+ * </p>
+ * <dl>
+ * <dt><strong>Arguments</strong></dt>
+ * <dd><strong>None</strong></dd>
+ * </dl>
+ */
+public class OpenApplication extends EditorAction {
 
-public class MokapDesktop {
+	public OpenApplication() {
+		super(true, false);
+	}
 
-	public static void main(String[] args) {
+	@Override
+	public void perform(Object... args) {
 
-		LwjglApplicationConfiguration config = new LwjglApplicationConfiguration();
-		config.width = 640;
-		config.height = 360;
-		config.title = "Mokap";
-		AbstractPlatform mokapDesktopPlatform = new MokapDesktopPlatform();
-		mokapDesktopPlatform.setApplicationArguments(args);
-		new LwjglApplication(
-				new MokapApplicationListener(mokapDesktopPlatform), config);
-		Gdx.app.setLogLevel(Application.LOG_DEBUG);
+		MokapPlatform platform = (MokapPlatform) controller.getPlatform();
+		Object[] appArgs = platform.getApplicationArguments();
+		String importProjectPath = (appArgs == null || appArgs.length != 1) ? null
+				: (String) appArgs[0];
+
+		Class elseView = HomeView.class;
+		if (importProjectPath != null && !importProjectPath.isEmpty()
+				&& importProjectPath.endsWith(ProjectUtils.ZIP_EXTENSION)) {
+			controller.action(ImportProject.class, elseView);
+		} else {
+			controller.action(OpenLastProject.class, elseView);
+		}
 	}
 }

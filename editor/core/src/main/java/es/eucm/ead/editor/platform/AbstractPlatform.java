@@ -61,6 +61,8 @@ public abstract class AbstractPlatform implements Platform {
 
 	private static final String ABSTRACT_PLATFORM_TAG = "AbstractPlatform";
 	private static final int TIMEOUT = 25000;
+
+	private Object[] applicationArguments;
 	private Batch batch;
 
 	protected AbstractPlatform() {
@@ -224,5 +226,14 @@ public abstract class AbstractPlatform implements Platform {
 		} finally {
 			connection.disconnect();
 		}
+	}
+
+	public void setApplicationArguments(Object... applicationArguments) {
+		this.applicationArguments = applicationArguments;
+	}
+
+	@Override
+	public Object[] getApplicationArguments() {
+		return applicationArguments;
 	}
 }

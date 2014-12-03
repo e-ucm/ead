@@ -36,6 +36,7 @@
  */
 package es.eucm.ead.editor.control.actions.editor;
 
+import es.eucm.ead.editor.control.Preferences;
 import es.eucm.ead.editor.control.actions.EditorAction;
 import es.eucm.ead.editor.model.events.LoadEvent;
 import es.eucm.ead.editor.model.events.LoadEvent.Type;
@@ -48,5 +49,6 @@ public class CloseProject extends EditorAction {
 		controller.getModel().reset();
 		controller.getModel().notify(
 				new LoadEvent(Type.UNLOADED, controller.getModel()));
+		controller.getPreferences().putString(Preferences.LAST_OPENED_GAME, "");
 	}
 }

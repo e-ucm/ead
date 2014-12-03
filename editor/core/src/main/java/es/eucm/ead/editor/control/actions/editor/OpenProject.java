@@ -36,6 +36,7 @@
  */
 package es.eucm.ead.editor.control.actions.editor;
 
+import es.eucm.ead.editor.control.Preferences;
 import es.eucm.ead.editor.control.Selection;
 import es.eucm.ead.editor.control.actions.EditorAction;
 import es.eucm.ead.editor.control.actions.editor.workers.LoadScenes;
@@ -74,6 +75,9 @@ public class OpenProject extends EditorAction implements
 				ResourceCategory.GAME, asset);
 		controller.getModel().notify(
 				new LoadEvent(Type.LOADED, controller.getModel()));
+		controller.getPreferences().putString(Preferences.LAST_OPENED_GAME,
+				controller.getEditorGameAssets().getLoadingPath());
+		controller.getPreferences().flush();
 		controller.action(SetSelection.class, null, Selection.PROJECT, asset);
 		controller.action(SetSelection.class, Selection.PROJECT,
 				Selection.RESOURCE);

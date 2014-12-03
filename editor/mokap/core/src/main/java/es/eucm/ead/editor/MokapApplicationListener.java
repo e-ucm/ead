@@ -40,13 +40,13 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.scenes.scene2d.ui.WidgetGroup;
 import com.badlogic.gdx.utils.Timer;
 import com.badlogic.gdx.utils.Timer.Task;
+
 import es.eucm.ead.editor.control.Controller;
 import es.eucm.ead.editor.control.MokapController;
-import es.eucm.ead.editor.control.actions.editor.OpenLastProject;
+import es.eucm.ead.editor.control.actions.editor.OpenApplication;
 import es.eucm.ead.editor.control.actions.editor.Save;
 import es.eucm.ead.editor.model.Q;
 import es.eucm.ead.editor.platform.Platform;
-import es.eucm.ead.editor.view.builders.home.HomeView;
 import es.eucm.ead.editor.view.widgets.WidgetBuilder;
 
 public class MokapApplicationListener extends EditorApplicationListener {
@@ -67,7 +67,7 @@ public class MokapApplicationListener extends EditorApplicationListener {
 	@Override
 	protected void initialize() {
 		super.initialize();
-		controller.action(OpenLastProject.class, HomeView.class);
+		controller.action(OpenApplication.class);
 		stage.setActionsRequestRendering(true);
 	}
 

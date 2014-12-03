@@ -36,19 +36,21 @@
  */
 package es.eucm.ead.android;
 
+import java.util.HashMap;
+import java.util.Map;
+
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
+
 import com.badlogic.gdx.backends.android.AndroidApplication;
 import com.badlogic.gdx.backends.android.AndroidApplicationConfiguration;
 import com.google.android.gms.analytics.GoogleAnalytics;
 import com.google.android.gms.analytics.Tracker;
+
 import es.eucm.ead.editor.MokapApplicationListener;
 import es.eucm.ead.editor.platform.MokapPlatform;
 import es.eucm.mokap.R;
-
-import java.util.HashMap;
-import java.util.Map;
 
 public class EditorActivity extends AndroidApplication {
 
@@ -82,7 +84,7 @@ public class EditorActivity extends AndroidApplication {
 				Uri data = intent.getData();
 				if (data != null) {
 					String path = data.getPath();
-					platform.setImportProjectPath(path);
+					platform.setApplicationArguments(path);
 				}
 			}
 		}

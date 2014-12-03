@@ -49,8 +49,6 @@ import es.eucm.ead.schema.data.Dimension;
 
 public abstract class MokapPlatform extends AbstractPlatform {
 
-	private String importProjectPath;
-
 	@Override
 	public void askForFile(FileChooserListener listener) {
 
@@ -59,19 +57,6 @@ public abstract class MokapPlatform extends AbstractPlatform {
 	@Override
 	public void askForFolder(FileChooserListener listener) {
 
-	}
-
-	public void setImportProjectPath(String importProjectPath) {
-		this.importProjectPath = importProjectPath;
-	}
-
-	/**
-	 * 
-	 * @return the path of a file that was exported by an editor and should be
-	 *         imported in this editor's working space.
-	 */
-	public String getImportProjectPath() {
-		return importProjectPath;
 	}
 
 	@Override

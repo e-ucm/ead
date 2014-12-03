@@ -65,7 +65,7 @@ public class OpenLastProject extends EditorAction {
 
 		if (projectToOpenPath != null && !"".equals(projectToOpenPath)) {
 			try {
-				controller.action(OpenGame.class, projectToOpenPath);
+				controller.action(OpenProject.class, projectToOpenPath);
 			} catch (EditorActionException eae) {
 				// the project is probably corrupt; complain but continue
 				Gdx.app.log("OpenLastProject", "Error opening '"

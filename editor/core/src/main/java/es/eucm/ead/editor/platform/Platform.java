@@ -48,6 +48,7 @@ import com.badlogic.gdx.math.Vector2;
 
 import es.eucm.ead.editor.control.Controller;
 import es.eucm.ead.editor.control.Tracker;
+import es.eucm.ead.editor.utils.ProjectUtils;
 import es.eucm.ead.engine.I18N;
 import es.eucm.ead.schema.data.Dimension;
 
@@ -221,4 +222,18 @@ public interface Platform {
 	 */
 	boolean scaleImage(FileHandle imageFile, int maxWidth, int maxHeight,
 			FileHandle resultImage);
+
+	/**
+	 * 
+	 * @return the arguments of the application. For instance in Android
+	 *         returns:
+	 *         <dl>
+	 *         <dt><strong>Arguments</strong></dt>
+	 *         <dd><strong>args[0]</strong> <em>{@link String}</em> absolute
+	 *         path to a file with {@link ProjectUtils#ZIP_EXTENSION} that
+	 *         should be imported to the {@link #getDefaultProjectsFolder()}, or
+	 *         null if the application was initiated normally.</dd>
+	 *         </dl>
+	 */
+	Object[] getApplicationArguments();
 }
