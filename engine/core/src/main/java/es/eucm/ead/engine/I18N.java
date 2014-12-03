@@ -109,7 +109,10 @@ public class I18N {
 	public List<Lang> getAvailable() {
 		if (available.isEmpty()) {
 			Map<String, String> all = new HashMap<String, String>();
-			load(assets.resolve(i18nPath + LANGUAGE_INDEX), all);
+			FileHandle i18nFile = assets.resolve(i18nPath + LANGUAGE_INDEX);
+			if (assets.checkFileExistence(i18nFile)) {
+				load(i18nFile, all);
+			}
 
 			boolean defaultFound = false;
 
@@ -121,7 +124,7 @@ public class I18N {
 				}
 				fileName = i18nPath + MESSAGE_FILE_NAME + '_' + k
 						+ MESSAGE_FILE_EXTENSION;
-				if (assets.resolve(fileName).exists()) {
+				if (assets.checkFileExistence(assets.resolve(fileName))) {
 					Lang lang = new Lang(k, all.get(k));
 					available.add(lang);
 					if (k.equals(defaultLanguage)) {
@@ -175,7 +178,8 @@ public class I18N {
 			// global defaults (messages.properties)
 			overlayMessages("_" + defaultLanguage);
 
-			if (!defaultLanguage.equals(currentLanguage)) {
+			if (defaultLanguage != null
+					&& !defaultLanguage.equals(currentLanguage)) {
 				// specific language (more specific: messages_en.properties)
 				int first = currentLanguage.indexOf('_');
 				String langWithoutCountry = (first == -1) ? currentLanguage
@@ -213,7 +217,7 @@ public class I18N {
 	private void overlayMessages(String suffix) throws IOException {
 		FileHandle fileHandle = assets.resolve(i18nPath + MESSAGE_FILE_NAME
 				+ suffix + MESSAGE_FILE_EXTENSION);
-		if (fileHandle.exists()) {
+		if (assets.checkFileExistence(fileHandle)) {
 			load(fileHandle, messages);
 		} else {
 			Gdx.app.error("I18N",
