@@ -42,7 +42,7 @@ import es.eucm.ead.editor.control.workers.Worker.WorkerListener;
 
 public abstract class UnzipFileListener implements WorkerListener {
 
-	private FileHandle outputFolder;
+	protected FileHandle outputFolder;
 
 	public UnzipFileListener(FileHandle outputFolder) {
 		this.outputFolder = outputFolder;
@@ -57,7 +57,7 @@ public abstract class UnzipFileListener implements WorkerListener {
 		if ((Boolean) results[0]) {
 			unzipped();
 		} else {
-			cancelled();
+			error(null);
 		}
 	}
 
@@ -65,7 +65,7 @@ public abstract class UnzipFileListener implements WorkerListener {
 
 	@Override
 	public void error(Throwable ex) {
-		cancelled();
+		outputFolder.deleteDirectory();
 	}
 
 	@Override
@@ -74,7 +74,7 @@ public abstract class UnzipFileListener implements WorkerListener {
 
 	@Override
 	public void cancelled() {
-		outputFolder.deleteDirectory();
+		error(null);
 	}
 
 }
