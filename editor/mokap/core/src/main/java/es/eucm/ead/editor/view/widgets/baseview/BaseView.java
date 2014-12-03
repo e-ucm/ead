@@ -92,7 +92,7 @@ public class BaseView extends AbstractWidget {
 		addActor(selectionContext = new SelectionContext());
 		addActor(navigation = new Navigation(style));
 		lockPanels = false;
-		
+
 		// Listens for fling gestures to quickly show hidden panels
 		addCaptureListener(new GestureListener() {
 

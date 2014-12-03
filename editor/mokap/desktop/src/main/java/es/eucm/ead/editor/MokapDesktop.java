@@ -41,6 +41,8 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.backends.lwjgl.LwjglApplication;
 import com.badlogic.gdx.backends.lwjgl.LwjglApplicationConfiguration;
 
+import es.eucm.ead.editor.platform.AbstractPlatform;
+
 public class MokapDesktop {
 
 	public static void main(String[] args) {
@@ -49,9 +51,10 @@ public class MokapDesktop {
 		config.width = 640;
 		config.height = 360;
 		config.title = "Mokap";
-
-		new LwjglApplication(new MokapApplicationListener(
-				new MokapDesktopPlatform()), config);
+		AbstractPlatform mokapDesktopPlatform = new MokapDesktopPlatform();
+		mokapDesktopPlatform.setApplicationArguments(args);
+		new LwjglApplication(
+				new MokapApplicationListener(mokapDesktopPlatform), config);
 		Gdx.app.setLogLevel(Application.LOG_DEBUG);
 	}
 }
