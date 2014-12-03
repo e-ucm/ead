@@ -62,6 +62,8 @@ import es.eucm.ead.schema.entities.ModelEntity;
  */
 public class EditorGameAssets extends GameAssets {
 
+	private static final String I18N_PATH = "i18n-engine";
+
 	public static final String EDITOR_BINDINGS = "editor-bindings.json";
 
 	/**
@@ -72,6 +74,7 @@ public class EditorGameAssets extends GameAssets {
 	 */
 	public EditorGameAssets(Files files) {
 		super(files);
+		getI18N().setI18nPath(I18N_PATH);
 		setOutputType(OutputType.json);
 		setIgnores();
 	}
