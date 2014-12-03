@@ -47,13 +47,10 @@ import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.utils.Align;
 import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
-
 import es.eucm.ead.editor.control.Controller;
 import es.eucm.ead.editor.control.Preferences;
 import es.eucm.ead.editor.control.Selection;
-import es.eucm.ead.editor.control.actions.editor.AddLabel;
 import es.eucm.ead.editor.control.actions.editor.AddPaintedElement;
-import es.eucm.ead.editor.control.actions.editor.ChangeView;
 import es.eucm.ead.editor.control.actions.editor.Copy;
 import es.eucm.ead.editor.control.actions.editor.Paste;
 import es.eucm.ead.editor.control.actions.editor.Redo;
@@ -61,11 +58,9 @@ import es.eucm.ead.editor.control.actions.editor.ShowInfoPanel;
 import es.eucm.ead.editor.control.actions.editor.ShowInfoPanel.TypePanel;
 import es.eucm.ead.editor.control.actions.editor.ShowToast;
 import es.eucm.ead.editor.control.actions.editor.Undo;
-import es.eucm.ead.editor.control.actions.model.AddInteractiveZone;
 import es.eucm.ead.editor.control.actions.model.GroupSelection;
 import es.eucm.ead.editor.control.actions.model.RemoveSelectionFromScene;
 import es.eucm.ead.editor.control.actions.model.SetSelection;
-import es.eucm.ead.editor.control.actions.model.TakePicture;
 import es.eucm.ead.editor.control.actions.model.UngroupSelection;
 import es.eucm.ead.editor.control.actions.model.scene.ReorderSelection;
 import es.eucm.ead.editor.control.actions.model.scene.transform.MirrorSelection;
@@ -74,16 +69,15 @@ import es.eucm.ead.editor.model.Q;
 import es.eucm.ead.editor.model.events.SelectionEvent;
 import es.eucm.ead.editor.view.ModelView;
 import es.eucm.ead.editor.view.SkinConstants;
-import es.eucm.ead.editor.view.builders.FileView;
 import es.eucm.ead.editor.view.builders.scene.SceneEditor.Mode;
 import es.eucm.ead.editor.view.builders.scene.draw.BrushStrokes;
 import es.eucm.ead.editor.view.builders.scene.draw.BrushStrokes.ModeEvent;
 import es.eucm.ead.editor.view.builders.scene.draw.BrushStrokes.ModeListener;
 import es.eucm.ead.editor.view.widgets.ContextMenu;
 import es.eucm.ead.editor.view.widgets.IconButton;
+import es.eucm.ead.editor.view.widgets.LabelTextEditor;
 import es.eucm.ead.editor.view.widgets.MultiWidget;
 import es.eucm.ead.editor.view.widgets.Switch;
-import es.eucm.ead.editor.view.widgets.LabelTextEditor;
 import es.eucm.ead.editor.view.widgets.WidgetBuilder;
 import es.eucm.ead.editor.view.widgets.draw.BrushStrokesPicker;
 import es.eucm.ead.editor.view.widgets.draw.BrushStrokesPicker.SizeEvent;
@@ -189,9 +183,6 @@ public class GroupEditorToolbar extends MultiWidget implements ModelView {
 
 		compose.add(WidgetBuilder.toolbarIcon(SkinConstants.IC_PASTE,
 				i18N.m("paste"), true, Paste.class));
-
-		compose.add(WidgetBuilder.toolbarIconWithMenu(SkinConstants.IC_ADD,
-				buildInsertContextMenu(i18N)));
 		return compose;
 	}
 
@@ -303,42 +294,6 @@ public class GroupEditorToolbar extends MultiWidget implements ModelView {
 				textFontPane.getHeight());
 
 		return transform;
-	}
-
-	private ContextMenu buildInsertContextMenu(I18N i18n) {
-		String style = SkinConstants.STYLE_CONTEXT;
-
-		Button picture = WidgetBuilder.button(SkinConstants.IC_CAMERA,
-				i18n.m("picture"), style, TakePicture.class);
-
-		Button text = WidgetBuilder.button(SkinConstants.IC_TEXT,
-				i18n.m("text"), style, AddLabel.class);
-
-		Button zone = WidgetBuilder.button(SkinConstants.IC_ZONE,
-				i18n.m("interactive.zone"), style, AddInteractiveZone.class);
-		WidgetBuilder.actionOnClick(zone, ShowInfoPanel.class, TypePanel.ZONES,
-				Preferences.HELP_ZONES);
-
-		Button paint = WidgetBuilder.button(SkinConstants.IC_BRUSH,
-				i18n.m("drawing"), style);
-		paint.addListener(new ClickListener() {
-
-			@Override
-			public void clicked(InputEvent event, float x, float y) {
-				sceneEditor.setMode(Mode.DRAW);
-			}
-		});
-
-		Button gallery = WidgetBuilder.button(SkinConstants.IC_CLOUD,
-				i18n.m("gallery"), style, ChangeView.class, FileView.class);
-
-		ContextMenu contextMenu = WidgetBuilder.iconLabelContextPanel(gallery,
-				picture, text, zone, paint);
-
-		contextMenu.pack();
-		contextMenu.setOriginX(contextMenu.getWidth());
-		contextMenu.setOriginY(contextMenu.getHeight());
-		return contextMenu;
 	}
 
 	private ContextMenu buildTransformContextMenu(I18N i18n) {

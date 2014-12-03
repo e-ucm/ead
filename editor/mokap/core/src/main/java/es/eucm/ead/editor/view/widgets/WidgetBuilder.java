@@ -235,8 +235,8 @@ public class WidgetBuilder {
 		return (buttonSize / UNIT_SIZE) * dp;
 	}
 
-	public static Actor circlesMenu(int align, String[] icons, Class[] actions,
-			Object[][] args) {
+	public static CirclesMenu circlesMenu(int align, String[] icons,
+			Class[] actions, Object[][] args) {
 		if (icons.length != actions.length || actions.length != args.length) {
 			throw new IllegalArgumentException(
 					"Icons array needs to have the same length as actions array.");
@@ -258,6 +258,7 @@ public class WidgetBuilder {
 					circleStyle);
 			imageButtonStyle.imageUp = skin.getDrawable(icons[i]);
 			ImageButton imageButton = new ImageButton(imageButtonStyle);
+			imageButton.setName(icons[i]);
 			actionOnClick(imageButton, actions[i], args[i]);
 			menu.add(imageButton);
 		}

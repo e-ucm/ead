@@ -37,26 +37,40 @@
 package es.eucm.ead.editor.view.builders.scene;
 
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.scenes.scene2d.Actor;
+import com.badlogic.gdx.scenes.scene2d.InputEvent;
+import com.badlogic.gdx.scenes.scene2d.ui.Button;
+import com.badlogic.gdx.scenes.scene2d.utils.Align;
+import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
+
 import es.eucm.ead.editor.control.Controller;
 import es.eucm.ead.editor.control.Preferences;
 import es.eucm.ead.editor.control.Selection;
 import es.eucm.ead.editor.control.Selection.Context;
+import es.eucm.ead.editor.control.actions.editor.AddLabel;
+import es.eucm.ead.editor.control.actions.editor.ChangeView;
 import es.eucm.ead.editor.control.actions.editor.CreateThumbnail;
+import es.eucm.ead.editor.control.actions.editor.ShowContextMenu;
 import es.eucm.ead.editor.control.actions.editor.ShowInfoPanel;
 import es.eucm.ead.editor.control.actions.editor.ShowInfoPanel.TypePanel;
 import es.eucm.ead.editor.control.actions.editor.ShowToast;
+import es.eucm.ead.editor.control.actions.model.AddInteractiveZone;
 import es.eucm.ead.editor.control.actions.model.SetSelection;
+import es.eucm.ead.editor.control.actions.model.TakePicture;
 import es.eucm.ead.editor.model.Model.SelectionListener;
 import es.eucm.ead.editor.model.Q;
 import es.eucm.ead.editor.model.events.SelectionEvent;
 import es.eucm.ead.editor.model.events.SelectionEvent.Type;
 import es.eucm.ead.editor.view.ModelView;
+import es.eucm.ead.editor.view.SkinConstants;
+import es.eucm.ead.editor.view.builders.FileView;
 import es.eucm.ead.editor.view.builders.scene.context.SceneElementContext;
 import es.eucm.ead.editor.view.builders.scene.draw.BrushStrokes;
 import es.eucm.ead.editor.view.builders.scene.fx.FxContext;
 import es.eucm.ead.editor.view.builders.scene.interaction.InteractionContext;
 import es.eucm.ead.editor.view.builders.scene.play.TestGameView;
 import es.eucm.ead.editor.view.widgets.AbstractWidget;
+import es.eucm.ead.editor.view.widgets.CirclesMenu;
 import es.eucm.ead.editor.view.widgets.MultiWidget;
 import es.eucm.ead.editor.view.widgets.WidgetBuilder;
 import es.eucm.ead.editor.view.widgets.baseview.BaseView;
@@ -96,6 +110,8 @@ public class SceneEditor extends BaseView implements ModelView,
 
 	private InteractionContext interactionContext;
 
+	private Button addButton;
+
 	public SceneEditor(Controller controller) {
 		super(controller.getApplicationAssets().getSkin());
 		this.controller = controller;
@@ -116,6 +132,19 @@ public class SceneEditor extends BaseView implements ModelView,
 		container.addActor(sceneGroupEditor);
 		container.addActor(gameView);
 
+		CirclesMenu circlesMenu = buildAddButtons();
+		addButton = WidgetBuilder.button(SkinConstants.STYLE_ADD);
+		addButton.pack();
+		circlesMenu.pack();
+		WidgetBuilder.actionOnClick(
+				addButton,
+				ShowContextMenu.class,
+				addButton,
+				circlesMenu,
+				-circlesMenu.getWidth() + addButton.getWidth()
+						+ WidgetBuilder.dpToPixels(8), 0f);
+		container.addActor(addButton);
+
 		setToolbar(toolbar = new GroupEditorToolbar(controller, this,
 				brushStrokes));
 		setContent(container);
@@ -128,6 +157,15 @@ public class SceneEditor extends BaseView implements ModelView,
 
 	public SceneGroupEditor getGroupEditor() {
 		return sceneGroupEditor;
+	}
+
+	@Override
+	public void layout() {
+		super.layout();
+		addButton.setPosition(
+				getWidth() - addButton.getWidth()
+						- WidgetBuilder.dpToPixels(32),
+				WidgetBuilder.dpToPixels(32));
 	}
 
 	@Override
@@ -210,6 +248,7 @@ public class SceneEditor extends BaseView implements ModelView,
 					Preferences.HELP_MODE_COMPOSE);
 			break;
 		case DRAW:
+			addButton.setVisible(false);
 			lockPanels(true);
 			toolbar.setSelectedWidget(PAINT);
 			brushStrokes.show();
@@ -225,6 +264,7 @@ public class SceneEditor extends BaseView implements ModelView,
 			setContext(fxContext);
 			break;
 		case PLAY:
+			addButton.setVisible(false);
 			lockPanels(true);
 			enterFullScreen();
 			gameView.setVisible(true);
@@ -250,6 +290,7 @@ public class SceneEditor extends BaseView implements ModelView,
 	private void unsetMode(Mode mode) {
 		switch (mode) {
 		case PLAY:
+			addButton.setVisible(true);
 			controller.getEngine().stop();
 			exitFullscreen();
 			gameView.setVisible(false);
@@ -265,6 +306,9 @@ public class SceneEditor extends BaseView implements ModelView,
 			controller.getCommands().popStack(false);
 			setSelectionContext(null);
 			fxContext.release();
+			break;
+		case DRAW:
+			addButton.setVisible(true);
 			break;
 		}
 	}
@@ -284,6 +328,32 @@ public class SceneEditor extends BaseView implements ModelView,
 		float height = getHeight() + toolbar.getBackground().getBottomHeight()
 				- (toolbar == null ? 0 : getPrefHeight(toolbar));
 		selectionContext.setHeight(height);
+	}
+
+	private CirclesMenu buildAddButtons() {
+		CirclesMenu circlesMenu = WidgetBuilder.circlesMenu(Align.right,
+				new String[] { SkinConstants.IC_CLOUD, SkinConstants.IC_CAMERA,
+						SkinConstants.IC_BRUSH, SkinConstants.IC_TEXT,
+						SkinConstants.IC_ZONE, SkinConstants.IC_CLOSE },
+				new Class[] { ChangeView.class, TakePicture.class, null,
+						AddLabel.class, AddInteractiveZone.class, null },
+				new Object[][] { new Object[] { FileView.class },
+						new Object[] {}, new Object[] {}, new Object[] {},
+						new Object[] {}, null });
+
+		Actor zone = circlesMenu.findActor(SkinConstants.IC_ZONE);
+		WidgetBuilder.actionOnClick(zone, ShowInfoPanel.class, TypePanel.ZONES,
+				Preferences.HELP_ZONES);
+
+		Actor paint = circlesMenu.findActor(SkinConstants.IC_BRUSH);
+		paint.addListener(new ClickListener() {
+			@Override
+			public void clicked(InputEvent event, float x, float y) {
+				setMode(Mode.DRAW);
+			}
+		});
+
+		return circlesMenu;
 	}
 
 }

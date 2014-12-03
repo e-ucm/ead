@@ -58,8 +58,8 @@ public class CirclesMenuTest extends UITest {
 	@Override
 	protected Actor buildUI(Skin skin, I18N i18n) {
 
-		final CirclesMenu menu = (CirclesMenu) WidgetBuilder.circlesMenu(
-				Align.left, new String[] { SkinConstants.IC_ADD,
+		final CirclesMenu menu = WidgetBuilder.circlesMenu(Align.left,
+				new String[] { SkinConstants.IC_ADD,
 						SkinConstants.IC_BRING_TO_FRONT,
 						SkinConstants.IC_CAMERA, SkinConstants.IC_PLAY },
 				new Class[] { null, null, null, null }, new Object[][] { null,
