@@ -36,56 +36,34 @@
  */
 package es.eucm.ead.editor.view.builders.scene.groupeditor.input;
 
-import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
-import es.eucm.ead.editor.view.builders.scene.groupeditor.SelectionBox;
 import es.eucm.ead.editor.view.builders.scene.groupeditor.inputstatemachine.InputState;
 
-public class NoPointersState extends InputState {
+public class CameraPanState extends InputState {
 
 	private EditStateMachine stateMachine;
 
-	public NoPointersState(EditStateMachine stateMachine) {
+	public CameraPanState(EditStateMachine stateMachine) {
 		this.stateMachine = stateMachine;
 	}
 
 	@Override
-	public void touchDown1(InputEvent event, float x, float y) {
-		Actor target = stateMachine.getTarget(event);
-		if (target == null) {
-			stateMachine.unsetActors();
-		} else if (target instanceof SelectionBox) {
-			stateMachine.setSelectionBox((SelectionBox) target);
-			if (!stateMachine.isOnlySelection()) {
-				stateMachine.setState(SelectionBoxPressedState.class);
-			}
-		} else {
-			stateMachine.setActor(target);
-			stateMachine.setState(ActorPressedState.class);
-		}
+	public void enter() {
+		stateMachine.enterFullScreen();
 	}
 
 	@Override
-	public void dragStart1(InputEvent event, float x, float y) {
-		stateMachine.setState(CameraPanState.class);
-	}
-
-	@Override
-	public void touchDown2(InputEvent event, float x, float y) {
-		stateMachine.setState(ScaleState.class);
+	public void drag1(InputEvent event, float x, float y) {
+		stateMachine.pan();
 	}
 
 	@Override
 	public void touchUp1(InputEvent event, float x, float y) {
-		if (!stateMachine.isMultiSelection() && stateMachine.actor == null
-				&& !isTouchCancelled(event, x, y)) {
-			stateMachine.clearSelection();
-			stateMachine.fireSelection();
-		}
+		stateMachine.setState(NoPointersState.class);
 	}
 
 	@Override
-	public void longPress(float x, float y) {
-		stateMachine.showLayerSelector(x, y);
+	public void exit() {
+		stateMachine.exitFullScreen();
 	}
 }

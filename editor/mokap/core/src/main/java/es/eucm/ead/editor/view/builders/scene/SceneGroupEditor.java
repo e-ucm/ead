@@ -46,14 +46,14 @@ import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.Touchable;
 import com.badlogic.gdx.scenes.scene2d.actions.Actions;
 import com.badlogic.gdx.scenes.scene2d.ui.Container;
+import com.badlogic.gdx.scenes.scene2d.ui.ImageButton;
 import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.scenes.scene2d.ui.Label.LabelStyle;
 import com.badlogic.gdx.scenes.scene2d.utils.ActorGestureListener;
-import com.badlogic.gdx.scenes.scene2d.utils.DragListener;
+import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.Pools;
 import com.badlogic.gdx.utils.Predicate;
-
 import es.eucm.ead.editor.control.Controller;
 import es.eucm.ead.editor.control.Preferences;
 import es.eucm.ead.editor.control.Selection;
@@ -70,9 +70,11 @@ import es.eucm.ead.editor.model.events.ListEvent;
 import es.eucm.ead.editor.model.events.SelectionEvent;
 import es.eucm.ead.editor.utils.Actions2;
 import es.eucm.ead.editor.view.ModelView;
+import es.eucm.ead.editor.view.SkinConstants;
 import es.eucm.ead.editor.view.builders.scene.groupeditor.GroupEditor;
-import es.eucm.ead.editor.view.builders.scene.groupeditor.SelectionBox;
+import es.eucm.ead.editor.view.builders.scene.groupeditor.input.EditStateMachine;
 import es.eucm.ead.editor.view.widgets.AbstractWidget;
+import es.eucm.ead.editor.view.widgets.WidgetBuilder;
 import es.eucm.ead.engine.EntitiesLoader;
 import es.eucm.ead.engine.entities.EngineEntity;
 import es.eucm.ead.schema.components.ModelComponent;
@@ -106,11 +108,14 @@ public class SceneGroupEditor extends GroupEditor implements ModelView {
 
 	private SceneSelectionListener sceneSelectionListener = new SceneSelectionListener();
 
+	private ImageButton fitButton;
+
 	public SceneGroupEditor(Controller c, final SceneEditor sceneEditor) {
 		super(c.getApplicationAssets().getSkin());
 		this.controller = c;
 		this.model = controller.getModel();
 		this.entitiesLoader = controller.getEngine().getEntitiesLoader();
+		addListener(new EditStateMachine(sceneEditor, this, selectionGroup));
 		addListener(new SceneListener(controller));
 		addListener(new ActorGestureListener() {
 
@@ -135,30 +140,32 @@ public class SceneGroupEditor extends GroupEditor implements ModelView {
 				}
 			}
 		});
-		addListener(new DragListener() {
 
-			private boolean draggingSelectBox;
-
+		fitButton = WidgetBuilder.imageButton(SkinConstants.IC_FIT,
+				SkinConstants.STYLE_SECONDARY_CIRCLE);
+		fitButton.addListener(new ClickListener() {
 			@Override
-			public void dragStart(InputEvent event, float x, float y,
-					int pointer) {
-				if (event.getTarget() instanceof SelectionBox
-						&& !isOnlySelection()) {
-					sceneEditor.enterFullScreen();
-					draggingSelectBox = true;
-				} else {
-					draggingSelectBox = false;
-				}
-
-			}
-
-			@Override
-			public void dragStop(InputEvent event, float x, float y, int pointer) {
-				if (draggingSelectBox) {
-					sceneEditor.exitFullscreen();
-				}
+			public void clicked(InputEvent event, float x, float y) {
+				fit();
+				fitButton.setVisible(false);
 			}
 		});
+		fitButton.setVisible(false);
+		addActor(fitButton);
+	}
+
+	@Override
+	public void pan(float deltaX, float deltaY) {
+		super.pan(deltaX, deltaY);
+		fitButton.setVisible(true);
+	}
+
+	@Override
+	public void layout() {
+		super.layout();
+		fitButton.pack();
+		setPosition(fitButton, WidgetBuilder.dpToPixels(32),
+				WidgetBuilder.dpToPixels(32));
 	}
 
 	@Override

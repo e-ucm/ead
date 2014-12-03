@@ -92,7 +92,7 @@ public class BaseView extends AbstractWidget {
 		addActor(selectionContext = new SelectionContext());
 		addActor(navigation = new Navigation(style));
 		lockPanels = false;
-		
+
 		// Listens for fling gestures to quickly show hidden panels
 		addCaptureListener(new GestureListener() {
 
@@ -193,7 +193,7 @@ public class BaseView extends AbstractWidget {
 		navigation.hideRightAway();
 	}
 
-	public void exitFullscreen() {
+	public void exitFullScreen() {
 		toolbar.clearActions();
 		toolbar.addAction(Actions.sequence(
 				Actions.touchable(Touchable.enabled), Actions.moveTo(0,

@@ -70,6 +70,7 @@ public class SelectionBoxPressedState extends InputState {
 	@Override
 	public void dragStart1(InputEvent event, float x, float y) {
 		moving = true;
+		stateMachine.enterFullScreen();
 	}
 
 	@Override
@@ -85,6 +86,7 @@ public class SelectionBoxPressedState extends InputState {
 		} else {
 			stateMachine.selectActor();
 		}
+		stateMachine.exitFullScreen();
 		stateMachine.setState(NoPointersState.class);
 	}
 

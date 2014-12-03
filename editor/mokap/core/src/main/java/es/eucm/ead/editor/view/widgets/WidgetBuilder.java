@@ -179,6 +179,13 @@ public class WidgetBuilder {
 		return button;
 	}
 
+	public static ImageButton imageButton(String icon, String buttonStyle) {
+		ButtonStyle style = skin.get(buttonStyle, ButtonStyle.class);
+		ImageButtonStyle imageButtonStyle = new ImageButtonStyle(style);
+		imageButtonStyle.imageUp = skin.getDrawable(icon);
+		return new ImageButton(imageButtonStyle);
+	}
+
 	public static ContextMenu iconLabelContextPanel(String... iconLabel) {
 		ContextMenu contextMenu = new ContextMenu();
 		contextMenu.background(skin.getDrawable(SkinConstants.DRAWABLE_PAGE));

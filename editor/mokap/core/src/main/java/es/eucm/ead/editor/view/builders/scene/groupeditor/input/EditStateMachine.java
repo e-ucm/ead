@@ -39,6 +39,8 @@ package es.eucm.ead.editor.view.builders.scene.groupeditor.input;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.utils.Array;
+
+import es.eucm.ead.editor.view.builders.scene.SceneEditor;
 import es.eucm.ead.editor.view.builders.scene.groupeditor.GroupEditor;
 import es.eucm.ead.editor.view.builders.scene.groupeditor.SelectionBox;
 import es.eucm.ead.editor.view.builders.scene.groupeditor.SelectionGroup;
@@ -46,6 +48,8 @@ import es.eucm.ead.editor.view.builders.scene.groupeditor.inputstatemachine.Inpu
 import es.eucm.ead.engine.utils.EngineUtils;
 
 public class EditStateMachine extends InputStateMachine {
+
+	private SceneEditor sceneEditor;
 
 	private GroupEditor groupEditor;
 
@@ -55,8 +59,9 @@ public class EditStateMachine extends InputStateMachine {
 
 	Actor actor;
 
-	public EditStateMachine(GroupEditor groupEditor,
+	public EditStateMachine(SceneEditor sceneEditor, GroupEditor groupEditor,
 			SelectionGroup selectionGroup) {
+		this.sceneEditor = sceneEditor;
 		this.groupEditor = groupEditor;
 		this.selectionGroup = selectionGroup;
 		addState(new NoPointersState(this));
@@ -65,6 +70,7 @@ public class EditStateMachine extends InputStateMachine {
 		addState(new ActorPressedState(this));
 		addState(new ScaleState(this));
 		addState(new RotateState(this));
+		addState(new CameraPanState(this));
 		setState(NoPointersState.class);
 	}
 
@@ -97,6 +103,14 @@ public class EditStateMachine extends InputStateMachine {
 	void setSelectionBox(SelectionBox selectionBox) {
 		this.selectionBox = selectionBox;
 		this.actor = selectionBox.getTarget();
+	}
+
+	void enterFullScreen() {
+		sceneEditor.enterFullScreen();
+	}
+
+	void exitFullScreen() {
+		sceneEditor.exitFullScreen();
 	}
 
 	void unsetActors() {
@@ -137,6 +151,10 @@ public class EditStateMachine extends InputStateMachine {
 
 	void move() {
 		selectionGroup.move(-getDeltaX1(), -getDeltaY1());
+	}
+
+	public void pan() {
+		groupEditor.pan(-getDeltaX1(), -getDeltaY1());
 	}
 
 	void showLayerSelector(float x, float y) {

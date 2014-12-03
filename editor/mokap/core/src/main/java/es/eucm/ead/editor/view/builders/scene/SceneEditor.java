@@ -292,7 +292,7 @@ public class SceneEditor extends BaseView implements ModelView,
 		case PLAY:
 			addButton.setVisible(true);
 			controller.getEngine().stop();
-			exitFullscreen();
+			exitFullScreen();
 			gameView.setVisible(false);
 			sceneGroupEditor.setVisible(true);
 			sceneGroupEditor.prepare();

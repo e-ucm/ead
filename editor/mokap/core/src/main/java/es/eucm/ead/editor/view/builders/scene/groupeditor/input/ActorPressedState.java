@@ -43,8 +43,6 @@ public class ActorPressedState extends InputState {
 
 	private EditStateMachine editStateMachine;
 
-	private boolean dragged;
-
 	public ActorPressedState(EditStateMachine editStateMachine) {
 		this.editStateMachine = editStateMachine;
 	}
@@ -52,21 +50,18 @@ public class ActorPressedState extends InputState {
 	@Override
 	public void enter() {
 		editStateMachine.pressActor();
-		dragged = false;
 	}
 
 	@Override
 	public void dragStart1(InputEvent event, float x, float y) {
 		editStateMachine.unpressActor();
-		dragged = true;
+		editStateMachine.setState(CameraPanState.class);
 	}
 
 	@Override
 	public void touchUp1(InputEvent event, float x, float y) {
-		if (!dragged) {
-			editStateMachine.selectActor();
-			editStateMachine.fireSelection();
-		}
+		editStateMachine.selectActor();
+		editStateMachine.fireSelection();
 		editStateMachine.setState(NoPointersState.class);
 	}
 

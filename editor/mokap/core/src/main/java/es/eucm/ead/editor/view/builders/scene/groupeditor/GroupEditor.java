@@ -37,19 +37,22 @@
 package es.eucm.ead.editor.view.builders.scene.groupeditor;
 
 import com.badlogic.gdx.graphics.Color;
+import com.badlogic.gdx.graphics.g2d.Batch;
+import com.badlogic.gdx.math.Interpolation;
 import com.badlogic.gdx.math.Polygon;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.Event;
 import com.badlogic.gdx.scenes.scene2d.EventListener;
 import com.badlogic.gdx.scenes.scene2d.Group;
+import com.badlogic.gdx.scenes.scene2d.actions.Actions;
 import com.badlogic.gdx.scenes.scene2d.ui.Button.ButtonStyle;
+import com.badlogic.gdx.scenes.scene2d.ui.Container;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.utils.Drawable;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.Pools;
 import es.eucm.ead.editor.view.builders.scene.groupeditor.GroupEditor.GroupEvent.Type;
-import es.eucm.ead.editor.view.builders.scene.groupeditor.input.EditStateMachine;
 import es.eucm.ead.editor.view.widgets.AbstractWidget;
 
 public class GroupEditor extends AbstractWidget {
@@ -62,13 +65,17 @@ public class GroupEditor extends AbstractWidget {
 
 	private Group rootGroup;
 
-	private SelectionGroup selectionGroup;
+	protected SelectionGroup selectionGroup;
 
 	protected Array<Actor> layersTouched;
 
 	protected LayerSelector layerSelector;
 
 	private boolean onlySelection;
+
+	private AbstractWidget sceneContainer;
+
+	private Container sceneBackground;
 
 	public GroupEditor(Skin skin) {
 		this(skin.get(GroupEditorStyle.class));
@@ -80,13 +87,19 @@ public class GroupEditor extends AbstractWidget {
 		layerSelector = new LayerSelector(this, style);
 
 		selectionGroup = new SelectionGroup(this, style);
-		addActor(selectionGroup);
+
+		addActor(sceneContainer = new AbstractWidget());
+
+		sceneBackground = new Container();
+		sceneBackground.setBackground(style.groupBackground);
+		sceneContainer.addActor(sceneBackground);
+
+		sceneContainer.addActor(selectionGroup);
 
 		TouchRepresentation touchRepresentation = new TouchRepresentation(
 				style.touch);
 		addActor(touchRepresentation);
 
-		addListener(new EditStateMachine(this, selectionGroup));
 		addListener(touchRepresentation);
 	}
 
@@ -107,6 +120,19 @@ public class GroupEditor extends AbstractWidget {
 	}
 
 	/**
+	 * Sets the root group in its initial position, fitting the view
+	 */
+	public void fit() {
+		sceneContainer.clearActions();
+		sceneContainer.addAction(Actions.moveTo(0, 0, 0.22f,
+				Interpolation.exp5Out));
+	}
+
+	public void pan(float deltaX, float deltaY) {
+		sceneContainer.moveBy(deltaX, deltaY);
+	}
+
+	/**
 	 * Sets the group being edited
 	 */
 	public void setRootGroup(Group rootGroup) {
@@ -115,8 +141,28 @@ public class GroupEditor extends AbstractWidget {
 		}
 		this.rootGroup = rootGroup;
 		if (rootGroup != null) {
-			addActorAt(0, rootGroup);
+			sceneBackground.setBounds(
+					-style.groupBackground.getLeftWidth(),
+					-style.groupBackground.getBottomHeight(),
+					rootGroup.getWidth() + style.groupBackground.getLeftWidth()
+							+ style.groupBackground.getRightWidth(),
+					rootGroup.getHeight()
+							+ style.groupBackground.getTopHeight()
+							+ style.groupBackground.getBottomHeight());
+			sceneContainer.addActorAfter(sceneBackground, rootGroup);
 		}
+	}
+
+	@Override
+	protected void drawChildren(Batch batch, float parentAlpha) {
+		if (style.background != null) {
+			style.background.draw(batch, 0, 0, getWidth(), getHeight());
+		}
+		super.drawChildren(batch, parentAlpha);
+	}
+
+	public AbstractWidget getSceneContainer() {
+		return sceneContainer;
 	}
 
 	public Array<Actor> getSelection() {
@@ -221,7 +267,11 @@ public class GroupEditor extends AbstractWidget {
 
 	public static class GroupEditorStyle {
 
+		public Drawable background;
+
 		public Drawable selectedBackground;
+
+		public Drawable groupBackground;
 
 		/**
 		 * Background for layer selector
