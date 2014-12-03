@@ -38,9 +38,11 @@ package es.eucm.ead.editor.control.workers;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.files.FileHandle;
+
 import es.eucm.ead.editor.assets.EditorGameAssets;
 import es.eucm.ead.editor.control.Controller;
 import es.eucm.ead.editor.model.Q;
+import es.eucm.ead.editor.utils.ProjectUtils;
 import es.eucm.ead.schema.editor.components.GameData;
 import es.eucm.ead.schema.entities.ModelEntity;
 import es.eucm.ead.schemax.GameStructure;
@@ -85,9 +87,8 @@ public class CreateProject extends Worker {
 			FileHandle projectsFolder = assets.absolute(controller
 					.getPlatform().getDefaultProjectsFolder());
 
-			FileHandle projectFolder = projectsFolder.child("mokap"
-					+ System.currentTimeMillis()
-					+ Math.round(Math.random() * 100));
+			FileHandle projectFolder = projectsFolder.child(ProjectUtils
+					.createProjectName());
 
 			projectFolder.mkdirs();
 

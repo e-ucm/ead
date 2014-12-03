@@ -38,11 +38,12 @@ package es.eucm.ead.editor.utils;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.files.FileHandle;
+import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.utils.Array;
-
 import com.badlogic.gdx.utils.reflect.ClassReflection;
 import com.badlogic.gdx.utils.reflect.Field;
 import com.badlogic.gdx.utils.reflect.ReflectionException;
+
 import es.eucm.ead.editor.model.Model;
 import es.eucm.ead.schemax.GameStructure;
 
@@ -53,6 +54,8 @@ import java.util.Map;
  * Some useful methods to deal with file system and projects
  */
 public class ProjectUtils {
+
+	public static final String ZIP_EXTENSION = "zip";
 
 	private static final Array<String> IMAGE_EXTENSIONS = new Array<String>(
 			new String[] { "jpg", "jpeg", "png", "gif", "bmp" });
@@ -81,6 +84,14 @@ public class ProjectUtils {
 				}
 			}
 		}
+	}
+
+	/**
+	 * 
+	 * @return a valid project name.
+	 */
+	public static String createProjectName() {
+		return "mokap" + System.currentTimeMillis() + MathUtils.random(100);
 	}
 
 	/**
