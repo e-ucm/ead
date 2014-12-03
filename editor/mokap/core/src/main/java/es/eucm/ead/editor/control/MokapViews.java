@@ -116,7 +116,8 @@ public class MokapViews extends Views implements BackListener {
 				if (Selection.EDITED_GROUP.equals(event.getContextId())) {
 					controller.action(ChangeView.class, SceneView.class);
 				} else if (Selection.RESOURCE.equals(event.getContextId())) {
-					if (getCurrentView().getClass() != ProjectView.class) {
+					if (getCurrentView() == null
+							|| getCurrentView().getClass() != ProjectView.class) {
 						controller.action(ChangeView.class, ProjectView.class);
 					}
 				}
