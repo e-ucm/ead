@@ -14,7 +14,7 @@
    id="svg3398"
    version="1.1"
    inkscape:version="0.48.3.1 r9886"
-   sodipodi:docname="button_add.svg">
+   sodipodi:docname="circle.svg">
   <defs
      id="defs3400">
     <filter
@@ -60,7 +60,7 @@
         <dc:format>image/svg+xml</dc:format>
         <dc:type
            rdf:resource="http://purl.org/dc/dcmitype/StillImage" />
-        <dc:title></dc:title>
+        <dc:title />
       </cc:Work>
     </rdf:RDF>
   </metadata>
@@ -81,7 +81,7 @@
        transform="matrix(0.96435903,0,0,0.96435903,0.85538322,1005.2176)" />
     <path
        sodipodi:type="arc"
-       style="fill:#ff5722;fill-opacity:1;stroke:none"
+       style="fill:#ffffff;fill-opacity:1;stroke:none"
        id="path3427-3"
        sodipodi:cx="24"
        sodipodi:cy="24"

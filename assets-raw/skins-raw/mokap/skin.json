@@ -29,6 +29,12 @@
             "b": 1,
             "a": 1
         },
+        "semi_white": {
+            "r": 1,
+            "g": 1,
+            "b": 1,
+            "a": 0.5
+        },
         "black": {
             "r": 0,
             "g": 0,
@@ -166,6 +172,22 @@
         "deep_orange_semi_bg": {
             "name": "blank_grey_border",
             "color": "deep_orange_semi"
+        },
+        "deep_orange_circle": {
+            "name": "circle",
+            "color": "deep_orange"
+        },
+        "deep_orange_900_circle": {
+            "name": "circle",
+            "color": "deep_orange_900"
+        },
+        "semi_white_circle": {
+            "name": "circle",
+            "color": "semi_white"
+        },
+        "semi_transparent_circle": {
+            "name": "circle",
+            "color": "semi_transparent"
         }
     },
     "com.badlogic.gdx.scenes.scene2d.ui.Label$LabelStyle": {
@@ -206,8 +228,12 @@
             "down": "button_add_pressed"
         },
         "circle": {
-            "up": "circle",
-            "down": "circle_pressed"
+            "up": "deep_orange_circle",
+            "down": "deep_orange_900_circle"
+        },
+        "secondary_circle": {
+            "up": "semi_transparent_circle",
+            "down": "semi_white_circle"
         }
     },
     "com.badlogic.gdx.scenes.scene2d.ui.TextButton$TextButtonStyle": {
@@ -231,8 +257,8 @@
             "checked": "page_checked"
         },
         "check": {
-            "up": "circle",
-            "down": "circle_pressed",
+            "up": "deep_orange_circle",
+            "down": "deep_orange_900_circle",
             "imageUp": "ic_check"
         },
         "marker": {
@@ -426,11 +452,13 @@
     },
     "es.eucm.ead.editor.view.builders.scene.groupeditor.GroupEditor$GroupEditorStyle": {
         "default": {
+            "background": "light_gray_bg",
             "layersBackground": "page_semi_transparent",
             "layerButtonStyle": {
                 "down": "light_gray_bg",
                 "checked": "blank_grey_border"
             },
+            "groupBackground": "page",
             "selectedBackground": "blank",
             "touch": "touch",
             "pressedColor": "gray",

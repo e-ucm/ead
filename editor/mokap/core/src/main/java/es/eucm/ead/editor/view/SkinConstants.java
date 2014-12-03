@@ -65,6 +65,7 @@ public interface SkinConstants {
 	public static final String STYLE_ADD = "add";
 	public static final String STYLE_SCENE = "scene";
 	public static final String STYLE_CIRCLE = "circle";
+	public static final String STYLE_SECONDARY_CIRCLE = "secondary_circle";
 	public static final String STYLE_NAVIGATION_SCENE = "navigation_scene";
 	public static final String STYLE_NAVIGATION = "navigation";
 	public static final String STYLE_SLIDER_PAGES = "pages";
@@ -138,6 +139,7 @@ public interface SkinConstants {
 	public static final String IC_BLUR_LINEAR = "ic_blur_linear";
 
 	public static final String IC_ONE = "ic_one";
+	public static final String IC_FIT = "ic_fit";
 
 	public static final String COLOR_GRAY = "gray";
 }
