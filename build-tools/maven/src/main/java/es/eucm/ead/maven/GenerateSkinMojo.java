@@ -124,13 +124,14 @@ public class GenerateSkinMojo extends AbstractMojo {
 				FileHandle skinFolder = skinsRoot.child(skinRaw.name());
 
 				if (!skinFolder.exists()) {
-					getLog().info(
-							"[generate-skins] Generating: " + skinRaw.name());
-					skinFolder.mkdirs();
 
 					if (skinRaw.child("common").exists()) {
 						generateMultipleSkins(skinRaw, skinsRoot);
 					} else {
+						getLog().info(
+								"[generate-skins] Generating: "
+										+ skinRaw.name());
+						skinFolder.mkdirs();
 						FileHandle imagesFolder = skinRaw.child("images");
 
 						FileHandle fonts = skinRaw.child("ttf2fnt");
@@ -154,7 +155,8 @@ public class GenerateSkinMojo extends AbstractMojo {
 									if (child.exists()) {
 										String fontName = child
 												.nameWithoutExtension()
-												+ "-" + fontSize;
+												+ "-"
+												+ fontSize;
 										FileHandle dstFolder = imagesFolder
 												.child(fontName);
 										dstFolder.mkdirs();
@@ -162,8 +164,9 @@ public class GenerateSkinMojo extends AbstractMojo {
 												.child("pack.json")
 												.writeString(defaultPack, false);
 										tempFolders.add(dstFolder);
-										generateFiles(fontName, child, Integer
-												.valueOf(fontSize), dstFolder);
+										generateFiles(fontName, child,
+												Integer.valueOf(fontSize),
+												dstFolder);
 										dstFolder.child(fontName + ".fnt")
 												.copyTo(skinFolder);
 									}
@@ -198,7 +201,7 @@ public class GenerateSkinMojo extends AbstractMojo {
 	private void generateMultipleSkins(FileHandle skinRaw, FileHandle skinRoot) {
 		Settings settings = new Settings();
 		settings.limitMemory = false;
-
+		FileHandle ttfFont = skinRaw.list(".ttf")[0];
 		FileHandle common = skinRaw.child("common");
 		for (FileHandle dpi : skinRaw.list()) {
 			if (dpi.isDirectory() && !"common".equals(dpi.name())
@@ -212,9 +215,7 @@ public class GenerateSkinMojo extends AbstractMojo {
 
 				common.copyTo(atlasImagesFolder);
 				dpi.child("images").copyTo(atlasImagesFolder);
-				dpi.child("fonts").child("font.png").copyTo(atlasImagesFolder);
-
-				dpi.child("fonts").child("font.fnt").copyTo(skinFolder);
+				ttfFont.copyTo(skinFolder);
 
 				TexturePacker.process(settings, atlasImagesFolder.file()
 						.getAbsolutePath(),

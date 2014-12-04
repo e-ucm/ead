@@ -176,8 +176,15 @@ public class ExtendedSkin extends Skin {
 				FreeTypeFontGenerator generator = new FreeTypeFontGenerator(
 						fontFile);
 				FreeTypeFontGenerator.FreeTypeFontParameter parameter = new FreeTypeFontGenerator.FreeTypeFontParameter();
-				parameter.size = json.readValue("size", int.class, 12,
+
+				Integer dpSize = json.readValue("dpSize", int.class, -1,
 						jsonValue);
+				if (dpSize == -1) {
+					parameter.size = json.readValue("size", int.class, 12,
+							jsonValue);
+				} else {
+					parameter.size = (int) (dpSize * Gdx.graphics.getDensity());
+				}
 				BitmapFont font = generator.generateFont(parameter);
 				font.setOwnsTexture(true);
 				generator.dispose();

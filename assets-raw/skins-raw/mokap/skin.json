@@ -1,7 +1,8 @@
 {
     "com.badlogic.gdx.graphics.g2d.BitmapFont": {
         "default_font": {
-            "file": "font.fnt"
+            "file": "Roboto-Regular.ttf",
+            "dpSize": 16
         }
     },
     "com.badlogic.gdx.graphics.Color": {
