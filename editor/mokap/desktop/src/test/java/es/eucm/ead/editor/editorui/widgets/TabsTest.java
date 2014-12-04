@@ -46,6 +46,8 @@ import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
 import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
 
 import es.eucm.ead.editor.editorui.UITest;
+import es.eucm.ead.editor.view.SkinConstants;
+import es.eucm.ead.editor.view.widgets.MultiWidget;
 import es.eucm.ead.editor.view.widgets.Tabs;
 import es.eucm.ead.engine.I18N;
 
@@ -56,6 +58,7 @@ public class TabsTest extends UITest {
 	@Override
 	protected Actor buildUI(Skin skin, I18N i18n) {
 
+		MultiWidget widget = new MultiWidget(skin, SkinConstants.STYLE_TOOLBAR);
 		Tabs tabs = new Tabs(skin);
 
 		tabs.setItems("ITEM ONE", "ITEM TWO", "ITEM THREE");
@@ -71,10 +74,11 @@ public class TabsTest extends UITest {
 				}
 			}
 		});
+		widget.addWidgets(tabs);
 		Table table = new Table();
 		table.add(selected);
 		table.row();
-		table.add(tabs);
+		table.add(widget);
 		return table;
 	}
 

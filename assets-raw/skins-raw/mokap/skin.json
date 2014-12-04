@@ -358,8 +358,6 @@
             "selectedDrawableColor": "light_yellow",
             "disablexTextColor": "white_semi6",
             "activeTextColor": "white",
-            "background": "toolbar",
-            "color": "brown_moka",
             "buttonsHorizontalPad": 24,
             "buttonsVerticalPad": 20
         }
