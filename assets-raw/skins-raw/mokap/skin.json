@@ -129,6 +129,10 @@
             "name": "blank",
             "color": "transparent"
         },
+        "while_semi_bg": {
+            "name": "blank",
+            "color": "semi_white"        	
+        },
         "black_semi_bg": {
             "name": "blank",
             "color": "black_semi"
@@ -312,6 +316,9 @@
     },
     "com.badlogic.gdx.scenes.scene2d.ui.TextField$TextFieldStyle": {
         "default": {
+        	"selection": "while_semi_bg",
+        	"background": "text_field",
+        	"cursor": "text_field_cursor",
             "font": "default_font",
             "fontColor": "white"
         }
