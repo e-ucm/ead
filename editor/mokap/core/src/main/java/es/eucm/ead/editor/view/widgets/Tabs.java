@@ -37,10 +37,9 @@
 package es.eucm.ead.editor.view.widgets;
 
 import com.badlogic.gdx.graphics.Color;
-import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.math.Interpolation;
-import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.actions.Actions;
+import com.badlogic.gdx.scenes.scene2d.ui.Cell;
 import com.badlogic.gdx.scenes.scene2d.ui.Image;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
@@ -66,31 +65,16 @@ public class Tabs extends Table {
 	}
 
 	public Tabs(TabsStyle style) {
-		background(style.background);
 		this.style = style;
-		if (style.color != null) {
-			setColor(style.color);
-		}
 		selectedImage = new Image(style.selectedDrawable);
 		if (style.selectedDrawableColor != null) {
 			selectedImage.setColor(style.selectedDrawableColor);
 		}
 	}
 
-	@Override
-	public void act(float delta) {
-		super.act(delta);
-		selectedImage.act(delta);
-	}
-
-	@Override
-	public void draw(Batch batch, float parentAlpha) {
-		super.draw(batch, parentAlpha);
-		selectedImage.draw(batch, parentAlpha);
-	}
-
 	public void setItems(String... items) {
 		clearChildren();
+		addActor(selectedImage);
 		float veticalPad = WidgetBuilder.dpToPixels(style.buttonsVerticalPad);
 		float horizontalPad = WidgetBuilder
 				.dpToPixels(style.buttonsHorizontalPad);
@@ -113,9 +97,8 @@ public class Tabs extends Table {
 	public void layout() {
 		super.layout();
 		if (checked != null) {
-			selectedImage.setBounds(getX() + checked.getX(),
-					getY() + checked.getY(), checked.getWidth(),
-					selectedImage.getHeight());
+			selectedImage.setBounds(checked.getX(), checked.getY(),
+					checked.getWidth(), selectedImage.getHeight());
 		}
 	}
 
@@ -130,23 +113,15 @@ public class Tabs extends Table {
 
 		public TextButtonStyle textButtonStyle;
 
-		public Color activeTextColor, disablexTextColor, color,
-				selectedDrawableColor;
+		public Color activeTextColor, disablexTextColor, selectedDrawableColor;
 
 		public Drawable selectedDrawable;
 
 		public float buttonsVerticalPad, buttonsHorizontalPad;
 
-		/** Optional */
-		public Drawable background;
-
 		public TabsStyle() {
 		}
 
-		public TabsStyle(TabsStyle style) {
-			this.textButtonStyle = style.textButtonStyle;
-			this.background = style.background;
-		}
 	}
 
 	private class TabButton extends TextButton {
@@ -165,8 +140,8 @@ public class Tabs extends Table {
 					return;
 				}
 				checked = this;
-				for (Actor actor : Tabs.this.getChildren()) {
-					TextButton btn = (TextButton) actor;
+				for (Cell cell : Tabs.this.getCells()) {
+					TextButton btn = (TextButton) cell.getActor();
 					if (btn != this) {
 						btn.setChecked(false);
 					}
@@ -177,11 +152,10 @@ public class Tabs extends Table {
 
 			Color color = null;
 			if (isChecked) {
-				float targetX = Tabs.this.getX() + getX();
+				float targetX = getX();
 				if (targetX < selectedImage.getX()) {
-					selectedImage.addAction(Actions.moveTo(targetX, getY()
-							+ Tabs.this.getY(), SELECTION_ANIMATION,
-							Interpolation.pow2Out));
+					selectedImage.addAction(Actions.moveTo(targetX, getY(),
+							SELECTION_ANIMATION, Interpolation.pow2Out));
 					selectedImage.addAction(Actions.sequence(Actions.sizeTo(
 							getWidth() + selectedImage.getWidth(),
 							selectedImage.getHeight(), SELECTION_ANIMATION,
@@ -198,8 +172,7 @@ public class Tabs extends Table {
 											selectedImage.getHeight(),
 											SELECTION_ANIMATION,
 											Interpolation.pow2Out), Actions
-											.moveTo(targetX,
-													getY() + Tabs.this.getY(),
+											.moveTo(targetX, getY(),
 													SELECTION_ANIMATION,
 													Interpolation.pow2Out))));
 				}
