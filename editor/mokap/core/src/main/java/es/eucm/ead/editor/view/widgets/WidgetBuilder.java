@@ -36,6 +36,7 @@
  */
 package es.eucm.ead.editor.view.widgets;
 
+import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.Touchable;
 import com.badlogic.gdx.scenes.scene2d.ui.Button;
@@ -70,8 +71,6 @@ public class WidgetBuilder {
 
 	private static Skin skin;
 
-	private static float buttonSize;
-
 	private static final ActorGestureListener TOOLTIP_LISTENER = new ActorGestureListener() {
 		@Override
 		public boolean longPress(Actor actor, float x, float y) {
@@ -87,8 +86,6 @@ public class WidgetBuilder {
 
 	public static void setController(Controller controller) {
 		WidgetBuilder.controller = controller;
-		WidgetBuilder.buttonSize = controller.getApplicationAssets().getSkin()
-				.getDrawable("bg48").getMinHeight();
 		skin = controller.getApplicationAssets().getSkin();
 	}
 
@@ -239,7 +236,7 @@ public class WidgetBuilder {
 	}
 
 	public static float dpToPixels(float dp) {
-		return (buttonSize / UNIT_SIZE) * dp;
+		return Gdx.graphics.getDensity() * dp;
 	}
 
 	public static CirclesMenu circlesMenu(int align, String[] icons,

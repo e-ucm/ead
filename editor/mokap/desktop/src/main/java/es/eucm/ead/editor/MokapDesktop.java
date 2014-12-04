@@ -51,6 +51,7 @@ public class MokapDesktop {
 		config.width = 640;
 		config.height = 360;
 		config.title = "Mokap";
+		config.overrideDensity = 160;
 		AbstractPlatform mokapDesktopPlatform = new MokapDesktopPlatform();
 		mokapDesktopPlatform.setApplicationArguments(args);
 		new LwjglApplication(

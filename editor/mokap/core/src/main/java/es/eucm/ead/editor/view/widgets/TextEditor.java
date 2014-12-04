@@ -39,10 +39,10 @@ package es.eucm.ead.editor.view.widgets;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.scenes.scene2d.actions.Actions;
 import com.badlogic.gdx.scenes.scene2d.actions.SequenceAction;
+import com.badlogic.gdx.scenes.scene2d.ui.Container;
 import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.scenes.scene2d.ui.SelectBox;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
-import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.scenes.scene2d.utils.Drawable;
 import com.badlogic.gdx.utils.Array;
 
@@ -84,12 +84,13 @@ public class TextEditor extends ContextMenu {
 		text = " ";
 		label = new Label(text, skin, SkinConstants.STYLE_TOOLBAR);
 		label.setEllipsis(true);
-		Table textContainer = new Table();
+		Container<Label> textContainer = new Container<Label>();
 		Color color = skin.getColor(SkinConstants.COLOR_SEMI_BLACK);
 		textContainer.setBackground(skin
 				.getDrawable(SkinConstants.DRAWABLE_TEXT_FIELD));
 		textContainer.setColor(color);
-		textContainer.add(label).expandX().fillX().width(0);
+		textContainer.setActor(label);
+		textContainer.fillX().width(0);
 
 		colorPicker = new ColorPickerPanel(skin, style.colorPickerStyle);
 		colorPicker.addListener(new ColorListener() {
