@@ -34,6 +34,12 @@
             "g": 1,
             "b": 1,
             "a": 0.5
+		},
+        "white_semi6": {
+            "r": 1,
+            "g": 1,
+            "b": 1,
+            "a": 0.6
         },
         "black": {
             "r": 0,
@@ -83,6 +89,12 @@
             "b": 0.95686275,
             "a": 1.0
         },
+        "light_yellow": {
+            "r": 1,
+            "g": 1,
+            "b": 0.55294118,
+            "a": 1
+        },
         "light_blue_semi": {
             "r": 0.011764706,
             "g": 0.6627451,
@@ -94,6 +106,12 @@
             "g": 0.34117648,
             "b": 0.60784316,
             "a": 1
+        },
+        "light_yellow_semi": {
+            "r": 1,
+            "g": 1,
+            "b": 0.55294118,
+            "a": 0.5
         },
         "deep_orange": {
             "r": 1.0,
@@ -136,6 +154,10 @@
         "semi_transparent_bg": {
             "name": "blank",
             "color": "semi_transparent"
+        },
+        "light_yellow_semi_bg": {
+            "name": "blank",
+            "color": "light_yellow_semi"
         },
         "light_gray_bg": {
             "name": "blank",
@@ -244,6 +266,11 @@
             "fontColor": "white",
             "downFontColor": "white",
             "disabledFontColor": "gray"
+        },
+         "tab": {
+            "down": "light_yellow_semi_bg",
+            "font": "default_font",
+            "fontColor": "white"
         }
     },
     "com.badlogic.gdx.scenes.scene2d.ui.ImageButton$ImageButtonStyle": {
@@ -314,6 +341,19 @@
         "default": {
             "font": "default_font",
             "fontColor": "white"
+        }
+    },
+    "es.eucm.ead.editor.view.widgets.Tabs$TabsStyle": {
+        "default": {
+            "textButtonStyle": "tab",
+            "selectedDrawable": "selected_tab",
+            "selectedDrawableColor": "light_yellow",
+            "disablexTextColor": "white_semi6",
+            "activeTextColor": "white",
+            "background": "toolbar",
+            "color": "brown_moka",
+            "buttonsHorizontalPad": 24,
+            "buttonsVerticalPad": 20
         }
     },
     "es.eucm.ead.editor.view.widgets.IconButton$IconButtonStyle": {
