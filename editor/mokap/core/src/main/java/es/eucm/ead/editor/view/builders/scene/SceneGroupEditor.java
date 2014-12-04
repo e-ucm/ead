@@ -60,6 +60,7 @@ import es.eucm.ead.editor.control.Selection;
 import es.eucm.ead.editor.control.actions.editor.ShowInfoPanel;
 import es.eucm.ead.editor.control.actions.editor.ShowInfoPanel.TypePanel;
 import es.eucm.ead.editor.control.actions.editor.ShowModal;
+import es.eucm.ead.editor.control.actions.editor.ShowToast;
 import es.eucm.ead.editor.model.Model;
 import es.eucm.ead.editor.model.Model.FieldListener;
 import es.eucm.ead.editor.model.Model.ModelListener;
@@ -168,6 +169,15 @@ public class SceneGroupEditor extends GroupEditor implements ModelView {
 				WidgetBuilder.dpToPixels(32));
 	}
 
+	public boolean selectLayer(float x, float y) {
+		boolean result = super.selectLayer(x, y);
+		if (!result) {
+			controller.action(ShowToast.class, controller
+					.getApplicationAssets().getI18N().m("nothing_to_select"));
+		}
+		return result;
+	}
+
 	@Override
 	protected void showLayerSelector(float x, float y) {
 		layerSelector.prepare(layersTouched);
@@ -180,6 +190,8 @@ public class SceneGroupEditor extends GroupEditor implements ModelView {
 		readSceneContext();
 		readEditedGroup();
 		readSelection();
+		fitButton.setVisible(false);
+		fit(false);
 	}
 
 	@Override

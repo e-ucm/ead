@@ -37,6 +37,7 @@
 package es.eucm.ead.editor.view.widgets;
 
 import com.badlogic.gdx.graphics.Color;
+import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.scenes.scene2d.Touchable;
 import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.scenes.scene2d.ui.Label.LabelStyle;
@@ -64,6 +65,12 @@ public class Toast extends LinearLayout {
 		backgroundColor(style.color);
 		Color g = style.color;
 		this.setColor(g);
+	}
+
+	@Override
+	protected void drawChildren(Batch batch, float parentAlpha) {
+		super.drawChildren(batch, parentAlpha);
+		batch.setColor(Color.WHITE);
 	}
 
 	public void setText(String text) {

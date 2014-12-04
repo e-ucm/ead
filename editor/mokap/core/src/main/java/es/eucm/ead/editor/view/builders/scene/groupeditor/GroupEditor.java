@@ -123,9 +123,17 @@ public class GroupEditor extends AbstractWidget {
 	 * Sets the root group in its initial position, fitting the view
 	 */
 	public void fit() {
-		sceneContainer.clearActions();
-		sceneContainer.addAction(Actions.moveTo(0, 0, 0.22f,
-				Interpolation.exp5Out));
+		fit(true);
+	}
+
+	public void fit(boolean animated) {
+		if (animated) {
+			sceneContainer.clearActions();
+			sceneContainer.addAction(Actions.moveTo(0, 0, 0.22f,
+					Interpolation.exp5Out));
+		} else {
+			sceneContainer.setPosition(0, 0);
+		}
 	}
 
 	public void pan(float deltaX, float deltaY) {
@@ -197,7 +205,10 @@ public class GroupEditor extends AbstractWidget {
 
 	float[] points = new float[8];
 
-	public void selectLayer(float x, float y) {
+	/**
+	 * @return if there was any element in the given coordinates
+	 */
+	public boolean selectLayer(float x, float y) {
 		layersTouched.clear();
 		Vector2 tmp = Pools.obtain(Vector2.class);
 		Polygon polygon = Pools.obtain(Polygon.class);
@@ -228,7 +239,9 @@ public class GroupEditor extends AbstractWidget {
 		Pools.free(tmp);
 		if (layersTouched.size > 0) {
 			showLayerSelector(x, y);
+			return true;
 		}
+		return false;
 	}
 
 	protected void showLayerSelector(float x, float y) {

@@ -159,6 +159,7 @@ public class EditStateMachine extends InputStateMachine {
 
 	void showLayerSelector(float x, float y) {
 		setState(NoPointersState.class);
+		cancelTouchFocus();
 		groupEditor.selectLayer(x, y);
 	}
 
@@ -177,4 +178,7 @@ public class EditStateMachine extends InputStateMachine {
 		}
 	}
 
+	public void cancelTouchFocus() {
+		groupEditor.getStage().cancelTouchFocus(groupEditor);
+	}
 }

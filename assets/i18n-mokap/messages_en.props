@@ -44,6 +44,7 @@ link = Link
 mirror.horizontal = Horizontal mirror
 mirror.vertical = Vertical mirror
 none = None
+nothing_to_select = Nothing to select in the area
 normal = Normal
 paste = Paste
 play.back = Press 'Back' to exit

@@ -248,6 +248,11 @@ public class SceneEditor extends BaseView implements ModelView,
 					Preferences.HELP_MODE_COMPOSE);
 			break;
 		case DRAW:
+			if (controller.getModel().getSelection()
+					.getSingle(Selection.SCENE_ELEMENT) != null) {
+				controller.action(SetSelection.class, Selection.EDITED_GROUP,
+						Selection.SCENE_ELEMENT);
+			}
 			addButton.setVisible(false);
 			lockPanels(true);
 			toolbar.setSelectedWidget(PAINT);
