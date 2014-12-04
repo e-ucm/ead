@@ -199,8 +199,6 @@ public class GenerateSkinMojo extends AbstractMojo {
 	}
 
 	private void generateMultipleSkins(FileHandle skinRaw, FileHandle skinRoot) {
-		Settings settings = new Settings();
-		settings.limitMemory = false;
 		FileHandle ttfFont = skinRaw.list(".ttf")[0];
 		FileHandle common = skinRaw.child("common");
 		for (FileHandle dpi : skinRaw.list()) {
@@ -212,6 +210,13 @@ public class GenerateSkinMojo extends AbstractMojo {
 				skinRaw.child("skin.json").copyTo(skinFolder);
 				FileHandle atlasImagesFolder = skinFolder.child("atlas");
 				atlasImagesFolder.mkdirs();
+
+				Settings settings = new Settings();
+				settings.limitMemory = false;
+				if (dpi.name().contains("xxx")) {
+					settings.maxWidth = 2048;
+					settings.maxHeight = 2048;
+				}
 
 				common.copyTo(atlasImagesFolder);
 				dpi.child("images").copyTo(atlasImagesFolder);

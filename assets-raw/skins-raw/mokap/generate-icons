@@ -20,6 +20,7 @@ for file in $(find . -type f -not -name .)
                 ../xhdpi) dpi=135;;
                 ../xxhdpi) dpi=157;;
                 ../xxxhdpi) dpi=180;;
+                ../xxxxhdpi) dpi=270;;
             esac
             echo "$folder has $dpi dpi"
 		    inkscape --export-png=$folder/images/$imagepng --export-dpi=$dpi --export-background-opacity=0 --without-gui $imagefile
