@@ -822,6 +822,104 @@ public class MockGraphics implements Graphics {
 		@Override
 		public void glViewport(int x, int y, int width, int height) {
 		}
+
+		@Override
+		public void glDeleteBuffer(int arg0) {
+
+		}
+
+		@Override
+		public void glDeleteFramebuffer(int arg0) {
+
+		}
+
+		@Override
+		public void glDeleteRenderbuffer(int arg0) {
+
+		}
+
+		@Override
+		public void glDeleteTexture(int arg0) {
+
+		}
+
+		@Override
+		public int glGenBuffer() {
+			return 0;
+		}
+
+		@Override
+		public int glGenFramebuffer() {
+			return 0;
+		}
+
+		@Override
+		public int glGenRenderbuffer() {
+			return 0;
+		}
+
+		@Override
+		public int glGenTexture() {
+			return 0;
+		}
+
+		@Override
+		public void glUniform1fv(int arg0, int arg1, float[] arg2, int arg3) {
+
+		}
+
+		@Override
+		public void glUniform1iv(int arg0, int arg1, int[] arg2, int arg3) {
+
+		}
+
+		@Override
+		public void glUniform2fv(int arg0, int arg1, float[] arg2, int arg3) {
+
+		}
+
+		@Override
+		public void glUniform2iv(int arg0, int arg1, int[] arg2, int arg3) {
+
+		}
+
+		@Override
+		public void glUniform3fv(int arg0, int arg1, float[] arg2, int arg3) {
+
+		}
+
+		@Override
+		public void glUniform3iv(int arg0, int arg1, int[] arg2, int arg3) {
+
+		}
+
+		@Override
+		public void glUniform4fv(int arg0, int arg1, float[] arg2, int arg3) {
+
+		}
+
+		@Override
+		public void glUniform4iv(int arg0, int arg1, int[] arg2, int arg3) {
+
+		}
+
+		@Override
+		public void glUniformMatrix2fv(int arg0, int arg1, boolean arg2,
+				float[] arg3, int arg4) {
+
+		}
+
+		@Override
+		public void glUniformMatrix3fv(int arg0, int arg1, boolean arg2,
+				float[] arg3, int arg4) {
+
+		}
+
+		@Override
+		public void glUniformMatrix4fv(int arg0, int arg1, boolean arg2,
+				float[] arg3, int arg4) {
+
+		}
 	}
 
 	@Override
