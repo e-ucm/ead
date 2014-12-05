@@ -358,4 +358,8 @@ public class Q {
 
 		return color;
 	}
+
+	public static boolean isGroup(ModelEntity sceneElement) {
+		return sceneElement != null && sceneElement.getChildren().size > 0;
+	}
 }
