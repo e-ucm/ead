@@ -70,12 +70,8 @@ public class SceneView implements ViewBuilder, BackListener {
 
 	@Override
 	public boolean onBackPressed() {
-		if (!view.backPressed()) {
-			controller.action(ChangeView.class, ProjectView.class);
-			return true;
-
-		}
-		return false;
+		controller.action(ChangeView.class, ProjectView.class);
+		return true;
 	}
 
 }

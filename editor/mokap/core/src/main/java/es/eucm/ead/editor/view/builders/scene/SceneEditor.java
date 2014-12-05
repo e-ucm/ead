@@ -44,6 +44,7 @@ import com.badlogic.gdx.scenes.scene2d.utils.Align;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 
 import es.eucm.ead.editor.control.Controller;
+import es.eucm.ead.editor.control.MokapController.BackListener;
 import es.eucm.ead.editor.control.Preferences;
 import es.eucm.ead.editor.control.Selection;
 import es.eucm.ead.editor.control.Selection.Context;
@@ -80,7 +81,7 @@ import es.eucm.ead.schema.entities.ModelEntity;
 import es.eucm.ead.schemax.Layer;
 
 public class SceneEditor extends BaseView implements ModelView,
-		SelectionListener {
+		SelectionListener, BackListener {
 
 	public static final int INSERT = 0, PAINT = 2, FX = 3, INTERACTION = 5;
 
@@ -207,10 +208,8 @@ public class SceneEditor extends BaseView implements ModelView,
 		}
 	}
 
-	/**
-	 * @return true if the back was processed
-	 */
-	public boolean backPressed() {
+	@Override
+	public boolean onBackPressed() {
 		if (isNavigationVisible()) {
 			toggleNavigation();
 			return true;
@@ -220,10 +219,6 @@ public class SceneEditor extends BaseView implements ModelView,
 		} else if (mode == Mode.DRAW) {
 			setMode(Mode.COMPOSE);
 			brushStrokes.hide(true);
-			return true;
-		} else if (selection.get(Selection.SCENE_ELEMENT).length > 0) {
-			controller.action(SetSelection.class, Selection.EDITED_GROUP,
-					Selection.SCENE_ELEMENT);
 			return true;
 		}
 		return false;
