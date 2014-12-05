@@ -54,16 +54,21 @@ import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.Pools;
 import es.eucm.ead.editor.view.builders.scene.groupeditor.GroupEditor.GroupEvent.Type;
 import es.eucm.ead.editor.view.widgets.AbstractWidget;
+import es.eucm.ead.engine.utils.EngineUtils;
 
 public class GroupEditor extends AbstractWidget {
 
 	public static final float NEAR_CM = 1.0f;
+
+	public static final float ALPHA_FACTOR = 0.24f;
 
 	private GroupEditorStyle style;
 
 	private boolean multipleSelection;
 
 	private Group rootGroup;
+
+	private Group editedGroup;
 
 	protected SelectionGroup selectionGroup;
 
@@ -158,6 +163,7 @@ public class GroupEditor extends AbstractWidget {
 							+ style.groupBackground.getTopHeight()
 							+ style.groupBackground.getBottomHeight());
 			sceneContainer.addActorAfter(sceneBackground, rootGroup);
+			editedGroup = rootGroup;
 		}
 	}
 
@@ -178,13 +184,16 @@ public class GroupEditor extends AbstractWidget {
 	}
 
 	public void setSelection(Iterable<Actor> selection) {
+		boolean isMultiSelection = isMultipleSelection();
+		setMultipleSelection(true);
 		selectionGroup.clearChildren();
 		for (Actor actor : selection) {
 			addToSelection(actor);
 		}
+		setMultipleSelection(isMultiSelection);
 	}
 
-	void addToSelection(Actor actor) {
+	public void addToSelection(Actor actor) {
 		selectionGroup.select(actor);
 	}
 
@@ -203,6 +212,173 @@ public class GroupEditor extends AbstractWidget {
 		return rootGroup;
 	}
 
+	public Group getEditedGroup() {
+		return editedGroup;
+	}
+
+	protected Group newGroup() {
+		return new Group();
+	}
+
+	/**
+	 * Creates a group with the current selection. It is notified through a
+	 * grouped event
+	 */
+	public void createGroupWithSelection() {
+		Group group = newGroup();
+		for (Actor a : selectionGroup.getSelection()) {
+			group.addActor(a);
+		}
+		EngineUtils.adjustGroup(group);
+		fireGrouped(group);
+		clearSelection();
+		addToSelection(group);
+		fireSelection();
+	}
+
+	/**
+	 * Ungroups all groups in selection
+	 */
+	public void ungroup() {
+		Array<Actor> toUngroup = Pools.obtain(Array.class);
+		toUngroup.addAll(getSelection());
+		clearSelection();
+		for (Actor actor : toUngroup) {
+			if (actor instanceof Group) {
+				ungroup((Group) actor);
+			}
+		}
+		Pools.free(toUngroup);
+	}
+
+	/**
+	 * Ungroups the given group in a list of actors. The resulting actors
+	 * accumulates the transformation of the group to keep its absolute
+	 * coordinates the same. The group is removed.
+	 */
+	private Array<Actor> ungroup(Group group) {
+		Group parent = group.getParent();
+		Array<Actor> actors = new Array<Actor>();
+		for (Actor actor : group.getChildren()) {
+			EngineUtils.computeTransformFor(actor, parent);
+			actors.add(actor);
+		}
+
+		for (Actor actor : actors) {
+			parent.addActor(actor);
+		}
+
+		group.remove();
+		fireUngroup(parent, group, actors);
+
+		boolean multipleSelection = isMultipleSelection();
+		setMultipleSelection(true);
+		for (Actor a : actors) {
+			addToSelection(a);
+		}
+		fireSelection();
+		setMultipleSelection(multipleSelection);
+
+		return actors;
+	}
+
+	/**
+	 * Changes the current edited group to the given one.
+	 * 
+	 * @param group
+	 *            must be a direct child of the current edited group. If not,
+	 *            nothing happens
+	 */
+	public void enterGroupEdition(Group group) {
+		if (group != editedGroup && group != null
+				&& group.getChildren().size > 1
+				&& editedGroup.getChildren().contains(group, true)) {
+			editedGroup = group;
+			for (Actor actor : editedGroup.getParent().getChildren()) {
+				// Make non-edited actors transparent
+				if (actor != editedGroup) {
+					Color c = actor.getColor();
+					actor.setColor(c.r, c.g, c.b, c.a * ALPHA_FACTOR);
+				}
+			}
+
+			for (Actor actor : editedGroup.getChildren()) {
+				EngineUtils.computeTransformFor(actor, editedGroup.getParent());
+			}
+			editedGroup.setPosition(0, 0);
+			editedGroup.setRotation(0);
+			editedGroup.setScale(1.0f, 1.0f);
+
+			clearSelection();
+			fireSelection();
+			fireEnteredGroupEdition(editedGroup);
+		}
+	}
+
+	/**
+	 * Edited group is set to the parent of the current edited group
+	 */
+	public boolean endGroupEdition() {
+		// Only can end a group edition of the edited group is not the root
+		if (editedGroup != rootGroup) {
+			clearSelection();
+			Group nextEditedGroup = editedGroup.getParent();
+			Group oldGroup = editedGroup;
+			/*
+			 * The current edited group has changed. It is necessary to simplify
+			 * it in case it has less than 2 children, which will make it no
+			 * longer a group.
+			 */
+			Actor simplifiedGroup = simplifyGroup(oldGroup);
+
+			/*
+			 * Removed the edited group. Whatever is left of it is in
+			 * simplifiedGroup.
+			 */
+			oldGroup.remove();
+
+			if (simplifiedGroup != null) {
+				nextEditedGroup.addActor(simplifiedGroup);
+				addToSelection(simplifiedGroup);
+				fireTransformed();
+			}
+			editedGroup = nextEditedGroup;
+
+			// Restore transparency values
+			for (Actor actor : editedGroup.getChildren()) {
+				if (actor != editedGroup) {
+					Color c = actor.getColor();
+					actor.setColor(c.r, c.g, c.b, c.a / ALPHA_FACTOR);
+				}
+			}
+			fireSelection();
+			fireEndedGroupEdition(nextEditedGroup, oldGroup, simplifiedGroup);
+			return true;
+		}
+		return false;
+	}
+
+	/**
+	 * @return if the group has 1 children, returns that child with the parent
+	 *         transformation applied. If the group has no children,
+	 *         {@code null} is returned. Otherwise, the passed group is
+	 *         returned.
+	 */
+	private Actor simplifyGroup(Group group) {
+		Actor result;
+		if (group.getChildren().size == 0) {
+			result = null;
+		} else if (group.getChildren().size == 1) {
+			result = group.getChildren().first();
+			EngineUtils.computeTransformFor(result, group.getParent());
+		} else {
+			EngineUtils.adjustGroup(group);
+			fireGroupSimplified(group);
+			result = group;
+		}
+		return result;
+	}
+
 	float[] points = new float[8];
 
 	/**
@@ -213,7 +389,7 @@ public class GroupEditor extends AbstractWidget {
 		Vector2 tmp = Pools.obtain(Vector2.class);
 		Polygon polygon = Pools.obtain(Polygon.class);
 
-		for (Actor actor : rootGroup.getChildren()) {
+		for (Actor actor : editedGroup.getChildren()) {
 
 			int j = 0;
 			for (int i = 0; i < 4; i++) {
@@ -256,6 +432,15 @@ public class GroupEditor extends AbstractWidget {
 				&& Math.abs(y1 - y2) < cmToYPixels(NEAR_CM);
 	}
 
+	private void fireGroupSimplified(Group group) {
+		GroupEvent groupEvent = Pools.obtain(GroupEvent.class);
+		groupEvent.setType(Type.transformed);
+		groupEvent.setSelection(group.getChildren());
+		groupEvent.getSelection().add(group);
+		fire(groupEvent);
+		Pools.free(groupEvent);
+	}
+
 	/**
 	 * Fires some actors has been transformed
 	 */
@@ -267,6 +452,36 @@ public class GroupEditor extends AbstractWidget {
 		Pools.free(groupEvent);
 	}
 
+	private void fireGrouped(Group group) {
+		GroupEvent groupEvent = Pools.obtain(GroupEvent.class);
+		groupEvent.setType(Type.grouped);
+		groupEvent.setSelection(selectionGroup.getSelection());
+		groupEvent.setGroup(group);
+		groupEvent.setParent(editedGroup);
+		fire(groupEvent);
+		Pools.free(groupEvent);
+	}
+
+	/**
+	 * Fires an ungroup notification
+	 * 
+	 * @param parent
+	 *            the parent for the actors
+	 * @param oldGroup
+	 *            the old group grouping the actors
+	 * @param actors
+	 *            the actors ungrouped
+	 */
+	private void fireUngroup(Group parent, Group oldGroup, Array<Actor> actors) {
+		GroupEvent groupEvent = Pools.obtain(GroupEvent.class);
+		groupEvent.setType(Type.ungrouped);
+		groupEvent.setParent(parent);
+		groupEvent.setGroup(oldGroup);
+		groupEvent.setSelection(actors);
+		fire(groupEvent);
+		Pools.free(groupEvent);
+	}
+
 	/**
 	 * Notifies current selection has been updated
 	 */
@@ -274,6 +489,25 @@ public class GroupEditor extends AbstractWidget {
 		GroupEvent groupEvent = Pools.obtain(GroupEvent.class);
 		groupEvent.setType(Type.selected);
 		groupEvent.setSelection(selectionGroup.getSelection());
+		fire(groupEvent);
+		Pools.free(groupEvent);
+	}
+
+	private void fireEnteredGroupEdition(Group group) {
+		GroupEvent groupEvent = Pools.obtain(GroupEvent.class);
+		groupEvent.setType(Type.enteredEdition);
+		groupEvent.setGroup(group);
+		fire(groupEvent);
+		Pools.free(groupEvent);
+	}
+
+	private void fireEndedGroupEdition(Group parent, Group oldGroup,
+			Actor resultingGroup) {
+		GroupEvent groupEvent = Pools.obtain(GroupEvent.class);
+		groupEvent.setType(Type.exitedEdition);
+		groupEvent.setParent(parent);
+		groupEvent.setGroup(oldGroup);
+		groupEvent.setSelection(resultingGroup);
 		fire(groupEvent);
 		Pools.free(groupEvent);
 	}

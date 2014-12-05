@@ -54,13 +54,16 @@ import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.Pools;
 import com.badlogic.gdx.utils.Predicate;
+
 import es.eucm.ead.editor.control.Controller;
+import es.eucm.ead.editor.control.MokapController.BackListener;
 import es.eucm.ead.editor.control.Preferences;
 import es.eucm.ead.editor.control.Selection;
 import es.eucm.ead.editor.control.actions.editor.ShowInfoPanel;
 import es.eucm.ead.editor.control.actions.editor.ShowInfoPanel.TypePanel;
 import es.eucm.ead.editor.control.actions.editor.ShowModal;
 import es.eucm.ead.editor.control.actions.editor.ShowToast;
+import es.eucm.ead.editor.control.actions.model.SetSelection;
 import es.eucm.ead.editor.model.Model;
 import es.eucm.ead.editor.model.Model.FieldListener;
 import es.eucm.ead.editor.model.Model.ModelListener;
@@ -78,12 +81,14 @@ import es.eucm.ead.editor.view.widgets.AbstractWidget;
 import es.eucm.ead.editor.view.widgets.WidgetBuilder;
 import es.eucm.ead.engine.EntitiesLoader;
 import es.eucm.ead.engine.entities.EngineEntity;
+import es.eucm.ead.engine.entities.actors.EntityGroup;
 import es.eucm.ead.schema.components.ModelComponent;
 import es.eucm.ead.schema.editor.components.GameData;
 import es.eucm.ead.schema.entities.ModelEntity;
 import es.eucm.ead.schemax.FieldName;
 
-public class SceneGroupEditor extends GroupEditor implements ModelView {
+public class SceneGroupEditor extends GroupEditor implements ModelView,
+		BackListener {
 
 	public static final float TIME = 0.25f;
 
@@ -96,6 +101,8 @@ public class SceneGroupEditor extends GroupEditor implements ModelView {
 	private EngineEntity scene;
 
 	private ModelEntity sceneEntity;
+
+	private SceneEditor sceneEditor;
 
 	private TransformationFieldListener transformationListener = new TransformationFieldListener();
 
@@ -113,6 +120,7 @@ public class SceneGroupEditor extends GroupEditor implements ModelView {
 
 	public SceneGroupEditor(Controller c, final SceneEditor sceneEditor) {
 		super(c.getApplicationAssets().getSkin());
+		this.sceneEditor = sceneEditor;
 		this.controller = c;
 		this.model = controller.getModel();
 		this.entitiesLoader = controller.getEngine().getEntitiesLoader();
@@ -153,6 +161,19 @@ public class SceneGroupEditor extends GroupEditor implements ModelView {
 		});
 		fitButton.setVisible(false);
 		addActor(fitButton);
+	}
+
+	@Override
+	public void enterGroupEdition(Group group) {
+		super.enterGroupEdition(group);
+		sceneEditor.lockPanels(true);
+	}
+
+	@Override
+	public boolean endGroupEdition() {
+		boolean result = super.endGroupEdition();
+		sceneEditor.lockPanels(getRootGroup() != getEditedGroup());
+		return result;
 	}
 
 	@Override
@@ -229,11 +250,14 @@ public class SceneGroupEditor extends GroupEditor implements ModelView {
 			entityPredicate.setEntity(editedGroupEntity);
 			Actor actor = findActor(scene.getGroup(), entityPredicate);
 			if (actor instanceof Group) {
-				/*
-				 * groupEditor.enterGroupEdition( (Group) actor);
-				 */
+				enterGroupEdition((Group) actor);
 			}
 		}
+	}
+
+	@Override
+	protected Group newGroup() {
+		return new EntityGroup();
 	}
 
 	private void readSelection() {
@@ -302,6 +326,17 @@ public class SceneGroupEditor extends GroupEditor implements ModelView {
 		}
 	}
 
+	@Override
+	public boolean onBackPressed() {
+		if (controller.getModel().getSelection().get(Selection.SCENE_ELEMENT).length > 0) {
+			controller.action(SetSelection.class, Selection.EDITED_GROUP,
+					Selection.SCENE_ELEMENT);
+			return true;
+		} else {
+			return endGroupEdition();
+		}
+	}
+
 	/**
 	 * Handles changes in entities children
 	 */
@@ -311,45 +346,55 @@ public class SceneGroupEditor extends GroupEditor implements ModelView {
 		public void modelChanged(ListEvent event) {
 			// If parent not in the scene, return
 			entityPredicate.setEntity((ModelEntity) event.getParent());
-			Actor actor = findActor(scene.getGroup(), entityPredicate);
-			if (actor == null) {
+			Actor parent = findActor(getEditedGroup(), entityPredicate);
+			if (parent == null) {
 				return;
 			}
 
 			ModelEntity sceneElement = (ModelEntity) event.getElement();
 			switch (event.getType()) {
 			case ADDED:
-				ModelEntity added = (ModelEntity) event.getElement();
-				entityPredicate.setEntity(added);
 
-				Actor addedActor = findActor(scene.getGroup(), entityPredicate);
+				entityPredicate.setEntity(sceneElement);
+				Actor addedActor = findActor(getEditedGroup(), entityPredicate);
 				if (addedActor == null) {
 					EngineEntity engineEntity = entitiesLoader
-							.toEngineEntity(added);
+							.toEngineEntity(sceneElement);
 					addedActor = engineEntity.getGroup();
 				}
-				((Group) actor).addActorAt(event.getIndex(), addedActor);
-				addedActor.clearActions();
-				addedActor.setTouchable(Touchable.disabled);
-				float y = sceneElement.getY();
-				float alpha = addedActor.getColor().a;
-				addedActor.setY(Gdx.graphics.getHeight());
-				addedActor.getColor().a = 0.0f;
-				addedActor.setTouchable(Touchable.disabled);
+				((Group) parent).addActorAt(event.getIndex(), addedActor);
 
-				addedActor.addAction(Actions.sequence(Actions.parallel(
-						Actions2.moveToY(y, TIME, Interpolation.exp5Out),
-						Actions.alpha(alpha, TIME, Interpolation.exp5Out)),
-						Actions.touchable(Touchable.enabled)));
-				addListeners(addedActor);
+				if (controller.getModel().getSelection()
+						.contains(Selection.SCENE_ELEMENT, sceneElement)) {
+					addToSelection(addedActor);
+				}
+
+				// Apply animation only if it is added to the edited group
+				if (parent == getEditedGroup()) {
+					addedActor.clearActions();
+					addedActor.setTouchable(Touchable.disabled);
+					float y = sceneElement.getY();
+					float alpha = addedActor.getColor().a;
+					addedActor.setX(sceneElement.getX());
+					addedActor.setY(Gdx.graphics.getHeight());
+					addedActor.getColor().a = 0.0f;
+					addedActor.setTouchable(Touchable.disabled);
+
+					addedActor.addAction(Actions.sequence(Actions.parallel(
+							Actions2.moveToY(y, TIME, Interpolation.exp5Out),
+							Actions.alpha(alpha, TIME, Interpolation.exp5Out)),
+							Actions.touchable(Touchable.enabled)));
+					addListeners(addedActor);
+				}
 				break;
 			case REMOVED:
 				removeListeners(sceneElement);
 				entityPredicate.setEntity(sceneElement);
 
-				Actor removedActor = findActor(scene.getGroup(),
+				Actor removedActor = findActor(getEditedGroup(),
 						entityPredicate);
 				if (removedActor != null) {
+					removedActor.clearActions();
 					removedActor.setTouchable(Touchable.disabled);
 					removedActor.addAction(Actions.sequence(Actions.parallel(
 							Actions.scaleTo(0, 0, TIME, Interpolation.exp5In),
@@ -382,27 +427,29 @@ public class SceneGroupEditor extends GroupEditor implements ModelView {
 		public void modelChanged(FieldEvent event) {
 			entityPredicate.setEntity((ModelEntity) event.getTarget());
 			Actor actor = findActor(scene.getGroup(), entityPredicate);
-			float value = (Float) event.getValue();
-			if (FieldName.X.equals(event.getField()))
-				actor.addAction(Actions2.moveToX(value, TIME,
-						Interpolation.exp5Out));
-			else if (FieldName.Y.equals(event.getField()))
-				actor.addAction(Actions2.moveToY(value, TIME,
-						Interpolation.exp5Out));
-			else if (FieldName.ROTATION.equals(event.getField()))
-				actor.addAction(Actions.rotateTo(value, TIME,
-						Interpolation.exp5Out));
-			else if (FieldName.ORIGIN_Y.equals(event.getField()))
-				actor.setOriginY(value);
-			else if (FieldName.ORIGIN_X.equals(event.getField()))
-				actor.setOriginX(value);
-			else if (FieldName.SCALE_X.equals(event.getField()))
-				actor.addAction(Actions2.scaleToX(value, TIME,
-						Interpolation.exp5Out));
-			else if (FieldName.SCALE_Y.equals(event.getField()))
-				actor.addAction(Actions2.scaleToY(value, TIME,
-						Interpolation.exp5Out));
-			refreshSelectionBox();
+			if (actor != null) {
+				float value = (Float) event.getValue();
+				if (FieldName.X.equals(event.getField()))
+					actor.addAction(Actions2.moveToX(value, TIME,
+							Interpolation.exp5Out));
+				else if (FieldName.Y.equals(event.getField()))
+					actor.addAction(Actions2.moveToY(value, TIME,
+							Interpolation.exp5Out));
+				else if (FieldName.ROTATION.equals(event.getField()))
+					actor.addAction(Actions.rotateTo(value, TIME,
+							Interpolation.exp5Out));
+				else if (FieldName.ORIGIN_Y.equals(event.getField()))
+					actor.setOriginY(value);
+				else if (FieldName.ORIGIN_X.equals(event.getField()))
+					actor.setOriginX(value);
+				else if (FieldName.SCALE_X.equals(event.getField()))
+					actor.addAction(Actions2.scaleToX(value, TIME,
+							Interpolation.exp5Out));
+				else if (FieldName.SCALE_Y.equals(event.getField()))
+					actor.addAction(Actions2.scaleToY(value, TIME,
+							Interpolation.exp5Out));
+				refreshSelectionBox();
+			}
 		}
 	}
 
@@ -421,7 +468,7 @@ public class SceneGroupEditor extends GroupEditor implements ModelView {
 			componentPredicate.setComponent((ModelComponent) event.getTarget());
 			Actor actor = findActor(scene.getGroup(), componentPredicate);
 			Label label = (Label) ((Container) actor).getActor();
-			Object value = (Object) event.getValue();
+			Object value = event.getValue();
 
 			if (FieldName.TEXT.equals(event.getField())) {
 				label.setText((String) value);

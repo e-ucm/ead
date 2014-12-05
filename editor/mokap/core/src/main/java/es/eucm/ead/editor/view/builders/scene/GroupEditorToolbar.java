@@ -38,15 +38,15 @@ package es.eucm.ead.editor.view.builders.scene;
 
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.scenes.scene2d.Actor;
+import com.badlogic.gdx.scenes.scene2d.Group;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
-import com.badlogic.gdx.scenes.scene2d.Touchable;
-import com.badlogic.gdx.scenes.scene2d.actions.Actions;
 import com.badlogic.gdx.scenes.scene2d.ui.Button;
 import com.badlogic.gdx.scenes.scene2d.ui.Image;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.utils.Align;
 import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
+
 import es.eucm.ead.editor.control.Controller;
 import es.eucm.ead.editor.control.Preferences;
 import es.eucm.ead.editor.control.Selection;
@@ -54,14 +54,13 @@ import es.eucm.ead.editor.control.actions.editor.AddPaintedElement;
 import es.eucm.ead.editor.control.actions.editor.Copy;
 import es.eucm.ead.editor.control.actions.editor.Paste;
 import es.eucm.ead.editor.control.actions.editor.Redo;
+import es.eucm.ead.editor.control.actions.editor.ShowContextMenu;
 import es.eucm.ead.editor.control.actions.editor.ShowInfoPanel;
 import es.eucm.ead.editor.control.actions.editor.ShowInfoPanel.TypePanel;
 import es.eucm.ead.editor.control.actions.editor.ShowToast;
 import es.eucm.ead.editor.control.actions.editor.Undo;
-import es.eucm.ead.editor.control.actions.model.GroupSelection;
 import es.eucm.ead.editor.control.actions.model.RemoveSelectionFromScene;
 import es.eucm.ead.editor.control.actions.model.SetSelection;
-import es.eucm.ead.editor.control.actions.model.UngroupSelection;
 import es.eucm.ead.editor.control.actions.model.scene.ReorderSelection;
 import es.eucm.ead.editor.control.actions.model.scene.transform.MirrorSelection;
 import es.eucm.ead.editor.model.Model.SelectionListener;
@@ -73,6 +72,7 @@ import es.eucm.ead.editor.view.builders.scene.SceneEditor.Mode;
 import es.eucm.ead.editor.view.builders.scene.draw.BrushStrokes;
 import es.eucm.ead.editor.view.builders.scene.draw.BrushStrokes.ModeEvent;
 import es.eucm.ead.editor.view.builders.scene.draw.BrushStrokes.ModeListener;
+import es.eucm.ead.editor.view.listeners.VisibleListener;
 import es.eucm.ead.editor.view.widgets.ContextMenu;
 import es.eucm.ead.editor.view.widgets.IconButton;
 import es.eucm.ead.editor.view.widgets.LabelTextEditor;
@@ -91,18 +91,33 @@ import es.eucm.ead.schema.entities.ModelEntity;
 
 public class GroupEditorToolbar extends MultiWidget implements ModelView {
 
+	private float ANIM_TIME = 0.3f;
+
 	private Controller controller;
 
 	private SceneEditor sceneEditor;
 
 	private BrushStrokes brushStrokes;
 
+	private MultiWidget editButton;
+
+	private VisibleListener ungroupVisible;
+
+	private VisibleListener editVisible;
+
 	private ClickListener navigationListener = new ClickListener() {
 		@Override
 		public void clicked(InputEvent event, float x, float y) {
-			sceneEditor.toggleNavigation();
+			if (sceneEditor.getGroupEditor().getRootGroup() == sceneEditor
+					.getGroupEditor().getEditedGroup()) {
+				sceneEditor.toggleNavigation();
+			} else {
+				sceneEditor.getGroupEditor().endGroupEdition();
+			}
 		}
 	};
+
+	private ToolbarSelectionListener selectionListener = new ToolbarSelectionListener();
 
 	public GroupEditorToolbar(Controller controller, SceneEditor sceneEditor,
 			BrushStrokes brushStrokes) {
@@ -116,20 +131,22 @@ public class GroupEditorToolbar extends MultiWidget implements ModelView {
 		Actor modeSelector = buildModeContextMenu(i18N);
 		addWidgets(buildComposeToolbar(i18N, modeSelector),
 				buildTransformToolbar(skin, i18N, modeSelector),
-				buildDrawToolbar(skin, i18N),
-				buildFxToolbar(i18N, modeSelector),
+				buildDrawToolbar(skin, i18N), buildFxToolbar(modeSelector),
 				buildFxSelectionToolbar(i18N, modeSelector),
-				buildInteractionToolbar(i18N, modeSelector),
+				buildInteractionToolbar(modeSelector),
 				buildInteractionSelectionToolbar(i18N, modeSelector));
 
 	}
 
 	@Override
 	public void prepare() {
+		controller.getModel().addSelectionListener(selectionListener);
+		readSelection();
 	}
 
 	@Override
 	public void release() {
+		controller.getModel().removeSelectionListener(selectionListener);
 	}
 
 	private Actor buildModeContextMenu(I18N i18N) {
@@ -225,58 +242,61 @@ public class GroupEditorToolbar extends MultiWidget implements ModelView {
 
 		transform.addSpace();
 
-		transform.add(WidgetBuilder.toolbarIcon(SkinConstants.IC_UNGROUP,
-				i18N.m("ungroup"), true, UngroupSelection.class));
+		Actor ungroupButton = WidgetBuilder.toolbarIcon(
+				SkinConstants.IC_UNGROUP, i18N.m("ungroup"));
+
+		ungroupButton.addListener(new ClickListener() {
+			@Override
+			public void clicked(InputEvent event, float x, float y) {
+				sceneEditor.getGroupEditor().ungroup();
+			}
+		});
+
+		transform.add(ungroupButton);
+
+		ungroupVisible = new VisibleListener(ungroupButton);
 
 		final LabelTextEditor textFontPane = new LabelTextEditor(skin,
 				controller);
-		IconButton edit = WidgetBuilder.toolbarIconWithMenu(
-				SkinConstants.IC_EDIT, textFontPane);
-		edit.addListener(new ClickListener() {
+		final IconButton edit = WidgetBuilder.toolbarIcon(
+				SkinConstants.IC_EDIT, i18N.m("edit"));
+
+		edit.addCaptureListener(new ClickListener() {
 			@Override
 			public void clicked(InputEvent event, float x, float y) {
-				textFontPane.prepare(sceneEditor);
-			}
-		});
-
-		final MultiWidget multiButton = WidgetBuilder.multiToolbarIcon(
-				edit,
-				WidgetBuilder.toolbarIcon(SkinConstants.IC_GROUP,
-						i18N.m("group.create"), false, GroupSelection.class));
-
-		controller.getModel().addSelectionListener(new SelectionListener() {
-
-			private float ANIM_TIME = 0.3f;
-
-			@Override
-			public void modelChanged(SelectionEvent event) {
-				if (controller.getModel().getSelection()
-						.get(Selection.SCENE_ELEMENT).length > 1) {
-					multiButton.addAction(Actions.fadeIn(ANIM_TIME));
-					multiButton.setTouchable(Touchable.enabled);
-					multiButton.setSelectedWidget(1);
-				} else {
-					ModelEntity entity = (ModelEntity) controller.getModel()
-							.getSelection().getSingle(Selection.SCENE_ELEMENT);
-					if (Q.hasComponent(entity, Label.class)) {
-						multiButton.addAction(Actions.fadeIn(ANIM_TIME));
-						multiButton.setTouchable(Touchable.enabled);
-						multiButton.setSelectedWidget(0);
-					} else {
-						multiButton.setTouchable(Touchable.disabled);
-						multiButton.addAction(Actions.fadeOut(ANIM_TIME));
+				ModelEntity sceneElement = (ModelEntity) controller.getModel()
+						.getSelection().getSingle(Selection.SCENE_ELEMENT);
+				if (Q.hasComponent(sceneElement, Label.class)) {
+					controller
+							.action(ShowContextMenu.class, edit, textFontPane);
+					textFontPane.prepare(sceneEditor);
+				} else if (Q.isGroup(sceneElement)) {
+					event.stop();
+					Actor actor = sceneEditor.getGroupEditor().findActor(
+							sceneElement);
+					if (actor instanceof Group) {
+						sceneEditor.getGroupEditor().enterGroupEdition(
+								(Group) actor);
 					}
 				}
 			}
+		});
 
+		IconButton createGroup = WidgetBuilder.toolbarIcon(
+				SkinConstants.IC_GROUP, i18N.m("group.create"));
+
+		createGroup.addListener(new ClickListener() {
 			@Override
-			public boolean listenToContext(String contextId) {
-				return contextId.equals(Selection.SCENE_ELEMENT);
+			public void clicked(InputEvent event, float x, float y) {
+				sceneEditor.getGroupEditor().createGroupWithSelection();
 			}
 		});
 
-		transform.add(multiButton);
+		editButton = WidgetBuilder.multiToolbarIcon(edit, createGroup);
 
+		editVisible = new VisibleListener(editButton);
+
+		transform.add(editButton);
 		transform.add(WidgetBuilder.toolbarIcon(SkinConstants.IC_TO_BACK,
 				i18N.m("to.back"), false, ReorderSelection.class,
 				ReorderSelection.Type.TO_BACK));
@@ -290,7 +310,7 @@ public class GroupEditorToolbar extends MultiWidget implements ModelView {
 
 		transform.pack();
 		textFontPane.setOrigin(textFontPane.getWidth()
-				- (transform.getWidth() - multiButton.getX()),
+				- (transform.getWidth() - editButton.getX()),
 				textFontPane.getHeight());
 
 		return transform;
@@ -446,7 +466,7 @@ public class GroupEditorToolbar extends MultiWidget implements ModelView {
 		return contextMenu;
 	}
 
-	private LinearLayout buildFxToolbar(I18N i18N, Actor modeSelector) {
+	private LinearLayout buildFxToolbar(Actor modeSelector) {
 		LinearLayout fx = new LinearLayout(true);
 		fx.setComputeInvisibles(true);
 		fx.add(navigationButton());
@@ -483,7 +503,7 @@ public class GroupEditorToolbar extends MultiWidget implements ModelView {
 		return fxSelection;
 	}
 
-	private LinearLayout buildInteractionToolbar(I18N i18N, Actor modeSelector) {
+	private LinearLayout buildInteractionToolbar(Actor modeSelector) {
 		LinearLayout interaction = new LinearLayout(true);
 		interaction.setComputeInvisibles(true);
 		interaction.add(navigationButton());
@@ -493,6 +513,36 @@ public class GroupEditorToolbar extends MultiWidget implements ModelView {
 		WidgetBuilder.launchContextMenu(mode, modeSelector);
 		interaction.add(mode);
 		return interaction;
+	}
+
+	private void readSelection() {
+		if (controller.getModel().getSelection().get(Selection.SCENE_ELEMENT).length > 1) {
+			ungroupVisible.setVisible(false);
+			editVisible.setVisible(true);
+			editButton.setSelectedWidget(1);
+		} else {
+			ModelEntity entity = (ModelEntity) controller.getModel()
+					.getSelection().getSingle(Selection.SCENE_ELEMENT);
+			ungroupVisible.setVisible(entity != null
+					&& entity.getChildren().size > 0);
+			editButton.setSelectedWidget(0);
+			editVisible.setVisible(entity != null
+					&& (Q.hasComponent(entity, Label.class) || entity
+							.getChildren().size > 1));
+		}
+	}
+
+	public class ToolbarSelectionListener implements SelectionListener {
+
+		@Override
+		public void modelChanged(SelectionEvent event) {
+			readSelection();
+		}
+
+		@Override
+		public boolean listenToContext(String contextId) {
+			return contextId.equals(Selection.SCENE_ELEMENT);
+		}
 	}
 
 }

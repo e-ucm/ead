@@ -39,15 +39,22 @@ package es.eucm.ead.editor.view.builders.scene.groupeditor;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.g2d.Batch;
+import com.badlogic.gdx.math.MathUtils;
+import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.Group;
 import com.badlogic.gdx.scenes.scene2d.utils.Drawable;
+
 import es.eucm.ead.editor.view.builders.scene.groupeditor.GroupEditor.GroupEditorStyle;
+import es.eucm.ead.engine.utils.EngineUtils;
 
 /**
  * Actor to represent the selection box over the selected objects
  */
 public class SelectionBox extends Group {
+
+	private static Vector2 origin = new Vector2(), normal = new Vector2(),
+			tangent = new Vector2();
 
 	public static enum State {
 		PRESSED, SELECTED, MOVING
@@ -79,17 +86,32 @@ public class SelectionBox extends Group {
 	}
 
 	public void readTargetBounds() {
-		setBounds(target.getX(), target.getY(), target.getWidth(),
-				target.getHeight());
-		setScale(target.getScaleX(), target.getScaleY());
-		setRotation(target.getRotation());
+		EngineUtils.adjustGroup(target);
+		origin.set(0, 0);
+		tangent.set(target.getWidth(), 0);
+		normal.set(0, target.getHeight());
+
+		target.localToAscendantCoordinates(groupEditor.getSceneContainer(),
+				origin);
+		target.localToAscendantCoordinates(groupEditor.getSceneContainer(),
+				tangent);
+		target.localToAscendantCoordinates(groupEditor.getSceneContainer(),
+				normal);
+
+		setSize(target.getWidth(), target.getHeight());
 		setOrigin(target.getOriginX(), target.getOriginY());
+		setRotation(target.getRotation());
+		EngineUtils.applyTransformation(this, origin, tangent, normal);
 	}
 
 	@Override
-	public void draw(Batch batch, float parentAlpha) {
-		readTargetBounds();
-		super.draw(batch, parentAlpha);
+	public void act(float delta) {
+		if (target.getActions().size > 0
+				|| !MathUtils.isEqual(target.getWidth(), getWidth(), 0.01f)
+				|| !MathUtils.isEqual(target.getHeight(), getHeight(), 0.01f)) {
+			readTargetBounds();
+		}
+		super.act(delta);
 	}
 
 	public void selected() {
@@ -114,14 +136,9 @@ public class SelectionBox extends Group {
 	}
 
 	@Override
-	public void setPosition(float x, float y) {
-		super.setPosition(x, y);
-		target.setPosition(x, y);
-	}
-
-	@Override
-	protected void positionChanged() {
-		target.setPosition(getX(), getY());
+	public void moveBy(float deltaX, float deltaY) {
+		target.moveBy(deltaX, deltaY);
+		super.moveBy(deltaX, deltaY);
 	}
 
 	@Override

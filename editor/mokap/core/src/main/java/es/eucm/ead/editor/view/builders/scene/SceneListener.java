@@ -39,9 +39,12 @@ package es.eucm.ead.editor.view.builders.scene;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.Group;
 import com.badlogic.gdx.utils.Array;
+
 import es.eucm.ead.editor.control.Controller;
 import es.eucm.ead.editor.control.Selection;
+import es.eucm.ead.editor.control.actions.model.ExitGroupEdition;
 import es.eucm.ead.editor.control.actions.model.SetSelection;
+import es.eucm.ead.editor.control.actions.model.scene.ActorTransformToEntity;
 import es.eucm.ead.editor.control.actions.model.scene.MultipleActorTransformToEntity;
 import es.eucm.ead.editor.control.actions.model.scene.NewGroupHierarchyToEntities;
 import es.eucm.ead.editor.control.actions.model.scene.RemoveChildrenFromEntity;
@@ -115,7 +118,9 @@ public class SceneListener extends GroupListener {
 
 	@Override
 	public void enteredGroupEdition(GroupEvent groupEvent, Group group) {
+		// Group transformation is reset when entering a group
 		controller.getCommands().pushStack();
+		controller.action(ActorTransformToEntity.class, group);
 		ModelEntity modelEntity = Q.getModelEntity(group);
 		if (modelEntity != null) {
 			controller.action(SetSelection.class, Selection.SCENE,
@@ -128,10 +133,7 @@ public class SceneListener extends GroupListener {
 	public void exitedGroupEdition(GroupEvent groupEvent, Group parent,
 			Group oldGroup, Actor simplifiedGroup) {
 		controller.getCommands().popStack(true);
-		ModelEntity modelEntity = Q.getModelEntity(parent);
-		if (modelEntity != null) {
-			controller.action(SetSelection.class, Selection.SCENE,
-					Selection.EDITED_GROUP, modelEntity);
-		}
+		controller.action(ExitGroupEdition.class, parent, oldGroup,
+				simplifiedGroup);
 	}
 }
