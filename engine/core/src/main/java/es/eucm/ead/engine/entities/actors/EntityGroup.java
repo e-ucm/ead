@@ -38,6 +38,7 @@ package es.eucm.ead.engine.entities.actors;
 
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.Group;
+import com.badlogic.gdx.scenes.scene2d.Touchable;
 import com.badlogic.gdx.scenes.scene2d.ui.WidgetGroup;
 import com.badlogic.gdx.scenes.scene2d.utils.Layout;
 import es.eucm.ead.engine.entities.EngineEntity;
@@ -57,8 +58,15 @@ public class EntityGroup extends WidgetGroup {
 	}
 
 	@Override
+	public void setTouchable(Touchable touchable) {
+		super.setTouchable(touchable == Touchable.enabled
+				&& getChildren().size > 1 ? Touchable.childrenOnly : touchable);
+	}
+
+	@Override
 	protected void sizeChanged() {
 		updateBoundingArea();
+		super.sizeChanged();
 	}
 
 	@Override
@@ -144,6 +152,9 @@ public class EntityGroup extends WidgetGroup {
 	protected void childrenChanged() {
 		updateBoundingArea();
 		super.childrenChanged();
+		if (getChildren().size > 1) {
+			setTouchable(Touchable.childrenOnly);
+		}
 	}
 
 	@Override
