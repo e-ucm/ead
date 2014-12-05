@@ -46,7 +46,7 @@ import es.eucm.ead.schema.entities.ModelEntity;
  * <dl>
  * <dt><strong>Arguments</strong></dt>
  * <dd><strong>args[0]</strong> <em>{@link ModelEntity}</em> The parent of the
- * entities</dd>
+ * entity</dd>
  * <dd><strong>args[1]</strong> <em>{@link ModelEntity}</em> Child to be removed
  * </dd>
  * </dl>

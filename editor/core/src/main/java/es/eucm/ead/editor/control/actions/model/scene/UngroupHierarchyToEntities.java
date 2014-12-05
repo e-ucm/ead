@@ -53,7 +53,7 @@ import es.eucm.ead.schema.entities.ModelEntity;
 import es.eucm.ead.schemax.FieldName;
 
 /**
- * Reads the hierarchy of a recently unbgrouped group, performing the necessary
+ * Reads the hierarchy of a recently ungrouped group, performing the necessary
  * commands over the {@link ModelEntity}s associated to the arguments to
  * replicate the actual hierarchy in the given arguments.
  * <dl>
@@ -68,7 +68,7 @@ import es.eucm.ead.schemax.FieldName;
  */
 public class UngroupHierarchyToEntities extends ModelAction {
 
-	private MultipleActorTransformToEntity multipleActorTransformToEntity;
+	private ActorTransformToEntity actorTransformToEntity;
 
 	public UngroupHierarchyToEntities() {
 		super(true, false, Group.class, Group.class, Array.class);
@@ -77,8 +77,8 @@ public class UngroupHierarchyToEntities extends ModelAction {
 	@Override
 	public void initialize(Controller controller) {
 		super.initialize(controller);
-		multipleActorTransformToEntity = controller.getActions().getAction(
-				MultipleActorTransformToEntity.class);
+		actorTransformToEntity = controller.getActions().getAction(
+				ActorTransformToEntity.class);
 	}
 
 	@Override
@@ -91,27 +91,23 @@ public class UngroupHierarchyToEntities extends ModelAction {
 		ModelEntity parentEntity = Q.getModelEntity(parent);
 		ModelEntity oldGroupEntity = Q.getModelEntity(oldGroup);
 
-		// Copy actors transformations
-		CompositeCommand command = multipleActorTransformToEntity
-				.perform(ungrouped);
-
-		// Remove from old group and add it to new group
-		for (Actor actor : ungrouped) {
-			ModelEntity actorEntity = Q.getModelEntity(actor);
-
-			command.addCommand(new RemoveFromListCommand(oldGroupEntity,
-					oldGroupEntity.getChildren(), actorEntity));
-
-			command.addCommand(new AddToListCommand(parentEntity, parentEntity
-					.getChildren(), actorEntity));
-			command.addCommand(new FieldCommand(Q.getComponent(actorEntity,
-					Parent.class), FieldName.PARENT, parentEntity));
-
-		}
+		CompositeCommand command = new CompositeCommand();
 
 		// Remove old group
 		command.addCommand(new RemoveFromListCommand(parentEntity, parentEntity
 				.getChildren(), oldGroupEntity));
+		// Remove from old group and add it to new group
+		for (Actor actor : ungrouped) {
+			ModelEntity actorEntity = Q.getModelEntity(actor);
+			command.addCommand(new RemoveFromListCommand(oldGroupEntity,
+					oldGroupEntity.getChildren(), actorEntity));
+			command.addCommand(new AddToListCommand(parentEntity, parentEntity
+					.getChildren(), actorEntity));
+			command.addCommand(new FieldCommand(Q.getComponent(actorEntity,
+					Parent.class), FieldName.PARENT, parentEntity));
+			command.addCommand(actorTransformToEntity.perform(actor));
+
+		}
 
 		return command;
 	}

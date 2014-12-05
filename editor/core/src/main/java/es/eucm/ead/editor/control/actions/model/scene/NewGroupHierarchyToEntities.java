@@ -72,9 +72,9 @@ public class NewGroupHierarchyToEntities extends ModelAction {
 
 	private GameLoop gameLoop;
 
-	private RemoveChildrenFromEntity removeChildrenFromEntity;
+	private RemoveChildFromEntity removeChildFromEntity;
 
-	private MultipleActorTransformToEntity multipleActorTransformToEntity;
+	private ActorTransformToEntity actorTransformToEntity;
 
 	public NewGroupHierarchyToEntities() {
 		super(true, false, Group.class, Group.class, Array.class);
@@ -84,10 +84,10 @@ public class NewGroupHierarchyToEntities extends ModelAction {
 	public void initialize(Controller controller) {
 		super.initialize(controller);
 		gameLoop = controller.getEngine().getGameLoop();
-		removeChildrenFromEntity = controller.getActions().getAction(
-				RemoveChildrenFromEntity.class);
-		multipleActorTransformToEntity = controller.getActions().getAction(
-				MultipleActorTransformToEntity.class);
+		removeChildFromEntity = controller.getActions().getAction(
+				RemoveChildFromEntity.class);
+		actorTransformToEntity = controller.getActions().getAction(
+				ActorTransformToEntity.class);
 	}
 
 	@Override
@@ -107,8 +107,7 @@ public class NewGroupHierarchyToEntities extends ModelAction {
 				tmpEntities.add(entity);
 			}
 		}
-		CompositeCommand command = removeChildrenFromEntity.perform(
-				parentEntity, tmpEntities);
+		CompositeCommand command = new CompositeCommand();
 
 		// Create entity for new group
 		ModelEntity newGroupEntity = new ModelEntity();
@@ -125,14 +124,12 @@ public class NewGroupHierarchyToEntities extends ModelAction {
 		engineEntity.setGroup(newGroup);
 		engineEntity.setModelEntity(newGroupEntity);
 
-		// Add new group to parent. To listen correctly to events, the group
-		// must be added first to the parent, and then children to the new group
-		command.addCommand(new AddToListCommand(parentEntity, parentEntity
-				.getChildren(), newGroupEntity));
-
 		for (Actor actor : grouped) {
 			ModelEntity entity = Q.getModelEntity(actor);
 			if (entity != null) {
+				command.addCommand(actorTransformToEntity.perform(actor));
+				command.addCommand(removeChildFromEntity.perform(parentEntity,
+						entity));
 				command.addCommand(new FieldCommand(Q.getComponent(entity,
 						Parent.class), FieldName.PARENT, newGroupEntity));
 				command.addCommand(new AddToListCommand(newGroupEntity,
@@ -140,8 +137,10 @@ public class NewGroupHierarchyToEntities extends ModelAction {
 			}
 		}
 
-		command.addAll(multipleActorTransformToEntity.perform(grouped)
-				.getCommandList());
+		// Add new group to parent. To listen correctly to events, the group
+		// must be added first to the parent, and then children to the new group
+		command.addCommand(new AddToListCommand(parentEntity, parentEntity
+				.getChildren(), newGroupEntity));
 		return command;
 	}
 }
