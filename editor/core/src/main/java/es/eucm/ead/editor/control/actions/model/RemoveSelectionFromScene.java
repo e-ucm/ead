@@ -56,7 +56,8 @@ public class RemoveSelectionFromScene extends ModelAction {
 
 		CompositeCommand command = new CompositeCommand();
 
-		ModelEntity scene = (ModelEntity) selection.getSingle(Selection.SCENE);
+		ModelEntity scene = (ModelEntity) selection
+				.getSingle(Selection.EDITED_GROUP);
 		Array<ModelEntity> elements = new Array<ModelEntity>();
 		for (Object element : selection.get(Selection.SCENE_ELEMENT)) {
 			elements.add((ModelEntity) element);
