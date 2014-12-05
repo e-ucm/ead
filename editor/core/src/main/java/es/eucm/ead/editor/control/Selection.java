@@ -222,6 +222,21 @@ public class Selection {
 		return selection == null || selection.length == 0 ? null : selection[0];
 	}
 
+	/**
+	 * @return whether an object is within a context
+	 */
+	public boolean contains(String contextId, Object object) {
+		Object[] selection = get(contextId);
+		if (selection != null) {
+			for (Object o : selection) {
+				if (o == object) {
+					return true;
+				}
+			}
+		}
+		return false;
+	}
+
 	public Array<Context> getContexts() {
 		return contexts;
 	}
