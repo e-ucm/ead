@@ -120,7 +120,7 @@ public class EditStateMachine extends InputStateMachine {
 
 	void setActor(Actor actor) {
 		this.selectionBox = null;
-		this.actor = EngineUtils.getDirectChild(groupEditor.getRootGroup(),
+		this.actor = EngineUtils.getDirectChild(groupEditor.getEditedGroup(),
 				actor);
 	}
 
@@ -170,7 +170,7 @@ public class EditStateMachine extends InputStateMachine {
 			Actor actor = EngineUtils.getDirectChild(selectionGroup,
 					event.getTarget());
 			if (actor == null) {
-				return EngineUtils.getDirectChild(groupEditor.getRootGroup(),
+				return EngineUtils.getDirectChild(groupEditor.getEditedGroup(),
 						event.getTarget());
 			} else {
 				return actor;

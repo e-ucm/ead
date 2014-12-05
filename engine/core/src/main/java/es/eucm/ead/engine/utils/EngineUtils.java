@@ -37,9 +37,11 @@
 package es.eucm.ead.engine.utils;
 
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
+import com.badlogic.gdx.math.Matrix3;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.Group;
+import com.badlogic.gdx.scenes.scene2d.utils.Layout;
 import com.badlogic.gdx.utils.Array;
 import es.eucm.ead.engine.assets.Assets;
 import es.eucm.ead.engine.variables.VariablesManager;
@@ -49,7 +51,9 @@ import es.eucm.ead.schema.data.Parameters;
 public class EngineUtils {
 
 	private static final Vector2 tmp1 = new Vector2(), tmp2 = new Vector2(),
-			tmp3 = new Vector2(), tmp4 = new Vector2();
+			tmp3 = new Vector2(), tmp4 = new Vector2(), tmp5 = new Vector2();
+
+	private static final Matrix3 tmpMatrix = new Matrix3();
 
 	public static <T extends Parameters> T buildWithParameters(Assets assets,
 			VariablesManager variablesManager, T parameters) {
@@ -198,6 +202,8 @@ public class EngineUtils {
 		for (Actor actor : group.getChildren()) {
 			if (actor instanceof Group) {
 				adjustGroup(actor);
+			} else if (actor instanceof Layout) {
+				((Layout) actor).pack();
 			}
 		}
 
@@ -224,5 +230,138 @@ public class EngineUtils {
 					tmp2.x, tmp2.y);
 			group.setOrigin(group.getWidth() / 2.0f, group.getHeight() / 2.0f);
 		}
+	}
+
+	/**
+	 * Sets position, rotation, scale and origin in actor to meet the 3 given
+	 * points
+	 */
+	public static void applyTransformation(Actor actor, Vector2 origin,
+			Vector2 tangent, Vector2 normal) {
+		/*
+		 * We are going to calculate the affine transformation for the actor to
+		 * fit the bounds represented by the handles. The affine transformation
+		 * is defined as follows:
+		 */
+		// |a b tx|
+		// |c d ty|=|Translation Matrix| x |Scale Matrix| x |Rotation
+		// Matrix|
+		// |0 0 1 |
+		/*
+		 * More info about affine transformations:
+		 * https://people.gnome.org/~mathieu
+		 * /libart/libart-affine-transformation-matrices.html, To obtain the
+		 * matrix, we want to resolve the following equation system:
+		 */
+		// | a b tx| |0| |o.x|
+		// | c d ty|*|0|=|o.y|
+		// | 0 0 1 | |1| | 1 |
+		//
+		// | a b tx| |w| |t.x|
+		// | c d ty|*|0|=|t.y|
+		// | 0 0 1 | |1| | 1 |
+		//
+		// | a b tx| |0| |n.x|
+		// | c d ty|*|h|=|n.y|
+		// | 0 0 1 | |1| | 1 |
+		/*
+		 * where o is handles[0] (origin), t is handles[2] (tangent) and n is
+		 * handles[6] (normal), w is actor.getWidth() and h is
+		 * actor.getHeight().
+		 * 
+		 * This matrix defines that the 3 points defining actor bounds are
+		 * transformed to the 3 points defining modifier bounds. E.g., we want
+		 * that actor origin (0,0) is transformed to (handles[0].x,
+		 * handles[0].y), and that is expressed in the first equation.
+		 * 
+		 * Resolving these equations is obtained:
+		 */
+		// a = (t.x - o.y) / w
+		// b = (t.y - o.y) / w
+		// c = (n.x - o.x) / h
+		// d = (n.y - o.y) / h
+		/*
+		 * Values for translation, scale and rotation contained by the matrix
+		 * can be obtained directly making operations over a, b, c and d:
+		 */
+		// tx = o.x
+		// ty = o.y
+		// sx = sqrt(a^2+b^2)
+		// sy = sqrt(c^2+d^2)
+		// rotation = atan(c/d)
+		// or
+		// rotation = atan(-b/a)
+		/*
+		 * Rotation can give two different values (this happens when there is
+		 * more than one way of obtaining the same transformation). To avoid
+		 * that, we ignore the rotation to obtain the final values.
+		 */
+
+		Vector2 o = tmp1.set(origin.x, origin.y);
+		Vector2 t = tmp2.set(tangent.x, tangent.y);
+		Vector2 n = tmp3.set(normal.x, normal.y);
+
+		Vector2 vt = tmp4.set(t).sub(o);
+		Vector2 vn = tmp5.set(n).sub(o);
+
+		// Ignore rotation
+		float rotation = actor.getRotation();
+		vt.rotate(-rotation);
+		vn.rotate(-rotation);
+
+		t.set(vt).add(o);
+		n.set(vn).add(o);
+
+		float a = (t.x - o.x) / actor.getWidth();
+		float c = (t.y - o.y) / actor.getWidth();
+		float b = (n.x - o.x) / actor.getHeight();
+		float d = (n.y - o.y) / actor.getHeight();
+
+		// Math.sqrt gives a positive value, but it also have a negatives.
+		// The
+		// signum is calculated computing the current rotation
+		float signumX = vt.angle() > 90.0f && vt.angle() < 270.0f ? -1.0f
+				: 1.0f;
+		float signumY = vn.angle() > 180.0f ? -1.0f : 1.0f;
+
+		float scaleX = (float) Math.sqrt(a * a + b * b) * signumX;
+		float scaleY = (float) Math.sqrt(c * c + d * d) * signumY;
+
+		actor.setScale(scaleX, scaleY);
+
+		/*
+		 * To obtain the correct translation value we need to subtract the
+		 * amount of translation due to the origin.
+		 */
+		tmpMatrix.setToTranslation(actor.getOriginX(), actor.getOriginY());
+		tmpMatrix.rotate(actor.getRotation());
+		tmpMatrix.scale(actor.getScaleX(), actor.getScaleY());
+		tmpMatrix.translate(-actor.getOriginX(), -actor.getOriginY());
+
+		/*
+		 * Now, the matrix has how much translation is due to the origin
+		 * involved in the rotation and scaling operations
+		 */
+		float x = o.x - tmpMatrix.getValues()[Matrix3.M02];
+		float y = o.y - tmpMatrix.getValues()[Matrix3.M12];
+		actor.setPosition(x, y);
+	}
+
+	/**
+	 * For a given actor computes and applies the transformation to keep the
+	 * same screen transformation in a new group
+	 * 
+	 * @param actor
+	 * @param newGroup
+	 */
+	public static void computeTransformFor(Actor actor, Group newGroup) {
+		Vector2 o = tmp1.set(0, 0);
+		Vector2 t = tmp2.set(actor.getWidth(), 0);
+		Vector2 n = tmp3.set(0, actor.getHeight());
+		actor.localToAscendantCoordinates(newGroup, o);
+		actor.localToAscendantCoordinates(newGroup, t);
+		actor.localToAscendantCoordinates(newGroup, n);
+		actor.setRotation(actor.getRotation() + actor.getParent().getRotation());
+		applyTransformation(actor, o, t, n);
 	}
 }
