@@ -61,18 +61,22 @@ public class VisibleListener {
 	}
 
 	public void setVisible(boolean visible) {
-		actor.clearActions();
-		if (visible) {
-			actor.addAction(Actions.sequence(Actions.visible(true), Actions
-					.rotateTo(0, 0), Actions.scaleTo(0.5f, 0.5f), Actions
-					.parallel(Actions.fadeIn(ANIM_TIME), Actions.scaleTo(1, 1,
-							ANIM_TIME), Actions.rotateBy(360, ANIM_TIME,
-							Interpolation.pow2Out))));
-		} else {
-			actor.addAction(Actions.sequence(Actions.rotateTo(0, 0), Actions
-					.parallel(Actions.fadeOut(ANIM_TIME), Actions.scaleTo(0.5f,
-							0.5f, ANIM_TIME), Actions.rotateBy(-360, ANIM_TIME,
-							Interpolation.pow2In)), Actions.visible(false)));
+		if (actor.getActions().size > 0 || visible != actor.isVisible()) {
+			actor.clearActions();
+			if (visible) {
+				actor.addAction(Actions.sequence(Actions.visible(true), Actions
+						.rotateTo(0, 0), Actions.scaleTo(0.5f, 0.5f), Actions
+						.parallel(Actions.fadeIn(ANIM_TIME), Actions.scaleTo(1,
+								1, ANIM_TIME), Actions.rotateBy(360, ANIM_TIME,
+								Interpolation.pow2Out))));
+			} else {
+				actor.addAction(Actions.sequence(Actions.rotateTo(0, 0),
+						Actions.parallel(Actions.fadeOut(ANIM_TIME), Actions
+								.scaleTo(0.5f, 0.5f, ANIM_TIME),
+								Actions.rotateBy(-360, ANIM_TIME,
+										Interpolation.pow2In)), Actions
+								.visible(false)));
+			}
 		}
 	}
 

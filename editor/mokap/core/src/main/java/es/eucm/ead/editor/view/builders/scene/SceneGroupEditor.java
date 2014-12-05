@@ -374,7 +374,6 @@ public class SceneGroupEditor extends GroupEditor implements ModelView,
 					addedActor.clearActions();
 					addedActor.setTouchable(Touchable.disabled);
 					float y = sceneElement.getY();
-					float alpha = addedActor.getColor().a;
 					addedActor.setX(sceneElement.getX());
 					addedActor.setY(Gdx.graphics.getHeight());
 					addedActor.getColor().a = 0.0f;
@@ -382,7 +381,7 @@ public class SceneGroupEditor extends GroupEditor implements ModelView,
 
 					addedActor.addAction(Actions.sequence(Actions.parallel(
 							Actions2.moveToY(y, TIME, Interpolation.exp5Out),
-							Actions.alpha(alpha, TIME, Interpolation.exp5Out)),
+							Actions.alpha(1.0f, TIME, Interpolation.exp5Out)),
 							Actions.touchable(Touchable.enabled)));
 					addListeners(addedActor);
 				}
