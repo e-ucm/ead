@@ -486,7 +486,9 @@ public class Model {
 					notify((ViewEvent) event, viewListeners);
 				} else if (event instanceof SelectionEvent) {
 					SelectionEvent selectionEvent = (SelectionEvent) event;
-					for (SelectionListener selectionListener : selectionListeners) {
+					for (int i = 0; i < selectionListeners.size; i++) {
+						SelectionListener selectionListener = selectionListeners
+								.get(i);
 						if (selectionListener.listenToContext(selectionEvent
 								.getContextId())) {
 							selectionListener.modelChanged(selectionEvent);
