@@ -36,18 +36,44 @@
  */
 package es.eucm.ead.editor.view.listeners;
 
+import com.badlogic.gdx.math.Interpolation;
 import com.badlogic.gdx.scenes.scene2d.Actor;
+import com.badlogic.gdx.scenes.scene2d.Group;
+import com.badlogic.gdx.scenes.scene2d.actions.Actions;
+import com.badlogic.gdx.scenes.scene2d.utils.Align;
+import com.badlogic.gdx.scenes.scene2d.utils.Layout;
 
-public class VisibleActionListener extends VisibleListener implements
-		ActionListener {
+public class VisibleListener {
 
-	public VisibleActionListener(Actor actor) {
-		super(actor);
+	private static final float ANIM_TIME = 0.15f;
+
+	private Actor actor;
+
+	public VisibleListener(Actor actor) {
+		this.actor = actor;
+		if (actor instanceof Group) {
+			((Group) actor).setTransform(true);
+		}
+		if (actor instanceof Layout) {
+			((Layout) actor).pack();
+		}
+		actor.setOrigin(Align.center);
 	}
 
-	@Override
-	public void enableChanged(Class actionClass, boolean enable) {
-		setVisible(enable);
+	public void setVisible(boolean visible) {
+		actor.clearActions();
+		if (visible) {
+			actor.addAction(Actions.sequence(Actions.visible(true), Actions
+					.rotateTo(0, 0), Actions.scaleTo(0.5f, 0.5f), Actions
+					.parallel(Actions.fadeIn(ANIM_TIME), Actions.scaleTo(1, 1,
+							ANIM_TIME), Actions.rotateBy(360, ANIM_TIME,
+							Interpolation.pow2Out))));
+		} else {
+			actor.addAction(Actions.sequence(Actions.rotateTo(0, 0), Actions
+					.parallel(Actions.fadeOut(ANIM_TIME), Actions.scaleTo(0.5f,
+							0.5f, ANIM_TIME), Actions.rotateBy(-360, ANIM_TIME,
+							Interpolation.pow2In)), Actions.visible(false)));
+		}
 	}
 
 }
