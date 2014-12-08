@@ -43,3 +43,4 @@ engine/schema/src/main/java/es/eucm/ead/schema/*
 editor/schema/src/main/java/es/eucm/ead/schema/*
 editor/core/src/main/java/es/eucm/ead/editor/control/appdata/*
 gen-external*
+editor/schema/src/main/java/es/eucm/ead/schemax/repo/RepoElementFields.java
