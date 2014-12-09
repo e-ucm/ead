@@ -5,6 +5,22 @@
         "k":{
             "type":"string",
             "description":"API Key of the application that is making a request to the backend. Only mokap administrators know these api keys! (API keys cannot be public)"
+        },
+        "l": {
+            "type": "string",
+            "description": "Filters results by {@link es.eucm.ead.schema.editor.components.repo.RepoElement#libraryId}"
+        },
+        "p": {
+            "type": "string",
+            "description": "Filters results by {@link es.eucm.ead.schema.editor.components.repo.RepoElement#publisher}"
+        },
+        "cat": {
+            "type": "string",
+            "description": "Filters results by {@link es.eucm.ead.schema.editor.components.repo.RepoElement#categoryList} (filter value must be present in the list of categories)"
+        },
+        "t": {
+            "type": "string",
+            "description": "Filters results by {@link es.eucm.ead.schema.editor.components.repo.RepoElement#tagList} (filter value must be a tag present in the list)"
         }
     },
     "type": "object",
