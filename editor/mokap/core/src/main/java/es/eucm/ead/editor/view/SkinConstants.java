@@ -74,6 +74,8 @@ public interface SkinConstants {
 	public static final String STYLE_MARKER = "marker";
 	public static final String STYLE_COLOR_REDUCED = "color_reduced";
 	public static final String STYLE_TOAST_ACTION = "toast_action";
+	public static final String STYLE_RADIO_CHECKBOX = "default_radio";
+	public static final String STYLE_CONTEXT_RADIO = "context_radio";
 
 	public static final String TABLET_GAME = "tablet_game";
 	public static final String TABLET_CARD = "tablet_card";
@@ -140,6 +142,9 @@ public interface SkinConstants {
 
 	public static final String IC_ONE = "ic_one";
 	public static final String IC_FIT = "ic_fit";
+
+	public static final String IC_ARROW_UP = "ic_arrow_up";
+	public static final String IC_ARROW_DOWN = "ic_arrow_down";
 
 	public static final String COLOR_GRAY = "gray";
 }

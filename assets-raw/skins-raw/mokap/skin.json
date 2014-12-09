@@ -301,6 +301,45 @@
             "up": "semi_transparent_bg"
         }
     },
+    com.badlogic.gdx.scenes.scene2d.ui.CheckBox$CheckBoxStyle: {
+		default: { 
+			font: default_font, 
+			fontColor: black, 
+			downFontColor: black, 
+			overFontColor: black, 
+			checkedFontColor: black, 
+			checkedOverFontColor: black, 
+			disabledFontColor: gray, 
+			checkboxOn: button_check_on, 
+			checkboxOff: button_check_off, 
+			checkboxOver: button_check_off_focused
+		},
+		default_radio: {  
+			font: default_font, 
+			fontColor: black, 
+			downFontColor: black, 
+			overFontColor: black, 
+			checkedFontColor: black, 
+			checkedOverFontColor: black, 
+			disabledFontColor: gray, 
+			checkboxOn: button_radio_on, 
+			checkboxOff: button_radio_off,
+			checkboxOver: button_radio_off_focused
+		},
+		context_radio: {  
+			font: default_font, 
+			fontColor: gray, 
+			downFontColor: gray, 
+			overFontColor: gray, 
+			checkedFontColor: gray, 
+			checkedOverFontColor: gray, 
+			disabledFontColor: gray, 
+			checkboxOn: button_radio_on, 
+			checkboxOff: button_radio_off,
+			checkboxOver: button_radio_off_focused
+		}
+		
+	},
     "com.badlogic.gdx.scenes.scene2d.ui.Slider$SliderStyle": {
         "default-horizontal": {
             "background": "knob_after",
@@ -359,6 +398,15 @@
             "fontColor": "white",
             "scrollStyle": "pane",
             "listStyle": "gray"
+        },
+        "context": {
+            "background": "spinner_default",
+            "backgroundOver": "spinner_default",
+            "backgroundOpen": "spinner_default",
+            "font": "default_font",
+            "fontColor": "gray",
+            "scrollStyle": "pane",
+            "listStyle": "default"
         }
     },
     "com.badlogic.gdx.scenes.scene2d.ui.TextField$TextFieldStyle": {
@@ -368,6 +416,13 @@
         	"cursor": "text_field_cursor",
             "font": "default_font",
             "fontColor": "white"
+        },
+        "gray": {
+        	"selection": "black_semi_bg",
+        	"background": "text_field",
+        	"cursor": "text_field_cursor",
+            "font": "default_font",
+            "fontColor": "gray"
         }
     },
     "es.eucm.ead.editor.view.widgets.Tabs$TabsStyle": {
@@ -393,7 +448,6 @@
         "switch": {
             "disabledColor": "white",
             "color": "brown_moka",
-            "up": "transparent_48_bg",
         },
         "pages": {
             "disabledColor": "black",

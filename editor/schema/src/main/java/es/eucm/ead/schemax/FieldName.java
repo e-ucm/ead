@@ -175,6 +175,16 @@ public class FieldName {
 	 */
 	DURATION = "duration",
 
+	/**
+	 * Refers to {@link es.eucm.ead.schema.components.tweens.AlphaTween#alpha}
+	 */
+	ALPHA = "alpha",
+
+	/**
+	 * Refers to {@link es.eucm.ead.schema.components.tweens.BaseTween#alpha}
+	 */
+	REPEAT = "repeat",
+
 	SCENE_ID = "sceneId",
 
 	TRANSITION = "transition";
