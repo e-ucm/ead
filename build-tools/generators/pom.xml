@@ -124,7 +124,7 @@
                                     <goal>java</goal>
                                 </goals>
                                 <configuration>
-                                    <mainClass>es.eucm.ead.buildtools.GenerateBindings</mainClass>
+                                    <mainClass>es.eucm.ead.buildtools.Run</mainClass>
                                 </configuration>
                             </execution>
                         </executions>
