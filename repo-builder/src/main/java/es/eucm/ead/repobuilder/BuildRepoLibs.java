@@ -38,15 +38,12 @@ package es.eucm.ead.repobuilder;
 
 import com.badlogic.gdx.backends.lwjgl.LwjglNativesLoader;
 import com.badlogic.gdx.files.FileHandle;
-import com.badlogic.gdx.utils.Json;
 import es.eucm.ead.editor.demobuilder.ImgUtils;
 import es.eucm.ead.engine.mock.MockApplication;
 import es.eucm.ead.repobuilder.libs.FreepikNature;
 import es.eucm.ead.repobuilder.libs.MockupIconsLib;
 import es.eucm.ead.repobuilder.libs.Monejos;
 import es.eucm.ead.repobuilder.libs.VectorCharacters;
-import es.eucm.ead.schema.editor.components.repo.Library;
-import es.eucm.ead.schema.editor.components.repo.Repo;
 
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -132,7 +129,6 @@ public class BuildRepoLibs {
 
 		System.out.println();
 
-		Repo repo = new Repo();
 		int nitems = 0;
 		List<FileHandle> previewGames = new ArrayList<FileHandle>();
 		for (int i = 0; i < librariesToExport.length; i++) {
@@ -159,11 +155,6 @@ public class BuildRepoLibs {
 						/ 1000F + " seconds.");
 				System.out.println();
 
-				Library lib = new Library();
-				lib.setVersion(version);
-				lib.setPath(libBuilder.getRoot());
-				repo.getLibraries().add(lib);
-
 			} catch (ClassNotFoundException e) {
 				System.err
 						.println("[Error] Could not load library: " + libName);
@@ -176,10 +167,6 @@ public class BuildRepoLibs {
 			}
 		}
 
-		System.out.println("Saving libraries.json");
-		Json json = new Json();
-		json.toJson(repo, Repo.class,
-				new FileHandle(outDir).child("libraries.json"));
 		System.out.println("Export complete!!! " + nitems
 				+ " elements in the repository. Opening previewer ...");
 		LibPreview.main(new String[] { outDir });
