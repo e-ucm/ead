@@ -44,6 +44,7 @@ public interface SkinConstants {
 	public static final String ENGINE_DEFAULT_FONT = "roboto-small";
 
 	public static final String COLOR_SEMI_BLACK = "black_semi";
+	public static final String COLOR_GRAY = "gray";
 
 	public static final String DRAWABLE_LOGO = "logo";
 	public static final String DRAWABLE_BLANK = "blank";
@@ -146,5 +147,4 @@ public interface SkinConstants {
 	public static final String IC_ARROW_UP = "ic_arrow_up";
 	public static final String IC_ARROW_DOWN = "ic_arrow_down";
 
-	public static final String COLOR_GRAY = "gray";
 }

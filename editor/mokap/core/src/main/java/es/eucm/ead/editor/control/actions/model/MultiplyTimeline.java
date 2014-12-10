@@ -75,7 +75,7 @@ public class MultiplyTimeline extends ModelAction {
 		Timeline timeline = (Timeline) args[0];
 		float multiplier = (Float) args[1];
 		boolean time = (Boolean) args[2];
-		
+
 		for (BaseTween baseTween : timeline.getChildren()) {
 			if (baseTween instanceof Tween) {
 				if (time) {
@@ -109,10 +109,10 @@ public class MultiplyTimeline extends ModelAction {
 					}
 				}
 			} else {
-				perform(baseTween, command, multiplier, time);
+				command.addCommand(perform(baseTween, multiplier, time));
 			}
 		}
-		
+
 		return command;
 	}
 

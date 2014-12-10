@@ -302,41 +302,41 @@
         }
     },
     com.badlogic.gdx.scenes.scene2d.ui.CheckBox$CheckBoxStyle: {
-		default: { 
-			font: default_font, 
-			fontColor: black, 
-			downFontColor: black, 
-			overFontColor: black, 
-			checkedFontColor: black, 
-			checkedOverFontColor: black, 
-			disabledFontColor: gray, 
-			checkboxOn: button_check_on, 
-			checkboxOff: button_check_off, 
-			checkboxOver: button_check_off_focused
+		"default": { 
+			"font": "default_font", 
+			"fontColor": "black", 
+			"downFontColor": "black", 
+			"overFontColor": "black", 
+			"checkedFontColor": "black", 
+			"checkedOverFontColor": "black", 
+			"disabledFontColor": "gray", 
+			"checkboxOn": "button_check_on", 
+			"checkboxOff": "button_check_off", 
+			"checkboxOver": "button_check_off_focused"
 		},
-		default_radio: {  
-			font: default_font, 
-			fontColor: black, 
-			downFontColor: black, 
-			overFontColor: black, 
-			checkedFontColor: black, 
-			checkedOverFontColor: black, 
-			disabledFontColor: gray, 
-			checkboxOn: button_radio_on, 
-			checkboxOff: button_radio_off,
-			checkboxOver: button_radio_off_focused
+		"default_radio": { 
+			"font": "default_font", 
+			"fontColor": "black", 
+			"downFontColor": "black", 
+			"overFontColor": "black", 
+			"checkedFontColor": "black", 
+			"checkedOverFontColor": "black", 
+			"disabledFontColor": "gray", 
+			"checkboxOn": "button_radio_on", 
+			"checkboxOff": "button_radio_off", 
+			"checkboxOver": "button_radio_off_focused"
 		},
-		context_radio: {  
-			font: default_font, 
-			fontColor: gray, 
-			downFontColor: gray, 
-			overFontColor: gray, 
-			checkedFontColor: gray, 
-			checkedOverFontColor: gray, 
-			disabledFontColor: gray, 
-			checkboxOn: button_radio_on, 
-			checkboxOff: button_radio_off,
-			checkboxOver: button_radio_off_focused
+		"context_radio": {  
+			"font": "default_font", 
+			"fontColor": "gray", 
+			"downFontColor": "gray", 
+			"overFontColor": "gray", 
+			"checkedFontColor": "gray", 
+			"checkedOverFontColor": "gray", 
+			"disabledFontColor": "gray", 
+			"checkboxOn": "button_radio_on", 
+			"checkboxOff": "button_radio_off", 
+			"checkboxOver": "button_radio_off_focused"
 		}
 		
 	},
@@ -400,9 +400,9 @@
             "listStyle": "gray"
         },
         "context": {
-            "background": "spinner_default",
-            "backgroundOver": "spinner_default",
-            "backgroundOpen": "spinner_default",
+            "background": "black_spinner",
+            "backgroundOver": "black_spinner",
+            "backgroundOpen": "black_spinner",
             "font": "default_font",
             "fontColor": "gray",
             "scrollStyle": "pane",

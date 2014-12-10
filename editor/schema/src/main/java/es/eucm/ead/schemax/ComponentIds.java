@@ -41,8 +41,8 @@ public interface ComponentIds {
 	public static final String ANIMATION_IN = "_animation_in";
 	public static final String BLINK = "_blink";
 	public static final String JUMP = "_jump";
-	public static final String CROSS_X = "_horizontal_cross";
-	public static final String CROSS_Y = "_vertical_cross";
+	public static final String PASS_X = "_horizontal_pass";
+	public static final String PASS_Y = "_vertical_pass";
 	public static final String ROTATE = "_rotate";
 
 	public static final String LINK = "_link";
