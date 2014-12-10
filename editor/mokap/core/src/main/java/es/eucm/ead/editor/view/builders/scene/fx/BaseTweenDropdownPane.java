@@ -37,12 +37,11 @@
 package es.eucm.ead.editor.view.builders.scene.fx;
 
 import com.badlogic.gdx.scenes.scene2d.Actor;
-import com.badlogic.gdx.scenes.scene2d.InputEvent;
+import com.badlogic.gdx.scenes.scene2d.Group;
 import com.badlogic.gdx.scenes.scene2d.Touchable;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
-import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.utils.Array;
 
 import es.eucm.ead.editor.control.Controller;
@@ -54,8 +53,8 @@ import es.eucm.ead.editor.view.widgets.DropdownPane;
 import es.eucm.ead.editor.view.widgets.MultiWidget;
 import es.eucm.ead.editor.view.widgets.Switch;
 import es.eucm.ead.editor.view.widgets.WidgetBuilder;
-import es.eucm.ead.editor.view.widgets.modelwidgets.ModelCheckBox;
 import es.eucm.ead.editor.view.widgets.modelwidgets.ModelSelectBox;
+import es.eucm.ead.editor.view.widgets.modelwidgets.ModelTextField;
 import es.eucm.ead.engine.I18N;
 import es.eucm.ead.schema.components.tweens.Timeline;
 import es.eucm.ead.schema.entities.ModelEntity;
@@ -108,16 +107,6 @@ public class BaseTweenDropdownPane extends DropdownPane {
 						SkinConstants.STYLE_GRAY));
 
 		dropActor.add(arrow);
-		dropActor.addListener(new ClickListener() {
-			@Override
-			public void clicked(InputEvent event, float x, float y) {
-				if (isOpen()) {
-					arrow.setSelectedWidget(0);
-				} else {
-					arrow.setSelectedWidget(1);
-				}
-			}
-		});
 
 		head.add(switchWidget = new Switch(skin)).padRight(
 				WidgetBuilder.dpToPixels(16));
@@ -136,12 +125,12 @@ public class BaseTweenDropdownPane extends DropdownPane {
 							.getSingle(Selection.SCENE_ELEMENT);
 					if (switchWidget.isStateOn()) {
 						open();
-						activeComponent();
+						activateComponent();
 						controller.action(AddComponent.class, sceneElement,
 								component);
 					} else {
 						close();
-						desactivecomponent();
+						deactivateComponent();
 						controller.action(RemoveFromArray.class, sceneElement,
 								sceneElement.getComponents(), component);
 					}
@@ -150,16 +139,28 @@ public class BaseTweenDropdownPane extends DropdownPane {
 		});
 	}
 
-	private void activeComponent() {
+	private void activateComponent() {
 		dropActor.setTouchable(Touchable.enabled);
 		arrow.setVisible(true);
 		dropActor.getColor().a = 1f;
 	}
 
-	private void desactivecomponent() {
+	private void deactivateComponent() {
 		dropActor.setTouchable(Touchable.disabled);
 		arrow.setVisible(false);
 		dropActor.getColor().a = 0.5f;
+	}
+
+	@Override
+	public void open() {
+		super.open();
+		arrow.setSelectedWidget(1);
+	}
+
+	@Override
+	public void close() {
+		super.close();
+		arrow.setSelectedWidget(0);
 	}
 
 	public void loadComponent(Timeline timeline, float baseTime,
@@ -168,20 +169,26 @@ public class BaseTweenDropdownPane extends DropdownPane {
 
 		if (stateOn) {
 			switchWidget.setStateOn(true);
-			activeComponent();
+			activateComponent();
 		} else {
 			switchWidget.setStateOn(false);
-			desactivecomponent();
+			deactivateComponent();
 		}
 
 		close();
 
-		for (Actor child : body.getChildren()) {
+		prepareModelWidgets(timeline, body);
+	}
+
+	private void prepareModelWidgets(Timeline timeline, Group widget) {
+		for (Actor child : widget.getChildren()) {
 			if (child instanceof ModelSelectBox) {
 				((ModelSelectBox) child).loadComponent(timeline);
-			} else if (child instanceof ModelCheckBox) {
-				((ModelCheckBox) child).loadComponent(timeline,
+			} else if (child instanceof ModelTextField) {
+				((ModelTextField) child).loadComponent(timeline,
 						timeline.getRepeat());
+			} else if (child instanceof Group) {
+				prepareModelWidgets(timeline, (Group) child);
 			}
 		}
 	}
