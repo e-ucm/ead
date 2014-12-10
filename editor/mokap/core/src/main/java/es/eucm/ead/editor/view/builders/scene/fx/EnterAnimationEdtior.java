@@ -38,7 +38,13 @@ package es.eucm.ead.editor.view.builders.scene.fx;
 
 import java.util.HashMap;
 
+import com.badlogic.gdx.scenes.scene2d.Actor;
+import com.badlogic.gdx.scenes.scene2d.InputEvent;
+import com.badlogic.gdx.scenes.scene2d.InputListener;
 import com.badlogic.gdx.scenes.scene2d.ui.ButtonGroup;
+import com.badlogic.gdx.scenes.scene2d.ui.CheckBox;
+import com.badlogic.gdx.scenes.scene2d.ui.Table;
+import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
 import com.badlogic.gdx.utils.Array;
 
 import es.eucm.ead.editor.control.Controller;
@@ -50,9 +56,9 @@ import es.eucm.ead.editor.model.Q;
 import es.eucm.ead.editor.view.SkinConstants;
 import es.eucm.ead.editor.view.builders.scene.interaction.ComponentEditor;
 import es.eucm.ead.editor.view.widgets.WidgetBuilder;
-import es.eucm.ead.editor.view.widgets.modelwidgets.ModelCheckBox;
-import es.eucm.ead.editor.view.widgets.modelwidgets.ModelCheckBox.DataType;
 import es.eucm.ead.editor.view.widgets.modelwidgets.ModelSelectBox;
+import es.eucm.ead.editor.view.widgets.modelwidgets.ModelTextField;
+import es.eucm.ead.editor.view.widgets.modelwidgets.ModelTextField.DataType;
 import es.eucm.ead.schema.components.ModelComponent;
 import es.eucm.ead.schema.components.tweens.AlphaTween;
 import es.eucm.ead.schema.components.tweens.MoveTween;
@@ -74,9 +80,9 @@ public class EnterAnimationEdtior extends ComponentEditor<Timeline> {
 
 	private BaseTweenDropdownPane jump;
 
-	private BaseTweenDropdownPane crossX;
+	private BaseTweenDropdownPane passX;
 
-	private BaseTweenDropdownPane crossY;
+	private BaseTweenDropdownPane passY;
 
 	private BaseTweenDropdownPane rotate;
 
@@ -107,10 +113,10 @@ public class EnterAnimationEdtior extends ComponentEditor<Timeline> {
 		list.add(blink).expandX();
 		buildJumpPane();
 		list.add(jump).expandX();
-		buildCrossXPane();
-		list.add(crossX).expandX();
-		buildCrossYPane();
-		list.add(crossY).expandX();
+		buildPassXPane();
+		list.add(passX).expandX();
+		buildPassYPane();
+		list.add(passY).expandX();
 		buildRotatePane();
 		list.add(rotate).expandX();
 
@@ -123,8 +129,8 @@ public class EnterAnimationEdtior extends ComponentEditor<Timeline> {
 
 		readAndLoadComponent(blink, sceneElement, ComponentIds.BLINK);
 		readAndLoadComponent(jump, sceneElement, ComponentIds.JUMP);
-		readAndLoadComponent(crossX, sceneElement, ComponentIds.CROSS_X);
-		readAndLoadComponent(crossY, sceneElement, ComponentIds.CROSS_Y);
+		readAndLoadComponent(passX, sceneElement, ComponentIds.PASS_X);
+		readAndLoadComponent(passY, sceneElement, ComponentIds.PASS_Y);
 		readAndLoadComponent(rotate, sceneElement, ComponentIds.ROTATE);
 
 	}
@@ -160,8 +166,8 @@ public class EnterAnimationEdtior extends ComponentEditor<Timeline> {
 	protected void removeComponent(ModelEntity modelEntity) {
 		removeComponent(modelEntity, ComponentIds.BLINK);
 		removeComponent(modelEntity, ComponentIds.JUMP);
-		removeComponent(modelEntity, ComponentIds.CROSS_X);
-		removeComponent(modelEntity, ComponentIds.CROSS_Y);
+		removeComponent(modelEntity, ComponentIds.PASS_X);
+		removeComponent(modelEntity, ComponentIds.PASS_Y);
 		removeComponent(modelEntity, ComponentIds.ROTATE);
 		super.removeComponent(modelEntity);
 	}
@@ -182,10 +188,10 @@ public class EnterAnimationEdtior extends ComponentEditor<Timeline> {
 			timeline = createBlink(id);
 		} else if (id.equals(ComponentIds.JUMP)) {
 			timeline = createJump(game, id);
-		} else if (id.equals(ComponentIds.CROSS_X)) {
-			timeline = createHorizontalCross(game, id, sceneElment);
-		} else if (id.equals(ComponentIds.CROSS_Y)) {
-			timeline = createVerticalCross(game, id, sceneElment);
+		} else if (id.equals(ComponentIds.PASS_X)) {
+			timeline = createHorizontalPass(game, id, sceneElment);
+		} else if (id.equals(ComponentIds.PASS_Y)) {
+			timeline = createVerticalPass(game, id, sceneElment);
 		} else if (id.equals(ComponentIds.ROTATE)) {
 			timeline = createRotate(id);
 		}
@@ -248,7 +254,7 @@ public class EnterAnimationEdtior extends ComponentEditor<Timeline> {
 		return timeline;
 	}
 
-	private Timeline createHorizontalCross(GameData game, String id,
+	private Timeline createHorizontalPass(GameData game, String id,
 			ModelEntity sceneElement) {
 		float originX = sceneElement.getX();
 		float width = game.getWidth() * 1.2f;
@@ -276,7 +282,7 @@ public class EnterAnimationEdtior extends ComponentEditor<Timeline> {
 		return timeline;
 	}
 
-	private Timeline createVerticalCross(GameData game, String id,
+	private Timeline createVerticalPass(GameData game, String id,
 			ModelEntity sceneElement) {
 		float originY = sceneElement.getY();
 		float height = game.getHeight() * 1.2f;
@@ -323,144 +329,212 @@ public class EnterAnimationEdtior extends ComponentEditor<Timeline> {
 		return timeline;
 	}
 
-	private ModelCheckBox buildModelCheckBox(String name, DataType type,
-			int value) {
-		return new ModelCheckBox(skin, name, type, value,
-				SkinConstants.STYLE_GRAY, SkinConstants.STYLE_CONTEXT_RADIO) {
-			@Override
-			public void doAction() {
-				super.doAction();
-				controller.action(SetField.class, getComponent(),
-						FieldName.REPEAT, getCurrentValue());
-			}
-		};
-	}
+	private Table buildCheckBoxRepeatsGroup() {
+		Table layout = new Table();
+		layout.left();
 
-	private ModelSelectBox buildTimelineSelectBox(String name,
-			final Array<String> items, final String idTween) {
-		return new ModelSelectBox(skin, name, items,
-				SkinConstants.STYLE_EDITION, SkinConstants.STYLE_CONTEXT) {
-			@Override
-			public void doAction() {
-				super.doAction();
-				controller.action(MultiplyTimeline.class, getComponent(),
-						getFactor(), items == speedArray);
-			}
+		final CheckBox loop = new CheckBox(i18N.m("loop"), skin,
+				SkinConstants.STYLE_CONTEXT_RADIO);
+		final CheckBox repeats = new CheckBox(i18N.m("repeats"), skin,
+				SkinConstants.STYLE_CONTEXT_RADIO);
 
+		final ModelTextField text = new ModelTextField(skin,
+				SkinConstants.STYLE_GRAY, SkinConstants.COLOR_GRAY,
+				DataType.INT) {
 			@Override
-			protected float calculateValue() {
-				if (items == speedArray) {
-					return Q.calculateTimelineDuration((Timeline) getComponent());
+			public void loadComponent(ModelComponent component, Object val) {
+				super.loadComponent(component, val);
+				if (((Timeline) component).getRepeat() >= 0) {
+					repeats.setChecked(true);
 				} else {
-					return Q.calculateTimelineAmount((Timeline) getComponent());
+					loop.setChecked(true);
 				}
 			}
+		};
+		text.setColor(skin.getColor(SkinConstants.COLOR_GRAY));
+
+		loop.addListener(new ChangeListener() {
+			@Override
+			public void changed(ChangeEvent event, Actor actor) {
+				if (loop.isChecked() && text.getComponent() != null) {
+					controller.action(SetField.class, text.getComponent(),
+							FieldName.REPEAT, -1);
+				}
+			}
+		});
+
+		repeats.addListener(new ChangeListener() {
+			@Override
+			public void changed(ChangeEvent event, Actor actor) {
+				if (repeats.isChecked() && text.getComponent() != null) {
+					controller.action(SetField.class, text.getComponent(),
+							FieldName.REPEAT, Integer.valueOf(text.getText()));
+				}
+			}
+		});
+
+		text.addListener(new InputListener() {
+
+			@Override
+			public boolean keyDown(InputEvent event, int keycode) {
+				return super.keyDown(event, keycode);
+			}
+
+			@Override
+			public boolean keyTyped(InputEvent event, char character) {
+				if (repeats.isChecked() && text.getComponent() != null) {
+					try {
+						text.updateCurrentValue();
+						controller.action(SetField.class, text.getComponent(),
+								FieldName.REPEAT,
+								Integer.valueOf(text.getText()));
+					} catch (NumberFormatException e) {
+					}
+				}
+				return super.keyTyped(event, character);
+			}
+		});
+
+		Table table = new Table();
+		table.add(repeats);
+		table.add(text).padLeft(WidgetBuilder.dpToPixels(16))
+				.padRight(WidgetBuilder.dpToPixels(16));
+
+		layout.add(loop).expandX().left();
+		layout.row();
+		layout.add(table).expandX();
+
+		ButtonGroup group = new ButtonGroup();
+		group.add(loop);
+		group.add(repeats);
+
+		return layout;
+	}
+
+	private ModelSelectBox buildSpeedTimelineSelectBox(String name,
+			final String idTween) {
+		final ModelSelectBox selectBox = new ModelSelectBox(skin, name,
+				speedArray, SkinConstants.STYLE_EDITION,
+				SkinConstants.STYLE_CONTEXT) {
 
 			@Override
 			public void loadComponent(ModelComponent component) {
 				ModelEntity sceneElement = (ModelEntity) controller.getModel()
 						.getSelection().getSingle(Selection.SCENE_ELEMENT);
-				if (items == speedArray) {
-					base = Q.calculateTimelineDuration(createDefaultAnimation(
-							idTween, sceneElement));
-				} else {
-					base = Q.calculateTimelineAmount(createDefaultAnimation(
-							idTween, sceneElement));
-				}
+				setBaseValue(Q
+						.calculateTimelineDuration(createDefaultAnimation(
+								idTween, sceneElement)));
+				setInitValue(Q.calculateTimelineDuration((Timeline) component));
 				super.loadComponent(component);
 			}
 
 		};
+
+		selectBox.addListener(new ChangeListener() {
+
+			@Override
+			public void changed(ChangeEvent event, Actor actor) {
+				selectBox.calculateFactor(Q
+						.calculateTimelineDuration((Timeline) selectBox
+								.getComponent()));
+				controller.action(MultiplyTimeline.class,
+						selectBox.getComponent(), selectBox.getFactor(), true);
+			}
+		});
+
+		return selectBox;
+	}
+
+	private ModelSelectBox buildAmountTimelineSelectBox(String name,
+			final String idTween) {
+		final ModelSelectBox selectBox = new ModelSelectBox(skin, name,
+				amountArray, SkinConstants.STYLE_EDITION,
+				SkinConstants.STYLE_CONTEXT) {
+
+			@Override
+			public void loadComponent(ModelComponent component) {
+				ModelEntity sceneElement = (ModelEntity) controller.getModel()
+						.getSelection().getSingle(Selection.SCENE_ELEMENT);
+				setBaseValue(Q.calculateTimelineAmount(createDefaultAnimation(
+						idTween, sceneElement)));
+				setInitValue(Q.calculateTimelineAmount((Timeline) component));
+				super.loadComponent(component);
+			}
+
+		};
+
+		selectBox.addListener(new ChangeListener() {
+
+			@Override
+			public void changed(ChangeEvent event, Actor actor) {
+				selectBox.calculateFactor(Q
+						.calculateTimelineAmount((Timeline) selectBox
+								.getComponent()));
+				controller.action(MultiplyTimeline.class,
+						selectBox.getComponent(), selectBox.getFactor(), false);
+			}
+		});
+
+		return selectBox;
 	}
 
 	private void buildBlinkPane() {
 		blink = new BaseTweenDropdownPane(controller, i18N.m("blink"), skin);
 
-		ModelSelectBox speed = buildTimelineSelectBox(i18N.m("speed"),
-				speedArray, ComponentIds.BLINK);
-		ModelCheckBox loop = buildModelCheckBox(i18N.m("loop"), DataType.NONE,
-				-1);
-		ModelCheckBox repeats = buildModelCheckBox(i18N.m("repeats"),
-				DataType.INT, 0);
-
-		ButtonGroup group = new ButtonGroup();
-		group.add(loop.getCheckBox());
-		group.add(repeats.getCheckBox());
+		ModelSelectBox speed = buildSpeedTimelineSelectBox(i18N.m("speed"),
+				ComponentIds.BLINK);
+		Table repeats = buildCheckBoxRepeatsGroup();
 
 		blink.addToBody(speed);
-		blink.addToBody(loop);
 		blink.addToBody(repeats);
+
 	}
 
 	private void buildJumpPane() {
 		jump = new BaseTweenDropdownPane(controller, i18N.m("jump"), skin);
 
-		ModelSelectBox amount = buildTimelineSelectBox(i18N.m("amount"),
-				amountArray, ComponentIds.JUMP);
-		ModelSelectBox speed = buildTimelineSelectBox(i18N.m("speed"),
-				speedArray, ComponentIds.JUMP);
-		ModelCheckBox loop = buildModelCheckBox(i18N.m("loop"), DataType.NONE,
-				-1);
-		ModelCheckBox repeats = buildModelCheckBox(i18N.m("repeats"),
-				DataType.INT, 0);
-
-		ButtonGroup group = new ButtonGroup();
-		group.add(loop.getCheckBox());
-		group.add(repeats.getCheckBox());
+		ModelSelectBox amount = buildAmountTimelineSelectBox(i18N.m("amount"),
+				ComponentIds.JUMP);
+		ModelSelectBox speed = buildSpeedTimelineSelectBox(i18N.m("speed"),
+				ComponentIds.JUMP);
+		Table repeats = buildCheckBoxRepeatsGroup();
 
 		jump.addToBody(amount);
 		jump.addToBody(speed);
-		jump.addToBody(loop);
 		jump.addToBody(repeats);
 	}
 
-	private void buildCrossXPane() {
-		crossX = new BaseTweenDropdownPane(controller,
-				i18N.m("cross.horizontal"), skin);
+	private void buildPassXPane() {
+		passX = new BaseTweenDropdownPane(controller,
+				i18N.m("pass.horizontal"), skin);
 
-		ModelSelectBox speed = buildTimelineSelectBox(i18N.m("speed"),
-				speedArray, ComponentIds.CROSS_X);
-		ModelCheckBox loop = buildModelCheckBox(i18N.m("loop"), DataType.NONE,
-				-1);
-		ModelCheckBox repeats = buildModelCheckBox(i18N.m("repeats"),
-				DataType.INT, 0);
+		ModelSelectBox speed = buildSpeedTimelineSelectBox(i18N.m("speed"),
+				ComponentIds.PASS_X);
+		Table repeats = buildCheckBoxRepeatsGroup();
 
-		ButtonGroup group = new ButtonGroup();
-		group.add(loop.getCheckBox());
-		group.add(repeats.getCheckBox());
-
-		crossX.addToBody(speed);
-		crossX.addToBody(loop);
-		crossX.addToBody(repeats);
+		passX.addToBody(speed);
+		passX.addToBody(repeats);
 
 	}
 
-	private void buildCrossYPane() {
-		crossY = new BaseTweenDropdownPane(controller,
-				i18N.m("cross.vertical"), skin);
+	private void buildPassYPane() {
+		passY = new BaseTweenDropdownPane(controller, i18N.m("pass.vertical"),
+				skin);
 
-		ModelSelectBox speed = buildTimelineSelectBox(i18N.m("speed"),
-				speedArray, ComponentIds.CROSS_Y);
-		ModelCheckBox loop = buildModelCheckBox(i18N.m("loop"), DataType.NONE,
-				-1);
-		ModelCheckBox repeats = buildModelCheckBox(i18N.m("repeats"),
-				DataType.INT, 0);
+		ModelSelectBox speed = buildSpeedTimelineSelectBox(i18N.m("speed"),
+				ComponentIds.PASS_Y);
+		Table repeats = buildCheckBoxRepeatsGroup();
 
-		ButtonGroup group = new ButtonGroup();
-		group.add(loop.getCheckBox());
-		group.add(repeats.getCheckBox());
-
-		crossY.addToBody(speed);
-		crossY.addToBody(loop);
-		crossY.addToBody(repeats);
+		passY.addToBody(speed);
+		passY.addToBody(repeats);
 
 	}
 
 	private void buildRotatePane() {
 		rotate = new BaseTweenDropdownPane(controller, i18N.m("rotate"), skin);
 
-		ModelSelectBox speed = buildTimelineSelectBox(i18N.m("speed"),
-				speedArray, ComponentIds.ROTATE);
+		ModelSelectBox speed = buildSpeedTimelineSelectBox(i18N.m("speed"),
+				ComponentIds.ROTATE);
 
 		rotate.addToBody(speed);
 	}
