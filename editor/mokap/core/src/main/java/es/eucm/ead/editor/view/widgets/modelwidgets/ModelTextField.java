@@ -36,88 +36,60 @@
  */
 package es.eucm.ead.editor.view.widgets.modelwidgets;
 
-import com.badlogic.gdx.scenes.scene2d.ui.Label;
-import com.badlogic.gdx.scenes.scene2d.ui.SelectBox;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
-import com.badlogic.gdx.utils.Array;
+import com.badlogic.gdx.scenes.scene2d.ui.TextField;
 
-import es.eucm.ead.editor.view.widgets.layouts.LinearLayout;
+import es.eucm.ead.editor.view.widgets.WidgetBuilder;
 import es.eucm.ead.schema.components.ModelComponent;
 
-public class ModelSelectBox extends LinearLayout {
-
-	private SelectBox<String> selectBox;
-
-	protected float base;
-
-	private float factor;
+public class ModelTextField extends TextField {
 
 	private ModelComponent component;
 
-	private float value;
+	private DataType inputType;
 
-	public ModelSelectBox(Skin skin, String name, Array<String> items,
-			String labelStyle, String selectBoxStyle) {
-		super(true);
-
-		base = 0;
-		value = 0;
-
-		add(new Label(name, skin, labelStyle)).expandX().left();
-		selectBox = new SelectBox<String>(skin, selectBoxStyle);
-
-		selectBox.setItems(items);
-
-		selectBox.getSelection().setProgrammaticChangeEvents(false);
-		add(selectBox).right();
+	public enum DataType {
+		INT, FLOAT, TEXT
 	}
 
-	public void calculateFactor(float value) {
-		factor = 0;
+	public ModelTextField(Skin skin, String style, String color, DataType type) {
+		super("0", skin, style);
+		setColor(skin.getColor(color));
 
-		if (selectBox.getSelectedIndex() == 2) {
-			if (value < base) {
-				factor = 4f;
+		this.inputType = type;
+	}
+
+	public float getPrefWidth() {
+		return WidgetBuilder.dpToPixels(48);
+	}
+
+	public void updateCurrentValue() {
+		Object value = 0;
+		try {
+			if (inputType.equals(DataType.INT)) {
+				value = Integer.valueOf(getText());
+			} else if (inputType.equals(DataType.FLOAT)) {
+				value = Float.valueOf(getText());
+			} else if (inputType.equals(DataType.TEXT)) {
+				value = getText();
 			} else {
-				factor = 2f;
+				return;
 			}
-		} else if (selectBox.getSelectedIndex() == 1) {
-			if (value < base) {
-				factor = 2f;
-			} else {
-				factor = 0.5f;
+			if (value instanceof Integer && (Integer) value < 0) {
+				value = 0;
+			} else if (value instanceof Float && (Float) value < 0) {
+				value = 0.0f;
 			}
-		} else if (selectBox.getSelectedIndex() == 0) {
-			if (value > base) {
-				factor = 0.25f;
-			} else {
-				factor = 0.5f;
-			}
+		} catch (NumberFormatException e) {
+
 		}
+		setText(value.toString());
 	}
 
-	public void setInitValue(float value) {
-		this.value = value;
-	}
-
-	public void setBaseValue(float value) {
-		base = value;
-	}
-
-	public void loadComponent(ModelComponent component) {
+	public void loadComponent(ModelComponent component, Object val) {
 		this.component = component;
-
-		if (value < base) {
-			selectBox.setSelectedIndex(0);
-		} else if (value == base) {
-			selectBox.setSelectedIndex(1);
-		} else {
-			selectBox.setSelectedIndex(2);
-		}
-	}
-
-	public float getFactor() {
-		return factor;
+		setText(val.toString());
+		updateCurrentValue();
 	}
 
 	public ModelComponent getComponent() {
