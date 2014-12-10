@@ -43,6 +43,6 @@ public class Run {
 
 	public static void main(String[] args) {
 		GenerateBindings.main(args);
-		GenerateRepoFields.main(args);
+		GenerateFieldClasses.main(args);
 	}
 }
