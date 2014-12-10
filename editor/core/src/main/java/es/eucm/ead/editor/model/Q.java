@@ -49,6 +49,14 @@ import es.eucm.ead.engine.I18N;
 import es.eucm.ead.engine.assets.Assets.AssetLoadedCallback;
 import es.eucm.ead.engine.entities.EngineEntity;
 import es.eucm.ead.schema.components.ModelComponent;
+import es.eucm.ead.schema.components.tweens.AlphaTween;
+import es.eucm.ead.schema.components.tweens.BaseTween;
+import es.eucm.ead.schema.components.tweens.MoveTween;
+import es.eucm.ead.schema.components.tweens.RotateTween;
+import es.eucm.ead.schema.components.tweens.ScaleTween;
+import es.eucm.ead.schema.components.tweens.Timeline;
+import es.eucm.ead.schema.components.tweens.Timeline.Mode;
+import es.eucm.ead.schema.components.tweens.Tween;
 import es.eucm.ead.schema.editor.components.Date;
 import es.eucm.ead.schema.editor.components.Documentation;
 import es.eucm.ead.schema.editor.components.GameData;
@@ -361,5 +369,50 @@ public class Q {
 
 	public static boolean isGroup(ModelEntity sceneElement) {
 		return sceneElement != null && sceneElement.getChildren().size > 0;
+	}
+
+	public static float calculateTimelineDuration(Timeline timeline) {
+		float time = 0;
+		if (timeline.getMode().equals(Mode.PARALLEL)) {
+			for (BaseTween tween : timeline.getChildren()) {
+				if (tween instanceof Tween) {
+					time = Math.max(time, ((Tween) tween).getDuration());
+				} else {
+					time = Math.max(time,
+							calculateTimelineDuration((Timeline) tween));
+				}
+			}
+		} else {
+			for (BaseTween tween : timeline.getChildren()) {
+				if (tween instanceof Tween) {
+					time += ((Tween) tween).getDuration();
+				} else {
+					time += calculateTimelineDuration((Timeline) tween);
+				}
+			}
+		}
+		return time;
+	}
+
+	public static float calculateTimelineAmount(BaseTween baseTween) {
+		float amount = 0;
+		if (baseTween instanceof Timeline) {
+			for (BaseTween tween : ((Timeline) baseTween).getChildren()) {
+				amount += calculateTimelineAmount(tween);
+			}
+		} else {
+			if (baseTween instanceof AlphaTween) {
+				amount += Math.abs(((AlphaTween) baseTween).getAlpha());
+			} else if (baseTween instanceof MoveTween) {
+				amount += Math.abs(((MoveTween) baseTween).getX());
+				amount += Math.abs(((MoveTween) baseTween).getY());
+			} else if (baseTween instanceof ScaleTween) {
+				amount += Math.abs(((ScaleTween) baseTween).getScaleX());
+				amount += Math.abs(((ScaleTween) baseTween).getScaleY());
+			} else if (baseTween instanceof RotateTween) {
+				amount += Math.abs(((RotateTween) baseTween).getRotation());
+			}
+		}
+		return amount;
 	}
 }

@@ -71,6 +71,7 @@ import es.eucm.ead.schema.components.behaviors.events.Touch;
 import es.eucm.ead.schema.effects.GoScene;
 import es.eucm.ead.schema.effects.GoScene.Transition;
 import es.eucm.ead.schema.entities.ModelEntity;
+import es.eucm.ead.schemax.ComponentIds;
 import es.eucm.ead.schemax.FieldName;
 import es.eucm.ead.schemax.entities.ResourceCategory;
 
@@ -109,7 +110,7 @@ public class LinkEditor extends ComponentEditor<Behavior> implements
 
 	public LinkEditor(Controller controller) {
 		super(SkinConstants.IC_LINK, controller.getApplicationAssets()
-				.getI18N().m("link"), "_link", controller);
+				.getI18N().m("link"), ComponentIds.LINK, controller);
 
 		sceneSelector = new SceneSelector(controller);
 		transitionSelector = new TransitionSelector(controller);

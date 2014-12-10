@@ -41,6 +41,7 @@ import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.InputListener;
+import com.badlogic.gdx.scenes.scene2d.Touchable;
 import com.badlogic.gdx.scenes.scene2d.ui.Container;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.utils.Align;
@@ -73,6 +74,10 @@ public class Switch extends Container<Actor> {
 
 	private Color barColor;
 
+	public Switch(Skin skin) {
+		this(skin, skin.get(SwitchStyle.class), null, null);
+	}
+
 	public Switch(Skin skin, String imageOn, String imageOff) {
 		this(skin, skin.get(SwitchStyle.class), imageOn, imageOff);
 	}
@@ -88,30 +93,39 @@ public class Switch extends Container<Actor> {
 		this.style = switchStyle;
 		this.current = style.off;
 
+		setTouchable(Touchable.enabled);
+
 		background = switchStyle.backgroundOff;
 
-		onImage = new IconButton(imageOn, skin, switchStyle.iconStyle);
-		onImage.pack();
+		if (imageOn != null) {
+			onImage = new IconButton(imageOn, skin, switchStyle.iconStyle);
+			onImage.pack();
+		}
 
-		offImage = new IconButton(imageOff, skin, switchStyle.iconStyle);
-		offImage.setDisabled(true);
-		offImage.pack();
+		if (imageOff != null) {
+			offImage = new IconButton(imageOff, skin, switchStyle.iconStyle);
+			offImage.setDisabled(true);
+			offImage.pack();
+		}
 
 		align(Align.left);
 
 		setStateOn(false);
 
 		addListener(new InputListener() {
+			private boolean drag;
 
 			@Override
 			public boolean touchDown(InputEvent event, float x, float y,
 					int pointer, int button) {
+				drag = false;
 				return true;
 			}
 
 			@Override
 			public void touchDragged(InputEvent event, float x, float y,
 					int pointer) {
+				drag = true;
 				setActor(null);
 				if (x <= current.getMinWidth() / 2) {
 					offsetX = 0;
@@ -137,8 +151,8 @@ public class Switch extends Container<Actor> {
 			@Override
 			public void touchUp(InputEvent event, float x, float y,
 					int pointer, int button) {
-				setStateOn((offsetX > (getWidth() - current.getMinWidth()) / 2 && getActor() == null)
-						|| (offsetX < (getWidth() - current.getMinWidth()) / 2 && getActor() != null));
+				setStateOn((offsetX > (getWidth() - current.getMinWidth()) / 2 && drag)
+						|| (offsetX < (getWidth() - current.getMinWidth()) / 2 && !drag));
 			}
 		});
 	}
@@ -146,9 +160,11 @@ public class Switch extends Container<Actor> {
 	public void setStateOn(boolean isOn) {
 		if (isOn) {
 			offsetX = getWidth() - style.on.getMinWidth();
-			setActor(onImage);
-			padLeft(getWidth() - offImage.getWidth()
-					- (current.getMinWidth() - offImage.getWidth()) / 2);
+			if (onImage != null) {
+				setActor(onImage);
+				padLeft(getWidth() - onImage.getWidth()
+						- (current.getMinWidth() - onImage.getWidth()) / 2);
+			}
 			current = style.on;
 			background = style.backgroundOn;
 			barColor = style.barColorOn;
@@ -156,8 +172,10 @@ public class Switch extends Container<Actor> {
 
 		} else if (!isOn) {
 			offsetX = 0;
-			setActor(offImage);
-			padLeft((current.getMinWidth() - offImage.getWidth()) / 2);
+			if (offImage != null) {
+				setActor(offImage);
+				padLeft((current.getMinWidth() - offImage.getWidth()) / 2);
+			}
 			current = style.off;
 			background = style.backgroundOff;
 			barColor = style.barColorOff;

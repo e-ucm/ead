@@ -101,11 +101,7 @@ public abstract class ComponentEditor<T extends ModelComponent> extends
 			public void clicked(InputEvent event, float x, float y) {
 				ModelEntity modelEntity = (ModelEntity) controller.getModel()
 						.getSelection().getSingle(Selection.SCENE_ELEMENT);
-				ModelComponent component = Q.getComponentById(modelEntity,
-						getComponentId());
-				controller.action(RemoveFromArray.class, modelEntity,
-						modelEntity.getComponents(), component);
-				((SceneElementContext) getParent()).closeEditor();
+				removeComponent(modelEntity);
 			}
 		});
 
@@ -148,6 +144,14 @@ public abstract class ComponentEditor<T extends ModelComponent> extends
 
 	@Override
 	public void release() {
+	}
+
+	protected void removeComponent(ModelEntity modelEntity) {
+		ModelComponent component = Q.getComponentById(modelEntity,
+				getComponentId());
+		controller.action(RemoveFromArray.class, modelEntity,
+				modelEntity.getComponents(), component);
+		((SceneElementContext) getParent()).closeEditor();
 	}
 
 	protected abstract void buildContent();

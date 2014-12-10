@@ -231,14 +231,17 @@ public abstract class SceneElementContext extends GroupContext implements
 			if (component.getId() != null) {
 				switch (event.getType()) {
 				case ADDED:
-					addIcon(component.getId(),
-							controller
-									.getApplicationAssets()
-									.getSkin()
-									.getDrawable(
-											((ComponentEditor) buttons.get(
-													component.getId())
-													.getUserObject()).getIcon()));
+					if (buttons.get(component.getId()) != null) {
+						addIcon(component.getId(),
+								controller
+										.getApplicationAssets()
+										.getSkin()
+										.getDrawable(
+												((ComponentEditor) buttons.get(
+														component.getId())
+														.getUserObject())
+														.getIcon()));
+					}
 					break;
 				case REMOVED:
 					Actor actor = iconsList.findActor(component.getId());
