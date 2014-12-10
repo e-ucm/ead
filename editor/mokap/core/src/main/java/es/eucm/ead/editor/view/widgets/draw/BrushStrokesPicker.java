@@ -78,6 +78,10 @@ public class BrushStrokesPicker extends ContextMenu {
 	}
 
 	public BrushStrokesPicker(Skin skin, BrushStrokesPickerStyle style) {
+
+		float pad = WidgetBuilder.dpToPixels(8);
+		pad(pad);
+
 		setBackground(style.background);
 		slider = new Slider(MIN_SIZE, MAX_SIZE, STEP_SIZE, false, skin,
 				style.sizeSliderStyleName);
@@ -124,10 +128,9 @@ public class BrushStrokesPicker extends ContextMenu {
 		});
 
 		add(iconButton);
-		add(slider).pad(WidgetBuilder.dpToPixels(style.sizeSliderPad))
-				.expandX().fillX();
+		add(slider).padRight(pad).expandX().fillX();
 		row();
-		add(colorPicker).colspan(2);
+		add(colorPicker).colspan(2).padBottom(pad);
 	}
 
 	/**

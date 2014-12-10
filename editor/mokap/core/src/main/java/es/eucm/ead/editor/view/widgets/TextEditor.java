@@ -43,6 +43,7 @@ import com.badlogic.gdx.scenes.scene2d.ui.Container;
 import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.scenes.scene2d.ui.SelectBox;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
+import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.scenes.scene2d.utils.Drawable;
 import com.badlogic.gdx.utils.Array;
 
@@ -69,13 +70,17 @@ public class TextEditor extends ContextMenu {
 
 	private SelectBox<String> selectTypo;
 
-	protected LinearLayout top;
+	protected Table top;
 
 	public TextEditor(Skin skin, I18N i18n) {
 		this(skin, skin.get(TextEditorStyle.class), i18n);
 	}
 
 	public TextEditor(Skin skin, TextEditorStyle style, I18N i18n) {
+
+		float pad = WidgetBuilder.dpToPixels(8);
+		pad(pad);
+
 		setBackground(style.background);
 
 		this.i18n = i18n;
@@ -100,11 +105,9 @@ public class TextEditor extends ContextMenu {
 			}
 		});
 
-		float pad = WidgetBuilder.dpToPixels(16);
-
-		top = new LinearLayout(true);
-		top.add(editLabel).margin(0, 0, pad * 0.5f, 0);
-		top.add(textContainer).expandX();
+		top = new Table();
+		top.add(editLabel).pad(pad);
+		top.add(textContainer).pad(pad).expandX().fillX();
 
 		selectTypo = new SelectBox<String>(skin);
 		selectTypo.getSelection().setProgrammaticChangeEvents(false);
@@ -122,14 +125,14 @@ public class TextEditor extends ContextMenu {
 		selectSize.setItems(size);
 
 		LinearLayout fontOptions = new LinearLayout(true);
-		fontOptions.add(selectTypo);
+		fontOptions.add(selectTypo).margin(0, 0, pad * 2, 0);
 		fontOptions.add(selectSize);
 
-		add(top).expandX().fillX().pad(0, pad, 0, pad);
+		add(top).expandX().fillX();
 		row();
-		add(fontOptions);
+		add(fontOptions).padBottom(pad);
 		row();
-		add(colorPicker);
+		add(colorPicker).padBottom(pad);
 	}
 
 	@Override
