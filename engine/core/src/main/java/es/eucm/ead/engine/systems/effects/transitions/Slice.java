@@ -115,32 +115,32 @@ public class Slice implements Transition {
 		float h = nextScreenRegion.h;
 		float x = nextScreenRegion.x;
 		float y = nextScreenRegion.y;
+		int numSlices = sliceIndex.size;
 
 		if (horizontal) {
 
 			Texture nextTex = nextScreen.getTexture();
-			float sliceHeight = (h / sliceIndex.size);
-			int sliceTexelHeight = (int) (nextTex.getHeight() / sliceIndex.size);
+			float sliceHeight = (h / numSlices);
+			int sliceTexelHeight = (int) (nextTex.getHeight() / numSlices);
 			completion = easing.apply(completion);
-			for (int i = 0; i < sliceIndex.size; ++i) {
+			for (int i = 0; i < numSlices; ++i) {
 				// current slice/column
-				y = i * sliceHeight;
+				y = i * sliceHeight + nextScreenRegion.y;
 				// vertical displacement using randomized
 				// list of slice indices
-				float offsetX = w
-						* (1 + sliceIndex.get(i) / (float) sliceIndex.size);
+				float offsetX = w * (1 + sliceIndex.get(i) / (float) numSlices);
 				switch (direction) {
 				case UP:
-					x = -offsetX + offsetX * completion;
+					x = nextScreenRegion.x - offsetX + offsetX * completion;
 					break;
 				case DOWN:
-					x = offsetX - offsetX * completion;
+					x = nextScreenRegion.x + offsetX - offsetX * completion;
 					break;
 				case UP_DOWN:
 					if (i % 2 == 0) {
-						x = -offsetX + offsetX * completion;
+						x = nextScreenRegion.x - offsetX + offsetX * completion;
 					} else {
-						x = offsetX - offsetX * completion;
+						x = nextScreenRegion.x + offsetX - offsetX * completion;
 					}
 					break;
 				}
@@ -151,28 +151,27 @@ public class Slice implements Transition {
 		} else {
 
 			Texture nextTex = nextScreen.getTexture();
-			float sliceWidth = (w / sliceIndex.size);
-			int sliceTexelWidth = (int) (nextTex.getWidth() / sliceIndex.size);
+			float sliceWidth = (w / numSlices);
+			int sliceTexelWidth = (int) (nextTex.getWidth() / numSlices);
 			completion = easing.apply(completion);
-			for (int i = 0; i < sliceIndex.size; ++i) {
+			for (int i = 0; i < numSlices; ++i) {
 				// current slice/column
-				x = i * sliceWidth;
+				x = i * sliceWidth + nextScreenRegion.x;
 				// vertical displacement using randomized
 				// list of slice indices
-				float offsetY = h
-						* (1 + sliceIndex.get(i) / (float) sliceIndex.size);
+				float offsetY = h * (1 + sliceIndex.get(i) / (float) numSlices);
 				switch (direction) {
 				case UP:
-					y = -offsetY + offsetY * completion;
+					y = nextScreenRegion.y - offsetY + offsetY * completion;
 					break;
 				case DOWN:
-					y = offsetY - offsetY * completion;
+					y = nextScreenRegion.y + offsetY - offsetY * completion;
 					break;
 				case UP_DOWN:
 					if (i % 2 == 0) {
-						y = -offsetY + offsetY * completion;
+						y = nextScreenRegion.y - offsetY + offsetY * completion;
 					} else {
-						y = offsetY - offsetY * completion;
+						y = nextScreenRegion.y + offsetY - offsetY * completion;
 					}
 					break;
 				}

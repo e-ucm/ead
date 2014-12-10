@@ -36,30 +36,28 @@
  */
 package es.eucm.ead.editor.view.widgets.selectors;
 
-import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Texture;
-import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
+import com.badlogic.gdx.scenes.scene2d.ui.Container;
 import com.badlogic.gdx.scenes.scene2d.ui.Image;
 import com.badlogic.gdx.scenes.scene2d.ui.Label;
+import com.badlogic.gdx.scenes.scene2d.ui.SelectBox;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
+import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.utils.Array;
 
 import es.eucm.ead.editor.control.Controller;
-import es.eucm.ead.editor.control.Selection;
 import es.eucm.ead.editor.control.MokapController.BackListener;
+import es.eucm.ead.editor.control.Selection;
 import es.eucm.ead.editor.model.Model;
 import es.eucm.ead.editor.model.Q;
 import es.eucm.ead.editor.view.SkinConstants;
 import es.eucm.ead.editor.view.widgets.AbstractWidget;
 import es.eucm.ead.editor.view.widgets.MultiWidget;
-import es.eucm.ead.editor.view.widgets.Tile;
 import es.eucm.ead.editor.view.widgets.WidgetBuilder;
-import es.eucm.ead.editor.view.widgets.layouts.Gallery;
-import es.eucm.ead.editor.view.widgets.layouts.Gallery.Cell;
-import es.eucm.ead.editor.view.widgets.layouts.Gallery.GalleryStyle;
+import es.eucm.ead.editor.view.widgets.layouts.LinearGallery;
 import es.eucm.ead.editor.view.widgets.layouts.LinearLayout;
 import es.eucm.ead.engine.I18N;
 import es.eucm.ead.engine.assets.Assets;
@@ -75,53 +73,57 @@ public class TransitionSelector extends LinearLayout implements
 
 	private SelectTransitionsGallery transitionSelector;
 
+	private SelectBox<String> box;
+
 	private Controller controller;
 
 	public TransitionSelector(Controller controller) {
 		super(false);
 		this.controller = controller;
 		Skin skin = controller.getApplicationAssets().getSkin();
-		I18N i18N = controller.getApplicationAssets().getI18N();
+		final I18N i18N = controller.getApplicationAssets().getI18N();
 		background(skin.getDrawable(SkinConstants.DRAWABLE_BLANK));
 
 		MultiWidget toolbar = new MultiWidget(skin, SkinConstants.STYLE_TOOLBAR);
 		LinearLayout buttons = new LinearLayout(true);
 		toolbar.addWidgets(buttons);
 
-		Actor cancel = WidgetBuilder.toolbarIcon(SkinConstants.IC_GO,
-				i18N.m("cancel"));
-		buttons.add(cancel);
-		cancel.addListener(new ClickListener() {
+		Actor accept = WidgetBuilder.toolbarIcon(SkinConstants.IC_CHECK,
+				i18N.m("accept"));
+		buttons.add(accept);
+		accept.addListener(new ClickListener() {
 			@Override
 			public void clicked(InputEvent event, float x, float y) {
-				selectorListener.cancelled();
+				Actor actor = transitionSelector.gallery.getCurrentPage();
+				selectorListener.selected(actor.getName());
 			}
 		});
 
 		buttons.add(new Label(i18N.m("select.transition"), skin,
 				SkinConstants.STYLE_TOOLBAR));
 		buttons.addSpace();
+		buttons.add(box = new SelectBox<String>(skin,
+				SkinConstants.STYLE_TOOLBAR));
 
 		add(toolbar).expandX();
 		add(
-				transitionSelector = new SelectTransitionsGallery(Gdx.graphics
-						.getHeight() / 1.6f, 2, controller
+				transitionSelector = new SelectTransitionsGallery(controller
 						.getEditorGameAssets(), skin, i18N)).expand(true, true);
+		transitionSelector.addListener(new ChangeListener() {
+			@Override
+			public void changed(ChangeEvent event, Actor actor) {
+				box.setSelected(i18N.m(transitionSelector.gallery
+						.getCurrentPage().getName()));
+			}
+		});
+		box.getSelection().setProgrammaticChangeEvents(false);
 	}
 
 	@Override
 	public void prepare(SelectorListener<String> selectorListener,
 			Object... args) {
 		this.selectorListener = selectorListener;
-		transitionSelector.gallery.uncheckAll();
 		transitionSelector.prepare(args);
-		if (args.length > 0 && args[0] != null) {
-			String transitionname = (String) args[0];
-			Actor actor = findActor(transitionname);
-			if (actor instanceof Cell) {
-				((Cell) actor).checked(true);
-			}
-		}
 	}
 
 	public class SelectTransitionsGallery extends AbstractWidget {
@@ -133,63 +135,28 @@ public class TransitionSelector extends LinearLayout implements
 		protected Array<TransitionDrawable> pendingCurrentTextures = new Array<TransitionDrawable>();
 		protected Array<TransitionDrawable> pendingNextTextures = new Array<TransitionDrawable>();
 
-		protected Gallery gallery;
+		protected LinearGallery gallery;
 
-		public SelectTransitionsGallery(float rowHeight, int columns,
-				Assets assets, Skin skin, I18N i18N) {
-			this(rowHeight, columns, assets, skin, i18N, skin
-					.get(GalleryStyle.class));
-		}
-
-		public SelectTransitionsGallery(float rowHeight, int columns,
-				Assets assets, Skin skin, I18N i18N, String galleryStyle) {
-			this(rowHeight, columns, assets, skin, i18N, skin.get(galleryStyle,
-					GalleryStyle.class));
-		}
-
-		public SelectTransitionsGallery(float rowHeight, int columns,
-				Assets assets, Skin skin, I18N i18N, GalleryStyle galleryStyle) {
-			addActor(gallery = new Gallery(rowHeight, columns, galleryStyle));
+		public SelectTransitionsGallery(Assets assets, Skin skin, I18N i18N) {
+			addActor(gallery = new LinearGallery(skin,
+					SkinConstants.DRAWABLE_BLANK));
 			gallery.setFillParent(true);
 			this.skin = skin;
 			this.i18N = i18N;
 		}
 
-		public void addTransitionPreview(String id, String title) {
+		public void addTransitionPreview(String id) {
 			TransitionDrawable thumbnail = new TransitionDrawable();
 			thumbnail.setTransition(Transition.fromValue(id), 2f);
-			Image image = new Image(thumbnail) {
-				@Override
-				public void draw(Batch batch, float parentAlpha) {
-					if (clipBegin(getX(), getY(), getWidth(), getHeight())) {
-						super.draw(batch, parentAlpha);
-						batch.flush();
-						clipEnd();
-					}
-				}
-			};
+			Image image = new Image(thumbnail);
 			pendingCurrentTextures.add(thumbnail);
 			pendingNextTextures.add(thumbnail);
-
-			title = title == null || "".equals(title) ? i18N.m("untitled")
-					: title;
-			Tile tile = WidgetBuilder.tile(image, title);
-			tile.setName(id);
-			prepareGalleryItem(tile, id);
-			Cell cell = gallery.add(tile);
-			cell.setName(id);
-		}
-
-		protected void prepareGalleryItem(Actor actor, final String id) {
-			actor.addListener(new ClickListener() {
-				@Override
-				public void clicked(InputEvent event, float x, float y) {
-					gallery.uncheckAll();
-					Cell cell = (Cell) event.getListenerActor().getParent();
-					cell.checked(true);
-					selectorListener.selected(id);
-				}
-			});
+			Container<Image> container = new Container<Image>(image);
+			container.setClip(true);
+			container.fill();
+			container.background(skin.getDrawable(SkinConstants.DRAWABLE_PAGE));
+			container.setName(id);
+			gallery.add(container);
 		}
 
 		public void prepare(Object... args) {
@@ -204,12 +171,25 @@ public class TransitionSelector extends LinearLayout implements
 
 			if (pendingCurrentTextures.size == 0) {
 				Transition[] values = Transition.values();
+				String[] items = new String[values.length];
 				for (int i = 0; i < values.length; ++i) {
 					Transition transition = values[i];
 					String name = transition.toString();
-					addTransitionPreview(name, i18N.m(name));
+					addTransitionPreview(name);
+					items[i] = i18N.m(name);
 				}
+
+				box.setItems(items);
+				box.addListener(new ChangeListener() {
+
+					@Override
+					public void changed(ChangeEvent event, Actor actor) {
+						SelectBox box = (SelectBox) actor;
+						gallery.scrollToPage(box.getSelectedIndex());
+					}
+				});
 			}
+			box.setSelected(i18N.m((String) args[0]));
 
 			Q.getThumbnailTexture(selectedScene,
 					new AssetLoadedCallback<Texture>() {

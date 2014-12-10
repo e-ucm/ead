@@ -106,22 +106,22 @@ public class Slide implements Transition {
 		// calculate position
 		switch (direction) {
 		case LEFT:
-			x = -w * alpha;
+			x = currScreenRegion.x - w * alpha;
 			if (!slideOut)
 				x += w;
 			break;
 		case RIGHT:
-			x = w * alpha;
+			x = currScreenRegion.x + w * alpha;
 			if (!slideOut)
 				x -= w;
 			break;
 		case UP:
-			y = h * alpha;
+			y = currScreenRegion.y + h * alpha;
 			if (!slideOut)
 				y -= h;
 			break;
 		case DOWN:
-			y = -h * alpha;
+			y = currScreenRegion.y - h * alpha;
 			if (!slideOut)
 				y += h;
 			break;

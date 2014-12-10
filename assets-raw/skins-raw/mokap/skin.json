@@ -215,6 +215,10 @@
         "semi_transparent_circle": {
             "name": "circle",
             "color": "semi_transparent"
+        },
+        "black_spinner": {
+            "name": "spinner_default",
+            "color": "black"
         }
     },
     "com.badlogic.gdx.scenes.scene2d.ui.Label$LabelStyle": {
@@ -318,6 +322,12 @@
             "fontColorSelected": "black",
             "selection": "transparent_bg",
             "fontColorUnselected": "black"
+        },        
+        "gray": {
+            "font": "default_font",
+            "fontColorSelected": "black",
+            "selection": "light_gray_bg",
+            "fontColorUnselected": "dark_gray"
         }
     },
     "com.badlogic.gdx.scenes.scene2d.ui.ScrollPane$ScrollPaneStyle": {
@@ -333,13 +343,22 @@
     },
     "com.badlogic.gdx.scenes.scene2d.ui.SelectBox$SelectBoxStyle": {
         "default": {
-            "background": "spinner_default",
-            "backgroundOver": "spinner_default",
-            "backgroundOpen": "spinner_default",
+            "background": "black_spinner",
+            "backgroundOver": "black_spinner",
+            "backgroundOpen": "black_spinner",
             "font": "default_font",
             "fontColor": "black",
             "scrollStyle": "pane",
             "listStyle": "default"
+        }, 
+        "toolbar": {
+            "background": "spinner_default",
+            "backgroundOver": "spinner_default",
+            "backgroundOpen": "spinner_default",
+            "font": "default_font",
+            "fontColor": "white",
+            "scrollStyle": "pane",
+            "listStyle": "gray"
         }
     },
     "com.badlogic.gdx.scenes.scene2d.ui.TextField$TextFieldStyle": {
