@@ -54,7 +54,7 @@
 		<maven-annotations.version>3.0</maven-annotations.version>
 		<maven-plugin-plugin.version>3.2</maven-plugin-plugin.version>
 		<maven-testing.api.version>2.1</maven-testing.api.version>
-		<gdx.version>1.0.0</gdx.version>
+		<gdx.version>1.5.0</gdx.version>
 	</properties>
 	<dependencies>
 		<dependency>
