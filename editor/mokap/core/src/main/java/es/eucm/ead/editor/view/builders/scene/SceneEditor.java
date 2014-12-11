@@ -37,8 +37,11 @@
 package es.eucm.ead.editor.view.builders.scene;
 
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.math.Interpolation;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
+import com.badlogic.gdx.scenes.scene2d.Touchable;
+import com.badlogic.gdx.scenes.scene2d.actions.Actions;
 import com.badlogic.gdx.scenes.scene2d.ui.Button;
 import com.badlogic.gdx.scenes.scene2d.utils.Align;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
@@ -67,7 +70,6 @@ import es.eucm.ead.editor.view.SkinConstants;
 import es.eucm.ead.editor.view.builders.FileView;
 import es.eucm.ead.editor.view.builders.scene.context.SceneElementContext;
 import es.eucm.ead.editor.view.builders.scene.draw.BrushStrokes;
-import es.eucm.ead.editor.view.builders.scene.fx.FxContext;
 import es.eucm.ead.editor.view.builders.scene.interaction.InteractionContext;
 import es.eucm.ead.editor.view.builders.scene.play.TestGameView;
 import es.eucm.ead.editor.view.widgets.AbstractWidget;
@@ -82,6 +84,8 @@ import es.eucm.ead.schemax.Layer;
 
 public class SceneEditor extends BaseView implements ModelView,
 		SelectionListener, BackListener {
+
+	public static final float ANIMATION_TIME = 0.3f;
 
 	public static final int INSERT = 0, PAINT = 2, FX = 3, INTERACTION = 5;
 
@@ -107,11 +111,11 @@ public class SceneEditor extends BaseView implements ModelView,
 
 	private BrushStrokes brushStrokes;
 
-	private FxContext fxContext;
-
 	private InteractionContext interactionContext;
 
 	private Button addButton;
+
+	private Button interactiveButton;
 
 	public SceneEditor(Controller controller) {
 		super(controller.getApplicationAssets().getSkin());
@@ -133,6 +137,22 @@ public class SceneEditor extends BaseView implements ModelView,
 		container.addActor(sceneGroupEditor);
 		container.addActor(gameView);
 
+		interactiveButton = WidgetBuilder.imageButton(SkinConstants.IC_TOUCH,
+				SkinConstants.STYLE_CIRCLE);
+		interactiveButton.addListener(new ClickListener() {
+			@Override
+			public void clicked(InputEvent event, float x, float y) {
+				selectionContext.show();
+			}
+		});
+		interactiveButton.setTransform(true);
+		interactiveButton.pack();
+		interactiveButton.setOrigin(interactiveButton.getWidth() / 2,
+				interactiveButton.getHeight() / 2);
+		interactiveButton.setScale(0);
+		interactiveButton.setVisible(false);
+		container.addActor(interactiveButton);
+
 		CirclesMenu circlesMenu = buildAddButtons();
 		addButton = WidgetBuilder.button(SkinConstants.STYLE_ADD);
 		addButton.pack();
@@ -152,8 +172,7 @@ public class SceneEditor extends BaseView implements ModelView,
 
 		interactionContext = new InteractionContext(controller, controller
 				.getApplicationAssets().getSkin());
-		fxContext = new FxContext(controller, controller.getApplicationAssets()
-				.getSkin());
+		setContext(interactionContext);
 	}
 
 	public SceneGroupEditor getGroupEditor() {
@@ -163,6 +182,8 @@ public class SceneEditor extends BaseView implements ModelView,
 	@Override
 	public void layout() {
 		super.layout();
+		interactiveButton.setPosition(getWidth() - addButton.getWidth()
+				- WidgetBuilder.dpToPixels(32), WidgetBuilder.dpToPixels(96));
 		addButton.setPosition(
 				getWidth() - addButton.getWidth()
 						- WidgetBuilder.dpToPixels(32),
@@ -193,6 +214,25 @@ public class SceneEditor extends BaseView implements ModelView,
 
 	@Override
 	public void modelChanged(SelectionEvent event) {
+		interactiveButton.clearActions();
+		if (event.getContextId().equals(Selection.SCENE_ELEMENT)
+				&& controller.getModel().getSelection()
+						.get(Selection.SCENE_ELEMENT).length != 1) {
+			lockContextOnly(true);
+			interactiveButton
+					.addAction(Actions.sequence(Actions
+							.touchable(Touchable.disabled), Actions.scaleTo(0,
+							0, ANIMATION_TIME, Interpolation.sineIn), Actions
+							.visible(false)));
+		} else {
+			lockContextOnly(false);
+			interactiveButton
+					.addAction(Actions.sequence(Actions.visible(true),
+							Actions.scaleTo(1, 1, ANIMATION_TIME,
+									Interpolation.sineIn), Actions
+									.touchable(Touchable.enabled)));
+		}
+
 		if (event.getType() == Type.REMOVED
 				&& event.getContextId().equals(Selection.SCENE)
 				&& event.getSelection().length > 0) {
@@ -237,6 +277,7 @@ public class SceneEditor extends BaseView implements ModelView,
 		switch (mode) {
 		case COMPOSE:
 			lockPanels(false);
+			setContext(interactionContext);
 			toolbar.setSelectedWidget(INSERT + (selection ? 1 : 0));
 			sceneGroupEditor.setOnlySelection(false);
 			controller.action(ShowInfoPanel.class, TypePanel.COMPOSE,
@@ -252,16 +293,6 @@ public class SceneEditor extends BaseView implements ModelView,
 			lockPanels(true);
 			toolbar.setSelectedWidget(PAINT);
 			brushStrokes.show();
-			break;
-		case INTERACTION:
-			lockPanels(false);
-			toolbar.setSelectedWidget(INTERACTION + (selection ? 1 : 0));
-			setContext(interactionContext);
-			break;
-		case FX:
-			lockPanels(false);
-			toolbar.setSelectedWidget(FX + (selection ? 1 : 0));
-			setContext(fxContext);
 			break;
 		case PLAY:
 			addButton.setVisible(false);
@@ -296,16 +327,6 @@ public class SceneEditor extends BaseView implements ModelView,
 			gameView.setVisible(false);
 			sceneGroupEditor.setVisible(true);
 			sceneGroupEditor.prepare();
-			break;
-		case INTERACTION:
-			controller.getCommands().popStack(false);
-			setSelectionContext(null);
-			interactionContext.release();
-			break;
-		case FX:
-			controller.getCommands().popStack(false);
-			setSelectionContext(null);
-			fxContext.release();
 			break;
 		case DRAW:
 			addButton.setVisible(true);
