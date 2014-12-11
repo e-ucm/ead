@@ -174,8 +174,12 @@ public abstract class SceneElementContext extends GroupContext implements
 	}
 
 	private void readSceneElement() {
-		ModelEntity sceneElement = (ModelEntity) controller.getModel()
-				.getSelection().getSingle(Selection.SCENE_ELEMENT);
+		ModelEntity sceneElement = null;
+		if (controller.getModel().getSelection().get(Selection.SCENE_ELEMENT).length == 1) {
+			sceneElement = (ModelEntity) controller.getModel().getSelection()
+					.getSingle(Selection.SCENE_ELEMENT);
+		}
+
 		clearIcons();
 		closeEditor();
 		if (sceneElement != null) {

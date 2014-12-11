@@ -37,6 +37,7 @@
 package es.eucm.ead.editor.view.builders.scene.interaction;
 
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
+
 import es.eucm.ead.editor.control.Controller;
 import es.eucm.ead.editor.view.builders.scene.context.SceneElementContext;
 
@@ -48,6 +49,7 @@ public class InteractionContext extends SceneElementContext {
 
 	protected void addContent() {
 		addComponentEditor(new LinkEditor(controller));
+		addComponentEditor(new EnterAnimationEdtior(controller));
 	}
 
 }
