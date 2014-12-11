@@ -48,8 +48,11 @@ import es.eucm.ead.editor.control.workers.Worker.WorkerListener;
  * <dd><strong>args[0]</strong> <em>{@link Class}</em> Worker class</dd>
  * <dd><strong>args[1]</strong> <em>{@link WorkerListener}</em> A listener for
  * the worker</dd>
- * <dd><strong>args[2]...</strong> <em>{@link Object}</em> Arguments passed to
- * the worker</dd>
+ * <dd><strong>args[2]</strong> <em>Optional {@link Boolean}</em> If the
+ * previous workers with the same class should be cancelled (true) or this
+ * worker should be appended among the others</dd>
+ * <dd><strong>args[2 or 3]...</strong> <em>{@link Object}</em> Arguments passed
+ * to the worker</dd>
  * </dl>
  */
 public class ExecuteWorker extends EditorAction {
@@ -62,9 +65,18 @@ public class ExecuteWorker extends EditorAction {
 
 	@Override
 	public void perform(Object... args) {
-		Object[] workerArguments = new Object[args.length - 2];
-		System.arraycopy(args, 2, workerArguments, 0, workerArguments.length);
+		boolean cancelOthers = true;
+		int index = 2;
+		if (args.length > 2) {
+			if (args[2] instanceof Boolean) {
+				index = 3;
+				cancelOthers = (Boolean) args[2];
+			}
+		}
+		Object[] workerArguments = new Object[args.length - index];
+		System.arraycopy(args, index, workerArguments, 0,
+				workerArguments.length);
 		controller.getWorkerExecutor().execute((Class) args[0],
-				(WorkerListener) args[1], workerArguments);
+				(WorkerListener) args[1], cancelOthers, workerArguments);
 	}
 }

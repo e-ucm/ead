@@ -36,14 +36,15 @@
  */
 package es.eucm.ead.editor.control.workers;
 
-import es.eucm.ead.editor.control.workers.Worker.WorkerListener;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
+
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
+import es.eucm.ead.editor.control.workers.Worker.WorkerListener;
 
 public class WorkerExecutorTest {
 
@@ -59,8 +60,8 @@ public class WorkerExecutorTest {
 		TestWorkerListener t1 = new TestWorkerListener();
 		TestWorkerListener t2 = new TestWorkerListener();
 
-		workerExecutor.execute(TestWorker.class, t1);
-		workerExecutor.execute(TestWorker.class, t2);
+		workerExecutor.execute(TestWorker.class, t1, true);
+		workerExecutor.execute(TestWorker.class, t2, true);
 
 		Thread.sleep(3000);
 
@@ -73,13 +74,32 @@ public class WorkerExecutorTest {
 
 		TestWorkerListener t1 = new TestWorkerListener();
 		TestWorkerListener t2 = new TestWorkerListener();
-		workerExecutor.execute(InfiniteWorker.class, t1);
-		workerExecutor.execute(InfiniteWorker.class, t2);
+		workerExecutor.execute(InfiniteWorker.class, t1, true);
+		workerExecutor.execute(InfiniteWorker.class, t2, true);
 
 		Thread.sleep(500);
 
 		assertTrue(t1.cancelled && !t1.done);
 		assertTrue(t2.done && !t2.cancelled);
+		assertFalse(workerExecutor.isWorking());
+
+		workerExecutor.cancelAll();
+		t1 = new TestWorkerListener();
+		t2 = new TestWorkerListener();
+
+		workerExecutor.execute(InfiniteWorker.class, t1, false);
+		workerExecutor.execute(InfiniteWorker.class, t2, false);
+
+		Thread.sleep(500);
+
+		assertTrue(!t1.cancelled && !t1.done);
+		assertTrue(t2.done && !t2.cancelled);
+
+		workerExecutor.cancel(InfiniteWorker.class, t1);
+
+		Thread.sleep(500);
+
+		assertTrue(t1.cancelled && !t1.done);
 		assertFalse(workerExecutor.isWorking());
 	}
 
