@@ -153,6 +153,14 @@ public class SceneGroupEditor extends GroupEditor implements ModelView,
 		fitButton = WidgetBuilder.imageButton(SkinConstants.IC_FIT,
 				SkinConstants.STYLE_SECONDARY_CIRCLE);
 		fitButton.addListener(new ClickListener() {
+
+			@Override
+			public boolean touchDown(InputEvent event, float x, float y,
+					int pointer, int button) {
+				event.cancel();
+				return super.touchDown(event, x, y, pointer, button);
+			}
+
 			@Override
 			public void clicked(InputEvent event, float x, float y) {
 				fit();
@@ -166,7 +174,7 @@ public class SceneGroupEditor extends GroupEditor implements ModelView,
 	@Override
 	public void enterGroupEdition(Group group) {
 		super.enterGroupEdition(group);
-		sceneEditor.lockPanels(true);
+		sceneEditor.lockPanels(getRootGroup() != getEditedGroup());
 	}
 
 	@Override
