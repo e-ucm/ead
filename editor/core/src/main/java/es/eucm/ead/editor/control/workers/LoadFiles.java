@@ -36,10 +36,8 @@
  */
 package es.eucm.ead.editor.control.workers;
 
-import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.utils.Array;
-
 import es.eucm.ead.editor.control.Controller;
 import es.eucm.ead.editor.utils.ProjectUtils;
 import es.eucm.ead.engine.assets.Assets;
@@ -47,9 +45,7 @@ import es.eucm.ead.schemax.GameStructure;
 
 /**
  * Receives a path (args[0]) and loads all its children that are images.
- * Automatically creates thumbnails for each image. The thumbnails are stored in
- * a child folder named {@value #THUMBNAILS_FOLDER_NAME} with the same name as
- * the original image.
+ * Automatically creates thumbnails for each image.
  * <dl>
  * <dt><strong>The result arguments are</strong></dt>
  * <dd><strong>args[0]</strong> <em>String</em> path to the image.
@@ -102,10 +98,8 @@ public class LoadFiles extends Worker {
 			String thumbnailPath = file.path();
 			if (!thumbnail.exists()
 					|| thumbnail.lastModified() < file.lastModified()) {
-				int maxWidth = (int) (Gdx.graphics.getWidth() * .25f);
-				int maxHeight = (int) (Gdx.graphics.getWidth() * .3f);
-				if (controller.getPlatform().scaleImage(file, maxWidth,
-						maxHeight, thumbnail)) {
+				if (controller.getPlatform().getImageUtils()
+						.scale(file, thumbnail) != -1) {
 					thumbnailPath = thumbnail.path();
 				}
 			}

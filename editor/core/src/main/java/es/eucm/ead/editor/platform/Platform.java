@@ -36,21 +36,18 @@
  */
 package es.eucm.ead.editor.platform;
 
-import java.io.IOException;
-import java.io.InputStream;
-import java.net.HttpURLConnection;
-
 import com.badlogic.gdx.Input.TextInputListener;
 import com.badlogic.gdx.Net.HttpRequest;
-import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.math.Vector2;
-
 import es.eucm.ead.editor.control.Controller;
 import es.eucm.ead.editor.control.Tracker;
 import es.eucm.ead.editor.utils.ProjectUtils;
 import es.eucm.ead.engine.I18N;
-import es.eucm.ead.schema.data.Dimension;
+import es.eucm.ead.engine.assets.GameAssets.ImageUtils;
+
+import java.io.IOException;
+import java.net.HttpURLConnection;
 
 /**
  * Interface to implements platform-dependent functionality.
@@ -159,17 +156,6 @@ public interface Platform {
 	void setBatch(Batch spriteBatch);
 
 	/**
-	 * Returns the dimensions of the image represented by the given
-	 * {@code imageInputStream} without needing to load the whole image from
-	 * disk.
-	 * 
-	 * @param imageInputStream
-	 *            The inputStream of the image to determine its dimensions
-	 * @return The Dimension with the width and height of the image.
-	 */
-	Dimension getImageDimension(InputStream imageInputStream);
-
-	/**
 	 * @return the default string locale in the device
 	 */
 	String getLocale();
@@ -206,22 +192,9 @@ public interface Platform {
 			throws IOException;
 
 	/**
-	 * Creates a scaled image given a source {@code imageFile}. The
-	 * implementation may vary with the platform.
-	 * 
-	 * @param imageFile
-	 *            the image that we want to scale.
-	 * @param maxWidth
-	 *            the maximum width of the resulting image.
-	 * @param maxHeight
-	 *            the maximum height of the resulting image.
-	 * @param resultImage
-	 *            a {@link FileHandle} to the resulting scaled image or null if
-	 *            you want to override the source {@code imageFile}.
-	 * @return false if something went wrong, true if the scaling succeeded.
+	 * @return tools to interact with images
 	 */
-	boolean scaleImage(FileHandle imageFile, int maxWidth, int maxHeight,
-			FileHandle resultImage);
+	public ImageUtils getImageUtils();
 
 	/**
 	 * 

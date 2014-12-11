@@ -72,8 +72,8 @@ public class EditorGameAssets extends GameAssets {
 	 * @param files
 	 *            object granting access to files
 	 */
-	public EditorGameAssets(Files files) {
-		super(files);
+	public EditorGameAssets(Files files, ImageUtils imageUtils) {
+		super(files, imageUtils);
 		getI18N().setI18nPath(I18N_PATH);
 		setOutputType(OutputType.json);
 		setIgnores();

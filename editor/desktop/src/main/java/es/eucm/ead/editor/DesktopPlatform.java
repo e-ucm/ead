@@ -43,7 +43,6 @@ import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
-
 import es.eucm.ead.editor.control.Controller;
 import es.eucm.ead.editor.control.GATracker;
 import es.eucm.ead.editor.control.Preferences;
@@ -53,14 +52,7 @@ import es.eucm.ead.editor.platform.Platform.FileChooserListener;
 import es.eucm.ead.editor.view.widgets.dialogs.FileChooserDialog;
 import es.eucm.ead.engine.I18N;
 
-import javax.imageio.ImageIO;
-import javax.imageio.ImageReader;
-import javax.imageio.stream.ImageInputStream;
-
-import java.awt.Dimension;
-import java.io.IOException;
-import java.io.InputStream;
-import java.util.Iterator;
+import java.awt.*;
 
 public class DesktopPlatform extends AbstractPlatform implements
 		FileChooserListener {
@@ -168,53 +160,8 @@ public class DesktopPlatform extends AbstractPlatform implements
 		// Nothing to do
 	}
 
-	/**
-	 * Determines the width and height of an image without loading it from disk.
-	 */
-	@Override
-	public es.eucm.ead.schema.data.Dimension getImageDimension(
-			InputStream imageInputStream) {
-		ImageInputStream in = null;
-		try {
-			in = ImageIO.createImageInputStream(imageInputStream);
-			final Iterator<ImageReader> readers = ImageIO.getImageReaders(in);
-			if (readers.hasNext()) {
-				ImageReader reader = readers.next();
-				try {
-					reader.setInput(in);
-					es.eucm.ead.schema.data.Dimension dimension = new es.eucm.ead.schema.data.Dimension();
-					dimension.setWidth(reader.getWidth(0));
-					dimension.setHeight(reader.getHeight(0));
-					return dimension;
-				} catch (IOException e) {
-					e.printStackTrace();
-				} finally {
-					reader.dispose();
-				}
-			}
-		} catch (IOException e) {
-			e.printStackTrace();
-		} finally {
-			if (in != null)
-				try {
-					in.close();
-				} catch (IOException e) {
-					e.printStackTrace();
-				}
-		}
-		return null;
-	}
-
-	@Override
-	public boolean scaleImage(FileHandle imageFile, int maxWidth,
-			int maxHeight, FileHandle resultImage) {
-		// TODO
-		return false;
-	}
-
 	@Override
 	public void getMultilineTextInput(TextInputListener listener, String title,
 			String text, I18N i18n) {
-
 	}
 }

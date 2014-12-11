@@ -40,6 +40,7 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.backends.lwjgl.LwjglApplicationConfiguration;
 import com.badlogic.gdx.backends.lwjgl.LwjglFrame;
 import es.eucm.ead.engine.effects.VideoEngineObject;
+import es.eucm.ead.engine.utils.DesktopImageUtils;
 import es.eucm.ead.engine.utils.SwingEDTUtils;
 
 import javax.swing.*;
@@ -122,12 +123,14 @@ public class EngineDesktop {
 	}
 
 	public void run(final String gameUri, final boolean internal) {
-		run(new EngineApplicationListener(), gameUri, internal, true);
+		run(new EngineApplicationListener(new DesktopImageUtils()), gameUri,
+				internal, true);
 	}
 
 	public void run(final String gameUri, final boolean internal,
 			final boolean forceExit) {
-		run(new EngineApplicationListener(), gameUri, internal, forceExit);
+		run(new EngineApplicationListener(new DesktopImageUtils()), gameUri,
+				internal, forceExit);
 	}
 
 	/**

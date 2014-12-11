@@ -36,27 +36,25 @@
  */
 package es.eucm.ead.editor;
 
-import java.awt.FlowLayout;
-import java.awt.event.WindowEvent;
-import java.awt.event.WindowFocusListener;
-
-import javax.swing.JDialog;
-import javax.swing.JOptionPane;
-import javax.swing.JPanel;
-import javax.swing.JTextArea;
-import javax.swing.SwingUtilities;
-
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input.TextInputListener;
 import com.badlogic.gdx.backends.lwjgl.LwjglFrame;
 import com.badlogic.gdx.files.FileHandle;
-
 import es.eucm.ead.editor.control.Controller;
 import es.eucm.ead.editor.platform.MokapPlatform;
 import es.eucm.ead.editor.platform.MokapPlatform.ImageCapturedListener.Result;
 import es.eucm.ead.engine.I18N;
+import es.eucm.ead.engine.assets.GameAssets.ImageUtils;
+import es.eucm.ead.engine.utils.DesktopImageUtils;
+
+import javax.swing.*;
+import java.awt.*;
+import java.awt.event.WindowEvent;
+import java.awt.event.WindowFocusListener;
 
 public class MokapDesktopPlatform extends MokapPlatform {
+
+	private ImageUtils imageUtils = new DesktopImageUtils();
 
 	@Override
 	public void setTitle(String title) {
@@ -187,9 +185,7 @@ public class MokapDesktopPlatform extends MokapPlatform {
 	}
 
 	@Override
-	public boolean scaleImage(FileHandle imageFile, int maxWidth,
-			int maxHeight, FileHandle resultImage) {
-		imageFile.copyTo(resultImage);
-		return true;
+	public ImageUtils getImageUtils() {
+		return imageUtils;
 	}
 }

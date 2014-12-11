@@ -55,7 +55,8 @@ public class MockGame {
 	}
 
 	public MockGame(String path) {
-		engineApplicationListener = new EngineApplicationListener();
+		engineApplicationListener = new EngineApplicationListener(
+				new MockImageUtils());
 		application = new MockApplication(engineApplicationListener, 800, 600);
 		application.start();
 		engineApplicationListener.getGameLoader().loadGame(path, true);

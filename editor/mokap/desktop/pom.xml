@@ -15,6 +15,11 @@
         </dependency>
         <dependency>
             <groupId>es.e-ucm.ead</groupId>
+            <artifactId>engine-desktop</artifactId>
+            <version>${project.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>es.e-ucm.ead</groupId>
             <artifactId>mokap-core</artifactId>
             <version>${project.version}</version>
         </dependency>

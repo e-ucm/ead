@@ -49,7 +49,8 @@ public class EAdEngineActivity extends AndroidApplication {
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		AndroidApplicationConfiguration config = new AndroidApplicationConfiguration();
-		EngineApplicationListener engineApplicationListener = new EngineApplicationListener();
+		EngineApplicationListener engineApplicationListener = new EngineApplicationListener(
+				new AndroidImageUtils());
 		initialize(engineApplicationListener, config);
 		// engineApplicationListener.loadGame("", true);
 	}

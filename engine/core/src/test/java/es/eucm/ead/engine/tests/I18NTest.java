@@ -48,6 +48,7 @@ import es.eucm.ead.engine.I18N;
 import es.eucm.ead.engine.I18N.Lang;
 import es.eucm.ead.engine.mock.MockApplication;
 import es.eucm.ead.engine.mock.MockFiles;
+import es.eucm.ead.engine.mock.MockImageUtils;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -71,7 +72,7 @@ public class I18NTest {
 		MockApplication.initStatics();
 		assertTrue("Test i18n must be reachable",
 				I18NTest.class.getResourceAsStream("/i18n_test") != null);
-		i18N = new I18N(new GameAssets(new MockFiles()) {
+		i18N = new I18N(new GameAssets(new MockFiles(), new MockImageUtils()) {
 			@Override
 			public FileHandle resolve(String path) {
 				return super.resolve("i18n_test/" + path);

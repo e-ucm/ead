@@ -40,18 +40,11 @@ import com.badlogic.gdx.ApplicationListener;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.glutils.ShaderProgram;
-import com.badlogic.gdx.scenes.scene2d.InputEvent;
-import com.badlogic.gdx.scenes.scene2d.InputListener;
 import com.badlogic.gdx.scenes.scene2d.Stage;
-import com.badlogic.gdx.scenes.scene2d.utils.UIUtils;
-import com.badlogic.gdx.utils.Pools;
+import es.eucm.ead.engine.assets.GameAssets.ImageUtils;
 import es.eucm.ead.engine.assets.GameAssets;
-import es.eucm.ead.engine.components.behaviors.events.RuntimeKey;
 import es.eucm.ead.engine.expressions.operators.OperationsFactory;
-import es.eucm.ead.engine.components.KeyPressedComponent;
-import es.eucm.ead.engine.entities.EngineEntity;
 import es.eucm.ead.engine.variables.VariablesManager;
-import es.eucm.ead.schemax.Layer;
 
 import java.util.HashMap;
 
@@ -69,6 +62,12 @@ public class EngineApplicationListener implements ApplicationListener {
 
 	private DefaultGameView gameView;
 
+	private ImageUtils imageUtils;
+
+	public EngineApplicationListener(ImageUtils imageUtils) {
+		this.imageUtils = imageUtils;
+	}
+
 	@Override
 	public void create() {
 		// OpenGL settings
@@ -78,7 +77,7 @@ public class EngineApplicationListener implements ApplicationListener {
 		gameLoop = new GameLoop();
 		gameView = new DefaultGameView(gameLoop);
 
-		gameAssets = new GameAssets(Gdx.files);
+		gameAssets = new GameAssets(Gdx.files, imageUtils);
 
 		Accessor accessor = new Accessor(new HashMap<String, Object>());
 		OperationsFactory operationsFactory = new OperationsFactory(gameLoop,

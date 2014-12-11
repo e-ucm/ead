@@ -41,6 +41,7 @@ import es.eucm.ead.engine.expressions.operators.OperationsFactory;
 import es.eucm.ead.engine.mock.MockApplication;
 import es.eucm.ead.engine.mock.MockComponentProcessor;
 import es.eucm.ead.engine.mock.MockFiles;
+import es.eucm.ead.engine.mock.MockImageUtils;
 import es.eucm.ead.engine.mock.schema.MockEffect;
 import es.eucm.ead.engine.mock.schema.MockModelComponent;
 import es.eucm.ead.engine.variables.VariablesManager;
@@ -75,7 +76,7 @@ public class EngineTest {
 
 	@Before
 	public void setUp() {
-		gameAssets = new GameAssets(new MockFiles());
+		gameAssets = new GameAssets(new MockFiles(), new MockImageUtils());
 		gameLoop = new GameLoop();
 		gameView = new DefaultGameView(gameLoop);
 		accessor = new Accessor();

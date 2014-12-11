@@ -39,6 +39,7 @@ package es.eucm.ead.engine.tests.assets;
 import es.eucm.ead.engine.assets.GameAssets;
 import es.eucm.ead.engine.mock.MockApplication;
 import es.eucm.ead.engine.mock.MockFiles;
+import es.eucm.ead.engine.mock.MockImageUtils;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
@@ -57,7 +58,7 @@ public class GameAssetsTest {
 	public static void setUpClass() {
 		MockApplication.initStatics();
 		MockFiles files = new MockFiles();
-		assets = new GameAssets(files);
+		assets = new GameAssets(files, new MockImageUtils());
 		assets.setLoadingPath("", true);
 	}
 

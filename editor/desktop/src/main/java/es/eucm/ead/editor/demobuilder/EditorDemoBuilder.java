@@ -40,22 +40,24 @@ import com.badlogic.gdx.Application;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.graphics.Pixmap;
+import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.GdxRuntimeException;
 import com.badlogic.gdx.utils.Json;
 import com.vividsolutions.jts.geom.Geometry;
 import es.eucm.ead.editor.DesktopPlatform;
 import es.eucm.ead.editor.utils.GeometryUtils;
-import es.eucm.ead.engine.utils.ZipUtils;
 import es.eucm.ead.engine.EngineDesktop;
 import es.eucm.ead.engine.assets.GameAssets;
 import es.eucm.ead.engine.demobuilder.DemoBuilder;
+import es.eucm.ead.engine.utils.DesktopImageUtils;
+import es.eucm.ead.engine.utils.ZipUtils;
 import es.eucm.ead.schema.data.Dimension;
 import es.eucm.ead.schema.data.shape.Polygon;
 import es.eucm.ead.schema.entities.ModelEntity;
 import es.eucm.ead.schema.renderers.Image;
 
-import java.io.*;
+import java.io.InputStream;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -121,7 +123,7 @@ public abstract class EditorDemoBuilder extends DemoBuilder {
 	 * @param root
 	 */
 	public EditorDemoBuilder(String root) {
-		this.gameAssets = new GameAssets(Gdx.files);
+		this.gameAssets = new GameAssets(Gdx.files, new DesktopImageUtils());
 		this.root = root;
 		platform = new DesktopPlatform();
 	}
@@ -156,7 +158,12 @@ public abstract class EditorDemoBuilder extends DemoBuilder {
 	}
 
 	protected Dimension getImageDimension(String imageUri) {
-		return platform.getImageDimension(gameAssets.resolve(imageUri).read());
+		Dimension dimension = new Dimension();
+		Vector2 size = new Vector2();
+		platform.getImageUtils().imageSize(gameAssets.resolve(imageUri), size);
+		dimension.setWidth((int) size.x);
+		dimension.setHeight((int) size.y);
+		return dimension;
 	}
 
 	// ////////////////////////////////////////////////////

@@ -36,15 +36,6 @@
  */
 package es.eucm.ead.editor.platform;
 
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.OutputStream;
-import java.io.OutputStreamWriter;
-import java.net.HttpURLConnection;
-import java.net.URL;
-import java.util.Locale;
-import java.util.Map;
-
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Net;
 import com.badlogic.gdx.Net.HttpMethods;
@@ -53,9 +44,18 @@ import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.net.HttpStatus;
 import com.badlogic.gdx.utils.Pools;
 import com.badlogic.gdx.utils.StreamUtils;
-
 import es.eucm.ead.editor.control.Controller;
 import es.eucm.ead.editor.control.Tracker;
+import es.eucm.ead.engine.assets.GameAssets.ImageUtils;
+
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
+import java.io.OutputStreamWriter;
+import java.net.HttpURLConnection;
+import java.net.URL;
+import java.util.Locale;
+import java.util.Map;
 
 public abstract class AbstractPlatform implements Platform {
 
@@ -235,5 +235,10 @@ public abstract class AbstractPlatform implements Platform {
 	@Override
 	public Object[] getApplicationArguments() {
 		return applicationArguments;
+	}
+
+	@Override
+	public ImageUtils getImageUtils() {
+		return null;
 	}
 }

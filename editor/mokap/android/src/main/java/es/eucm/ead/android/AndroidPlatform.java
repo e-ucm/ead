@@ -36,11 +36,6 @@
  */
 package es.eucm.ead.android;
 
-import java.io.IOException;
-import java.io.InputStream;
-import java.util.List;
-import java.util.Locale;
-
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.ProgressDialog;
@@ -60,19 +55,23 @@ import android.os.AsyncTask;
 import android.provider.MediaStore;
 import android.text.InputType;
 import android.widget.EditText;
-
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input.TextInputListener;
 import com.badlogic.gdx.files.FileHandle;
+import com.badlogic.gdx.graphics.g2d.Batch;
 import com.google.android.gms.analytics.Tracker;
-
 import es.eucm.ead.android.EditorActivity.ActivityResultListener;
 import es.eucm.ead.editor.control.Controller;
 import es.eucm.ead.editor.platform.MokapPlatform;
 import es.eucm.ead.editor.platform.MokapPlatform.ImageCapturedListener.Result;
 import es.eucm.ead.editor.utils.ProjectUtils;
 import es.eucm.ead.engine.I18N;
-import es.eucm.ead.schema.data.Dimension;
+import es.eucm.ead.engine.android.AndroidImageUtils;
+import es.eucm.ead.engine.assets.GameAssets.ImageUtils;
+
+import java.io.IOException;
+import java.util.List;
+import java.util.Locale;
 
 public class AndroidPlatform extends MokapPlatform {
 
@@ -114,6 +113,8 @@ public class AndroidPlatform extends MokapPlatform {
 
 	private final String[] names;
 
+	private ImageUtils imageUtils;
+
 	public AndroidPlatform(Context context, Tracker tracker) {
 		this.tracker = tracker;
 		this.context = context;
@@ -122,6 +123,12 @@ public class AndroidPlatform extends MokapPlatform {
 		names = new String[values.length];
 		for (int i = 0; i < values.length; ++i)
 			names[i] = values[i].name;
+	}
+
+	@Override
+	public void setBatch(Batch batch) {
+		super.setBatch(batch);
+		imageUtils = new AndroidImageUtils();
 	}
 
 	@Override
@@ -386,12 +393,6 @@ public class AndroidPlatform extends MokapPlatform {
 	}
 
 	@Override
-	public Dimension getImageDimension(InputStream imageInputStream) {
-		// Do nothing
-		return null;
-	}
-
-	@Override
 	public es.eucm.ead.editor.control.Tracker createTracker(
 			Controller controller) {
 		return new GATracker(context, controller, tracker);
@@ -445,8 +446,7 @@ public class AndroidPlatform extends MokapPlatform {
 		}
 	}
 
-	public static class DecodePictureTask extends
-			AsyncTask<Void, Void, Boolean> {
+	public class DecodePictureTask extends AsyncTask<Void, Void, Boolean> {
 
 		private final PostRunnable postRunnable = new PostRunnable();
 		private ProgressDialog mPleaseWaitDialog = null;
@@ -533,8 +533,7 @@ public class AndroidPlatform extends MokapPlatform {
 						sourceImage.extension());
 			}
 
-			return ImageUtils.decodeFile(sourceImage, Gdx.graphics.getWidth(),
-					Gdx.graphics.getHeight(), file);
+			return getImageUtils().scale(sourceImage, file) != -1;
 		}
 	};
 
@@ -645,14 +644,12 @@ public class AndroidPlatform extends MokapPlatform {
 	}
 
 	@Override
-	public boolean scaleImage(FileHandle imageFile, int targetWidth,
-			int targetHeight, FileHandle resultImage) {
-		return ImageUtils.decodeFile(imageFile, targetWidth, targetHeight,
-				resultImage);
+	public String getLocale() {
+		return Locale.getDefault().toString();
 	}
 
 	@Override
-	public String getLocale() {
-		return Locale.getDefault().toString();
+	public ImageUtils getImageUtils() {
+		return imageUtils;
 	}
 }
