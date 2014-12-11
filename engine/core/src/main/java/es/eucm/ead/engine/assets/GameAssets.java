@@ -39,11 +39,13 @@ package es.eucm.ead.engine.assets;
 import com.badlogic.gdx.Files;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.files.FileHandle;
+import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.reflect.ClassReflection;
 import com.badlogic.gdx.utils.reflect.ReflectionException;
 
 import es.eucm.ead.engine.GameLoader;
+import es.eucm.ead.engine.assets.loaders.ScaledTextureLoader;
 import es.eucm.ead.schemax.GameStructure;
 
 /**
@@ -60,14 +62,17 @@ public class GameAssets extends Assets implements GameStructure {
 
 	private boolean gamePathInternal;
 
+	protected ImageUtils imageUtils;
+
 	/**
 	 * Creates an assets handler
 	 * 
 	 * @param files
 	 *            object granting access to files
 	 */
-	public GameAssets(Files files) {
+	public GameAssets(Files files, ImageUtils imageUtils) {
 		super(files);
+		this.imageUtils = imageUtils;
 		setLoaders();
 		loadBindings();
 	}
@@ -137,7 +142,7 @@ public class GameAssets extends Assets implements GameStructure {
 			// Relative file
 			FileHandle fh = gamePathInternal ? files.internal(loadingPath
 					+ path) : files.absolute(loadingPath + path);
-			if (checkFileExistence(fh)) {
+			if (checkFileExistence(fh) || !files.internal(path).exists()) {
 				return fh;
 			} else {
 				// Fallback: use internal file
@@ -200,6 +205,8 @@ public class GameAssets extends Assets implements GameStructure {
 	 */
 	protected void setLoaders() {
 		setLoader(Object.class, new JsonLoader<Object>(this, Object.class));
+		setLoader(ScaledTexture.class,
+				new ScaledTextureLoader(this, imageUtils));
 	}
 
 	public String convertSceneNameToPath(String name) {
@@ -210,4 +217,29 @@ public class GameAssets extends Assets implements GameStructure {
 		return convertNameToPath(name, SUBGAMES_PATH, false, true);
 	}
 
+	public interface ImageUtils {
+
+		/**
+		 * Puts in size the size of the image in file handle
+		 * 
+		 * @return false if the file is not an image. In that case, size will be
+		 *         set to -1, -1
+		 */
+		boolean imageSize(FileHandle fileHandle, Vector2 size);
+
+		/**
+		 * @return if the given size can be opened with the current hardware
+		 */
+		boolean validSize(Vector2 size);
+
+		/**
+		 * Scales the image in src to make it loadable by the current hardware.
+		 * Result is stored in target.
+		 * 
+		 * @return the scale applied to src to be loadable ty the current
+		 *         hardware
+		 */
+		float scale(FileHandle src, FileHandle target);
+
+	}
 }

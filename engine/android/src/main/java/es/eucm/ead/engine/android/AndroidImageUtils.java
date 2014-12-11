@@ -34,28 +34,67 @@
  *      You should have received a copy of the GNU Lesser General Public License
  *      along with eAdventure.  If not, see <http://www.gnu.org/licenses/>.
  */
-package es.eucm.ead.android;
+package es.eucm.ead.engine.android;
+
+import android.graphics.Bitmap;
+import android.graphics.Bitmap.CompressFormat;
+import android.graphics.BitmapFactory;
+import android.graphics.BitmapFactory.Options;
+import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.files.FileHandle;
+import com.badlogic.gdx.graphics.GL20;
+import com.badlogic.gdx.math.Vector2;
+import com.badlogic.gdx.utils.BufferUtils;
+import com.badlogic.gdx.utils.GdxRuntimeException;
+import com.badlogic.gdx.utils.StreamUtils;
+import es.eucm.ead.engine.assets.GameAssets.ImageUtils;
 
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.nio.IntBuffer;
 
-import android.graphics.Bitmap;
-import android.graphics.Bitmap.CompressFormat;
-import android.graphics.BitmapFactory;
-
-import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.files.FileHandle;
-import com.badlogic.gdx.utils.GdxRuntimeException;
-import com.badlogic.gdx.utils.StreamUtils;
-
-public final class ImageUtils {
+public class AndroidImageUtils implements ImageUtils {
 
 	private static final String TAG = "ImageUtils";
 
-	private ImageUtils() {
+	private int maxSize = -1;
 
+	public AndroidImageUtils() {
+		// We do this to make sure it is called in a opengl thread
+		maxSize();
+	}
+
+	@Override
+	public boolean imageSize(FileHandle fileHandle, Vector2 size) {
+		BitmapFactory.Options options = new Options();
+		options.inJustDecodeBounds = true;
+		BitmapFactory.decodeFile(fileHandle.file().getAbsolutePath(), options);
+		size.set(options.outWidth, options.outHeight);
+		return true;
+	}
+
+	private int maxSize() {
+		if (maxSize == -1) {
+			IntBuffer intBuffer = BufferUtils.newIntBuffer(16);
+			Gdx.gl.glGetIntegerv(GL20.GL_MAX_TEXTURE_SIZE, intBuffer);
+			maxSize = Math
+					.min(intBuffer.get(0),
+							Math.max(Gdx.graphics.getHeight(),
+									Gdx.graphics.getWidth()));
+		}
+		return maxSize;
+	}
+
+	@Override
+	public boolean validSize(Vector2 size) {
+		return size.x < maxSize() && size.y < maxSize();
+	}
+
+	@Override
+	public float scale(FileHandle src, FileHandle target) {
+		return decodeFile(src, maxSize(), maxSize(), target);
 	}
 
 	/**
@@ -77,9 +116,8 @@ public final class ImageUtils {
 	 *            {@code file} is copied to {@code result}.
 	 * @return true if the scaling has been successful, false otherwise.
 	 */
-	public static boolean decodeFile(FileHandle file, int targetWidth,
-			int targetHeight, FileHandle result) {
-		boolean success = false;
+	public float decodeFile(FileHandle file, int targetWidth, int targetHeight,
+			FileHandle result) {
 		if (result == null) {
 			result = file;
 		}
@@ -125,9 +163,8 @@ public final class ImageUtils {
 			} else if (file != result) {
 				file.copyTo(result);
 			}
-			success = true;
-
 			Gdx.app.log(TAG, "New image saved! " + file.path());
+			return scale;
 		} catch (FileNotFoundException fnfex) {
 			Gdx.app.error(TAG, "File not found! ", fnfex);
 		} catch (IOException ioex) {
@@ -138,12 +175,11 @@ public final class ImageUtils {
 		} finally {
 			if (tempBmap != null) {
 				tempBmap.recycle();
-				tempBmap = null;
 			}
 			StreamUtils.closeQuietly(decodedFis);
 			StreamUtils.closeQuietly(scaledFis);
 			StreamUtils.closeQuietly(savedFos);
 		}
-		return success;
+		return -1;
 	}
 }
