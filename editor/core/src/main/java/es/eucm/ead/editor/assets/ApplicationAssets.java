@@ -112,7 +112,6 @@ public class ApplicationAssets extends Assets {
 	public ApplicationAssets(Files files, String skin) {
 		super(files);
 		releaseFile = RELEASE_FILE;
-		// Set editor loaders
 		loadSkin(skin);
 	}
 
