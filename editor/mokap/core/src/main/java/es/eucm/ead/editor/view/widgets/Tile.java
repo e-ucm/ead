@@ -47,9 +47,7 @@ import com.badlogic.gdx.scenes.scene2d.utils.Drawable;
 
 public class Tile extends AbstractWidget {
 
-	private Actor background;
-
-	private Actor marker;
+	private Actor background, bottom, marker;
 
 	private Label label;
 
@@ -82,6 +80,19 @@ public class Tile extends AbstractWidget {
 			addActorAt(0, actor);
 		}
 		this.background = actor;
+	}
+
+	public void setBottom(Actor actor) {
+		if (bottom == actor) {
+			return;
+		}
+		if (this.bottom != null) {
+			this.bottom.remove();
+		}
+		if (actor != null) {
+			addActorAt(2, actor);
+		}
+		this.bottom = actor;
 	}
 
 	public void setMarker(Actor actor) {
@@ -119,20 +130,20 @@ public class Tile extends AbstractWidget {
 
 	@Override
 	public void layout() {
-		setBounds(background, 0, 0, getWidth(), getHeight());
-		setBounds(labelContainer, 0, 0, getWidth(),
-				getPrefHeight(labelContainer));
-		if (marker != null) {
-			float width = getPrefWidth(marker);
-			float height = getPrefHeight(marker);
-			setBounds(marker, getWidth() - width, getHeight() - height, width,
-					height);
+		float width = getWidth();
+		float height = getHeight();
+		setBounds(background, 0, 0, width, height);
+		setBounds(labelContainer, 0, 0, width, getPrefHeight(labelContainer));
+		if (bottom != null) {
+			float topPrefH = getPrefHeight(bottom);
+			setBounds(bottom, 0, 0, width, topPrefH);
 		}
-	}
-
-	@Override
-	public void setLayoutEnabled(boolean enabled) {
-		super.setLayoutEnabled(enabled);
+		if (marker != null) {
+			float markerPrefW = getPrefWidth(marker);
+			float markerPrefH = getPrefHeight(marker);
+			setBounds(marker, width - markerPrefW, height - markerPrefH,
+					markerPrefW, markerPrefH);
+		}
 	}
 
 	public static class TileStyle {
