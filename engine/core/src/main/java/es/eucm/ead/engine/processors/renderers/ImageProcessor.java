@@ -36,13 +36,12 @@
  */
 package es.eucm.ead.engine.processors.renderers;
 
-import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.math.Polygon;
 import com.badlogic.gdx.utils.Array;
-
 import es.eucm.ead.engine.GameLoop;
 import es.eucm.ead.engine.assets.Assets.AssetLoadedCallback;
 import es.eucm.ead.engine.assets.GameAssets;
+import es.eucm.ead.engine.assets.ScaledTexture;
 import es.eucm.ead.engine.components.renderers.ImageComponent;
 import es.eucm.ead.engine.components.renderers.RendererComponent;
 import es.eucm.ead.schema.renderers.Image;
@@ -56,10 +55,10 @@ public class ImageProcessor extends RendererProcessor<Image> {
 	@Override
 	public RendererComponent getComponent(Image image) {
 		final ImageComponent imageComponent = createComponent();
-		gameAssets.get(image.getUri(), Texture.class,
-				new AssetLoadedCallback<Texture>() {
+		gameAssets.get(image.getUri() + ".tex", ScaledTexture.class,
+				new AssetLoadedCallback<ScaledTexture>() {
 					@Override
-					public void loaded(String fileName, Texture asset) {
+					public void loaded(String fileName, ScaledTexture asset) {
 						imageComponent.setTexture(asset);
 					}
 				}, true);

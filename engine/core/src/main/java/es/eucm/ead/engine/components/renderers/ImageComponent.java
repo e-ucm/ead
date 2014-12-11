@@ -36,21 +36,21 @@
  */
 package es.eucm.ead.engine.components.renderers;
 
-import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Batch;
+import es.eucm.ead.engine.assets.ScaledTexture;
 
 public class ImageComponent extends CollidableRendererComponent {
 
-	private Texture texture;
+	private ScaledTexture texture;
 
-	public void setTexture(Texture texture) {
+	public void setTexture(ScaledTexture texture) {
 		this.texture = texture;
 	}
 
 	@Override
 	public void draw(Batch batch) {
 		if (texture != null) {
-			batch.draw(texture, 0, 0);
+			texture.draw(batch, 0, 0, getWidth(), getHeight());
 		}
 	}
 

@@ -34,46 +34,41 @@
  *      You should have received a copy of the GNU Lesser General Public License
  *      along with eAdventure.  If not, see <http://www.gnu.org/licenses/>.
  */
-package es.eucm.ead.schemax;
+package es.eucm.ead.engine.assets;
 
-/**
- * This interface describes the internal structure of game files and projects.
- * It provides constants for accessing the subfolders where scenes, images and
- * subgames are stored, for example.
- * 
- * Created by Javier Torrente on 3/04/14.
- */
-public interface GameStructure {
+import com.badlogic.gdx.graphics.Texture;
+import com.badlogic.gdx.graphics.g2d.Batch;
+import com.badlogic.gdx.math.Matrix4;
+import com.badlogic.gdx.scenes.scene2d.utils.BaseDrawable;
 
-	public static final String IMAGES_FOLDER = "images/";
+public class ScaledTexture extends BaseDrawable {
 
-	public static final String VIDEOS_FOLDER = "videos/";
+	private Texture texture;
 
-	public static final String SOUNDS_FOLDER = "sounds/";
+	private float scale;
 
-	public static final String GAME_FILE = "game.json";
+	private Matrix4 textureMatrix = new Matrix4();
 
-	public static final String GAME_DEBUG = "game_debug.json";
+	public ScaledTexture(Texture texture, float scale) {
+		this.texture = texture;
+		this.scale = scale;
+	}
 
-	public static final String SCENES_PATH = "scenes/";
+	@Override
+	public void draw(Batch batch, float x, float y, float width, float height) {
+		Matrix4 oldMatrix = batch.getTransformMatrix();
+		textureMatrix.set(oldMatrix);
+		textureMatrix.scl(scale, scale, 1.0f);
+		batch.setTransformMatrix(textureMatrix);
+		batch.draw(texture, x, y);
+		batch.setTransformMatrix(oldMatrix);
+	}
 
-	public static final String HUDS_PATH = "huds/";
+	public float getWidth() {
+		return texture.getWidth() * scale;
+	}
 
-	public static final String SUBGAMES_PATH = "subgames/";
-
-	public static final String ANIMATION_PATH = "anim/";
-
-	public static final String METADATA_PATH = ".metadata/";
-
-	/**
-	 * Internal folder where the game is stored when it is exported as a Jar.
-	 * This constant should be the same than the one defined in EngineJarGame,
-	 * the class that launches jar games.
-	 * 
-	 * All the game contents (e.g. "scenes/", "game.json") should be placed
-	 * under this folder in the jar file generated.
-	 */
-	public static final String JAR_GAME_FOLDER = "assets/";
-
-	public static final String THUMBNAILS_PATH = "thumbnails/";
+	public float getHeight() {
+		return texture.getHeight() * scale;
+	}
 }

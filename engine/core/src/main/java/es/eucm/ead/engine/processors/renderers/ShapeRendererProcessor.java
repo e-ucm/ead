@@ -44,6 +44,7 @@ import com.badlogic.gdx.math.Polygon;
 import com.badlogic.gdx.utils.Array;
 
 import es.eucm.ead.engine.GameLoop;
+import es.eucm.ead.engine.assets.ScaledTexture;
 import es.eucm.ead.engine.components.renderers.shape.ShapeRendererComponent;
 import es.eucm.ead.engine.components.renderers.shape.ShapeToPixmap;
 import es.eucm.ead.engine.utils.ShapeToCollider;
@@ -74,7 +75,8 @@ public class ShapeRendererProcessor extends RendererProcessor<ShapeRenderer> {
 		shapeRendererComponent.setCollider(collider);
 		// Set pixmap
 		Pixmap pixmap = shapeToPixmap.createShape(component);
-		shapeRendererComponent.setTexture(new Texture(pixmap));
+		shapeRendererComponent.setTexture(new ScaledTexture(
+				new Texture(pixmap), 1.0f));
 		pixmap.dispose();
 		return shapeRendererComponent;
 	}
