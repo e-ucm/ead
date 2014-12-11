@@ -84,6 +84,12 @@
             "b": 0.2392,
             "a": 1
         },
+        "semi_light_brown_moka": {
+            "r": 0.7176,
+            "g": 0.3529,
+            "b": 0.2392,
+            "a": 0.5
+        },
         "light_blue": {
             "r": 0.011764706,
             "g": 0.6627451,
@@ -143,6 +149,14 @@
         "black_bg": {
             "name": "blank",
             "color": "black"
+        },
+        "progress_bar_bg": {
+        	"name": "selected_tab",
+        	"color": "semi_light_brown_moka"
+        },
+        "progress_bar_knob_before": {
+        	"name": "selected_tab",
+        	"color": "brown_moka"
         },
         "transparent_bg": {
             "name": "blank",
@@ -369,6 +383,12 @@
             "fontColorUnselected": "dark_gray"
         }
     },
+    "com.badlogic.gdx.scenes.scene2d.ui.ProgressBar$ProgressBarStyle": {
+        "default-horizontal": {
+            "background": "progress_bar_bg",
+            "knobBefore": "progress_bar_knob_before"
+        }
+    },
     "com.badlogic.gdx.scenes.scene2d.ui.ScrollPane$ScrollPaneStyle": {
         "default": {
 
@@ -434,6 +454,12 @@
             "activeTextColor": "white",
             "buttonsHorizontalPad": 24,
             "buttonsVerticalPad": 20
+        }
+    },    
+    "es.eucm.ead.editor.view.widgets.LoadingBar$LoadingBarStyle": {
+        "default": {
+            "background": "progress_bar_bg",
+            "knobBefore": "progress_bar_knob_before"
         }
     },
     "es.eucm.ead.editor.view.widgets.IconButton$IconButtonStyle": {
