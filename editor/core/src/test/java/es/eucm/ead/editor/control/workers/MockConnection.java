@@ -36,81 +36,45 @@
  */
 package es.eucm.ead.editor.control.workers;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
-import static org.junit.Assert.fail;
-
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.HttpURLConnection;
 
-import org.junit.Before;
+public class MockConnection extends HttpURLConnection {
 
-import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.files.FileHandle;
+	private InputStream stream;
 
-import es.eucm.ead.editor.assets.EditorGameAssets;
-import es.eucm.ead.editor.control.actions.editor.ExecuteWorker;
-import es.eucm.ead.editor.control.workers.Worker.WorkerListener;
-import es.eucm.ead.editor.utils.ProjectUtils;
-
-public class DownloadFileTest extends WorkerTest implements WorkerListener {
-
-	private static final String URL = "";
-
-	private FileHandle image;
-
-	private FileHandle dstFile;
-
-	@Before
-	public void buildInputStream() {
-
-		EditorGameAssets gameAssets = controller.getEditorGameAssets();
-		gameAssets.setLoadingPath("", true);
-		image = gameAssets.resolve("blank.png");
-
-		platform.putHttpResponse(URL, new MockConnection(image.read()));
+	public MockConnection(InputStream stream) {
+		super(null);
+		this.stream = stream;
 	}
 
 	@Override
-	public void testWorker() {
-		FileHandle directory = Gdx.files.external("");
-		dstFile = ProjectUtils.getNonExistentFile(directory,
-				image.nameWithoutExtension(), image.extension());
-		controller.action(ExecuteWorker.class, DownloadFile.class, this, URL,
-				dstFile);
+	public InputStream getInputStream() throws IOException {
+		return stream;
 	}
 
 	@Override
-	public void asserts() {
-		assertTrue(dstFile.exists());
-		assertEquals(dstFile.length(), image.length());
-		dstFile.delete();
+	public int getContentLength() {
+		try {
+			return stream.available();
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+		return -1;
 	}
 
 	@Override
-	public void start() {
-
+	public void disconnect() {
 	}
 
 	@Override
-	public void result(Object... results) {
-		Float result = (Float) results[0];
-		assertTrue(result >= 0f && result <= 1f);
+	public boolean usingProxy() {
+		return false;
 	}
 
 	@Override
-	public void done() {
-	}
-
-	@Override
-	public void error(Throwable ex) {
-		fail("Exception thrown" + ex);
-	}
-
-	@Override
-	public void cancelled() {
+	public void connect() throws IOException {
 
 	}
-
 }

@@ -44,6 +44,7 @@ import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.utils.Array;
 
 import es.eucm.ead.editor.assets.EditorGameAssets;
+import es.eucm.ead.editor.control.workers.MockConnection;
 import es.eucm.ead.editor.editorui.MockPlatform;
 import es.eucm.ead.editor.editorui.UITest;
 import es.eucm.ead.editor.view.builders.SearchView;
@@ -84,6 +85,9 @@ public class SearchRepoViewTest extends UITest {
 			elem.getThumbnailUrlList().add(currentThumbnail);
 			repoElems.add(elem);
 			platform.putHttpResponse(currentThumbnail, bytes);
+			String contents = i + ".zip";
+			elem.setContentsUrl(contents);
+			platform.putHttpResponse(contents, new MockConnection(image.read()));
 		}
 
 		SearchResponse response = new SearchResponse();
