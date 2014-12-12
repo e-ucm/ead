@@ -57,7 +57,7 @@ public class MokapController extends Controller {
 
 	public static enum Dpi {
 		LDPI(150), MDPI(190), HDPI(270), XHDPI(Float.MAX_VALUE), XXHDPI(0), XXXHDPI(
-				0), XXXXHDPI(0);
+				0), XXXXHDPI(0), XXXXXHDPI(0);
 
 		private String dpi;
 		/**
@@ -78,7 +78,7 @@ public class MokapController extends Controller {
 			float ppcX = Gdx.graphics.getPpcX();
 			Gdx.app.error("PX", ppcX + "ppc");
 
-			Dpi dpi = XXXXHDPI;
+			Dpi dpi = XXXXXHDPI;
 			if (ppcX <= 36.0f) {
 				dpi = LDPI;
 			} else if (ppcX <= 48.0f) {
@@ -91,6 +91,8 @@ public class MokapController extends Controller {
 				dpi = XXHDPI;
 			} else if (ppcX <= 120.0f) {
 				dpi = XXXHDPI;
+			} else if (ppcX <= 156.0f) {
+				dpi = XXXXHDPI;
 			}
 			return dpi;
 		}
