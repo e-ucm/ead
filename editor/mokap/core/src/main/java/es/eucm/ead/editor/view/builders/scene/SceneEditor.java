@@ -183,12 +183,15 @@ public class SceneEditor extends BaseView implements ModelView,
 	@Override
 	public void layout() {
 		super.layout();
-		interactiveButton.setPosition(getWidth() - addButton.getWidth()
-				- WidgetBuilder.dpToPixels(32), WidgetBuilder.dpToPixels(96));
 		addButton.setPosition(
 				getWidth() - addButton.getWidth()
 						- WidgetBuilder.dpToPixels(32),
 				WidgetBuilder.dpToPixels(32));
+		interactiveButton.setPosition(
+				getWidth() - addButton.getWidth()
+						- WidgetBuilder.dpToPixels(32),
+				addButton.getY() + addButton.getPrefHeight()
+						+ WidgetBuilder.dpToPixels(32));
 	}
 
 	@Override
