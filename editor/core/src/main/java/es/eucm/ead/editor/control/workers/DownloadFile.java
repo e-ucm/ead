@@ -49,61 +49,108 @@ import com.badlogic.gdx.utils.StreamUtils;
  * <dl>
  * <dt><strong>The input arguments are</strong></dt>
  * <dd><strong>args[0]</strong> <em>String</em> URL to start the download.
- * <dd><strong>args[1]</strong> <em>String</em> Absolute path to the destination
+ * <dd><strong>args[1]</strong> <em>FileHandle</em> FileHandle to the output
  * file.</dd>
  * </dl>
  * <dl>
  * <dt><strong>The result argument is</strong></dt>
- * <dd><strong>args[0]</strong> <em>Boolean</em> success.
+ * <dd><strong>args[0]</strong> <em>Float</em> the completion value, ranging
+ * from 0 to 1.
  * </dl>
  */
 public class DownloadFile extends Worker {
 
 	private static final String DOWNLOAD_TAG = "DownloadFileWorker";
 
+	private static final float THRESHOLD = 0.1F;
+
 	/**
 	 * A temporal byte array used to write to disk efficiently.
 	 */
 	private final byte data[] = new byte[2048];
+	private int lengthOfFile, total;
+	private float completion;
+
+	private InputStream input;
+	private OutputStream output;
+	private HttpURLConnection connection;
+
+	private FileHandle dstFile;
+
+	public DownloadFile() {
+		super(true);
+	}
 
 	@Override
 	protected void prepare() {
+		String URL = (String) args[0];
+		dstFile = (FileHandle) args[1];
 
+		completion = 0f;
+		total = 0;
+		input = null;
+		output = null;
+		connection = null;
+		try {
+			connection = controller.getPlatform().sendHttpGetRequest(URL,
+					HttpURLConnection.class);
+			lengthOfFile = connection.getContentLength();
+			input = connection.getInputStream();
+			result(.1f);
+			output = dstFile.write(false);
+		} catch (Exception e) {
+			Gdx.app.error(DOWNLOAD_TAG, "Exception while downloading file "
+					+ dstFile.toString(), e);
+			closeStreams();
+			error(e);
+		}
 	}
 
 	@Override
 	protected boolean step() {
-		String URL = (String) args[0];
-		FileHandle dstFile = controller.getApplicationAssets().absolute(
-				(String) args[1]);
-		boolean succeeded = true;
-
-		int count = -1;
-		InputStream input = null;
-		OutputStream output = null;
-		HttpURLConnection connection = null;
-		try {
-			connection = controller.getPlatform().sendHttpGetRequest(URL,
-					HttpURLConnection.class);
-			input = connection.getInputStream();
-			output = dstFile.write(false);
-
-			while ((count = input.read(data)) != -1)
-				output.write(data, 0, count);
-
-			output.flush();
-		} catch (Exception e) {
-			Gdx.app.error(DOWNLOAD_TAG, "Exception while downloading file "
-					+ dstFile.toString(), e);
-			succeeded = false;
-		} finally {
-			if (connection != null) {
-				connection.disconnect();
+		if (input != null) {
+			try {
+				int count;
+				count = input.read(data);
+				if (count != -1) {
+					output.write(data, 0, count);
+					total += count;
+					float completed = (total / (float) lengthOfFile);
+					if (completed == 1f || completed - completion > THRESHOLD) {
+						completion = completed;
+						result(.1f + completed * .9f);
+					}
+				} else {
+					output.flush();
+					closeStreams();
+				}
+			} catch (Exception e) {
+				Gdx.app.error(DOWNLOAD_TAG, "Exception while downloading file "
+						+ dstFile.toString(), e);
+				closeStreams();
+				error(e);
 			}
-			StreamUtils.closeQuietly(output);
-			StreamUtils.closeQuietly(input);
 		}
-		result(succeeded);
-		return true;
+		return input == null;
+	}
+
+	@Override
+	protected void cancelled() {
+		super.cancelled();
+		closeStreams();
+		if (dstFile != null && dstFile.exists()) {
+			dstFile.delete();
+		}
+	}
+
+	private void closeStreams() {
+		if (connection != null) {
+			connection.disconnect();
+			connection = null;
+		}
+		StreamUtils.closeQuietly(output);
+		StreamUtils.closeQuietly(input);
+		output = null;
+		input = null;
 	}
 }

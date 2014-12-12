@@ -73,7 +73,7 @@ public class CopyEntityResourcesTest extends WorkerTest implements
 		Gdx.files.internal("import_entity/medic.png").copyTo(contentsFolder);
 		Gdx.files.internal("import_entity/my_medic_def.json").copyTo(
 				contentsFolder);
-		outputFolder = contentsFolder.child(TEMP_OUTPUT_PATH);
+		outputFolder = Gdx.files.external(TEMP_OUTPUT_PATH);
 		outputFolder.mkdirs();
 		Gdx.files.internal("import_entity/medic.png").copyTo(outputFolder);
 		gameAssets.setLoadingPath(outputFolder.file().getAbsolutePath(), false);
@@ -91,6 +91,7 @@ public class CopyEntityResourcesTest extends WorkerTest implements
 	public void asserts() {
 		assertTrue(success);
 		contentsFolder.deleteDirectory();
+		outputFolder.deleteDirectory();
 	}
 
 	@Override

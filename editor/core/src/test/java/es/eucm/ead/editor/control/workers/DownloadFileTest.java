@@ -78,7 +78,7 @@ public class DownloadFileTest extends WorkerTest implements WorkerListener {
 		dstFile = ProjectUtils.getNonExistentFile(directory,
 				image.nameWithoutExtension(), image.extension());
 		controller.action(ExecuteWorker.class, DownloadFile.class, this, URL,
-				dstFile.file().getAbsolutePath());
+				dstFile);
 	}
 
 	@Override
@@ -95,7 +95,8 @@ public class DownloadFileTest extends WorkerTest implements WorkerListener {
 
 	@Override
 	public void result(Object... results) {
-		assertTrue((Boolean) results[0]);
+		Float result = (Float) results[0];
+		assertTrue(result >= 0f && result <= 1f);
 	}
 
 	@Override
@@ -112,32 +113,4 @@ public class DownloadFileTest extends WorkerTest implements WorkerListener {
 
 	}
 
-	public static class MockConnection extends HttpURLConnection {
-
-		private InputStream stream;
-
-		protected MockConnection(InputStream stream) {
-			super(null);
-			this.stream = stream;
-		}
-
-		@Override
-		public InputStream getInputStream() throws IOException {
-			return stream;
-		}
-
-		@Override
-		public void disconnect() {
-		}
-
-		@Override
-		public boolean usingProxy() {
-			return false;
-		}
-
-		@Override
-		public void connect() throws IOException {
-
-		}
-	}
 }

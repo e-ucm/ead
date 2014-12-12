@@ -34,49 +34,35 @@
  *      You should have received a copy of the GNU Lesser General Public License
  *      along with eAdventure.  If not, see <http://www.gnu.org/licenses/>.
  */
-package es.eucm.ead.editor.control.actions.editor;
+package es.eucm.ead.editor.editorui.widgets;
 
-import es.eucm.ead.editor.control.actions.EditorAction;
-import es.eucm.ead.editor.control.workers.Worker.WorkerListener;
+import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.backends.lwjgl.LwjglApplication;
+import com.badlogic.gdx.backends.lwjgl.LwjglApplicationConfiguration;
+import com.badlogic.gdx.scenes.scene2d.Actor;
+import com.badlogic.gdx.scenes.scene2d.ui.Skin;
+import com.badlogic.gdx.scenes.scene2d.ui.Table;
 
-/**
- * <p>
- * Starts a worker
- * </p>
- * <dl>
- * <dt><strong>Arguments</strong></dt>
- * <dd><strong>args[0]</strong> <em>{@link Class}</em> Worker class</dd>
- * <dd><strong>args[1]</strong> <em>{@link WorkerListener}</em> A listener for
- * the worker</dd>
- * <dd><strong>args[2]</strong> <em>Optional {@link Boolean}</em> If the
- * previous workers with the same class should be cancelled (true) or this
- * worker should be appended among the others</dd>
- * <dd><strong>args[2 or 3]...</strong> <em>{@link Object}</em> Arguments passed
- * to the worker</dd>
- * </dl>
- */
-public class ExecuteWorker extends EditorAction {
+import es.eucm.ead.editor.editorui.UITest;
+import es.eucm.ead.editor.view.widgets.LoadingBar;
+import es.eucm.ead.editor.view.widgets.WidgetBuilder;
+import es.eucm.ead.engine.I18N;
+
+public class LoadingBarTest extends UITest {
 
 	@Override
-	public boolean validate(Object... args) {
-		return args.length > 1 && args[0] instanceof Class
-				&& args[1] instanceof WorkerListener;
+	protected Actor buildUI(Skin skin, I18N i18n) {
+
+		Gdx.graphics.setContinuousRendering(false);
+		Table table = new Table();
+		table.add(new LoadingBar(skin, WidgetBuilder.dpToPixels(8))).width(500);
+		return table;
 	}
 
-	@Override
-	public void perform(Object... args) {
-		boolean cancelOthers = true;
-		int index = 2;
-		if (args.length > 2) {
-			if (args[2] instanceof Boolean) {
-				index = 3;
-				cancelOthers = (Boolean) args[2];
-			}
-		}
-		Object[] workerArguments = new Object[args.length - index];
-		System.arraycopy(args, index, workerArguments, 0,
-				workerArguments.length);
-		controller.getWorkerExecutor().execute((Class) args[0],
-				(WorkerListener) args[1], cancelOthers, workerArguments);
+	public static void main(String[] args) {
+		LwjglApplicationConfiguration config = new LwjglApplicationConfiguration();
+		config.width = 640;
+		config.height = 360;
+		new LwjglApplication(new LoadingBarTest(), config);
 	}
 }

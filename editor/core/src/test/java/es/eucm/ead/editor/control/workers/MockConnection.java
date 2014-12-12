@@ -34,47 +34,47 @@
  *      You should have received a copy of the GNU Lesser General Public License
  *      along with eAdventure.  If not, see <http://www.gnu.org/licenses/>.
  */
-package es.eucm.ead.editor.view.listeners.workers;
+package es.eucm.ead.editor.control.workers;
 
-import com.badlogic.gdx.files.FileHandle;
+import java.io.IOException;
+import java.io.InputStream;
+import java.net.HttpURLConnection;
 
-import es.eucm.ead.editor.control.workers.Worker.WorkerListener;
+public class MockConnection extends HttpURLConnection {
 
-public abstract class DownloadFileListener implements WorkerListener {
+	private InputStream stream;
 
-	private FileHandle outputFolder;
-
-	public DownloadFileListener(FileHandle outputFolder) {
-		this.outputFolder = outputFolder;
+	public MockConnection(InputStream stream) {
+		super(null);
+		this.stream = stream;
 	}
 
 	@Override
-	public void start() {
+	public InputStream getInputStream() throws IOException {
+		return stream;
 	}
 
 	@Override
-	public void result(Object... results) {
-		if ((Boolean) results[0]) {
-			downloaded();
-		} else {
-			cancelled();
+	public int getContentLength() {
+		try {
+			return stream.available();
+		} catch (IOException e) {
+			e.printStackTrace();
 		}
-	}
-
-	public abstract void downloaded();
-
-	@Override
-	public void error(Throwable ex) {
-		cancelled();
+		return -1;
 	}
 
 	@Override
-	public void done() {
+	public void disconnect() {
 	}
 
 	@Override
-	public void cancelled() {
-		outputFolder.deleteDirectory();
+	public boolean usingProxy() {
+		return false;
 	}
 
+	@Override
+	public void connect() throws IOException {
+
+	}
 }

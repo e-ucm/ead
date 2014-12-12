@@ -36,41 +36,22 @@
  */
 package es.eucm.ead.editor.view.widgets.galleries;
 
-import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.graphics.Pixmap;
 import com.badlogic.gdx.graphics.Texture;
-import com.badlogic.gdx.scenes.scene2d.Actor;
-import com.badlogic.gdx.scenes.scene2d.InputEvent;
-import com.badlogic.gdx.scenes.scene2d.ui.Image;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
-import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 
 import es.eucm.ead.editor.assets.ApplicationAssets;
-import es.eucm.ead.editor.assets.EditorGameAssets;
 import es.eucm.ead.editor.control.Controller;
-import es.eucm.ead.editor.control.actions.editor.ChangeView;
-import es.eucm.ead.editor.control.actions.editor.ExecuteWorker;
-import es.eucm.ead.editor.control.actions.model.AddSceneElement;
-import es.eucm.ead.editor.control.workers.CopyEntityResources;
-import es.eucm.ead.editor.control.workers.DownloadFile;
-import es.eucm.ead.editor.control.workers.UnzipFile;
 import es.eucm.ead.editor.control.workers.Worker.WorkerListener;
-import es.eucm.ead.editor.model.Q;
 import es.eucm.ead.editor.view.ModelView;
-import es.eucm.ead.editor.view.builders.scene.SceneView;
-import es.eucm.ead.editor.view.drawables.TextureDrawable;
-import es.eucm.ead.editor.view.listeners.workers.CopyEntityResourcesListener;
-import es.eucm.ead.editor.view.listeners.workers.DownloadFileListener;
-import es.eucm.ead.editor.view.listeners.workers.UnzipFileListener;
 import es.eucm.ead.editor.view.widgets.AbstractWidget;
-import es.eucm.ead.editor.view.widgets.Tile;
+import es.eucm.ead.editor.view.widgets.RepoTile;
 import es.eucm.ead.editor.view.widgets.WidgetBuilder;
 import es.eucm.ead.editor.view.widgets.layouts.Gallery;
 import es.eucm.ead.editor.view.widgets.layouts.Gallery.Cell;
 import es.eucm.ead.editor.view.widgets.layouts.Gallery.GalleryStyle;
 import es.eucm.ead.schema.editor.components.repo.RepoElement;
 import es.eucm.ead.schema.editor.components.repo.response.SearchResponse;
-import es.eucm.ead.schema.entities.ModelEntity;
 
 public class SearchGallery extends AbstractWidget implements WorkerListener,
 		ModelView {
@@ -81,10 +62,7 @@ public class SearchGallery extends AbstractWidget implements WorkerListener,
 
 	private ApplicationAssets assets;
 
-	private Controller controller;
-
 	public SearchGallery(float rowHeight, int columns, Controller controller) {
-		this.controller = controller;
 		assets = controller.getApplicationAssets();
 		skin = assets.getSkin();
 		addActor(gallery = new Gallery(rowHeight, columns,
@@ -128,67 +106,9 @@ public class SearchGallery extends AbstractWidget implements WorkerListener,
 
 	private Cell addTile(RepoElement elem, Texture thumbnailTexture) {
 
-		TextureDrawable thumbnail = new TextureDrawable(thumbnailTexture);
-		Image image = new Image(thumbnail);
-		image.setName(elem.getId());
-
-		String title = Q.getRepoElementName(elem);
-		Tile tile = WidgetBuilder.tile(image, title);
-		prepareGalleryItem(tile, elem);
+		RepoTile tile = WidgetBuilder.repoTile(elem, thumbnailTexture);
 
 		return gallery.add(tile);
-	}
-
-	private void prepareGalleryItem(Actor actor, final RepoElement elem) {
-		actor.addListener(new ClickListener() {
-			@Override
-			public void clicked(InputEvent event, float x, float y) {
-				EditorGameAssets editorGameAssets = controller
-						.getEditorGameAssets();
-				final FileHandle loadingPath = editorGameAssets
-						.absolute(editorGameAssets.getLoadingPath());
-				final FileHandle tempOutputFolder = FileHandle
-						.tempDirectory("downloadedRepoElem");
-				final FileHandle contentsZip = tempOutputFolder
-						.child("contents");
-				controller.action(ExecuteWorker.class, DownloadFile.class,
-						new DownloadFileListener(tempOutputFolder) {
-
-							@Override
-							public void downloaded() {
-								controller.action(ExecuteWorker.class,
-										UnzipFile.class, new UnzipFileListener(
-												tempOutputFolder) {
-
-											@Override
-											public void unzipped() {
-												controller
-														.action(ExecuteWorker.class,
-																CopyEntityResources.class,
-																new CopyEntityResourcesListener(
-																		tempOutputFolder) {
-
-																	@Override
-																	public void entityCopied(
-																			ModelEntity entity) {
-																		controller
-																				.action(AddSceneElement.class,
-																						entity);
-																		controller
-																				.action(ChangeView.class,
-																						SceneView.class);
-																	}
-																},
-																tempOutputFolder,
-																loadingPath);
-											}
-										}, contentsZip, tempOutputFolder);
-							}
-						}, elem.getContentsUrl(), contentsZip.file()
-								.getAbsolutePath());
-
-			}
-		});
 	}
 
 	@Override
