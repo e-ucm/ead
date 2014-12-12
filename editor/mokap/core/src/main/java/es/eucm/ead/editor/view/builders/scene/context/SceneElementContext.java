@@ -94,10 +94,13 @@ public abstract class SceneElementContext extends GroupContext implements
 		closeButton.addListener(new ClickListener() {
 			@Override
 			public void clicked(InputEvent event, float x, float y) {
-				closeEditor();
+				if (!onBackPressed()) {
+					if (getParent() instanceof BackListener) {
+						((BackListener) getParent()).onBackPressed();
+					}
+				}
 			}
 		});
-		closeButton.setVisible(false);
 		addActor(closeButton);
 
 		addContent();
@@ -124,7 +127,6 @@ public abstract class SceneElementContext extends GroupContext implements
 
 	public void closeEditor() {
 		if (currentComponentEditor != null) {
-			closeButton.setVisible(false);
 			gallery.setTouchable(Touchable.enabled);
 			currentComponentEditor.release();
 			currentComponentEditor
@@ -146,9 +148,6 @@ public abstract class SceneElementContext extends GroupContext implements
 		currentComponentEditor.addAction(Actions.sequence(
 				Actions.touchable(Touchable.enabled),
 				Actions.moveTo(0, 0, 0.33f, Interpolation.exp5Out)));
-		closeButton.addAction(Actions.sequence(Actions.delay(0.33f),
-				Actions.alpha(0), Actions.visible(true),
-				Actions.alpha(1.0f, 0.45f, Interpolation.exp5Out)));
 	}
 
 	@Override
