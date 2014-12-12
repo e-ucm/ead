@@ -173,6 +173,7 @@ public class SceneEditor extends BaseView implements ModelView,
 		interactionContext = new InteractionContext(controller, controller
 				.getApplicationAssets().getSkin());
 		setContext(interactionContext);
+		lockContextOnly(true);
 	}
 
 	public SceneGroupEditor getGroupEditor() {
@@ -215,9 +216,7 @@ public class SceneEditor extends BaseView implements ModelView,
 	@Override
 	public void modelChanged(SelectionEvent event) {
 		interactiveButton.clearActions();
-		if (event.getContextId().equals(Selection.SCENE_ELEMENT)
-				&& controller.getModel().getSelection()
-						.get(Selection.SCENE_ELEMENT).length != 1) {
+		if (controller.getModel().getSelection().get(Selection.SCENE_ELEMENT).length != 1) {
 			lockContextOnly(true);
 			interactiveButton
 					.addAction(Actions.sequence(Actions
@@ -276,8 +275,8 @@ public class SceneEditor extends BaseView implements ModelView,
 				&& context.getSelection().length > 0;
 		switch (mode) {
 		case COMPOSE:
-			lockPanels(false);
 			setContext(interactionContext);
+			lockPanels(false);
 			toolbar.setSelectedWidget(INSERT + (selection ? 1 : 0));
 			sceneGroupEditor.setOnlySelection(false);
 			controller.action(ShowInfoPanel.class, TypePanel.COMPOSE,
@@ -320,6 +319,10 @@ public class SceneEditor extends BaseView implements ModelView,
 
 	private void unsetMode(Mode mode) {
 		switch (mode) {
+		case COMPOSE:
+			setSelectionContext(null);
+			interactionContext.release();
+			break;
 		case PLAY:
 			addButton.setVisible(true);
 			controller.getEngine().stop();

@@ -165,6 +165,18 @@ public class GroupEditorToolbar extends MultiWidget implements ModelView {
 
 		compose.add(WidgetBuilder.toolbarIcon(SkinConstants.IC_PASTE,
 				i18N.m("paste"), true, Paste.class));
+
+		Button play = WidgetBuilder.toolbarIcon(SkinConstants.IC_PLAY,
+				i18N.m("test"));
+		play.addListener(new ClickListener() {
+			@Override
+			public void clicked(InputEvent event, float x, float y) {
+				sceneEditor.setMode(Mode.PLAY);
+				super.clicked(event, x, y);
+			}
+		});
+		compose.add(play);
+
 		return compose;
 	}
 
