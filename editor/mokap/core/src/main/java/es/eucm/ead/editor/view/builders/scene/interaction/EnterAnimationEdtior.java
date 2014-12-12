@@ -34,7 +34,7 @@
  *      You should have received a copy of the GNU Lesser General Public License
  *      along with eAdventure.  If not, see <http://www.gnu.org/licenses/>.
  */
-package es.eucm.ead.editor.view.builders.scene.fx;
+package es.eucm.ead.editor.view.builders.scene.interaction;
 
 import java.util.HashMap;
 
@@ -54,7 +54,6 @@ import es.eucm.ead.editor.control.actions.model.generic.RemoveFromArray;
 import es.eucm.ead.editor.control.actions.model.generic.SetField;
 import es.eucm.ead.editor.model.Q;
 import es.eucm.ead.editor.view.SkinConstants;
-import es.eucm.ead.editor.view.builders.scene.interaction.ComponentEditor;
 import es.eucm.ead.editor.view.widgets.WidgetBuilder;
 import es.eucm.ead.editor.view.widgets.modelwidgets.ModelSelectBox;
 import es.eucm.ead.editor.view.widgets.modelwidgets.ModelTextField;

@@ -128,13 +128,8 @@ public class GroupEditorToolbar extends MultiWidget implements ModelView {
 		this.brushStrokes = brushStrokes;
 		I18N i18N = controller.getApplicationAssets().getI18N();
 		Skin skin = controller.getApplicationAssets().getSkin();
-		Actor modeSelector = buildModeContextMenu(i18N);
-		addWidgets(buildComposeToolbar(i18N, modeSelector),
-				buildTransformToolbar(skin, i18N, modeSelector),
-				buildDrawToolbar(skin, i18N), buildFxToolbar(modeSelector),
-				buildFxSelectionToolbar(i18N, modeSelector),
-				buildInteractionToolbar(modeSelector),
-				buildInteractionSelectionToolbar(i18N, modeSelector));
+		addWidgets(buildComposeToolbar(i18N),
+				buildTransformToolbar(skin, i18N), buildDrawToolbar(skin, i18N));
 
 	}
 
@@ -149,31 +144,6 @@ public class GroupEditorToolbar extends MultiWidget implements ModelView {
 		controller.getModel().removeSelectionListener(selectionListener);
 	}
 
-	private Actor buildModeContextMenu(I18N i18N) {
-		ContextMenu contextMenu = WidgetBuilder.iconLabelContextPanel(
-				SkinConstants.IC_COMPOSE, i18N.m("compose"),
-				SkinConstants.IC_FX, i18N.m("fx"), SkinConstants.IC_TOUCH,
-				i18N.m("interaction"), SkinConstants.IC_PLAY, i18N.m("test"));
-		contextMenu.pack();
-		contextMenu.setOriginY(contextMenu.getHeight());
-		contextMenu.addListener(new ClickListener() {
-			@Override
-			public void clicked(InputEvent event, float x, float y) {
-				String name = event.getTarget().getName();
-				if (SkinConstants.IC_COMPOSE.equals(name)) {
-					sceneEditor.setMode(Mode.COMPOSE);
-				} else if (SkinConstants.IC_FX.equals(name)) {
-					sceneEditor.setMode(Mode.FX);
-				} else if (SkinConstants.IC_PLAY.equals(name)) {
-					sceneEditor.setMode(Mode.PLAY);
-				} else if (SkinConstants.IC_TOUCH.equals(name)) {
-					sceneEditor.setMode(Mode.INTERACTION);
-				}
-			}
-		});
-		return contextMenu;
-	}
-
 	private IconButton navigationButton() {
 		IconButton navigation = WidgetBuilder.toolbarIcon(
 				SkinConstants.IC_MENU, null);
@@ -181,16 +151,11 @@ public class GroupEditorToolbar extends MultiWidget implements ModelView {
 		return navigation;
 	}
 
-	private LinearLayout buildComposeToolbar(I18N i18N, Actor modeSelector) {
+	private LinearLayout buildComposeToolbar(I18N i18N) {
 		LinearLayout compose = new LinearLayout(true);
 		compose.setComputeInvisibles(true);
 		compose.add(navigationButton());
 
-		IconButton mode = WidgetBuilder.icon(SkinConstants.IC_COMPOSE,
-				SkinConstants.STYLE_DROP_DOWN);
-		WidgetBuilder.launchContextMenu(mode, modeSelector);
-
-		compose.add(mode);
 		compose.add(WidgetBuilder.toolbarIcon(SkinConstants.IC_UNDO,
 				i18N.m("undo"), true, Undo.class));
 		compose.add(WidgetBuilder.toolbarIcon(SkinConstants.IC_REDO,
@@ -200,21 +165,28 @@ public class GroupEditorToolbar extends MultiWidget implements ModelView {
 
 		compose.add(WidgetBuilder.toolbarIcon(SkinConstants.IC_PASTE,
 				i18N.m("paste"), true, Paste.class));
+
+		Button play = WidgetBuilder.toolbarIcon(SkinConstants.IC_PLAY,
+				i18N.m("test"));
+		play.addListener(new ClickListener() {
+			@Override
+			public void clicked(InputEvent event, float x, float y) {
+				sceneEditor.setMode(Mode.PLAY);
+				super.clicked(event, x, y);
+			}
+		});
+		compose.add(play);
+
 		return compose;
 	}
 
-	private LinearLayout buildTransformToolbar(Skin skin, I18N i18N,
-			Actor modeSelector) {
+	private LinearLayout buildTransformToolbar(Skin skin, I18N i18N) {
 		LinearLayout transform = new LinearLayout(true);
 		transform.setComputeInvisibles(true);
 		transform.add(WidgetBuilder.toolbarIcon(SkinConstants.IC_CHECK,
 				i18N.m("clear.selection"), SetSelection.class,
 				Selection.EDITED_GROUP, Selection.SCENE_ELEMENT));
-		IconButton mode = WidgetBuilder.icon(SkinConstants.IC_COMPOSE,
-				SkinConstants.STYLE_DROP_DOWN);
-		WidgetBuilder.launchContextMenu(mode, modeSelector);
 
-		transform.add(mode);
 		transform.add(WidgetBuilder.toolbarIcon(SkinConstants.IC_UNDO,
 				i18N.m("undo"), true, Undo.class));
 		transform.add(WidgetBuilder.toolbarIcon(SkinConstants.IC_REDO,
@@ -464,55 +436,6 @@ public class GroupEditorToolbar extends MultiWidget implements ModelView {
 			}
 		});
 		return contextMenu;
-	}
-
-	private LinearLayout buildFxToolbar(Actor modeSelector) {
-		LinearLayout fx = new LinearLayout(true);
-		fx.setComputeInvisibles(true);
-		fx.add(navigationButton());
-
-		IconButton mode = WidgetBuilder.icon(SkinConstants.IC_FX,
-				SkinConstants.STYLE_DROP_DOWN);
-		WidgetBuilder.launchContextMenu(mode, modeSelector);
-		fx.add(mode);
-		return fx;
-	}
-
-	private LinearLayout buildFxSelectionToolbar(I18N i18N, Actor modeSelector) {
-		LinearLayout fxSelection = new LinearLayout(true);
-		fxSelection.add(WidgetBuilder.toolbarIcon(SkinConstants.IC_CHECK,
-				i18N.m("clear.selection"), SetSelection.class,
-				Selection.EDITED_GROUP, Selection.SCENE_ELEMENT));
-		IconButton mode = WidgetBuilder.icon(SkinConstants.IC_FX,
-				SkinConstants.STYLE_DROP_DOWN);
-		WidgetBuilder.launchContextMenu(mode, modeSelector);
-		fxSelection.add(mode);
-		return fxSelection;
-	}
-
-	private LinearLayout buildInteractionSelectionToolbar(I18N i18N,
-			Actor modeSelector) {
-		LinearLayout fxSelection = new LinearLayout(true);
-		fxSelection.add(WidgetBuilder.toolbarIcon(SkinConstants.IC_CHECK,
-				i18N.m("clear.selection"), SetSelection.class,
-				Selection.EDITED_GROUP, Selection.SCENE_ELEMENT));
-		IconButton mode = WidgetBuilder.icon(SkinConstants.IC_TOUCH,
-				SkinConstants.STYLE_DROP_DOWN);
-		WidgetBuilder.launchContextMenu(mode, modeSelector);
-		fxSelection.add(mode);
-		return fxSelection;
-	}
-
-	private LinearLayout buildInteractionToolbar(Actor modeSelector) {
-		LinearLayout interaction = new LinearLayout(true);
-		interaction.setComputeInvisibles(true);
-		interaction.add(navigationButton());
-
-		IconButton mode = WidgetBuilder.icon(SkinConstants.IC_TOUCH,
-				SkinConstants.STYLE_DROP_DOWN);
-		WidgetBuilder.launchContextMenu(mode, modeSelector);
-		interaction.add(mode);
-		return interaction;
 	}
 
 	private void readSelection() {

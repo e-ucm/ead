@@ -44,6 +44,7 @@ import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.Touchable;
 import com.badlogic.gdx.scenes.scene2d.actions.Actions;
 import com.badlogic.gdx.scenes.scene2d.actions.MoveByAction;
+import com.badlogic.gdx.scenes.scene2d.ui.ImageButton;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.utils.Drawable;
 
@@ -84,6 +85,8 @@ public class BaseView extends AbstractWidget {
 
 	private boolean lockPanels;
 
+	private boolean lockContext;
+
 	public BaseView(Skin skin) {
 		this(skin.get(BaseViewStyle.class));
 	}
@@ -92,6 +95,7 @@ public class BaseView extends AbstractWidget {
 		addActor(selectionContext = new SelectionContext());
 		addActor(navigation = new Navigation(style));
 		lockPanels = false;
+		lockContext = false;
 
 		// Listens for fling gestures to quickly show hidden panels
 		addCaptureListener(new GestureListener() {
@@ -162,7 +166,7 @@ public class BaseView extends AbstractWidget {
 		if (!lockPanels) {
 			if (navigation.hasContent() && x < cmToXPixels(FLING_AREA_CM)) {
 				return NAVIGATION_AREA;
-			} else if (selectionContext.hasContent()
+			} else if (!lockContext && selectionContext.hasContent()
 					&& x > Gdx.graphics.getWidth() - cmToXPixels(FLING_AREA_CM)) {
 				return SELECTION_CONTEXT_AREA;
 			}
@@ -199,6 +203,10 @@ public class BaseView extends AbstractWidget {
 				Actions.touchable(Touchable.enabled), Actions.moveTo(0,
 						getHeight() - toolbar.getHeight(), 0.25f,
 						Interpolation.exp5Out)));
+
+		if (!selectionContext.isHidden()) {
+			selectionContext.show();
+		}
 	}
 
 	public void enterFullScreen() {
@@ -206,6 +214,11 @@ public class BaseView extends AbstractWidget {
 		toolbar.addAction(Actions.sequence(
 				Actions.touchable(Touchable.disabled),
 				Actions.moveTo(0, getHeight(), 0.25f, Interpolation.exp5Out)));
+
+		if (!selectionContext.isHidden()) {
+			selectionContext.hide();
+			selectionContext.hidden = false;
+		}
 	}
 
 	/**
@@ -306,6 +319,21 @@ public class BaseView extends AbstractWidget {
 
 	public void lockPanels(boolean lockPanels) {
 		this.lockPanels = lockPanels;
+		if (lockPanels) {
+			if (!selectionContext.isHidden()) {
+				selectionContext.hide();
+			}
+			if (!navigation.isHidden()) {
+				navigation.hideRightAway();
+			}
+		}
+	}
+
+	public void lockContextOnly(boolean lockContext) {
+		this.lockContext = lockContext;
+		if (lockContext && !selectionContext.isHidden()) {
+			selectionContext.hide();
+		}
 	}
 
 }
