@@ -125,36 +125,7 @@ public class CopyEntityResources extends Worker {
 	@Override
 	protected boolean step() {
 		if (entity != null) {
-			Array<String> binaries = ProjectUtils.listRefBinaries(entity);
-			for (String binaryPath : binaries) {
-				FileHandle binFile = contentsFile.child(binaryPath);
-				if (!binFile.exists()) {
-					FileNotFoundException binaryNotFoundEx = new FileNotFoundException(
-							"A binary reference  (" + binaryPath
-									+ ") doesn't exist. Contents folder: "
-									+ contentsFile.path());
-					Gdx.app.error(IMPORT_TAG, "Binary not found",
-							binaryNotFoundEx);
-					error(binaryNotFoundEx);
-					return true;
-				}
-			}
-			String outputFolderPath = outputFolder.file().getAbsolutePath();
-			if (!outputFolderPath.endsWith("/")) {
-				outputFolderPath += "/";
-			}
-			for (String binaryPath : binaries) {
-				FileHandle binFile = contentsFile.child(binaryPath);
-				FileHandle unusedFile = ProjectUtils.getNonExistentFile(
-						outputFolder, binFile.nameWithoutExtension(),
-						binFile.extension());
-				if (!unusedFile.file().getAbsolutePath().endsWith(binaryPath)) {
-					String newRef = unusedFile.file().getAbsolutePath()
-							.substring(outputFolderPath.length());
-					ProjectUtils.replaceBinaryRef(entity, binaryPath, newRef);
-				}
-				binFile.copyTo(unusedFile);
-			}
+			contentsFile.copyTo(outputFolder);
 			result(entity);
 		}
 		return true;

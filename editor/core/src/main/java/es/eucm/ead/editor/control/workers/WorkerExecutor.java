@@ -42,6 +42,7 @@ import java.util.concurrent.ThreadFactory;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.utils.Array;
+import com.badlogic.gdx.utils.DelayedRemovalArray;
 import com.badlogic.gdx.utils.ObjectMap;
 
 import es.eucm.ead.editor.control.Controller;
@@ -56,14 +57,14 @@ public class WorkerExecutor {
 
 	private ExecutorService executorService;
 
-	private ObjectMap<Class, Array<Worker>> workersMap;
+	private ObjectMap<Class, DelayedRemovalArray<Worker>> workersMap;
 
 	private Array<WorkerExecutorListener> listeners;
 
 	public WorkerExecutor(Controller controller) {
 		this.controller = controller;
 		listeners = new Array<WorkerExecutorListener>();
-		workersMap = new ObjectMap<Class, Array<Worker>>();
+		workersMap = new ObjectMap<Class, DelayedRemovalArray<Worker>>();
 		executorService = Executors.newFixedThreadPool(
 				Math.max(1, Runtime.getRuntime().availableProcessors() - 1),
 				new ThreadFactory() {
@@ -78,8 +79,9 @@ public class WorkerExecutor {
 	 * Runs in UI thread
 	 */
 	public void act() {
-		for (Array<Worker> workers : workersMap.values()) {
-			for (int i = 0; i < workers.size; ++i) {
+		for (DelayedRemovalArray<Worker> workers : workersMap.values()) {
+			workers.begin();
+			for (int i = 0, n = workers.size; i < n; ++i) {
 				Worker worker = workers.get(i);
 				if (worker.isResultsInUIThread()) {
 					worker.act();
@@ -88,6 +90,7 @@ public class WorkerExecutor {
 					workers.removeIndex(i);
 				}
 			}
+			workers.end();
 		}
 	}
 
@@ -104,9 +107,10 @@ public class WorkerExecutor {
 	 */
 	public void cancelAll() {
 		for (Array<Worker> workers : workersMap.values()) {
-			for (int i = 0; i < workers.size; ++i) {
-				Worker worker = workers.get(i);
-				worker.cancel();
+			for (Worker worker : workers) {
+				if (!worker.isDone()) {
+					worker.cancel();
+				}
 			}
 		}
 	}
@@ -117,8 +121,7 @@ public class WorkerExecutor {
 	public void cancel(Class clazz, WorkerListener listener) {
 		Array<Worker> workers = workersMap.get(clazz);
 		if (workers != null) {
-			for (int i = 0; i < workers.size; ++i) {
-				Worker worker = workers.get(i);
+			for (Worker worker : workers) {
 				if (worker.getListener() == listener) {
 					worker.cancel();
 				}
@@ -132,15 +135,14 @@ public class WorkerExecutor {
 	public <T extends Worker> void execute(Class<T> workerClass,
 			WorkerListener workerListener, boolean cancelOthers, Object... args) {
 		try {
-			Array<Worker> workers = workersMap.get(workerClass);
+			DelayedRemovalArray<Worker> workers = workersMap.get(workerClass);
 			if (workers == null) {
-				workers = new Array<Worker>(1);
+				workers = new DelayedRemovalArray<Worker>(1);
 				workersMap.put(workerClass, workers);
 			}
 			if (cancelOthers) {
-				for (int i = 0; i < workers.size; ++i) {
-					Worker worker = workers.get(i);
-					if (worker != null && !worker.isDone()) {
+				for (Worker worker : workers) {
+					if (!worker.isDone()) {
 						worker.cancel();
 					}
 				}

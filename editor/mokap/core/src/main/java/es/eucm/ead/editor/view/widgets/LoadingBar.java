@@ -36,6 +36,7 @@
  */
 package es.eucm.ead.editor.view.widgets;
 
+import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.scenes.scene2d.actions.Actions;
 import com.badlogic.gdx.scenes.scene2d.ui.Container;
 import com.badlogic.gdx.scenes.scene2d.ui.Image;
@@ -44,12 +45,15 @@ import com.badlogic.gdx.scenes.scene2d.utils.Drawable;
 
 public class LoadingBar extends Container<Image> {
 
-	public LoadingBar(Skin skin) {
-		this(skin.get(LoadingBarStyle.class));
+	float prefHeight;
+
+	public LoadingBar(Skin skin, float prefHeight) {
+		this(skin.get(LoadingBarStyle.class), prefHeight);
 	}
 
-	public LoadingBar(LoadingBarStyle style) {
+	public LoadingBar(LoadingBarStyle style, float prefHeight) {
 		background(style.background);
+		this.prefHeight = prefHeight;
 		setActor(new Image(style.knobBefore));
 		setClip(true);
 	}
@@ -65,6 +69,24 @@ public class LoadingBar extends Container<Image> {
 				Actions.moveTo(0, 0),
 				Actions.parallel(Actions.moveTo(getWidth(), 0, 1f),
 						Actions.sizeTo(getWidth() * .5f, getHeight(), .5f)))));
+	}
+
+	@Override
+	public float getPrefHeight() {
+		return prefHeight;
+	}
+
+	/**
+	 * 
+	 * @param completion
+	 *            a value from 0 to 1.
+	 */
+	public void setCompletion(float completion) {
+		Image image = getActor();
+		if (image.getActions().size > 0) {
+			image.clearActions();
+		}
+		image.setWidth(getWidth() * MathUtils.clamp(completion, 0f, 1f));
 	}
 
 	static public class LoadingBarStyle {

@@ -383,12 +383,6 @@
             "fontColorUnselected": "dark_gray"
         }
     },
-    "com.badlogic.gdx.scenes.scene2d.ui.ProgressBar$ProgressBarStyle": {
-        "default-horizontal": {
-            "background": "progress_bar_bg",
-            "knobBefore": "progress_bar_knob_before"
-        }
-    },
     "com.badlogic.gdx.scenes.scene2d.ui.ScrollPane$ScrollPaneStyle": {
         "default": {
 

@@ -43,7 +43,6 @@ import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.ui.ImageButton;
 import com.badlogic.gdx.scenes.scene2d.ui.ImageButton.ImageButtonStyle;
-import com.badlogic.gdx.scenes.scene2d.ui.ProgressBar;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 
@@ -75,7 +74,6 @@ public class RepoTile extends Tile implements DownloadListener {
 	private Skin skin;
 
 	private LoadingBar loadingBar;
-	private ProgressBar progressBar;
 	private ImageButton marker;
 
 	private State state;
@@ -90,11 +88,11 @@ public class RepoTile extends Tile implements DownloadListener {
 		this.skin = controller.getApplicationAssets().getSkin();
 		state = State.DOWNLOADABLE;
 
-		final FileHandle loadingPath = controller.getApplicationAssets()
+		final FileHandle projctsFolder = controller.getApplicationAssets()
 				.absolute(controller.getPlatform().getDefaultProjectsFolder());
-		tempDownloadFolder = ProjectUtils.getNonExistentFile(loadingPath,
+		tempDownloadFolder = ProjectUtils.getNonExistentFile(projctsFolder,
 				MathUtils.random(1000) + "", "");
-		FileHandle downloadFile = tempDownloadFolder.child("contents");
+		FileHandle downloadFile = tempDownloadFolder.child("contents.zip");
 		work = new DownloadWork(RepoTile.this, elem.getContentsUrl(),
 				downloadFile);
 		addListener(new ClickListener() {
@@ -107,10 +105,13 @@ public class RepoTile extends Tile implements DownloadListener {
 					controller.getDownloadManager().download(work);
 					break;
 				case DOWNLOADED:
+					FileHandle unzipFolder = tempDownloadFolder.child(elem
+							.getEntityRef());
+					unzipFolder.mkdirs();
 					controller.action(ExecuteWorker.class, UnzipFile.class,
-							new UnzipAndCopyEntityListener(tempDownloadFolder,
-									controller), work.getOutputFile(),
-							tempDownloadFolder);
+							new UnzipAndCopyEntityListener(unzipFolder,
+									controller), false, work.getOutputFile(),
+							unzipFolder);
 					break;
 				case DOWNLOADING:
 				case IN_QUEUE:
@@ -148,7 +149,7 @@ public class RepoTile extends Tile implements DownloadListener {
 	public void completion(float completion) {
 		if (state == State.DOWNLOADING) {
 			setBottom(getProgressBar(true));
-			progressBar.setValue(completion);
+			loadingBar.setCompletion(completion);
 		} else {
 			error("Receiving results in an invalid state: " + state);
 		}
@@ -197,17 +198,10 @@ public class RepoTile extends Tile implements DownloadListener {
 	}
 
 	private Actor getProgressBar(boolean determinate) {
-		if (determinate) {
-			if (progressBar == null) {
-				progressBar = new ProgressBar(0, 1, .05f, false, skin);
-			}
-			return progressBar;
-		} else {
-			if (loadingBar == null) {
-				loadingBar = new LoadingBar(skin);
-			}
-			return loadingBar;
+		if (loadingBar == null) {
+			loadingBar = new LoadingBar(skin, WidgetBuilder.dpToPixels(8));
 		}
+		return loadingBar;
 	}
 
 	private ImageButton getMarker(String drawable) {
@@ -245,7 +239,7 @@ public class RepoTile extends Tile implements DownloadListener {
 							controller
 									.action(ChangeView.class, SceneView.class);
 						}
-					}, outputFolder, projectFolder);
+					}, false, outputFolder, projectFolder);
 		}
 
 	}

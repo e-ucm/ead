@@ -45,6 +45,7 @@ import com.badlogic.gdx.scenes.scene2d.ui.Table;
 
 import es.eucm.ead.editor.editorui.UITest;
 import es.eucm.ead.editor.view.widgets.LoadingBar;
+import es.eucm.ead.editor.view.widgets.WidgetBuilder;
 import es.eucm.ead.engine.I18N;
 
 public class LoadingBarTest extends UITest {
@@ -54,7 +55,7 @@ public class LoadingBarTest extends UITest {
 
 		Gdx.graphics.setContinuousRendering(false);
 		Table table = new Table();
-		table.add(new LoadingBar(skin)).width(500);
+		table.add(new LoadingBar(skin, WidgetBuilder.dpToPixels(8))).width(500);
 		return table;
 	}
 
