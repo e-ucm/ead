@@ -83,6 +83,15 @@ public class BuildRepoLibs {
 			} else if (arg.equals("-libs")) {
 				if (i + 1 < args.length && args[i + 1] != null) {
 					librariesToExport = args[i + 1].split(",");
+					for (int j = 0; j < librariesToExport.length; j++) {
+						for (int k = 0; k < LIBRARIES_IN_REPO.length; k++) {
+							if (LIBRARIES_IN_REPO[k].toLowerCase().endsWith(
+									librariesToExport[j].toLowerCase())) {
+								librariesToExport[j] = LIBRARIES_IN_REPO[k];
+								break;
+							}
+						}
+					}
 				} else {
 					System.err
 							.println("[Error] Comma-separated lib (classes) names expected after -libs");
