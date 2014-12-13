@@ -425,5 +425,11 @@ public class Controller {
 		backgroundExecutor.act();
 		workerExecutor.act();
 		engine.update(delta);
+
+		if (!editorGameAssets.isDoneLoading()
+				|| !applicationAssets.isDoneLoading()
+				|| workerExecutor.isWorking() || !backgroundExecutor.isDone()) {
+			Gdx.graphics.requestRendering();
+		}
 	}
 }

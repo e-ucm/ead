@@ -72,15 +72,6 @@ public class MokapApplicationListener extends EditorApplicationListener {
 	}
 
 	@Override
-	public void render() {
-		super.render();
-		if (!controller.getEditorGameAssets().isDoneLoading()
-				|| !controller.getApplicationAssets().isDoneLoading()) {
-			Gdx.graphics.requestRendering();
-		}
-	}
-
-	@Override
 	public void resize(int width, int height) {
 		super.stage.getViewport().update(width, height, true);
 	}
