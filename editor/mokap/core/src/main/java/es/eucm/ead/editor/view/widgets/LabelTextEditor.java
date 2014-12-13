@@ -103,9 +103,9 @@ public class LabelTextEditor extends TextEditor implements
 			@Override
 			public void changed(ChangeEvent event, Actor actor) {
 				if (event.getTarget() instanceof SelectBox) {
-					if (!modelLabel.getStyle().equals(getStyle())) {
+					if (!modelLabel.getStyle().equals(getStyleName())) {
 						controller.action(ChangeSelectionText.class,
-								getStyle(), false);
+								getStyleName(), false);
 					}
 				}
 			}

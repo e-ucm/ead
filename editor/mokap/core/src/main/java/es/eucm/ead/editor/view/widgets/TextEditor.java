@@ -164,7 +164,7 @@ public class TextEditor extends ContextMenu {
 		return null;
 	}
 
-	public String getStyle() {
+	public String getStyleName() {
 		return selectTypo.getSelected() + "-" + getTextSize();
 	}
 

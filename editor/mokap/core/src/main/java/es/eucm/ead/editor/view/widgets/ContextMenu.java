@@ -41,15 +41,16 @@ import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.actions.Actions;
 import com.badlogic.gdx.scenes.scene2d.actions.SequenceAction;
 import com.badlogic.gdx.scenes.scene2d.ui.Cell;
+import com.badlogic.gdx.scenes.scene2d.ui.ScrollPane;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
+import com.badlogic.gdx.scenes.scene2d.utils.Drawable;
 import com.badlogic.gdx.utils.Array;
-
 import es.eucm.ead.editor.view.Modal;
 
 /**
  * A panel with a scale animation.
  */
-public class ContextMenu extends Table implements Modal {
+public class ContextMenu extends ScrollPane implements Modal {
 
 	protected static final float FADE = .5F;
 
@@ -61,8 +62,34 @@ public class ContextMenu extends Table implements Modal {
 
 	private Array<Runnable> hideRunnables = new Array<Runnable>();
 
+	private Table table;
+
 	public ContextMenu() {
-		setTransform(true);
+		super(new Table());
+		table = (Table) getWidget();
+		table.setTransform(true);
+	}
+
+	public Cell add(Actor actor) {
+		return table.add(actor);
+	}
+
+	public Cell row() {
+		return table.row();
+	}
+
+	public void setBackground(Drawable background) {
+		table.setBackground(background);
+	}
+
+	public ContextMenu background(Drawable background) {
+		table.background(background);
+		return this;
+	}
+
+	public ContextMenu pad(float pad) {
+		table.pad(pad);
+		return this;
 	}
 
 	public void addHideRunnable(Runnable runnable) {
@@ -93,7 +120,7 @@ public class ContextMenu extends Table implements Modal {
 				Actions.scaleBy(0f, 1f, yDuration, Interpolation.pow2Out)),
 				Actions.scaleTo(1.0f, 1.0f)));
 
-		Array<Cell> cells = getCells();
+		Array<Cell> cells = table.getCells();
 		for (int i = 0; i < cells.size; ++i) {
 			Actor actor = cells.get(i).getActor();
 			if (actor != null) {
