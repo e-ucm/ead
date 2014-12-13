@@ -36,17 +36,16 @@
  */
 package es.eucm.ead.editor.control.workers;
 
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
-import java.util.concurrent.ThreadFactory;
-
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.DelayedRemovalArray;
 import com.badlogic.gdx.utils.ObjectMap;
-
 import es.eucm.ead.editor.control.Controller;
 import es.eucm.ead.editor.control.workers.Worker.WorkerListener;
+
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.concurrent.ThreadFactory;
 
 /**
  * Manages workers in independent threads
@@ -182,6 +181,17 @@ public class WorkerExecutor {
 	 */
 	public void dispose() {
 		executorService.shutdown();
+	}
+
+	/**
+	 * @return the number of workers running and pending to run
+	 */
+	public int countWorkers() {
+		int i = 0;
+		for (DelayedRemovalArray<Worker> workers : workersMap.values()) {
+			i += workers.size;
+		}
+		return i;
 	}
 
 	/**

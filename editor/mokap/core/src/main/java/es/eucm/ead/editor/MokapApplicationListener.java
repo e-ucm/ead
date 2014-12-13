@@ -37,7 +37,11 @@
 package es.eucm.ead.editor;
 
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.scenes.scene2d.Touchable;
+import com.badlogic.gdx.scenes.scene2d.ui.Label;
+import com.badlogic.gdx.scenes.scene2d.ui.Label.LabelStyle;
 import com.badlogic.gdx.scenes.scene2d.ui.WidgetGroup;
+import com.badlogic.gdx.scenes.scene2d.utils.Align;
 import com.badlogic.gdx.utils.Timer;
 import com.badlogic.gdx.utils.Timer.Task;
 
@@ -47,11 +51,14 @@ import es.eucm.ead.editor.control.actions.editor.OpenApplication;
 import es.eucm.ead.editor.control.actions.editor.Save;
 import es.eucm.ead.editor.model.Q;
 import es.eucm.ead.editor.platform.Platform;
+import es.eucm.ead.editor.view.SkinConstants;
 import es.eucm.ead.editor.view.widgets.WidgetBuilder;
 
 public class MokapApplicationListener extends EditorApplicationListener {
 
 	private SaveTask saveTask = new SaveTask();
+
+	private Label performance;
 
 	public MokapApplicationListener(Platform platform) {
 		super(platform);
@@ -69,9 +76,17 @@ public class MokapApplicationListener extends EditorApplicationListener {
 		super.initialize();
 		controller.action(OpenApplication.class);
 		stage.setActionsRequestRendering(true);
+		performance = new Label("", controller.getApplicationAssets().getSkin()
+				.get(SkinConstants.STYLE_SMALL, LabelStyle.class));
+		performance.setTouchable(Touchable.disabled);
+		performance.setAlignment(Align.bottomLeft);
+		stage.addActor(performance);
 	}
 
 	@Override
+		String perf = "";
+		perf += "Workers: " + controller.getWorkerExecutor().countWorkers();
+		performance.setText(perf);
 	public void resize(int width, int height) {
 		super.stage.getViewport().update(width, height, true);
 	}

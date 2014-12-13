@@ -3,6 +3,10 @@
         "default_font": {
             "file": "Roboto-Regular.ttf",
             "dpSize": 16
+        },
+        "small_font": {
+            "file": "Roboto-Regular.ttf",
+            "dpSize": 8
         }
     },
     "com.badlogic.gdx.graphics.Color": {
@@ -35,7 +39,7 @@
             "g": 1,
             "b": 1,
             "a": 0.5
-		},
+        },
         "white_semi6": {
             "r": 1,
             "g": 1,
@@ -151,12 +155,12 @@
             "color": "black"
         },
         "progress_bar_bg": {
-        	"name": "selected_tab",
-        	"color": "semi_light_brown_moka"
+            "name": "selected_tab",
+            "color": "semi_light_brown_moka"
         },
         "progress_bar_knob_before": {
-        	"name": "selected_tab",
-        	"color": "brown_moka"
+            "name": "selected_tab",
+            "color": "brown_moka"
         },
         "transparent_bg": {
             "name": "blank",
@@ -164,7 +168,7 @@
         },
         "while_semi_bg": {
             "name": "blank",
-            "color": "semi_white"        	
+            "color": "semi_white"
         },
         "black_semi_bg": {
             "name": "blank",
@@ -240,6 +244,10 @@
             "font": "default_font",
             "fontColor": "black"
         },
+        "small": {
+            "font": "small_font",
+            "fontColor": "black"
+        },
         "context": {
             "font": "default_font",
             "fontColor": "gray"
@@ -290,7 +298,7 @@
             "downFontColor": "white",
             "disabledFontColor": "gray"
         },
-         "tab": {
+        "tab": {
             "down": "light_yellow_semi_bg",
             "font": "default_font",
             "fontColor": "white"
@@ -315,45 +323,45 @@
             "up": "semi_transparent_bg"
         }
     },
-    com.badlogic.gdx.scenes.scene2d.ui.CheckBox$CheckBoxStyle: {
-		"default": { 
-			"font": "default_font", 
-			"fontColor": "black", 
-			"downFontColor": "black", 
-			"overFontColor": "black", 
-			"checkedFontColor": "black", 
-			"checkedOverFontColor": "black", 
-			"disabledFontColor": "gray", 
-			"checkboxOn": "button_check_on", 
-			"checkboxOff": "button_check_off", 
-			"checkboxOver": "button_check_off_focused"
-		},
-		"default_radio": { 
-			"font": "default_font", 
-			"fontColor": "black", 
-			"downFontColor": "black", 
-			"overFontColor": "black", 
-			"checkedFontColor": "black", 
-			"checkedOverFontColor": "black", 
-			"disabledFontColor": "gray", 
-			"checkboxOn": "button_radio_on", 
-			"checkboxOff": "button_radio_off", 
-			"checkboxOver": "button_radio_off_focused"
-		},
-		"context_radio": {  
-			"font": "default_font", 
-			"fontColor": "gray", 
-			"downFontColor": "gray", 
-			"overFontColor": "gray", 
-			"checkedFontColor": "gray", 
-			"checkedOverFontColor": "gray", 
-			"disabledFontColor": "gray", 
-			"checkboxOn": "button_radio_on", 
-			"checkboxOff": "button_radio_off", 
-			"checkboxOver": "button_radio_off_focused"
-		}
-		
-	},
+    "com.badlogic.gdx.scenes.scene2d.ui.CheckBox$CheckBoxStyle": {
+        "default": {
+            "font": "default_font",
+            "fontColor": "black",
+            "downFontColor": "black",
+            "overFontColor": "black",
+            "checkedFontColor": "black",
+            "checkedOverFontColor": "black",
+            "disabledFontColor": "gray",
+            "checkboxOn": "button_check_on",
+            "checkboxOff": "button_check_off",
+            "checkboxOver": "button_check_off_focused"
+        },
+        "default_radio": {
+            "font": "default_font",
+            "fontColor": "black",
+            "downFontColor": "black",
+            "overFontColor": "black",
+            "checkedFontColor": "black",
+            "checkedOverFontColor": "black",
+            "disabledFontColor": "gray",
+            "checkboxOn": "button_radio_on",
+            "checkboxOff": "button_radio_off",
+            "checkboxOver": "button_radio_off_focused"
+        },
+        "context_radio": {
+            "font": "default_font",
+            "fontColor": "gray",
+            "downFontColor": "gray",
+            "overFontColor": "gray",
+            "checkedFontColor": "gray",
+            "checkedOverFontColor": "gray",
+            "disabledFontColor": "gray",
+            "checkboxOn": "button_radio_on",
+            "checkboxOff": "button_radio_off",
+            "checkboxOver": "button_radio_off_focused"
+        }
+
+    },
     "com.badlogic.gdx.scenes.scene2d.ui.Slider$SliderStyle": {
         "default-horizontal": {
             "background": "knob_after",
@@ -375,7 +383,7 @@
             "fontColorSelected": "black",
             "selection": "transparent_bg",
             "fontColorUnselected": "black"
-        },        
+        },
         "gray": {
             "font": "default_font",
             "fontColorSelected": "black",
@@ -403,7 +411,7 @@
             "fontColor": "black",
             "scrollStyle": "pane",
             "listStyle": "default"
-        }, 
+        },
         "toolbar": {
             "background": "spinner_default",
             "backgroundOver": "spinner_default",
@@ -425,16 +433,16 @@
     },
     "com.badlogic.gdx.scenes.scene2d.ui.TextField$TextFieldStyle": {
         "default": {
-        	"selection": "while_semi_bg",
-        	"background": "text_field",
-        	"cursor": "text_field_cursor",
+            "selection": "while_semi_bg",
+            "background": "text_field",
+            "cursor": "text_field_cursor",
             "font": "default_font",
             "fontColor": "white"
         },
         "gray": {
-        	"selection": "black_semi_bg",
-        	"background": "text_field",
-        	"cursor": "text_field_cursor",
+            "selection": "black_semi_bg",
+            "background": "text_field",
+            "cursor": "text_field_cursor",
             "font": "default_font",
             "fontColor": "gray"
         }
@@ -449,7 +457,7 @@
             "buttonsHorizontalPad": 24,
             "buttonsVerticalPad": 20
         }
-    },    
+    },
     "es.eucm.ead.editor.view.widgets.LoadingBar$LoadingBarStyle": {
         "default": {
             "background": "progress_bar_bg",
