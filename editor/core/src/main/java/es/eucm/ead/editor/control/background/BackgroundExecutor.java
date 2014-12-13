@@ -108,6 +108,10 @@ public class BackgroundExecutor {
 		return tasks.size == 0;
 	}
 
+	public int countTasks() {
+		return tasks.size;
+	}
+
 	/**
 	 * Groups objects conforming a background task
 	 * 

@@ -461,6 +461,10 @@ public abstract class Assets extends Json implements FileHandleResolver,
 		assetManager.clear();
 	}
 
+	public int count() {
+		return assetManager.getLoadedAssets();
+	}
+
 	public class AssetManager extends com.badlogic.gdx.assets.AssetManager {
 
 		public AssetManager(FileHandleResolver resolver) {

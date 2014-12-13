@@ -46,6 +46,7 @@ import android.content.DialogInterface.OnCancelListener;
 import android.content.DialogInterface.OnClickListener;
 import android.content.Intent;
 import android.content.pm.ActivityInfo;
+import android.content.pm.ApplicationInfo;
 import android.content.pm.PackageManager;
 import android.content.pm.PackageManager.NameNotFoundException;
 import android.content.pm.ResolveInfo;
@@ -646,6 +647,11 @@ public class AndroidPlatform extends MokapPlatform {
 	@Override
 	public String getLocale() {
 		return Locale.getDefault().toString();
+	}
+
+	@Override
+	public boolean isDebug() {
+		return (0 != (context.getApplicationInfo().flags & ApplicationInfo.FLAG_DEBUGGABLE));
 	}
 
 	@Override

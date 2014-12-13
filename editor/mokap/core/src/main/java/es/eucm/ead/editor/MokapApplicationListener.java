@@ -60,6 +60,8 @@ public class MokapApplicationListener extends EditorApplicationListener {
 
 	private Label performance;
 
+	private float time;
+
 	public MokapApplicationListener(Platform platform) {
 		super(platform);
 	}
@@ -76,17 +78,42 @@ public class MokapApplicationListener extends EditorApplicationListener {
 		super.initialize();
 		controller.action(OpenApplication.class);
 		stage.setActionsRequestRendering(true);
-		performance = new Label("", controller.getApplicationAssets().getSkin()
-				.get(SkinConstants.STYLE_SMALL, LabelStyle.class));
-		performance.setTouchable(Touchable.disabled);
-		performance.setAlignment(Align.bottomLeft);
-		stage.addActor(performance);
+		if (platform.isDebug()) {
+			performance = new Label("", controller.getApplicationAssets()
+					.getSkin()
+					.get(SkinConstants.STYLE_PERFORMANCE, LabelStyle.class));
+			performance.setTouchable(Touchable.disabled);
+			performance.setAlignment(Align.bottomLeft);
+			stage.addActor(performance);
+		}
 	}
 
 	@Override
-		String perf = "";
-		perf += "Workers: " + controller.getWorkerExecutor().countWorkers();
-		performance.setText(perf);
+	public void render() {
+		super.render();
+		if (platform.isDebug()) {
+			time += Gdx.graphics.getDeltaTime();
+			int div = (int) (time * 10) % 4;
+
+			String perf = "";
+			perf += "Rnderng: "
+					+ (div == 0 ? "|" : div == 1 ? "/" : div == 2 ? "-" : "\\")
+					+ "\n";
+			perf += "MokAsst: " + controller.getEditorGameAssets().count()
+					+ "\n";
+			perf += "AppAsst: " + controller.getApplicationAssets().count()
+					+ "\n";
+			perf += "NatHeap: " + Gdx.app.getNativeHeap() / 1000000 + " MB\n";
+			perf += "JavHeap: " + Gdx.app.getJavaHeap() / 1000000 + " MB\n";
+			perf += "Workers: " + controller.getWorkerExecutor().countWorkers()
+					+ "\n";
+			perf += "BgTasks: "
+					+ controller.getBackgroundExecutor().countTasks() + "\n";
+			performance.setText(perf);
+			performance.pack();
+		}
+	}
+
 	public void resize(int width, int height) {
 		super.stage.getViewport().update(width, height, true);
 	}

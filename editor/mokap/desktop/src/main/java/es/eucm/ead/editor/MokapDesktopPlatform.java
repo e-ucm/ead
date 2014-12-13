@@ -56,6 +56,8 @@ public class MokapDesktopPlatform extends MokapPlatform {
 
 	private ImageUtils imageUtils = new DesktopImageUtils();
 
+	private boolean debug;
+
 	@Override
 	public void setTitle(String title) {
 
@@ -187,5 +189,22 @@ public class MokapDesktopPlatform extends MokapPlatform {
 	@Override
 	public ImageUtils getImageUtils() {
 		return imageUtils;
+	}
+
+	public void setApplicationArguments(Object... applicationArguments) {
+		super.setApplicationArguments(applicationArguments);
+		if (applicationArguments.length > 0
+				|| "debug".equals(applicationArguments[0])) {
+			setDebug(true);
+		}
+	}
+
+	public void setDebug(boolean debug) {
+		this.debug = debug;
+	}
+
+	@Override
+	public boolean isDebug() {
+		return debug;
 	}
 }

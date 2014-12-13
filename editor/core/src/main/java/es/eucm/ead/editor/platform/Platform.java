@@ -209,4 +209,9 @@ public interface Platform {
 	 *         </dl>
 	 */
 	Object[] getApplicationArguments();
+
+	/**
+	 * @return if the application is in debug mode
+	 */
+	boolean isDebug();
 }

@@ -241,4 +241,9 @@ public abstract class AbstractPlatform implements Platform {
 	public ImageUtils getImageUtils() {
 		return null;
 	}
+
+	@Override
+	public boolean isDebug() {
+		return false;
+	}
 }
