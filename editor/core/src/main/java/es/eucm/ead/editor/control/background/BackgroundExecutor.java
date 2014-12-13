@@ -104,6 +104,10 @@ public class BackgroundExecutor {
 		}
 	}
 
+	public boolean isDone() {
+		return tasks.size == 0;
+	}
+
 	/**
 	 * Groups objects conforming a background task
 	 * 
