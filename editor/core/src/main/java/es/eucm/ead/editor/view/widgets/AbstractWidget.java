@@ -83,7 +83,7 @@ public class AbstractWidget extends WidgetGroup {
 		getStage().setKeyboardFocus(this);
 	}
 
-	protected float getPrefWidth(Actor a) {
+	public static float getPrefWidth(Actor a) {
 		if (a == null) {
 			return 0;
 		} else if (a instanceof Widget) {
@@ -95,7 +95,7 @@ public class AbstractWidget extends WidgetGroup {
 		}
 	}
 
-	protected float getPrefHeight(Actor a) {
+	public static float getPrefHeight(Actor a) {
 		if (a == null) {
 			return 0;
 		} else if (a instanceof Widget) {
@@ -107,7 +107,7 @@ public class AbstractWidget extends WidgetGroup {
 		}
 	}
 
-	protected float getMaxWidth(Actor a) {
+	protected static float getMaxWidth(Actor a) {
 		if (a instanceof Widget) {
 			return ((Widget) a).getMaxWidth();
 		} else if (a instanceof WidgetGroup) {
@@ -117,7 +117,7 @@ public class AbstractWidget extends WidgetGroup {
 		}
 	}
 
-	protected float getMaxHeight(Actor a) {
+	protected static float getMaxHeight(Actor a) {
 		if (a instanceof Widget) {
 			return ((Widget) a).getMaxHeight();
 		} else if (a instanceof WidgetGroup) {
