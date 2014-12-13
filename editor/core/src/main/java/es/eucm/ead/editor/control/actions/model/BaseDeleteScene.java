@@ -37,6 +37,7 @@
 package es.eucm.ead.editor.control.actions.model;
 
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.utils.Array;
 import es.eucm.ead.editor.control.Selection;
 import es.eucm.ead.editor.control.actions.ModelAction;
@@ -116,6 +117,13 @@ public class BaseDeleteScene extends ModelAction {
 							id,
 							args.length == 2 && args[1] instanceof ModelEntity ? (ModelEntity) args[1]
 									: null, ResourceCategory.SCENE));
+
+			// Delete thumbnail
+			FileHandle thumbnail = controller.getEditorGameAssets().resolve(
+					Q.getThumbnailPath(id));
+			if (thumbnail.exists()) {
+				thumbnail.delete();
+			}
 
 			// 4) Delete the sceneId from gameMetadata.getSceneorder()
 			commandList.add(new ListCommand.RemoveFromListCommand(editState,

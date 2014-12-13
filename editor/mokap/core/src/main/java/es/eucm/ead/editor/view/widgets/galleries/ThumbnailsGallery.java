@@ -42,8 +42,6 @@ import com.badlogic.gdx.scenes.scene2d.ui.Button;
 import com.badlogic.gdx.scenes.scene2d.ui.Image;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.utils.ObjectMap;
-import com.badlogic.gdx.utils.Scaling;
-
 import es.eucm.ead.editor.view.SkinConstants;
 import es.eucm.ead.editor.view.drawables.TextureDrawable;
 import es.eucm.ead.editor.view.widgets.AbstractWidget;
@@ -115,22 +113,21 @@ public abstract class ThumbnailsGallery extends AbstractWidget implements
 	}
 
 	public Cell addTile(String id, String title, String thumbnailPath) {
-		Image image;
-		if (thumbnailPath == null) {
-			image = new Image(skin, SkinConstants.DRAWABLE_LOGO);
-			image.setScaling(Scaling.fit);
-		} else {
-			TextureDrawable thumbnail = new TextureDrawable();
-			image = new Image(thumbnail);
-			pendingTextures.put(thumbnailPath, thumbnail);
-			assets.get(thumbnailPath, Texture.class, this);
-			image.setName(thumbnailPath);
-		}
+		TextureDrawable thumbnail = new TextureDrawable();
+		Image image = new Image(thumbnail);
+		pendingTextures.put(thumbnailPath, thumbnail);
+		loadThumbnail(thumbnailPath);
+		image.setName(thumbnailPath);
+
 		title = title == null || "".equals(title) ? i18N.m("untitled") : title;
 		Tile tile = WidgetBuilder.tile(image, title);
 		tile.setName(id);
 		prepareGalleryItem(tile, id);
 		return gallery.add(tile);
+	}
+
+	protected void loadThumbnail(String path) {
+		assets.get(path, Texture.class, this);
 	}
 
 	protected abstract void prepareAddButton(Actor actor);

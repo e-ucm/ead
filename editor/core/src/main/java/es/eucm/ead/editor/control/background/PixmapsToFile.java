@@ -34,44 +34,48 @@
  *      You should have received a copy of the GNU Lesser General Public License
  *      along with eAdventure.  If not, see <http://www.gnu.org/licenses/>.
  */
-package es.eucm.ead.editor.view.builders.scene;
+package es.eucm.ead.editor.control.background;
 
-import com.badlogic.gdx.scenes.scene2d.Actor;
-import es.eucm.ead.editor.control.Controller;
-import es.eucm.ead.editor.control.MokapController.BackListener;
-import es.eucm.ead.editor.control.Selection;
-import es.eucm.ead.editor.control.actions.model.SetSelection;
-import es.eucm.ead.editor.view.builders.ViewBuilder;
+import com.badlogic.gdx.files.FileHandle;
+import com.badlogic.gdx.graphics.Pixmap;
+import com.badlogic.gdx.graphics.Pixmap.Format;
+import com.badlogic.gdx.graphics.PixmapIO;
 
-public class SceneView implements ViewBuilder, BackListener {
+/**
+ * Creates a new Pixmap with a set of pixmaps and then writes it to a file.
+ * Pixmaps are expected to come slice as columns of the total pixmap
+ */
+public class PixmapsToFile extends BackgroundTask<String> {
 
-	private Controller controller;
+	private Pixmap[] pixmaps;
 
-	private SceneEditor view;
+	private FileHandle path;
 
-	@Override
-	public void initialize(Controller controller) {
-		this.controller = controller;
-		view = new SceneEditor(controller);
+	public PixmapsToFile(Pixmap[] pixmaps, FileHandle path) {
+		this.pixmaps = pixmaps;
+		this.path = path;
 	}
 
 	@Override
-	public Actor getView(Object... args) {
-		controller.getCommands().pushStack();
-		view.hideNavigationRightAway();
-		return view;
-	}
+	public String call() throws Exception {
+		int height = 0;
+		int width = 0;
+		for (Pixmap pixmap : pixmaps) {
+			height = Math.max(height, pixmap.getHeight());
+			width += pixmap.getWidth();
+		}
 
-	@Override
-	public void release(Controller controller) {
-		controller.getCommands().popStack(false);
-	}
+		Pixmap pixmap = new Pixmap(width, height, Format.RGB888);
+		int xOffset = 0;
+		for (Pixmap p : pixmaps) {
+			pixmap.drawPixmap(p, xOffset, 0);
+			xOffset += p.getWidth();
+			p.dispose();
+		}
 
-	@Override
-	public boolean onBackPressed() {
-		controller.action(SetSelection.class, Selection.PROJECT,
-				Selection.RESOURCE);
-		return true;
-	}
+		PixmapIO.writePNG(path, pixmap);
+		pixmap.dispose();
 
+		return path.path();
+	}
 }

@@ -34,44 +34,40 @@
  *      You should have received a copy of the GNU Lesser General Public License
  *      along with eAdventure.  If not, see <http://www.gnu.org/licenses/>.
  */
-package es.eucm.ead.editor.view.builders.scene;
+package es.eucm.ead.editor.control.workers;
 
-import com.badlogic.gdx.scenes.scene2d.Actor;
-import es.eucm.ead.editor.control.Controller;
-import es.eucm.ead.editor.control.MokapController.BackListener;
-import es.eucm.ead.editor.control.Selection;
-import es.eucm.ead.editor.control.actions.model.SetSelection;
-import es.eucm.ead.editor.view.builders.ViewBuilder;
+import es.eucm.ead.engine.assets.Assets;
 
-public class SceneView implements ViewBuilder, BackListener {
+/**
+ * Steps worker, to help divide long process in the OpenGL thread. If assets is
+ * passed as argument, the first step is not invoked until all assets are loaded
+ */
+public class StepsWorker extends Worker {
 
-	private Controller controller;
+	private Assets assets;
 
-	private SceneEditor view;
+	private int totalSteps;
 
-	@Override
-	public void initialize(Controller controller) {
-		this.controller = controller;
-		view = new SceneEditor(controller);
+	private int step;
+
+	public StepsWorker() {
+		super(true, false);
 	}
 
 	@Override
-	public Actor getView(Object... args) {
-		controller.getCommands().pushStack();
-		view.hideNavigationRightAway();
-		return view;
+	protected void prepare() {
+		totalSteps = getArg(0);
+		if (args.length == 2) {
+			assets = getArg(1);
+		}
 	}
 
 	@Override
-	public void release(Controller controller) {
-		controller.getCommands().popStack(false);
+	protected boolean step() {
+		if (assets == null || assets.isDoneLoading()) {
+			result(step++);
+			return step >= totalSteps;
+		}
+		return false;
 	}
-
-	@Override
-	public boolean onBackPressed() {
-		controller.action(SetSelection.class, Selection.PROJECT,
-				Selection.RESOURCE);
-		return true;
-	}
-
 }

@@ -43,6 +43,7 @@ import com.badlogic.gdx.scenes.scene2d.ui.ImageButton.ImageButtonStyle;
 import com.badlogic.gdx.utils.Array;
 import es.eucm.ead.editor.control.Controller;
 import es.eucm.ead.editor.control.actions.editor.AddScene;
+import es.eucm.ead.editor.control.actions.editor.CreateSceneThumbnail;
 import es.eucm.ead.editor.control.actions.model.scene.SetEditedScene;
 import es.eucm.ead.editor.model.Model.FieldListener;
 import es.eucm.ead.editor.model.Model.ModelListener;
@@ -59,7 +60,6 @@ import es.eucm.ead.engine.assets.Assets;
 import es.eucm.ead.engine.assets.Assets.AssetLoadingListener;
 import es.eucm.ead.schema.editor.components.Documentation;
 import es.eucm.ead.schema.editor.components.GameData;
-import es.eucm.ead.schema.editor.components.Thumbnail;
 import es.eucm.ead.schema.entities.ModelEntity;
 import es.eucm.ead.schemax.FieldName;
 import es.eucm.ead.schemax.entities.ResourceCategory;
@@ -162,8 +162,8 @@ public class ScenesGallery extends ThumbnailsGallery implements
 	}
 
 	private void addScene(String id, ModelEntity scene) {
-		Cell cell = addTile(id, Q.getName(scene, ""),
-				Q.getComponent(scene, Thumbnail.class).getPath());
+		String thumbnailPath = Q.getThumbnailPath(id);
+		Cell cell = addTile(id, Q.getName(scene, ""), thumbnailPath);
 		cell.setUserObject(scene);
 		Tile tile = (Tile) cell.getActor();
 
@@ -172,6 +172,18 @@ public class ScenesGallery extends ThumbnailsGallery implements
 		controller.getModel().addFieldListener(
 				Q.getComponent(scene, Documentation.class), nameListener);
 		sortScenes();
+
+		// Check if thumbnail exists. If not, create
+		if (assets.resolve(thumbnailPath).exists()) {
+			super.loadThumbnail(thumbnailPath);
+		} else {
+			controller.action(CreateSceneThumbnail.class, scene);
+		}
+	}
+
+	@Override
+	protected void loadThumbnail(String path) {
+		// Do nothing
 	}
 
 	private void sortScenes() {

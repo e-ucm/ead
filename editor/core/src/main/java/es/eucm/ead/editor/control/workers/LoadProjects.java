@@ -38,14 +38,12 @@ package es.eucm.ead.editor.control.workers;
 
 import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.utils.Array;
-
 import es.eucm.ead.editor.control.Controller;
 import es.eucm.ead.editor.model.Q;
 import es.eucm.ead.editor.utils.ProjectUtils;
 import es.eucm.ead.engine.assets.Assets;
 import es.eucm.ead.schema.editor.components.Documentation;
 import es.eucm.ead.schema.editor.components.GameData;
-import es.eucm.ead.schema.editor.components.Thumbnail;
 import es.eucm.ead.schema.entities.ModelEntity;
 import es.eucm.ead.schemax.GameStructure;
 
@@ -100,14 +98,12 @@ public class LoadProjects extends Worker {
 	private String findThumbnail(ModelEntity game, String path) {
 		String scenePath = Q.getComponent(game, GameData.class)
 				.getInitialScene();
-		ModelEntity scene = findScene(path, scenePath);
-		if (Q.hasComponent(scene, Thumbnail.class)
-				&& Q.getComponent(scene, Thumbnail.class).getPath() != null) {
-			return assets.absolute(path)
-					.child(Q.getComponent(scene, Thumbnail.class).getPath())
+		if (scenePath != null) {
+			return assets.absolute(path).child(Q.getThumbnailPath(scenePath))
 					.path();
+		} else {
+			return null;
 		}
-		return null;
 	}
 
 	private ModelEntity findGame(String path) {

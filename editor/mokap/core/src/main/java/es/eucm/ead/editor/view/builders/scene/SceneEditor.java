@@ -36,7 +36,6 @@
  */
 package es.eucm.ead.editor.view.builders.scene;
 
-import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.math.Interpolation;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
@@ -45,7 +44,6 @@ import com.badlogic.gdx.scenes.scene2d.actions.Actions;
 import com.badlogic.gdx.scenes.scene2d.ui.Button;
 import com.badlogic.gdx.scenes.scene2d.utils.Align;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
-
 import es.eucm.ead.editor.control.Controller;
 import es.eucm.ead.editor.control.MokapController.BackListener;
 import es.eucm.ead.editor.control.Preferences;
@@ -53,7 +51,7 @@ import es.eucm.ead.editor.control.Selection;
 import es.eucm.ead.editor.control.Selection.Context;
 import es.eucm.ead.editor.control.actions.editor.AddLabel;
 import es.eucm.ead.editor.control.actions.editor.ChangeView;
-import es.eucm.ead.editor.control.actions.editor.CreateThumbnail;
+import es.eucm.ead.editor.control.actions.editor.CreateSceneThumbnail;
 import es.eucm.ead.editor.control.actions.editor.ShowContextMenu;
 import es.eucm.ead.editor.control.actions.editor.ShowInfoPanel;
 import es.eucm.ead.editor.control.actions.editor.ShowInfoPanel.TypePanel;
@@ -64,7 +62,6 @@ import es.eucm.ead.editor.control.actions.model.TakePicture;
 import es.eucm.ead.editor.model.Model.SelectionListener;
 import es.eucm.ead.editor.model.Q;
 import es.eucm.ead.editor.model.events.SelectionEvent;
-import es.eucm.ead.editor.model.events.SelectionEvent.Type;
 import es.eucm.ead.editor.view.ModelView;
 import es.eucm.ead.editor.view.SkinConstants;
 import es.eucm.ead.editor.view.builders.FileView;
@@ -195,6 +192,13 @@ public class SceneEditor extends BaseView implements ModelView,
 	}
 
 	@Override
+	public void toggleNavigation() {
+		super.toggleNavigation();
+		controller.action(CreateSceneThumbnail.class, getGroupEditor()
+				.getRootGroup());
+	}
+
+	@Override
 	public void prepare() {
 		setMode(mode);
 		controller.getEngine().setGameView(gameView);
@@ -212,14 +216,13 @@ public class SceneEditor extends BaseView implements ModelView,
 
 	@Override
 	public boolean listenToContext(String contextId) {
-		return Selection.SCENE_ELEMENT.equals(contextId)
-				|| Selection.SCENE.equals(contextId);
+		return Selection.SCENE_ELEMENT.equals(contextId);
 	}
 
 	@Override
 	public void modelChanged(SelectionEvent event) {
 		interactiveButton.clearActions();
-		if (controller.getModel().getSelection().get(Selection.SCENE_ELEMENT).length != 1) {
+		if (selection.get(Selection.SCENE_ELEMENT).length != 1) {
 			lockContextOnly(true);
 			interactiveButton
 					.addAction(Actions.sequence(Actions
@@ -234,20 +237,7 @@ public class SceneEditor extends BaseView implements ModelView,
 									Interpolation.sineIn), Actions
 									.touchable(Touchable.enabled)));
 		}
-
-		if (event.getType() == Type.REMOVED
-				&& event.getContextId().equals(Selection.SCENE)
-				&& event.getSelection().length > 0) {
-			ModelEntity scene = (ModelEntity) event.getSelection()[0];
-			if (scene != null) {
-				controller.action(CreateThumbnail.class, scene,
-						(int) (Gdx.graphics.getHeight() - WidgetBuilder
-								.dpToPixels(56)), (int) (Gdx.graphics
-								.getHeight() / 2.15f));
-			}
-		} else {
-			setMode(mode);
-		}
+		setMode(mode);
 	}
 
 	@Override
@@ -272,22 +262,20 @@ public class SceneEditor extends BaseView implements ModelView,
 		}
 		this.oldMode = this.mode;
 		this.mode = mode;
-		Context context = controller.getModel().getSelection()
-				.getContext(Selection.SCENE_ELEMENT);
-		boolean selection = context != null
+		Context context = selection.getContext(Selection.SCENE_ELEMENT);
+		boolean somethingSelected = context != null
 				&& context.getSelection().length > 0;
 		switch (mode) {
 		case COMPOSE:
 			setContext(interactionContext);
 			lockPanels(false);
-			toolbar.setSelectedWidget(INSERT + (selection ? 1 : 0));
+			toolbar.setSelectedWidget(INSERT + (somethingSelected ? 1 : 0));
 			sceneGroupEditor.setOnlySelection(false);
 			controller.action(ShowInfoPanel.class, TypePanel.COMPOSE,
 					Preferences.HELP_MODE_COMPOSE);
 			break;
 		case DRAW:
-			if (controller.getModel().getSelection()
-					.getSingle(Selection.SCENE_ELEMENT) != null) {
+			if (selection.getSingle(Selection.SCENE_ELEMENT) != null) {
 				controller.action(SetSelection.class, Selection.EDITED_GROUP,
 						Selection.SCENE_ELEMENT);
 			}
@@ -305,8 +293,8 @@ public class SceneEditor extends BaseView implements ModelView,
 			controller.getEngine().play();
 			sceneGroupEditor.release();
 
-			ModelEntity scene = (ModelEntity) controller.getModel()
-					.getSelection().getSingle(Selection.SCENE);
+			ModelEntity scene = (ModelEntity) selection
+					.getSingle(Selection.SCENE);
 			gameView.clearLayer(Layer.SCENE_CONTENT, true);
 			gameView.addEntityToLayer(Layer.SCENE_CONTENT,
 					entitiesLoader.toEngineEntity(scene));

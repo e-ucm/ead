@@ -52,6 +52,7 @@ import com.badlogic.gdx.utils.Array;
 
 import es.eucm.ead.editor.control.Controller;
 import es.eucm.ead.editor.control.Selection;
+import es.eucm.ead.editor.control.actions.editor.CreateSceneThumbnail;
 import es.eucm.ead.editor.control.actions.model.generic.SetField;
 import es.eucm.ead.editor.model.Q;
 import es.eucm.ead.editor.view.SkinConstants;
@@ -150,12 +151,12 @@ public class LinkEditor extends ComponentEditor<Behavior> implements
 
 		LinearLayout velTable = new LinearLayout(true);
 
-		Array<String> velOptions = new Array<String>();
-		velOptions.add(i18N.m("fast"));
-		velOptions.add(i18N.m("normal"));
-		velOptions.add(i18N.m("slow"));
+		Array<String> speedOptions = new Array<String>();
+		speedOptions.add(i18N.m("fast"));
+		speedOptions.add(i18N.m("normal"));
+		speedOptions.add(i18N.m("slow"));
 		duration = new SelectBox<String>(skin);
-		duration.setItems(velOptions);
+		duration.setItems(speedOptions);
 		duration.addListener(new com.badlogic.gdx.scenes.scene2d.utils.ChangeListener() {
 
 			@Override
@@ -329,6 +330,12 @@ public class LinkEditor extends ComponentEditor<Behavior> implements
 	@Override
 	public void prepare() {
 		super.prepare();
+		// Generate thumbnail to correct display transition
+		ModelEntity scene = (ModelEntity) controller.getModel().getSelection()
+				.getSingle(Selection.SCENE);
+		if (scene != null) {
+			controller.action(CreateSceneThumbnail.class, scene);
+		}
 		controller.getEditorGameAssets().addAssetListener(this);
 	}
 

@@ -47,9 +47,14 @@ import com.badlogic.gdx.utils.Timer.Task;
 
 import es.eucm.ead.editor.control.Controller;
 import es.eucm.ead.editor.control.MokapController;
+import es.eucm.ead.editor.control.Selection;
+import es.eucm.ead.editor.control.actions.editor.CreateSceneThumbnail;
 import es.eucm.ead.editor.control.actions.editor.OpenApplication;
 import es.eucm.ead.editor.control.actions.editor.Save;
+import es.eucm.ead.editor.model.Model.SelectionListener;
 import es.eucm.ead.editor.model.Q;
+import es.eucm.ead.editor.model.events.SelectionEvent;
+import es.eucm.ead.editor.model.events.SelectionEvent.Type;
 import es.eucm.ead.editor.platform.Platform;
 import es.eucm.ead.editor.view.SkinConstants;
 import es.eucm.ead.editor.view.widgets.WidgetBuilder;
@@ -132,6 +137,9 @@ public class MokapApplicationListener extends EditorApplicationListener {
 				Gdx.files, viewContainer, modalContainer);
 		WidgetBuilder.setController(controller);
 		Q.setController(controller);
+
+		controller.getModel().addSelectionListener(
+				new ThumbnailSelectionListener());
 		return controller;
 	}
 
@@ -163,6 +171,23 @@ public class MokapApplicationListener extends EditorApplicationListener {
 		public void run() {
 			Gdx.app.postRunnable(runnable);
 			Gdx.graphics.requestRendering();
+		}
+	}
+
+	public class ThumbnailSelectionListener implements SelectionListener {
+
+		@Override
+		public boolean listenToContext(String contextId) {
+			return Selection.SCENE.equals(contextId);
+		}
+
+		@Override
+		public void modelChanged(SelectionEvent event) {
+			if (event.getType() == Type.REMOVED
+					&& event.getSelection().length > 0) {
+				controller.action(CreateSceneThumbnail.class,
+						event.getSelection()[0]);
+			}
 		}
 	}
 }

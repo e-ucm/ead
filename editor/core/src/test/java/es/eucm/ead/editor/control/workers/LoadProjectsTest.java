@@ -44,7 +44,6 @@ import es.eucm.ead.editor.control.workers.Worker.WorkerListener;
 import es.eucm.ead.editor.model.Q;
 import es.eucm.ead.editor.platform.MockPlatform;
 import es.eucm.ead.schema.editor.components.GameData;
-import es.eucm.ead.schema.editor.components.Thumbnail;
 import es.eucm.ead.schema.entities.ModelEntity;
 
 import static org.junit.Assert.assertEquals;
@@ -108,20 +107,13 @@ public class LoadProjectsTest extends WorkerTest implements WorkerListener {
 		controller.getApplicationAssets().toJson(game,
 				gameFolder.child("game.json"));
 
-		String thumbnailPath = "thumbnail" + Math.random() + ".png";
+		String thumbnailPath = Q.getThumbnailPath("s.json");
 		ModelEntity scene = new ModelEntity();
-		// Only generate thumbnails for random games
-		if (Math.random() > 0.5f) {
-			Q.getComponent(scene, Thumbnail.class).setPath(thumbnailPath);
-		} else {
-			thumbnailPath = null;
-		}
 
 		controller.getApplicationAssets().toJson(scene,
 				gameFolder.child("s.json"));
 
 		paths.add(temp.child(gamePath).path());
-		paths.add(thumbnailPath == null ? null : temp.child(gamePath)
-				.child(thumbnailPath).path());
+		paths.add(temp.child(gamePath).child(thumbnailPath).path());
 	}
 }
