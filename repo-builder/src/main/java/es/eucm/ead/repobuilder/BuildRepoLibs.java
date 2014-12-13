@@ -40,10 +40,7 @@ import com.badlogic.gdx.backends.lwjgl.LwjglNativesLoader;
 import com.badlogic.gdx.files.FileHandle;
 import es.eucm.ead.editor.demobuilder.ImgUtils;
 import es.eucm.ead.engine.mock.MockApplication;
-import es.eucm.ead.repobuilder.libs.FreepikNature;
-import es.eucm.ead.repobuilder.libs.MockupIconsLib;
-import es.eucm.ead.repobuilder.libs.Monejos;
-import es.eucm.ead.repobuilder.libs.VectorCharacters;
+import es.eucm.ead.repobuilder.libs.*;
 
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -56,7 +53,8 @@ public class BuildRepoLibs {
 
 	private static final String[] LIBRARIES_IN_REPO = {
 			MockupIconsLib.class.getName(), FreepikNature.class.getName(),
-			VectorCharacters.class.getName(), Monejos.class.getName() };
+			VectorCharacters.class.getName(), Monejos.class.getName(),
+			FindingAJob.class.getName(), EatingOut.class.getName() };
 
 	public static void main(String[] args) {
 		String outDir = null;
