@@ -244,7 +244,16 @@ public class LinearLayout extends AbstractWidget {
 	 * remaining horizontal/vertical space.
 	 */
 	public void addSpace() {
-		add(new SpaceConsumer()).expand(true, true);
+		add(new SpaceConsumer(0)).expand(true, true);
+	}
+
+	/**
+	 * Adds a space between widgets. The space will try to fill all the
+	 * remaining horizontal/vertical space, and will have a pref height/width of
+	 * the given size
+	 */
+	public void addSpace(float size) {
+		add(new SpaceConsumer(size)).expand(true, true);
 	}
 
 	@Override
@@ -348,14 +357,21 @@ public class LinearLayout extends AbstractWidget {
 	}
 
 	public class SpaceConsumer extends Widget {
+
+		private float size;
+
+		public SpaceConsumer(float size) {
+			this.size = size;
+		}
+
 		@Override
 		public float getPrefWidth() {
-			return 0;
+			return size;
 		}
 
 		@Override
 		public float getPrefHeight() {
-			return 0;
+			return size;
 		}
 	}
 

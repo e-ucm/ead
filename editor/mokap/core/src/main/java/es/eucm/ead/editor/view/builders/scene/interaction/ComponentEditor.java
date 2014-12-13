@@ -110,7 +110,7 @@ public abstract class ComponentEditor<T extends ModelComponent> extends
 		list.add(header).expandX();
 		buildContent();
 
-		list.addSpace();
+		list.addSpace(WidgetBuilder.dpToPixels(48));
 	}
 
 	@Override
