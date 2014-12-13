@@ -91,10 +91,11 @@ public class ScaledTextureLoader
 					Texture.class));
 		} else {
 			FileHandle scaleProperty = gameAssets
-					.resolve(GameStructure.METADATA_PATH + imageFile.name()
-							+ ".prop");
-			FileHandle scaled = gameAssets.resolve(GameStructure.METADATA_PATH
-					+ imageFile.name() + ".scaled");
+					.resolveProject(GameStructure.METADATA_PATH
+							+ imageFile.name() + ".prop");
+			FileHandle scaled = gameAssets
+					.resolveProject(GameStructure.METADATA_PATH
+							+ imageFile.name() + ".scaled");
 			if (!imageFile.exists() || !scaleProperty.exists()) {
 				scale = imageUtils.scale(imageFile, scaled);
 				scaleProperty.writeString(scale + "", false);

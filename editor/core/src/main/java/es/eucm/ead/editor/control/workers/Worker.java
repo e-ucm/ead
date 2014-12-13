@@ -100,6 +100,10 @@ public abstract class Worker implements Runnable {
 		this.args = args;
 	}
 
+	public <T> T getArg(int index) {
+		return (T) args[index];
+	}
+
 	public WorkerListener getListener() {
 		return listener;
 	}

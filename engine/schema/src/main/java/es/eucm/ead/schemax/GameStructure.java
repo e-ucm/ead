@@ -75,5 +75,5 @@ public interface GameStructure {
 	 */
 	public static final String JAR_GAME_FOLDER = "assets/";
 
-	public static final String THUMBNAILS_PATH = "thumbnails/";
+	public static final String THUMBNAILS_PATH = METADATA_PATH + "thumbnails/";
 }
