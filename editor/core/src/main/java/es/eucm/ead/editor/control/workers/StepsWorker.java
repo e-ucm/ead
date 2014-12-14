@@ -46,7 +46,7 @@ public class StepsWorker extends Worker {
 
 	private Assets assets;
 
-	private int totalSteps;
+	private Integer totalSteps;
 
 	private int step;
 
