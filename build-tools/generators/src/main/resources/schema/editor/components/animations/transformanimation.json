@@ -1,0 +1,31 @@
+{
+    "additionalProperties": false,
+    "javaType": "es.eucm.ead.schema.editor.components.animations.TransformAnimation",
+    "extends": {
+        "$ref": "../../../engine/components/component.json"
+    },
+    "properties": {
+        "ease": {
+            "type": "string",
+            "enum": ["linear", "cubic_in", "cubic_out", "cubic_in_out", "bounce_in", "bounce_out"],
+            "default": "linear",
+            "description": "Ease type. Default is linear"
+        },
+        "yoyo": {
+            "type": "boolean",
+            "default": false,
+            "description": "If repeats are yoyo"
+        },
+        "repeat": {
+            "type": "integer",
+            "default": -1,
+            "description": "Repeats for the transfomation. -1 means infinite repeats"
+        },
+        "speed": {
+            "type": "number",
+            "default": 0,
+            "description": "Speed of the animation. Maximum is 1.0, minimum is 0.0"
+        }
+    },
+    "type": "object"
+}
