@@ -126,8 +126,14 @@ public class LinearLayout extends AbstractWidget {
 
 	protected Insets defaultMargin;
 
+	private int align = Align.center;
+
 	public LinearLayout(boolean horizontal) {
 		this(horizontal, null);
+	}
+
+	public void setAlign(int align) {
+		this.align = align;
 	}
 
 	public LinearLayout(boolean horizontal, Drawable background) {
@@ -300,10 +306,13 @@ public class LinearLayout extends AbstractWidget {
 	public void layout() {
 		// Check if there is enough width to layout all children without problem
 		float childrenWidth = prefWidth() - paddingWidth();
+		float prefChildrenWidth = 0;
 		int widgetsExpanded = 0;
 		for (Constraints c : constraints) {
 			if (expandX(c)) {
 				widgetsExpanded++;
+			} else {
+				prefChildrenWidth += actorWidth(c.actor);
 			}
 		}
 
@@ -328,7 +337,19 @@ public class LinearLayout extends AbstractWidget {
 			}
 		}
 
-		float leftX = ignorePadding ? 0.0f : paddingLeft();
+		float xOffset = 0;
+		// If no widget is expanded, we need to use the alignment to set the
+		// xOffset of the remaining width
+		if (widgetsExpanded == 0) {
+			float remainingWidth = childrenWidth - prefChildrenWidth;
+			if (isXAlignCenter()) {
+				xOffset = remainingWidth / 2;
+			} else if (isAlignRight()) {
+				xOffset = remainingWidth;
+			}
+		}
+
+		float leftX = (ignorePadding ? 0.0f : paddingLeft()) + xOffset;
 		float expandedWidth = 0.0f;
 
 		if (!collapsed) {
@@ -393,7 +414,7 @@ public class LinearLayout extends AbstractWidget {
 			return paddingBottom() + marginBottom(c);
 		default:
 			// Align.center
-			float offset = paddingBottom() + marginBottom(c);
+			float offset = paddingBottom();
 			float containerHeight = containerHeight() - paddingHeight();
 			return (containerHeight - height) / 2 + offset;
 		}
@@ -408,7 +429,7 @@ public class LinearLayout extends AbstractWidget {
 			}
 		}
 		prefWidth += paddingWidth();
-		return prefWidth;
+		return Math.max(prefWidth, backgroundMinWidth());
 	}
 
 	public float prefHeight() {
@@ -420,7 +441,7 @@ public class LinearLayout extends AbstractWidget {
 			}
 		}
 		prefHeight += paddingHeight();
-		return prefHeight;
+		return Math.max(prefHeight, backgroundMinHeight());
 	}
 
 	protected float containerHeight() {
@@ -481,6 +502,16 @@ public class LinearLayout extends AbstractWidget {
 				.getBottomHeight() : background.getLeftWidth();
 	}
 
+	private float backgroundMinHeight() {
+		return background == null ? 0 : horizontal ? background.getMinHeight()
+				: background.getMinWidth();
+	}
+
+	private float backgroundMinWidth() {
+		return background == null ? 0 : horizontal ? background.getMinWidth()
+				: background.getMinHeight();
+	}
+
 	protected float paddingHeight() {
 		return (horizontal ? padding.getHeight() : padding.getWidth())
 				+ backgroundHeight();
@@ -535,6 +566,15 @@ public class LinearLayout extends AbstractWidget {
 		return horizontal ? c.verticalAlign : c.horizontalAlign;
 	}
 
+	private boolean isXAlignCenter() {
+		return (Align.center & align) != 0;
+	}
+
+	private boolean isAlignRight() {
+		return horizontal ? (Align.right & align) != 0
+				: (Align.top & align) != 0;
+	}
+
 	protected void setBoundsForActor(Actor actor, float x, float y,
 			float width, float height) {
 		if (horizontal) {
@@ -577,6 +617,26 @@ public class LinearLayout extends AbstractWidget {
 		public Constraints margin(float left, float top, float right,
 				float bottom) {
 			margin.set(left, top, right, bottom);
+			return this;
+		}
+
+		public Constraints marginLeft(float margin) {
+			this.margin.left = margin;
+			return this;
+		}
+
+		public Constraints marginRight(float margin) {
+			this.margin.right = margin;
+			return this;
+		}
+
+		public Constraints marginTop(float margin) {
+			this.margin.top = margin;
+			return this;
+		}
+
+		public Constraints marginBottom(float margin) {
+			this.margin.bottom = margin;
 			return this;
 		}
 
