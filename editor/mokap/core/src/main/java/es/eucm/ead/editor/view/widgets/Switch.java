@@ -38,218 +38,202 @@ package es.eucm.ead.editor.view.widgets;
 
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.g2d.Batch;
-import com.badlogic.gdx.scenes.scene2d.Actor;
+import com.badlogic.gdx.math.Interpolation;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.InputListener;
-import com.badlogic.gdx.scenes.scene2d.Touchable;
 import com.badlogic.gdx.scenes.scene2d.ui.Container;
+import com.badlogic.gdx.scenes.scene2d.ui.Image;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
-import com.badlogic.gdx.scenes.scene2d.utils.Align;
 import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener.ChangeEvent;
 import com.badlogic.gdx.scenes.scene2d.utils.Drawable;
 import com.badlogic.gdx.utils.Pools;
+import es.eucm.ead.editor.utils.Actions2;
 
 /**
- * Widget with two states, on and off. For change the state you can touch the
- * image contained or drag it to the opposite side.
- * 
+ * This widget imitates a switch with check and unchecked states. Each state can
+ * have an drawable associated.
  */
-public class Switch extends Container<Actor> {
+public class Switch extends AbstractWidget {
 
 	private SwitchStyle style;
 
-	private IconButton onImage;
+	private boolean checked;
 
-	private IconButton offImage;
+	private Container<Image> knob;
 
-	private float offsetX;
-
-	private Drawable current;
-
-	private Drawable background;
-
-	private boolean stateOn;
-
-	private Color circleColor;
-
-	private Color barColor;
+	private Image knobImage;
 
 	public Switch(Skin skin) {
-		this(skin, skin.get(SwitchStyle.class), null, null);
+		this(skin.get(SwitchStyle.class));
 	}
 
-	public Switch(Skin skin, String imageOn, String imageOff) {
-		this(skin, skin.get(SwitchStyle.class), imageOn, imageOff);
+	public Switch(Skin skin, String checkedDrawable, String uncheckedDrawable,
+			Color drawableColor) {
+		this(skin, skin.get(SwitchStyle.class), checkedDrawable,
+				uncheckedDrawable, drawableColor);
 	}
 
-	public Switch(Skin skin, String imageOn, String imageOff, String style) {
-		this(skin, skin.get(style, SwitchStyle.class), imageOn, imageOff);
+	public Switch(Skin skin, String style, String checkedDrawable,
+			String uncheckedDrawable, Color drawableColor) {
+		this(skin, skin.get(style, SwitchStyle.class), checkedDrawable,
+				uncheckedDrawable, drawableColor);
 	}
 
-	public Switch(Skin skin, SwitchStyle switchStyle, String imageOn,
-			String imageOff) {
-		super();
+	public Switch(Skin skin, SwitchStyle switchStyle, String checkedDrawable,
+			String uncheckedDrawable, Color drawableColor) {
+		this(new SwitchStyle(switchStyle, skin.getDrawable(checkedDrawable),
+				skin.getDrawable(uncheckedDrawable), drawableColor));
+	}
 
-		this.style = switchStyle;
-		this.current = style.off;
+	public Switch(Skin skin, String style) {
+		this(skin.get(style, SwitchStyle.class));
+	}
 
-		setTouchable(Touchable.enabled);
-
-		background = switchStyle.backgroundOff;
-
-		if (imageOn != null) {
-			onImage = new IconButton(imageOn, skin, switchStyle.iconStyle);
-			onImage.pack();
-		}
-
-		if (imageOff != null) {
-			offImage = new IconButton(imageOff, skin, switchStyle.iconStyle);
-			offImage.setDisabled(true);
-			offImage.pack();
-		}
-
-		align(Align.left);
-
-		setStateOn(false);
-
+	public Switch(SwitchStyle style) {
+		this.style = style;
+		knob = new Container<Image>(knobImage = new Image());
+		knob.setBackground(style.knob);
+		addActor(knob);
 		addListener(new InputListener() {
+
 			private boolean drag;
 
 			@Override
 			public boolean touchDown(InputEvent event, float x, float y,
 					int pointer, int button) {
 				drag = false;
+				event.stop();
 				return true;
 			}
 
 			@Override
 			public void touchDragged(InputEvent event, float x, float y,
 					int pointer) {
-				drag = true;
-				setActor(null);
-				if (x <= current.getMinWidth() / 2) {
-					offsetX = 0;
-				} else if (x < getWidth() - current.getMinWidth() / 2) {
-					offsetX = x - current.getMinWidth() / 2;
-				} else {
-					offsetX = getWidth() - current.getMinWidth();
+				if (!drag) {
+					drag = true;
+					getStage().cancelTouchFocusExcept(this, Switch.this);
 				}
 
-				if (offsetX < (getWidth() - current.getMinWidth()) / 2) {
-					current = style.off;
-					background = style.backgroundOff;
-					barColor = style.barColorOff;
-					circleColor = style.circleColorOff;
-				} else if (offsetX > (getWidth() - current.getMinWidth()) / 2) {
-					current = style.on;
-					background = style.backgroundOn;
-					barColor = style.barColorOn;
-					circleColor = style.circleColorOn;
-				}
+				knob.setX(Math.max(
+						0,
+						Math.min(getWidth() - knob.getWidth(),
+								x - knob.getWidth() / 2.0f)));
 			}
 
 			@Override
 			public void touchUp(InputEvent event, float x, float y,
 					int pointer, int button) {
-				setStateOn((offsetX > (getWidth() - current.getMinWidth()) / 2 && drag)
-						|| (offsetX < (getWidth() - current.getMinWidth()) / 2 && !drag));
+				if (drag) {
+					setChecked(knobInCheckedPosition(), true);
+				} else {
+					setChecked(!isChecked(), true);
+				}
 			}
 		});
 	}
 
-	public void setStateOn(boolean isOn) {
-		if (isOn) {
-			offsetX = getWidth() - style.on.getMinWidth();
-			if (onImage != null) {
-				setActor(onImage);
-				padLeft(getWidth() - onImage.getWidth()
-						- (current.getMinWidth() - onImage.getWidth()) / 2);
-			}
-			current = style.on;
-			background = style.backgroundOn;
-			barColor = style.barColorOn;
-			circleColor = style.circleColorOn;
+	@Override
+	protected void drawChildren(Batch batch, float parentAlpha) {
+		boolean knobInCheckedPosition = knobInCheckedPosition();
+		batch.setColor(knobInCheckedPosition ? style.checkedColor
+				: style.uncheckedColor);
+		style.background.draw(batch, 0,
+				getHeight() / 2.0f - style.background.getMinHeight() / 2.0f,
+				getWidth(), style.background.getMinHeight());
+		knob.setColor(batch.getColor());
 
-		} else if (!isOn) {
-			offsetX = 0;
-			if (offImage != null) {
-				setActor(offImage);
-				padLeft((current.getMinWidth() - offImage.getWidth()) / 2);
-			}
-			current = style.off;
-			background = style.backgroundOff;
-			barColor = style.barColorOff;
-			circleColor = style.circleColorOff;
+		if (style.checkedDrawable != null) {
+			knobImage.setDrawable(knobInCheckedPosition ? style.checkedDrawable
+					: style.uncheckedDrawable);
+			knobImage
+					.setColor(knobInCheckedPosition ? style.checkedDrawableColor
+							: style.uncheckedDrawableColor);
 		}
+		super.drawChildren(batch, parentAlpha);
+	}
 
-		if (stateOn != isOn) {
-			ChangeEvent changeEvent = Pools.obtain(ChangeEvent.class);
-			stateOn = isOn;
-			fire(changeEvent);
-			Pools.free(changeEvent);
+	private boolean knobInCheckedPosition() {
+		return knob.getX() > getWidth() / 2.0f - knob.getWidth() / 2.0f;
+	}
+
+	public void setChecked(boolean checked) {
+		setChecked(checked, false);
+	}
+
+	private void setChecked(boolean checked, boolean fireEvent) {
+		float x = checked ? getWidth() - knob.getWidth() : 0;
+		knob.clearActions();
+		knob.addAction(Actions2.moveToX(x, 0.2f, Interpolation.exp5Out));
+
+		if (this.checked != checked) {
+			this.checked = checked;
+
+			if (fireEvent) {
+				ChangeEvent changeEvent = Pools.obtain(ChangeEvent.class);
+				fire(changeEvent);
+				Pools.free(changeEvent);
+			}
 		}
 	}
 
-	public boolean isStateOn() {
-		return stateOn;
+	public boolean isChecked() {
+		return checked;
 	}
 
 	@Override
-	protected void drawBackground(Batch batch, float parentAlpha, float x,
-			float y) {
-		batch.setColor(barColor != null ? barColor : Color.WHITE);
-		background.draw(batch, x, y + (getHeight() - background.getMinHeight())
-				/ 2, background.getMinWidth(), background.getMinHeight());
-		batch.setColor(circleColor != null ? circleColor : Color.WHITE);
-		current.draw(batch, x + offsetX,
-				y + (getHeight() - current.getMinHeight()) / 2,
-				current.getMinWidth(), current.getMinHeight());
+	public void layout() {
+		knob.clearActions();
+		knob.pack();
+		float x = checked ? getWidth() - knob.getWidth() : 0;
+		knob.setPosition(x, getHeight() / 2.0f - knob.getHeight() / 2.0f);
 	}
 
 	@Override
 	public float getPrefHeight() {
-		return style.on.getMinHeight() > style.off.getMinHeight() ? style.on
-				.getMinHeight() : style.off.getMinHeight();
+		return Math.max(style.background.getMinHeight(), getPrefHeight(knob));
 	}
 
 	@Override
 	public float getPrefWidth() {
-		return style.backgroundOn.getMinWidth() > style.backgroundOff
-				.getMinWidth() ? style.backgroundOn.getMinWidth()
-				: style.backgroundOff.getMinWidth();
+		return Math.max(style.background.getMinWidth(), getPrefHeight(knob));
 	}
 
 	public static class SwitchStyle {
 
-		public Drawable backgroundOn;
+		public Drawable background;
 
-		public Drawable backgroundOff;
+		public Drawable knob;
 
-		public Drawable on;
+		public Color checkedColor;
 
-		public Drawable off;
-
-		public String iconStyle;
+		public Color uncheckedColor;
 
 		/**
 		 * Optional
 		 */
-		public Color circleColorOn;
+		public Drawable checkedDrawable;
 
 		/**
 		 * Optional
 		 */
-		public Color circleColorOff;
+		public Drawable uncheckedDrawable;
 
-		/**
-		 * Optional
-		 */
-		public Color barColorOn;
+		public Color checkedDrawableColor;
 
-		/**
-		 * Optional
-		 */
-		public Color barColorOff;
+		public Color uncheckedDrawableColor;
 
+		public SwitchStyle() {
+		}
+
+		public SwitchStyle(SwitchStyle style, Drawable checkedDrawable,
+				Drawable uncheckedDrawable, Color color) {
+			this.background = style.background;
+			this.knob = style.knob;
+			this.checkedColor = style.checkedColor;
+			this.uncheckedColor = style.uncheckedColor;
+			this.checkedDrawable = checkedDrawable;
+			this.uncheckedDrawable = uncheckedDrawable;
+			this.checkedDrawableColor = this.uncheckedDrawableColor = color;
+		}
 	}
 }

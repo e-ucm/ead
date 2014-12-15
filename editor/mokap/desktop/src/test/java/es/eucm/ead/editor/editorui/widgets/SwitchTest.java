@@ -38,10 +38,10 @@ package es.eucm.ead.editor.editorui.widgets;
 
 import com.badlogic.gdx.backends.lwjgl.LwjglApplication;
 import com.badlogic.gdx.backends.lwjgl.LwjglApplicationConfiguration;
+import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
-
 import es.eucm.ead.editor.editorui.UITest;
 import es.eucm.ead.editor.view.SkinConstants;
 import es.eucm.ead.editor.view.widgets.Switch;
@@ -55,8 +55,8 @@ public class SwitchTest extends UITest {
 		Table table = new Table();
 		table.setFillParent(true);
 
-		Switch sw = new Switch(skin, SkinConstants.IC_ADD,
-				SkinConstants.IC_CLOSE);
+		Switch sw = new Switch(skin, SkinConstants.IC_MULTIPLE_SELECTION,
+				SkinConstants.IC_SINGLE_SELECTION, Color.WHITE);
 
 		table.add(sw);
 
