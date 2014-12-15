@@ -71,6 +71,35 @@ public class DropdownPaneTest extends UITest {
 			table.row();
 			dropDownPanes.add(drop);
 		}
+
+		for (int j = 0; j < 3; j++) {
+			SwitchDropDownPane drop = new SwitchDropDownPane(skin);
+			drop.setTitle("Header " + j);
+			for (int i = 0; i < 4; i++) {
+				drop.addBodyRow(new Label("Line " + i, skin));
+			}
+			table.add(drop).width(500);
+			table.row();
+			dropDownPanes.add(drop);
+		}
+		stage.addListener(new InputListener() {
+			@Override
+			public boolean keyDown(InputEvent event, int keycode) {
+				switch (keycode) {
+				case Input.Keys.A:
+					for (DropDownPane d : dropDownPanes) {
+						d.open(false);
+					}
+					break;
+				case Input.Keys.C:
+					for (DropDownPane d : dropDownPanes) {
+						d.close(false);
+					}
+					break;
+				}
+				return super.keyDown(event, keycode);
+			}
+		});
 		return table;
 	}
 
