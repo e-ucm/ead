@@ -234,7 +234,6 @@ public class Q {
 	}
 
 	/**
-	 * 
 	 * @param row
 	 * @param column
 	 * @param cells
@@ -251,7 +250,6 @@ public class Q {
 	}
 
 	/**
-	 * 
 	 * @param sceneId
 	 * @param cells
 	 * @return the {@link Cell} with the given sceneId or null if there is none.
@@ -419,5 +417,15 @@ public class Q {
 			}
 		}
 		return amount;
+	}
+
+	public static float getGameHeight() {
+		return Q.getComponent(controller.getModel().getGame(), GameData.class)
+				.getHeight();
+	}
+
+	public static float getGameWidth() {
+		return Q.getComponent(controller.getModel().getGame(), GameData.class)
+				.getWidth();
 	}
 }
