@@ -34,7 +34,7 @@
  *      You should have received a copy of the GNU Lesser General Public License
  *      along with eAdventure.  If not, see <http://www.gnu.org/licenses/>.
  */
-package es.eucm.ead.editor.view.builders.scene.interaction;
+package es.eucm.ead.editor.view.builders.scene.components;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Texture;
@@ -232,7 +232,7 @@ public class LinkEditor extends ComponentEditor<Behavior> implements
 	}
 
 	@Override
-	protected void read(Behavior component) {
+	protected void read(ModelEntity entity, Behavior component) {
 		goScene = (GoScene) component.getEffects().get(0);
 		sceneId = goScene.getSceneId();
 		transition = goScene.getTransition();

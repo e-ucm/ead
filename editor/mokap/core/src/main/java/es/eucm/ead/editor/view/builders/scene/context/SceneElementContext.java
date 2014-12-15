@@ -57,7 +57,7 @@ import es.eucm.ead.editor.model.events.ListEvent;
 import es.eucm.ead.editor.model.events.SelectionEvent;
 import es.eucm.ead.editor.view.ModelView;
 import es.eucm.ead.editor.view.SkinConstants;
-import es.eucm.ead.editor.view.builders.scene.interaction.ComponentEditor;
+import es.eucm.ead.editor.view.builders.scene.components.ComponentEditor;
 import es.eucm.ead.editor.view.widgets.IconButton;
 import es.eucm.ead.editor.view.widgets.WidgetBuilder;
 import es.eucm.ead.schema.components.ModelComponent;

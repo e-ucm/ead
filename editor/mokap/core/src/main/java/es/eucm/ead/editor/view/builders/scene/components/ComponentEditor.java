@@ -34,7 +34,7 @@
  *      You should have received a copy of the GNU Lesser General Public License
  *      along with eAdventure.  If not, see <http://www.gnu.org/licenses/>.
  */
-package es.eucm.ead.editor.view.builders.scene.interaction;
+package es.eucm.ead.editor.view.builders.scene.components;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
@@ -123,14 +123,14 @@ public abstract class ComponentEditor<T extends ModelComponent> extends
 				component = createComponent(sceneElement);
 			}
 			try {
-				read(component);
+				read(sceneElement, component);
 			} catch (Exception e) {
 				Gdx.app.error(
 						"ComponentEditor",
 						"Component impossible to read. Replaced with a fresh one",
 						e);
 				sceneElement.getComponents().removeValue(component, true);
-				read(createComponent(sceneElement));
+				read(sceneElement, createComponent(sceneElement));
 			}
 		}
 	}
@@ -154,10 +154,17 @@ public abstract class ComponentEditor<T extends ModelComponent> extends
 		((SceneElementContext) getParent()).closeEditor();
 	}
 
+	/**
+	 * Build the UI insided the component editor
+	 */
 	protected abstract void buildContent();
 
-	protected abstract void read(T component);
+	protected abstract void read(ModelEntity entity, T component);
 
+	/**
+	 * @return a new component edited by this component. Id for this component
+	 *         will be set automatically to {@link #componentId}
+	 */
 	protected abstract T buildNewComponent();
 
 	@Override

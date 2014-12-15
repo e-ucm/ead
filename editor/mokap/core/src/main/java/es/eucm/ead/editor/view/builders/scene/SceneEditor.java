@@ -67,7 +67,7 @@ import es.eucm.ead.editor.view.SkinConstants;
 import es.eucm.ead.editor.view.builders.FileView;
 import es.eucm.ead.editor.view.builders.scene.context.SceneElementContext;
 import es.eucm.ead.editor.view.builders.scene.draw.BrushStrokes;
-import es.eucm.ead.editor.view.builders.scene.interaction.InteractionContext;
+import es.eucm.ead.editor.view.builders.scene.components.InteractionContext;
 import es.eucm.ead.editor.view.builders.scene.play.TestGameView;
 import es.eucm.ead.editor.view.widgets.AbstractWidget;
 import es.eucm.ead.editor.view.widgets.CirclesMenu;

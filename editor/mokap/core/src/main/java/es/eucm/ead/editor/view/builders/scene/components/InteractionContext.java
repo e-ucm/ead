@@ -34,11 +34,12 @@
  *      You should have received a copy of the GNU Lesser General Public License
  *      along with eAdventure.  If not, see <http://www.gnu.org/licenses/>.
  */
-package es.eucm.ead.editor.view.builders.scene.interaction;
+package es.eucm.ead.editor.view.builders.scene.components;
 
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 
 import es.eucm.ead.editor.control.Controller;
+import es.eucm.ead.editor.view.builders.scene.components.transformanimations.AnimationsEditor;
 import es.eucm.ead.editor.view.builders.scene.context.SceneElementContext;
 
 public class InteractionContext extends SceneElementContext {
@@ -49,7 +50,7 @@ public class InteractionContext extends SceneElementContext {
 
 	protected void addContent() {
 		addComponentEditor(new LinkEditor(controller));
-		addComponentEditor(new EnterAnimationEdtior(controller));
+		addComponentEditor(new AnimationsEditor(controller));
 	}
 
 }

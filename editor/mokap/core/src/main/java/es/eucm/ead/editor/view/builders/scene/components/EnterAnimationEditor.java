@@ -34,9 +34,7 @@
  *      You should have received a copy of the GNU Lesser General Public License
  *      along with eAdventure.  If not, see <http://www.gnu.org/licenses/>.
  */
-package es.eucm.ead.editor.view.builders.scene.interaction;
-
-import java.util.HashMap;
+package es.eucm.ead.editor.view.builders.scene.components;
 
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
@@ -46,7 +44,6 @@ import com.badlogic.gdx.scenes.scene2d.ui.CheckBox;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
 import com.badlogic.gdx.utils.Array;
-
 import es.eucm.ead.editor.control.Controller;
 import es.eucm.ead.editor.control.Selection;
 import es.eucm.ead.editor.control.actions.model.MultiplyTimeline;
@@ -69,27 +66,29 @@ import es.eucm.ead.schema.entities.ModelEntity;
 import es.eucm.ead.schemax.ComponentIds;
 import es.eucm.ead.schemax.FieldName;
 
-public class EnterAnimationEdtior extends ComponentEditor<Timeline> {
+import java.util.HashMap;
+
+public class EnterAnimationEditor extends ComponentEditor<Timeline> {
 
 	private HashMap<String, Float> baseTweenSpeed;
 
 	private HashMap<String, Float> baseTweenAmount;
 
-	private BaseTweenDropdownPane blink;
+	private BaseTweenDropDownPane blink;
 
-	private BaseTweenDropdownPane jump;
+	private BaseTweenDropDownPane jump;
 
-	private BaseTweenDropdownPane passX;
+	private BaseTweenDropDownPane passX;
 
-	private BaseTweenDropdownPane passY;
+	private BaseTweenDropDownPane passY;
 
-	private BaseTweenDropdownPane rotate;
+	private BaseTweenDropDownPane rotate;
 
 	private Array<String> amountArray;
 
 	private Array<String> speedArray;
 
-	public EnterAnimationEdtior(Controller controller) {
+	public EnterAnimationEditor(Controller controller) {
 		super(SkinConstants.IC_BLUR_LINEAR, controller.getApplicationAssets()
 				.getI18N().m("animation.in"), ComponentIds.ANIMATION_IN,
 				controller);
@@ -122,7 +121,7 @@ public class EnterAnimationEdtior extends ComponentEditor<Timeline> {
 	}
 
 	@Override
-	protected void read(Timeline component) {
+	protected void read(ModelEntity entity, Timeline component) {
 		ModelEntity sceneElement = (ModelEntity) controller.getModel()
 				.getSelection().getSingle(Selection.SCENE_ELEMENT);
 
@@ -134,7 +133,7 @@ public class EnterAnimationEdtior extends ComponentEditor<Timeline> {
 
 	}
 
-	private void readAndLoadComponent(BaseTweenDropdownPane dropDown,
+	private void readAndLoadComponent(BaseTweenDropDownPane dropDown,
 			ModelEntity sceneElement, String id) {
 		Timeline timeline = (Timeline) Q.getComponentById(sceneElement, id);
 
@@ -478,19 +477,19 @@ public class EnterAnimationEdtior extends ComponentEditor<Timeline> {
 	}
 
 	private void buildBlinkPane() {
-		blink = new BaseTweenDropdownPane(controller, i18N.m("blink"), skin);
+		blink = new BaseTweenDropDownPane(controller, i18N.m("blink"), skin);
 
 		ModelSelectBox speed = buildSpeedTimelineSelectBox(i18N.m("speed"),
 				ComponentIds.BLINK);
 		Table repeats = buildCheckBoxRepeatsGroup();
 
-		blink.addToBody(speed);
-		blink.addToBody(repeats);
+		blink.addBodyRow(speed);
+		blink.addBodyRow(repeats);
 
 	}
 
 	private void buildJumpPane() {
-		jump = new BaseTweenDropdownPane(controller, i18N.m("jump"), skin);
+		jump = new BaseTweenDropDownPane(controller, i18N.m("jump"), skin);
 
 		ModelSelectBox amount = buildAmountTimelineSelectBox(i18N.m("amount"),
 				ComponentIds.JUMP);
@@ -498,44 +497,44 @@ public class EnterAnimationEdtior extends ComponentEditor<Timeline> {
 				ComponentIds.JUMP);
 		Table repeats = buildCheckBoxRepeatsGroup();
 
-		jump.addToBody(amount);
-		jump.addToBody(speed);
-		jump.addToBody(repeats);
+		jump.addBodyRow(amount);
+		jump.addBodyRow(speed);
+		jump.addBodyRow(repeats);
 	}
 
 	private void buildPassXPane() {
-		passX = new BaseTweenDropdownPane(controller,
+		passX = new BaseTweenDropDownPane(controller,
 				i18N.m("pass.horizontal"), skin);
 
 		ModelSelectBox speed = buildSpeedTimelineSelectBox(i18N.m("speed"),
 				ComponentIds.PASS_X);
 		Table repeats = buildCheckBoxRepeatsGroup();
 
-		passX.addToBody(speed);
-		passX.addToBody(repeats);
+		passX.addBodyRow(speed);
+		passX.addBodyRow(repeats);
 
 	}
 
 	private void buildPassYPane() {
-		passY = new BaseTweenDropdownPane(controller, i18N.m("pass.vertical"),
+		passY = new BaseTweenDropDownPane(controller, i18N.m("pass.vertical"),
 				skin);
 
 		ModelSelectBox speed = buildSpeedTimelineSelectBox(i18N.m("speed"),
 				ComponentIds.PASS_Y);
 		Table repeats = buildCheckBoxRepeatsGroup();
 
-		passY.addToBody(speed);
-		passY.addToBody(repeats);
+		passY.addBodyRow(speed);
+		passY.addBodyRow(repeats);
 
 	}
 
 	private void buildRotatePane() {
-		rotate = new BaseTweenDropdownPane(controller, i18N.m("rotate"), skin);
+		rotate = new BaseTweenDropDownPane(controller, i18N.m("rotate"), skin);
 
 		ModelSelectBox speed = buildSpeedTimelineSelectBox(i18N.m("speed"),
 				ComponentIds.ROTATE);
 
-		rotate.addToBody(speed);
+		rotate.addBodyRow(speed);
 	}
 
 }
