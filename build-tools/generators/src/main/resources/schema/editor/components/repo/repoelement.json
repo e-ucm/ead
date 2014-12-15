@@ -13,7 +13,12 @@
 
         "contentsUrl":{
             "type":"string",
-            "description":"Absolute url pointing to the zip with the contents of the element. Should be filled in by the backend when building a response, who knows how to store and retrieve binary files for elements."
+            "description": "Absolute url pointing to the zip with the contents of the element. Should be filled in by the backend when building a response, who knows how to store and retrieve binary files for elements."
+        },
+
+        "contentsSize":{
+            "type": "number",
+            "description": "Size of the contents.zip file, in Megabytes. Should be filled in by the backend when building a response"
         },
 
         "authorName":{
