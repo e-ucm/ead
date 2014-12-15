@@ -178,7 +178,7 @@ class Navigation extends Panel {
 		if (navigation != null) {
 			float height = Math.max(getPrefHeight(navigation), getHeight());
 			float x = MathUtils.isEqual(navigation.getWidth(),
-					getPrefWidth(navigation), 0.1f) ? navigation.getX()
+					getPrefWidth(navigation), 1.1f) ? navigation.getX()
 					: -getPrefWidth(navigation);
 			setBounds(navigation, x, getHeight() - height,
 					getPrefWidth(navigation), height);
