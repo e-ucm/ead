@@ -7,6 +7,7 @@
 accept = Accept
 always = Always
 amount = Amount
+animations = Animations
 animation.in = Init animations
 application.title = Mokap
 big = Big
@@ -47,6 +48,7 @@ jump = Jump
 link = Link
 little = Little
 loop = Loop
+move = Move
 middle = Middle
 mirror.horizontal = Horizontal mirror
 mirror.vertical = Vertical mirror

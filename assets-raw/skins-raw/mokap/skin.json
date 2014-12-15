@@ -4,9 +4,21 @@
             "file": "Roboto-Regular.ttf",
             "dpSize": 16
         },
+        "default_bold": {
+            "file": "Roboto-Bold.ttf",
+            "dpSize": 16
+        },
         "small_font": {
             "file": "Roboto-Regular.ttf",
             "dpSize": 8
+        },
+        "big_font": {
+            "file": "Roboto-Regular.ttf",
+            "dpSize": 36
+        },
+        "big_bold": {
+            "file": "Roboto-Bold.ttf",
+            "dpSize": 36
         }
     },
     "com.badlogic.gdx.graphics.Color": {
@@ -237,11 +249,23 @@
         "black_spinner": {
             "name": "spinner_default",
             "color": "black"
+        },
+        "orange_arrow_up": {
+            "name": "ic_arrow_up",
+            "color": "deep_orange"
+        },
+        "orange_arrow_down": {
+            "name": "ic_arrow_down",
+            "color": "deep_orange"
         }
     },
     "com.badlogic.gdx.scenes.scene2d.ui.Label$LabelStyle": {
         "default": {
             "font": "default_font",
+            "fontColor": "black"
+        },
+        "big": {
+            "font": "big_font",
             "fontColor": "black"
         },
         "performance": {
@@ -303,6 +327,12 @@
             "down": "light_yellow_semi_bg",
             "font": "default_font",
             "fontColor": "white"
+        },
+        "dialog": {
+            "up": "transparent_bg",
+            "down": "light_gray_bg",
+            "font": "default_bold",
+            "fontColor": "deep_orange"
         }
     },
     "com.badlogic.gdx.scenes.scene2d.ui.ImageButton$ImageButtonStyle": {
@@ -513,6 +543,11 @@
             "color": "white",
             "up": "transparent_48_bg",
             "down": "pressed_48_bg"
+        },
+        "orange": {
+            "up": "transparent_48_bg",
+            "down": "edition_pressed_48_bg",
+            "color": "deep_orange"
         }
     },
     "es.eucm.ead.editor.view.widgets.draw.ColorPickerPanel$ColorPickerPanelStyle": {
@@ -587,15 +622,20 @@
     },
     "es.eucm.ead.editor.view.widgets.Switch$SwitchStyle": {
         "default": {
-            "backgroundOn": "switch_bar",
-            "backgroundOff": "switch_bar",
-            "on": "switch_circle",
-            "off": "switch_circle",
-            "iconStyle": "switch",
-            "circleColorOn": "white",
-            "circleColorOff": "brown_moka",
-            "barColorOn": "light_brown_moka",
-            "barColorOff": "dark_brown_moka"
+            "background": "switch_bar",
+            "knob": "switch_circle",
+            "checkedColor": "light_brown_moka",
+            "uncheckedColor": "dark_brown_moka"
+        },
+        "selection": {
+            "background": "switch_bar",
+            "knob": "switch_circle",
+            "checkedColor": "light_brown_moka",
+            "uncheckedColor": "dark_brown_moka",
+            "checkedDrawable": "ic_multiple_selection",
+            "uncheckedDrawable": "ic_single_selection",
+            "checkedDrawableColor": "white",
+            "uncheckedDrawableColor": "white"
         }
     },
     "es.eucm.ead.editor.view.builders.scene.groupeditor.GroupEditor$GroupEditorStyle": {
@@ -646,6 +686,48 @@
             "galleryStyle": {
                 "background": "blank"
             }
+        }
+    },
+    "es.eucm.ead.editor.view.widgets.SwitchDropDownPane$SwitchDropDownPaneStyle": {
+        "default": {
+            "switchStyle": "default",
+            "titleStyle": "edition",
+            "openIcon": "ic_arrow_down",
+            "closeIcon": "ic_arrow_up",
+            "iconColor": "gray"
+        }
+    },
+    "es.eucm.ead.editor.view.widgets.StatesButton$StatesButtonStyle": {
+        "default": {
+            "iconColor": "black"
+        },
+        "context": {
+            "iconColor": "gray",
+            "down": "light_gray_bg"
+        }
+    },
+    "es.eucm.ead.editor.view.widgets.modals.ModalContainer$ModalContainerStyle": {
+        "default": {
+            "background": "semi_transparent_bg"
+        }
+    },
+    "es.eucm.ead.editor.view.widgets.modals.SpinnerModal$SpinnerModalStyle": {
+        "default": {
+            "background": "page",
+            "textStyle": {
+                "font": "big_font",
+                "fontColor": "gray"
+            },
+            "numberStyle": "big",
+            "upStyle": {
+                "imageUp": "orange_arrow_up",
+                "down": "light_gray_bg"
+            },
+            "downStyle": {
+                "imageUp": "orange_arrow_down",
+                "down": "light_gray_bg"
+            },
+            "buttonsStyle": "dialog"
         }
     }
 }
