@@ -36,61 +36,41 @@
  */
 package es.eucm.ead.editor.editorui.widgets;
 
+import com.badlogic.gdx.Input;
 import com.badlogic.gdx.backends.lwjgl.LwjglApplication;
 import com.badlogic.gdx.backends.lwjgl.LwjglApplicationConfiguration;
 import com.badlogic.gdx.scenes.scene2d.Actor;
+import com.badlogic.gdx.scenes.scene2d.InputEvent;
+import com.badlogic.gdx.scenes.scene2d.InputListener;
 import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
+import com.badlogic.gdx.utils.Array;
 
 import es.eucm.ead.editor.editorui.UITest;
-import es.eucm.ead.editor.view.widgets.DropdownPane;
+import es.eucm.ead.editor.view.widgets.DropDownPane;
+import es.eucm.ead.editor.view.widgets.SwitchDropDownPane;
 import es.eucm.ead.engine.I18N;
 
 public class DropdownPaneTest extends UITest {
+
+	private Array<DropDownPane> dropDownPanes = new Array<DropDownPane>();
 
 	@Override
 	protected Actor buildUI(Skin skin, I18N i18n) {
 
 		Table table = new Table();
 		table.setFillParent(true);
-
-		DropdownPane drop = new DropdownPane(skin, "page");
-		drop.setHead(new Label("HEAD1", skin));
-		drop.addToBody(new Label("BODY1", skin));
-
-		DropdownPane drop2 = new DropdownPane(skin, "page");
-		drop2.setHead(new Label("HEAD2", skin));
-		drop2.addToBody(new Label("BODY2", skin));
-
-		DropdownPane drop3 = new DropdownPane(skin, "page");
-		drop3.setHead(new Label("HEAD3", skin));
-		drop3.addToBody(new Label("BODY3", skin));
-
-		DropdownPane drop4 = new DropdownPane(skin, "page");
-		drop4.setHead(new Label("HEAD4", skin));
-		drop4.addToBody(new Label("BODY4", skin));
-
-		DropdownPane drop5 = new DropdownPane(skin, "page");
-		drop5.setHead(new Label("HEAD5", skin));
-		drop5.addToBody(new Label("BODY5", skin));
-
-		DropdownPane drop6 = new DropdownPane(skin, "page");
-		drop6.setHead(new Label("HEAD6", skin));
-		drop6.addToBody(new Label("BODY6", skin));
-
-		table.add(drop);
-		table.row();
-		table.add(drop2);
-		table.row();
-		table.add(drop3);
-		table.row();
-		table.add(drop4);
-		table.row();
-		table.add(drop5);
-		table.row();
-		table.add(drop6);
-
+		for (int j = 0; j < 3; j++) {
+			DropDownPane drop = new DropDownPane();
+			drop.addHeaderRow(new Label("Drop down title", skin));
+			for (int i = 0; i < 4; i++) {
+				drop.addBodyRow(new Label("Line " + i, skin));
+			}
+			table.add(drop);
+			table.row();
+			dropDownPanes.add(drop);
+		}
 		return table;
 	}
 
