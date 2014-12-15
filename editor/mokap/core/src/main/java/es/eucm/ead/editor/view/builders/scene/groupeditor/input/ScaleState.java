@@ -166,6 +166,9 @@ public class ScaleState extends InputState {
 					.angle()
 					- initialPointerRotation);
 			if (diffRotation > INIT_ROTATE_ANGLE) {
+				for (ActorTransformation actorTransformation : transformations) {
+					actorTransformation.resetRotation();
+				}
 				stateMachine.setState(RotateState.class);
 				return;
 			}
@@ -206,8 +209,11 @@ public class ScaleState extends InputState {
 
 		private float denominator;
 
+		private float rotation;
+
 		public ActorTransformation(Actor actor) {
 			this.actor = actor;
+			this.rotation = actor.getRotation();
 			float scaleX = actor.getScaleX();
 			float scaleY = actor.getScaleY();
 			float width = actor.getWidth();
@@ -257,6 +263,10 @@ public class ScaleState extends InputState {
 				actor.setScale(scaleX * signumX, scaleY * signumY);
 				break;
 			}
+		}
+
+		public void resetRotation() {
+			actor.setRotation(rotation);
 		}
 	}
 

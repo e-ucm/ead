@@ -38,7 +38,6 @@ package es.eucm.ead.editor.view.builders.project;
 
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.ui.Button;
-
 import es.eucm.ead.editor.control.Controller;
 import es.eucm.ead.editor.control.Selection;
 import es.eucm.ead.editor.control.actions.editor.RenameCurrentScene;
@@ -50,7 +49,6 @@ import es.eucm.ead.editor.control.actions.model.EditScene;
 import es.eucm.ead.editor.control.actions.model.SetSelection;
 import es.eucm.ead.editor.model.Model.SelectionListener;
 import es.eucm.ead.editor.model.events.SelectionEvent;
-import es.eucm.ead.editor.model.events.SelectionEvent.Type;
 import es.eucm.ead.editor.view.SkinConstants;
 import es.eucm.ead.editor.view.listeners.LongPressListener;
 import es.eucm.ead.editor.view.widgets.ContextMenu;
@@ -125,6 +123,7 @@ public class ProjectScenesGallery extends ScenesGallery {
 	@Override
 	public void prepare() {
 		super.prepare();
+		readScene();
 		controller.getModel().addSelectionListener(sceneSelectionListener);
 	}
 
@@ -132,6 +131,19 @@ public class ProjectScenesGallery extends ScenesGallery {
 	public void release() {
 		super.release();
 		controller.getModel().removeSelectionListener(sceneSelectionListener);
+	}
+
+	private void readScene() {
+		String resource = (String) controller.getModel().getSelection()
+				.getSingle(Selection.RESOURCE);
+		gallery.uncheckAll();
+		if (resource != null) {
+			Cell cell = (Cell) EngineUtils.getDirectChild(gallery.getGrid(),
+					gallery.findActor(resource));
+			if (cell != null) {
+				cell.checked(true);
+			}
+		}
 	}
 
 	public class SceneSelectionListener implements SelectionListener {
@@ -143,19 +155,7 @@ public class ProjectScenesGallery extends ScenesGallery {
 
 		@Override
 		public void modelChanged(SelectionEvent event) {
-			if (event.getType() == Type.FOCUSED) {
-				gallery.uncheckAll();
-				for (Object o : event.getSelection()) {
-					if (o instanceof String) {
-						Cell cell = (Cell) EngineUtils.getDirectChild(
-								gallery.getGrid(),
-								gallery.findActor((String) o));
-						if (cell != null) {
-							cell.checked(true);
-						}
-					}
-				}
-			}
+			readScene();
 		}
 	}
 }

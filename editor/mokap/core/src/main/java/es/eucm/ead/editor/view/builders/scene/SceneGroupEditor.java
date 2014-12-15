@@ -116,6 +116,8 @@ public class SceneGroupEditor extends GroupEditor implements ModelView,
 
 	private SceneSelectionListener sceneSelectionListener = new SceneSelectionListener();
 
+	private AbstractWidget editionButtons;
+
 	private ImageButton fitButton;
 
 	public SceneGroupEditor(Controller c, final SceneEditor sceneEditor) {
@@ -168,7 +170,13 @@ public class SceneGroupEditor extends GroupEditor implements ModelView,
 			}
 		});
 		fitButton.setVisible(false);
-		addActor(fitButton);
+		editionButtons = new AbstractWidget();
+		editionButtons.addActor(fitButton);
+		addActor(editionButtons);
+	}
+
+	public AbstractWidget getEditionButtons() {
+		return editionButtons;
 	}
 
 	@Override

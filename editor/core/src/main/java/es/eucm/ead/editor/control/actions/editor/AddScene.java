@@ -36,9 +36,11 @@
  */
 package es.eucm.ead.editor.control.actions.editor;
 
+import es.eucm.ead.editor.control.Controller;
 import es.eucm.ead.editor.control.actions.ModelAction;
 import es.eucm.ead.editor.control.actions.model.scene.SetEditedScene;
 import es.eucm.ead.editor.control.commands.Command;
+import es.eucm.ead.editor.control.commands.CompositeCommand;
 import es.eucm.ead.editor.control.commands.ResourceCommand.AddResourceCommand;
 import es.eucm.ead.editor.model.Q;
 import es.eucm.ead.editor.utils.ProjectUtils;
@@ -50,14 +52,25 @@ import es.eucm.ead.schemax.entities.ResourceCategory;
  */
 public class AddScene extends ModelAction {
 
+	private SetEditedScene setEditedScene;
+
+	@Override
+	public void initialize(Controller controller) {
+		super.initialize(controller);
+		setEditedScene = controller.getActions()
+				.getAction(SetEditedScene.class);
+	}
+
 	@Override
 	public Command perform(Object... args) {
 		ModelEntity scene = Q.createScene();
 		String sceneId = ProjectUtils.newSceneId(controller.getModel());
 
-		controller.action(SetEditedScene.class, sceneId, scene);
+		CompositeCommand commands = new CompositeCommand();
+		commands.addCommand(new AddResourceCommand(controller.getModel(),
+				sceneId, scene, ResourceCategory.SCENE));
+		commands.addCommand(setEditedScene.perform(sceneId, scene));
 
-		return new AddResourceCommand(controller.getModel(), sceneId, scene,
-				ResourceCategory.SCENE);
+		return commands;
 	}
 }

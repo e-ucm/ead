@@ -283,6 +283,7 @@ public class SceneEditor extends BaseView implements ModelView,
 			lockPanels(true);
 			toolbar.setSelectedWidget(PAINT);
 			brushStrokes.show();
+			sceneGroupEditor.getEditionButtons().setVisible(false);
 			break;
 		case PLAY:
 			addButton.setVisible(false);
@@ -324,6 +325,7 @@ public class SceneEditor extends BaseView implements ModelView,
 			break;
 		case DRAW:
 			addButton.setVisible(true);
+			sceneGroupEditor.getEditionButtons().setVisible(true);
 			break;
 		}
 	}
