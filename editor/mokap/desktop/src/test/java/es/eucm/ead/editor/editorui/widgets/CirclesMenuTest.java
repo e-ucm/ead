@@ -53,8 +53,6 @@ import es.eucm.ead.engine.I18N;
 
 public class CirclesMenuTest extends UITest {
 
-	private boolean showing = false;
-
 	@Override
 	protected Actor buildUI(Skin skin, I18N i18n) {
 
@@ -75,13 +73,7 @@ public class CirclesMenuTest extends UITest {
 		iconButton.addListener(new ClickListener() {
 			@Override
 			public void clicked(InputEvent event, float x, float y) {
-				stage.addActor(menu);
-				if (!showing) {
-					menu.show();
-				} else {
-					menu.hide(null);
-				}
-				showing = !showing;
+				controller.getViews().showModal(menu, 0, 0);
 			}
 		});
 
