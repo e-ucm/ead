@@ -45,6 +45,7 @@ import com.badlogic.gdx.scenes.scene2d.ui.ScrollPane;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.scenes.scene2d.utils.Drawable;
 import com.badlogic.gdx.utils.Array;
+import es.eucm.ead.editor.control.Views;
 import es.eucm.ead.editor.view.Modal;
 
 /**
@@ -98,9 +99,11 @@ public class ContextMenu extends ScrollPane implements Modal {
 
 	/**
 	 * The default animation used to show the {@link ContextMenu}.
+	 * 
+	 * @param views
 	 */
 	@Override
-	public void show() {
+	public void show(Views views) {
 		float xDuration, yDuration;
 		float w = getPrefWidth(), h = getPrefHeight();
 		if (w > h) {

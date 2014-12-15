@@ -36,9 +36,11 @@
  */
 package es.eucm.ead.editor.view;
 
+import es.eucm.ead.editor.control.Views;
+
 public interface Modal {
 
-	void show();
+	void show(Views views);
 
 	/**
 	 * Hides the modal and executes the given runnable once it is done

@@ -51,6 +51,7 @@ import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.scenes.scene2d.utils.Drawable;
 import com.badlogic.gdx.utils.Pools;
 
+import es.eucm.ead.editor.control.Views;
 import es.eucm.ead.editor.view.SkinConstants;
 import es.eucm.ead.editor.view.widgets.ContextMenu;
 import es.eucm.ead.editor.view.widgets.IconButton;
@@ -164,8 +165,8 @@ public class BrushStrokesPicker extends ContextMenu {
 	}
 
 	@Override
-	public void show() {
-		super.show();
+	public void show(Views views) {
+		super.show(views);
 		colorPicker.initResources();
 	}
 

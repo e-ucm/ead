@@ -48,6 +48,7 @@ import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.scenes.scene2d.utils.Drawable;
 import com.badlogic.gdx.utils.Array;
 
+import es.eucm.ead.editor.control.Views;
 import es.eucm.ead.editor.view.widgets.ContextMenu;
 import es.eucm.ead.editor.view.widgets.IconButton;
 import es.eucm.ead.editor.view.widgets.draw.SlideColorPicker.SlideColorPickerStyle;
@@ -124,9 +125,9 @@ public class ColorPickerPanel extends ContextMenu {
 		picker.setPickedColor(color);
 	}
 
-	public void show() {
+	public void show(Views views) {
 		initResources();
-		super.show();
+		super.show(views);
 	}
 
 	public void initResources() {
