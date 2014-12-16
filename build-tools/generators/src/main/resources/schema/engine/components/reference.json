@@ -1,0 +1,15 @@
+{
+    "additionalProperties": false,
+    "javaType": "es.eucm.ead.schema.components.Reference",
+    "type": "object",
+    "extends": {
+        "$ref": "component.json"
+    },
+    "properties": {
+        "id": {
+            "type": "string",
+            "description": "Used as base path for the entity's URI references (images, sounds...). The path to the referenced model entity. E.g. /myEntity/entity.json"
+        }
+    },
+    "description": "A component that references another entity."
+}
