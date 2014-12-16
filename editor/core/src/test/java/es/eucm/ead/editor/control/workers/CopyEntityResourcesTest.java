@@ -44,19 +44,20 @@ import org.junit.Before;
 import com.badlogic.gdx.Application;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.files.FileHandle;
-import com.badlogic.gdx.utils.Array;
 
 import es.eucm.ead.editor.assets.EditorGameAssets;
 import es.eucm.ead.editor.control.actions.editor.ExecuteWorker;
 import es.eucm.ead.editor.control.workers.Worker.WorkerListener;
-import es.eucm.ead.editor.utils.ProjectUtils;
+import es.eucm.ead.schema.editor.components.repo.RepoElement;
+import es.eucm.ead.schemax.ModelStructure;
 
 public class CopyEntityResourcesTest extends WorkerTest implements
 		WorkerListener {
 
-	private static final String TEMP_OUTPUT_PATH = "tempOutputPath";
+	private FileHandle contentsFolder;
+	private FileHandle thumbnailFile;
+	private RepoElement element;
 
-	private FileHandle contentsFolder, outputFolder;
 	private boolean success;
 
 	@Before
@@ -70,28 +71,27 @@ public class CopyEntityResourcesTest extends WorkerTest implements
 			contentsFolder.deleteDirectory();
 		}
 		contentsFolder.mkdirs();
-		Gdx.files.internal("import_entity/medic.png").copyTo(contentsFolder);
+		FileHandle medicPng = Gdx.files.internal("import_entity/medic.png");
+		thumbnailFile = medicPng;
+		element = new RepoElement();
+		element.setEntityRef("restID");
+		medicPng.copyTo(contentsFolder);
 		Gdx.files.internal("import_entity/my_medic_def.json").copyTo(
 				contentsFolder);
-		outputFolder = Gdx.files.external(TEMP_OUTPUT_PATH);
-		outputFolder.mkdirs();
-		Gdx.files.internal("import_entity/medic.png").copyTo(outputFolder);
-		gameAssets.setLoadingPath(outputFolder.file().getAbsolutePath(), false);
-
 	}
 
 	@Override
 	public void testWorker() {
 		success = false;
-		controller.action(ExecuteWorker.class, CopyEntityResources.class, this,
-				contentsFolder, outputFolder);
+		controller.action(ExecuteWorker.class,
+				CopyToLibraryEntityResources.class, this, contentsFolder,
+				element, thumbnailFile);
 	}
 
 	@Override
 	public void asserts() {
 		assertTrue(success);
 		contentsFolder.deleteDirectory();
-		outputFolder.deleteDirectory();
 	}
 
 	@Override
@@ -101,12 +101,29 @@ public class CopyEntityResourcesTest extends WorkerTest implements
 
 	@Override
 	public void result(Object... results) {
-		EditorGameAssets gameAssets = controller.getEditorGameAssets();
-		Array<String> binaries = ProjectUtils.listRefBinaries(results[0]);
-		for (String binary : binaries) {
-			assertTrue(gameAssets.resolve(binary).exists());
+		success = (Boolean) results[0];
+		if (success) {
+			EditorGameAssets gameAssets = controller.getEditorGameAssets();
+			FileHandle mockLibsFolder = gameAssets.absolute(controller
+					.getPlatform().getDefaultLibraryFolder());
+			assertTrue(mockLibsFolder.exists() && mockLibsFolder.isDirectory());
+
+			FileHandle entityFolder = mockLibsFolder.child(element
+					.getEntityRef());
+			assertTrue(entityFolder.exists() && entityFolder.isDirectory());
+			assertTrue(entityFolder.child(ModelStructure.THUMBNAIL_FILE)
+					.exists());
+			assertTrue(entityFolder.child(ModelStructure.DESCRIPTOR_FILE)
+					.exists());
+
+			FileHandle contentsFolder = entityFolder
+					.child(ModelStructure.CONTENTS_FOLDER);
+			assertTrue(contentsFolder.exists() && contentsFolder.isDirectory());
+			assertTrue(contentsFolder.child(ModelStructure.ENTITY_FILE)
+					.exists());
+
+			mockLibsFolder.deleteDirectory();
 		}
-		success = true;
 	}
 
 	@Override

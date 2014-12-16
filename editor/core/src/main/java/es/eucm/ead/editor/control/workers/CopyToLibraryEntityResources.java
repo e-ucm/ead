@@ -38,17 +38,17 @@ package es.eucm.ead.editor.control.workers;
 
 import java.io.FileNotFoundException;
 
-import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.files.FileHandle;
-import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.SerializationException;
 
 import es.eucm.ead.editor.assets.EditorGameAssets;
 import es.eucm.ead.editor.utils.ProjectUtils;
+import es.eucm.ead.schema.editor.components.repo.RepoElement;
 import es.eucm.ead.schema.entities.ModelEntity;
+import es.eucm.ead.schemax.ModelStructure;
 
 /**
- * Copies to a given folder the binaries of a {@link ModelEntity} defined by a
+ * Copies to the library folder the contents a {@link ModelEntity} defined by a
  * .json file. Note that the result is executed on UI thread.
  * <dl>
  * <dt><strong>The input arguments are</strong></dt>
@@ -56,78 +56,94 @@ import es.eucm.ead.schema.entities.ModelEntity;
  * the element that will be copied. E.g. "contents.zip" that has already been
  * unzipped somewhere. The contents must contain one .json file where the
  * {@link ModelEntity} is defined.</dd>
- * <dd><strong>args[1]</strong> <em>FileHandle</em> Directory where the binaries
- * referenced by the {@link ModelEntity} will be copied.</dd>
+ * <dd><strong>args[1]</strong> <em>RepoElement</em> The element that will be
+ * added to the library.</dd>
+ * <dd><strong>args[1]</strong> <em>FileHandle</em> The thumbnail of the element
+ * </dd>
  * </dl>
  * <dl>
  * <dt><strong>The result argument is</strong></dt>
- * <dd><strong>if</strong> everything went well, result({@link ModelEntity}) is
- * invoked. <strong>args[0]</strong> the <em>{@link ModelEntity}</em> whose
- * assets have been imported to the project path.</dd> Otherwise,
- * <dd><strong>if</strong> the .json file with the definition of the
- * {@link ModelEntity} isn't found then error({@link FileNotFoundException}) is
- * invoked.</dd>
- * <dd><strong>if</strong> the .json file with the definition of the
- * {@link ModelEntity} is found but couldn't be parsed as a correct
- * {@link ModelEntity} then error({@link SerializationException}) is invoked.</dd>
- * <dd><strong>if</strong> a binary reference doesn't exist error(
- * {@link FileNotFoundException}) is invoked.</dd>
+ * <dd><strong>if</strong> everything went well, result(true) is invoked.</dd>
  * </dl>
  */
-public class CopyEntityResources extends Worker {
-
-	private static final String IMPORT_TAG = "ImportEntity";
-
-	private ModelEntity entity;
-
-	private FileHandle contentsFile;
-
-	private FileHandle outputFolder;
+public class CopyToLibraryEntityResources extends Worker {
 
 	private EditorGameAssets gameAssets;
 
-	public CopyEntityResources() {
+	private FileHandle entityFolder;
+
+	private FileHandle contentsFolder;
+
+	private RepoElement element;
+
+	private FileHandle thumbnail;
+
+	public CopyToLibraryEntityResources() {
 		super(true);
 	}
 
 	@Override
 	protected void prepare() {
-		entity = null;
-		contentsFile = (FileHandle) args[0];
-		outputFolder = (FileHandle) args[1];
-		FileHandle[] jsons = contentsFile.list(".json");
-		if (jsons.length == 1) {
-			FileHandle modelEntityFile = jsons[0];
-			if (modelEntityFile.exists()) {
-				try {
-					gameAssets = controller.getEditorGameAssets();
-					entity = gameAssets.fromJson(ModelEntity.class,
-							modelEntityFile);
-				} catch (SerializationException se) {
-					Gdx.app.error(IMPORT_TAG,
-							"Exception parsing model entity .json "
-									+ modelEntityFile.file().getAbsolutePath(),
-							se);
-					entity = null;
-					error(se);
-				}
-			} else {
-				FileNotFoundException entityJsonNotFound = new FileNotFoundException(
-						"Couldn't find the model entity definition in "
-								+ contentsFile.file().getAbsolutePath());
-				Gdx.app.error(IMPORT_TAG, "Entity .json not found",
-						entityJsonNotFound);
-				error(entityJsonNotFound);
-			}
-		}
+		contentsFolder = (FileHandle) args[0];
+		element = (RepoElement) args[1];
+		thumbnail = (FileHandle) args[2];
+
+		gameAssets = controller.getEditorGameAssets();
+		entityFolder = ProjectUtils.getRepoElementLibraryFolder(element);
 	}
 
 	@Override
 	protected boolean step() {
-		if (entity != null) {
-			contentsFile.copyTo(outputFolder);
-			result(entity);
+		if (!thumbnail.exists()) {
+			error(new FileNotFoundException("TNo thumbnail file found at: "
+					+ thumbnail.path()));
+			return true;
+		}
+		entityFolder.mkdirs();
+		FileHandle contentsFolder = entityFolder
+				.child(ModelStructure.CONTENTS_FOLDER);
+		this.contentsFolder.copyTo(contentsFolder);
+		FileHandle[] list = contentsFolder.list(".json");
+		if (list.length > 0) {
+			list[0].copyTo(contentsFolder.child(ModelStructure.ENTITY_FILE));
+			list[0].delete();
+
+			FileHandle thumbnailFile = entityFolder
+					.child(ModelStructure.THUMBNAIL_FILE);
+
+			thumbnail.copyTo(thumbnailFile);
+			String json = null;
+			try {
+				json = gameAssets.toJson(element, RepoElement.class);
+			} catch (SerializationException se) {
+				error(se);
+				return true;
+			}
+			entityFolder.child(ModelStructure.DESCRIPTOR_FILE).writeString(
+					json, false);
+			result(true);
+		} else {
+			error(new FileNotFoundException("Entity json file not found"));
 		}
 		return true;
+	}
+
+	@Override
+	protected void error(Throwable t) {
+		deleteEntityFolder();
+		super.error(t);
+	}
+
+	@Override
+	protected void cancelled() {
+		deleteEntityFolder();
+		super.cancelled();
+	}
+
+	private void deleteEntityFolder() {
+		if (entityFolder != null && entityFolder.exists()
+				&& entityFolder.isDirectory()) {
+			entityFolder.delete();
+		}
 	}
 }
