@@ -75,8 +75,8 @@ public class Engine {
 		VariablesManager variablesManager = new VariablesManager(accessor,
 				operationsFactory);
 
-		ComponentLoader componentLoader = new ComponentLoader(editorGameAssets,
-				variablesManager);
+		ComponentLoader componentLoader = new EditorComponentLoader(
+				editorGameAssets, variablesManager);
 		accessor.setComponentLoader(componentLoader);
 
 		this.entitiesLoader = new EntitiesLoader(gameLoop, editorGameAssets,

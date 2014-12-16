@@ -71,8 +71,7 @@ public class ContextMenuTest extends UITest {
 		iconButton.addListener(new ClickListener() {
 			@Override
 			public void clicked(InputEvent event, float x, float y) {
-				stage.addActor(contextMenu);
-				contextMenu.show();
+				controller.getViews().showModal(contextMenu, 0, 0);
 			}
 		});
 

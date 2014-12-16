@@ -199,7 +199,7 @@ public class GenerateSkinMojo extends AbstractMojo {
 	}
 
 	private void generateMultipleSkins(FileHandle skinRaw, FileHandle skinRoot) {
-		FileHandle ttfFont = skinRaw.list(".ttf")[0];
+		FileHandle[] ttfFonts = skinRaw.list(".ttf");
 		FileHandle common = skinRaw.child("common");
 		for (FileHandle dpi : skinRaw.list()) {
 			if (dpi.isDirectory() && !"common".equals(dpi.name())
@@ -220,7 +220,9 @@ public class GenerateSkinMojo extends AbstractMojo {
 
 				common.copyTo(atlasImagesFolder);
 				dpi.child("images").copyTo(atlasImagesFolder);
-				ttfFont.copyTo(skinFolder);
+				for (FileHandle font : ttfFonts) {
+					font.copyTo(skinFolder);
+				}
 
 				TexturePacker.process(settings, atlasImagesFolder.file()
 						.getAbsolutePath(),

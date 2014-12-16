@@ -233,11 +233,12 @@ public class AbstractWidget extends WidgetGroup {
 				Math.round(height));
 	}
 
-	public void setPosition(Actor a, float x, float y) {
+	public static void setPosition(Actor a, float x, float y) {
 		a.setPosition(Math.round(x), Math.round(y));
 	}
 
-	public void setBounds(Actor a, float x, float y, float width, float height) {
+	public static void setBounds(Actor a, float x, float y, float width,
+			float height) {
 		a.setBounds(Math.round(x), Math.round(y), Math.round(width),
 				Math.round(height));
 	}
@@ -249,7 +250,7 @@ public class AbstractWidget extends WidgetGroup {
 	 * @return the actor found. Could be {@code null} if no actor matched the
 	 *         predicate
 	 */
-	public Actor findActor(Group root, Predicate<Actor> predicate) {
+	public static Actor findActor(Group root, Predicate<Actor> predicate) {
 		if (predicate.evaluate(root)) {
 			return root;
 		}

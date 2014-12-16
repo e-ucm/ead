@@ -172,7 +172,7 @@ public class MultiWidget extends Container<Actor> {
 
 		public Drawable background;
 
-		public Color color;
+		public Color color = Color.WHITE;
 
 	}
 }

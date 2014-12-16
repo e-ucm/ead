@@ -78,6 +78,9 @@ public interface SkinConstants {
 	public static final String STYLE_RADIO_CHECKBOX = "default_radio";
 	public static final String STYLE_CONTEXT_RADIO = "context_radio";
 	public static final String STYLE_PERFORMANCE = "performance";
+	public static final String STYLE_SELECTION = "selection";
+	public static final String STYLE_DIALOG = "dialog";
+	public static final String STYLE_ORANGE = "orange";
 
 	public static final String TABLET_GAME = "tablet_game";
 	public static final String TABLET_CARD = "tablet_card";
@@ -150,4 +153,22 @@ public interface SkinConstants {
 	public static final String IC_ARROW_UP = "ic_arrow_up";
 	public static final String IC_ARROW_DOWN = "ic_arrow_down";
 
+	public static final String IC_EASE_LINEAR = "ic_ease_linear";
+	public static final String IC_EASE_IN_CUBIC = "ic_ease_in_cubic";
+	public static final String IC_EASE_OUT_CUBIC = "ic_ease_out_cubic";
+	public static final String IC_EASE_IN_OUT_CUBIC = "ic_ease_in_out_cubic";
+	public static final String IC_EASE_IN_BOUNCE = "ic_ease_in_bounce";
+	public static final String IC_EASE_OUT_BOUNCE = "ic_ease_out_bounce";
+
+	public static final String IC_YOYO = "ic_yoyo";
+	public static final String IC_NO_YOYO = "ic_no_yoyo";
+
+	public static final String IC_REPEAT = "ic_repeat";
+	public static final String IC_REPLAY = "ic_replay";
+	public static final String IC_SPEED = "ic_speed";
+	public static final String IC_SPEED_POINTER = "ic_speed_pointer";
+
+	public static final String IC_SEGMENT_END = "ic_segment_end";
+	public static final String IC_SEGMENT_MIDDLE = "ic_segment_middle";
+	public static final String IC_ARROW = "ic_arrow";
 }

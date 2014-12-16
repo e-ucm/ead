@@ -1,0 +1,20 @@
+{
+    "additionalProperties": false,
+    "javaType": "es.eucm.ead.schema.editor.components.animations.MoveAnimation",
+    "extends": {
+        "$ref": "transformanimation.json"
+    },
+    "properties": {
+        "direction": {
+            "type": "number",
+            "default": 0,
+            "description": "An angle in degrees with the pass across direction"
+        },
+        "amplitude": {
+            "type": "number",
+            "default": 0.1,
+            "description": "Amplitude of the movement. A number between 0 and 1.0"
+        }
+    },
+    "type": "object"
+}

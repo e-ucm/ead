@@ -41,7 +41,7 @@ import es.eucm.ead.schema.entities.ModelEntity;
 /**
  * The only purpose of this class is to hold String constants with the names of
  * the schema fields actions modify.
- * 
+ * <p/>
  * Created by Javier Torrente on 7/03/14.
  */
 public class FieldName {
@@ -187,5 +187,11 @@ public class FieldName {
 
 	SCENE_ID = "sceneId",
 
-	TRANSITION = "transition";
+	TRANSITION = "transition",
+
+	EASE = "ease",
+
+	YOYO = "yoyo",
+
+	SPEED = "speed", AMPLITUDE = "amplitude", DIRECTION = "direction";
 }

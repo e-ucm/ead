@@ -47,6 +47,7 @@ import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.scenes.scene2d.utils.Drawable;
 import com.badlogic.gdx.utils.Array;
 
+import es.eucm.ead.editor.control.Views;
 import es.eucm.ead.editor.view.SkinConstants;
 import es.eucm.ead.editor.view.widgets.draw.BrushStrokesPicker.BrushStrokesPickerStyle;
 import es.eucm.ead.editor.view.widgets.draw.ColorPickerPanel;
@@ -136,8 +137,8 @@ public class TextEditor extends ContextMenu {
 	}
 
 	@Override
-	public void show() {
-		super.show();
+	public void show(Views views) {
+		super.show(views);
 		colorPicker.initResources();
 	}
 

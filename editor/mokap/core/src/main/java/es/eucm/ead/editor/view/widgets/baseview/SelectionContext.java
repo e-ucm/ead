@@ -109,7 +109,7 @@ public class SelectionContext extends Panel implements BackListener {
 		super.layout();
 		if (selectionContext != null) {
 			float newWidth = getPrefWidth(selectionContext);
-			if (!MathUtils.isEqual(newWidth, selectionContext.getWidth(), 0.1f)) {
+			if (!MathUtils.isEqual(newWidth, selectionContext.getWidth(), 1.1f)) {
 				float height = Math.max(getPrefHeight(selectionContext),
 						getHeight());
 				setBounds(selectionContext, getWidth(), getHeight() - height,

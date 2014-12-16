@@ -47,9 +47,10 @@ import com.badlogic.gdx.scenes.scene2d.ui.ImageButton;
 import com.badlogic.gdx.scenes.scene2d.ui.ImageButton.ImageButtonStyle;
 import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
+import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
+import com.badlogic.gdx.scenes.scene2d.ui.TextButton.TextButtonStyle;
 import com.badlogic.gdx.scenes.scene2d.utils.ActorGestureListener;
 import com.badlogic.gdx.scenes.scene2d.utils.Align;
-
 import es.eucm.ead.editor.control.Controller;
 import es.eucm.ead.editor.control.actions.editor.ShowContextMenu;
 import es.eucm.ead.editor.control.actions.editor.ShowTooltip;
@@ -305,5 +306,18 @@ public class WidgetBuilder {
 		Label label = new Label(text, skin, styleEdition);
 		label.setEllipsis(true);
 		return label;
+	}
+
+	public static TextButton dialogButton(String text, TextButtonStyle style) {
+		TextButton button = new TextButton(text.toUpperCase(), style);
+		button.pad(dpToPixels(8)).padBottom(dpToPixels(10))
+				.padTop(dpToPixels(10));
+		return button;
+	}
+
+	public static Image image(String icon, String color) {
+		Image image = new Image(skin, icon);
+		image.setColor(skin.getColor(color));
+		return image;
 	}
 }

@@ -38,6 +38,9 @@ package es.eucm.ead.schemax;
 
 public interface ComponentIds {
 
+	public static final String ANIMATIONS = "_animations";
+	public static final String MOVE = "_move";
+
 	public static final String ANIMATION_IN = "_animation_in";
 	public static final String BLINK = "_blink";
 	public static final String JUMP = "_jump";

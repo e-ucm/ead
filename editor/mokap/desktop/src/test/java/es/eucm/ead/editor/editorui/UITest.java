@@ -36,8 +36,6 @@
  */
 package es.eucm.ead.editor.editorui;
 
-import java.util.Map;
-
 import com.badlogic.gdx.Application;
 import com.badlogic.gdx.ApplicationListener;
 import com.badlogic.gdx.Gdx;
@@ -51,7 +49,6 @@ import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.ui.WidgetGroup;
 import com.badlogic.gdx.scenes.scene2d.utils.UIUtils;
 import com.badlogic.gdx.utils.viewport.ScreenViewport;
-
 import es.eucm.ead.editor.MokapDesktopPlatform;
 import es.eucm.ead.editor.assets.ApplicationAssets;
 import es.eucm.ead.editor.control.Controller;
@@ -69,6 +66,8 @@ import es.eucm.ead.editor.model.Q;
 import es.eucm.ead.editor.view.widgets.WidgetBuilder;
 import es.eucm.ead.engine.I18N;
 import es.eucm.ead.schemax.entities.ResourceCategory;
+
+import java.util.Map;
 
 /**
  * <p>
@@ -120,7 +119,7 @@ public abstract class UITest implements ApplicationListener {
 		if (actor instanceof WidgetGroup) {
 			((WidgetGroup) actor).setFillParent(true);
 		}
-		stage.getRoot().addActor(actor);
+		viewContainer.addActor(actor);
 
 		stage.addListener(new ShortcutListener());
 	}

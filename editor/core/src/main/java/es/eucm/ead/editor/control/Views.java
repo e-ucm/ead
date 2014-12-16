@@ -97,7 +97,7 @@ public class Views implements ModelListener<LoadEvent> {
 		@Override
 		public void run() {
 			// Resend touch down if user pressed outside the context menu
-			boolean resendTouch = Views.this.resendTouch
+			boolean resendTouch = lastEvent != null && Views.this.resendTouch
 					&& lastEvent.getTarget() != currentModal
 					&& !lastEvent.getTarget().isDescendantOf(currentModal);
 
@@ -121,23 +121,30 @@ public class Views implements ModelListener<LoadEvent> {
 		@Override
 		public void clicked(InputEvent event, float x, float y) {
 			if (currentModal != null) {
-				setModalsTouchable(Touchable.disabled);
-				lastEvent = event;
-				if (currentModal instanceof Modal) {
-					Modal modal = ((Modal) currentModal);
-					if (modal.hideAlways()) {
-						modal.hide(hideModalsContainer);
-					} else if (!event.getTarget().isDescendantOf(currentModal)) {
-						modal.hide(hideModalsContainer);
-					} else {
-						setModalsTouchable(Touchable.enabled);
-					}
-				} else {
-					hideModalsContainer.run();
-				}
+				hideModal(event);
 			}
 		}
 	};
+
+	public void hideModal() {
+		hideModal(null);
+	}
+
+	private void hideModal(InputEvent event) {
+		lastEvent = event;
+		if (currentModal instanceof Modal) {
+			Modal modal = ((Modal) currentModal);
+			if (modal.hideAlways() || lastEvent == null) {
+				modal.hide(hideModalsContainer);
+				setModalsTouchable(Touchable.disabled);
+			} else if (!lastEvent.getTarget().isDescendantOf(currentModal)) {
+				modal.hide(hideModalsContainer);
+				setModalsTouchable(Touchable.disabled);
+			}
+		} else {
+			hideModalsContainer.run();
+		}
+	}
 
 	/**
 	 * 
@@ -324,7 +331,7 @@ public class Views implements ModelListener<LoadEvent> {
 		modalsContainer.setTouchable(Touchable.enabled);
 
 		if (modal instanceof Modal) {
-			((Modal) modal).show();
+			((Modal) modal).show(this);
 		}
 
 		setKeyboardFocus(modal);

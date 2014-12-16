@@ -87,18 +87,7 @@ public class BrushStrokesPickerTest extends UITest {
 		iconButton.addListener(new ClickListener() {
 			@Override
 			public void clicked(InputEvent event, float x, float y) {
-				if (!contextMenu.hasParent()) {
-					stage.addActor(contextMenu);
-					contextMenu.show();
-				} else {
-					contextMenu.hide(new Runnable() {
-
-						@Override
-						public void run() {
-							contextMenu.remove();
-						}
-					});
-				}
+				controller.getViews().showModal(contextMenu, 0, 0);
 			}
 		});
 

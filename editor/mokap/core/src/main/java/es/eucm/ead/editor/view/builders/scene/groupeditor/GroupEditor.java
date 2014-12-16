@@ -424,7 +424,7 @@ public class GroupEditor extends AbstractWidget {
 		layerSelector.prepare(layersTouched);
 		layerSelector.setPosition(x, y);
 		addActor(layerSelector);
-		layerSelector.show();
+		layerSelector.show(null);
 	}
 
 	private boolean nearEnough(float x1, float y1, float x2, float y2) {

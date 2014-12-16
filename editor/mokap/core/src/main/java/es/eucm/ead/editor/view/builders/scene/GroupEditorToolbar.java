@@ -193,14 +193,13 @@ public class GroupEditorToolbar extends MultiWidget implements ModelView {
 				i18N.m("redo"), true, Redo.class));
 
 		final Switch multiSelection = new Switch(skin,
-				SkinConstants.IC_MULTIPLE_SELECTION,
-				SkinConstants.IC_SINGLE_SELECTION);
+				SkinConstants.STYLE_SELECTION);
 		multiSelection.addListener(new ChangeListener() {
 			@Override
 			public void changed(ChangeEvent event, Actor actor) {
 				if (actor instanceof Switch) {
 					sceneEditor.getGroupEditor().setMultipleSelection(
-							((Switch) actor).isStateOn());
+							((Switch) actor).isChecked());
 				}
 			}
 		});

@@ -68,6 +68,7 @@ public class GestureListener extends InputListener {
 	private final Vector2 pointer2 = new Vector2();
 	private final Vector2 initialPointer1 = new Vector2();
 	private final Vector2 initialPointer2 = new Vector2();
+	private boolean touchedUp;
 
 	private final Task longPressTask = new Task() {
 		@Override
@@ -112,6 +113,7 @@ public class GestureListener extends InputListener {
 	@Override
 	public boolean touchDown(InputEvent event, float x, float y, int pointer,
 			int button) {
+		touchedUp = false;
 		if (pointer > 1)
 			return false;
 
@@ -150,6 +152,9 @@ public class GestureListener extends InputListener {
 
 	@Override
 	public void touchDragged(InputEvent event, float x, float y, int pointer) {
+		if (touchedUp)
+			return;
+
 		if (pointer > 1)
 			return;
 		if (longPressFired)
@@ -187,6 +192,7 @@ public class GestureListener extends InputListener {
 	@Override
 	public void touchUp(InputEvent event, float x, float y, int pointer,
 			int button) {
+		touchedUp = true;
 		if (pointer > 1)
 			return;
 
