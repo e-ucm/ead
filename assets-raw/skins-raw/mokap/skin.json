@@ -556,8 +556,8 @@
             "recentColorStyle": "recent_color",
             "slider": "colorPicker",
             "background": "page",
-            "maxColors": 12,
-            "columns": 4,
+            "colorsPerRow": 4,
+            "rows": 4,
             "sliderSpace": 12,
             "pad": 12
         },
@@ -565,20 +565,11 @@
             "recentColorIcon": "color_picker_recent_color",
             "recentColorStyle": "recent_color",
             "slider": "colorPicker",
-            "maxColors": 12,
-            "columns": 4,
+            "colorsPerRow": 4,
+            "rows": 4,
             "sliderSpace": 12,
             "pad": 12
         },
-        "color_reduced": {
-            "recentColorIcon": "color_picker_recent_color",
-            "recentColorStyle": "recent_color",
-            "slider": "colorPicker",
-            "maxColors": 8,
-            "columns": 4,
-            "sliderSpace": 12,
-            "pad": 12
-        }
     },
     "es.eucm.ead.editor.view.widgets.draw.BrushStrokesPicker$BrushStrokesPickerStyle": {
         "default": {
@@ -591,7 +582,7 @@
     "es.eucm.ead.editor.view.widgets.TextEditor$TextEditorStyle": {
         "default": {
             "background": "page",
-            "colorPickerStyle": "color_reduced"
+            "colorPickerStyle": "default_no_background"
         }
     },
     "es.eucm.ead.editor.view.widgets.baseview.BaseView$BaseViewStyle": {

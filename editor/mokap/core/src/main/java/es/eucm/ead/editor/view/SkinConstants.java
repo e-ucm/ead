@@ -73,7 +73,6 @@ public interface SkinConstants {
 	public static final String STYLE_CHECK = "check";
 	public static final String STYLE_GRAY = "gray";
 	public static final String STYLE_MARKER = "marker";
-	public static final String STYLE_COLOR_REDUCED = "color_reduced";
 	public static final String STYLE_TOAST_ACTION = "toast_action";
 	public static final String STYLE_RADIO_CHECKBOX = "default_radio";
 	public static final String STYLE_CONTEXT_RADIO = "context_radio";
