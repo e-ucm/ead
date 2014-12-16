@@ -600,6 +600,24 @@ public class Model {
 	}
 
 	/**
+	 * @return a string with number listeners in the model
+	 */
+	public String countListeners() {
+		String result = "";
+		result += "LoadLis: " + loadListeners.size + "\n";
+		result += "SeleLis: " + selectionListeners.size + "\n";
+		result += "ResoLis: " + resourcesListeners.size + "\n";
+		result += "ViewLis: " + viewListeners.size + "\n";
+
+		int fieldListeners = 0;
+		for (Array a : listeners.values()) {
+			fieldListeners += a.size;
+		}
+		result += "FielLis: " + fieldListeners + "\n";
+		return result;
+	}
+
+	/**
 	 * General interface to listen to the model
 	 * 
 	 * @param <T>

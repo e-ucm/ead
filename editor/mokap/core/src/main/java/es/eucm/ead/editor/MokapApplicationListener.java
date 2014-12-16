@@ -112,6 +112,7 @@ public class MokapApplicationListener extends EditorApplicationListener {
 			perf += "JavHeap: " + Gdx.app.getJavaHeap() / 1000000 + " MB\n";
 			perf += "Workers: " + controller.getWorkerExecutor().countWorkers()
 					+ "\n";
+			perf += controller.getModel().countListeners();
 			perf += "BgTasks: "
 					+ controller.getBackgroundExecutor().countTasks() + "\n";
 			performance.setText(perf);
