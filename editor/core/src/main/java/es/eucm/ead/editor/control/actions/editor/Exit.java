@@ -63,6 +63,9 @@ public class Exit extends EditorAction {
 	private DialogButtonListener yesListener = new DialogButtonListener() {
 		@Override
 		public void selected() {
+			while (controller.getCommands().getCommandsStack().size() > 0) {
+				controller.getCommands().popStack(false);
+			}
 			controller.action(Save.class);
 			exit();
 		}

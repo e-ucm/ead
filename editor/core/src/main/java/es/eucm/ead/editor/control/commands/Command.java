@@ -97,8 +97,7 @@ public abstract class Command {
 
 	/**
 	 * @return the id of the resource modified. If {@code null} is returned, it
-	 *         modifies the resource in
-	 *         {@link es.eucm.ead.editor.control.Selection#RESOURCE}
+	 *         modifies the default selected resource
 	 */
 	public String getResourceModified() {
 		return resourceModified;

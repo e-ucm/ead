@@ -51,6 +51,9 @@ public class Commands {
 
 	private static final int COMMAND = 0, UNDO = 1, REDO = 2, SAVE = 3;
 
+	private static final String[] RESOURCE_CONTEXTS = new String[] {
+			Selection.MOKAP_RESOURCE, Selection.RESOURCE };
+
 	private Model model;
 
 	private Array<CommandListener> commandListeners;
@@ -73,6 +76,7 @@ public class Commands {
 		this.model = model;
 		commandListeners = new Array<CommandListener>();
 		this.commandsStacks = new Stack<CommandsStack>();
+		pushStack();
 	}
 
 	/**
@@ -130,8 +134,7 @@ public class Commands {
 		if (command.modifiesResource()) {
 			String resourceModified = command.getResourceModified();
 			if (resourceModified == null) {
-				resourceModified = (String) model.getSelection().getSingle(
-						Selection.RESOURCE);
+				resourceModified = getDefaultResourceModified();
 			}
 
 			if (resourceModified != null
@@ -144,6 +147,16 @@ public class Commands {
 			}
 		}
 		model.notify(modelEvent);
+	}
+
+	private String getDefaultResourceModified() {
+		for (String context : RESOURCE_CONTEXTS) {
+			String resource = (String) model.getSelection().getSingle(context);
+			if (resource != null) {
+				return resource;
+			}
+		}
+		return null;
 	}
 
 	/**
