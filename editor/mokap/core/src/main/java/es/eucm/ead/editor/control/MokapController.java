@@ -49,6 +49,7 @@ import com.badlogic.gdx.scenes.scene2d.ui.TextArea;
 import es.eucm.ead.editor.assets.ApplicationAssets;
 import es.eucm.ead.editor.control.engine.MobileEngineInitializer;
 import es.eucm.ead.editor.platform.Platform;
+import es.eucm.ead.editor.view.widgets.WidgetBuilder;
 import es.eucm.ead.engine.EngineInitializer;
 
 public class MokapController extends Controller {
@@ -105,6 +106,7 @@ public class MokapController extends Controller {
 	public MokapController(Platform platform, Files files,
 			final Group rootComponent, final Group modalContainer) {
 		super(platform, files, rootComponent, modalContainer);
+		WidgetBuilder.setController(this);
 
 		// This allows us to catch events related with
 		// the back key in Android.

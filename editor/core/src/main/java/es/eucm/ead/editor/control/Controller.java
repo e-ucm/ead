@@ -63,7 +63,9 @@ import es.eucm.ead.editor.control.pastelisteners.TextCopyListener;
 import es.eucm.ead.editor.control.workers.WorkerExecutor;
 import es.eucm.ead.editor.indexes.ControllerIndex;
 import es.eucm.ead.editor.model.Model;
+import es.eucm.ead.editor.model.Q;
 import es.eucm.ead.editor.platform.Platform;
+import es.eucm.ead.editor.utils.ProjectUtils;
 import es.eucm.ead.editor.view.builders.ViewBuilder;
 import es.eucm.ead.engine.EngineInitializer;
 import es.eucm.ead.schema.components.behaviors.Behavior;
@@ -143,11 +145,15 @@ public class Controller {
 
 	public Controller(Platform platform, Files files, Group viewsContainer,
 			Group modalsContainer) {
+		ProjectUtils.setController(this);
+		Q.setController(this);
 		this.shapeRenderer = new ShapeRenderer();
 		this.platform = platform;
 		this.applicationAssets = createApplicationAssets(files);
 		this.editorGameAssets = new EditorGameAssets(files,
 				platform.getImageUtils());
+		editorGameAssets
+				.setLibraryPath(getPlatform().getDefaultLibraryFolder());
 		this.templates = new Templates(this);
 		this.model = new Model(editorGameAssets);
 		this.commands = new Commands(model);

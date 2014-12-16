@@ -110,8 +110,6 @@ public abstract class UITest implements ApplicationListener {
 		controller = new MokapController(platform = new MockPlatform(),
 				Gdx.files, viewContainer, modalContainer);
 		controller.getCommands().pushStack();
-		WidgetBuilder.setController(controller);
-		Q.setController(controller);
 		platform.setBatch(stage.getBatch());
 		Gdx.input.setInputProcessor(stage);
 		ApplicationAssets assets = controller.getApplicationAssets();
