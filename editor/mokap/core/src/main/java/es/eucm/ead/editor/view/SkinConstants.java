@@ -47,6 +47,7 @@ public interface SkinConstants {
 	public static final String COLOR_GRAY = "gray";
 
 	public static final String DRAWABLE_LOGO = "logo";
+	public static final String DRAWABLE_LOGO_MINI = "logo_mini";
 	public static final String DRAWABLE_BLANK = "blank";
 	public static final String DRAWABLE_SEMI_BLANK = "blank75";
 	public static final String DRAWABLE_PAGE = "page";
