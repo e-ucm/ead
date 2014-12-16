@@ -75,8 +75,11 @@ public class Q {
 
 	private static Controller controller;
 
+	private static I18N i18N;
+
 	public static void setController(Controller controller) {
 		Q.controller = controller;
+		Q.i18N = controller.getApplicationAssets().getI18N();
 	}
 
 	/**
@@ -135,17 +138,16 @@ public class Q {
 	/**
 	 * Returns the {@link Documentation#name} attribute of the model entity
 	 * 
-	 * @param defaultValue
-	 *            value if the name is null
 	 */
-	public static String getName(ModelEntity modelEntity, String defaultValue) {
+	public static String getTitle(ModelEntity modelEntity) {
 		if (modelEntity == null) {
-			return defaultValue;
+			return "";
 		}
 		Documentation documentation = getComponent(modelEntity,
 				Documentation.class);
-		return documentation.getName() == null ? defaultValue : documentation
-				.getName();
+		return documentation.getName() == null
+				|| "".equals(documentation.getName()) ? i18N.m("untitled")
+				: documentation.getName();
 	}
 
 	/**
@@ -419,6 +421,10 @@ public class Q {
 		return amount;
 	}
 
+	public static void setTitle(ModelEntity entity, String title) {
+		Q.getComponent(entity, Documentation.class).setName(title);
+}
+		
 	public static float getGameHeight() {
 		return Q.getComponent(controller.getModel().getGame(), GameData.class)
 				.getHeight();
