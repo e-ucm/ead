@@ -49,9 +49,11 @@ public class Selection {
 
 	private static final Object[] NO_SELECTION = new Object[0];
 
-	public static final String PROJECT = "project";
-
 	public static final String RESOURCE = "resource";
+
+	public static final String MOKAP = "mokap";
+
+	public static final String MOKAP_RESOURCE = "mokap_resource";
 
 	public static final String SCENE = "scene";
 
