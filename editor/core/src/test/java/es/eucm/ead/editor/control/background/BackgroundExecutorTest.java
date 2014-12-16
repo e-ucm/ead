@@ -69,8 +69,6 @@ public class BackgroundExecutorTest {
 			public Boolean call() throws Exception {
 				int sleeps = 10;
 				for (int i = 0; i < sleeps; i++) {
-					float percentage = (float) i / (float) sleeps;
-					setCompletionPercentage(percentage);
 					Thread.sleep(100);
 				}
 				return true;
@@ -79,13 +77,6 @@ public class BackgroundExecutorTest {
 
 		done = false;
 		executor.submit(task, new BackgroundTaskListener<Boolean>() {
-
-			private float lastPercentage = 0.0f;
-
-			@Override
-			public void completionPercentage(float percentage) {
-				assertTrue(lastPercentage <= percentage);
-			}
 
 			@Override
 			public void done(BackgroundExecutor backgroundExecutor,
@@ -119,10 +110,6 @@ public class BackgroundExecutorTest {
 
 		done = false;
 		executor.submit(task, new BackgroundTaskListener<Boolean>() {
-
-			@Override
-			public void completionPercentage(float percentage) {
-			}
 
 			@Override
 			public void done(BackgroundExecutor backgroundExecutor,

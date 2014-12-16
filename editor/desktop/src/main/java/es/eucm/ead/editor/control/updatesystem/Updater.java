@@ -187,12 +187,6 @@ public class Updater {
 	private void downloadUpdateInfo() {
 		controller.getBackgroundExecutor().submit(new DownloadUpdateInfoTask(),
 				new BackgroundExecutor.BackgroundTaskListener() {
-					@Override
-					public void completionPercentage(float percentage) {
-						Gdx.app.debug(LOG_TAG,
-								"Downloading update.json. Progress:"
-										+ percentage);
-					}
 
 					@Override
 					public void done(BackgroundExecutor backgroundExecutor,

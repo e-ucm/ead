@@ -97,9 +97,6 @@ public class BackgroundExecutor {
 				} finally {
 					tasks.removeValue(e, true);
 				}
-			} else {
-				e.listener.completionPercentage(e.task
-						.getCompletionPercentage());
 			}
 		}
 	}
@@ -147,12 +144,6 @@ public class BackgroundExecutor {
 	 *            the task result type
 	 */
 	public interface BackgroundTaskListener<T> {
-
-		/**
-		 * Notifies the completion percentage of the task.This method is
-		 * executed in the UI thread
-		 */
-		void completionPercentage(float percentage);
 
 		/**
 		 * Notifies the execution of the task has successfully finished. This

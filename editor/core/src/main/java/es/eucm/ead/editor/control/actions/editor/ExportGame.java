@@ -194,10 +194,6 @@ public class ExportGame extends EnabledOnLoadAction {
 		}
 
 		// BackgroundTaskListener methods
-		@Override
-		public void completionPercentage(float percentage) {
-			progress(Math.round(percentage * 100), "");
-		}
 
 		@Override
 		public void done(BackgroundExecutor backgroundExecutor, Object result) {

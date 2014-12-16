@@ -36,10 +36,7 @@
  */
 package es.eucm.ead.editor.control.background;
 
-import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.utils.async.AsyncTask;
-
-import java.util.concurrent.Semaphore;
 
 /**
  * This class represents a background task in the editor, intended to run in an
@@ -49,54 +46,4 @@ import java.util.concurrent.Semaphore;
  */
 public abstract class BackgroundTask<T> implements AsyncTask<T> {
 
-	private Semaphore semaphore;
-
-	public BackgroundTask() {
-		semaphore = new Semaphore(1);
-	}
-
-	/**
-	 * Completion percentage. To avoid concurrency problems, it should be set
-	 * only through {@link BackgroundTask#setCompletionPercentage(float)}
-	 */
-	private Float completionPercentage = 0.0f;
-
-	/**
-	 * 
-	 * @return a float between {@code 0.0f} and {@code 1.0f}, representing the
-	 *         completion percentage of the task
-	 */
-	public float getCompletionPercentage() {
-		float percentage = 0.0f;
-		try {
-			semaphore.acquire();
-			percentage = this.completionPercentage;
-			semaphore.release();
-		} catch (InterruptedException e) {
-			Gdx.app.error("BackgroundTask.getCompletionPercentage",
-					"Thread interrupted", e);
-		}
-		return percentage;
-	}
-
-	/**
-	 * Sets the completion percentage. This method is protected and should be
-	 * called only from {@link BackgroundTask#call()}
-	 * 
-	 * @param completionPercentage
-	 *            a float between {@code 0.0f} and {@code 1.0f}, representing
-	 *            the completion percentage of the task
-	 */
-	protected void setCompletionPercentage(float completionPercentage) {
-		try {
-			semaphore.acquire();
-			this.completionPercentage = completionPercentage;
-			semaphore.release();
-		} catch (InterruptedException e) {
-			Gdx.app.error(
-					"BackgroundTask.setCompletionPercentage",
-					"Thread interrupted. completion percentage was not updated",
-					e);
-		}
-	}
 }
