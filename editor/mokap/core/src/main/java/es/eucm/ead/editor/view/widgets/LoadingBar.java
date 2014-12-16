@@ -85,6 +85,7 @@ public class LoadingBar extends Container<Image> {
 		Image image = getActor();
 		if (image.getActions().size > 0) {
 			image.clearActions();
+			image.setX(0f);
 		}
 		image.setWidth(getWidth() * MathUtils.clamp(completion, 0f, 1f));
 	}

@@ -37,6 +37,7 @@
 package es.eucm.ead.editor.view.widgets;
 
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.graphics.Pixmap;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.Touchable;
@@ -290,9 +291,10 @@ public class WidgetBuilder {
 		return tile;
 	}
 
-	public static RepoTile repoTile(RepoElement elem, Texture background) {
+	public static RepoTile repoTile(RepoElement elem, Texture background,
+			Pixmap thumbnailPixmap) {
 		Image image = new Image(new TextureDrawable(background));
-		RepoTile tile = new RepoTile(controller, elem);
+		RepoTile tile = new RepoTile(controller, elem, thumbnailPixmap);
 		tile.setBackground(image);
 		tile.setText(Q.getRepoElementName(elem));
 		return tile;

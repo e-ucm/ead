@@ -38,6 +38,8 @@ package es.eucm.ead.editor.view.widgets;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.files.FileHandle;
+import com.badlogic.gdx.graphics.Pixmap;
+import com.badlogic.gdx.graphics.PixmapIO;
 import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
@@ -46,27 +48,25 @@ import com.badlogic.gdx.scenes.scene2d.ui.ImageButton.ImageButtonStyle;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 
-import es.eucm.ead.editor.assets.EditorGameAssets;
 import es.eucm.ead.editor.control.Controller;
 import es.eucm.ead.editor.control.DownloadManager.DownloadListener;
 import es.eucm.ead.editor.control.DownloadManager.DownloadWork;
 import es.eucm.ead.editor.control.actions.editor.ChangeView;
 import es.eucm.ead.editor.control.actions.editor.ExecuteWorker;
-import es.eucm.ead.editor.control.actions.model.AddSceneElement;
-import es.eucm.ead.editor.control.workers.CopyEntityResources;
+import es.eucm.ead.editor.control.actions.model.AddRepoElementReference;
+import es.eucm.ead.editor.control.workers.CopyToLibraryEntityResources;
 import es.eucm.ead.editor.control.workers.UnzipFile;
+import es.eucm.ead.editor.control.workers.Worker.WorkerListener;
 import es.eucm.ead.editor.utils.ProjectUtils;
 import es.eucm.ead.editor.view.SkinConstants;
 import es.eucm.ead.editor.view.builders.scene.SceneView;
-import es.eucm.ead.editor.view.listeners.workers.CopyEntityResourcesListener;
 import es.eucm.ead.editor.view.listeners.workers.UnzipFileListener;
 import es.eucm.ead.schema.editor.components.repo.RepoElement;
-import es.eucm.ead.schema.entities.ModelEntity;
 
 public class RepoTile extends Tile implements DownloadListener {
 
 	public static enum State {
-		DOWNLOADABLE, DOWNLOADING, IN_QUEUE, DOWNLOADED, CANCELLED
+		DOWNLOADABLE, IN_QUEUE, DOWNLOADING, DOWNLOADED, CANCELLED, IN_LIBRARY
 	}
 
 	private static final String TAG = "RepoTile";
@@ -74,6 +74,7 @@ public class RepoTile extends Tile implements DownloadListener {
 	private Skin skin;
 
 	private LoadingBar loadingBar;
+
 	private ImageButton marker;
 
 	private State state;
@@ -82,17 +83,26 @@ public class RepoTile extends Tile implements DownloadListener {
 
 	private FileHandle tempDownloadFolder;
 
-	public RepoTile(final Controller controller, final RepoElement elem) {
-		super(controller.getApplicationAssets().getSkin());
+	private FileHandle thumbnailFile;
 
+	private RepoElement element;
+
+	private Controller controller;
+
+	public RepoTile(Controller control, RepoElement elem,
+			final Pixmap thumbPixmap) {
+		super(control.getApplicationAssets().getSkin());
+
+		this.element = elem;
+		this.controller = control;
 		this.skin = controller.getApplicationAssets().getSkin();
-		state = State.DOWNLOADABLE;
-
-		final FileHandle projctsFolder = controller.getApplicationAssets()
-				.absolute(controller.getPlatform().getDefaultProjectsFolder());
+		initState();
+		FileHandle projctsFolder = controller.getApplicationAssets().absolute(
+				controller.getPlatform().getDefaultProjectsFolder());
 		tempDownloadFolder = ProjectUtils.getNonExistentFile(projctsFolder,
 				MathUtils.random(1000) + "", "");
 		FileHandle downloadFile = tempDownloadFolder.child("contents.zip");
+		thumbnailFile = tempDownloadFolder.child("thumbnail");
 		work = new DownloadWork(RepoTile.this, elem.getContentsUrl(),
 				downloadFile);
 		addListener(new ClickListener() {
@@ -102,16 +112,14 @@ public class RepoTile extends Tile implements DownloadListener {
 				case CANCELLED:
 				case DOWNLOADABLE:
 					tempDownloadFolder.mkdirs();
+					PixmapIO.writePNG(thumbnailFile, thumbPixmap);
 					controller.getDownloadManager().download(work);
 					break;
 				case DOWNLOADED:
-					FileHandle unzipFolder = tempDownloadFolder.child(elem
-							.getEntityRef());
-					unzipFolder.mkdirs();
-					controller.action(ExecuteWorker.class, UnzipFile.class,
-							new UnzipAndCopyEntityListener(unzipFolder,
-									controller), false, work.getOutputFile(),
-							unzipFolder);
+					break;
+				case IN_LIBRARY:
+					controller.action(AddRepoElementReference.class, element);
+					controller.action(ChangeView.class, SceneView.class);
 					break;
 				case DOWNLOADING:
 				case IN_QUEUE:
@@ -123,6 +131,17 @@ public class RepoTile extends Tile implements DownloadListener {
 				}
 			}
 		});
+	}
+
+	private void initState() {
+		FileHandle entityFolder = ProjectUtils
+				.getRepoElementLibraryFolder(element);
+		if (entityFolder.exists()) {
+			state = State.DOWNLOADED;
+			inLibrary();
+		} else {
+			state = State.DOWNLOADABLE;
+		}
 	}
 
 	@Override
@@ -159,8 +178,10 @@ public class RepoTile extends Tile implements DownloadListener {
 	public void downloaded() {
 		if (state == State.DOWNLOADING) {
 			state = State.DOWNLOADED;
-			setBottom(null);
-			setMarker(getMarker(SkinConstants.IC_CLOUD_DONE));
+			FileHandle entityFolder = tempDownloadFolder.child("contents");
+			controller.action(ExecuteWorker.class, UnzipFile.class,
+					new UnzipAndCopyEntityListener(entityFolder), false,
+					work.getOutputFile(), entityFolder);
 		} else {
 			error("Downloaded from an invalid state: " + state);
 		}
@@ -168,11 +189,10 @@ public class RepoTile extends Tile implements DownloadListener {
 
 	@Override
 	public void cancelled() {
-		if (state == State.IN_QUEUE || state == State.DOWNLOADING) {
+		if (state == State.IN_QUEUE || state == State.DOWNLOADING
+				|| state == State.DOWNLOADED) {
 			state = State.CANCELLED;
-			if (tempDownloadFolder.exists() && tempDownloadFolder.isDirectory()) {
-				tempDownloadFolder.deleteDirectory();
-			}
+			deleteTempDownloadFolder();
 			setBottom(null);
 		} else {
 			error("Trying to cancel from an invalid state: " + state);
@@ -181,11 +201,10 @@ public class RepoTile extends Tile implements DownloadListener {
 
 	@Override
 	public void error() {
-		if (state == State.IN_QUEUE || state == State.DOWNLOADING) {
+		if (state == State.IN_QUEUE || state == State.DOWNLOADING
+				|| state == State.DOWNLOADED) {
 			state = State.DOWNLOADABLE;
-			if (tempDownloadFolder.exists() && tempDownloadFolder.isDirectory()) {
-				tempDownloadFolder.deleteDirectory();
-			}
+			deleteTempDownloadFolder();
 			setBottom(null);
 			setMarker(getMarker(SkinConstants.IC_ERROR));
 		} else {
@@ -193,7 +212,24 @@ public class RepoTile extends Tile implements DownloadListener {
 		}
 	}
 
+	private void inLibrary() {
+		if (state == State.DOWNLOADED) {
+			state = State.IN_LIBRARY;
+			setBottom(null);
+			setMarker(getMarker(SkinConstants.IC_CLOUD_DONE));
+		} else {
+			error("Element added to library in an invalid state: " + state);
+		}
+	}
+
+	private void deleteTempDownloadFolder() {
+		if (tempDownloadFolder.exists() && tempDownloadFolder.isDirectory()) {
+			tempDownloadFolder.deleteDirectory();
+		}
+	}
+
 	private void error(String msg) {
+		deleteTempDownloadFolder();
 		Gdx.app.error(TAG, msg);
 	}
 
@@ -216,31 +252,55 @@ public class RepoTile extends Tile implements DownloadListener {
 		return marker;
 	}
 
-	private static class UnzipAndCopyEntityListener extends UnzipFileListener {
+	private class UnzipAndCopyEntityListener extends UnzipFileListener {
 
-		private Controller controller;
-
-		public UnzipAndCopyEntityListener(FileHandle outputFolder,
-				Controller controller) {
+		public UnzipAndCopyEntityListener(FileHandle outputFolder) {
 			super(outputFolder);
-			this.controller = controller;
 		}
 
 		@Override
 		public void unzipped() {
-			EditorGameAssets assets = controller.getEditorGameAssets();
-			FileHandle projectFolder = assets.absolute(assets.getLoadingPath());
-			controller.action(ExecuteWorker.class, CopyEntityResources.class,
-					new CopyEntityResourcesListener(outputFolder) {
-
-						@Override
-						public void entityCopied(ModelEntity entity) {
-							controller.action(AddSceneElement.class, entity);
-							controller
-									.action(ChangeView.class, SceneView.class);
-						}
-					}, false, outputFolder, projectFolder);
+			controller.action(ExecuteWorker.class,
+					CopyToLibraryEntityResources.class,
+					new CopyToLibraryListener(), false, outputFolder, element,
+					thumbnailFile);
 		}
 
+		@Override
+		public void error(Throwable ex) {
+			RepoTile.this.error();
+			super.error(ex);
+		}
+
+	}
+
+	private class CopyToLibraryListener implements WorkerListener {
+
+		@Override
+		public void start() {
+
+		}
+
+		@Override
+		public void result(Object... results) {
+			if ((Boolean) results[0]) {
+				inLibrary();
+			}
+		}
+
+		@Override
+		public void done() {
+			deleteTempDownloadFolder();
+		}
+
+		@Override
+		public void error(Throwable ex) {
+			RepoTile.this.error();
+		}
+
+		@Override
+		public void cancelled() {
+			RepoTile.this.cancelled();
+		}
 	}
 }
