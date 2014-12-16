@@ -37,8 +37,6 @@
 package es.eucm.ead.editor.control.actions.editor;
 
 import com.badlogic.gdx.Input.TextInputListener;
-
-import es.eucm.ead.editor.control.Selection;
 import es.eucm.ead.editor.control.actions.EditorAction;
 import es.eucm.ead.editor.control.actions.model.generic.SetField;
 import es.eucm.ead.editor.model.Q;
@@ -47,25 +45,41 @@ import es.eucm.ead.schema.editor.components.Documentation;
 import es.eucm.ead.schema.entities.ModelEntity;
 import es.eucm.ead.schemax.FieldName;
 
-public class RenameCurrentScene extends EditorAction implements
-		TextInputListener {
+/**
+ * <p>
+ * Renames the entity in the givencontext
+ * </p>
+ * <dl>
+ * <dt><strong>Arguments</strong></dt>
+ * <dd><strong>args[0]</strong> <em>String</em> name of the context where the
+ * name of the resource modified is</dd>
+ * <dd><strong>args[1]</strong> <em>String</em> name of the context where the
+ * entity to rename is</dd>
+ * </dl>
+ **/
+public class Rename extends EditorAction implements TextInputListener {
 
-	private ModelEntity scene;
+	private ModelEntity modelEntity;
+
+	public Rename() {
+		super(true, false, String.class);
+	}
 
 	@Override
 	public void perform(Object... args) {
-		scene = (ModelEntity) controller.getModel().getSelection()
-				.getSingle(Selection.SCENE);
-		if (scene != null) {
+		modelEntity = (ModelEntity) controller.getModel().getSelection()
+				.getSingle((String) args[0]);
+		if (modelEntity != null) {
 			I18N i18n = controller.getApplicationAssets().getI18N();
-			controller.getPlatform().getMultilineTextInput(this,
-					i18n.m("scene.change_title"), Q.getName(scene, ""), i18n);
+			controller.getPlatform()
+					.getMultilineTextInput(this, i18n.m("scene.change_title"),
+							Q.getTitle(modelEntity), i18n);
 		}
 	}
 
 	@Override
 	public void input(String text) {
-		Documentation doc = Q.getComponent(scene, Documentation.class);
+		Documentation doc = Q.getComponent(modelEntity, Documentation.class);
 		controller.action(SetField.class, doc, FieldName.NAME, text);
 	}
 
