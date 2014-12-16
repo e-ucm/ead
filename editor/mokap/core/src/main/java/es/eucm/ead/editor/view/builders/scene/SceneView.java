@@ -69,8 +69,8 @@ public class SceneView implements ViewBuilder, BackListener {
 
 	@Override
 	public boolean onBackPressed() {
-		controller.action(SetSelection.class, Selection.PROJECT,
-				Selection.RESOURCE);
+		controller.action(SetSelection.class, Selection.MOKAP,
+				Selection.MOKAP_RESOURCE);
 		return true;
 	}
 

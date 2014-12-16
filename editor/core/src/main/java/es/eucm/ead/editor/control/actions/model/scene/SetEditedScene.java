@@ -76,9 +76,9 @@ public class SetEditedScene extends ModelAction {
 		ModelEntity scene = (ModelEntity) args[1];
 		boolean setEditedGroup = args.length == 3 ? (Boolean) args[2] : true;
 		CompositeCommand commands = new CompositeCommand();
-		commands.addCommand(setSelection.perform(Selection.PROJECT,
-				Selection.RESOURCE, sceneId));
-		commands.addCommand(setSelection.perform(Selection.RESOURCE,
+		commands.addCommand(setSelection.perform(Selection.MOKAP,
+				Selection.MOKAP_RESOURCE, sceneId));
+		commands.addCommand(setSelection.perform(Selection.MOKAP_RESOURCE,
 				Selection.SCENE, scene));
 		if (setEditedGroup) {
 			commands.addCommand(setSelection.perform(Selection.SCENE,

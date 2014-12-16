@@ -85,7 +85,7 @@ public class EditScene extends EditorAction implements
 			}
 		}
 		return (String) (args.length == 0 ? controller.getModel()
-				.getSelection().getSingle(Selection.RESOURCE) : args[0]);
+				.getSelection().getSingle(Selection.MOKAP_RESOURCE) : args[0]);
 	}
 
 	private boolean getEditGroup(Object... args) {

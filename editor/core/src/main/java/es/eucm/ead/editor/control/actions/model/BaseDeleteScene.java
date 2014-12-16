@@ -85,7 +85,7 @@ public class BaseDeleteScene extends ModelAction {
 	@Override
 	public Command perform(Object... args) {
 		String id = (String) (args.length == 0 ? controller.getModel()
-				.getSelection().getSingle(Selection.RESOURCE) : args[0]);
+				.getSelection().getSingle(Selection.MOKAP_RESOURCE) : args[0]);
 
 		if (controller.getModel().getResourceCategory(id) != ResourceCategory.SCENE) {
 			Gdx.app.error("DeleteScene", id

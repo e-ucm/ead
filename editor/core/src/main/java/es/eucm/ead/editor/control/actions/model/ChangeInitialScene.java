@@ -73,7 +73,7 @@ public class ChangeInitialScene extends ModelAction {
 	@Override
 	public Command perform(Object... args) {
 		String sceneId = (String) (args.length == 0 ? controller.getModel()
-				.getSelection().getSingle(Selection.RESOURCE) : args[0]);
+				.getSelection().getSingle(Selection.MOKAP_RESOURCE) : args[0]);
 
 		if (sceneId == null
 				|| !controller.getModel().getResources(ResourceCategory.SCENE)

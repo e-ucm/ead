@@ -58,12 +58,15 @@ public class OpenProject extends EditorAction implements
 		AssetLoadedCallback<Object> {
 
 	public OpenProject() {
-		super(true, false, String.class);
+		super(true, false, new Class[] {}, new Class[] { String.class });
 	}
 
 	@Override
 	public void perform(Object... args) {
-		controller.getEditorGameAssets().setLoadingPath((String) args[0]);
+		String path = (String) (args.length == 1 ? args[0] : controller
+				.getModel().getSelection().getSingle(Selection.RESOURCE));
+
+		controller.getEditorGameAssets().setLoadingPath(path);
 		controller.getModel().reset();
 		controller.getEditorGameAssets().get(ModelStructure.GAME_FILE,
 				Object.class, this);
@@ -78,9 +81,12 @@ public class OpenProject extends EditorAction implements
 		controller.getPreferences().putString(Preferences.LAST_OPENED_GAME,
 				controller.getEditorGameAssets().getLoadingPath());
 		controller.getPreferences().flush();
-		controller.action(SetSelection.class, null, Selection.PROJECT, asset);
-		controller.action(SetSelection.class, Selection.PROJECT,
-				Selection.RESOURCE);
+		controller.action(SetSelection.class, null, Selection.RESOURCE,
+				GameStructure.GAME_FILE);
+		controller.action(SetSelection.class, Selection.RESOURCE,
+				Selection.MOKAP, asset);
+		controller.action(SetSelection.class, Selection.MOKAP,
+				Selection.MOKAP_RESOURCE);
 		controller.action(LoadScenes.class);
 	}
 }

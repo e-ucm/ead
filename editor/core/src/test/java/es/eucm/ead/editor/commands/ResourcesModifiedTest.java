@@ -71,10 +71,10 @@ public class ResourcesModifiedTest extends EditorTest {
 
 		controller.action(Save.class);
 
-		controller.action(SetSelection.class, null, Selection.PROJECT,
+		controller.action(SetSelection.class, null, Selection.MOKAP,
 				model.getGame());
-		controller.action(SetSelection.class, Selection.PROJECT,
-				Selection.RESOURCE, "scene1");
+		controller.action(SetSelection.class, Selection.MOKAP,
+				Selection.MOKAP_RESOURCE, "scene1");
 		controller.action(EditScene.class);
 
 		assertFalse(model.getResource(ModelStructure.GAME_FILE).isModified());
