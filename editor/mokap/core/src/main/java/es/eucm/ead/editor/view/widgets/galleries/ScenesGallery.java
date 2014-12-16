@@ -67,11 +67,9 @@ import es.eucm.ead.schemax.entities.ResourceCategory;
 import java.util.Comparator;
 import java.util.Map.Entry;
 
-public class ScenesGallery extends ThumbnailsGallery implements
+public class ScenesGallery extends ContextMenuGallery implements
 		ModelListener<ResourceEvent>, ModelView, AssetLoadingListener<Texture>,
 		Comparator<Actor> {
-
-	protected Controller controller;
 
 	private GameData gameData;
 
@@ -84,17 +82,12 @@ public class ScenesGallery extends ThumbnailsGallery implements
 	public ScenesGallery(float rows, int columns, Controller controller,
 			String galleryStyle) {
 		super(rows, columns, controller.getEditorGameAssets(), controller
-				.getApplicationAssets().getSkin(), controller
-				.getApplicationAssets().getI18N(), galleryStyle);
-		this.controller = controller;
+				galleryStyle, controller);
 		init();
 	}
 
 	public ScenesGallery(float rows, int columns, Controller controller) {
 		super(rows, columns, controller.getEditorGameAssets(), controller
-				.getApplicationAssets().getSkin(), controller
-				.getApplicationAssets().getI18N());
-		this.controller = controller;
 		init();
 	}
 
@@ -163,7 +156,7 @@ public class ScenesGallery extends ThumbnailsGallery implements
 
 	private void addScene(String id, ModelEntity scene) {
 		String thumbnailPath = Q.getThumbnailPath(id);
-		Cell cell = addTile(id, Q.getName(scene, ""), thumbnailPath);
+		Cell cell = addTile(id, Q.getTitle(scene), thumbnailPath);
 		cell.setUserObject(scene);
 		Tile tile = (Tile) cell.getActor();
 
