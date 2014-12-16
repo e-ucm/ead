@@ -45,7 +45,6 @@ import com.badlogic.gdx.scenes.scene2d.actions.Actions;
 import com.badlogic.gdx.scenes.scene2d.actions.SequenceAction;
 import com.badlogic.gdx.scenes.scene2d.ui.Image;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
-import com.badlogic.gdx.scenes.scene2d.ui.Slider;
 import com.badlogic.gdx.scenes.scene2d.utils.Align;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.scenes.scene2d.utils.Drawable;
@@ -55,6 +54,7 @@ import es.eucm.ead.editor.control.Views;
 import es.eucm.ead.editor.view.SkinConstants;
 import es.eucm.ead.editor.view.widgets.ContextMenu;
 import es.eucm.ead.editor.view.widgets.IconButton;
+import es.eucm.ead.editor.view.widgets.Slider;
 import es.eucm.ead.editor.view.widgets.WidgetBuilder;
 import es.eucm.ead.editor.view.widgets.draw.ColorPickerPanel.ColorPickerPanelStyle;
 import es.eucm.ead.editor.view.widgets.draw.SlideColorPicker.ColorEvent;
@@ -132,6 +132,7 @@ public class BrushStrokesPicker extends ContextMenu {
 		add(slider).padRight(pad).expandX().fillX();
 		row();
 		add(colorPicker).colspan(2).padBottom(pad);
+		colorPicker.completeRowsIfPossible(this);
 	}
 
 	/**

@@ -126,14 +126,15 @@ public class TextEditor extends ContextMenu {
 		selectSize.setItems(size);
 
 		LinearLayout fontOptions = new LinearLayout(true);
-		fontOptions.add(selectTypo).margin(0, 0, pad * 2, 0);
-		fontOptions.add(selectSize);
+		fontOptions.add(selectTypo).marginRight(pad);
+		fontOptions.add(selectSize).marginRight(pad);
 
 		add(top).expandX().fillX();
 		row();
 		add(fontOptions).padBottom(pad);
 		row();
 		add(colorPicker).padBottom(pad);
+		colorPicker.completeRowsIfPossible(this);
 	}
 
 	@Override
