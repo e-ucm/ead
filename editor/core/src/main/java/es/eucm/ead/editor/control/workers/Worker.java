@@ -223,6 +223,14 @@ public abstract class Worker implements Runnable {
 	}
 
 	/**
+	 * @return if the worker has been cancelled. Cancel event could still be
+	 *         emitted to the listener
+	 */
+	public boolean isCancelled() {
+		return cancelled.get();
+	}
+
+	/**
 	 * @return if the worked is finished or was cancelled, and its correspondent
 	 *         thread stopped or is about to
 	 */
