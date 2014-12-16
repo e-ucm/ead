@@ -36,28 +36,91 @@
  */
 package es.eucm.ead.editor.view.widgets.galleries;
 
+import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.scenes.scene2d.Actor;
+import com.badlogic.gdx.scenes.scene2d.ui.Button;
 import es.eucm.ead.editor.control.Controller;
+import es.eucm.ead.editor.control.Selection;
 import es.eucm.ead.editor.control.actions.editor.AddProject;
+import es.eucm.ead.editor.control.actions.editor.CloneProject;
 import es.eucm.ead.editor.control.actions.editor.ExecuteWorker;
 import es.eucm.ead.editor.control.actions.editor.OpenProject;
+import es.eucm.ead.editor.control.actions.editor.ShowToast;
+import es.eucm.ead.editor.control.actions.model.DeleteProject;
+import es.eucm.ead.editor.control.actions.model.SetSelection;
+import es.eucm.ead.editor.control.background.BackgroundExecutor;
+import es.eucm.ead.editor.control.background.BackgroundExecutor.BackgroundTaskListener;
 import es.eucm.ead.editor.control.workers.LoadProjects;
 import es.eucm.ead.editor.control.workers.Worker.WorkerListener;
+import es.eucm.ead.editor.model.Model.ModelListener;
+import es.eucm.ead.editor.model.Model.SelectionListener;
+import es.eucm.ead.editor.model.Q;
+import es.eucm.ead.editor.model.events.ResourceEvent;
+import es.eucm.ead.editor.model.events.SelectionEvent;
+import es.eucm.ead.editor.model.events.SelectionEvent.Type;
+import es.eucm.ead.editor.view.ModelView;
+import es.eucm.ead.editor.view.SkinConstants;
 import es.eucm.ead.editor.view.widgets.WidgetBuilder;
+import es.eucm.ead.editor.view.widgets.layouts.Gallery.Cell;
+import es.eucm.ead.engine.utils.EngineUtils;
+import es.eucm.ead.schema.editor.components.GameData;
+import es.eucm.ead.schema.entities.ModelEntity;
+import es.eucm.ead.schemax.GameStructure;
+import es.eucm.ead.schemax.entities.ResourceCategory;
 
-public class ProjectsGallery extends ThumbnailsGallery implements
-		WorkerListener {
+public class ProjectsGallery extends ContextMenuGallery implements
+		WorkerListener, BackgroundTaskListener<Object[]>, ModelView {
 
 	private Controller controller;
 
-	public ProjectsGallery(float rows, int columns, Controller controller) {
-		super(rows, columns, controller.getApplicationAssets(), controller
-				.getApplicationAssets().getSkin(), controller
-				.getApplicationAssets().getI18N());
-		this.controller = controller;
+	private ResourceListener resourceListener = new ResourceListener();
+
+	private ProjectListener projectListener = new ProjectListener();
+
+	public ProjectsGallery(float rowHeight, int columns, Controller c) {
+		super(rowHeight, columns, c.getApplicationAssets(), c);
+		this.controller = c;
+
+		Button edit = WidgetBuilder.button(SkinConstants.IC_EDIT,
+				i18N.m("edit"), SkinConstants.STYLE_CONTEXT, OpenProject.class);
+
+		Button clone = WidgetBuilder.button(SkinConstants.IC_CLONE,
+				i18N.m("clone"), SkinConstants.STYLE_CONTEXT,
+				CloneProject.class, this);
+
+		Button delete = WidgetBuilder.button(SkinConstants.IC_DELETE,
+				i18N.m("delete"), SkinConstants.STYLE_CONTEXT);
+
+		float time = 10.0f;
+		WidgetBuilder.actionsOnClick(
+				delete,
+				new Class[] { DeleteProject.class, ShowToast.class },
+				new Object[][] {
+						new Object[] { time },
+						new Object[] {
+								controller.getApplicationAssets().getI18N()
+										.m("project.deleted"), time } });
+
+		setContextMenu(edit, clone, delete);
 	}
 
+	@Override
 	public void prepare() {
+		controller.getModel().addResourceListener(projectListener);
+		controller.getModel().addSelectionListener(resourceListener);
+	}
+
+	@Override
+	public void release() {
+		controller.getModel().removeResourceListener(projectListener);
+		controller.getModel().removeSelectionListener(resourceListener);
+	}
+
+	/**
+	 * Loads the projects in the gallery
+	 */
+	public void load() {
+		clear();
 		controller.action(ExecuteWorker.class, LoadProjects.class, this);
 	}
 
@@ -72,8 +135,20 @@ public class ProjectsGallery extends ThumbnailsGallery implements
 	}
 
 	@Override
+	public void tileLongPressed(String tileName) {
+		controller.action(SetSelection.class, null, Selection.RESOURCE,
+				tileName);
+	}
+
+	@Override
+	public void contextMenuHidden() {
+		controller.action(SetSelection.class, null, Selection.RESOURCE);
+	}
+
+	// Worker listener
+
+	@Override
 	public void start() {
-		clear();
 	}
 
 	@Override
@@ -83,16 +158,80 @@ public class ProjectsGallery extends ThumbnailsGallery implements
 
 	@Override
 	public void done() {
-
 	}
 
 	@Override
 	public void error(Throwable ex) {
-
 	}
 
 	@Override
 	public void cancelled() {
+	}
 
+	// Background listener
+
+	@Override
+	public void done(BackgroundExecutor backgroundExecutor, Object[] result) {
+		result(result);
+	}
+
+	private void readResource() {
+		String resource = (String) controller.getModel().getSelection()
+				.getSingle(Selection.RESOURCE);
+		gallery.uncheckAll();
+		if (resource != null) {
+			Cell cell = (Cell) EngineUtils.getDirectChild(gallery.getGrid(),
+					gallery.findActor(resource));
+			if (cell != null) {
+				cell.checked(true);
+			}
+		}
+	}
+
+	private void addProject(String id) {
+		ModelEntity game = controller.getEditorGameAssets().fromJson(
+				ModelEntity.class,
+				Gdx.files.absolute(id).child(GameStructure.GAME_FILE));
+		if (!id.endsWith("/")) {
+			id += "/";
+		}
+		addTile(id,
+				Q.getTitle(game),
+				id
+						+ Q.getThumbnailPath(Q.getComponent(game,
+								GameData.class).getInitialScene()));
+	}
+
+	class ProjectListener implements ModelListener<ResourceEvent> {
+
+		@Override
+		public void modelChanged(ResourceEvent event) {
+			if (event.getCategory() == ResourceCategory.GAME) {
+				switch (event.getType()) {
+				case ADDED:
+					addProject(event.getId());
+					break;
+				case REMOVED:
+					Actor actor = findActor(event.getId());
+					actor.getParent().remove();
+					break;
+				}
+			}
+		}
+	}
+
+	class ResourceListener implements SelectionListener {
+
+		@Override
+		public boolean listenToContext(String contextId) {
+			return Selection.RESOURCE.equals(contextId);
+		}
+
+		@Override
+		public void modelChanged(SelectionEvent event) {
+			if (event.getType() == Type.FOCUSED) {
+				readResource();
+			}
+		}
 	}
 }
