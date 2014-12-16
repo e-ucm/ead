@@ -34,41 +34,39 @@
  *      You should have received a copy of the GNU Lesser General Public License
  *      along with eAdventure.  If not, see <http://www.gnu.org/licenses/>.
  */
-package es.eucm.ead.editor.control.engine;
+package es.eucm.ead.engine.components.assets;
 
-import es.eucm.ead.editor.control.Controller;
-import es.eucm.ead.editor.processors.EditorEmptyRendererProcessor;
-import es.eucm.ead.editor.processors.EditorFramesProcessor;
-import es.eucm.ead.engine.ComponentLoader;
-import es.eucm.ead.engine.DefaultEngineInitializer;
-import es.eucm.ead.engine.EntitiesLoader;
-import es.eucm.ead.engine.GameLoop;
-import es.eucm.ead.engine.assets.GameAssets;
-import es.eucm.ead.engine.variables.VariablesManager;
-import es.eucm.ead.schema.renderers.EmptyRenderer;
-import es.eucm.ead.schema.renderers.Frames;
+import ashley.core.Component;
 
-public class MobileEngineInitializer extends DefaultEngineInitializer {
+import com.badlogic.gdx.scenes.scene2d.Group;
+import com.badlogic.gdx.utils.Pool;
 
-	private Controller controller;
+import es.eucm.ead.engine.components.controls.ControlComponent;
 
-	public MobileEngineInitializer(Controller controller) {
-		this.controller = controller;
+/**
+ * References for entities
+ */
+public class ReferenceComponent extends ControlComponent<Group> implements
+		Pool.Poolable {
+
+	private Group group;
+
+	public void setGroup(Group group) {
+		this.group = group;
 	}
 
-	protected void registerComponents(ComponentLoader componentLoader,
-			GameAssets gameAssets, GameLoop gameLoop,
-			VariablesManager variablesManager, EntitiesLoader entitiesLoader) {
-		super.registerComponents(componentLoader, gameAssets, gameLoop,
-				variablesManager, entitiesLoader);
-		componentLoader.registerComponentProcessor(
-				EmptyRenderer.class,
-				new EditorEmptyRendererProcessor(gameLoop, controller
-						.getApplicationAssets()));
-		componentLoader
-				.registerComponentProcessor(Frames.class,
-						new EditorFramesProcessor(gameLoop, gameAssets,
-								componentLoader));
+	@Override
+	public boolean combine(Component other) {
+		return false;
 	}
 
+	@Override
+	public void reset() {
+		group = null;
+	}
+
+	@Override
+	public Group getControl() {
+		return group;
+	}
 }

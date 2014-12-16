@@ -42,6 +42,7 @@ import es.eucm.ead.editor.processors.EditorEmptyRendererProcessor;
 import es.eucm.ead.editor.processors.EditorImageProcessor;
 import es.eucm.ead.engine.ComponentLoader;
 import es.eucm.ead.engine.DefaultEngineInitializer;
+import es.eucm.ead.engine.EntitiesLoader;
 import es.eucm.ead.engine.GameLoop;
 import es.eucm.ead.engine.assets.GameAssets;
 import es.eucm.ead.engine.variables.VariablesManager;
@@ -59,9 +60,9 @@ public class EditorEngineInitializer extends DefaultEngineInitializer {
 
 	protected void registerComponents(ComponentLoader componentLoader,
 			GameAssets gameAssets, GameLoop gameLoop,
-			VariablesManager variablesManager) {
+			VariablesManager variablesManager, EntitiesLoader entitiesLoader) {
 		super.registerComponents(componentLoader, gameAssets, gameLoop,
-				variablesManager);
+				variablesManager, entitiesLoader);
 		componentLoader.registerComponentProcessor(
 				Image.class,
 				new EditorImageProcessor(gameLoop, controller

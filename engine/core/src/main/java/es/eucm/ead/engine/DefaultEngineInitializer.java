@@ -48,6 +48,7 @@ import es.eucm.ead.engine.processors.RefProcessor;
 import es.eucm.ead.engine.processors.TagsProcessor;
 import es.eucm.ead.engine.processors.TouchabilityProcessor;
 import es.eucm.ead.engine.processors.VisibilityProcessor;
+import es.eucm.ead.engine.processors.assets.ReferenceProcessor;
 import es.eucm.ead.engine.processors.assets.SoundProcessor;
 import es.eucm.ead.engine.processors.behaviors.BehaviorsProcessor;
 import es.eucm.ead.engine.processors.controls.ButtonProcessor;
@@ -127,6 +128,7 @@ import es.eucm.ead.schema.assets.Sound;
 import es.eucm.ead.schema.components.Animation;
 import es.eucm.ead.schema.components.PathBoundary;
 import es.eucm.ead.schema.components.RefComponent;
+import es.eucm.ead.schema.components.Reference;
 import es.eucm.ead.schema.components.Tags;
 import es.eucm.ead.schema.components.Touchability;
 import es.eucm.ead.schema.components.Visibility;
@@ -199,7 +201,7 @@ public class DefaultEngineInitializer implements EngineInitializer {
 			EntitiesLoader entitiesLoader, GameView gameView,
 			VariablesManager variablesManager) {
 		registerComponents(entitiesLoader.getComponentLoader(), assets,
-				gameLoop, variablesManager);
+				gameLoop, variablesManager, entitiesLoader);
 		registerSystems(assets, gameLoop, entitiesLoader, gameView,
 				variablesManager);
 	}
@@ -325,7 +327,7 @@ public class DefaultEngineInitializer implements EngineInitializer {
 
 	protected void registerComponents(ComponentLoader componentLoader,
 			GameAssets gameAssets, GameLoop gameLoop,
-			VariablesManager variablesManager) {
+			VariablesManager variablesManager, EntitiesLoader entitiesLoader) {
 		// Components
 		componentLoader.registerComponentProcessor(Tags.class,
 				new TagsProcessor(gameLoop));
@@ -409,6 +411,8 @@ public class DefaultEngineInitializer implements EngineInitializer {
 				new ConversationProcessor(gameLoop));
 		componentLoader.registerComponentProcessor(SpineAnimation.class,
 				new SpineAnimationProcessor(gameLoop, gameAssets));
+		componentLoader.registerComponentProcessor(Reference.class,
+				new ReferenceProcessor(gameLoop, gameAssets, entitiesLoader));
 	}
 
 	private static class LanguageVariableListener implements
