@@ -45,7 +45,6 @@ import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 
 import es.eucm.ead.editor.editorui.UITest;
 import es.eucm.ead.editor.view.SkinConstants;
-import es.eucm.ead.editor.view.widgets.ContextMenu;
 import es.eucm.ead.editor.view.widgets.IconButton;
 import es.eucm.ead.editor.view.widgets.WidgetBuilder;
 import es.eucm.ead.editor.view.widgets.draw.ColorPickerPanel;
@@ -64,13 +63,19 @@ public class ColorPickerPanelTest extends UITest {
 		container.add(iconButton);
 		container.addSpace();
 
-		final ContextMenu contextMenu = new ColorPickerPanel(skin);
+		final ColorPickerPanel contextMenu = new ColorPickerPanel(skin);
 		contextMenu.pack();
 
 		iconButton.addListener(new ClickListener() {
 			@Override
 			public void clicked(InputEvent event, float x, float y) {
-				controller.getViews().showModal(contextMenu, 0, 0);
+				if (!contextMenu.hasParent()) {
+					stage.addActor(contextMenu);
+					contextMenu.initResources();
+				} else {
+					contextMenu.setUpPickedColor();
+					contextMenu.remove();
+				}
 			}
 		});
 
