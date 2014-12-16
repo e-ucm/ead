@@ -45,8 +45,12 @@ import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 
+import es.eucm.ead.editor.control.Commands;
+import es.eucm.ead.editor.control.Commands.CommandListener;
+import es.eucm.ead.editor.control.Commands.CommandsStack;
 import es.eucm.ead.editor.control.Controller;
 import es.eucm.ead.editor.control.actions.EditorAction;
+import es.eucm.ead.editor.control.commands.Command;
 import es.eucm.ead.editor.view.SkinConstants;
 import es.eucm.ead.editor.view.widgets.Toast;
 import es.eucm.ead.editor.view.widgets.WidgetBuilder;
@@ -58,14 +62,13 @@ import es.eucm.ead.editor.view.widgets.WidgetBuilder;
  * <dl>
  * <dt><strong>Arguments</strong></dt>
  * <dd><strong>args[0]</strong> <em>String</em> The toast text</dd>
- * <dd><strong>args[1]</strong>
- * <em>{@link Boolean} (Optional, default = false)</em> If undo option must
- * appear in the toast</dd>
+ * <dd><strong>args[1]</strong> <em>{@link Float} (Optional)</em> If it's
+ * greater than 0, an undo appears, and stays args[1] seconds</dd>
  * </dl>
  */
-public class ShowToast extends EditorAction {
+public class ShowToast extends EditorAction implements CommandListener {
 
-	private static final float TOAST_TIME = 1.0f;
+	public static final float DEFAULT_TOAST_TIME = 3.0f;
 
 	private Toast toast;
 
@@ -73,12 +76,13 @@ public class ShowToast extends EditorAction {
 
 	public ShowToast() {
 		super(true, true, new Class[] { String.class }, new Class[] {
-				String.class, Boolean.class });
+				String.class, Float.class });
 	}
 
 	@Override
 	public void initialize(Controller controller) {
 		super.initialize(controller);
+		controller.getCommands().addCommandListener(this);
 		Skin skin = controller.getApplicationAssets().getSkin();
 		toast = new Toast(skin);
 		toast.setTouchable(Touchable.childrenOnly);
@@ -90,8 +94,8 @@ public class ShowToast extends EditorAction {
 		undo.addListener(new ClickListener() {
 			@Override
 			public void clicked(InputEvent event, float x, float y) {
+				removeToast();
 				ShowToast.this.controller.action(Undo.class);
-				toast.remove();
 			}
 		});
 		toast.add(undo).margin(
@@ -102,7 +106,9 @@ public class ShowToast extends EditorAction {
 	public void perform(Object... args) {
 		toast.setText((String) args[0]);
 
-		boolean showUndo = args.length == 2 ? (Boolean) args[1] : false;
+		boolean showUndo = args.length == 2 && ((Float) args[1]) > 0;
+		float toastTime = (showUndo ? (Float) args[1] : DEFAULT_TOAST_TIME) - 2.0f;
+
 		undo.setVisible(showUndo);
 
 		toast.pack();
@@ -112,10 +118,49 @@ public class ShowToast extends EditorAction {
 		toast.setPosition(x, y);
 		toast.clearActions();
 		toast.addAction(Actions.sequence(Actions.alpha(0.0f),
-				Actions.alpha(1.0f, TOAST_TIME, Interpolation.exp5Out),
-				Actions.delay(TOAST_TIME * (showUndo ? 10 : 1)),
-				Actions.alpha(0.0f, TOAST_TIME, Interpolation.exp5Out),
+				Actions.alpha(1.0f, 1.0f, Interpolation.exp5Out),
+				Actions.delay(toastTime),
+				Actions.alpha(0.0f, 1.0f, Interpolation.exp5Out),
 				Actions.removeActor()));
 		controller.getViews().addToModalsContainer(toast);
+	}
+
+	private void removeToast() {
+		toast.clearActions();
+		toast.remove();
+	}
+
+	@Override
+	public void doCommand(Commands commands, Command command) {
+		if (command.modifiesResource()) {
+			removeToast();
+		}
+	}
+
+	@Override
+	public void undoCommand(Commands commands, Command command) {
+	}
+
+	@Override
+	public void redoCommand(Commands commands, Command command) {
+	}
+
+	@Override
+	public void savePointUpdated(Commands commands, Command savePoint) {
+	}
+
+	@Override
+	public void cleared(Commands commands) {
+	}
+
+	@Override
+	public void contextPushed(Commands commands) {
+		removeToast();
+	}
+
+	@Override
+	public void contextPopped(Commands commands, CommandsStack poppedContext,
+			boolean merge) {
+		removeToast();
 	}
 }
