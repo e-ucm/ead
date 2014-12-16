@@ -36,10 +36,8 @@
  */
 package es.eucm.ead.editor.view.builders;
 
-import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
-
 import es.eucm.ead.editor.control.Controller;
 import es.eucm.ead.editor.control.actions.editor.ChangeView;
 import es.eucm.ead.editor.view.SkinConstants;
@@ -63,9 +61,8 @@ public class FileView implements ViewBuilder {
 		I18N i18N = controller.getApplicationAssets().getI18N();
 		view = new LinearLayout(false);
 		view.add(buildToolbar(skin, i18N)).expandX();
-		view.add(
-				new FileGallery(Gdx.graphics.getHeight() / 3.15f, 4, controller))
-				.expand(true, true).top();
+		view.add(new FileGallery(3.15f, 4, controller)).expand(true, true)
+				.top();
 	}
 
 	@Override

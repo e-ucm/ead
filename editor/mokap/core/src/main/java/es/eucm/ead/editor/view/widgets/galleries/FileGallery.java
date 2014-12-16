@@ -62,8 +62,8 @@ public class FileGallery extends ThumbnailsGallery implements WorkerListener,
 	private Array<String> loadedThumbnails = new Array<String>();
 	private Controller controller;
 
-	public FileGallery(float rowHeight, int columns, Controller controller) {
-		super(rowHeight, columns, controller.getApplicationAssets(), controller
+	public FileGallery(float rows, int columns, Controller controller) {
+		super(rows, columns, controller.getApplicationAssets(), controller
 				.getApplicationAssets().getSkin(), controller
 				.getApplicationAssets().getI18N());
 		this.controller = controller;

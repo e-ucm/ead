@@ -56,8 +56,7 @@ public class NavigationGallery extends ScenesGallery {
 	private I18N i18N;
 
 	public NavigationGallery(Controller controller) {
-		super(Gdx.graphics.getHeight() / 2.15f, 1, controller,
-				SkinConstants.STYLE_NAVIGATION);
+		super(3.35f, 1, controller, SkinConstants.STYLE_NAVIGATION);
 		gallery.pad(0);
 		gallery.setCancelTouchFocus(false);
 		i18N = controller.getApplicationAssets().getI18N();

@@ -36,7 +36,6 @@
  */
 package es.eucm.ead.editor.view.builders;
 
-import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input.Keys;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
@@ -44,7 +43,6 @@ import com.badlogic.gdx.scenes.scene2d.InputListener;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.ui.TextField;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
-
 import es.eucm.ead.editor.assets.ApplicationAssets;
 import es.eucm.ead.editor.control.Controller;
 import es.eucm.ead.editor.control.MokapController.BackListener;
@@ -77,9 +75,7 @@ public class SearchView implements ViewBuilder, BackListener {
 		I18N i18N = assets.getI18N();
 		view = new LinearLayout(false);
 		view.add(buildToolbar(skin, i18N)).expandX();
-		view.add(
-				searchGallery = new SearchGallery(
-						Gdx.graphics.getHeight() / 3.15f, 4, controller))
+		view.add(searchGallery = new SearchGallery(2.65f, 4, controller))
 				.expand(true, true).top();
 	}
 

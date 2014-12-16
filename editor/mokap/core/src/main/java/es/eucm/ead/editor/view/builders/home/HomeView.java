@@ -36,9 +36,7 @@
  */
 package es.eucm.ead.editor.view.builders.home;
 
-import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.scenes.scene2d.Actor;
-
 import es.eucm.ead.editor.control.Controller;
 import es.eucm.ead.editor.control.MokapController.BackListener;
 import es.eucm.ead.editor.control.Preferences;
@@ -57,7 +55,7 @@ public class HomeView implements ViewBuilder, BackListener {
 	@Override
 	public void initialize(Controller c) {
 		this.controller = c;
-		view = new ProjectsGallery(Gdx.graphics.getHeight() / 2.15f, 3, c);
+		view = new ProjectsGallery(2.65f, 3, c);
 	}
 
 	@Override

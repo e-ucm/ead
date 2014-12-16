@@ -57,20 +57,28 @@ public class Gallery extends ScrollPane {
 
 	private GalleryStyle style;
 
-	public Gallery(float rowHeight, int columns, Skin skin) {
-		this(rowHeight, columns, skin.get(GalleryStyle.class));
+	/**
+	 * @param rows
+	 *            the number rows to show in the gallery. No need to be a whole
+	 *            number
+	 * @param columns
+	 *            number of columns of the gallery
+	 */
+	public Gallery(float rows, int columns, Skin skin) {
+		this(rows, columns, skin.get(GalleryStyle.class));
 	}
 
 	/**
-	 * @param rowHeight
-	 *            row height (in pixels)
+	 * @param rows
+	 *            the number rows to show in the gallery. No need to be a whole
+	 *            number
 	 * @param columns
-	 *            number of columns for the gallery
+	 *            number of columns of the gallery
 	 */
-	public Gallery(float rowHeight, int columns, GalleryStyle style) {
+	public Gallery(float rows, int columns, GalleryStyle style) {
 		super(null);
 		this.style = style;
-		setWidget(grid = new Grid(rowHeight, columns));
+		setWidget(grid = new Grid(rows, columns));
 		getStyle().background = style.background;
 		setScrollingDisabled(true, false);
 	}
@@ -117,28 +125,37 @@ public class Gallery extends ScrollPane {
 		}
 	}
 
+	public void setRows(float rows) {
+		if (grid.rows != rows) {
+			grid.rows = rows;
+			grid.invalidate();
+		}
+	}
+
 	public static class Grid extends AbstractWidget {
 
 		private int columns;
 
-		private float rowHeight;
+		private float rows;
 
 		private float pad = WidgetBuilder.dpToPixels(8);
 
-		Grid(float rowHeight, int columns) {
+		Grid(float rows, int columns) {
 			this.columns = columns;
-			this.rowHeight = rowHeight;
+			this.rows = rows;
 		}
 
 		@Override
 		public void layout() {
 			float columnWidth = (getWidth() - pad) / columns;
-			float y = Math.max(getPrefHeight(), getHeight() - rowHeight) - pad;
+			float prefRowHeight = getPrefRowHeight();
+			float y = Math.max(getPrefHeight(), getHeight() - prefRowHeight)
+					- pad;
 			int count = 0;
 			float rowHeight = 0;
 			for (Actor actor : getChildren()) {
 				if (count % columns == 0) {
-					rowHeight = rowHeight(count);
+					rowHeight = rowHeight(count, prefRowHeight);
 					y -= rowHeight;
 				}
 				setBounds(actor, pad + (count % columns) * columnWidth,
@@ -147,7 +164,7 @@ public class Gallery extends ScrollPane {
 			}
 		}
 
-		private float rowHeight(int fromIndex) {
+		private float rowHeight(int fromIndex, float prefRowHeight) {
 			float currentRowHeight = 0;
 			for (int i = fromIndex; i < fromIndex + columns
 					&& i < getChildren().size; i++) {
@@ -156,11 +173,15 @@ public class Gallery extends ScrollPane {
 				if (cell.usePrefHeight) {
 					actorHeight = getPrefHeight(cell.actor);
 				} else {
-					actorHeight = rowHeight;
+					actorHeight = prefRowHeight;
 				}
 				currentRowHeight = Math.max(currentRowHeight, actorHeight);
 			}
 			return currentRowHeight;
+		}
+
+		private float getPrefRowHeight() {
+			return (getParent().getHeight() - pad) / rows;
 		}
 
 		@Override
@@ -183,7 +204,7 @@ public class Gallery extends ScrollPane {
 				if (((Cell) cell).usePrefHeight) {
 					actorHeight = getPrefHeight(((Cell) cell).actor);
 				} else {
-					actorHeight = rowHeight;
+					actorHeight = getPrefRowHeight();
 				}
 				currentRowHeight = Math.max(currentRowHeight, actorHeight);
 				counter++;

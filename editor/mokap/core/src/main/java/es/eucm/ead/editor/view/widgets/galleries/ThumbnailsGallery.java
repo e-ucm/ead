@@ -72,21 +72,20 @@ public abstract class ThumbnailsGallery extends AbstractWidget implements
 
 	private Button add;
 
-	public ThumbnailsGallery(float rowHeight, int columns, Assets assets,
-			Skin skin, I18N i18N) {
-		this(rowHeight, columns, assets, skin, i18N, skin
-				.get(GalleryStyle.class));
+	public ThumbnailsGallery(float rows, int columns, Assets assets, Skin skin,
+			I18N i18N) {
+		this(rows, columns, assets, skin, i18N, skin.get(GalleryStyle.class));
 	}
 
-	public ThumbnailsGallery(float rowHeight, int columns, Assets assets,
-			Skin skin, I18N i18N, String galleryStyle) {
-		this(rowHeight, columns, assets, skin, i18N, skin.get(galleryStyle,
+	public ThumbnailsGallery(float rows, int columns, Assets assets, Skin skin,
+			I18N i18N, String galleryStyle) {
+		this(rows, columns, assets, skin, i18N, skin.get(galleryStyle,
 				GalleryStyle.class));
 	}
 
-	public ThumbnailsGallery(float rowHeight, int columns, Assets assets,
-			Skin skin, I18N i18N, GalleryStyle galleryStyle) {
-		addActor(gallery = new Gallery(rowHeight, columns, galleryStyle));
+	public ThumbnailsGallery(float rows, int columns, Assets assets, Skin skin,
+			I18N i18N, GalleryStyle galleryStyle) {
+		addActor(gallery = new Gallery(rows, columns, galleryStyle));
 		addActor(add = WidgetBuilder.button(SkinConstants.STYLE_ADD));
 		prepareAddButton(add);
 		this.assets = assets;

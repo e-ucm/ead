@@ -36,13 +36,11 @@
  */
 package es.eucm.ead.editor.view.widgets.selectors;
 
-import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
-
 import es.eucm.ead.editor.control.Controller;
 import es.eucm.ead.editor.control.MokapController.BackListener;
 import es.eucm.ead.editor.view.SkinConstants;
@@ -85,10 +83,8 @@ public class SceneSelector extends LinearLayout implements Selector<String>,
 		buttons.addSpace();
 
 		add(toolbar).expandX();
-		add(
-				gallery = new SelectScenesGallery(
-						Gdx.graphics.getHeight() / 2.15f, 3, controller))
-				.expand(true, true);
+		add(gallery = new SelectScenesGallery(2.35f, 3, controller)).expand(
+				true, true);
 	}
 
 	@Override
@@ -107,9 +103,9 @@ public class SceneSelector extends LinearLayout implements Selector<String>,
 
 	public class SelectScenesGallery extends ScenesGallery {
 
-		public SelectScenesGallery(float rowHeight, int columns,
+		public SelectScenesGallery(float rows, int columns,
 				Controller controller) {
-			super(rowHeight, columns, controller);
+			super(rows, columns, controller);
 		}
 
 		@Override

@@ -50,8 +50,8 @@ public class ProjectsGallery extends ThumbnailsGallery implements
 
 	private Controller controller;
 
-	public ProjectsGallery(float rowHeight, int columns, Controller controller) {
-		super(rowHeight, columns, controller.getApplicationAssets(), controller
+	public ProjectsGallery(float rows, int columns, Controller controller) {
+		super(rows, columns, controller.getApplicationAssets(), controller
 				.getApplicationAssets().getSkin(), controller
 				.getApplicationAssets().getI18N());
 		this.controller = controller;

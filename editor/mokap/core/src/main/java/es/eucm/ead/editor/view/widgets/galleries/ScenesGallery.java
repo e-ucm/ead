@@ -81,17 +81,17 @@ public class ScenesGallery extends ThumbnailsGallery implements
 
 	private Array<NameListener> nameListeners = new Array<NameListener>();
 
-	public ScenesGallery(float rowHeight, int columns, Controller controller,
+	public ScenesGallery(float rows, int columns, Controller controller,
 			String galleryStyle) {
-		super(rowHeight, columns, controller.getEditorGameAssets(), controller
+		super(rows, columns, controller.getEditorGameAssets(), controller
 				.getApplicationAssets().getSkin(), controller
 				.getApplicationAssets().getI18N(), galleryStyle);
 		this.controller = controller;
 		init();
 	}
 
-	public ScenesGallery(float rowHeight, int columns, Controller controller) {
-		super(rowHeight, columns, controller.getEditorGameAssets(), controller
+	public ScenesGallery(float rows, int columns, Controller controller) {
+		super(rows, columns, controller.getEditorGameAssets(), controller
 				.getApplicationAssets().getSkin(), controller
 				.getApplicationAssets().getI18N());
 		this.controller = controller;
@@ -116,7 +116,8 @@ public class ScenesGallery extends ThumbnailsGallery implements
 
 		for (Entry<String, Resource> entry : controller.getModel()
 				.getResources(ResourceCategory.SCENE).entrySet()) {
-			addScene(entry.getKey(), (ModelEntity) entry.getValue().getObject());
+			addScene(entry.getKey(),
+					(ModelEntity) entry.getValue().getObject(), false);
 		}
 		controller.getEditorGameAssets().addAssetListener(this);
 		controller.getModel().addFieldListener(gameData, gameDataListener);
@@ -151,7 +152,7 @@ public class ScenesGallery extends ThumbnailsGallery implements
 		if (event.getCategory() == ResourceCategory.SCENE) {
 			switch (event.getType()) {
 			case ADDED:
-				addScene(event.getId(), (ModelEntity) event.getResource());
+				addScene(event.getId(), (ModelEntity) event.getResource(), true);
 				break;
 			case REMOVED:
 				removeScene(event.getId());
@@ -161,7 +162,8 @@ public class ScenesGallery extends ThumbnailsGallery implements
 		}
 	}
 
-	private void addScene(String id, ModelEntity scene) {
+	private void addScene(String id, ModelEntity scene,
+			boolean forceCreateThumbnail) {
 		String thumbnailPath = Q.getThumbnailPath(id);
 		Cell cell = addTile(id, Q.getName(scene, ""), thumbnailPath);
 		cell.setUserObject(scene);
@@ -174,7 +176,7 @@ public class ScenesGallery extends ThumbnailsGallery implements
 		sortScenes();
 
 		// Check if thumbnail exists. If not, create
-		if (assets.resolve(thumbnailPath).exists()) {
+		if (!forceCreateThumbnail && assets.resolve(thumbnailPath).exists()) {
 			super.loadThumbnail(thumbnailPath);
 		} else {
 			controller.action(CreateSceneThumbnail.class, scene);

@@ -36,7 +36,6 @@
  */
 package es.eucm.ead.editor.view.builders.project;
 
-import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import es.eucm.ead.editor.control.Controller;
@@ -65,9 +64,8 @@ public class ProjectView implements ViewBuilder, BackListener {
 		Skin skin = controller.getApplicationAssets().getSkin();
 		view = new LinearLayout(false);
 		view.add(buildToolbar(skin)).expandX();
-		view.add(
-				new ProjectScenesGallery(Gdx.graphics.getHeight() / 2.15f, 3,
-						controller)).expand(true, true).top();
+		view.add(new ProjectScenesGallery(2.35f, 3, controller))
+				.expand(true, true).top();
 	}
 
 	@Override

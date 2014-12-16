@@ -62,10 +62,10 @@ public class SearchGallery extends AbstractWidget implements WorkerListener,
 
 	private ApplicationAssets assets;
 
-	public SearchGallery(float rowHeight, int columns, Controller controller) {
+	public SearchGallery(float rows, int columns, Controller controller) {
 		assets = controller.getApplicationAssets();
 		skin = assets.getSkin();
-		addActor(gallery = new Gallery(rowHeight, columns,
+		addActor(gallery = new Gallery(rows, columns,
 				skin.get(GalleryStyle.class)));
 		gallery.setFillParent(true);
 	}

@@ -67,8 +67,8 @@ public class ProjectScenesGallery extends ScenesGallery {
 
 	private SceneSelectionListener sceneSelectionListener = new SceneSelectionListener();
 
-	public ProjectScenesGallery(float rowHeight, int columns, Controller cont) {
-		super(rowHeight, columns, cont);
+	public ProjectScenesGallery(float rows, int columns, Controller cont) {
+		super(rows, columns, cont);
 		addListener(new LongPressListener() {
 			@Override
 			public void longPress(float x, float y) {

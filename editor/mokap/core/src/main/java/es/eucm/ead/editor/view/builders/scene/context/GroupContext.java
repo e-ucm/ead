@@ -71,9 +71,7 @@ public abstract class GroupContext extends AbstractWidget {
 		iconsContainer.addSpace();
 		iconsContainer.setTouchable(Touchable.disabled);
 		addActor(iconsContainer);
-		addActor(gallery = new Gallery(
-				WidgetBuilder.dpToPixels(WidgetBuilder.UNIT_SIZE), COLUMNS,
-				style.galleryStyle));
+		addActor(gallery = new Gallery(1, COLUMNS, style.galleryStyle));
 		gallery.setCancelTouchFocus(false);
 	}
 
@@ -81,6 +79,7 @@ public abstract class GroupContext extends AbstractWidget {
 	public void layout() {
 		float width = WidgetBuilder.dpToPixels(16);
 		setBounds(iconsContainer, -width, 0, width, getHeight());
+		gallery.setRows(getHeight() / WidgetBuilder.dpToPixels(48));
 		gallery.setColumns(columns);
 		setBounds(gallery, 0, 0, getWidth(), getHeight());
 	}
