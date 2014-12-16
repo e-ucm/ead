@@ -103,6 +103,10 @@ public class EditorGameAssets extends GameAssets {
 		if (isGamePathInternal()) {
 			return super.resolve(path);
 		}
+		FileHandle reference = getReferenceFile(path);
+		if (reference != null) {
+			return reference;
+		}
 		FileHandle internal = files.internal(path);
 		if (checkFileExistence(internal)) {
 			return internal;

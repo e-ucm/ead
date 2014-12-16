@@ -38,6 +38,7 @@ package es.eucm.ead.engine.assets;
 
 import com.badlogic.gdx.Files;
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.assets.AssetLoaderParameters;
 import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.utils.Array;
@@ -46,7 +47,7 @@ import com.badlogic.gdx.utils.reflect.ReflectionException;
 
 import es.eucm.ead.engine.GameLoader;
 import es.eucm.ead.engine.assets.loaders.ScaledTextureLoader;
-import es.eucm.ead.schemax.GameStructure;
+import es.eucm.ead.schemax.ModelStructure;
 
 /**
  * Manages all game assets. Internally delegates LibGDX
@@ -54,11 +55,15 @@ import es.eucm.ead.schemax.GameStructure;
  * 
  * @see com.badlogic.gdx.assets.AssetManager
  */
-public class GameAssets extends Assets implements GameStructure {
+public class GameAssets extends Assets implements ModelStructure {
 
 	public static final String ENGINE_BINDINGS = "bindings.json";
 
-	private String loadingPath;
+	public static final String REREFENCE_PREFIX = "&";
+
+	private String loadingPath, referencePath, libraryPath;
+
+	private String refPrefix = "";
 
 	private boolean gamePathInternal;
 
@@ -106,11 +111,39 @@ public class GameAssets extends Assets implements GameStructure {
 		loadSkin(GameLoader.DEFAULT_SKIN);
 	}
 
+	@Override
+	public <T> void get(String fileName, Class<T> clazz,
+			AssetLoaderParameters<T> parameters,
+			AssetLoadedCallback<T> callback, boolean forceLoading) {
+		if (!refPrefix.isEmpty()) {
+			fileName = refPrefix + fileName;
+		}
+		super.get(fileName, clazz, parameters, callback, forceLoading);
+	}
+
+	public void setReferencePrefix(String refPrefix) {
+		this.refPrefix = refPrefix;
+	}
+
 	/**
 	 * @return the current loading path
 	 */
 	public String getLoadingPath() {
 		return loadingPath;
+	}
+
+	/**
+	 * Sets the current path for a referenced entity.
+	 */
+	public void setReferencePath(String referencePath) {
+		this.referencePath = convertNameToPath(referencePath, "", false, true);
+	}
+
+	/**
+	 * Sets the root path for referenced entities
+	 */
+	public void setLibraryPath(String rootLibraryPath) {
+		this.libraryPath = convertNameToPath(rootLibraryPath, "", false, true);
 	}
 
 	/**
@@ -132,7 +165,10 @@ public class GameAssets extends Assets implements GameStructure {
 	 */
 	@Override
 	public FileHandle resolve(String path) {
-		if (path.startsWith("/") || path.indexOf(':') == 1) {
+		FileHandle reference = getReferenceFile(path);
+		if (reference != null) {
+			return reference;
+		} else if (path.startsWith("/") || path.indexOf(':') == 1) {
 			// Absolute file
 			return files.absolute(path);
 		} else if (loadingPath == null) {
@@ -149,6 +185,20 @@ public class GameAssets extends Assets implements GameStructure {
 				return files.internal(path);
 			}
 		}
+	}
+
+	/**
+	 * 
+	 * @return a {@link FileHandle} to the current referenced entity if path
+	 *         starts with {@link GameAssets#REFERENCE_PREFIX}, or null
+	 *         otherwise.
+	 */
+	protected FileHandle getReferenceFile(String path) {
+		if (path.startsWith(REREFENCE_PREFIX)) {
+			return files.absolute(libraryPath + referencePath
+					+ path.substring(REREFENCE_PREFIX.length()));
+		}
+		return null;
 	}
 
 	/**
