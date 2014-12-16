@@ -55,7 +55,9 @@ public class PlaceHolder extends AbstractWidget {
 			this.content.remove();
 		}
 		this.content = content;
-		addActor(content);
+		if (content != null) {
+			addActor(content);
+		}
 	}
 
 	public Actor getContent() {
