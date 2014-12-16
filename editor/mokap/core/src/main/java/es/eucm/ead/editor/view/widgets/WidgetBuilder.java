@@ -309,7 +309,7 @@ public class WidgetBuilder {
 	}
 
 	public static TextButton dialogButton(String text, TextButtonStyle style) {
-		TextButton button = new TextButton(text, style);
+		TextButton button = new TextButton(text.toUpperCase(), style);
 		button.pad(dpToPixels(8)).padBottom(dpToPixels(10))
 				.padTop(dpToPixels(10));
 		return button;

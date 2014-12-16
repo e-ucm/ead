@@ -58,7 +58,8 @@ public class ShowSpinner extends EditorAction {
 		super.initialize(controller);
 		container = new ModalContainer(controller.getApplicationAssets()
 				.getSkin(), spinnerModal = new SpinnerModal(controller
-				.getApplicationAssets().getSkin()));
+				.getApplicationAssets().getSkin(), controller
+				.getApplicationAssets().getI18N()));
 	}
 
 	@Override

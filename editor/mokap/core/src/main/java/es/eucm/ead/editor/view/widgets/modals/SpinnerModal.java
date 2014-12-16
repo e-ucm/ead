@@ -39,6 +39,7 @@ package es.eucm.ead.editor.view.widgets.modals;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.math.Interpolation;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
+import com.badlogic.gdx.scenes.scene2d.InputListener;
 import com.badlogic.gdx.scenes.scene2d.actions.Actions;
 import com.badlogic.gdx.scenes.scene2d.ui.ImageButton;
 import com.badlogic.gdx.scenes.scene2d.ui.ImageButton.ImageButtonStyle;
@@ -58,6 +59,7 @@ import es.eucm.ead.editor.utils.Actions2;
 import es.eucm.ead.editor.view.Modal;
 import es.eucm.ead.editor.view.widgets.WidgetBuilder;
 import es.eucm.ead.editor.view.widgets.layouts.LinearLayout;
+import es.eucm.ead.engine.I18N;
 
 public class SpinnerModal extends LinearLayout implements Modal {
 
@@ -79,15 +81,15 @@ public class SpinnerModal extends LinearLayout implements Modal {
 
 	private Views views;
 
-	public SpinnerModal(Skin skin) {
-		this(skin.get(SpinnerModalStyle.class));
+	public SpinnerModal(Skin skin, I18N i18N) {
+		this(skin.get(SpinnerModalStyle.class), i18N);
 	}
 
 	public void setModalListener(SpinnerModalListener modalListener) {
 		this.modalListener = modalListener;
 	}
 
-	public SpinnerModal(SpinnerModalStyle style) {
+	public SpinnerModal(SpinnerModalStyle style, I18N i18N) {
 		super(false);
 		background(style.background);
 		pad(WidgetBuilder.dpToPixels(16));
@@ -98,49 +100,13 @@ public class SpinnerModal extends LinearLayout implements Modal {
 		LinearLayout numberButton = new LinearLayout(false);
 
 		ImageButton up = new ImageButton(style.upStyle);
-		up.addListener(new ClickListener() {
-
-			@Override
-			public boolean touchDown(InputEvent event, float x, float y,
-					int pointer, int button) {
-				repeatTask.inc = 1;
-				if (!repeatTask.isScheduled()) {
-					Timer.schedule(repeatTask, 0.4f, 0.05f);
-				}
-				return super.touchDown(event, x, y, pointer, button);
-			}
-
-			@Override
-			public void clicked(InputEvent event, float x, float y) {
-				repeatTask.cancel();
-				setValue(value + 1);
-			}
-		});
-
+		up.addListener(new IncListener(1));
 		numberButton.add(up).centerX();
 		numberButton.add(numberLabel = new Label("", style.numberStyle))
 				.centerX();
 
 		ImageButton down = new ImageButton(style.downStyle);
-		down.addListener(new ClickListener() {
-
-			@Override
-			public boolean touchDown(InputEvent event, float x, float y,
-					int pointer, int button) {
-				repeatTask.inc = -1;
-				if (!repeatTask.isScheduled()) {
-					Timer.schedule(repeatTask, 0.4f, 0.05f);
-				}
-				return super.touchDown(event, x, y, pointer, button);
-			}
-
-			@Override
-			public void clicked(InputEvent event, float x, float y) {
-				repeatTask.cancel();
-				setValue(value - 1);
-			}
-		});
-
+		down.addListener(new IncListener(-1));
 		numberButton.add(down).centerX();
 
 		statement.add(numberButton).centerY()
@@ -153,7 +119,7 @@ public class SpinnerModal extends LinearLayout implements Modal {
 
 		LinearLayout closeButtons = new LinearLayout(true);
 		closeButtons.addSpace();
-		TextButton cancel = WidgetBuilder.dialogButton("CANCEL",
+		TextButton cancel = WidgetBuilder.dialogButton(i18N.m("cancel"),
 				style.buttonsStyle);
 		cancel.addListener(new ClickListener() {
 			@Override
@@ -167,7 +133,8 @@ public class SpinnerModal extends LinearLayout implements Modal {
 
 		closeButtons.add(cancel);
 
-		TextButton ok = WidgetBuilder.dialogButton("OK", style.buttonsStyle);
+		TextButton ok = WidgetBuilder.dialogButton(i18N.m("ok"),
+				style.buttonsStyle);
 		ok.addListener(new ClickListener() {
 			@Override
 			public void clicked(InputEvent event, float x, float y) {
@@ -184,6 +151,16 @@ public class SpinnerModal extends LinearLayout implements Modal {
 	private void setValue(int value) {
 		this.value = Math.min(maxValue, Math.max(minValue, value));
 		numberLabel.setText(this.value + "");
+	}
+
+	private void inc(int increment) {
+		int newValue = value + increment;
+		if (newValue < minValue) {
+			newValue = maxValue;
+		} else if (newValue > maxValue) {
+			newValue = minValue;
+		}
+		setValue(newValue);
 	}
 
 	public void set(String prefix, String suffix, int initialValue,
@@ -220,7 +197,7 @@ public class SpinnerModal extends LinearLayout implements Modal {
 		int inc;
 
 		public void run() {
-			setValue(value + inc);
+			inc(this.inc);
 		}
 	}
 
@@ -229,6 +206,33 @@ public class SpinnerModal extends LinearLayout implements Modal {
 		void value(int value);
 
 		void cancelled();
+
+	}
+
+	public class IncListener extends InputListener {
+
+		private int inc;
+
+		public IncListener(int inc) {
+			this.inc = inc;
+		}
+
+		@Override
+		public boolean touchDown(InputEvent event, float x, float y,
+				int pointer, int button) {
+			repeatTask.inc = inc;
+			if (!repeatTask.isScheduled()) {
+				Timer.schedule(repeatTask, 0.4f, 0.05f);
+			}
+			return true;
+		}
+
+		@Override
+		public void touchUp(InputEvent event, float x, float y, int pointer,
+				int button) {
+			inc(inc);
+			repeatTask.cancel();
+		}
 
 	}
 

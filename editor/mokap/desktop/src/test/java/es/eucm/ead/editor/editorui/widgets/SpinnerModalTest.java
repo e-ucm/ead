@@ -71,14 +71,14 @@ public class SpinnerModalTest extends UITest implements SpinnerModalListener {
 		iconButton.addListener(new ClickListener() {
 			@Override
 			public void clicked(InputEvent event, float x, float y) {
-				int value = 0;
+				int value = 3;
 				try {
 					value = Integer.parseInt(label.getText().toString());
 				} catch (NumberFormatException e) {
 
 				}
 				controller.action(ShowSpinner.class, "Repeat", "times", value,
-						1, 100, SpinnerModalTest.this);
+						1, 7, SpinnerModalTest.this);
 			}
 		});
 
