@@ -57,6 +57,7 @@ none = None
 nothing_to_select = Nothing to select in the area
 normal = Normal
 number.input = Enter a number
+ok = OK
 pass.horizontal = Pass horizontally
 pass.vertical = Pass vertically
 paste = Paste
