@@ -44,7 +44,7 @@ import es.eucm.ead.editor.control.actions.model.SetSelection;
 import es.eucm.ead.editor.model.events.LoadEvent;
 import es.eucm.ead.editor.model.events.LoadEvent.Type;
 import es.eucm.ead.engine.assets.Assets.AssetLoadedCallback;
-import es.eucm.ead.schemax.GameStructure;
+import es.eucm.ead.schemax.ModelStructure;
 import es.eucm.ead.schemax.entities.ResourceCategory;
 
 /**
@@ -65,13 +65,13 @@ public class OpenProject extends EditorAction implements
 	public void perform(Object... args) {
 		controller.getEditorGameAssets().setLoadingPath((String) args[0]);
 		controller.getModel().reset();
-		controller.getEditorGameAssets().get(GameStructure.GAME_FILE,
+		controller.getEditorGameAssets().get(ModelStructure.GAME_FILE,
 				Object.class, this);
 	}
 
 	@Override
 	public void loaded(String fileName, Object asset) {
-		controller.getModel().putResource(GameStructure.GAME_FILE,
+		controller.getModel().putResource(ModelStructure.GAME_FILE,
 				ResourceCategory.GAME, asset);
 		controller.getModel().notify(
 				new LoadEvent(Type.LOADED, controller.getModel()));

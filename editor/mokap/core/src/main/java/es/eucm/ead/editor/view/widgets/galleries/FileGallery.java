@@ -54,7 +54,7 @@ import es.eucm.ead.editor.view.ModelView;
 import es.eucm.ead.editor.view.builders.scene.SceneView;
 import es.eucm.ead.editor.view.widgets.WidgetBuilder;
 import es.eucm.ead.schema.entities.ModelEntity;
-import es.eucm.ead.schemax.GameStructure;
+import es.eucm.ead.schemax.ModelStructure;
 
 public class FileGallery extends ThumbnailsGallery implements WorkerListener,
 		ModelView, FileChooserListener {
@@ -72,7 +72,7 @@ public class FileGallery extends ThumbnailsGallery implements WorkerListener,
 	public void prepare() {
 		controller.action(ExecuteWorker.class, LoadFiles.class, this,
 				controller.getEditorGameAssets().getLoadingPath()
-						+ GameStructure.IMAGES_FOLDER);
+						+ ModelStructure.IMAGES_FOLDER);
 	}
 
 	@Override

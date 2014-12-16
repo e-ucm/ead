@@ -36,11 +36,13 @@
  */
 package es.eucm.ead.editor.platform;
 
+import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input.TextInputListener;
 import com.badlogic.gdx.Net.HttpRequest;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.ObjectMap;
+
 import es.eucm.ead.editor.control.Controller;
 import es.eucm.ead.editor.control.Tracker;
 import es.eucm.ead.engine.I18N;
@@ -74,6 +76,11 @@ public class MockPlatform extends AbstractPlatform {
 	@Override
 	public String getDefaultProjectsFolder() {
 		return defaultProjectsFolder;
+	}
+
+	@Override
+	public String getDefaultLibraryFolder() {
+		return Gdx.files.external("MockLibraryTest").file().getAbsolutePath();
 	}
 
 	@Override

@@ -66,7 +66,7 @@ import es.eucm.ead.schema.editor.components.Thumbnail;
 import es.eucm.ead.schema.editor.components.repo.RepoElement;
 import es.eucm.ead.schema.editor.data.Cell;
 import es.eucm.ead.schema.entities.ModelEntity;
-import es.eucm.ead.schemax.GameStructure;
+import es.eucm.ead.schemax.ModelStructure;
 
 /**
  * A class with statics methods to query parts of the model
@@ -394,7 +394,7 @@ public class Q {
 	}
 
 	public static String getThumbnailPath(String resourceId) {
-		return GameStructure.THUMBNAILS_PATH + resourceId + ".png";
+		return ModelStructure.THUMBNAILS_PATH + resourceId + ".png";
 	}
 
 	public static float calculateTimelineAmount(BaseTween baseTween) {

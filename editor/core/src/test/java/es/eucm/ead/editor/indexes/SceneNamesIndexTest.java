@@ -44,7 +44,7 @@ import es.eucm.ead.editor.indexes.FuzzyIndex.Term;
 import es.eucm.ead.editor.model.Q;
 import es.eucm.ead.schema.editor.components.Documentation;
 import es.eucm.ead.schema.entities.ModelEntity;
-import es.eucm.ead.schemax.GameStructure;
+import es.eucm.ead.schemax.ModelStructure;
 import es.eucm.ead.schemax.entities.ResourceCategory;
 import org.junit.Before;
 import org.junit.Test;
@@ -63,7 +63,7 @@ public class SceneNamesIndexTest extends EditorTest {
 	@Before
 	public void setUp() {
 		super.setUp();
-		model.putResource(GameStructure.GAME_FILE, new ModelEntity());
+		model.putResource(ModelStructure.GAME_FILE, new ModelEntity());
 		controller.getCommands().pushStack();
 		for (int i = 0; i < SCENES; i++) {
 			addScene("" + i);

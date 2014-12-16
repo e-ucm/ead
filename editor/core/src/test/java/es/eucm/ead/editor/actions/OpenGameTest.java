@@ -43,7 +43,7 @@ import es.eucm.ead.editor.control.actions.editor.OpenGame;
 import es.eucm.ead.editor.control.actions.editor.Save;
 import es.eucm.ead.editor.model.Model.ModelListener;
 import es.eucm.ead.editor.model.events.LoadEvent;
-import es.eucm.ead.schemax.GameStructure;
+import es.eucm.ead.schemax.ModelStructure;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -108,7 +108,7 @@ public class OpenGameTest extends ActionTest implements
 	public void testInvalidProject() {
 		count = 0;
 		FileHandle invalidGame = FileHandle.tempDirectory("ead-opengame-test-");
-		FileHandle gameJsonFile = invalidGame.child(GameStructure.GAME_FILE);
+		FileHandle gameJsonFile = invalidGame.child(ModelStructure.GAME_FILE);
 		gameJsonFile.writeString("{class:modelentity,width:1200,height:800}",
 				false);
 		try {
@@ -122,9 +122,9 @@ public class OpenGameTest extends ActionTest implements
 
 	@Test
 	public void testRecoverBcakup() {
-		FileHandle gameJson = emptyGamePath.child(GameStructure.GAME_FILE);
-		FileHandle gameJsonBackup = emptyGamePath.child(GameStructure.GAME_FILE
-				+ Save.BACKUP_SUFFIX);
+		FileHandle gameJson = emptyGamePath.child(ModelStructure.GAME_FILE);
+		FileHandle gameJsonBackup = emptyGamePath
+				.child(ModelStructure.GAME_FILE + Save.BACKUP_SUFFIX);
 		gameJson.moveTo(gameJsonBackup);
 		assertFalse(gameJson.exists());
 		assertTrue(gameJsonBackup.exists());

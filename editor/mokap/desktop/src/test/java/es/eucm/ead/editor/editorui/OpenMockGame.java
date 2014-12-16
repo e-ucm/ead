@@ -41,7 +41,7 @@ import es.eucm.ead.editor.control.actions.editor.ForceSave;
 import es.eucm.ead.editor.control.actions.editor.OpenGame;
 import es.eucm.ead.editor.model.Model;
 import es.eucm.ead.schema.entities.ModelEntity;
-import es.eucm.ead.schemax.GameStructure;
+import es.eucm.ead.schemax.ModelStructure;
 import es.eucm.ead.schemax.entities.ResourceCategory;
 
 import java.io.File;
@@ -62,7 +62,7 @@ public class OpenMockGame extends EditorAction {
 
 		Model model = controller.getModel();
 		model.reset();
-		model.putResource(GameStructure.GAME_FILE, ResourceCategory.GAME,
+		model.putResource(ModelStructure.GAME_FILE, ResourceCategory.GAME,
 				game.getGame());
 
 		for (Entry<String, ModelEntity> scene : game.getScenes().entrySet()) {

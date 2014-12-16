@@ -36,7 +36,7 @@
  */
 package es.eucm.ead.engine;
 
-import es.eucm.ead.schemax.GameStructure;
+import es.eucm.ead.schemax.ModelStructure;
 import es.eucm.ead.engine.assets.Assets.AssetLoadedCallback;
 import es.eucm.ead.engine.assets.GameAssets;
 import es.eucm.ead.schema.entities.ModelEntity;
@@ -77,7 +77,7 @@ public class GameLoader implements AssetLoadedCallback<Object> {
 		gameAssets.setLoadingPath(path, internal);
 		gameAssets.loadSkin(DEFAULT_SKIN);
 		gameAssets.getI18N().setLang(null);
-		gameAssets.get(GameStructure.GAME_FILE, Object.class, this);
+		gameAssets.get(ModelStructure.GAME_FILE, Object.class, this);
 	}
 
 	@Override

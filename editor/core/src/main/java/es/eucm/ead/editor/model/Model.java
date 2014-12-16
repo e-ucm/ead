@@ -50,7 +50,7 @@ import es.eucm.ead.editor.model.events.ResourceEvent;
 import es.eucm.ead.editor.model.events.SelectionEvent;
 import es.eucm.ead.editor.model.events.ViewEvent;
 import es.eucm.ead.schema.entities.ModelEntity;
-import es.eucm.ead.schemax.GameStructure;
+import es.eucm.ead.schemax.ModelStructure;
 import es.eucm.ead.schemax.entities.ResourceCategory;
 
 import java.util.AbstractMap;
@@ -300,7 +300,7 @@ public class Model {
 	}
 
 	public ModelEntity getGame() {
-		Resource resource = getResource(GameStructure.GAME_FILE,
+		Resource resource = getResource(ModelStructure.GAME_FILE,
 				ResourceCategory.GAME);
 		return resource == null ? null : (ModelEntity) resource.getObject();
 	}

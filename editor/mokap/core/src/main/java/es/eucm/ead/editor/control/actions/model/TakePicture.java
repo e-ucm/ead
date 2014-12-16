@@ -47,7 +47,7 @@ import es.eucm.ead.editor.platform.MokapPlatform;
 import es.eucm.ead.editor.platform.MokapPlatform.ImageCapturedListener;
 import es.eucm.ead.editor.utils.ProjectUtils;
 import es.eucm.ead.schema.entities.ModelEntity;
-import es.eucm.ead.schemax.GameStructure;
+import es.eucm.ead.schemax.ModelStructure;
 
 /**
  * <p>
@@ -80,7 +80,7 @@ public class TakePicture extends EditorAction {
 		EditorGameAssets assets = controller.getEditorGameAssets();
 
 		FileHandle picRootPath = assets.absolute(assets.getLoadingPath()
-				+ GameStructure.IMAGES_FOLDER);
+				+ ModelStructure.IMAGES_FOLDER);
 
 		pictureFile = ProjectUtils.getNonExistentFile(picRootPath,
 				pictureString, ".jpg");

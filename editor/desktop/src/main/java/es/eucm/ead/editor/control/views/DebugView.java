@@ -42,7 +42,7 @@ import es.eucm.ead.editor.control.Selection;
 import es.eucm.ead.editor.control.actions.model.SetSelection;
 import es.eucm.ead.editor.view.builders.ViewBuilder;
 import es.eucm.ead.editor.view.widgets.EnginePlayer;
-import es.eucm.ead.schemax.GameStructure;
+import es.eucm.ead.schemax.ModelStructure;
 
 /**
  * View that shows the engine in debug mode
@@ -67,7 +67,7 @@ public class DebugView implements ViewBuilder {
 		controller
 				.getEngine()
 				.getGameLoader()
-				.loaded(GameStructure.GAME_FILE,
+				.loaded(ModelStructure.GAME_FILE,
 						controller.getModel().getGame());
 		controller.getEngine().setGameView(enginePlayer);
 		controller.getEngine().play();

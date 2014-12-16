@@ -36,7 +36,7 @@
  */
 package es.eucm.ead.schemax.entities;
 
-import es.eucm.ead.schemax.GameStructure;
+import es.eucm.ead.schemax.ModelStructure;
 
 /**
  * Utility to identify different types of resources categories. For finding the
@@ -52,7 +52,7 @@ import es.eucm.ead.schemax.GameStructure;
  * create new ids, although is not mandatory. The id only requirement to belong
  * to a category is that it starts with the category prefix.
  */
-public enum ResourceCategory implements GameStructure {
+public enum ResourceCategory implements ModelStructure {
 
 	ANIM(ANIMATION_PATH, "anim"),
 

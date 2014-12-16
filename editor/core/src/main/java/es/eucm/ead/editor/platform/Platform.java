@@ -134,6 +134,8 @@ public interface Platform {
 
 	String getDefaultProjectsFolder();
 
+	String getDefaultLibraryFolder();
+
 	public interface FileChooserListener {
 		/**
 		 * 

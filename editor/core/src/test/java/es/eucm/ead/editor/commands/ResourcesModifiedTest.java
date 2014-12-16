@@ -44,7 +44,7 @@ import es.eucm.ead.editor.control.actions.model.ChangeInitialScene;
 import es.eucm.ead.editor.control.actions.model.EditScene;
 import es.eucm.ead.editor.control.actions.model.SetSelection;
 import es.eucm.ead.schema.entities.ModelEntity;
-import es.eucm.ead.schemax.GameStructure;
+import es.eucm.ead.schemax.ModelStructure;
 import es.eucm.ead.schemax.entities.ResourceCategory;
 import org.junit.Test;
 
@@ -58,14 +58,14 @@ public class ResourcesModifiedTest extends EditorTest {
 		controller.getEditorGameAssets().setLoadingPath(
 				platform.createTempFile(true).getAbsolutePath(), false);
 
-		model.putResource(GameStructure.GAME_FILE, ResourceCategory.GAME,
+		model.putResource(ModelStructure.GAME_FILE, ResourceCategory.GAME,
 				new ModelEntity());
 		model.putResource("scene1", ResourceCategory.SCENE, new ModelEntity());
 		model.putResource("scene2", ResourceCategory.SCENE, new ModelEntity());
 
 		controller.action(ChangeInitialScene.class, "scene1");
 
-		assertTrue(model.getResource(GameStructure.GAME_FILE).isModified());
+		assertTrue(model.getResource(ModelStructure.GAME_FILE).isModified());
 		assertFalse(model.getResource("scene1").isModified());
 		assertFalse(model.getResource("scene2").isModified());
 
@@ -77,13 +77,13 @@ public class ResourcesModifiedTest extends EditorTest {
 				Selection.RESOURCE, "scene1");
 		controller.action(EditScene.class);
 
-		assertFalse(model.getResource(GameStructure.GAME_FILE).isModified());
+		assertFalse(model.getResource(ModelStructure.GAME_FILE).isModified());
 		assertFalse(model.getResource("scene1").isModified());
 		assertFalse(model.getResource("scene2").isModified());
 
 		controller.action(AddSceneElement.class, new ModelEntity());
 
-		assertFalse(model.getResource(GameStructure.GAME_FILE).isModified());
+		assertFalse(model.getResource(ModelStructure.GAME_FILE).isModified());
 		assertTrue(model.getResource("scene1").isModified());
 		assertFalse(model.getResource("scene2").isModified());
 	}

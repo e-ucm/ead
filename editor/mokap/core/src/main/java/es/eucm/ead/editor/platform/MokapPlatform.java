@@ -136,4 +136,13 @@ public abstract class MokapPlatform extends AbstractPlatform {
 		}
 		return externalPath + "Mokap";
 	}
+
+	@Override
+	public String getDefaultLibraryFolder() {
+		String externalPath = Gdx.files.getExternalStoragePath();
+		if (!externalPath.endsWith("/")) {
+			externalPath += "/";
+		}
+		return externalPath + "Mokap Library";
+	}
 }
