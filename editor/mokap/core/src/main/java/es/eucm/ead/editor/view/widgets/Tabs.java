@@ -56,9 +56,11 @@ public class Tabs extends Table {
 
 	private static final float SELECTION_ANIMATION = .2f;
 
-	private Image selectedImage;
-	private TextButton checked;
 	private TabsStyle style;
+
+	private Image overlayImage;
+
+	private TextButton selectedTabe;
 
 	public Tabs(Skin skin) {
 		this(skin.get(TabsStyle.class));
@@ -66,44 +68,48 @@ public class Tabs extends Table {
 
 	public Tabs(TabsStyle style) {
 		this.style = style;
-		selectedImage = new Image(style.selectedDrawable);
+		overlayImage = new Image(style.selectedDrawable);
 		if (style.selectedDrawableColor != null) {
-			selectedImage.setColor(style.selectedDrawableColor);
+			overlayImage.setColor(style.selectedDrawableColor);
 		}
 	}
 
 	public void setItems(String... items) {
 		clearChildren();
-		addActor(selectedImage);
-		float veticalPad = WidgetBuilder.dpToPixels(style.buttonsVerticalPad);
-		float horizontalPad = WidgetBuilder
-				.dpToPixels(style.buttonsHorizontalPad);
+		addActor(overlayImage);
+		float veticalPad = WidgetBuilder.dpToPixels(16);
+		float horizontalPad = WidgetBuilder.dpToPixels(8);
 		for (int i = 0; i < items.length; ++i) {
 			String item = items[i];
 			TextButton textButton = new TabButton(item);
 			textButton.setName(item);
+			textButton.setUserObject(i);
 			if (i == 0) {
-				checked = textButton;
+				selectedTabe = textButton;
 			} else {
 				textButton.setChecked(false);
 			}
 			textButton
 					.pad(veticalPad, horizontalPad, veticalPad, horizontalPad);
-			add(textButton).expand();
+			add(textButton).left();
 		}
 	}
 
 	@Override
 	public void layout() {
 		super.layout();
-		if (checked != null) {
-			selectedImage.setBounds(checked.getX(), checked.getY(),
-					checked.getWidth(), selectedImage.getHeight());
+		if (selectedTabe != null) {
+			overlayImage.setBounds(selectedTabe.getX(), selectedTabe.getY(),
+					selectedTabe.getWidth(), overlayImage.getHeight());
 		}
 	}
 
-	public TextButton getSelected() {
-		return checked;
+	public TextButton getSelectedTab() {
+		return selectedTabe;
+	}
+
+	public int getSelectedTabIndex() {
+		return (Integer) selectedTabe.getUserObject();
 	}
 
 	/**
@@ -117,11 +123,6 @@ public class Tabs extends Table {
 
 		public Drawable selectedDrawable;
 
-		public float buttonsVerticalPad, buttonsHorizontalPad;
-
-		public TabsStyle() {
-		}
-
 	}
 
 	private class TabButton extends TextButton {
@@ -132,44 +133,44 @@ public class Tabs extends Table {
 
 		@Override
 		public void setChecked(boolean isChecked) {
-			if (selectedImage.getActions().size > 0) {
+			if (overlayImage.getActions().size > 0) {
 				return;
 			}
 			if (isChecked) {
-				if (checked == this) {
+				if (selectedTabe == this) {
 					return;
 				}
-				checked = this;
+				selectedTabe = this;
 				for (Cell cell : Tabs.this.getCells()) {
 					TextButton btn = (TextButton) cell.getActor();
 					if (btn != this) {
 						btn.setChecked(false);
 					}
 				}
-			} else if (checked == this) {
+			} else if (selectedTabe == this) {
 				return;
 			}
 
-			Color color = null;
+			Color color;
 			if (isChecked) {
 				float targetX = getX();
-				if (targetX < selectedImage.getX()) {
-					selectedImage.addAction(Actions.moveTo(targetX, getY(),
+				if (targetX < overlayImage.getX()) {
+					overlayImage.addAction(Actions.moveTo(targetX, getY(),
 							SELECTION_ANIMATION, Interpolation.pow2Out));
-					selectedImage.addAction(Actions.sequence(Actions.sizeTo(
-							getWidth() + selectedImage.getWidth(),
-							selectedImage.getHeight(), SELECTION_ANIMATION,
+					overlayImage.addAction(Actions.sequence(Actions.sizeTo(
+							getWidth() + overlayImage.getWidth(),
+							overlayImage.getHeight(), SELECTION_ANIMATION,
 							Interpolation.pow2Out), Actions.sizeTo(getWidth(),
-							selectedImage.getHeight(), SELECTION_ANIMATION,
+							overlayImage.getHeight(), SELECTION_ANIMATION,
 							Interpolation.pow2Out)));
 				} else {
-					selectedImage.addAction(Actions.sequence(Actions.sizeTo(
-							getWidth() + selectedImage.getWidth(),
-							selectedImage.getHeight(), SELECTION_ANIMATION,
+					overlayImage.addAction(Actions.sequence(Actions.sizeTo(
+							getWidth() + overlayImage.getWidth(),
+							overlayImage.getHeight(), SELECTION_ANIMATION,
 							Interpolation.pow2Out),
 							Actions.parallel(
 									Actions.sizeTo(getWidth(),
-											selectedImage.getHeight(),
+											overlayImage.getHeight(),
 											SELECTION_ANIMATION,
 											Interpolation.pow2Out), Actions
 											.moveTo(targetX, getY(),
