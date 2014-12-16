@@ -37,7 +37,6 @@
 package es.eucm.ead.editor.control.actions.model;
 
 import es.eucm.ead.editor.control.actions.editor.ShowToast;
-import es.eucm.ead.editor.control.commands.Command;
 
 public class DeleteScene extends BaseDeleteScene {
 
@@ -45,13 +44,5 @@ public class DeleteScene extends BaseDeleteScene {
 	protected void notifyIsLastScene() {
 		controller.action(ShowToast.class, controller.getApplicationAssets()
 				.getI18N().m("scene.last_scene_deleted"));
-	}
-
-	@Override
-	public Command perform(Object... args) {
-		Command command = super.perform(args);
-		controller.action(ShowToast.class, controller.getApplicationAssets()
-				.getI18N().m("scene.deleted"), true);
-		return command;
 	}
 }
