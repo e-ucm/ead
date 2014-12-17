@@ -38,13 +38,15 @@ package es.eucm.ead.editor.control.background;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.files.FileHandle;
-
 import es.eucm.ead.editor.control.Controller;
 import es.eucm.ead.editor.model.Q;
 import es.eucm.ead.editor.utils.ProjectUtils;
 import es.eucm.ead.schema.editor.components.GameData;
 import es.eucm.ead.schema.entities.ModelEntity;
-import es.eucm.ead.schemax.GameStructure;
+import es.eucm.ead.schemax.ModelStructure;
+
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 /**
  * Creates a sibling duplicate of a file/folder, and returns an array with: the
@@ -52,6 +54,8 @@ import es.eucm.ead.schemax.GameStructure;
  * thumbnail
  */
 public class CloneProjectTask extends BackgroundTask<Object[]> {
+
+	private static Pattern pattern;
 
 	private Controller controller;
 
@@ -75,15 +79,35 @@ public class CloneProjectTask extends BackgroundTask<Object[]> {
 		fileHandle.copyTo(duplicate);
 
 		ModelEntity game = controller.getEditorGameAssets().fromJson(
-				ModelEntity.class, duplicate.child(GameStructure.GAME_FILE));
-		String newTitle = Q.getTitle(game) + " "
-				+ controller.getApplicationAssets().getI18N().m("copy_suffix");
+				ModelEntity.class, duplicate.child(ModelStructure.GAME_FILE));
+
+		String copySuffix = controller.getApplicationAssets().getI18N()
+				.m("copy_suffix");
+
+		if (pattern == null) {
+			String regex = ".*\\(" + copySuffix + "\\s?(\\d*)\\)$";
+			pattern = Pattern.compile(regex);
+		}
+
+		String newTitle = Q.getTitle(game);
+
+		Matcher matcher = pattern.matcher(newTitle);
+		if (matcher.find()) {
+			int start = matcher.start(1);
+			String number = matcher.group(1);
+			String count = number.isEmpty() ? " " + 1 : ""
+					+ (Integer.parseInt(number) + 1);
+			newTitle = newTitle.substring(0, start) + count + ")";
+		} else {
+			newTitle += " (" + copySuffix + ")";
+		}
+
 		Q.setTitle(game, newTitle);
 
 		String initialScene = Q.getComponent(game, GameData.class)
 				.getInitialScene();
 		controller.getEditorGameAssets().toJson(game, null,
-				duplicate.child(GameStructure.GAME_FILE));
+				duplicate.child(ModelStructure.GAME_FILE));
 		return new Object[] { duplicate.path(), newTitle,
 				duplicate.child(Q.getThumbnailPath(initialScene)).path() };
 	}
