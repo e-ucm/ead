@@ -95,7 +95,7 @@ public class CloneProjectTask extends BackgroundTask<Object[]> {
 		if (matcher.find()) {
 			int start = matcher.start(1);
 			String number = matcher.group(1);
-			String count = number.isEmpty() ? " " + 1 : ""
+			String count = number.isEmpty() ? " 2" : ""
 					+ (Integer.parseInt(number) + 1);
 			newTitle = newTitle.substring(0, start) + count + ")";
 		} else {
