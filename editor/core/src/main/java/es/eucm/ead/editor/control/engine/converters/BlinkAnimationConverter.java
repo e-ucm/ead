@@ -34,40 +34,47 @@
  *      You should have received a copy of the GNU Lesser General Public License
  *      along with eAdventure.  If not, see <http://www.gnu.org/licenses/>.
  */
-package es.eucm.ead.editor.control.engine;
+package es.eucm.ead.editor.control.engine.converters;
 
-import ashley.core.Component;
+import com.badlogic.gdx.utils.Array;
 
-import com.badlogic.gdx.utils.ObjectMap;
-
-import es.eucm.ead.editor.assets.EditorGameAssets;
-import es.eucm.ead.editor.control.engine.converters.BlinkAnimationConverter;
-import es.eucm.ead.editor.control.engine.converters.ComponentConverter;
-import es.eucm.ead.editor.control.engine.converters.MoveAnimationConverter;
-import es.eucm.ead.engine.ComponentLoader;
-import es.eucm.ead.engine.variables.VariablesManager;
-import es.eucm.ead.schema.components.ModelComponent;
+import es.eucm.ead.schema.components.tweens.AlphaTween;
+import es.eucm.ead.schema.components.tweens.BaseTween;
+import es.eucm.ead.schema.components.tweens.Timeline;
+import es.eucm.ead.schema.components.tweens.Timeline.Mode;
 import es.eucm.ead.schema.editor.components.animations.BlinkAnimation;
-import es.eucm.ead.schema.editor.components.animations.MoveAnimation;
 
-public class EditorComponentLoader extends ComponentLoader {
+public class BlinkAnimationConverter extends
+		TransformAnimationConverter<BlinkAnimation> {
 
-	private ObjectMap<Class, ComponentConverter> converters;
-
-	public EditorComponentLoader(EditorGameAssets gameAssets,
-			VariablesManager variablesManager) {
-		super(gameAssets, variablesManager);
-		converters = new ObjectMap<Class, ComponentConverter>();
-		converters.put(MoveAnimation.class, new MoveAnimationConverter());
-		converters.put(BlinkAnimation.class, new BlinkAnimationConverter());
-	}
+	public static final float MAX_SPEED_TIME = 0.25f;
+	public static final float MIN_SPEED_TIME = 5f;
 
 	@Override
-	public Component toEngineComponent(ModelComponent component) {
-		ComponentConverter converter = converters.get(component.getClass());
-		if (converter != null) {
-			component = converter.convert(component);
-		}
-		return super.toEngineComponent(component);
+	public BaseTween convert(BlinkAnimation component) {
+		Timeline blinkTween = new Timeline();
+		blinkTween.setMode(Mode.SEQUENCE);
+		Array<BaseTween> blink = new Array<BaseTween>();
+
+		AlphaTween alphaTween = new AlphaTween();
+		alphaTween.setAlpha(component.getMinAlpha());
+		alphaTween.setDuration(0f);
+
+		AlphaTween alphaTween2 = new AlphaTween();
+		alphaTween2.setAlpha(component.getMaxAlpha());
+		super.setEase(component, alphaTween2);
+		super.setRepeatsAndYoyo(component, blinkTween);
+
+		float speed = (MAX_SPEED_TIME - MIN_SPEED_TIME) * component.getSpeed()
+				+ MIN_SPEED_TIME;
+
+		alphaTween2.setDuration((component.getMaxAlpha() - component
+				.getMinAlpha()) * speed);
+
+		blink.addAll(alphaTween, alphaTween2);
+		blinkTween.setChildren(blink);
+
+		return blinkTween;
 	}
+
 }

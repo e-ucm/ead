@@ -1,0 +1,20 @@
+{
+    "additionalProperties": false,
+    "javaType": "es.eucm.ead.schema.editor.components.animations.BlinkAnimation",
+    "extends": {
+        "$ref": "transformanimation.json"
+    },
+    "properties": {
+        "maxAlpha": {
+            "type": "number",
+            "default": 1,
+            "description": "Maximum alpha visibility"
+        },
+        "minAlpha": {
+            "type": "number",
+            "default": 0,
+            "description": "Minimum alpha visibility"
+        }
+    },
+    "type": "object"
+}
