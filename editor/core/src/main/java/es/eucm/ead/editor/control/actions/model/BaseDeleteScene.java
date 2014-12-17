@@ -39,11 +39,11 @@ package es.eucm.ead.editor.control.actions.model;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.utils.Array;
+import es.eucm.ead.editor.control.Controller;
 import es.eucm.ead.editor.control.Selection;
 import es.eucm.ead.editor.control.actions.ModelAction;
 import es.eucm.ead.editor.control.commands.Command;
 import es.eucm.ead.editor.control.commands.CompositeCommand;
-import es.eucm.ead.editor.control.commands.FieldCommand;
 import es.eucm.ead.editor.control.commands.ListCommand;
 import es.eucm.ead.editor.control.commands.ResourceCommand.RemoveResourceCommand;
 import es.eucm.ead.editor.model.Model;
@@ -53,7 +53,6 @@ import es.eucm.ead.schema.editor.components.GameData;
 import es.eucm.ead.schema.editor.components.SceneMap;
 import es.eucm.ead.schema.editor.data.Cell;
 import es.eucm.ead.schema.entities.ModelEntity;
-import es.eucm.ead.schemax.FieldName;
 import es.eucm.ead.schemax.entities.ResourceCategory;
 
 /**
@@ -62,17 +61,26 @@ import es.eucm.ead.schemax.entities.ResourceCategory;
  */
 public class BaseDeleteScene extends ModelAction {
 
+	private ChangeInitialScene changeInitialScene;
+
 	public BaseDeleteScene() {
 		super(true, false, new Class[] {}, new Class[] { String.class });
 	}
 
 	@Override
-	public boolean validate(Object... args) {
+	public void initialize(Controller controller) {
+		super.initialize(controller);
+		changeInitialScene = controller.getActions().getAction(
+				ChangeInitialScene.class);
+	}
+
+	@Override
+	public boolean isEnabled() {
 		if (controller.getModel().getResources(ResourceCategory.SCENE).size() == 1) {
 			notifyIsLastScene();
 			return false;
 		} else {
-			return super.validate(args);
+			return true;
 		}
 	}
 
@@ -87,9 +95,10 @@ public class BaseDeleteScene extends ModelAction {
 			return null;
 		}
 
+		CompositeCommand commands = new CompositeCommand();
+
 		Model model = controller.getModel();
 		ModelEntity game = model.getGame();
-		Array<Command> commandList = new Array<Command>();
 		EditState editState = Q.getComponent(game, EditState.class);
 
 		// 2) If the scene is the "initialscene", change the initial one
@@ -97,15 +106,15 @@ public class BaseDeleteScene extends ModelAction {
 		GameData gameData = Q.getComponent(game, GameData.class);
 		if (gameData.getInitialScene().equals(id)) {
 			alternateScene = findAlternateScene(id);
-			commandList.add(new FieldCommand(gameData, FieldName.INITIAL_SCENE,
-					alternateScene, false));
+			commands.addCommand(changeInitialScene.perform(alternateScene));
 		}
 
 		// 3) Delete the scene properly speaking
-		commandList
-				.add(new RemoveResourceCommand(model, id,
-						(ModelEntity) controller.getModel().getResource(id)
-								.getObject(), ResourceCategory.SCENE));
+		commands.addCommand(new RemoveResourceCommand(
+				model,
+				id,
+				(ModelEntity) controller.getModel().getResource(id).getObject(),
+				ResourceCategory.SCENE));
 
 		// Delete thumbnail
 		FileHandle thumbnail = controller.getEditorGameAssets().resolve(
@@ -115,18 +124,17 @@ public class BaseDeleteScene extends ModelAction {
 		}
 
 		// 4) Delete the sceneId from gameMetadata.getSceneorder()
-		commandList.add(new ListCommand.RemoveFromListCommand(editState,
+		commands.addCommand(new ListCommand.RemoveFromListCommand(editState,
 				editState.getSceneorder(), id));
 
 		// 5) Delete the cell from the scene map
 		SceneMap sceneMap = Q.getComponent(game, SceneMap.class);
 		Array<Cell> cells = sceneMap.getCells();
-		commandList.add(new ListCommand.RemoveFromListCommand(sceneMap, cells,
-				Q.getCellFromId(id, cells)));
+		commands.addCommand(new ListCommand.RemoveFromListCommand(sceneMap,
+				cells, Q.getCellFromId(id, cells)));
 
 		// Execute the composite command
-		CompositeCommand deleteSceneCommand = new CompositeCommand(commandList);
-		return deleteSceneCommand;
+		return commands;
 	}
 
 	/**

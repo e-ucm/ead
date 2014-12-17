@@ -132,21 +132,24 @@ public class Commands {
 	public void doCommand(Command command) {
 		ModelEvent modelEvent = command.doCommand();
 		if (command.modifiesResource()) {
-			String resourceModified = command.getResourceModified();
-			if (resourceModified == null) {
-				resourceModified = getDefaultResourceModified();
-			}
-
-			if (resourceModified != null
-					&& model.getResource(resourceModified) != null) {
-				model.getResource(resourceModified).setModified(true);
+			if (command.getResourcesModified() == null) {
+				modifyResource(getDefaultResourceModified());
 			} else {
-				Gdx.app.error("Commands",
-						"Command didn't change any known resource: "
-								+ resourceModified);
+				for (String resourceModified : command.getResourcesModified()) {
+					modifyResource(resourceModified);
+				}
 			}
 		}
 		model.notify(modelEvent);
+	}
+
+	private void modifyResource(String resourceId) {
+		if (resourceId != null && model.getResource(resourceId) != null) {
+			model.getResource(resourceId).setModified(true);
+		} else {
+			Gdx.app.error("Commands",
+					"Command didn't change any known resource: " + resourceId);
+		}
 	}
 
 	private String getDefaultResourceModified() {

@@ -90,7 +90,7 @@ public class ChangeInitialScene extends ModelAction {
 		if (!sceneId.equals(currentInitialSceneId)) {
 			FieldCommand fieldCommand = new FieldCommand(gameData,
 					FieldName.INITIAL_SCENE, sceneId, false);
-			fieldCommand.setResourceModified(ModelStructure.GAME_FILE);
+			fieldCommand.addResourceModified(ModelStructure.GAME_FILE);
 			return fieldCommand;
 		}
 		return null;
