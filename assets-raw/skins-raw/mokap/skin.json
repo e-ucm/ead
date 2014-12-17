@@ -423,6 +423,13 @@
             "knob": "color_picker_knob"
         }
     },
+    "es.eucm.ead.editor.view.widgets.MultiRangeSlider$MultiRangeSliderStyle":{
+    	"default-horizontal": {
+            "background": "knob_after",
+            "knob": "knob",
+            "knob2": "knob",
+        }
+    },      
     "es.eucm.ead.editor.view.widgets.draw.SlideColorPicker$SlideColorPickerStyle": {
         "default": {
             "slider": "colorPicker"
@@ -737,5 +744,5 @@
             },
             "buttonsStyle": "dialog"
         }
-    }
+    }    
 }

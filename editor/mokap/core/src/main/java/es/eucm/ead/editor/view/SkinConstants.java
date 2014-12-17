@@ -177,6 +177,8 @@ public interface SkinConstants {
 	public static final String IC_SPEED = "ic_speed";
 	public static final String IC_SPEED_POINTER = "ic_speed_pointer";
 
+	public static final String IC_TONALITY = "ic_tonality";
+
 	public static final String IC_SEGMENT_END = "ic_segment_end";
 	public static final String IC_SEGMENT_MIDDLE = "ic_segment_middle";
 	public static final String IC_ARROW = "ic_arrow";
