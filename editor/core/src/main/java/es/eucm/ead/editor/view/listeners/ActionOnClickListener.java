@@ -41,6 +41,10 @@ import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 
 import es.eucm.ead.editor.control.Controller;
 
+/**
+ * Executes a sequence of actions when clicked. If one of the action in the
+ * sequence fails, the rest of the actions are not executed
+ */
 public class ActionOnClickListener extends ClickListener {
 
 	private Controller controller;
@@ -62,7 +66,9 @@ public class ActionOnClickListener extends ClickListener {
 	@Override
 	public void clicked(InputEvent event, float x, float y) {
 		for (int i = 0; i < actions.length; i++) {
-			this.controller.action(actions[i], args[i]);
+			if (!controller.action(actions[i], args[i])) {
+				break;
+			}
 		}
 	}
 }

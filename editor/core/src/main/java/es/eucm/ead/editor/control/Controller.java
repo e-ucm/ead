@@ -36,9 +36,6 @@
  */
 package es.eucm.ead.editor.control;
 
-import java.util.HashMap;
-import java.util.Map;
-
 import com.badlogic.gdx.Files;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
@@ -47,7 +44,6 @@ import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.InputListener;
 import com.badlogic.gdx.utils.reflect.ClassReflection;
 import com.badlogic.gdx.utils.reflect.ReflectionException;
-
 import es.eucm.ead.editor.assets.ApplicationAssets;
 import es.eucm.ead.editor.assets.EditorGameAssets;
 import es.eucm.ead.editor.control.actions.ArgumentsValidationException;
@@ -65,11 +61,13 @@ import es.eucm.ead.editor.indexes.ControllerIndex;
 import es.eucm.ead.editor.model.Model;
 import es.eucm.ead.editor.model.Q;
 import es.eucm.ead.editor.platform.Platform;
-import es.eucm.ead.editor.utils.ProjectUtils;
 import es.eucm.ead.editor.view.builders.ViewBuilder;
 import es.eucm.ead.engine.EngineInitializer;
 import es.eucm.ead.schema.components.behaviors.Behavior;
 import es.eucm.ead.schema.entities.ModelEntity;
+
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  * Mediator and main controller of the editor's functionality
@@ -147,7 +145,6 @@ public class Controller {
 
 	public Controller(Platform platform, Files files, Group viewsContainer,
 			Group modalsContainer) {
-		Q.setController(this);
 		this.shapeRenderer = new ShapeRenderer();
 		this.platform = platform;
 		this.applicationAssets = createApplicationAssets(files);
@@ -173,6 +170,7 @@ public class Controller {
 		setClipboard();
 		loadPreferences();
 		indexes = new HashMap<Class, ControllerIndex>();
+		Q.setController(this);
 	}
 
 	protected EngineInitializer buildEngineInitializer() {
@@ -309,10 +307,11 @@ public class Controller {
 	 * @param args
 	 *            the arguments for the action
 	 */
-	public void action(Class actionClass, Object... args) {
+	public boolean action(Class actionClass, Object... args) {
 		try {
-			actions.perform(actionClass, args);
+			boolean performed = actions.perform(actionClass, args);
 			tracker.actionPerformed(actionClass.toString());
+			return performed;
 		} catch (ClassCastException e) {
 			throw new EditorActionException(getErrorMessage(actionClass, args),
 					e);
@@ -323,6 +322,7 @@ public class Controller {
 			Gdx.app.error("Controller", "Invalid arguments exception for "
 					+ actionClass, e);
 		}
+		return false;
 	}
 
 	private String getErrorMessage(Class actionClass, Object... args) {

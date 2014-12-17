@@ -100,8 +100,10 @@ public class Actions {
 
 	/**
 	 * Performs the action, identified by its class, with the given arguments
+	 * 
+	 * @return if the action was performed
 	 */
-	public void perform(Class actionClass, Object... args)
+	public boolean perform(Class actionClass, Object... args)
 			throws ArgumentsValidationException {
 		Action action = getAction(actionClass);
 		if (action != null && action.isEnabled()) {
@@ -115,6 +117,7 @@ public class Actions {
 				} else if (action instanceof EditorAction) {
 					editorActions.perform((EditorAction) action, args);
 				}
+				return true;
 			} else {
 				throw new ArgumentsValidationException(actionClass, args);
 			}
@@ -122,6 +125,7 @@ public class Actions {
 			Gdx.app.debug("Actions", "Action with class " + actionClass
 					+ (action == null ? " does not exist." : " is disabled."));
 		}
+		return false;
 	}
 
 	/**
