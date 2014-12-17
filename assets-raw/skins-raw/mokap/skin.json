@@ -10,7 +10,11 @@
         },
         "small_font": {
             "file": "Roboto-Regular.ttf",
-            "dpSize": 10
+            "dpSize": 12
+        },
+        "small_bold": {
+            "file": "Roboto-Bold.ttf",
+            "dpSize": 12
         },
         "big_font": {
             "file": "Roboto-Regular.ttf",
@@ -326,7 +330,7 @@
         },
         "tab": {
             "down": "light_yellow_semi_bg",
-            "font": "small_font",
+            "font": "small_bold",
             "fontColor": "white"
         },
         "dialog": {
@@ -334,6 +338,11 @@
             "down": "light_gray_bg",
             "font": "default_bold",
             "fontColor": "deep_orange"
+        },
+        "toolbar": {
+            "down": "pressed_48_bg",
+            "font": "default_font",
+            "fontColor": "white"
         }
     },
     "com.badlogic.gdx.scenes.scene2d.ui.ImageButton$ImageButtonStyle": {
