@@ -51,8 +51,8 @@ public class Commands {
 
 	private static final int COMMAND = 0, UNDO = 1, REDO = 2, SAVE = 3;
 
-	private static final String[] RESOURCE_CONTEXTS = new String[] {
-			Selection.MOKAP_RESOURCE, Selection.RESOURCE };
+	private static final Array<String> RESOURCE_CONTEXTS = new Array<String>(
+			new String[] { Selection.MOKAP_RESOURCE, Selection.RESOURCE });
 
 	private Model model;
 

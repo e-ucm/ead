@@ -62,24 +62,26 @@ public abstract class ContextMenuGallery extends ThumbnailsGallery {
 
 	private ContextMenu contextMenu;
 
-	public ContextMenuGallery(float rowHeight, int columns, Assets assets,
-			Controller c) {
-		super(rowHeight, columns, assets, c.getApplicationAssets().getSkin(), c
-				.getApplicationAssets().getI18N());
-		this.controller = c;
+	public ContextMenuGallery(float rows, int columns, Assets assets,
+			Controller controller) {
+		super(rows, columns, assets, controller.getApplicationAssets()
+				.getSkin(), controller.getApplicationAssets().getI18N());
+		this.controller = controller;
 	}
 
-	public ContextMenuGallery(float rowHeight, int columns, Assets assets,
-			String galleryStyle, Controller c) {
-		super(rowHeight, columns, assets, c.getApplicationAssets().getSkin(), c
-				.getApplicationAssets().getI18N(), galleryStyle);
-		this.controller = c;
+	public ContextMenuGallery(float rows, int columns, Assets assets,
+			String galleryStyle, Controller controller) {
+		super(rows, columns, assets, controller.getApplicationAssets()
+				.getSkin(), controller.getApplicationAssets().getI18N(),
+				galleryStyle);
+		this.controller = controller;
 	}
 
-	public ContextMenuGallery(float rowHeight, int columns, Assets assets,
-			Skin skin, I18N i18N, GalleryStyle galleryStyle, Controller c) {
-		super(rowHeight, columns, assets, skin, i18N, galleryStyle);
-		this.controller = c;
+	public ContextMenuGallery(float rows, int columns, Assets assets,
+			Skin skin, I18N i18N, GalleryStyle galleryStyle,
+			Controller controller) {
+		super(rows, columns, assets, skin, i18N, galleryStyle);
+		this.controller = controller;
 	}
 
 	public void setContextMenu(Button... buttons) {

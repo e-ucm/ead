@@ -60,7 +60,7 @@ public class Tabs extends Table {
 
 	private Image overlayImage;
 
-	private TextButton selectedTabe;
+	private TextButton selectedTab;
 
 	public Tabs(Skin skin) {
 		this(skin.get(TabsStyle.class));
@@ -77,20 +77,20 @@ public class Tabs extends Table {
 	public void setItems(String... items) {
 		clearChildren();
 		addActor(overlayImage);
-		float veticalPad = WidgetBuilder.dpToPixels(16);
-		float horizontalPad = WidgetBuilder.dpToPixels(8);
+		float verticalPad = WidgetBuilder.dpToPixels(16);
+		float horizontalPad = WidgetBuilder.dpToPixels(24);
 		for (int i = 0; i < items.length; ++i) {
 			String item = items[i];
 			TextButton textButton = new TabButton(item);
 			textButton.setName(item);
 			textButton.setUserObject(i);
 			if (i == 0) {
-				selectedTabe = textButton;
+				selectedTab = textButton;
 			} else {
 				textButton.setChecked(false);
 			}
-			textButton
-					.pad(veticalPad, horizontalPad, veticalPad, horizontalPad);
+			textButton.pad(verticalPad, horizontalPad, verticalPad,
+					horizontalPad);
 			add(textButton).left();
 		}
 	}
@@ -98,18 +98,18 @@ public class Tabs extends Table {
 	@Override
 	public void layout() {
 		super.layout();
-		if (selectedTabe != null) {
-			overlayImage.setBounds(selectedTabe.getX(), selectedTabe.getY(),
-					selectedTabe.getWidth(), overlayImage.getHeight());
+		if (selectedTab != null) {
+			overlayImage.setBounds(selectedTab.getX(), selectedTab.getY(),
+					selectedTab.getWidth(), overlayImage.getHeight());
 		}
 	}
 
 	public TextButton getSelectedTab() {
-		return selectedTabe;
+		return selectedTab;
 	}
 
 	public int getSelectedTabIndex() {
-		return (Integer) selectedTabe.getUserObject();
+		return (Integer) selectedTab.getUserObject();
 	}
 
 	/**
@@ -137,17 +137,17 @@ public class Tabs extends Table {
 				return;
 			}
 			if (isChecked) {
-				if (selectedTabe == this) {
+				if (selectedTab == this) {
 					return;
 				}
-				selectedTabe = this;
+				selectedTab = this;
 				for (Cell cell : Tabs.this.getCells()) {
 					TextButton btn = (TextButton) cell.getActor();
 					if (btn != this) {
 						btn.setChecked(false);
 					}
 				}
-			} else if (selectedTabe == this) {
+			} else if (selectedTab == this) {
 				return;
 			}
 

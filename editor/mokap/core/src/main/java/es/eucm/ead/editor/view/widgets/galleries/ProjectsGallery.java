@@ -39,6 +39,7 @@ package es.eucm.ead.editor.view.widgets.galleries;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.ui.Button;
+
 import es.eucm.ead.editor.control.Controller;
 import es.eucm.ead.editor.control.Selection;
 import es.eucm.ead.editor.control.actions.editor.AddProject;
@@ -65,7 +66,7 @@ import es.eucm.ead.editor.view.widgets.layouts.Gallery.Cell;
 import es.eucm.ead.engine.utils.EngineUtils;
 import es.eucm.ead.schema.editor.components.GameData;
 import es.eucm.ead.schema.entities.ModelEntity;
-import es.eucm.ead.schemax.GameStructure;
+import es.eucm.ead.schemax.ModelStructure;
 import es.eucm.ead.schemax.entities.ResourceCategory;
 
 public class ProjectsGallery extends ContextMenuGallery implements
@@ -77,8 +78,8 @@ public class ProjectsGallery extends ContextMenuGallery implements
 
 	private ProjectListener projectListener = new ProjectListener();
 
-	public ProjectsGallery(float rowHeight, int columns, Controller c) {
-		super(rowHeight, columns, c.getApplicationAssets(), c);
+	public ProjectsGallery(float rows, int columns, Controller c) {
+		super(rows, columns, c.getApplicationAssets(), c);
 		this.controller = c;
 
 		Button edit = WidgetBuilder.button(SkinConstants.IC_EDIT,
@@ -191,7 +192,7 @@ public class ProjectsGallery extends ContextMenuGallery implements
 	private void addProject(String id) {
 		ModelEntity game = controller.getEditorGameAssets().fromJson(
 				ModelEntity.class,
-				Gdx.files.absolute(id).child(GameStructure.GAME_FILE));
+				Gdx.files.absolute(id).child(ModelStructure.GAME_FILE));
 		if (!id.endsWith("/")) {
 			id += "/";
 		}
@@ -213,7 +214,9 @@ public class ProjectsGallery extends ContextMenuGallery implements
 					break;
 				case REMOVED:
 					Actor actor = findActor(event.getId());
-					actor.getParent().remove();
+					if (actor != null) {
+						actor.getParent().remove();
+					}
 					break;
 				}
 			}

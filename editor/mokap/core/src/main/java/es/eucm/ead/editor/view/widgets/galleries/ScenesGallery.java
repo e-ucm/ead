@@ -81,13 +81,13 @@ public class ScenesGallery extends ContextMenuGallery implements
 
 	public ScenesGallery(float rows, int columns, Controller controller,
 			String galleryStyle) {
-		super(rows, columns, controller.getEditorGameAssets(), controller
-				galleryStyle, controller);
+		super(rows, columns, controller.getEditorGameAssets(), galleryStyle,
+				controller);
 		init();
 	}
 
 	public ScenesGallery(float rows, int columns, Controller controller) {
-		super(rows, columns, controller.getEditorGameAssets(), controller
+		super(rows, columns, controller.getEditorGameAssets(), controller);
 		init();
 	}
 

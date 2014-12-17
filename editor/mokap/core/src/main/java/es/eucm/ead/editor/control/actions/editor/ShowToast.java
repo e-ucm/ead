@@ -126,8 +126,10 @@ public class ShowToast extends EditorAction implements CommandListener {
 	}
 
 	private void removeToast() {
-		toast.clearActions();
-		toast.remove();
+		if (undo.isVisible()) {
+			toast.clearActions();
+			toast.remove();
+		}
 	}
 
 	@Override

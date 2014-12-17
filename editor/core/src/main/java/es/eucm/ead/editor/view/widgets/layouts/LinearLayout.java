@@ -309,10 +309,13 @@ public class LinearLayout extends AbstractWidget {
 		float prefChildrenWidth = 0;
 		int widgetsExpanded = 0;
 		for (Constraints c : constraints) {
-			if (expandX(c)) {
-				widgetsExpanded++;
-			} else {
-				prefChildrenWidth += actorWidth(c.actor);
+			if (c.actor.isVisible() || computeInvisibles) {
+				if (expandX(c)) {
+					widgetsExpanded++;
+				} else {
+					prefChildrenWidth += actorWidth(c.actor) + marginLeft(c)
+							+ marginRight(c);
+				}
 			}
 		}
 

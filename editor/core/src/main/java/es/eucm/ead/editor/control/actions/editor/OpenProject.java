@@ -82,7 +82,7 @@ public class OpenProject extends EditorAction implements
 				controller.getEditorGameAssets().getLoadingPath());
 		controller.getPreferences().flush();
 		controller.action(SetSelection.class, null, Selection.RESOURCE,
-				GameStructure.GAME_FILE);
+				ModelStructure.GAME_FILE);
 		controller.action(SetSelection.class, Selection.RESOURCE,
 				Selection.MOKAP, asset);
 		controller.action(SetSelection.class, Selection.MOKAP,

@@ -316,6 +316,10 @@ public class WidgetBuilder {
 		return new Image(skin, drawable);
 	}
 
+	/**
+	 * @return a label with the given text and style, with ellipsis for the
+	 *         label set to true
+	 */
 	public static Label label(String text, String style) {
 		Label label = new Label(text, skin, style);
 		label.setEllipsis(true);
@@ -327,6 +331,10 @@ public class WidgetBuilder {
 		button.pad(dpToPixels(8)).padBottom(dpToPixels(10))
 				.padTop(dpToPixels(10));
 		return button;
+	}
+
+	public static TextButton textButton(String text, String style) {
+		return new TextButton(text, skin, style);
 	}
 
 	public static Image image(String icon, String color) {
