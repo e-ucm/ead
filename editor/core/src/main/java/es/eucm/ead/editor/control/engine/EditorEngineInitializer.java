@@ -40,12 +40,14 @@ import es.eucm.ead.editor.control.Controller;
 import es.eucm.ead.editor.processors.EditableLabelProccesor;
 import es.eucm.ead.editor.processors.EditorEmptyRendererProcessor;
 import es.eucm.ead.editor.processors.EditorImageProcessor;
+import es.eucm.ead.editor.processors.EditorReferenceProcessor;
 import es.eucm.ead.engine.ComponentLoader;
 import es.eucm.ead.engine.DefaultEngineInitializer;
 import es.eucm.ead.engine.EntitiesLoader;
 import es.eucm.ead.engine.GameLoop;
 import es.eucm.ead.engine.assets.GameAssets;
 import es.eucm.ead.engine.variables.VariablesManager;
+import es.eucm.ead.schema.components.Reference;
 import es.eucm.ead.schema.components.controls.Label;
 import es.eucm.ead.schema.renderers.EmptyRenderer;
 import es.eucm.ead.schema.renderers.Image;
@@ -75,6 +77,9 @@ public class EditorEngineInitializer extends DefaultEngineInitializer {
 				EmptyRenderer.class,
 				new EditorEmptyRendererProcessor(gameLoop, controller
 						.getApplicationAssets()));
+		componentLoader.registerComponentProcessor(Reference.class,
+				new EditorReferenceProcessor(gameLoop, gameAssets,
+						entitiesLoader, controller.getPlatform()));
 	}
 
 }

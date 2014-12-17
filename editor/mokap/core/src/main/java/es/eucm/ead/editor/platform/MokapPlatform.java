@@ -143,6 +143,6 @@ public abstract class MokapPlatform extends AbstractPlatform {
 		if (!externalPath.endsWith("/")) {
 			externalPath += "/";
 		}
-		return externalPath + "Mokap Library";
+		return externalPath + "Mokap Library/";
 	}
 }

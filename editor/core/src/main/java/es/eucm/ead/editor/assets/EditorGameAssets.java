@@ -100,12 +100,12 @@ public class EditorGameAssets extends GameAssets {
 
 	@Override
 	public FileHandle resolve(String path) {
+		if (path.startsWith("/") || path.indexOf(':') == 1) {
+			// Absolute file
+			return files.absolute(path);
+		}
 		if (isGamePathInternal()) {
 			return super.resolve(path);
-		}
-		FileHandle reference = getReferenceFile(path);
-		if (reference != null) {
-			return reference;
 		}
 		FileHandle internal = files.internal(path);
 		if (checkFileExistence(internal)) {

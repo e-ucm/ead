@@ -48,6 +48,7 @@ import es.eucm.ead.engine.components.assets.ReferenceComponent;
 import es.eucm.ead.engine.processors.ComponentProcessor;
 import es.eucm.ead.schema.components.Reference;
 import es.eucm.ead.schema.entities.ModelEntity;
+import es.eucm.ead.schemax.ModelStructure;
 
 public class ReferenceProcessor extends ComponentProcessor<Reference> {
 
@@ -69,14 +70,13 @@ public class ReferenceProcessor extends ComponentProcessor<Reference> {
 		String id = reference.getId();
 		int lastIndex = id.lastIndexOf("/") + 1;
 		String referenceLoadingPath = id.substring(0, lastIndex);
-		assets.setReferencePath(referenceLoadingPath);
+		assets.setReferencePath(getLibraryPath() + referenceLoadingPath);
 
 		ModelEntity entity = null;
 		if (assets.isLoaded(referenceLoadingPath, ModelEntity.class)) {
 			entity = assets.get(referenceLoadingPath, ModelEntity.class);
 		} else {
-			FileHandle jsonFile = assets.resolve(GameAssets.REREFENCE_PREFIX
-					+ id.substring(lastIndex));
+			FileHandle jsonFile = assets.resolve(getLibraryPath() + id);
 			if (assets.checkFileExistence(jsonFile)) {
 				entity = assets.fromJson(ModelEntity.class, jsonFile);
 				assets.addAsset(referenceLoadingPath, ModelEntity.class, entity);
@@ -84,15 +84,17 @@ public class ReferenceProcessor extends ComponentProcessor<Reference> {
 		}
 		Group group = null;
 		if (entity != null) {
-			assets.setReferencePrefix(GameAssets.REREFENCE_PREFIX);
 
 			group = loader.toEngineEntity(entity).getGroup();
 
-			assets.setReferencePrefix("");
 		}
-		assets.setReferencePath("");
+		assets.setReferencePath(null);
 		referenceComponent.setGroup(group);
 
 		return referenceComponent;
+	}
+
+	protected String getLibraryPath() {
+		return ModelStructure.LIBRARY_FOLDER;
 	}
 }

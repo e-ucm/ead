@@ -86,6 +86,8 @@ public interface ModelStructure {
 	 * Library Structure files
 	 */
 
+	public static final String LIBRARY_FOLDER = "library/";
+
 	public static final String CONTENTS_FOLDER = "contents/";
 
 	public static final String THUMBNAIL_FILE = "thumbnail.png";

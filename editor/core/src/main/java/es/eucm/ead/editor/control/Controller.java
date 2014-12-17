@@ -152,8 +152,6 @@ public class Controller {
 		this.applicationAssets = createApplicationAssets(files);
 		this.editorGameAssets = new EditorGameAssets(files,
 				platform.getImageUtils());
-		editorGameAssets
-				.setLibraryPath(getPlatform().getDefaultLibraryFolder());
 		this.templates = new Templates(this);
 		this.model = new Model(editorGameAssets);
 		this.commands = new Commands(model);

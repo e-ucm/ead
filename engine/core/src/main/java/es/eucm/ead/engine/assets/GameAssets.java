@@ -59,11 +59,7 @@ public class GameAssets extends Assets implements ModelStructure {
 
 	public static final String ENGINE_BINDINGS = "bindings.json";
 
-	public static final String REREFENCE_PREFIX = "&";
-
-	private String loadingPath, referencePath, libraryPath;
-
-	private String refPrefix = "";
+	private String loadingPath, referencePath;
 
 	private boolean gamePathInternal;
 
@@ -115,14 +111,10 @@ public class GameAssets extends Assets implements ModelStructure {
 	public <T> void get(String fileName, Class<T> clazz,
 			AssetLoaderParameters<T> parameters,
 			AssetLoadedCallback<T> callback, boolean forceLoading) {
-		if (!refPrefix.isEmpty()) {
-			fileName = refPrefix + fileName;
+		if (referencePath != null) {
+			fileName = referencePath + fileName;
 		}
 		super.get(fileName, clazz, parameters, callback, forceLoading);
-	}
-
-	public void setReferencePrefix(String refPrefix) {
-		this.refPrefix = refPrefix;
 	}
 
 	/**
@@ -136,14 +128,14 @@ public class GameAssets extends Assets implements ModelStructure {
 	 * Sets the current path for a referenced entity.
 	 */
 	public void setReferencePath(String referencePath) {
-		this.referencePath = convertNameToPath(referencePath, "", false, true);
+		if (referencePath != null && !referencePath.endsWith("/")) {
+			referencePath += "/";
+		}
+		this.referencePath = referencePath;
 	}
 
-	/**
-	 * Sets the root path for referenced entities
-	 */
-	public void setLibraryPath(String rootLibraryPath) {
-		this.libraryPath = convertNameToPath(rootLibraryPath, "", false, true);
+	public String getReferencePath() {
+		return referencePath;
 	}
 
 	/**
@@ -165,10 +157,7 @@ public class GameAssets extends Assets implements ModelStructure {
 	 */
 	@Override
 	public FileHandle resolve(String path) {
-		FileHandle reference = getReferenceFile(path);
-		if (reference != null) {
-			return reference;
-		} else if (path.startsWith("/") || path.indexOf(':') == 1) {
+		if (path.startsWith("/") || path.indexOf(':') == 1) {
 			// Absolute file
 			return files.absolute(path);
 		} else if (loadingPath == null) {
@@ -188,24 +177,11 @@ public class GameAssets extends Assets implements ModelStructure {
 	}
 
 	/**
-	 * 
-	 * @return a {@link FileHandle} to the current referenced entity if path
-	 *         starts with {@link GameAssets#REFERENCE_PREFIX}, or null
-	 *         otherwise.
-	 */
-	protected FileHandle getReferenceFile(String path) {
-		if (path.startsWith(REREFENCE_PREFIX)) {
-			return files.absolute(libraryPath + referencePath
-					+ path.substring(REREFENCE_PREFIX.length()));
-		}
-		return null;
-	}
-
-	/**
 	 * Resolves a file handle inside the project
 	 */
 	public FileHandle resolveProject(String path) {
-		return files.absolute(loadingPath + path);
+		return files.absolute((referencePath == null ? loadingPath
+				: referencePath) + path);
 	}
 
 	/**

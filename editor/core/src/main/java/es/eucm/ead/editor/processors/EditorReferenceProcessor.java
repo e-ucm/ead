@@ -34,46 +34,26 @@
  *      You should have received a copy of the GNU Lesser General Public License
  *      along with eAdventure.  If not, see <http://www.gnu.org/licenses/>.
  */
-package es.eucm.ead.editor.control.engine;
+package es.eucm.ead.editor.processors;
 
-import es.eucm.ead.editor.control.Controller;
-import es.eucm.ead.editor.processors.EditorEmptyRendererProcessor;
-import es.eucm.ead.editor.processors.EditorFramesProcessor;
-import es.eucm.ead.editor.processors.EditorReferenceProcessor;
-import es.eucm.ead.engine.ComponentLoader;
-import es.eucm.ead.engine.DefaultEngineInitializer;
+import es.eucm.ead.editor.platform.Platform;
 import es.eucm.ead.engine.EntitiesLoader;
 import es.eucm.ead.engine.GameLoop;
 import es.eucm.ead.engine.assets.GameAssets;
-import es.eucm.ead.engine.variables.VariablesManager;
-import es.eucm.ead.schema.components.Reference;
-import es.eucm.ead.schema.renderers.EmptyRenderer;
-import es.eucm.ead.schema.renderers.Frames;
+import es.eucm.ead.engine.processors.assets.ReferenceProcessor;
 
-public class MobileEngineInitializer extends DefaultEngineInitializer {
+public class EditorReferenceProcessor extends ReferenceProcessor {
 
-	private Controller controller;
+	private Platform platform;
 
-	public MobileEngineInitializer(Controller controller) {
-		this.controller = controller;
+	public EditorReferenceProcessor(GameLoop engine, GameAssets assets,
+			EntitiesLoader loader, Platform platform) {
+		super(engine, assets, loader);
+		this.platform = platform;
 	}
 
-	protected void registerComponents(ComponentLoader componentLoader,
-			GameAssets gameAssets, GameLoop gameLoop,
-			VariablesManager variablesManager, EntitiesLoader entitiesLoader) {
-		super.registerComponents(componentLoader, gameAssets, gameLoop,
-				variablesManager, entitiesLoader);
-		componentLoader.registerComponentProcessor(
-				EmptyRenderer.class,
-				new EditorEmptyRendererProcessor(gameLoop, controller
-						.getApplicationAssets()));
-		componentLoader
-				.registerComponentProcessor(Frames.class,
-						new EditorFramesProcessor(gameLoop, gameAssets,
-								componentLoader));
-		componentLoader.registerComponentProcessor(Reference.class,
-				new EditorReferenceProcessor(gameLoop, gameAssets,
-						entitiesLoader, controller.getPlatform()));
+	@Override
+	protected String getLibraryPath() {
+		return platform.getDefaultLibraryFolder();
 	}
-
 }
