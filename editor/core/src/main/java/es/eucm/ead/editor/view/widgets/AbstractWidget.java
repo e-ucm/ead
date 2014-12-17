@@ -41,8 +41,8 @@ import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.Group;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.InputListener;
-import com.badlogic.gdx.scenes.scene2d.ui.Widget;
 import com.badlogic.gdx.scenes.scene2d.ui.WidgetGroup;
+import com.badlogic.gdx.scenes.scene2d.utils.Layout;
 import com.badlogic.gdx.utils.Predicate;
 
 public class AbstractWidget extends WidgetGroup {
@@ -86,10 +86,8 @@ public class AbstractWidget extends WidgetGroup {
 	public static float getPrefWidth(Actor a) {
 		if (a == null) {
 			return 0;
-		} else if (a instanceof Widget) {
-			return ((Widget) a).getPrefWidth();
-		} else if (a instanceof WidgetGroup) {
-			return ((WidgetGroup) a).getPrefWidth();
+		} else if (a instanceof Layout) {
+			return ((Layout) a).getPrefWidth();
 		} else {
 			return a.getWidth();
 		}
@@ -98,30 +96,24 @@ public class AbstractWidget extends WidgetGroup {
 	public static float getPrefHeight(Actor a) {
 		if (a == null) {
 			return 0;
-		} else if (a instanceof Widget) {
-			return ((Widget) a).getPrefHeight();
-		} else if (a instanceof WidgetGroup) {
-			return ((WidgetGroup) a).getPrefHeight();
+		} else if (a instanceof Layout) {
+			return ((Layout) a).getPrefHeight();
 		} else {
 			return a.getHeight();
 		}
 	}
 
 	protected static float getMaxWidth(Actor a) {
-		if (a instanceof Widget) {
-			return ((Widget) a).getMaxWidth();
-		} else if (a instanceof WidgetGroup) {
-			return ((WidgetGroup) a).getMaxWidth();
+		if (a instanceof Layout) {
+			return ((Layout) a).getMaxWidth();
 		} else {
 			return a.getWidth();
 		}
 	}
 
 	protected static float getMaxHeight(Actor a) {
-		if (a instanceof Widget) {
-			return ((Widget) a).getMaxHeight();
-		} else if (a instanceof WidgetGroup) {
-			return ((WidgetGroup) a).getMaxHeight();
+		if (a instanceof Layout) {
+			return ((Layout) a).getMaxHeight();
 		} else {
 			return a.getHeight();
 		}

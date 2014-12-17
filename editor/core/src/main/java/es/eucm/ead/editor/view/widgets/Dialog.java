@@ -44,6 +44,7 @@ import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.InputListener;
 import com.badlogic.gdx.scenes.scene2d.Stage;
+import com.badlogic.gdx.scenes.scene2d.ui.Container;
 import com.badlogic.gdx.scenes.scene2d.ui.Image;
 import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.scenes.scene2d.ui.Label.LabelStyle;
@@ -78,7 +79,7 @@ public class Dialog extends LinearLayout {
 
 	private Label titleLabel;
 
-	private PlaceHolder content;
+	private Container<Actor> content;
 
 	private LinearLayout buttons;
 
@@ -122,7 +123,8 @@ public class Dialog extends LinearLayout {
 		background(style.background);
 
 		addTitle();
-		add(content = new PlaceHolder()).margin(style.pad).expand(true, true);
+		add(content = new Container<Actor>()).margin(style.pad).expand(true,
+				true);
 		addButtons();
 
 		addListener(new InputListener() {
@@ -297,7 +299,7 @@ public class Dialog extends LinearLayout {
 	 * Sets dialog content
 	 */
 	public Dialog root(Actor root) {
-		content.setContent(root);
+		content.setActor(root);
 		return this;
 	}
 

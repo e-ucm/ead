@@ -39,12 +39,13 @@ package es.eucm.ead.editor.view.widgets.options;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.scenes.scene2d.Actor;
+import com.badlogic.gdx.scenes.scene2d.ui.Container;
 import com.badlogic.gdx.scenes.scene2d.ui.Image;
 import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.scenes.scene2d.ui.Label.LabelStyle;
 import com.badlogic.gdx.scenes.scene2d.utils.Drawable;
+
 import es.eucm.ead.editor.view.tooltips.Tooltip;
-import es.eucm.ead.editor.view.widgets.PlaceHolder;
 import es.eucm.ead.editor.view.widgets.layouts.LinearLayout;
 
 /**
@@ -60,7 +61,7 @@ public class Option extends LinearLayout {
 
 	private ImageTooltip tooltipButton;
 
-	protected PlaceHolder optionContainer;
+	protected Container<Actor> optionContainer;
 
 	protected Actor optionWidget;
 
@@ -180,11 +181,11 @@ public class Option extends LinearLayout {
 	 */
 	public Option option(Actor option) {
 		if (optionContainer == null) {
-			optionContainer = new PlaceHolder();
+			optionContainer = new Container();
 			add(optionContainer).expandX();
 		}
 		this.optionWidget = option;
-		optionContainer.setContent(option);
+		optionContainer.setActor(option);
 		return this;
 	}
 

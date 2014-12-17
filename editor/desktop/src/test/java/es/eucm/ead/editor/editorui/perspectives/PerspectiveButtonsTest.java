@@ -37,11 +37,13 @@
 package es.eucm.ead.editor.editorui.perspectives;
 
 import com.badlogic.gdx.backends.lwjgl.LwjglApplication;
+import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.Group;
+import com.badlogic.gdx.scenes.scene2d.ui.Container;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
+
 import es.eucm.ead.editor.editorui.EditorUITest;
 import es.eucm.ead.editor.ui.perspectives.PerspectiveButtons;
-import es.eucm.ead.editor.view.widgets.PlaceHolder;
 
 /**
  * Created by angel on 22/05/14.
@@ -50,11 +52,11 @@ public class PerspectiveButtonsTest extends EditorUITest {
 	@Override
 	protected void builUI(Group root) {
 		Skin skin = controller.getApplicationAssets().getSkin();
-		PlaceHolder placeHolder = new PlaceHolder();
+		Container<Actor> placeHolder = new Container<Actor>();
 
 		PerspectiveButtons perspectiveButtons = new PerspectiveButtons(
 				controller);
-		placeHolder.setContent(perspectiveButtons);
+		placeHolder.setActor(perspectiveButtons);
 		placeHolder.setFillParent(true);
 
 		perspectiveButtons.background(skin.getDrawable("blank"));
