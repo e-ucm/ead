@@ -49,10 +49,8 @@ import es.eucm.ead.editor.assets.EditorGameAssets;
 import es.eucm.ead.editor.control.actions.editor.ExecuteWorker;
 import es.eucm.ead.editor.control.workers.Worker.WorkerListener;
 import es.eucm.ead.schema.editor.components.repo.RepoElement;
-import es.eucm.ead.schemax.ModelStructure;
 
-public class CopyEntityResourcesTest extends WorkerTest implements
-		WorkerListener {
+public class CopyToLibraryTest extends WorkerTest implements WorkerListener {
 
 	private FileHandle contentsFolder;
 	private FileHandle thumbnailFile;
@@ -83,9 +81,8 @@ public class CopyEntityResourcesTest extends WorkerTest implements
 	@Override
 	public void testWorker() {
 		success = false;
-		controller.action(ExecuteWorker.class,
-				CopyToLibraryEntityResources.class, this, contentsFolder,
-				element, thumbnailFile);
+		controller.action(ExecuteWorker.class, CopyToLibraryWorker.class, this,
+				contentsFolder, element, thumbnailFile);
 	}
 
 	@Override
@@ -106,21 +103,8 @@ public class CopyEntityResourcesTest extends WorkerTest implements
 			EditorGameAssets gameAssets = controller.getEditorGameAssets();
 			FileHandle mockLibsFolder = gameAssets.absolute(controller
 					.getPlatform().getDefaultLibraryFolder());
-			assertTrue(mockLibsFolder.exists() && mockLibsFolder.isDirectory());
-
-			FileHandle entityFolder = mockLibsFolder.child(element
-					.getEntityRef());
-			assertTrue(entityFolder.exists() && entityFolder.isDirectory());
-			assertTrue(entityFolder.child(ModelStructure.THUMBNAIL_FILE)
-					.exists());
-			assertTrue(entityFolder.child(ModelStructure.DESCRIPTOR_FILE)
-					.exists());
-
-			FileHandle contentsFolder = entityFolder
-					.child(ModelStructure.CONTENTS_FOLDER);
-			assertTrue(contentsFolder.exists() && contentsFolder.isDirectory());
-			assertTrue(contentsFolder.child(ModelStructure.ENTITY_FILE)
-					.exists());
+			assertTrue(mockLibsFolder.isDirectory());
+			assertTrue(controller.getLibraryManager().isDownloaded(element));
 
 			mockLibsFolder.deleteDirectory();
 		}

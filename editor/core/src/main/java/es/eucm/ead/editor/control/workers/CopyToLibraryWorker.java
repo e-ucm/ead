@@ -42,14 +42,13 @@ import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.utils.SerializationException;
 
 import es.eucm.ead.editor.assets.EditorGameAssets;
-import es.eucm.ead.editor.utils.ProjectUtils;
 import es.eucm.ead.schema.editor.components.repo.RepoElement;
 import es.eucm.ead.schema.entities.ModelEntity;
 import es.eucm.ead.schemax.ModelStructure;
 
 /**
- * Copies to the library folder the contents a {@link ModelEntity} defined by a
- * .json file. Note that the result is executed on UI thread.
+ * Copies to the library folder the contents of a {@link ModelEntity} defined by
+ * a .json file. Note that the result is executed on UI thread.
  * <dl>
  * <dt><strong>The input arguments are</strong></dt>
  * <dd><strong>args[0]</strong> <em>FileHandle</em> Directory to the contents of
@@ -66,7 +65,7 @@ import es.eucm.ead.schemax.ModelStructure;
  * <dd><strong>if</strong> everything went well, result(true) is invoked.</dd>
  * </dl>
  */
-public class CopyToLibraryEntityResources extends Worker {
+public class CopyToLibraryWorker extends Worker {
 
 	private EditorGameAssets gameAssets;
 
@@ -78,7 +77,7 @@ public class CopyToLibraryEntityResources extends Worker {
 
 	private FileHandle thumbnail;
 
-	public CopyToLibraryEntityResources() {
+	public CopyToLibraryWorker() {
 		super(true);
 	}
 
@@ -89,13 +88,14 @@ public class CopyToLibraryEntityResources extends Worker {
 		thumbnail = (FileHandle) args[2];
 
 		gameAssets = controller.getEditorGameAssets();
-		entityFolder = ProjectUtils.getRepoElementLibraryFolder(element);
+		entityFolder = controller.getLibraryManager()
+				.getRepoElementLibraryFolder(element);
 	}
 
 	@Override
 	protected boolean step() {
 		if (!thumbnail.exists()) {
-			error(new FileNotFoundException("TNo thumbnail file found at: "
+			error(new FileNotFoundException("No thumbnail file found at: "
 					+ thumbnail.path()));
 			return true;
 		}
