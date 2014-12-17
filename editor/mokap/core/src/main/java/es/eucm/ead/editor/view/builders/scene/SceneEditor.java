@@ -44,6 +44,7 @@ import com.badlogic.gdx.scenes.scene2d.actions.Actions;
 import com.badlogic.gdx.scenes.scene2d.ui.Button;
 import com.badlogic.gdx.scenes.scene2d.utils.Align;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
+
 import es.eucm.ead.editor.control.Controller;
 import es.eucm.ead.editor.control.MokapController.BackListener;
 import es.eucm.ead.editor.control.Preferences;
@@ -65,9 +66,9 @@ import es.eucm.ead.editor.model.events.SelectionEvent;
 import es.eucm.ead.editor.view.ModelView;
 import es.eucm.ead.editor.view.SkinConstants;
 import es.eucm.ead.editor.view.builders.FileView;
+import es.eucm.ead.editor.view.builders.scene.components.InteractionContext;
 import es.eucm.ead.editor.view.builders.scene.context.SceneElementContext;
 import es.eucm.ead.editor.view.builders.scene.draw.BrushStrokes;
-import es.eucm.ead.editor.view.builders.scene.components.InteractionContext;
 import es.eucm.ead.editor.view.builders.scene.play.TestGameView;
 import es.eucm.ead.editor.view.widgets.AbstractWidget;
 import es.eucm.ead.editor.view.widgets.CirclesMenu;
@@ -151,6 +152,7 @@ public class SceneEditor extends BaseView implements ModelView,
 		container.addActor(interactiveButton);
 
 		CirclesMenu circlesMenu = buildAddButtons();
+		circlesMenu.setAlign(Align.left);
 		addButton = WidgetBuilder.button(SkinConstants.STYLE_ADD);
 		addButton.pack();
 		circlesMenu.pack();
