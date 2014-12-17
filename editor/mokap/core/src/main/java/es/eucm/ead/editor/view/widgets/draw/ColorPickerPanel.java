@@ -36,20 +36,18 @@
  */
 package es.eucm.ead.editor.view.widgets.draw;
 
+import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
-import com.badlogic.gdx.scenes.scene2d.actions.Actions;
-import com.badlogic.gdx.scenes.scene2d.actions.SequenceAction;
 import com.badlogic.gdx.scenes.scene2d.ui.Cell;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
+import com.badlogic.gdx.scenes.scene2d.ui.WidgetGroup;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.scenes.scene2d.utils.Drawable;
 import com.badlogic.gdx.utils.Array;
 
-import es.eucm.ead.editor.control.Views;
-import es.eucm.ead.editor.view.widgets.ContextMenu;
 import es.eucm.ead.editor.view.widgets.IconButton;
 import es.eucm.ead.editor.view.widgets.draw.SlideColorPicker.SlideColorPickerStyle;
 
@@ -60,7 +58,9 @@ import es.eucm.ead.editor.view.widgets.draw.SlideColorPicker.SlideColorPickerSty
  * @author Rotaru Dan Cristian
  * 
  */
-public class ColorPickerPanel extends ContextMenu {
+public class ColorPickerPanel extends Table {
+
+	private static final int DEFAULT_ROWS = 2;
 
 	private static final ClickListener colorClicked = new ClickListener() {
 
@@ -73,8 +73,15 @@ public class ColorPickerPanel extends ContextMenu {
 		};
 	};
 
+	private Skin skin;
+
 	private Table colors;
+
 	protected SlideColorPicker picker;
+
+	private ColorPickerPanelStyle style;
+
+	private int rows;
 
 	public ColorPickerPanel(Skin skin) {
 		this(skin, skin.get(ColorPickerPanelStyle.class));
@@ -87,14 +94,28 @@ public class ColorPickerPanel extends ContextMenu {
 	public ColorPickerPanel(Skin skin,
 			ColorPickerPanelStyle colorPickerPanelStyle) {
 		setBackground(colorPickerPanelStyle.background);
-		String recentColorDrawable = colorPickerPanelStyle.recentColorIcon;
-		String buttonStyleName = colorPickerPanelStyle.recentColorStyle;
-
-		int maxColors = colorPickerPanelStyle.maxColors;
-		int columns = colorPickerPanelStyle.columns;
+		this.skin = skin;
+		this.style = colorPickerPanelStyle;
 
 		colors = new Table();
-		for (int i = 0; i < maxColors; ++i) {
+		for (int i = 0; i < DEFAULT_ROWS; ++i) {
+			addColorRow();
+		}
+		colors.addListener(colorClicked);
+		picker = new SlideColorPicker(colorPickerPanelStyle);
+
+		add(colors);
+		row();
+		add(picker).fill().expand();
+	}
+
+	private void addColorRow() {
+		String recentColorDrawable = style.recentColorIcon;
+		String buttonStyleName = style.recentColorStyle;
+
+		float columns = style.colorsPerRow;
+
+		for (int i = 0; i < columns; ++i) {
 			IconButton image = new IconButton(recentColorDrawable, skin,
 					buttonStyleName) {
 				@Override
@@ -109,37 +130,34 @@ public class ColorPickerPanel extends ContextMenu {
 			image.setUserObject(this);
 
 			colors.add(image);
-			if (i % columns == columns - 1) {
-				colors.row();
-			}
 		}
-		colors.addListener(colorClicked);
-		picker = new SlideColorPicker(colorPickerPanelStyle);
+		colors.row();
+		rows++;
 
-		add(colors);
-		row();
-		add(picker).fill().expand();
+		colors.addListener(colorClicked);
 	}
 
 	public void setPickedColor(Color color) {
 		picker.setPickedColor(color);
 	}
 
-	public void show(Views views) {
-		initResources();
-		super.show(views);
+	public void completeRowsIfPossible(WidgetGroup reference) {
+		reference.layout();
+		IconButton image = new IconButton(style.recentColorIcon, skin,
+				style.recentColorStyle);
+
+		int rowsToAdd = Math.min(
+				(int) Math.floor((Gdx.graphics.getHeight() - reference
+						.getPrefHeight()) / image.getPrefHeight()), style.rows
+						- rows);
+
+		for (int i = 0; i < rowsToAdd; i++) {
+			addColorRow();
+		}
 	}
 
 	public void initResources() {
 		picker.initialize();
-	}
-
-	@Override
-	public void hide(Runnable runnable) {
-		setUpPickedColor();
-		SequenceAction hideAction = getHideAction(runnable);
-		hideAction.addAction(Actions.run(getReleaseResources()));
-		addAction(hideAction);
 	}
 
 	private Runnable releaseResources = new Runnable() {
@@ -176,11 +194,6 @@ public class ColorPickerPanel extends ContextMenu {
 		return false;
 	}
 
-	@Override
-	public boolean hideAlways() {
-		return false;
-	}
-
 	/**
 	 * The style for a {@link ColorPickerPanel}.
 	 * 
@@ -192,7 +205,7 @@ public class ColorPickerPanel extends ContextMenu {
 
 		public String recentColorStyle;
 
-		public int maxColors, columns;
+		public int colorsPerRow, rows;
 
 		/** Optional */
 		public Drawable background;
