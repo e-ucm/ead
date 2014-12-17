@@ -136,8 +136,9 @@ public class Q {
 	}
 
 	/**
-	 * Returns the {@link Documentation#name} attribute of the model entity
-	 * 
+	 * Returns the {@link Documentation#name} attribute of the model entity. If
+	 * not set or set to the empty string, the value in "untitled" i18n key is
+	 * returned
 	 */
 	public static String getTitle(ModelEntity modelEntity) {
 		if (modelEntity == null) {
@@ -146,7 +147,7 @@ public class Q {
 		Documentation documentation = getComponent(modelEntity,
 				Documentation.class);
 		return documentation.getName() == null
-				|| "".equals(documentation.getName()) ? i18N.m("untitled")
+				|| documentation.getName().isEmpty() ? i18N.m("untitled")
 				: documentation.getName();
 	}
 
@@ -423,8 +424,8 @@ public class Q {
 
 	public static void setTitle(ModelEntity entity, String title) {
 		Q.getComponent(entity, Documentation.class).setName(title);
-}
-		
+	}
+
 	public static float getGameHeight() {
 		return Q.getComponent(controller.getModel().getGame(), GameData.class)
 				.getHeight();

@@ -37,9 +37,13 @@
 package es.eucm.ead.editor.view.builders.project;
 
 import com.badlogic.gdx.scenes.scene2d.Actor;
+import com.badlogic.gdx.scenes.scene2d.ui.Cell;
 import com.badlogic.gdx.scenes.scene2d.ui.Container;
-import com.badlogic.gdx.scenes.scene2d.ui.Label;
+import com.badlogic.gdx.scenes.scene2d.ui.Image;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
+import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
+import com.badlogic.gdx.scenes.scene2d.utils.Align;
+
 import es.eucm.ead.editor.control.Controller;
 import es.eucm.ead.editor.control.MokapController.BackListener;
 import es.eucm.ead.editor.control.Selection;
@@ -67,7 +71,7 @@ public class ProjectView implements ViewBuilder, BackListener, FieldListener {
 
 	private LinearLayout view;
 
-	private Label title;
+	private TextButton title;
 
 	@Override
 	public void initialize(Controller controller) {
@@ -104,10 +108,18 @@ public class ProjectView implements ViewBuilder, BackListener, FieldListener {
 		project.add(WidgetBuilder.toolbarIcon(SkinConstants.IC_GO, null,
 				CloseProject.class));
 		project.add(
-				new Container<Label>(title = WidgetBuilder.label("",
+				new Container<TextButton>(title = WidgetBuilder.textButton("",
 						SkinConstants.STYLE_TOOLBAR)).width(0).fillX())
-				.expandX();
-		title.setEllipsis(true);
+				.expandX().marginLeft(WidgetBuilder.dpToPixels(8));
+
+		title.getLabel().setAlignment(Align.left);
+		Cell cell = title.getLabelCell();
+		LinearLayout titleCell = new LinearLayout(true);
+		titleCell.add(new Image(skin, SkinConstants.IC_EDIT)).marginRight(
+				WidgetBuilder.dpToPixels(8));
+		titleCell.add(title.getLabel());
+		cell.setActor(titleCell);
+		title.padLeft(WidgetBuilder.dpToPixels(8));
 		WidgetBuilder.actionOnClick(title, Rename.class, Selection.MOKAP);
 
 		project.add(WidgetBuilder.toolbarIcon(SkinConstants.IC_PLAY, null,

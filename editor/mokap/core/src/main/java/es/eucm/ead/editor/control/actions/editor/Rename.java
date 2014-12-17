@@ -36,7 +36,9 @@
  */
 package es.eucm.ead.editor.control.actions.editor;
 
+import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input.TextInputListener;
+
 import es.eucm.ead.editor.control.actions.EditorAction;
 import es.eucm.ead.editor.control.actions.model.generic.SetField;
 import es.eucm.ead.editor.model.Q;
@@ -52,8 +54,6 @@ import es.eucm.ead.schemax.FieldName;
  * <dl>
  * <dt><strong>Arguments</strong></dt>
  * <dd><strong>args[0]</strong> <em>String</em> name of the context where the
- * name of the resource modified is</dd>
- * <dd><strong>args[1]</strong> <em>String</em> name of the context where the
  * entity to rename is</dd>
  * </dl>
  **/
@@ -71,9 +71,8 @@ public class Rename extends EditorAction implements TextInputListener {
 				.getSingle((String) args[0]);
 		if (modelEntity != null) {
 			I18N i18n = controller.getApplicationAssets().getI18N();
-			controller.getPlatform()
-					.getMultilineTextInput(this, i18n.m("scene.change_title"),
-							Q.getTitle(modelEntity), i18n);
+			Gdx.input.getTextInput(this, i18n.m("change_title"),
+					Q.getTitle(modelEntity), "");
 		}
 	}
 
