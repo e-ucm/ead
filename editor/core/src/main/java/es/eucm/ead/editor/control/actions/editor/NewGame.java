@@ -47,7 +47,7 @@ import es.eucm.ead.schema.editor.components.GameData;
 import es.eucm.ead.schema.editor.components.SceneMap;
 import es.eucm.ead.schema.editor.data.Cell;
 import es.eucm.ead.schema.entities.ModelEntity;
-import es.eucm.ead.schemax.GameStructure;
+import es.eucm.ead.schemax.ModelStructure;
 import es.eucm.ead.schemax.entities.ResourceCategory;
 
 import java.io.FileNotFoundException;
@@ -89,7 +89,7 @@ public class NewGame extends EditorAction {
 		Model model = controller.getModel();
 		model.reset();
 
-		model.putResource(GameStructure.GAME_FILE, ResourceCategory.GAME, game);
+		model.putResource(ModelStructure.GAME_FILE, ResourceCategory.GAME, game);
 		String initialScene = model.createId(ResourceCategory.SCENE);
 		ModelEntity scene = controller.getTemplates().createScene(
 				applicationAssets.getI18N().m("initial"));

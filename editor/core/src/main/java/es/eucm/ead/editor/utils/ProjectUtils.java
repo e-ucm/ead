@@ -36,6 +36,9 @@
  */
 package es.eucm.ead.editor.utils;
 
+import java.util.List;
+import java.util.Map;
+
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.math.MathUtils;
@@ -44,11 +47,10 @@ import com.badlogic.gdx.utils.reflect.ClassReflection;
 import com.badlogic.gdx.utils.reflect.Field;
 import com.badlogic.gdx.utils.reflect.ReflectionException;
 
+import es.eucm.ead.editor.control.Controller;
 import es.eucm.ead.editor.model.Model;
-import es.eucm.ead.schemax.GameStructure;
-
-import java.util.List;
-import java.util.Map;
+import es.eucm.ead.schema.editor.components.repo.RepoElement;
+import es.eucm.ead.schemax.ModelStructure;
 
 /**
  * Some useful methods to deal with file system and projects
@@ -334,7 +336,7 @@ public class ProjectUtils {
 
 	public static String newSceneId(Model model) {
 		int count = 0;
-		String prefix = GameStructure.SCENES_PATH + "scene";
+		String prefix = ModelStructure.SCENES_PATH + "scene";
 		String id;
 		do {
 			id = prefix + count++ + ".json";

@@ -34,54 +34,58 @@
  *      You should have received a copy of the GNU Lesser General Public License
  *      along with eAdventure.  If not, see <http://www.gnu.org/licenses/>.
  */
-package es.eucm.ead.engine;
+package es.eucm.ead.editor.control;
 
+import com.badlogic.gdx.files.FileHandle;
+
+import es.eucm.ead.schema.editor.components.repo.RepoElement;
 import es.eucm.ead.schemax.ModelStructure;
-import es.eucm.ead.engine.assets.Assets.AssetLoadedCallback;
-import es.eucm.ead.engine.assets.GameAssets;
-import es.eucm.ead.schema.entities.ModelEntity;
 
 /**
- * Deals with game loading. Games can be loaded through
- * {@link GameLoader#loadGame(String, boolean)}.
+ * Controls the downloaded {@link RepoElement}s.
  */
-public class GameLoader implements AssetLoadedCallback<Object> {
+public class LibraryManager {
 
-	public static final String DEFAULT_SKIN = "skins/engine/skin";
+	private Controller controller;
 
-	private GameAssets gameAssets;
-
-	private EntitiesLoader entitiesLoader;
-
-	public GameLoader(GameAssets gameAssets, EntitiesLoader entitiesLoader) {
-		this.entitiesLoader = entitiesLoader;
-		this.gameAssets = gameAssets;
+	public LibraryManager(Controller controller) {
+		this.controller = controller;
 	}
 
 	/**
-	 * @return the entities loader
-	 */
-	public EntitiesLoader getEntitiesLoader() {
-		return entitiesLoader;
-	}
-
-	/**
-	 * Loads a game stored in a path
 	 * 
-	 * @param path
-	 *            the path for the game
-	 * @param internal
-	 *            if the path has as root the classpath
+	 * @param element
+	 * @return the {@link FileHandle} where a given {@link RepoElement} should
+	 *         be downloaded and stored.
 	 */
-	public void loadGame(String path, boolean internal) {
-		gameAssets.setLoadingPath(path, internal);
-		gameAssets.loadSkin(DEFAULT_SKIN);
-		gameAssets.getI18N().setLang(null);
-		gameAssets.get(ModelStructure.GAME_FILE, Object.class, this);
+	public FileHandle getRepoElementLibraryFolder(RepoElement element) {
+		FileHandle libraryFolder = controller.getApplicationAssets().absolute(
+				controller.getPlatform().getDefaultLibraryFolder());
+		FileHandle entityFolder = libraryFolder.child(element.getEntityRef());
+		return entityFolder;
 	}
 
-	@Override
-	public void loaded(String fileName, Object modelEntity) {
-		entitiesLoader.toEngineEntity((ModelEntity) modelEntity);
+	/**
+	 * 
+	 * @param element
+	 * @return true if the minimum required files of a given {@link RepoElement}
+	 *         have been downloaded and are stored in the correct place.
+	 */
+	public boolean isDownloaded(RepoElement element) {
+		FileHandle elemFolder = getRepoElementLibraryFolder(element);
+		if (elemFolder.isDirectory()) {
+			if (elemFolder.child(ModelStructure.THUMBNAIL_FILE).file().isFile()
+					&& elemFolder.child(ModelStructure.DESCRIPTOR_FILE).file()
+							.isFile()) {
+				FileHandle contentsFolder = elemFolder
+						.child(ModelStructure.CONTENTS_FOLDER);
+				if (contentsFolder.isDirectory()
+						&& contentsFolder.child(ModelStructure.ENTITY_FILE)
+								.file().isFile()) {
+					return true;
+				}
+			}
+		}
+		return false;
 	}
 }

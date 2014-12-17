@@ -34,46 +34,39 @@
  *      You should have received a copy of the GNU Lesser General Public License
  *      along with eAdventure.  If not, see <http://www.gnu.org/licenses/>.
  */
-package es.eucm.ead.editor.view.listeners.workers;
+package es.eucm.ead.engine.components.assets;
 
-import com.badlogic.gdx.files.FileHandle;
+import ashley.core.Component;
 
-import es.eucm.ead.editor.control.workers.Worker.WorkerListener;
-import es.eucm.ead.schema.entities.ModelEntity;
+import com.badlogic.gdx.scenes.scene2d.Group;
+import com.badlogic.gdx.utils.Pool;
 
-public abstract class CopyEntityResourcesListener implements WorkerListener {
+import es.eucm.ead.engine.components.controls.ControlComponent;
 
-	private FileHandle outputFolder;
+/**
+ * References for entities
+ */
+public class ReferenceComponent extends ControlComponent<Group> implements
+		Pool.Poolable {
 
-	public CopyEntityResourcesListener(FileHandle outputFolder) {
-		this.outputFolder = outputFolder;
+	private Group group;
+
+	public void setGroup(Group group) {
+		this.group = group;
 	}
 
 	@Override
-	public void start() {
+	public boolean combine(Component other) {
+		return false;
 	}
 
 	@Override
-	public void result(Object... results) {
-		ModelEntity entity = (ModelEntity) results[0];
-		entityCopied(entity);
-		outputFolder.deleteDirectory();
-	}
-
-	public abstract void entityCopied(ModelEntity entity);
-
-	@Override
-	public void error(Throwable ex) {
-		cancelled();
+	public void reset() {
+		group = null;
 	}
 
 	@Override
-	public void done() {
+	public Group getControl() {
+		return group;
 	}
-
-	@Override
-	public void cancelled() {
-		outputFolder.deleteDirectory();
-	}
-
 }

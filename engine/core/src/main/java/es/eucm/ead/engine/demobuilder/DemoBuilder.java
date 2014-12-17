@@ -71,7 +71,7 @@ import es.eucm.ead.schema.renderers.Image;
 import es.eucm.ead.schema.renderers.Renderer;
 import es.eucm.ead.schema.renderers.State;
 import es.eucm.ead.schema.renderers.States;
-import es.eucm.ead.schemax.GameStructure;
+import es.eucm.ead.schemax.ModelStructure;
 
 import java.util.HashMap;
 
@@ -232,7 +232,7 @@ public abstract class DemoBuilder {
 		viewport.setHeight(height);
 		init.getEffects().add(viewport);
 		game.getComponents().add(init);
-		entities.put(GameStructure.GAME_FILE, game);
+		entities.put(ModelStructure.GAME_FILE, game);
 		return this;
 	}
 

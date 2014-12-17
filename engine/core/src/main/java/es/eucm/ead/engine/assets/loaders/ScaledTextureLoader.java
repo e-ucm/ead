@@ -47,7 +47,7 @@ import com.badlogic.gdx.utils.Array;
 import es.eucm.ead.engine.assets.GameAssets.ImageUtils;
 import es.eucm.ead.engine.assets.GameAssets;
 import es.eucm.ead.engine.assets.ScaledTexture;
-import es.eucm.ead.schemax.GameStructure;
+import es.eucm.ead.schemax.ModelStructure;
 
 public class ScaledTextureLoader
 		extends
@@ -91,10 +91,10 @@ public class ScaledTextureLoader
 					Texture.class));
 		} else {
 			FileHandle scaleProperty = gameAssets
-					.resolveProject(GameStructure.METADATA_PATH
+					.resolveProject(ModelStructure.METADATA_PATH
 							+ imageFile.name() + ".prop");
 			FileHandle scaled = gameAssets
-					.resolveProject(GameStructure.METADATA_PATH
+					.resolveProject(ModelStructure.METADATA_PATH
 							+ imageFile.name() + ".scaled");
 			if (!imageFile.exists() || !scaleProperty.exists()) {
 				scale = imageUtils.scale(imageFile, scaled);

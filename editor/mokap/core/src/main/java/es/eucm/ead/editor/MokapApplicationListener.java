@@ -56,6 +56,7 @@ import es.eucm.ead.editor.model.Q;
 import es.eucm.ead.editor.model.events.SelectionEvent;
 import es.eucm.ead.editor.model.events.SelectionEvent.Type;
 import es.eucm.ead.editor.platform.Platform;
+import es.eucm.ead.editor.utils.ProjectUtils;
 import es.eucm.ead.editor.view.SkinConstants;
 import es.eucm.ead.editor.view.widgets.WidgetBuilder;
 
@@ -136,8 +137,6 @@ public class MokapApplicationListener extends EditorApplicationListener {
 
 		MokapController controller = new MokapController(this.platform,
 				Gdx.files, viewContainer, modalContainer);
-		WidgetBuilder.setController(controller);
-		Q.setController(controller);
 
 		controller.getModel().addSelectionListener(
 				new ThumbnailSelectionListener());

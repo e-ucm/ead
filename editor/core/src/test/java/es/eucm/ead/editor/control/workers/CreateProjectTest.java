@@ -38,7 +38,7 @@ package es.eucm.ead.editor.control.workers;
 
 import es.eucm.ead.editor.control.actions.editor.ExecuteWorker;
 import es.eucm.ead.editor.control.workers.Worker.WorkerListener;
-import es.eucm.ead.schemax.GameStructure;
+import es.eucm.ead.schemax.ModelStructure;
 
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
@@ -82,6 +82,6 @@ public class CreateProjectTest extends WorkerTest implements WorkerListener {
 	public void asserts() {
 		assertNotNull(path);
 		assertTrue(controller.getEditorGameAssets().absolute(path)
-				.child(GameStructure.GAME_FILE).exists());
+				.child(ModelStructure.GAME_FILE).exists());
 	}
 }

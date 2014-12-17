@@ -62,7 +62,7 @@ import es.eucm.ead.engine.GameLoop;
 import es.eucm.ead.engine.entities.EngineEntity;
 import es.eucm.ead.schema.editor.components.Thumbnail;
 import es.eucm.ead.schema.entities.ModelEntity;
-import es.eucm.ead.schemax.GameStructure;
+import es.eucm.ead.schemax.ModelStructure;
 
 /**
  * Creates a thumbnail for a {@link ModelEntity}.
@@ -140,7 +140,7 @@ public class CreateSceneThumbnail extends EditorAction {
 		}
 
 		FileHandle thumbnailsFolder = assets
-				.resolveProject(GameStructure.THUMBNAILS_PATH);
+				.resolveProject(ModelStructure.THUMBNAILS_PATH);
 		thumbnailsFolder.mkdirs();
 
 		String thumbnailPath = Q.getThumbnailPath(model.getIdFor(scene));

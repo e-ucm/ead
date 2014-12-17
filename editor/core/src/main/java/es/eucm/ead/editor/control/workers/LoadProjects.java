@@ -45,7 +45,7 @@ import es.eucm.ead.engine.assets.Assets;
 import es.eucm.ead.schema.editor.components.Documentation;
 import es.eucm.ead.schema.editor.components.GameData;
 import es.eucm.ead.schema.entities.ModelEntity;
-import es.eucm.ead.schemax.GameStructure;
+import es.eucm.ead.schemax.ModelStructure;
 
 /**
  * Load all the projects and their associated thumbnails. Thumbnails path are
@@ -107,7 +107,7 @@ public class LoadProjects extends Worker {
 	}
 
 	private ModelEntity findGame(String path) {
-		FileHandle game = assets.absolute(path).child(GameStructure.GAME_FILE);
+		FileHandle game = assets.absolute(path).child(ModelStructure.GAME_FILE);
 		if (game.exists()) {
 			return assets.fromJson(ModelEntity.class, game);
 		} else {

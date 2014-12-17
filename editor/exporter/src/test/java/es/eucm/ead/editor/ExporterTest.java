@@ -54,7 +54,7 @@ import es.eucm.ead.schema.effects.GoScene;
 import es.eucm.ead.schema.effects.SetViewport;
 import es.eucm.ead.schema.entities.ModelEntity;
 import es.eucm.ead.schema.renderers.Image;
-import es.eucm.ead.schemax.GameStructure;
+import es.eucm.ead.schemax.ModelStructure;
 import es.eucm.ead.schemax.entities.ResourceCategory;
 import org.junit.Test;
 
@@ -238,7 +238,7 @@ public class ExporterTest {
 		}
 
 		// Copy images to the tempDir
-		FileHandle imagesFolder = tempDir.child(GameStructure.IMAGES_FOLDER);
+		FileHandle imagesFolder = tempDir.child(ModelStructure.IMAGES_FOLDER);
 		imagesFolder.mkdirs();
 		Random random = new Random();
 		for (String imagePath : TEST_IMAGES) {
@@ -308,8 +308,8 @@ public class ExporterTest {
 								// then read its contents to check
 								// no editor components are present
 								if (entry.getName().equals(
-										GameStructure.JAR_GAME_FOLDER
-												+ GameStructure.GAME_FILE)) {
+										ModelStructure.JAR_GAME_FOLDER
+												+ ModelStructure.GAME_FILE)) {
 									JarFile jarFile = new JarFile(destinyJAR
 											.file());
 									InputStream gameIS = jarFile

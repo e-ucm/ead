@@ -63,7 +63,9 @@ import es.eucm.ead.editor.control.pastelisteners.TextCopyListener;
 import es.eucm.ead.editor.control.workers.WorkerExecutor;
 import es.eucm.ead.editor.indexes.ControllerIndex;
 import es.eucm.ead.editor.model.Model;
+import es.eucm.ead.editor.model.Q;
 import es.eucm.ead.editor.platform.Platform;
+import es.eucm.ead.editor.utils.ProjectUtils;
 import es.eucm.ead.editor.view.builders.ViewBuilder;
 import es.eucm.ead.engine.EngineInitializer;
 import es.eucm.ead.schema.components.behaviors.Behavior;
@@ -137,12 +139,15 @@ public class Controller {
 
 	private DownloadManager downloadManager;
 
+	private LibraryManager libraryManager;
+
 	private Engine engine;
 
 	private Map<Class, ControllerIndex> indexes;
 
 	public Controller(Platform platform, Files files, Group viewsContainer,
 			Group modalsContainer) {
+		Q.setController(this);
 		this.shapeRenderer = new ShapeRenderer();
 		this.platform = platform;
 		this.applicationAssets = createApplicationAssets(files);
@@ -158,6 +163,7 @@ public class Controller {
 		this.backgroundExecutor = new BackgroundExecutor();
 		this.workerExecutor = new WorkerExecutor(this);
 		this.downloadManager = new DownloadManager(this);
+		this.libraryManager = new LibraryManager(this);
 		this.preferences = applicationAssets.loadPreferences();
 		// Get the release info from editor assets
 		this.releaseInfo = applicationAssets.loadReleaseInfo();
@@ -285,6 +291,10 @@ public class Controller {
 
 	public DownloadManager getDownloadManager() {
 		return downloadManager;
+	}
+
+	public LibraryManager getLibraryManager() {
+		return libraryManager;
 	}
 
 	public Engine getEngine() {

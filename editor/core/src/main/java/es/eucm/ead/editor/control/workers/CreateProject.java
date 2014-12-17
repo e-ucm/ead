@@ -45,7 +45,7 @@ import es.eucm.ead.editor.model.Q;
 import es.eucm.ead.editor.utils.ProjectUtils;
 import es.eucm.ead.schema.editor.components.GameData;
 import es.eucm.ead.schema.entities.ModelEntity;
-import es.eucm.ead.schemax.GameStructure;
+import es.eucm.ead.schemax.ModelStructure;
 
 import java.util.concurrent.atomic.AtomicBoolean;
 
@@ -98,14 +98,14 @@ public class CreateProject extends Worker {
 			ModelEntity scene = controller.getTemplates().createScene("");
 
 			FileHandle scenesFolder = projectFolder
-					.child(GameStructure.SCENES_PATH);
+					.child(ModelStructure.SCENES_PATH);
 			scenesFolder.mkdirs();
 			FileHandle sceneFile = scenesFolder.child("scene0.json");
 			Q.getComponent(game, GameData.class).setInitialScene(
-					GameStructure.SCENES_PATH + "scene0.json");
+					ModelStructure.SCENES_PATH + "scene0.json");
 
 			assets.toJson(game, null, null,
-					projectFolder.child(GameStructure.GAME_FILE));
+					projectFolder.child(ModelStructure.GAME_FILE));
 			assets.toJson(scene, null, null, sceneFile);
 
 			result(projectFolder.path());

@@ -45,7 +45,7 @@ import es.eucm.ead.editor.control.actions.EditorAction;
 import es.eucm.ead.editor.control.workers.UnzipFile;
 import es.eucm.ead.editor.utils.ProjectUtils;
 import es.eucm.ead.editor.view.listeners.workers.UnzipFileListener;
-import es.eucm.ead.schemax.GameStructure;
+import es.eucm.ead.schemax.ModelStructure;
 
 /**
  * Import a project from a given xip file and open it.
@@ -103,14 +103,14 @@ public class ImportProject extends EditorAction {
 		public void unzipped() {
 			FileHandle rootProject = null;
 
-			FileHandle gameFile = outputFolder.child(GameStructure.GAME_FILE);
+			FileHandle gameFile = outputFolder.child(ModelStructure.GAME_FILE);
 			if (gameFile.exists()) {
 				rootProject = outputFolder;
 			} else {
 				FileHandle[] listChildren = outputFolder.list();
 				if (listChildren.length == 1) {
 					FileHandle child = listChildren[0];
-					if (child.child(GameStructure.GAME_FILE).exists()) {
+					if (child.child(ModelStructure.GAME_FILE).exists()) {
 						rootProject = child;
 					}
 				}

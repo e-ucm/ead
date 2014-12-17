@@ -34,54 +34,50 @@
  *      You should have received a copy of the GNU Lesser General Public License
  *      along with eAdventure.  If not, see <http://www.gnu.org/licenses/>.
  */
-package es.eucm.ead.engine;
+package es.eucm.ead.editor.control.actions.model;
 
-import es.eucm.ead.schemax.ModelStructure;
-import es.eucm.ead.engine.assets.Assets.AssetLoadedCallback;
-import es.eucm.ead.engine.assets.GameAssets;
+import es.eucm.ead.editor.control.Controller;
+import es.eucm.ead.editor.control.actions.ModelAction;
+import es.eucm.ead.editor.control.commands.Command;
+import es.eucm.ead.schema.components.Reference;
+import es.eucm.ead.schema.editor.components.repo.RepoElement;
 import es.eucm.ead.schema.entities.ModelEntity;
+import es.eucm.ead.schemax.ModelStructure;
 
 /**
- * Deals with game loading. Games can be loaded through
- * {@link GameLoader#loadGame(String, boolean)}.
+ * 
+ * <p>
+ * Adds a reference to a given {@link RepoElement} to the current scene.
+ * <dl>
+ * <dt><strong>Arguments</strong></dt>
+ * <dd><strong>args[0] </strong> <em>{@link RepoElement}</em> The
+ * {@link RepoElement} already imported to the local library.</dd>
+ * </dl>
+ * </p>
+ * 
  */
-public class GameLoader implements AssetLoadedCallback<Object> {
+public class AddRepoElementReference extends ModelAction {
 
-	public static final String DEFAULT_SKIN = "skins/engine/skin";
+	private AddSceneElement addSceneElem;
 
-	private GameAssets gameAssets;
-
-	private EntitiesLoader entitiesLoader;
-
-	public GameLoader(GameAssets gameAssets, EntitiesLoader entitiesLoader) {
-		this.entitiesLoader = entitiesLoader;
-		this.gameAssets = gameAssets;
-	}
-
-	/**
-	 * @return the entities loader
-	 */
-	public EntitiesLoader getEntitiesLoader() {
-		return entitiesLoader;
-	}
-
-	/**
-	 * Loads a game stored in a path
-	 * 
-	 * @param path
-	 *            the path for the game
-	 * @param internal
-	 *            if the path has as root the classpath
-	 */
-	public void loadGame(String path, boolean internal) {
-		gameAssets.setLoadingPath(path, internal);
-		gameAssets.loadSkin(DEFAULT_SKIN);
-		gameAssets.getI18N().setLang(null);
-		gameAssets.get(ModelStructure.GAME_FILE, Object.class, this);
+	public AddRepoElementReference() {
+		super(true, false, new Class[] { RepoElement.class });
 	}
 
 	@Override
-	public void loaded(String fileName, Object modelEntity) {
-		entitiesLoader.toEngineEntity((ModelEntity) modelEntity);
+	public void initialize(Controller controller) {
+		super.initialize(controller);
+		addSceneElem = controller.getActions().getAction(AddSceneElement.class);
+	}
+
+	@Override
+	public Command perform(Object... args) {
+		RepoElement element = (RepoElement) args[0];
+		ModelEntity entity = new ModelEntity();
+		Reference ref = new Reference();
+		ref.setId(element.getEntityRef() + "/" + ModelStructure.CONTENTS_FOLDER
+				+ ModelStructure.ENTITY_FILE);
+		entity.getComponents().add(ref);
+		return addSceneElem.perform(entity);
 	}
 }

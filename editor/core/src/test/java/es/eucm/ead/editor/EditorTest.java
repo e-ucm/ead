@@ -92,7 +92,6 @@ public abstract class EditorTest {
 		controller = new Controller(platform, new MockFiles(), new Group(),
 				new Group());
 		model = controller.getModel();
-		Q.setController(controller);
 		app = (MockApplication) Gdx.app;
 	}
 

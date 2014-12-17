@@ -38,6 +38,7 @@ package es.eucm.ead.engine.assets;
 
 import com.badlogic.gdx.Files;
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.assets.AssetLoaderParameters;
 import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.utils.Array;
@@ -46,7 +47,7 @@ import com.badlogic.gdx.utils.reflect.ReflectionException;
 
 import es.eucm.ead.engine.GameLoader;
 import es.eucm.ead.engine.assets.loaders.ScaledTextureLoader;
-import es.eucm.ead.schemax.GameStructure;
+import es.eucm.ead.schemax.ModelStructure;
 
 /**
  * Manages all game assets. Internally delegates LibGDX
@@ -54,11 +55,11 @@ import es.eucm.ead.schemax.GameStructure;
  * 
  * @see com.badlogic.gdx.assets.AssetManager
  */
-public class GameAssets extends Assets implements GameStructure {
+public class GameAssets extends Assets implements ModelStructure {
 
 	public static final String ENGINE_BINDINGS = "bindings.json";
 
-	private String loadingPath;
+	private String loadingPath, referencePath;
 
 	private boolean gamePathInternal;
 
@@ -106,11 +107,35 @@ public class GameAssets extends Assets implements GameStructure {
 		loadSkin(GameLoader.DEFAULT_SKIN);
 	}
 
+	@Override
+	public <T> void get(String fileName, Class<T> clazz,
+			AssetLoaderParameters<T> parameters,
+			AssetLoadedCallback<T> callback, boolean forceLoading) {
+		if (referencePath != null) {
+			fileName = referencePath + fileName;
+		}
+		super.get(fileName, clazz, parameters, callback, forceLoading);
+	}
+
 	/**
 	 * @return the current loading path
 	 */
 	public String getLoadingPath() {
 		return loadingPath;
+	}
+
+	/**
+	 * Sets the current path for a referenced entity.
+	 */
+	public void setReferencePath(String referencePath) {
+		if (referencePath != null && !referencePath.endsWith("/")) {
+			referencePath += "/";
+		}
+		this.referencePath = referencePath;
+	}
+
+	public String getReferencePath() {
+		return referencePath;
 	}
 
 	/**
@@ -155,7 +180,8 @@ public class GameAssets extends Assets implements GameStructure {
 	 * Resolves a file handle inside the project
 	 */
 	public FileHandle resolveProject(String path) {
-		return files.absolute(loadingPath + path);
+		return files.absolute((referencePath == null ? loadingPath
+				: referencePath) + path);
 	}
 
 	/**

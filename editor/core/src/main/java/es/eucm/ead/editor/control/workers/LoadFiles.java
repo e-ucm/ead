@@ -41,7 +41,7 @@ import com.badlogic.gdx.utils.Array;
 import es.eucm.ead.editor.control.Controller;
 import es.eucm.ead.editor.utils.ProjectUtils;
 import es.eucm.ead.engine.assets.Assets;
-import es.eucm.ead.schemax.GameStructure;
+import es.eucm.ead.schemax.ModelStructure;
 
 /**
  * Receives a path (args[0]) and loads all its children that are images.
@@ -79,7 +79,7 @@ public class LoadFiles extends Worker {
 			projectPaths.addAll(fileFolder.list());
 			if (projectPaths.size > 0) {
 				thumbnailsFolder = fileFolder
-						.child(GameStructure.THUMBNAILS_PATH);
+						.child(ModelStructure.THUMBNAILS_PATH);
 				if (!thumbnailsFolder.exists()) {
 					thumbnailsFolder.mkdirs();
 				}

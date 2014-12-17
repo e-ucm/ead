@@ -100,6 +100,10 @@ public class EditorGameAssets extends GameAssets {
 
 	@Override
 	public FileHandle resolve(String path) {
+		if (path.startsWith("/") || path.indexOf(':') == 1) {
+			// Absolute file
+			return files.absolute(path);
+		}
 		if (isGamePathInternal()) {
 			return super.resolve(path);
 		}

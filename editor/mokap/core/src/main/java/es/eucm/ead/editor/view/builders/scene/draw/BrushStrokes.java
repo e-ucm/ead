@@ -60,7 +60,7 @@ import es.eucm.ead.engine.I18N;
 import es.eucm.ead.engine.entities.EngineEntity;
 import es.eucm.ead.engine.utils.EngineUtils;
 import es.eucm.ead.schema.entities.ModelEntity;
-import es.eucm.ead.schemax.GameStructure;
+import es.eucm.ead.schemax.ModelStructure;
 
 /**
  * Wrapper around {@link MeshHelper}. A widget that draws lines renders them to
@@ -149,7 +149,7 @@ public class BrushStrokes extends AbstractWidget {
 
 	/**
 	 * Attempts to save the contents of the {@link #mesh} to a file located in
-	 * the {@link GameStructure#IMAGES_FOLDER}.
+	 * the {@link ModelStructure#IMAGES_FOLDER}.
 	 * 
 	 * @return true if everything went OK.
 	 */
@@ -158,7 +158,7 @@ public class BrushStrokes extends AbstractWidget {
 			return false;
 
 		// Get a correct image name
-		String savingPath = GameStructure.IMAGES_FOLDER;
+		String savingPath = ModelStructure.IMAGES_FOLDER;
 		I18N i18n = this.controller.getApplicationAssets().getI18N();
 		EditorGameAssets gameAssets = this.controller.getEditorGameAssets();
 		FileHandle savingDir = gameAssets.resolve(savingPath);

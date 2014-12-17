@@ -113,6 +113,11 @@ public abstract class AbstractPlatform implements Platform {
 	}
 
 	@Override
+	public String getDefaultLibraryFolder() {
+		return getDefaultProjectsFolder();
+	}
+
+	@Override
 	public <T> T sendHttpGetRequest(String URL, Class<T> type)
 			throws IOException {
 		HttpRequest httpRequest = Pools.obtain(HttpRequest.class);

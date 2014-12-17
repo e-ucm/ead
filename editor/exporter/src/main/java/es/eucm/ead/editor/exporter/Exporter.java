@@ -62,7 +62,7 @@ import es.eucm.ead.schema.effects.ChangeVar;
 import es.eucm.ead.schema.effects.SetViewport;
 import es.eucm.ead.schema.entities.ModelEntity;
 import es.eucm.ead.schemax.FieldName;
-import es.eucm.ead.schemax.GameStructure;
+import es.eucm.ead.schemax.ModelStructure;
 import es.eucm.ead.schemax.JsonExtension;
 import es.eucm.ead.schemax.Layer;
 
@@ -254,7 +254,7 @@ public class Exporter {
 		tempDir.mkdirs();
 		// Create a subfolder that means the root of the game in the Jar
 		// (/assets/)
-		FileHandle tempGameDir = tempDir.child(GameStructure.JAR_GAME_FOLDER);
+		FileHandle tempGameDir = tempDir.child(ModelStructure.JAR_GAME_FOLDER);
 		tempGameDir.mkdirs();
 		if (callback != null)
 			callback.progress(15, "export.progress.saving");

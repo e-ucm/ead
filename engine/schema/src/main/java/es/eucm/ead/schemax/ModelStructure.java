@@ -37,13 +37,18 @@
 package es.eucm.ead.schemax;
 
 /**
- * This interface describes the internal structure of game files and projects.
- * It provides constants for accessing the subfolders where scenes, images and
+ * This interface describes the internal structure of the library, game files
+ * and projects. It provides constants for accessing the subfolders where of the
+ * entities where the thumbnail, descriptor, contents, scenes, images and
  * subgames are stored, for example.
  * 
  * Created by Javier Torrente on 3/04/14.
  */
-public interface GameStructure {
+public interface ModelStructure {
+
+	/*
+	 * Game Structure files
+	 */
 
 	public static final String IMAGES_FOLDER = "images/";
 
@@ -76,4 +81,19 @@ public interface GameStructure {
 	public static final String JAR_GAME_FOLDER = "assets/";
 
 	public static final String THUMBNAILS_PATH = METADATA_PATH + "thumbnails/";
+
+	/*
+	 * Library Structure files
+	 */
+
+	public static final String LIBRARY_FOLDER = "library/";
+
+	public static final String CONTENTS_FOLDER = "contents/";
+
+	public static final String THUMBNAIL_FILE = "thumbnail.png";
+
+	public static final String DESCRIPTOR_FILE = "descriptor.json";
+
+	public static final String ENTITY_FILE = "entity.json";
+
 }

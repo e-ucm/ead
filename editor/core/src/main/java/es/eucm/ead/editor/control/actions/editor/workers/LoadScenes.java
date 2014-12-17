@@ -44,7 +44,7 @@ import es.eucm.ead.editor.control.commands.ResourceCommand.AddResourceCommand;
 import es.eucm.ead.editor.control.workers.Worker;
 import es.eucm.ead.editor.control.workers.Worker.WorkerListener;
 import es.eucm.ead.schema.entities.ModelEntity;
-import es.eucm.ead.schemax.GameStructure;
+import es.eucm.ead.schemax.ModelStructure;
 import es.eucm.ead.schemax.entities.ResourceCategory;
 
 /**
@@ -99,7 +99,7 @@ public class LoadScenes extends EditorAction implements WorkerListener {
 		protected void prepare() {
 			scenes = new Array<String>();
 			FileHandle scenesFolder = controller.getEditorGameAssets().resolve(
-					GameStructure.SCENES_PATH);
+					ModelStructure.SCENES_PATH);
 			for (FileHandle child : scenesFolder.list()) {
 				if ("json".equals(child.extension())) {
 					scenes.add(child.path().substring(

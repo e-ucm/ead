@@ -97,16 +97,19 @@ public class SearchGallery extends AbstractWidget implements WorkerListener,
 			RepoElement elem = (RepoElement) firstResult;
 			Pixmap repoThumbnail = (Pixmap) results[1];
 			Texture thumbnailTex = new Texture(repoThumbnail);
-			repoThumbnail.dispose();
-			addTile(elem, thumbnailTex);
+			addTile(elem, thumbnailTex, repoThumbnail);
 			assets.addAsset(thumbnailTex.toString(), Texture.class,
 					thumbnailTex);
+			assets.addAsset(repoThumbnail.toString(), Pixmap.class,
+					repoThumbnail);
 		}
 	}
 
-	private Cell addTile(RepoElement elem, Texture thumbnailTexture) {
+	private Cell addTile(RepoElement elem, Texture thumbnailTexture,
+			Pixmap thumbnailPixmap) {
 
-		RepoTile tile = WidgetBuilder.repoTile(elem, thumbnailTexture);
+		RepoTile tile = WidgetBuilder.repoTile(elem, thumbnailTexture,
+				thumbnailPixmap);
 
 		return gallery.add(tile);
 	}

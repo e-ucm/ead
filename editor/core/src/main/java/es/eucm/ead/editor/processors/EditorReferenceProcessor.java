@@ -34,54 +34,26 @@
  *      You should have received a copy of the GNU Lesser General Public License
  *      along with eAdventure.  If not, see <http://www.gnu.org/licenses/>.
  */
-package es.eucm.ead.engine;
+package es.eucm.ead.editor.processors;
 
-import es.eucm.ead.schemax.ModelStructure;
-import es.eucm.ead.engine.assets.Assets.AssetLoadedCallback;
+import es.eucm.ead.editor.platform.Platform;
+import es.eucm.ead.engine.EntitiesLoader;
+import es.eucm.ead.engine.GameLoop;
 import es.eucm.ead.engine.assets.GameAssets;
-import es.eucm.ead.schema.entities.ModelEntity;
+import es.eucm.ead.engine.processors.assets.ReferenceProcessor;
 
-/**
- * Deals with game loading. Games can be loaded through
- * {@link GameLoader#loadGame(String, boolean)}.
- */
-public class GameLoader implements AssetLoadedCallback<Object> {
+public class EditorReferenceProcessor extends ReferenceProcessor {
 
-	public static final String DEFAULT_SKIN = "skins/engine/skin";
+	private Platform platform;
 
-	private GameAssets gameAssets;
-
-	private EntitiesLoader entitiesLoader;
-
-	public GameLoader(GameAssets gameAssets, EntitiesLoader entitiesLoader) {
-		this.entitiesLoader = entitiesLoader;
-		this.gameAssets = gameAssets;
-	}
-
-	/**
-	 * @return the entities loader
-	 */
-	public EntitiesLoader getEntitiesLoader() {
-		return entitiesLoader;
-	}
-
-	/**
-	 * Loads a game stored in a path
-	 * 
-	 * @param path
-	 *            the path for the game
-	 * @param internal
-	 *            if the path has as root the classpath
-	 */
-	public void loadGame(String path, boolean internal) {
-		gameAssets.setLoadingPath(path, internal);
-		gameAssets.loadSkin(DEFAULT_SKIN);
-		gameAssets.getI18N().setLang(null);
-		gameAssets.get(ModelStructure.GAME_FILE, Object.class, this);
+	public EditorReferenceProcessor(GameLoop engine, GameAssets assets,
+			EntitiesLoader loader, Platform platform) {
+		super(engine, assets, loader);
+		this.platform = platform;
 	}
 
 	@Override
-	public void loaded(String fileName, Object modelEntity) {
-		entitiesLoader.toEngineEntity((ModelEntity) modelEntity);
+	protected String getLibraryPath() {
+		return platform.getDefaultLibraryFolder();
 	}
 }
