@@ -82,7 +82,7 @@ public class WorkerExecutor {
 			workers.begin();
 			for (int i = 0, n = workers.size; i < n; ++i) {
 				Worker worker = workers.get(i);
-				if (!worker.isCancelled() && worker.isResultsInUIThread()) {
+				if (worker.isResultsInUIThread()) {
 					worker.act();
 				}
 				if (worker.isDone()) {
