@@ -62,6 +62,7 @@ public class AnimationsEditor extends ComponentEditor<ModelComponent> {
 	protected void buildContent() {
 		editors = new ObjectMap<String, TransformAnimationEditor>();
 		addTransformationAnimationEditor(new MoveAnimationEditor(controller));
+		addTransformationAnimationEditor(new BlinkAnimationEditor(controller));
 		for (Actor a : editors.values()) {
 			list.add(a).expandX().margin(WidgetBuilder.dpToPixels(16));
 		}

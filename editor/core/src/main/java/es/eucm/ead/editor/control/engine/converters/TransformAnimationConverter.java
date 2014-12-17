@@ -71,8 +71,10 @@ public abstract class TransformAnimationConverter<S extends TransformAnimation>
 			tween.setEaseType(EaseType.OUT);
 			break;
 		}
+	}
+
+	protected void setRepeatsAndYoyo(S transform, BaseTween tween) {
 		tween.setYoyo(transform.isYoyo());
 		tween.setRepeat(transform.getRepeat());
-
 	}
 }
