@@ -80,6 +80,7 @@ public class Rename extends EditorAction implements TextInputListener {
 	public void input(String text) {
 		Documentation doc = Q.getComponent(modelEntity, Documentation.class);
 		controller.action(SetField.class, doc, FieldName.NAME, text);
+		Gdx.graphics.requestRendering();
 	}
 
 	@Override
