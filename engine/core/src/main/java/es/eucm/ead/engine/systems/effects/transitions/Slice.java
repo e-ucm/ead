@@ -110,23 +110,38 @@ public class Slice implements Transition {
 			Region currScreenRegion, TextureRegion nextScreen,
 			Region nextScreenRegion, float completion) {
 		batch.draw(currScreen, currScreenRegion.x, currScreenRegion.y,
-				(float) currScreenRegion.w, currScreenRegion.h);
+				currScreenRegion.w, currScreenRegion.h);
 		float w = nextScreenRegion.w;
 		float h = nextScreenRegion.h;
 		float x = nextScreenRegion.x;
 		float y = nextScreenRegion.y;
 		int numSlices = sliceIndex.size;
 
+		Texture nextTex = nextScreen.getTexture();
+		completion = easing.apply(completion);
+
 		if (horizontal) {
 
-			Texture nextTex = nextScreen.getTexture();
-			float sliceHeight = (h / numSlices);
 			int sliceTexelHeight = (int) (nextTex.getHeight() / numSlices);
-			completion = easing.apply(completion);
+			float sliceHeight = h
+					* ((float) sliceTexelHeight / nextTex.getHeight());
+			float yOverflow = h - numSlices * sliceHeight;
 			for (int i = 0; i < numSlices; ++i) {
 				// current slice/column
-				y = i * sliceHeight + nextScreenRegion.y;
-				// vertical displacement using randomized
+				int offsetIdx;
+				float offsetY;
+				boolean flipY;
+				if (nextScreen.isFlipY()) {
+					flipY = true;
+					offsetIdx = i;
+					offsetY = 0;
+				} else {
+					flipY = false;
+					offsetIdx = numSlices - i - 1;
+					offsetY = yOverflow;
+				}
+				y = offsetIdx * sliceHeight + nextScreenRegion.y + offsetY;
+				// horizontal displacement using randomized
 				// list of slice indices
 				float offsetX = w * (1 + sliceIndex.get(i) / (float) numSlices);
 				switch (direction) {
@@ -146,14 +161,13 @@ public class Slice implements Transition {
 				}
 				batch.draw(nextTex, x, y, 0, 0, w, sliceHeight, 1, 1, 0, 0, i
 						* sliceTexelHeight, nextTex.getWidth(),
-						sliceTexelHeight, false, true);
+						sliceTexelHeight, false, flipY);
 			}
 		} else {
 
-			Texture nextTex = nextScreen.getTexture();
-			float sliceWidth = (w / numSlices);
 			int sliceTexelWidth = (int) (nextTex.getWidth() / numSlices);
-			completion = easing.apply(completion);
+			float sliceWidth = w
+					* ((float) sliceTexelWidth / nextTex.getWidth());
 			for (int i = 0; i < numSlices; ++i) {
 				// current slice/column
 				x = i * sliceWidth + nextScreenRegion.x;
@@ -175,9 +189,11 @@ public class Slice implements Transition {
 					}
 					break;
 				}
+
 				batch.draw(nextTex, x, y, 0, 0, sliceWidth, h, 1, 1, 0, i
-						* sliceTexelWidth, 0, sliceTexelWidth,
-						nextTex.getHeight(), false, true);
+						* sliceTexelWidth, 0, sliceTexelWidth, nextTex
+						.getHeight(), false, nextScreen.isFlipY() ? true
+						: false);
 			}
 		}
 	}
