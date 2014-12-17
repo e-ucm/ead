@@ -66,12 +66,6 @@ public class ProjectUtils {
 	private static final Array<String> BINARY_EXTENSIONS = new Array<String>(
 			new String[] { "midi", "mp3", "wav", "ogg", "mpg", "mpeg", "avi" });
 
-	private static Controller controller;
-
-	public static void setController(Controller controller) {
-		ProjectUtils.controller = controller;
-	}
-
 	/**
 	 * @return an array with paths of all the projects inside the given folder
 	 */
@@ -392,12 +386,5 @@ public class ProjectUtils {
 			}
 		}
 		return false;
-	}
-
-	public static FileHandle getRepoElementLibraryFolder(RepoElement element) {
-		FileHandle libraryFolder = controller.getApplicationAssets().absolute(
-				controller.getPlatform().getDefaultLibraryFolder());
-		FileHandle entityFolder = libraryFolder.child(element.getEntityRef());
-		return entityFolder;
 	}
 }

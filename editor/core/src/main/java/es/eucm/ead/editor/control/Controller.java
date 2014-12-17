@@ -139,13 +139,14 @@ public class Controller {
 
 	private DownloadManager downloadManager;
 
+	private LibraryManager libraryManager;
+
 	private Engine engine;
 
 	private Map<Class, ControllerIndex> indexes;
 
 	public Controller(Platform platform, Files files, Group viewsContainer,
 			Group modalsContainer) {
-		ProjectUtils.setController(this);
 		Q.setController(this);
 		this.shapeRenderer = new ShapeRenderer();
 		this.platform = platform;
@@ -162,6 +163,7 @@ public class Controller {
 		this.backgroundExecutor = new BackgroundExecutor();
 		this.workerExecutor = new WorkerExecutor(this);
 		this.downloadManager = new DownloadManager(this);
+		this.libraryManager = new LibraryManager(this);
 		this.preferences = applicationAssets.loadPreferences();
 		// Get the release info from editor assets
 		this.releaseInfo = applicationAssets.loadReleaseInfo();
@@ -289,6 +291,10 @@ public class Controller {
 
 	public DownloadManager getDownloadManager() {
 		return downloadManager;
+	}
+
+	public LibraryManager getLibraryManager() {
+		return libraryManager;
 	}
 
 	public Engine getEngine() {

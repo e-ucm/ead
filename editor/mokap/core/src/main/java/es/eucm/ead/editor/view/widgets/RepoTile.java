@@ -54,7 +54,7 @@ import es.eucm.ead.editor.control.DownloadManager.DownloadWork;
 import es.eucm.ead.editor.control.actions.editor.ChangeView;
 import es.eucm.ead.editor.control.actions.editor.ExecuteWorker;
 import es.eucm.ead.editor.control.actions.model.AddRepoElementReference;
-import es.eucm.ead.editor.control.workers.CopyToLibraryEntityResources;
+import es.eucm.ead.editor.control.workers.CopyToLibraryWorker;
 import es.eucm.ead.editor.control.workers.UnzipFile;
 import es.eucm.ead.editor.control.workers.Worker.WorkerListener;
 import es.eucm.ead.editor.utils.ProjectUtils;
@@ -134,9 +134,7 @@ public class RepoTile extends Tile implements DownloadListener {
 	}
 
 	private void initState() {
-		FileHandle entityFolder = ProjectUtils
-				.getRepoElementLibraryFolder(element);
-		if (entityFolder.exists()) {
+		if (controller.getLibraryManager().isDownloaded(element)) {
 			state = State.DOWNLOADED;
 			inLibrary();
 		} else {
@@ -260,8 +258,7 @@ public class RepoTile extends Tile implements DownloadListener {
 
 		@Override
 		public void unzipped() {
-			controller.action(ExecuteWorker.class,
-					CopyToLibraryEntityResources.class,
+			controller.action(ExecuteWorker.class, CopyToLibraryWorker.class,
 					new CopyToLibraryListener(), false, outputFolder, element,
 					thumbnailFile);
 		}
