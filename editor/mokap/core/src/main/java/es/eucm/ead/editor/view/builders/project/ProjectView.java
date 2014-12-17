@@ -37,26 +37,41 @@
 package es.eucm.ead.editor.view.builders.project;
 
 import com.badlogic.gdx.scenes.scene2d.Actor;
+import com.badlogic.gdx.scenes.scene2d.ui.Cell;
+import com.badlogic.gdx.scenes.scene2d.ui.Container;
+import com.badlogic.gdx.scenes.scene2d.ui.Image;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
+import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
+import com.badlogic.gdx.scenes.scene2d.utils.Align;
+
 import es.eucm.ead.editor.control.Controller;
 import es.eucm.ead.editor.control.MokapController.BackListener;
+import es.eucm.ead.editor.control.Selection;
 import es.eucm.ead.editor.control.actions.editor.ChangeView;
 import es.eucm.ead.editor.control.actions.editor.CloseProject;
+import es.eucm.ead.editor.control.actions.editor.Rename;
+import es.eucm.ead.editor.model.Model.FieldListener;
+import es.eucm.ead.editor.model.Q;
+import es.eucm.ead.editor.model.events.FieldEvent;
 import es.eucm.ead.editor.view.SkinConstants;
 import es.eucm.ead.editor.view.builders.PlayView;
 import es.eucm.ead.editor.view.builders.ViewBuilder;
 import es.eucm.ead.editor.view.widgets.MultiWidget;
 import es.eucm.ead.editor.view.widgets.WidgetBuilder;
 import es.eucm.ead.editor.view.widgets.layouts.LinearLayout;
+import es.eucm.ead.schema.editor.components.Documentation;
+import es.eucm.ead.schemax.FieldName;
 
 /**
  * Project view. A list with the scenes of the project
  */
-public class ProjectView implements ViewBuilder, BackListener {
+public class ProjectView implements ViewBuilder, BackListener, FieldListener {
 
 	private Controller controller;
 
 	private LinearLayout view;
+
+	private TextButton title;
 
 	@Override
 	public void initialize(Controller controller) {
@@ -71,11 +86,18 @@ public class ProjectView implements ViewBuilder, BackListener {
 	@Override
 	public Actor getView(Object... args) {
 		controller.getCommands().pushStack();
+		controller.getModel().addFieldListener(
+				Q.getComponent(controller.getModel().getGame(),
+						Documentation.class), this);
+		readTitle();
 		return view;
 	}
 
 	@Override
 	public void release(Controller controller) {
+		controller.getModel().removeListener(
+				Q.getComponent(controller.getModel().getGame(),
+						Documentation.class), this);
 		controller.getCommands().popStack(false);
 	}
 
@@ -85,7 +107,21 @@ public class ProjectView implements ViewBuilder, BackListener {
 		LinearLayout project = new LinearLayout(true);
 		project.add(WidgetBuilder.toolbarIcon(SkinConstants.IC_GO, null,
 				CloseProject.class));
-		project.addSpace();
+		project.add(
+				new Container<TextButton>(title = WidgetBuilder.textButton("",
+						SkinConstants.STYLE_TOOLBAR)).width(0).fillX())
+				.expandX().marginLeft(WidgetBuilder.dpToPixels(8));
+
+		title.getLabel().setAlignment(Align.left);
+		Cell cell = title.getLabelCell();
+		LinearLayout titleCell = new LinearLayout(true);
+		titleCell.add(new Image(skin, SkinConstants.IC_EDIT)).marginRight(
+				WidgetBuilder.dpToPixels(8));
+		titleCell.add(title.getLabel());
+		cell.setActor(titleCell);
+		title.padLeft(WidgetBuilder.dpToPixels(8));
+		WidgetBuilder.actionOnClick(title, Rename.class, Selection.MOKAP);
+
 		project.add(WidgetBuilder.toolbarIcon(SkinConstants.IC_PLAY, null,
 				ChangeView.class, PlayView.class));
 
@@ -97,5 +133,19 @@ public class ProjectView implements ViewBuilder, BackListener {
 	public boolean onBackPressed() {
 		controller.action(CloseProject.class);
 		return true;
+	}
+
+	private void readTitle() {
+		title.setText(Q.getTitle(controller.getModel().getGame()));
+	}
+
+	@Override
+	public boolean listenToField(String fieldName) {
+		return FieldName.NAME.equals(fieldName);
+	}
+
+	@Override
+	public void modelChanged(FieldEvent event) {
+		readTitle();
 	}
 }

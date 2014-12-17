@@ -197,9 +197,6 @@ public class CreateSceneThumbnail extends EditorAction {
 		}
 
 		// Background listener
-		@Override
-		public void completionPercentage(float percentage) {
-		}
 
 		@Override
 		public void done(BackgroundExecutor backgroundExecutor, String result) {

@@ -37,12 +37,12 @@
 package es.eucm.ead.editor.control.views;
 
 import com.badlogic.gdx.scenes.scene2d.Actor;
+import com.badlogic.gdx.scenes.scene2d.ui.Container;
 import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 
 import es.eucm.ead.editor.control.Controller;
 import es.eucm.ead.editor.view.builders.ViewBuilder;
-import es.eucm.ead.editor.view.widgets.PlaceHolder;
 
 public class InterfaceView implements ViewBuilder {
 
@@ -56,9 +56,9 @@ public class InterfaceView implements ViewBuilder {
 
 		Skin skin = controller.getApplicationAssets().getSkin();
 
-		PlaceHolder placeHolder = new PlaceHolder();
+		Container<Actor> placeHolder = new Container();
 		Label label = new Label("Interface view", skin);
-		placeHolder.setContent(label);
+		placeHolder.setActor(label);
 		placeHolder.setFillParent(true);
 
 		view = placeHolder;

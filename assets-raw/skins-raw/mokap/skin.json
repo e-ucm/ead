@@ -10,7 +10,11 @@
         },
         "small_font": {
             "file": "Roboto-Regular.ttf",
-            "dpSize": 8
+            "dpSize": 12
+        },
+        "small_bold": {
+            "file": "Roboto-Bold.ttf",
+            "dpSize": 12
         },
         "big_font": {
             "file": "Roboto-Regular.ttf",
@@ -283,7 +287,8 @@
         },
         "toolbar": {
             "font": "default_font",
-            "fontColor": "white"
+            "fontColor": "white",
+            "background": "transparent_48_bg"
         },
         "edition": {
             "font": "default_font",
@@ -325,7 +330,7 @@
         },
         "tab": {
             "down": "light_yellow_semi_bg",
-            "font": "default_font",
+            "font": "small_bold",
             "fontColor": "white"
         },
         "dialog": {
@@ -333,6 +338,11 @@
             "down": "light_gray_bg",
             "font": "default_bold",
             "fontColor": "deep_orange"
+        },
+        "toolbar": {
+            "down": "pressed_48_bg",
+            "font": "default_font",
+            "fontColor": "white"
         }
     },
     "com.badlogic.gdx.scenes.scene2d.ui.ImageButton$ImageButtonStyle": {
@@ -484,9 +494,7 @@
             "selectedDrawable": "selected_tab",
             "selectedDrawableColor": "light_yellow",
             "disablexTextColor": "white_semi6",
-            "activeTextColor": "white",
-            "buttonsHorizontalPad": 24,
-            "buttonsVerticalPad": 20
+            "activeTextColor": "white"
         }
     },
     "es.eucm.ead.editor.view.widgets.LoadingBar$LoadingBarStyle": {

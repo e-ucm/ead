@@ -95,6 +95,10 @@ public class WidgetBuilder {
 		skin = controller.getApplicationAssets().getSkin();
 	}
 
+	/**
+	 * @param tooltip
+	 *            if null, no tooltip is attached to the actor
+	 */
 	public static IconButton toolbarIcon(String icon, String tooltip) {
 		return toolbarIcon(icon, tooltip, null);
 	}
@@ -241,6 +245,14 @@ public class WidgetBuilder {
 		}
 	}
 
+	public static void actionsOnClick(Actor actor, Class action[],
+			Object[][] args) {
+		if (action != null) {
+			actor.addListener(new ActionOnClickListener(controller, action,
+					args));
+		}
+	}
+
 	public static float dpToPixels(float dp) {
 		return Gdx.graphics.getDensity() * dp;
 	}
@@ -304,8 +316,12 @@ public class WidgetBuilder {
 		return new Image(skin, drawable);
 	}
 
-	public static Label label(String text, String styleEdition) {
-		Label label = new Label(text, skin, styleEdition);
+	/**
+	 * @return a label with the given text and style, with ellipsis for the
+	 *         label set to true
+	 */
+	public static Label label(String text, String style) {
+		Label label = new Label(text, skin, style);
 		label.setEllipsis(true);
 		return label;
 	}
@@ -315,6 +331,10 @@ public class WidgetBuilder {
 		button.pad(dpToPixels(8)).padBottom(dpToPixels(10))
 				.padTop(dpToPixels(10));
 		return button;
+	}
+
+	public static TextButton textButton(String text, String style) {
+		return new TextButton(text, skin, style);
 	}
 
 	public static Image image(String icon, String color) {

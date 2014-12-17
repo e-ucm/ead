@@ -39,11 +39,11 @@ package es.eucm.ead.editor.control.actions.model;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.utils.Array;
+import es.eucm.ead.editor.control.Controller;
 import es.eucm.ead.editor.control.Selection;
 import es.eucm.ead.editor.control.actions.ModelAction;
 import es.eucm.ead.editor.control.commands.Command;
 import es.eucm.ead.editor.control.commands.CompositeCommand;
-import es.eucm.ead.editor.control.commands.FieldCommand;
 import es.eucm.ead.editor.control.commands.ListCommand;
 import es.eucm.ead.editor.control.commands.ResourceCommand.RemoveResourceCommand;
 import es.eucm.ead.editor.model.Model;
@@ -53,39 +53,41 @@ import es.eucm.ead.schema.editor.components.GameData;
 import es.eucm.ead.schema.editor.components.SceneMap;
 import es.eucm.ead.schema.editor.data.Cell;
 import es.eucm.ead.schema.entities.ModelEntity;
-import es.eucm.ead.schemax.FieldName;
 import es.eucm.ead.schemax.entities.ResourceCategory;
 
 /**
- * Deletes an scene given the scene id (args[0]). It only removes it from the
- * model, the .json file is kept on disk until the game is saved to disk again.
- * 
- * This action won't have effect if there are only one scene in the game. In
- * that case a
- * {@link es.eucm.ead.editor.view.builders.classic.dialogs.InfoDialogBuilder}
- * dialog will appear explaining it.
- * 
- * Optionally a second argument should be provided, which is the ModelEntity to
- * be removed (args[1]).
- * 
- * 
- * Created by Javier Torrente on 3/03/14.
+ * Deletes an scene given the scene id (args[0]). If not set, takes the scene in
+ * {@link Selection#MOKAP_RESOURCE}
  */
 public class BaseDeleteScene extends ModelAction {
+
+	private ChangeInitialScene changeInitialScene;
 
 	public BaseDeleteScene() {
 		super(true, false, new Class[] {}, new Class[] { String.class });
 	}
 
 	@Override
-	public boolean validate(Object... args) {
-		return true;
+	public void initialize(Controller controller) {
+		super.initialize(controller);
+		changeInitialScene = controller.getActions().getAction(
+				ChangeInitialScene.class);
+	}
+
+	@Override
+	public boolean isEnabled() {
+		if (controller.getModel().getResources(ResourceCategory.SCENE).size() == 1) {
+			notifyIsLastScene();
+			return false;
+		} else {
+			return true;
+		}
 	}
 
 	@Override
 	public Command perform(Object... args) {
 		String id = (String) (args.length == 0 ? controller.getModel()
-				.getSelection().getSingle(Selection.RESOURCE) : args[0]);
+				.getSelection().getSingle(Selection.MOKAP_RESOURCE) : args[0]);
 
 		if (controller.getModel().getResourceCategory(id) != ResourceCategory.SCENE) {
 			Gdx.app.error("DeleteScene", id
@@ -93,54 +95,46 @@ public class BaseDeleteScene extends ModelAction {
 			return null;
 		}
 
-		if (controller.getModel().getResources(ResourceCategory.SCENE).size() == 1) {
-			notifyIsLastScene();
-		} else {
-			Model model = controller.getModel();
-			ModelEntity game = model.getGame();
-			Array<Command> commandList = new Array<Command>();
-			String alternateScene = null;
-			EditState editState = Q.getComponent(game, EditState.class);
+		CompositeCommand commands = new CompositeCommand();
 
-			// 2) If the scene is the "initialscene", change the initial one
-			GameData gameData = Q.getComponent(game, GameData.class);
-			if (gameData.getInitialScene().equals(id)) {
-				alternateScene = findAlternateScene(id);
-				commandList.add(new FieldCommand(gameData,
-						FieldName.INITIAL_SCENE, alternateScene, false));
-			}
+		Model model = controller.getModel();
+		ModelEntity game = model.getGame();
+		EditState editState = Q.getComponent(game, EditState.class);
 
-			// 3) Delete the scene properly speaking
-			commandList
-					.add(new RemoveResourceCommand(
-							model,
-							id,
-							args.length == 2 && args[1] instanceof ModelEntity ? (ModelEntity) args[1]
-									: null, ResourceCategory.SCENE));
-
-			// Delete thumbnail
-			FileHandle thumbnail = controller.getEditorGameAssets().resolve(
-					Q.getThumbnailPath(id));
-			if (thumbnail.exists()) {
-				thumbnail.delete();
-			}
-
-			// 4) Delete the sceneId from gameMetadata.getSceneorder()
-			commandList.add(new ListCommand.RemoveFromListCommand(editState,
-					editState.getSceneorder(), id));
-
-			// 5) Delete the cell from the scene map
-			SceneMap sceneMap = Q.getComponent(game, SceneMap.class);
-			Array<Cell> cells = sceneMap.getCells();
-			commandList.add(new ListCommand.RemoveFromListCommand(sceneMap,
-					cells, Q.getCellFromId(id, cells)));
-
-			// Execute the composite command
-			CompositeCommand deleteSceneCommand = new CompositeCommand(
-					commandList);
-			return deleteSceneCommand;
+		// 2) If the scene is the "initialscene", change the initial one
+		String alternateScene;
+		GameData gameData = Q.getComponent(game, GameData.class);
+		if (gameData.getInitialScene().equals(id)) {
+			alternateScene = findAlternateScene(id);
+			commands.addCommand(changeInitialScene.perform(alternateScene));
 		}
-		return null;
+
+		// 3) Delete the scene properly speaking
+		commands.addCommand(new RemoveResourceCommand(
+				model,
+				id,
+				(ModelEntity) controller.getModel().getResource(id).getObject(),
+				ResourceCategory.SCENE));
+
+		// Delete thumbnail
+		FileHandle thumbnail = controller.getEditorGameAssets().resolve(
+				Q.getThumbnailPath(id));
+		if (thumbnail.exists()) {
+			thumbnail.delete();
+		}
+
+		// 4) Delete the sceneId from gameMetadata.getSceneorder()
+		commands.addCommand(new ListCommand.RemoveFromListCommand(editState,
+				editState.getSceneorder(), id));
+
+		// 5) Delete the cell from the scene map
+		SceneMap sceneMap = Q.getComponent(game, SceneMap.class);
+		Array<Cell> cells = sceneMap.getCells();
+		commands.addCommand(new ListCommand.RemoveFromListCommand(sceneMap,
+				cells, Q.getCellFromId(id, cells)));
+
+		// Execute the composite command
+		return commands;
 	}
 
 	/**

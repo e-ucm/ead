@@ -37,32 +37,49 @@
 package es.eucm.ead.editor.view.builders.home;
 
 import com.badlogic.gdx.scenes.scene2d.Actor;
+import com.badlogic.gdx.scenes.scene2d.ui.Container;
+import com.badlogic.gdx.scenes.scene2d.ui.Skin;
+import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
+
 import es.eucm.ead.editor.control.Controller;
 import es.eucm.ead.editor.control.MokapController.BackListener;
 import es.eucm.ead.editor.control.Preferences;
 import es.eucm.ead.editor.control.actions.editor.Exit;
 import es.eucm.ead.editor.control.actions.editor.ShowInfoPanel;
 import es.eucm.ead.editor.control.actions.editor.ShowInfoPanel.TypePanel;
+import es.eucm.ead.editor.view.SkinConstants;
 import es.eucm.ead.editor.view.builders.ViewBuilder;
+import es.eucm.ead.editor.view.widgets.Tabs;
+import es.eucm.ead.editor.view.widgets.WidgetBuilder;
 import es.eucm.ead.editor.view.widgets.galleries.ProjectsGallery;
+import es.eucm.ead.editor.view.widgets.layouts.LinearLayout;
+import es.eucm.ead.engine.I18N;
 
 public class HomeView implements ViewBuilder, BackListener {
 
-	private ProjectsGallery view;
-
 	private Controller controller;
+
+	private LinearLayout view;
+
+	private Container<Actor> content;
+
+	private ProjectsGallery projectsGallery;
 
 	@Override
 	public void initialize(Controller c) {
 		this.controller = c;
-		view = new ProjectsGallery(2.65f, 3, c);
+		view = new LinearLayout(false);
+		view.add(buildToolbar()).expandX();
+		view.add(content = new Container<Actor>().fill()).expand(true, true);
+		projectsGallery = new ProjectsGallery(1.65f, 3, c);
 	}
 
 	@Override
 	public Actor getView(Object... args) {
 		controller.getWorkerExecutor().cancelAll();
+		updateContent(0);
+		projectsGallery.load();
 		controller.getPreferences().putString(Preferences.LAST_OPENED_GAME, "");
-		view.prepare();
 		controller.action(ShowInfoPanel.class, TypePanel.INTRODUCTION,
 				Preferences.HELP_INTRODUCTION);
 		return view;
@@ -70,6 +87,7 @@ public class HomeView implements ViewBuilder, BackListener {
 
 	@Override
 	public void release(Controller controller) {
+		updateContent(-1);
 		controller.getApplicationAssets().clear();
 	}
 
@@ -77,6 +95,47 @@ public class HomeView implements ViewBuilder, BackListener {
 	public boolean onBackPressed() {
 		controller.action(Exit.class, false);
 		return true;
+	}
+
+	private void updateContent(int index) {
+		content.setActor(null);
+		switch (index) {
+		case 0:
+			content.setActor(projectsGallery);
+			break;
+		}
+	}
+
+	private Actor buildToolbar() {
+		Skin skin = controller.getApplicationAssets().getSkin();
+		LinearLayout topRow = new LinearLayout(true);
+		topRow.add(WidgetBuilder.toolbarIcon(SkinConstants.IC_MOKAP, null));
+		topRow.add(
+				WidgetBuilder.label(controller.getApplicationAssets().getI18N()
+						.m("application.title"), SkinConstants.STYLE_TOOLBAR))
+				.marginLeft(WidgetBuilder.dpToPixels(8));
+
+		LinearLayout toolbar = new LinearLayout(false);
+		toolbar.add(topRow).expandX();
+		toolbar.add(buildTabs()).left();
+		toolbar.background(skin.getDrawable(SkinConstants.DRAWABLE_TOOLBAR));
+		toolbar.backgroundColor(skin.getColor(SkinConstants.COLOR_BROWN_MOKA));
+		return toolbar;
+	}
+
+	private Actor buildTabs() {
+		Skin skin = controller.getApplicationAssets().getSkin();
+		I18N i18N = controller.getApplicationAssets().getI18N();
+		final Tabs tabs = new Tabs(skin);
+		tabs.setItems(i18N.m("my.mokaps").toUpperCase(), i18N.m("community")
+				.toUpperCase());
+		tabs.addListener(new ChangeListener() {
+			@Override
+			public void changed(ChangeEvent event, Actor actor) {
+				updateContent(tabs.getSelectedTabIndex());
+			}
+		});
+		return tabs;
 	}
 
 }

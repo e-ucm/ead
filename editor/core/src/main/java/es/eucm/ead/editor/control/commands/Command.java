@@ -36,6 +36,7 @@
  */
 package es.eucm.ead.editor.control.commands;
 
+import com.badlogic.gdx.utils.Array;
 import es.eucm.ead.editor.model.events.ModelEvent;
 
 /**
@@ -44,7 +45,7 @@ import es.eucm.ead.editor.model.events.ModelEvent;
  */
 public abstract class Command {
 
-	private String resourceModified;
+	private Array<String> resourcesModified;
 
 	/**
 	 * Do the actual work. Returns a model event if it could be performed, null
@@ -97,14 +98,19 @@ public abstract class Command {
 
 	/**
 	 * @return the id of the resource modified. If {@code null} is returned, it
-	 *         modifies the resource in
-	 *         {@link es.eucm.ead.editor.control.Selection#RESOURCE}
+	 *         modifies the default selected resource
 	 */
-	public String getResourceModified() {
-		return resourceModified;
+	public Array<String> getResourcesModified() {
+		return resourcesModified;
 	}
 
-	public void setResourceModified(String resourceModified) {
-		this.resourceModified = resourceModified;
+	/**
+	 * Add a resource id to the list of resources modified
+	 */
+	public void addResourceModified(String resourceModified) {
+		if (resourcesModified == null) {
+			resourcesModified = new Array<String>();
+		}
+		this.resourcesModified.add(resourceModified);
 	}
 }

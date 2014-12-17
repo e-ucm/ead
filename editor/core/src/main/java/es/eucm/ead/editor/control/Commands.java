@@ -51,6 +51,9 @@ public class Commands {
 
 	private static final int COMMAND = 0, UNDO = 1, REDO = 2, SAVE = 3;
 
+	private static final Array<String> RESOURCE_CONTEXTS = new Array<String>(
+			new String[] { Selection.MOKAP_RESOURCE, Selection.RESOURCE });
+
 	private Model model;
 
 	private Array<CommandListener> commandListeners;
@@ -73,6 +76,7 @@ public class Commands {
 		this.model = model;
 		commandListeners = new Array<CommandListener>();
 		this.commandsStacks = new Stack<CommandsStack>();
+		pushStack();
 	}
 
 	/**
@@ -128,22 +132,34 @@ public class Commands {
 	public void doCommand(Command command) {
 		ModelEvent modelEvent = command.doCommand();
 		if (command.modifiesResource()) {
-			String resourceModified = command.getResourceModified();
-			if (resourceModified == null) {
-				resourceModified = (String) model.getSelection().getSingle(
-						Selection.RESOURCE);
-			}
-
-			if (resourceModified != null
-					&& model.getResource(resourceModified) != null) {
-				model.getResource(resourceModified).setModified(true);
+			if (command.getResourcesModified() == null) {
+				modifyResource(getDefaultResourceModified());
 			} else {
-				Gdx.app.error("Commands",
-						"Command didn't change any known resource: "
-								+ resourceModified);
+				for (String resourceModified : command.getResourcesModified()) {
+					modifyResource(resourceModified);
+				}
 			}
 		}
 		model.notify(modelEvent);
+	}
+
+	private void modifyResource(String resourceId) {
+		if (resourceId != null && model.getResource(resourceId) != null) {
+			model.getResource(resourceId).setModified(true);
+		} else {
+			Gdx.app.error("Commands",
+					"Command didn't change any known resource: " + resourceId);
+		}
+	}
+
+	private String getDefaultResourceModified() {
+		for (String context : RESOURCE_CONTEXTS) {
+			String resource = (String) model.getSelection().getSingle(context);
+			if (resource != null) {
+				return resource;
+			}
+		}
+		return null;
 	}
 
 	/**

@@ -99,7 +99,8 @@ public class NavigationGallery extends ScenesGallery {
 		gallery.add(
 				WidgetBuilder.button(SkinConstants.IC_HOME, i18N.m("project"),
 						SkinConstants.STYLE_CONTEXT, SetSelection.class,
-						Selection.PROJECT, Selection.RESOURCE)).usePrefHeight();
+						Selection.MOKAP, Selection.MOKAP_RESOURCE))
+				.usePrefHeight();
 		gallery.add(
 				WidgetBuilder.button(SkinConstants.IC_PLAY, i18N.m("test.all"),
 						SkinConstants.STYLE_CONTEXT, ChangeView.class,

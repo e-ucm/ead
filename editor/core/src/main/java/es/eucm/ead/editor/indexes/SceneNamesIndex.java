@@ -38,8 +38,6 @@ package es.eucm.ead.editor.indexes;
 
 import java.util.Map.Entry;
 
-import javax.annotation.Resources;
-
 import es.eucm.ead.editor.control.Controller;
 import es.eucm.ead.editor.model.Model;
 import es.eucm.ead.editor.model.Model.ModelListener;
@@ -69,7 +67,7 @@ public class SceneNamesIndex extends ControllerIndex implements
 	}
 
 	private void addScene(String id, ModelEntity scene) {
-		addTerm(Q.getName(scene, ""), id);
+		addTerm(Q.getTitle(scene), id);
 	}
 
 	@Override
@@ -80,7 +78,7 @@ public class SceneNamesIndex extends ControllerIndex implements
 				addScene(event.getId(), (ModelEntity) event.getResource());
 				break;
 			case REMOVED:
-				removeTerm(Q.getName((ModelEntity) event.getResource(), ""),
+				removeTerm(Q.getTitle((ModelEntity) event.getResource()),
 						event.getId());
 				break;
 			}

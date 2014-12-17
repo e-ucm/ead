@@ -73,25 +73,29 @@ public class CompositeCommand extends Command {
 	 */
 	public CompositeCommand(Command... commands) {
 		commandList = new Array<Command>();
-		for (Command c : commands) {
-			commandList.add(c);
+		for (Command command : commands) {
+			addCommand(command);
 		}
 	}
 
 	public void addCommand(Command command) {
 		commandList.add(command);
+		if (command.modifiesResource()
+				&& command.getResourcesModified() != null) {
+			for (String resourceId : command.getResourcesModified()) {
+				addResourceModified(resourceId);
+			}
+		}
 	}
 
 	public void addAll(Array<Command> commands) {
-		commandList.addAll(commands);
+		for (Command command : commands) {
+			addCommand(command);
+		}
 	}
 
 	public Array<Command> getCommandList() {
 		return commandList;
-	}
-
-	public CompositeCommand(Array<Command> commands) {
-		commandList = commands;
 	}
 
 	@Override

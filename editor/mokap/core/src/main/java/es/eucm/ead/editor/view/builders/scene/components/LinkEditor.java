@@ -275,7 +275,7 @@ public class LinkEditor extends ComponentEditor<Behavior> implements
 		ModelEntity scene = (ModelEntity) controller.getModel()
 				.getResource(sceneId, ResourceCategory.SCENE).getObject();
 
-		tile.setText(Q.getName(scene, i18N.m("untitled")));
+		tile.setText(Q.getTitle(scene));
 		this.thumbnailPath = Q.getThumbnailPath(scene);
 
 		Q.getThumbnailTexture(scene, this);

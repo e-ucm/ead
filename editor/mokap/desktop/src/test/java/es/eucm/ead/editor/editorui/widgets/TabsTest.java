@@ -44,10 +44,8 @@ import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
 import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
-
 import es.eucm.ead.editor.editorui.UITest;
 import es.eucm.ead.editor.view.SkinConstants;
-import es.eucm.ead.editor.view.widgets.MultiWidget;
 import es.eucm.ead.editor.view.widgets.Tabs;
 import es.eucm.ead.engine.I18N;
 
@@ -58,11 +56,10 @@ public class TabsTest extends UITest {
 	@Override
 	protected Actor buildUI(Skin skin, I18N i18n) {
 
-		MultiWidget widget = new MultiWidget(skin, SkinConstants.STYLE_TOOLBAR);
 		Tabs tabs = new Tabs(skin);
 
 		tabs.setItems("ITEM ONE", "ITEM TWO", "ITEM THREE");
-		selected = new Label(tabs.getSelected().getName(), skin);
+		selected = new Label(tabs.getSelectedTab().getName(), skin);
 		tabs.addListener(new ChangeListener() {
 			@Override
 			public void changed(ChangeEvent event, Actor actor) {
@@ -74,11 +71,13 @@ public class TabsTest extends UITest {
 				}
 			}
 		});
-		widget.addWidgets(tabs);
 		Table table = new Table();
+		table.setFillParent(true);
+		tabs.setBackground(skin.getDrawable(SkinConstants.DRAWABLE_TOOLBAR));
+		tabs.setColor(skin.getColor(SkinConstants.COLOR_BROWN_MOKA));
 		table.add(selected);
 		table.row();
-		table.add(widget);
+		table.add(tabs).expandX().fillX();
 		return table;
 	}
 
@@ -86,6 +85,7 @@ public class TabsTest extends UITest {
 		LwjglApplicationConfiguration config = new LwjglApplicationConfiguration();
 		config.width = 640;
 		config.height = 360;
+		config.overrideDensity = 160;
 		new LwjglApplication(new TabsTest(), config);
 	}
 }

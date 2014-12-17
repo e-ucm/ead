@@ -127,6 +127,7 @@ public class CommandsTest extends CommandTest {
 		try {
 			commands.popStack(true);
 			commands.popStack(false);
+			commands.popStack(false);
 			fail("An exception should have be launched");
 		} catch (Exception e) {
 

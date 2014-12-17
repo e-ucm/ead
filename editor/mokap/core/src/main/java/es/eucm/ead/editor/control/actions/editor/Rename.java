@@ -34,56 +34,56 @@
  *      You should have received a copy of the GNU Lesser General Public License
  *      along with eAdventure.  If not, see <http://www.gnu.org/licenses/>.
  */
-package es.eucm.ead.editor.view.widgets;
+package es.eucm.ead.editor.control.actions.editor;
 
-import com.badlogic.gdx.graphics.g2d.Batch;
-import com.badlogic.gdx.scenes.scene2d.Actor;
-import com.badlogic.gdx.scenes.scene2d.utils.Drawable;
+import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.Input.TextInputListener;
 
-public class PlaceHolder extends AbstractWidget {
+import es.eucm.ead.editor.control.actions.EditorAction;
+import es.eucm.ead.editor.control.actions.model.generic.SetField;
+import es.eucm.ead.editor.model.Q;
+import es.eucm.ead.engine.I18N;
+import es.eucm.ead.schema.editor.components.Documentation;
+import es.eucm.ead.schema.entities.ModelEntity;
+import es.eucm.ead.schemax.FieldName;
 
-	private Drawable background;
+/**
+ * <p>
+ * Renames the entity in the givencontext
+ * </p>
+ * <dl>
+ * <dt><strong>Arguments</strong></dt>
+ * <dd><strong>args[0]</strong> <em>String</em> name of the context where the
+ * entity to rename is</dd>
+ * </dl>
+ **/
+public class Rename extends EditorAction implements TextInputListener {
 
-	private Actor content;
+	private ModelEntity modelEntity;
 
-	public void setBackground(Drawable background) {
-		this.background = background;
+	public Rename() {
+		super(true, false, String.class);
 	}
 
-	public void setContent(Actor content) {
-		if (this.content != null) {
-			this.content.remove();
+	@Override
+	public void perform(Object... args) {
+		modelEntity = (ModelEntity) controller.getModel().getSelection()
+				.getSingle((String) args[0]);
+		if (modelEntity != null) {
+			I18N i18n = controller.getApplicationAssets().getI18N();
+			Gdx.input.getTextInput(this, i18n.m("change_title"),
+					Q.getTitle(modelEntity), "");
 		}
-		this.content = content;
-		addActor(content);
-	}
-
-	public Actor getContent() {
-		return content;
 	}
 
 	@Override
-	protected void drawChildren(Batch batch, float parentAlpha) {
-		if (background != null) {
-			background.draw(batch, 0, 0, getWidth(), getHeight());
-		}
-		super.drawChildren(batch, parentAlpha);
+	public void input(String text) {
+		Documentation doc = Q.getComponent(modelEntity, Documentation.class);
+		controller.action(SetField.class, doc, FieldName.NAME, text);
 	}
 
 	@Override
-	public void layout() {
-		if (content != null) {
-			setBounds(content, 0, 0, getWidth(), getHeight());
-		}
-	}
+	public void canceled() {
 
-	@Override
-	public float getPrefHeight() {
-		return content == null ? 0 : getPrefHeight(content);
-	}
-
-	@Override
-	public float getPrefWidth() {
-		return content == null ? 0 : getPrefWidth(content);
 	}
 }

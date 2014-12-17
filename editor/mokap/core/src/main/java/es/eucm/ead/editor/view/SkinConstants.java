@@ -56,6 +56,7 @@ public interface SkinConstants {
 	public static final String DRAWABLE_LIGHT_GRAY_BG = "light_gray_bg";
 	public static final String DRAWABLE_TRANSPARENT_48 = "transparent_48_bg";
 	public static final String DRAWABLE_TEXT_FIELD = "text_field";
+	public static final String DRAWABLE_TOOLBAR = "toolbar";
 
 	public static final String STYLE_DEFAULT = "default";
 	public static final String STYLE_CONTEXT = "context";
@@ -96,6 +97,8 @@ public interface SkinConstants {
 	public static final String MOKAP_ZONE = "mokap_zone";
 	public static final String MOKAP_MULTIPLE_SELECT = "mokap_multiple";
 	public static final String MOKAP_CUP = "mokap_cup";
+
+	public static final String IC_MOKAP = "ic_mokap";
 
 	public static final String IC_MENU = "ic_menu";
 	public static final String IC_ADD = "ic_add";
@@ -151,6 +154,8 @@ public interface SkinConstants {
 
 	public static final String IC_ARROW_UP = "ic_arrow_up";
 	public static final String IC_ARROW_DOWN = "ic_arrow_down";
+
+	public static final String COLOR_BROWN_MOKA = "brown_moka";
 
 	public static final String IC_EASE_LINEAR = "ic_ease_linear";
 	public static final String IC_EASE_IN_CUBIC = "ic_ease_in_cubic";

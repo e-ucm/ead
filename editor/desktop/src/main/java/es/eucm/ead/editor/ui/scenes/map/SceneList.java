@@ -175,7 +175,7 @@ public class SceneList extends Table {
 
 		public SceneButton(Controller controller, ModelEntity scene, String id,
 				Skin skin) {
-			super(Q.getName(scene, id), skin);
+			super(Q.getTitle(scene), skin);
 
 			this.scene = scene;
 			Object modelEntity = controller.getModel().getSelection()

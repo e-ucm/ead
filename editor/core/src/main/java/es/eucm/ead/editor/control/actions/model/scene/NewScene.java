@@ -124,9 +124,9 @@ public class NewScene extends ModelAction {
 		compositeCommand.addCommand(new AddToListCommand(editState, editState
 				.getSceneorder(), id));
 		compositeCommand.addCommand(setSelection.perform(null,
-				Selection.RESOURCE, id));
-		compositeCommand.addCommand(setSelection.perform(Selection.RESOURCE,
-				Selection.SCENE, scene));
+				Selection.MOKAP_RESOURCE, id));
+		compositeCommand.addCommand(setSelection.perform(
+				Selection.MOKAP_RESOURCE, Selection.SCENE, scene));
 		compositeCommand.addCommand(setSelection.perform(Selection.SCENE,
 				Selection.EDITED_GROUP, scene));
 

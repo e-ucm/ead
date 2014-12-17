@@ -67,19 +67,10 @@ public class BackgroundTaskDemo extends AbstractWidgetTest {
 							int loops = 10;
 							for (int i = 0; i < loops; i++) {
 								Thread.sleep(1000);
-								setCompletionPercentage((float) i
-										/ (float) loops);
 							}
 							return "done";
 						}
 					}, new BackgroundTaskListener<String>() {
-						@Override
-						public void completionPercentage(float percentage) {
-							String percentageString = Math
-									.round(percentage * 100) + "";
-							label.setText("Background task running: "
-									+ percentageString + "% done");
-						}
 
 						@Override
 						public void done(BackgroundExecutor backgroundExecutor,

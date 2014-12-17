@@ -113,11 +113,6 @@ public class TakePicture extends EditorAction {
 	private final BackgroundTaskListener<Boolean> dummyListener = new BackgroundTaskListener<Boolean>() {
 
 		@Override
-		public void completionPercentage(float percentage) {
-
-		}
-
-		@Override
 		public void done(BackgroundExecutor backgroundExecutor, Boolean result) {
 
 		}

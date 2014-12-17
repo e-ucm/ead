@@ -87,7 +87,7 @@ public class ParameterOption extends Option {
 		parameterButton.addListener(new ClickListener() {
 			@Override
 			public void clicked(InputEvent event, float x, float y) {
-				setExpressionEditorVisible(optionContainer.getContent() == optionWidget);
+				setExpressionEditorVisible(optionContainer.getActor() == optionWidget);
 			}
 		});
 	}
@@ -97,9 +97,9 @@ public class ParameterOption extends Option {
 	 */
 	public void setExpressionEditorVisible(boolean visible) {
 		if (visible) {
-			optionContainer.setContent(expressionEditor);
+			optionContainer.setActor(expressionEditor);
 		} else {
-			optionContainer.setContent(optionWidget);
+			optionContainer.setActor(optionWidget);
 		}
 	}
 

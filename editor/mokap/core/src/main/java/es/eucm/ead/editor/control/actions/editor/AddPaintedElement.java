@@ -82,11 +82,6 @@ public class AddPaintedElement extends EditorAction {
 	private final BackgroundTaskListener<Boolean> saveListener = new BackgroundTaskListener<Boolean>() {
 
 		@Override
-		public void completionPercentage(float percentage) {
-
-		}
-
-		@Override
 		public void done(BackgroundExecutor backgroundExecutor, Boolean result) {
 			if (result) {
 				ModelEntity sceneElement = brushStrokes.createSceneElement();

@@ -128,7 +128,8 @@ public abstract class Worker implements Runnable {
 					}
 				} else if (o instanceof Throwable) {
 					listener.error((Throwable) o);
-				} else if (o != null && o.getClass().isArray()) {
+				} else if (o != null && o.getClass().isArray()
+						&& !isCancelled()) {
 					listener.result((Object[]) o);
 				}
 			}
@@ -220,6 +221,14 @@ public abstract class Worker implements Runnable {
 		if (cancellable) {
 			cancelled.set(true);
 		}
+	}
+
+	/**
+	 * @return if the worker has been cancelled. Cancel event could still be
+	 *         emitted to the listener
+	 */
+	public boolean isCancelled() {
+		return cancelled.get();
 	}
 
 	/**

@@ -36,41 +36,37 @@
  */
 package es.eucm.ead.editor.control.actions.editor;
 
-import com.badlogic.gdx.Input.TextInputListener;
-
 import es.eucm.ead.editor.control.Selection;
 import es.eucm.ead.editor.control.actions.EditorAction;
-import es.eucm.ead.editor.control.actions.model.generic.SetField;
-import es.eucm.ead.editor.model.Q;
-import es.eucm.ead.engine.I18N;
-import es.eucm.ead.schema.editor.components.Documentation;
-import es.eucm.ead.schema.entities.ModelEntity;
-import es.eucm.ead.schemax.FieldName;
+import es.eucm.ead.editor.control.background.BackgroundExecutor.BackgroundTaskListener;
+import es.eucm.ead.editor.control.background.CloneProjectTask;
 
-public class RenameCurrentScene extends EditorAction implements
-		TextInputListener {
+/**
+ * <p>
+ * Clones a project
+ * </p>
+ * <dl>
+ * <dt><strong>Arguments</strong></dt>
+ * *
+ * <dd><strong>args[0]</strong> <em>{@link BackgroundTaskListener}</em> Will be
+ * notified with the path of the cloned project once it's finished cloning</dd>
+ * <dd><strong>args[1]</strong> <em>String (optional)</em> path to the project
+ * to clone. If it is not set, it uses the path in {@link Selection#RESOURCE}</dd>
+ * </dl>
+ */
+public class CloneProject extends EditorAction {
 
-	private ModelEntity scene;
+	public CloneProject() {
+		super(true, false, new Class[] { BackgroundTaskListener.class },
+				new Class[] { BackgroundTaskListener.class, String.class });
+	}
 
 	@Override
 	public void perform(Object... args) {
-		scene = (ModelEntity) controller.getModel().getSelection()
-				.getSingle(Selection.SCENE);
-		if (scene != null) {
-			I18N i18n = controller.getApplicationAssets().getI18N();
-			controller.getPlatform().getMultilineTextInput(this,
-					i18n.m("scene.change_title"), Q.getName(scene, ""), i18n);
-		}
-	}
-
-	@Override
-	public void input(String text) {
-		Documentation doc = Q.getComponent(scene, Documentation.class);
-		controller.action(SetField.class, doc, FieldName.NAME, text);
-	}
-
-	@Override
-	public void canceled() {
-
+		BackgroundTaskListener<Object[]> listener = (BackgroundTaskListener<Object[]>) args[0];
+		String path = (String) (args.length == 2 ? args[1] : controller
+				.getModel().getSelection().getSingle(Selection.RESOURCE));
+		controller.getBackgroundExecutor().submit(
+				new CloneProjectTask(controller, path), listener);
 	}
 }

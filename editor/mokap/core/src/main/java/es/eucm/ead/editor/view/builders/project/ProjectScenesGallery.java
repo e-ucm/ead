@@ -36,12 +36,11 @@
  */
 package es.eucm.ead.editor.view.builders.project;
 
-import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.ui.Button;
 import es.eucm.ead.editor.control.Controller;
 import es.eucm.ead.editor.control.Selection;
-import es.eucm.ead.editor.control.actions.editor.RenameCurrentScene;
-import es.eucm.ead.editor.control.actions.editor.ShowModal;
+import es.eucm.ead.editor.control.actions.editor.Rename;
+import es.eucm.ead.editor.control.actions.editor.ShowToast;
 import es.eucm.ead.editor.control.actions.model.ChangeInitialScene;
 import es.eucm.ead.editor.control.actions.model.CloneScene;
 import es.eucm.ead.editor.control.actions.model.DeleteScene;
@@ -50,9 +49,6 @@ import es.eucm.ead.editor.control.actions.model.SetSelection;
 import es.eucm.ead.editor.model.Model.SelectionListener;
 import es.eucm.ead.editor.model.events.SelectionEvent;
 import es.eucm.ead.editor.view.SkinConstants;
-import es.eucm.ead.editor.view.listeners.LongPressListener;
-import es.eucm.ead.editor.view.widgets.ContextMenu;
-import es.eucm.ead.editor.view.widgets.Tile;
 import es.eucm.ead.editor.view.widgets.WidgetBuilder;
 import es.eucm.ead.editor.view.widgets.galleries.ScenesGallery;
 import es.eucm.ead.editor.view.widgets.layouts.Gallery.Cell;
@@ -63,61 +59,37 @@ import es.eucm.ead.engine.utils.EngineUtils;
  */
 public class ProjectScenesGallery extends ScenesGallery {
 
-	private ContextMenu sceneActions;
-
 	private SceneSelectionListener sceneSelectionListener = new SceneSelectionListener();
 
 	public ProjectScenesGallery(float rows, int columns, Controller cont) {
 		super(rows, columns, cont);
-		addListener(new LongPressListener() {
-			@Override
-			public void longPress(float x, float y) {
-				// If the view is still visible
-				if (getStage() != null) {
-					getStage().cancelTouchFocus();
-					Actor actor = EngineUtils.getDirectChild(gallery.getGrid(),
-							hit(x, y, true));
-					if (actor instanceof Cell) {
-						Tile tile = (Tile) ((Cell) actor).getActor();
-						controller.action(EditScene.class, tile.getName(),
-								false);
-						controller.action(ShowModal.class, sceneActions, x, y);
-					}
-				}
-			}
-		});
-
 		Button edit = WidgetBuilder.button(SkinConstants.IC_EDIT,
 				i18N.m("edit"), SkinConstants.STYLE_CONTEXT, EditScene.class);
 
 		Button rename = WidgetBuilder.button(SkinConstants.IC_TEXT,
-				i18N.m("rename"), SkinConstants.STYLE_CONTEXT,
-				RenameCurrentScene.class);
+				i18N.m("rename"), SkinConstants.STYLE_CONTEXT, Rename.class,
+				Selection.SCENE);
 
 		Button clone = WidgetBuilder.button(SkinConstants.IC_CLONE,
-				i18N.m("scene.clone"), SkinConstants.STYLE_CONTEXT,
-				CloneScene.class);
+				i18N.m("clone"), SkinConstants.STYLE_CONTEXT, CloneScene.class);
 
 		Button initial = WidgetBuilder.button(SkinConstants.IC_ONE,
 				i18N.m("scene.initial"), SkinConstants.STYLE_CONTEXT,
 				ChangeInitialScene.class);
 
 		Button delete = WidgetBuilder.button(SkinConstants.IC_DELETE,
-				i18N.m("delete"), SkinConstants.STYLE_CONTEXT,
-				DeleteScene.class);
+				i18N.m("delete"), SkinConstants.STYLE_CONTEXT);
 
-		sceneActions = WidgetBuilder.iconLabelContextPanel(edit, rename, clone,
-				initial, delete);
-		sceneActions.addHideRunnable(new Runnable() {
-			@Override
-			public void run() {
-				if (Selection.SCENE.equals(controller.getModel().getSelection()
-						.getCurrentContext().getId())) {
-					controller.action(SetSelection.class, Selection.PROJECT,
-							Selection.RESOURCE);
-				}
-			}
-		});
+		WidgetBuilder.actionsOnClick(
+				delete,
+				new Class[] { DeleteScene.class, ShowToast.class },
+				new Object[][] {
+						new Object[] {},
+						new Object[] {
+								controller.getApplicationAssets().getI18N()
+										.m("scene.deleted"), 10.0f } });
+
+		setContextMenu(edit, rename, clone, initial, delete);
 	}
 
 	@Override
@@ -133,9 +105,23 @@ public class ProjectScenesGallery extends ScenesGallery {
 		controller.getModel().removeSelectionListener(sceneSelectionListener);
 	}
 
+	@Override
+	public void tileLongPressed(String tileName) {
+		controller.action(EditScene.class, tileName, false);
+	}
+
+	@Override
+	public void contextMenuHidden() {
+		if (Selection.SCENE.equals(controller.getModel().getSelection()
+				.getCurrentContext().getId())) {
+			controller.action(SetSelection.class, Selection.MOKAP,
+					Selection.MOKAP_RESOURCE);
+		}
+	}
+
 	private void readScene() {
 		String resource = (String) controller.getModel().getSelection()
-				.getSingle(Selection.RESOURCE);
+				.getSingle(Selection.MOKAP_RESOURCE);
 		gallery.uncheckAll();
 		if (resource != null) {
 			Cell cell = (Cell) EngineUtils.getDirectChild(gallery.getGrid(),
@@ -150,7 +136,7 @@ public class ProjectScenesGallery extends ScenesGallery {
 
 		@Override
 		public boolean listenToContext(String contextId) {
-			return Selection.RESOURCE.equals(contextId);
+			return Selection.MOKAP_RESOURCE.equals(contextId);
 		}
 
 		@Override
