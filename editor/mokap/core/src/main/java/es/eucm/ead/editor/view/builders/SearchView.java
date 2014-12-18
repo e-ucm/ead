@@ -52,7 +52,7 @@ import es.eucm.ead.editor.control.Controller;
 import es.eucm.ead.editor.control.MokapController.BackListener;
 import es.eucm.ead.editor.control.actions.editor.ChangeView;
 import es.eucm.ead.editor.control.actions.editor.ExecuteWorker;
-import es.eucm.ead.editor.control.actions.model.AddRepoElementReference;
+import es.eucm.ead.editor.control.actions.model.AddLibraryReference;
 import es.eucm.ead.editor.control.workers.SearchRepo;
 import es.eucm.ead.editor.control.workers.Worker.WorkerListener;
 import es.eucm.ead.editor.view.SkinConstants;
@@ -106,8 +106,8 @@ public class SearchView implements ViewBuilder, BackListener, WorkerListener {
 
 			@Override
 			public void clickedInLibrary(RepoTileEvent event) {
-				controller.action(AddRepoElementReference.class,
-						event.getRepoElement());
+				controller.action(AddLibraryReference.class, event
+						.getRepoElement().getEntityRef());
 				controller.action(ChangeView.class, SceneView.class);
 			}
 

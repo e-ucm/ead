@@ -75,7 +75,7 @@ public class LibraryGallery extends ThumbnailsGallery implements
 
 	@Override
 	public void release() {
-		controller.getWorkerExecutor().cancel(ExecuteWorker.class, this);
+		controller.getWorkerExecutor().cancel(LoadLibraryEntities.class, this);
 	}
 
 	@Override
