@@ -86,6 +86,12 @@
             "b": 0.8627,
             "a": 1.0
         },
+        "gray_100": {
+            "r": 0.9607843,
+            "g": 0.9607843,
+            "b": 0.9607843,
+            "a": 1
+        },
         "brown_moka": {
             "r": 0.5245,
             "g": 0.3333,
@@ -261,6 +267,10 @@
         "orange_arrow_down": {
             "name": "ic_arrow_down",
             "color": "deep_orange"
+        },
+        "gray_100_bg": {
+            "name": "blank",
+            "color": "gray_100"
         }
     },
     "com.badlogic.gdx.scenes.scene2d.ui.Label$LabelStyle": {
@@ -668,7 +678,6 @@
     },
     "es.eucm.ead.editor.view.widgets.layouts.Gallery$GalleryStyle": {
         "default": {
-            "background": "blank",
             "checked": "light_blue_semi_bg",
             "pressed": "semi_transparent_bg"
         },

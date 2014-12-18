@@ -49,6 +49,7 @@ public interface SkinConstants {
 	public static final String DRAWABLE_LOGO = "logo";
 	public static final String DRAWABLE_LOGO_MINI = "logo_mini";
 	public static final String DRAWABLE_BLANK = "blank";
+	public static final String DRAWABLE_GRAY_100 = "gray_100_bg";
 	public static final String DRAWABLE_SEMI_BLANK = "blank75";
 	public static final String DRAWABLE_PAGE = "page";
 	public static final String DRAWABLE_PAGE_LEFT = "page_left";
@@ -100,6 +101,7 @@ public interface SkinConstants {
 	public static final String MOKAP_CUP = "mokap_cup";
 
 	public static final String IC_MOKAP = "ic_mokap";
+	public static final String IC_ADD_MOKAP = "ic_add_mokap";
 
 	public static final String IC_MENU = "ic_menu";
 	public static final String IC_ADD = "ic_add";
@@ -115,6 +117,7 @@ public interface SkinConstants {
 	public static final String IC_ZONE = "ic_zone";
 	public static final String IC_CLOUD_DONE = "ic_cloud_done";
 	public static final String IC_ERROR = "ic_error";
+	public static final String IC_PHOTO = "ic_photo";
 
 	public static final String IC_SINGLE_SELECTION = "ic_single_selection";
 	public static final String IC_MULTIPLE_SELECTION = "ic_multiple_selection";
@@ -157,6 +160,7 @@ public interface SkinConstants {
 	public static final String IC_ARROW_DOWN = "ic_arrow_down";
 
 	public static final String COLOR_BROWN_MOKA = "brown_moka";
+	public static final String COLOR_GRAY_100 = "gray_100";
 
 	public static final String IC_EASE_LINEAR = "ic_ease_linear";
 	public static final String IC_EASE_IN_CUBIC = "ic_ease_in_cubic";
@@ -176,4 +180,5 @@ public interface SkinConstants {
 	public static final String IC_SEGMENT_END = "ic_segment_end";
 	public static final String IC_SEGMENT_MIDDLE = "ic_segment_middle";
 	public static final String IC_ARROW = "ic_arrow";
+	public static final String IC_ADD_SCENE = "ic_add_scene";
 }
