@@ -59,7 +59,7 @@ public interface SkinConstants {
 	public static final String DRAWABLE_TRANSPARENT_48 = "transparent_48_bg";
 	public static final String DRAWABLE_TEXT_FIELD = "text_field";
 	public static final String DRAWABLE_TOOLBAR = "toolbar";
-    public static final String DRAWABLE_BROWN_TOOLBAR = "brown_toolbar";
+	public static final String DRAWABLE_BROWN_TOOLBAR = "brown_toolbar";
 
 	public static final String STYLE_DEFAULT = "default";
 	public static final String STYLE_CONTEXT = "context";

@@ -36,16 +36,12 @@
  */
 package es.eucm.ead.editor.view.widgets.galleries;
 
-import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.scenes.scene2d.Actor;
-import com.badlogic.gdx.scenes.scene2d.InputEvent;
-import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
-import com.badlogic.gdx.utils.Array;
 import es.eucm.ead.editor.control.Controller;
 import es.eucm.ead.editor.control.actions.editor.ChangeView;
 import es.eucm.ead.editor.control.actions.editor.ExecuteWorker;
-import es.eucm.ead.editor.control.actions.model.AddSceneElement;
-import es.eucm.ead.editor.control.workers.LoadFiles;
+import es.eucm.ead.editor.control.actions.model.AddLibraryReference;
+import es.eucm.ead.editor.control.workers.LoadLibraryEntities;
 import es.eucm.ead.editor.control.workers.Worker.WorkerListener;
 import es.eucm.ead.editor.view.ModelView;
 import es.eucm.ead.editor.view.SkinConstants;
@@ -53,15 +49,16 @@ import es.eucm.ead.editor.view.builders.SearchView;
 import es.eucm.ead.editor.view.builders.scene.SceneView;
 import es.eucm.ead.editor.view.widgets.WidgetBuilder;
 import es.eucm.ead.editor.view.widgets.layouts.Gallery.GalleryStyle;
-import es.eucm.ead.schemax.ModelStructure;
 
-public class FileGallery extends ThumbnailsGallery implements WorkerListener,
-		ModelView {
+/**
+ * A gallery showing the library elements
+ */
+public class LibraryGallery extends ThumbnailsGallery implements
+		WorkerListener, ModelView {
 
-	private Array<String> loadedThumbnails = new Array<String>();
 	private Controller controller;
 
-	public FileGallery(float rows, int columns, Controller controller) {
+	public LibraryGallery(float rows, int columns, Controller controller) {
 		super(rows, columns, controller.getApplicationAssets(), controller
 				.getApplicationAssets().getSkin(), controller
 				.getApplicationAssets().getI18N(), controller
@@ -70,19 +67,15 @@ public class FileGallery extends ThumbnailsGallery implements WorkerListener,
 		this.controller = controller;
 	}
 
+	@Override
 	public void prepare() {
-		controller.action(ExecuteWorker.class, LoadFiles.class, this,
-				controller.getEditorGameAssets().getLoadingPath()
-						+ ModelStructure.IMAGES_FOLDER);
+		controller.action(ExecuteWorker.class, LoadLibraryEntities.class, this,
+				controller.getPlatform().getLibraryFolder());
 	}
 
 	@Override
 	public void release() {
-		for (String loadedThumbnail : loadedThumbnails) {
-			if (assets.isLoaded(loadedThumbnail, Texture.class)) {
-				assets.unload(loadedThumbnail);
-			}
-		}
+		controller.getWorkerExecutor().cancel(ExecuteWorker.class, this);
 	}
 
 	@Override
@@ -91,13 +84,10 @@ public class FileGallery extends ThumbnailsGallery implements WorkerListener,
 	}
 
 	@Override
-	protected void prepareGalleryItem(Actor actor, final String elemPath) {
-		actor.addListener(new ClickListener() {
-			@Override
-			public void clicked(InputEvent event, float x, float y) {
-				addElementAndChangeView(elemPath);
-			}
-		});
+	protected void prepareGalleryItem(Actor actor, String id) {
+		WidgetBuilder.actionsOnClick(actor, new Class[] {
+				AddLibraryReference.class, ChangeView.class }, new Object[][] {
+				new Object[] { id }, new Object[] { SceneView.class } });
 	}
 
 	@Override
@@ -107,9 +97,7 @@ public class FileGallery extends ThumbnailsGallery implements WorkerListener,
 
 	@Override
 	public void result(Object... results) {
-		String path = (String) results[0];
-		loadedThumbnails.add(path);
-		addTile(path, (String) results[1], (String) results[2]);
+		addTile((String) results[0], (String) results[1], (String) results[2]);
 	}
 
 	@Override
@@ -127,9 +115,4 @@ public class FileGallery extends ThumbnailsGallery implements WorkerListener,
 
 	}
 
-	private void addElementAndChangeView(String elemPath) {
-		controller.action(AddSceneElement.class, controller.getTemplates()
-				.createSceneElement(elemPath, false));
-		controller.action(ChangeView.class, SceneView.class);
-	}
 }

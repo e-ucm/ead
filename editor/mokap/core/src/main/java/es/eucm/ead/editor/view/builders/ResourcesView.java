@@ -37,14 +37,18 @@
 package es.eucm.ead.editor.view.builders;
 
 import com.badlogic.gdx.scenes.scene2d.Actor;
+import com.badlogic.gdx.scenes.scene2d.ui.Container;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
+
+import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
 import es.eucm.ead.editor.control.Controller;
 import es.eucm.ead.editor.control.actions.editor.ChangeView;
 import es.eucm.ead.editor.view.SkinConstants;
 import es.eucm.ead.editor.view.builders.scene.SceneView;
-import es.eucm.ead.editor.view.widgets.MultiWidget;
+import es.eucm.ead.editor.view.widgets.Tabs;
 import es.eucm.ead.editor.view.widgets.WidgetBuilder;
-import es.eucm.ead.editor.view.widgets.galleries.FileGallery;
+import es.eucm.ead.editor.view.widgets.galleries.LibraryGallery;
+import es.eucm.ead.editor.view.widgets.galleries.ProjectResourcesGallery;
 import es.eucm.ead.editor.view.widgets.layouts.LinearLayout;
 import es.eucm.ead.engine.I18N;
 
@@ -55,18 +59,30 @@ public class ResourcesView implements ViewBuilder {
 
 	private LinearLayout view;
 
+	private Container<Actor> container;
+
+	private ProjectResourcesGallery projectResources;
+
+	private LibraryGallery libraryGallery;
+
+	private Tabs tabs;
+
 	@Override
 	public void initialize(Controller controller) {
 		Skin skin = controller.getApplicationAssets().getSkin();
 		I18N i18N = controller.getApplicationAssets().getI18N();
 		view = new LinearLayout(false);
+		view.background(controller.getApplicationAssets().getSkin()
+				.getDrawable(SkinConstants.DRAWABLE_GRAY_100));
 		view.add(buildToolbar(skin, i18N)).expandX();
-		view.add(new FileGallery(3.15f, 4, controller)).expand(true, true)
-				.top();
+		view.add(container = new Container<Actor>().fill()).expand(true, true);
+		projectResources = new ProjectResourcesGallery(3.15f, 4, controller);
+		libraryGallery = new LibraryGallery(3.15f, 4, controller);
 	}
 
 	@Override
 	public Actor getView(Object... args) {
+		updateContent(tabs.getSelectedTabIndex());
 		return view;
 	}
 
@@ -74,15 +90,41 @@ public class ResourcesView implements ViewBuilder {
 	public void release(Controller controller) {
 	}
 
+	private Actor buildTabs(Skin skin, I18N i18N) {
+		tabs = new Tabs(skin);
+		tabs.setItems(i18N.m("project").toUpperCase(), i18N.m("library")
+				.toUpperCase());
+		tabs.addListener(new ChangeListener() {
+			@Override
+			public void changed(ChangeEvent event, Actor actor) {
+				updateContent(tabs.getSelectedTabIndex());
+			}
+		});
+		return tabs;
+	}
+
+	private void updateContent(int index) {
+		container.setActor(null);
+		switch (index) {
+		case 0:
+			container.setActor(projectResources);
+			projectResources.release();
+			projectResources.prepare();
+			break;
+		case 1:
+			container.setActor(libraryGallery);
+			libraryGallery.release();
+			libraryGallery.prepare();
+			break;
+		}
+	}
+
 	private Actor buildToolbar(Skin skin, I18N i18N) {
-		MultiWidget toolbar = new MultiWidget(skin, SkinConstants.STYLE_TOOLBAR);
-
-		LinearLayout project = new LinearLayout(true);
-		project.add(WidgetBuilder.toolbarIcon(SkinConstants.IC_GO, null,
+		LinearLayout toolbar = new LinearLayout(true).background(skin
+				.getDrawable(SkinConstants.DRAWABLE_BROWN_TOOLBAR));
+		toolbar.add(WidgetBuilder.toolbarIcon(SkinConstants.IC_GO, null,
 				ChangeView.class, SceneView.class));
-		project.addSpace();
-
-		toolbar.addWidgets(project);
+		toolbar.add(buildTabs(skin, i18N)).expandX();
 		return toolbar;
 	}
 }

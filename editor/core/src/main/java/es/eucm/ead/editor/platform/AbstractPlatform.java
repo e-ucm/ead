@@ -113,7 +113,7 @@ public abstract class AbstractPlatform implements Platform {
 	}
 
 	@Override
-	public String getDefaultLibraryFolder() {
+	public String getLibraryFolder() {
 		return getDefaultProjectsFolder();
 	}
 

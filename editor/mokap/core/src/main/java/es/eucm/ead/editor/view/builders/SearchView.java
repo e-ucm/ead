@@ -102,7 +102,6 @@ public class SearchView implements ViewBuilder, BackListener, WorkerListener {
 
 	@Override
 	public Actor getView(Object... args) {
-		search();
 		return view;
 	}
 
@@ -136,13 +135,10 @@ public class SearchView implements ViewBuilder, BackListener, WorkerListener {
 				onBackPressed();
 			}
 		});
-		project.addSpace();
 		IconButton search = WidgetBuilder.toolbarIcon(SkinConstants.IC_SEARCH,
 				i18N.m("search"));
 		project.add(search);
-
 		textField = new TextField("", skin);
-		textField.setVisible(false);
 		textField.addListener(new InputListener() {
 			@Override
 			public boolean keyUp(InputEvent event, int keycode) {
@@ -156,25 +152,12 @@ public class SearchView implements ViewBuilder, BackListener, WorkerListener {
 				return false;
 			}
 		});
-
-		search.addListener(new ClickListener() {
-			@Override
-			public void clicked(InputEvent event, float x, float y) {
-				boolean visible = !textField.isVisible();
-				textField.setVisible(visible);
-				textField.getStage().setKeyboardFocus(textField);
-				textField.invalidateHierarchy();
-			}
-		});
-		project.add(textField);
-
+		project.add(textField).expandX();
 		toolbar.addWidgets(project);
 		return toolbar;
 	}
 
 	private void hideTextField() {
-		textField.setVisible(false);
-		textField.invalidateHierarchy();
 		Stage stage = textField.getStage();
 		stage.unfocus(textField);
 		stage.setKeyboardFocus(null);
@@ -182,11 +165,7 @@ public class SearchView implements ViewBuilder, BackListener, WorkerListener {
 
 	@Override
 	public boolean onBackPressed() {
-		if (textField.isVisible()) {
-			hideTextField();
-		} else {
-			controller.action(ChangeView.class, ResourcesView.class);
-		}
+		controller.action(ChangeView.class, ResourcesView.class);
 		return true;
 	}
 

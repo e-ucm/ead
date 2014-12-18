@@ -54,6 +54,6 @@ public class EditorReferenceProcessor extends ReferenceProcessor {
 
 	@Override
 	protected String getLibraryPath() {
-		return platform.getDefaultLibraryFolder();
+		return platform.getLibraryFolder();
 	}
 }

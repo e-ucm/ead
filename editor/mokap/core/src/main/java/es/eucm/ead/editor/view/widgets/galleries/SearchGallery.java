@@ -67,13 +67,12 @@ public class SearchGallery extends AbstractWidget implements ModelView {
 		gallery.setFillParent(true);
 	}
 
+	@Override
 	public void prepare() {
-		clear();
 	}
 
 	@Override
 	public void release() {
-		clear();
 	}
 
 	@Override

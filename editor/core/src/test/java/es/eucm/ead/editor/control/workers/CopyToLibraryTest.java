@@ -102,7 +102,7 @@ public class CopyToLibraryTest extends WorkerTest implements WorkerListener {
 		if (success) {
 			EditorGameAssets gameAssets = controller.getEditorGameAssets();
 			FileHandle mockLibsFolder = gameAssets.absolute(controller
-					.getPlatform().getDefaultLibraryFolder());
+					.getPlatform().getLibraryFolder());
 			assertTrue(mockLibsFolder.isDirectory());
 			assertTrue(controller.getLibraryManager().isDownloaded(element));
 

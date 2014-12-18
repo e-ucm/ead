@@ -79,7 +79,7 @@ public class MockPlatform extends AbstractPlatform {
 	}
 
 	@Override
-	public String getDefaultLibraryFolder() {
+	public String getLibraryFolder() {
 		return Gdx.files.external("MockLibraryTest").file().getAbsolutePath();
 	}
 

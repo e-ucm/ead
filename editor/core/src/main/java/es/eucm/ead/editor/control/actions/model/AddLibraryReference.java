@@ -47,37 +47,37 @@ import es.eucm.ead.schemax.ModelStructure;
 /**
  * 
  * <p>
- * Adds a reference to a given {@link RepoElement} to the current scene.
+ * Adds a reference to a library element to the current scene.
  * <dl>
  * <dt><strong>Arguments</strong></dt>
- * <dd><strong>args[0] </strong> <em>{@link RepoElement}</em> The
- * {@link RepoElement} already imported to the local library.</dd>
+ * <dd><strong>args[0] </strong> <em>{@link String}</em> The {@link RepoElement}
+ * already imported to the local library.</dd>
  * </dl>
  * </p>
  * 
  */
-public class AddRepoElementReference extends ModelAction {
+public class AddLibraryReference extends ModelAction {
 
-	private AddSceneElement addSceneElem;
+	private AddSceneElement addSceneElement;
 
-	public AddRepoElementReference() {
-		super(true, false, new Class[] { RepoElement.class });
+	public AddLibraryReference() {
+		super(true, false, String.class);
 	}
 
 	@Override
 	public void initialize(Controller controller) {
 		super.initialize(controller);
-		addSceneElem = controller.getActions().getAction(AddSceneElement.class);
+		addSceneElement = controller.getActions().getAction(
+				AddSceneElement.class);
 	}
 
 	@Override
 	public Command perform(Object... args) {
-		RepoElement element = (RepoElement) args[0];
 		ModelEntity entity = new ModelEntity();
 		Reference ref = new Reference();
-		ref.setId(element.getEntityRef() + "/" + ModelStructure.CONTENTS_FOLDER
+		ref.setId(args[0] + "/" + ModelStructure.CONTENTS_FOLDER
 				+ ModelStructure.ENTITY_FILE);
 		entity.getComponents().add(ref);
-		return addSceneElem.perform(entity);
+		return addSceneElement.perform(entity);
 	}
 }

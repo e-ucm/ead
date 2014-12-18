@@ -53,7 +53,7 @@ import es.eucm.ead.editor.control.DownloadManager.DownloadListener;
 import es.eucm.ead.editor.control.DownloadManager.DownloadWork;
 import es.eucm.ead.editor.control.actions.editor.ChangeView;
 import es.eucm.ead.editor.control.actions.editor.ExecuteWorker;
-import es.eucm.ead.editor.control.actions.model.AddRepoElementReference;
+import es.eucm.ead.editor.control.actions.model.AddLibraryReference;
 import es.eucm.ead.editor.control.workers.CopyToLibraryWorker;
 import es.eucm.ead.editor.control.workers.UnzipFile;
 import es.eucm.ead.editor.control.workers.Worker.WorkerListener;
@@ -118,7 +118,8 @@ public class RepoTile extends Tile implements DownloadListener {
 				case DOWNLOADED:
 					break;
 				case IN_LIBRARY:
-					controller.action(AddRepoElementReference.class, element);
+					controller.action(AddLibraryReference.class,
+							element.getEntityRef());
 					controller.action(ChangeView.class, SceneView.class);
 					break;
 				case DOWNLOADING:
