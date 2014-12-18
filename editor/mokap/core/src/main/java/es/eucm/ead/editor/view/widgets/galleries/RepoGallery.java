@@ -51,7 +51,7 @@ import es.eucm.ead.editor.view.widgets.layouts.Gallery.Cell;
 import es.eucm.ead.editor.view.widgets.layouts.Gallery.GalleryStyle;
 import es.eucm.ead.schema.editor.components.repo.RepoElement;
 
-public class SearchGallery extends AbstractWidget implements ModelView {
+public class RepoGallery extends AbstractWidget implements ModelView {
 
 	private Skin skin;
 
@@ -59,7 +59,7 @@ public class SearchGallery extends AbstractWidget implements ModelView {
 
 	private ApplicationAssets assets;
 
-	public SearchGallery(float rows, int columns, Controller controller) {
+	public RepoGallery(float rows, int columns, Controller controller) {
 		assets = controller.getApplicationAssets();
 		skin = assets.getSkin();
 		addActor(gallery = new Gallery(rows, columns,
