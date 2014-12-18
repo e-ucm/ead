@@ -103,18 +103,27 @@ public class CopyToLibraryWorker extends Worker {
 		FileHandle entityContents = entityFolder
 				.child(ModelStructure.CONTENTS_FOLDER);
 		this.contentsFolder.copyTo(entityContents);
-		FileHandle entityJson = entityContents
-				.child(ModelStructure.ENTITY_FILE);
-		if (!entityJson.exists()) {
-			FileHandle[] list = entityContents.list(".json");
-			if (list.length > 0) {
-				list[0].copyTo(entityJson);
-				list[0].delete();
-			} else {
-				error(new FileNotFoundException(
-						"Entity json file not found at "
-								+ entityContents.path()));
+
+		if (controller.getLibraryManager().isMokap(element)) {
+			if (!entityContents.child(ModelStructure.GAME_FILE).exists()) {
+				error(new FileNotFoundException(ModelStructure.GAME_FILE
+						+ " not found at " + entityContents.path()));
 				return true;
+			}
+		} else {
+			FileHandle entityJson = entityContents
+					.child(ModelStructure.ENTITY_FILE);
+			if (!entityJson.exists()) {
+				FileHandle[] list = entityContents.list(".json");
+				if (list.length > 0) {
+					list[0].copyTo(entityJson);
+					list[0].delete();
+				} else {
+					error(new FileNotFoundException(
+							"Entity json file not found at "
+									+ entityContents.path()));
+					return true;
+				}
 			}
 		}
 

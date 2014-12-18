@@ -37,7 +37,6 @@
 package es.eucm.ead.editor.view.builders;
 
 import com.badlogic.gdx.scenes.scene2d.Actor;
-import com.badlogic.gdx.scenes.scene2d.ui.Stack;
 import es.eucm.ead.editor.control.Controller;
 import es.eucm.ead.editor.control.actions.editor.ShowToast;
 import es.eucm.ead.editor.control.engine.Engine;
@@ -57,16 +56,11 @@ public class PlayView implements ViewBuilder {
 
 	private EnginePlayer enginePlayer;
 
-	private Stack window;
-
 	@Override
 	public void initialize(final Controller controller) {
 		this.controller = controller;
 		enginePlayer = new EnginePlayer(controller.getEngine().getGameLoop());
 		enginePlayer.setFillParent(true);
-		window = new Stack();
-		window.setFillParent(true);
-		window.add(enginePlayer);
 	}
 
 	@Override
@@ -87,7 +81,7 @@ public class PlayView implements ViewBuilder {
 				controller.getModel().getGame());
 		engine.setGameView(enginePlayer);
 		engine.play();
-		return window;
+		return enginePlayer;
 	}
 
 	@Override
