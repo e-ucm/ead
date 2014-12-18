@@ -159,7 +159,6 @@ public class OpenGame extends EditorAction implements FileChooserListener,
 	 */
 	protected void finishLoading(String path) {
 		EditorGameAssets assets = controller.getEditorGameAssets();
-		assets.finishLoading();
 
 		// Delete current command history
 		Commands commands = controller.getCommands();

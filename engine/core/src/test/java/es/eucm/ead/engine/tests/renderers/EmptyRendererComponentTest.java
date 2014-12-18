@@ -100,7 +100,7 @@ public class EmptyRendererComponentTest extends EngineTest {
 		FileHandle parent = tmpImageFile.parent();
 		gameAssets.setLoadingPath(parent.path());
 		EngineEntity engineEntity1 = entitiesLoader.toEngineEntity(entity1);
-		gameAssets.finishLoading();
+		gameAssets.getAssetManager().finishLoading();
 		gameView.addEntityToLayer(Layer.SCENE_CONTENT, engineEntity1);
 
 		// Now, add a simple entity with empty renderer that blocks out the

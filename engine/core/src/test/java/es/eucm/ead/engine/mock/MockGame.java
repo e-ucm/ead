@@ -69,7 +69,6 @@ public class MockGame {
 	public void act(int loops) {
 		for (int i = 0; i < loops; i++) {
 			application.act();
-			engineApplicationListener.getGameAssets().finishLoading();
 		}
 	}
 

@@ -124,10 +124,6 @@ public abstract class ActionTest extends EditorTest {
 		controller.getCommands().pushStack();
 	}
 
-	protected void loadAllPendingAssets() {
-		controller.getEditorGameAssets().finishLoading();
-	}
-
 	@After
 	/**
 	 * If an empty game was created and loaded, it must be deleted after the test

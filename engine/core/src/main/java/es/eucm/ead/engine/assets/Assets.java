@@ -153,7 +153,7 @@ public abstract class Assets extends Json implements FileHandleResolver,
 						public void loaded(String fileName, Skin asset) {
 							skin = asset;
 						}
-					}, true);
+					});
 		}
 	}
 
@@ -305,8 +305,7 @@ public abstract class Assets extends Json implements FileHandleResolver,
 	}
 
 	/**
-	 * Adds the given asset to the loading queue of the assets. It will be
-	 * loaded and passed to the callback eventually.
+	 * Adds the given asset to the loading queue of the Assets.
 	 * 
 	 * @param fileName
 	 *            the file name (interpretation depends on {@link GameAssets})
@@ -317,43 +316,7 @@ public abstract class Assets extends Json implements FileHandleResolver,
 	 */
 	public <T> void get(String fileName, Class<T> clazz,
 			AssetLoadedCallback<T> callback) {
-		get(fileName, clazz, null, callback, false);
-	}
-
-	/**
-	 * Adds the given asset to the loading queue of the Assets.
-	 * 
-	 * @param fileName
-	 *            the file name (interpretation depends on {@link GameAssets})
-	 * @param clazz
-	 *            the type of the asset.
-	 * @param callback
-	 *            to be called with the loaded asset
-	 * @param forceLoading
-	 *            the asset is loaded right away. If false, it will be loaded at
-	 *            some point in the future in the main thread
-	 */
-	public <T> void get(String fileName, Class<T> clazz,
-			AssetLoadedCallback<T> callback, boolean forceLoading) {
-		get(fileName, clazz, null, callback, forceLoading);
-	}
-
-	/**
-	 * Adds the given asset to the loading queue of the Assets.
-	 * 
-	 * @param fileName
-	 *            the file name (interpretation depends on {@link GameAssets})
-	 * @param clazz
-	 *            the type of the asset.
-	 * @param parameters
-	 *            asset params
-	 * @param assetLoadedCallback
-	 *            to be called with the loaded asset
-	 */
-	public <T> void get(String fileName, Class<T> clazz,
-			AssetLoaderParameters<T> parameters,
-			AssetLoadedCallback<T> assetLoadedCallback) {
-		get(fileName, clazz, parameters, assetLoadedCallback, false);
+		get(fileName, clazz, null, callback);
 	}
 
 	/**
@@ -367,13 +330,9 @@ public abstract class Assets extends Json implements FileHandleResolver,
 	 *            asset params
 	 * @param callback
 	 *            to be called with the loaded asset
-	 * @param forceLoading
-	 *            the asset is loaded right away. If false, it will be loaded at
-	 *            some point in the future in the main thread
 	 */
 	public <T> void get(String fileName, Class<T> clazz,
-			AssetLoaderParameters<T> parameters,
-			AssetLoadedCallback<T> callback, boolean forceLoading) {
+			AssetLoaderParameters<T> parameters, AssetLoadedCallback<T> callback) {
 		if (assetManager.isLoaded(fileName, clazz)) {
 			callback.loaded(fileName, assetManager.get(fileName, clazz));
 		} else {
@@ -383,9 +342,6 @@ public abstract class Assets extends Json implements FileHandleResolver,
 				parameters.loadedCallback = new AssetParameters<T>(callback);
 			}
 			assetManager.load(fileName, clazz, parameters);
-			if (forceLoading) {
-				assetManager.finishLoading();
-			}
 		}
 	}
 
@@ -403,14 +359,6 @@ public abstract class Assets extends Json implements FileHandleResolver,
 	 */
 	public boolean isLoaded(String fileName, Class<?> type) {
 		return assetManager.isLoaded(fileName, type);
-	}
-
-	/**
-	 * Forces load of all the assets in the queue. This method blocks until all
-	 * resources scheduled for loading are done.
-	 */
-	public void finishLoading() {
-		assetManager.finishLoading();
 	}
 
 	/**
@@ -465,7 +413,11 @@ public abstract class Assets extends Json implements FileHandleResolver,
 		return assetManager.getLoadedAssets();
 	}
 
-	public class AssetManager extends com.badlogic.gdx.assets.AssetManager {
+    public AssetManager getAssetManager() {
+        return assetManager;
+    }
+
+    public class AssetManager extends com.badlogic.gdx.assets.AssetManager {
 
 		public AssetManager(FileHandleResolver resolver) {
 			super(resolver);

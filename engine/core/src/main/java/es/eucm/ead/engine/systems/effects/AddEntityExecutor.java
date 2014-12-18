@@ -90,7 +90,6 @@ public class AddEntityExecutor extends EffectExecutor<AddEntity> {
 									"Entity not found in " + path);
 						}
 					});
-			entitiesLoader.finishLoading();
 		} else {
 			// Just log that the effect will be skipped
 			Gdx.app.debug("AddEntityExecutor", "Effect: " + effect

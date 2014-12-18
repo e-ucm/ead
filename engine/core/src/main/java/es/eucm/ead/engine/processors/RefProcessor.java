@@ -73,7 +73,6 @@ public class RefProcessor<T extends ModelComponent> extends
 			field.setAccessible(true);
 			loadedComponent = null;
 			gameAssets.get(field.get(component) + "", Object.class, this);
-			gameAssets.finishLoading();
 			return componentLoader.toEngineComponent(loadedComponent);
 		} catch (ReflectionException e) {
 			Gdx.app.error("RefProcessor", "No uri field in " + component);

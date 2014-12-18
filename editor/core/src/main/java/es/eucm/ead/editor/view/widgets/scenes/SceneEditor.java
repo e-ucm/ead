@@ -168,7 +168,7 @@ public abstract class SceneEditor extends AbstractWidget {
 			 * All the assets must be loaded, so all actors has their correct
 			 * width and height
 			 */
-			controller.getEditorGameAssets().finishLoading();
+			controller.getEditorGameAssets().getAssetManager().finishLoading();
 			GameData gameData = Q.getComponent(model.getGame(), GameData.class);
 
 			scene.getGroup().setSize(gameData.getWidth(), gameData.getHeight());

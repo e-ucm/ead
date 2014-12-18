@@ -62,7 +62,7 @@ public class GoSceneTest extends EffectTest {
 			GoScene goScene = new GoScene();
 			goScene.setSceneId("ñor");
 			goSceneExecutor.execute(null, goScene);
-			gameAssets.finishLoading();
+			gameAssets.getAssetManager().finishLoading();
 		} catch (Exception e) {
 			fail("Exception should not be thrown");
 		}

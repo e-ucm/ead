@@ -188,7 +188,7 @@ public class Templates {
 					sceneElement.setScaleY(vector.y / texture.getHeight());
 				}
 			}
-		}, true);
+		});
 		sceneElement.setX(x - sceneElement.getOriginX());
 		sceneElement.setY(y - sceneElement.getOriginY());
 

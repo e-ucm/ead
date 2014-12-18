@@ -42,25 +42,19 @@ import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.ui.Container;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
-
 import es.eucm.ead.editor.control.Controller;
 import es.eucm.ead.editor.control.MokapController.BackListener;
-import es.eucm.ead.editor.control.MokapViews;
 import es.eucm.ead.editor.control.Preferences;
 import es.eucm.ead.editor.control.actions.editor.ExecuteWorker;
 import es.eucm.ead.editor.control.actions.editor.Exit;
-import es.eucm.ead.editor.control.actions.editor.OpenProject;
+import es.eucm.ead.editor.control.actions.editor.Play;
 import es.eucm.ead.editor.control.actions.editor.ShowInfoPanel;
 import es.eucm.ead.editor.control.actions.editor.ShowInfoPanel.TypePanel;
 import es.eucm.ead.editor.control.workers.FeaturedElements;
 import es.eucm.ead.editor.control.workers.Worker.WorkerListener;
 import es.eucm.ead.editor.view.SkinConstants;
-import es.eucm.ead.editor.view.builders.PlayView;
 import es.eucm.ead.editor.view.builders.ViewBuilder;
-import es.eucm.ead.editor.view.builders.project.ProjectView;
 import es.eucm.ead.editor.view.widgets.RepoTile.RepoTileListener;
-import es.eucm.ead.editor.view.widgets.ScrollPane;
-import es.eucm.ead.editor.view.widgets.ScrollPane.ScrollPaneListener;
 import es.eucm.ead.editor.view.widgets.Tabs;
 import es.eucm.ead.editor.view.widgets.WidgetBuilder;
 import es.eucm.ead.editor.view.widgets.galleries.ProjectsGallery;
@@ -83,6 +77,8 @@ public class HomeView implements ViewBuilder, BackListener, WorkerListener {
 
 	private RepoGallery repoGallery;
 
+	private Tabs tabs;
+
 	@Override
 	public void initialize(Controller control) {
 		this.controller = control;
@@ -99,16 +95,10 @@ public class HomeView implements ViewBuilder, BackListener, WorkerListener {
 
 			@Override
 			public void clickedInLibrary(RepoTileEvent event) {
-				((MokapViews) controller.getViews())
-						.setOpenGameClass(PlayView.class);
-				controller.action(
-						OpenProject.class,
-						controller
-								.getLibraryManager()
-								.getRepoElementLibraryFolder(
-										event.getRepoElement()).file()
-								.getAbsolutePath()
-								+ "/" + ModelStructure.CONTENTS_FOLDER);
+				controller.action(Play.class, controller.getLibraryManager()
+						.getRepoElementLibraryFolder(event.getRepoElement())
+						.file().getAbsolutePath()
+						+ "/" + ModelStructure.CONTENTS_FOLDER);
 			}
 
 		});
@@ -121,9 +111,8 @@ public class HomeView implements ViewBuilder, BackListener, WorkerListener {
 
 	@Override
 	public Actor getView(Object... args) {
-		((MokapViews) controller.getViews())
-				.setOpenGameClass(ProjectView.class);
 		controller.getWorkerExecutor().cancelAll();
+		updateContent(tabs.getSelectedTabIndex());
 		controller.getPreferences().putString(Preferences.LAST_OPENED_GAME, "");
 		controller.action(ShowInfoPanel.class, TypePanel.INTRODUCTION,
 				Preferences.HELP_INTRODUCTION);
@@ -175,7 +164,7 @@ public class HomeView implements ViewBuilder, BackListener, WorkerListener {
 	private Actor buildTabs() {
 		Skin skin = controller.getApplicationAssets().getSkin();
 		I18N i18N = controller.getApplicationAssets().getI18N();
-		final Tabs tabs = new Tabs(skin);
+		tabs = new Tabs(skin);
 		tabs.setItems(i18N.m("my.mokaps").toUpperCase(), i18N.m("community")
 				.toUpperCase());
 		tabs.addListener(new ChangeListener() {
