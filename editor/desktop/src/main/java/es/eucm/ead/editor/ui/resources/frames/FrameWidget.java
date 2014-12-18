@@ -174,7 +174,7 @@ public class FrameWidget extends FocusButton {
 						((Image) widget).setDrawable(new TextureRegionDrawable(
 								new TextureRegion(asset)));
 					}
-				}, true);
+				});
 
 		controller.getModel().addFieldListener(frame, textfieldListener);
 	}

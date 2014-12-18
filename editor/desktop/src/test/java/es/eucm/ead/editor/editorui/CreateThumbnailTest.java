@@ -119,7 +119,7 @@ public class CreateThumbnailTest extends EditorUITest {
 								table.add(image);
 								table.row();
 							}
-						}, true);
+						});
 			}
 
 			root.addActor(scroll);

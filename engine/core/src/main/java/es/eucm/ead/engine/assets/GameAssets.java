@@ -109,8 +109,7 @@ public class GameAssets extends Assets implements ModelStructure {
 
 	@Override
 	public <T> void get(String fileName, Class<T> clazz,
-			AssetLoaderParameters<T> parameters,
-			AssetLoadedCallback<T> callback) {
+			AssetLoaderParameters<T> parameters, AssetLoadedCallback<T> callback) {
 		if (referencePath != null) {
 			fileName = referencePath + fileName;
 		}

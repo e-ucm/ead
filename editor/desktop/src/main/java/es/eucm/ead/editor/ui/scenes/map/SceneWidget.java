@@ -96,7 +96,7 @@ public class SceneWidget extends FocusButton {
 								new TextureRegion(asset)));
 					}
 
-				}, true);
+				});
 		Documentation documentation = Q
 				.getComponent(scene, Documentation.class);
 		String name = documentation.getName();

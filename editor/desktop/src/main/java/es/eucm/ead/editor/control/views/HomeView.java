@@ -36,12 +36,9 @@
  */
 package es.eucm.ead.editor.control.views;
 
-import java.util.Collection;
-
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
-
 import es.eucm.ead.editor.assets.EditorGameAssets;
 import es.eucm.ead.editor.control.Controller;
 import es.eucm.ead.editor.model.Model.Resource;
@@ -60,6 +57,8 @@ import es.eucm.ead.editor.view.widgets.layouts.LinearLayout;
 import es.eucm.ead.schema.editor.components.Thumbnail;
 import es.eucm.ead.schema.entities.ModelEntity;
 import es.eucm.ead.schemax.entities.ResourceCategory;
+
+import java.util.Collection;
 
 public class HomeView implements ViewBuilder {
 
@@ -127,7 +126,6 @@ public class HomeView implements ViewBuilder {
 				Q.getThumbnailPath(modelEntity);
 			}
 		}
-		editorGameAssets.finishLoading();
 		scenesFiltering.prepare();
 		sceneEdition.prepare();
 		sceneMap.prepare();

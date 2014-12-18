@@ -413,11 +413,11 @@ public abstract class Assets extends Json implements FileHandleResolver,
 		return assetManager.getLoadedAssets();
 	}
 
-    public AssetManager getAssetManager() {
-        return assetManager;
-    }
+	public AssetManager getAssetManager() {
+		return assetManager;
+	}
 
-    public class AssetManager extends com.badlogic.gdx.assets.AssetManager {
+	public class AssetManager extends com.badlogic.gdx.assets.AssetManager {
 
 		public AssetManager(FileHandleResolver resolver) {
 			super(resolver);

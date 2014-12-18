@@ -42,10 +42,8 @@ import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.utils.Scaling;
 import com.badlogic.gdx.utils.reflect.ClassReflection;
 import com.badlogic.gdx.utils.reflect.ReflectionException;
-
 import es.eucm.ead.editor.assets.EditorGameAssets;
 import es.eucm.ead.editor.model.Q;
-import es.eucm.ead.engine.assets.Assets.AssetLoadedCallback;
 import es.eucm.ead.schema.editor.components.Date;
 import es.eucm.ead.schema.editor.components.Documentation;
 import es.eucm.ead.schema.editor.components.GameData;
@@ -59,6 +57,8 @@ import es.eucm.ead.schemax.entities.ResourceCategory;
  * objects. It should be used whenever a new schema object is needed
  */
 public class Templates {
+
+	private static final Vector2 size = new Vector2();
 
 	private Controller controller;
 
@@ -166,35 +166,29 @@ public class Templates {
 			final boolean filled) {
 
 		EditorGameAssets assets = controller.getEditorGameAssets();
-
 		String newPath = assets.copyToProjectIfNeeded(imagePath, Texture.class);
-
 		final ModelEntity sceneElement = new ModelEntity();
-		assets.get(newPath, Texture.class, new AssetLoadedCallback<Texture>() {
-			@Override
-			public void loaded(String fileName, Texture texture) {
-
-				// Center the origin
-				sceneElement.setOriginX(texture.getWidth() * .5f);
-				sceneElement.setOriginY(texture.getHeight() * .5f);
-
-				if (filled) {
-					GameData data = Q.getComponent(controller.getModel()
-							.getGame(), GameData.class);
-					Vector2 vector = Scaling.fill.apply(texture.getWidth(),
-							texture.getHeight(), data.getWidth(),
-							data.getHeight());
-					sceneElement.setScaleX(vector.x / texture.getWidth());
-					sceneElement.setScaleY(vector.y / texture.getHeight());
-				}
-			}
-		});
+		controller
+				.getPlatform()
+				.getImageUtils()
+				.imageSize(
+						controller.getApplicationAssets().absolute(imagePath),
+						size);
+		// Center the origin
+		sceneElement.setOriginX(size.x * .5f);
+		sceneElement.setOriginY(size.y * .5f);
+		if (filled) {
+			GameData data = Q.getComponent(controller.getModel().getGame(),
+					GameData.class);
+			Vector2 vector = Scaling.fill.apply(size.x, size.y,
+					data.getWidth(), data.getHeight());
+			sceneElement.setScaleX(vector.x / size.x);
+			sceneElement.setScaleY(vector.y / size.y);
+		}
 		sceneElement.setX(x - sceneElement.getOriginX());
 		sceneElement.setY(y - sceneElement.getOriginY());
-
 		Image renderer = new Image();
 		renderer.setUri(newPath);
-
 		sceneElement.getComponents().add(renderer);
 		return sceneElement;
 	}

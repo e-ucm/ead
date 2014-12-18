@@ -145,7 +145,7 @@ public class SceneEditionWidget extends LinearLayout implements FieldListener {
 		makeInitial.setDisabled(isInitial(scene));
 
 		controller.getEditorGameAssets().get(Q.getThumbnailPath(scene),
-				Texture.class, thumbnailCallback, true);
+				Texture.class, thumbnailCallback);
 
 		clearChildren();
 		add(thumbnail);

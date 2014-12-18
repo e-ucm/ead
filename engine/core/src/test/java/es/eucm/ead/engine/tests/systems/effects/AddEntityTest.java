@@ -183,6 +183,7 @@ public class AddEntityTest extends EngineTest implements EntityListener {
 		assertNull(variablesManager
 				.getValue(VarsContext.RESERVED_NEWEST_ENTITY_VAR));
 		addEntityExecutor.execute(parentEntity, addEntity);
+		gameAssets.getAssetManager().finishLoading();
 		gameLoop.update(0);
 		assertEquals("There should be 2 entities", 2, count);
 		// Get added entity
@@ -213,6 +214,7 @@ public class AddEntityTest extends EngineTest implements EntityListener {
 		assertNull(variablesManager
 				.getValue(VarsContext.RESERVED_NEWEST_ENTITY_VAR));
 		addEntityExecutor.execute(parentEntity, addEntity);
+		gameAssets.getAssetManager().finishLoading();
 		gameLoop.update(0);
 		assertEquals("There should be 2 entities", 2, count);
 		// Get added entity
@@ -259,12 +261,14 @@ public class AddEntityTest extends EngineTest implements EntityListener {
 		EngineEntity parentEntity = entitiesLoader
 				.toEngineEntity(new ModelEntity());
 		addEntityExecutor.execute(parentEntity, addEntity);
+		gameAssets.getAssetManager().finishLoading();
 		assertEquals("There should be 2 entities", 2, count);
 		// Get added entity
 		EngineEntity entityAdded = (EngineEntity) parentEntity.getGroup()
 				.getChildren().get(0).getUserObject();
 		assertTrue("Entity added should have a tweens component",
 				entityAdded.hasComponent(TweensComponent.class));
+		gameAssets.getAssetManager().finishLoading();
 		gameLoop.update(0);
 		// Check animation is active
 		gameLoop.update(0.5F);
@@ -317,6 +321,7 @@ public class AddEntityTest extends EngineTest implements EntityListener {
 		EngineEntity parentEntity = entitiesLoader
 				.toEngineEntity(new ModelEntity());
 		addEntityExecutor.execute(parentEntity, addEntity);
+		gameAssets.getAssetManager().finishLoading();
 		assertEquals("There should be 2 entities", 2, count);
 		// Get added entity
 		EngineEntity entityAdded = (EngineEntity) parentEntity.getGroup()

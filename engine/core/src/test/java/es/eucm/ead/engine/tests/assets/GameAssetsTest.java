@@ -64,6 +64,7 @@ public class GameAssetsTest {
 
 	@Test
 	public void testSkinIsLoadedRightAway() {
+		assets.getAssetManager().finishLoading();
 		assets.loadSkin(DEFAULT_SKIN);
 		assertNotNull(assets.getSkin());
 	}
