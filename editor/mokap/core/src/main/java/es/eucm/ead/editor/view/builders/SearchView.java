@@ -37,35 +37,47 @@
 package es.eucm.ead.editor.view.builders;
 
 import com.badlogic.gdx.Input.Keys;
+import com.badlogic.gdx.graphics.Pixmap;
+import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.InputListener;
+import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.ui.TextField;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
+
 import es.eucm.ead.editor.assets.ApplicationAssets;
 import es.eucm.ead.editor.control.Controller;
 import es.eucm.ead.editor.control.MokapController.BackListener;
 import es.eucm.ead.editor.control.actions.editor.ChangeView;
 import es.eucm.ead.editor.control.actions.editor.ExecuteWorker;
 import es.eucm.ead.editor.control.workers.SearchRepo;
+import es.eucm.ead.editor.control.workers.Worker.WorkerListener;
 import es.eucm.ead.editor.view.SkinConstants;
 import es.eucm.ead.editor.view.widgets.IconButton;
 import es.eucm.ead.editor.view.widgets.MultiWidget;
+import es.eucm.ead.editor.view.widgets.ScrollPane;
+import es.eucm.ead.editor.view.widgets.ScrollPane.ScrollPaneListener;
 import es.eucm.ead.editor.view.widgets.WidgetBuilder;
 import es.eucm.ead.editor.view.widgets.galleries.SearchGallery;
 import es.eucm.ead.editor.view.widgets.layouts.LinearLayout;
 import es.eucm.ead.engine.I18N;
+import es.eucm.ead.schema.editor.components.repo.RepoElement;
+import es.eucm.ead.schema.editor.components.repo.response.SearchResponse;
 
 /**
  * File view. A list with the children of a given file.
  */
-public class SearchView implements ViewBuilder, BackListener {
+public class SearchView implements ViewBuilder, BackListener, WorkerListener {
 
 	private LinearLayout view;
 	private SearchGallery searchGallery;
 	private Controller controller;
 	private TextField textField;
+
+	private SearchResponse currentResponse;
+	private boolean canSearch;
 
 	@Override
 	public void initialize(Controller controller) {
@@ -77,18 +89,39 @@ public class SearchView implements ViewBuilder, BackListener {
 		view.add(buildToolbar(skin, i18N)).expandX();
 		view.add(searchGallery = new SearchGallery(2.65f, 4, controller))
 				.expand(true, true).top();
+
+		searchGallery.addListener(new ScrollPaneListener() {
+			@Override
+			public void hitEdge(ScrollPane scrollPane, Edge edge) {
+				if (canSearch && edge == Edge.BOTTOM) {
+					search();
+				}
+			}
+		});
 	}
 
 	@Override
 	public Actor getView(Object... args) {
-		controller.action(ExecuteWorker.class, SearchRepo.class, searchGallery,
-				textField.getText());
+		search();
 		return view;
+	}
+
+	private void search() {
+		canSearch = false;
+		if (currentResponse != null) {
+			controller.action(ExecuteWorker.class, SearchRepo.class, this,
+					textField.getText(), currentResponse.getSearchCursor());
+		} else {
+			controller.action(ExecuteWorker.class, SearchRepo.class, this,
+					textField.getText());
+		}
 	}
 
 	@Override
 	public void release(Controller controller) {
-		controller.getWorkerExecutor().cancel(SearchRepo.class, searchGallery);
+		controller.getWorkerExecutor().cancel(SearchRepo.class, this);
+		currentResponse = null;
+		canSearch = true;
 	}
 
 	private Actor buildToolbar(Skin skin, I18N i18N) {
@@ -114,8 +147,9 @@ public class SearchView implements ViewBuilder, BackListener {
 			@Override
 			public boolean keyUp(InputEvent event, int keycode) {
 				if (keycode == Keys.ENTER) {
+					searchGallery.clear();
 					controller.action(ExecuteWorker.class, SearchRepo.class,
-							searchGallery, textField.getText());
+							SearchView.this, textField.getText());
 					hideTextField();
 					return true;
 				}
@@ -140,8 +174,10 @@ public class SearchView implements ViewBuilder, BackListener {
 
 	private void hideTextField() {
 		textField.setVisible(false);
-		textField.getStage().unfocus(textField);
 		textField.invalidateHierarchy();
+		Stage stage = textField.getStage();
+		stage.unfocus(textField);
+		stage.setKeyboardFocus(null);
 	}
 
 	@Override
@@ -152,5 +188,38 @@ public class SearchView implements ViewBuilder, BackListener {
 			controller.action(ChangeView.class, ResourcesView.class);
 		}
 		return true;
+	}
+
+	@Override
+	public void start() {
+
+	}
+
+	@Override
+	public void result(Object... results) {
+		Object firstResult = results[0];
+		if (!(firstResult instanceof SearchResponse)) {
+			RepoElement elem = (RepoElement) firstResult;
+			Pixmap repoThumbnail = (Pixmap) results[1];
+			Texture thumbnailTex = new Texture(repoThumbnail);
+			searchGallery.add(elem, repoThumbnail, thumbnailTex);
+		} else {
+			currentResponse = (SearchResponse) firstResult;
+		}
+	}
+
+	@Override
+	public void done() {
+		canSearch = true;
+	}
+
+	@Override
+	public void error(Throwable ex) {
+
+	}
+
+	@Override
+	public void cancelled() {
+		canSearch = true;
 	}
 }
