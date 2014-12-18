@@ -243,10 +243,6 @@ public class ApplicationAssets extends Assets {
 			releaseInfo.setBackendApiKey("API_KEY_NOT_PRESENT");
 		}
 
-		if (releaseInfo.getBackendSearchServlet() == null) {
-			releaseInfo.setBackendSearchServlet("search");
-		}
-
 		return releaseInfo;
 	}
 
