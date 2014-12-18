@@ -80,7 +80,7 @@ public class LoadLibraryEntities extends Worker {
 		}
 
 		if (args.length == 2 && args[1] instanceof Integer) {
-			i = getArg(1);
+			i = (Integer) args[1];
 		}
 	}
 

@@ -38,11 +38,8 @@ package es.eucm.ead.editor.view.builders;
 
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.ui.Stack;
-
 import es.eucm.ead.editor.control.Controller;
-import es.eucm.ead.editor.control.Selection;
 import es.eucm.ead.editor.control.actions.editor.ShowToast;
-import es.eucm.ead.editor.control.actions.model.SetSelection;
 import es.eucm.ead.editor.control.engine.Engine;
 import es.eucm.ead.editor.exporter.Exporter;
 import es.eucm.ead.editor.model.Q;
@@ -76,8 +73,6 @@ public class PlayView implements ViewBuilder {
 	public Actor getView(Object... args) {
 		controller.action(ShowToast.class, controller.getApplicationAssets()
 				.getI18N().m("play.back"));
-		controller.action(SetSelection.class, Selection.EDITED_GROUP,
-				Selection.SCENE_ELEMENT);
 
 		String currentSceneId = Q.getComponent(controller.getModel().getGame(),
 				GameData.class).getInitialScene();
