@@ -52,28 +52,25 @@ public class RepoRequestFactoryTest {
 	@Test
 	public void testNormal() {
 		assertEquals(
-				build("api.mokap.es", "XXXXXX", "search", "text to search for"),
-				"http://api.mokap.es/search?q=text+to+search+for&k=XXXXXX");
+				build("api.mokap.es/backend", "XXXXXX", "text to search for"),
+				"http://api.mokap.es/backend?q=text+to+search+for&k=XXXXXX");
 		assertEquals(
-				build("http://api.mokap.es/", "XXXXXX", "search?",
+				build("http://api.mokap.es/backend", "XXXXXX",
 						"text to search for"),
-				"http://api.mokap.es/search?q=text+to+search+for&k=XXXXXX");
+				"http://api.mokap.es/backend?q=text+to+search+for&k=XXXXXX");
 	}
 
 	@Test
 	public void testBackendDataNotAvailable() {
 		MockApplication.initStatics();
-		assertNull(build(null, "XXXXXX", "search", "text to search for"));
-		assertNull(build("api.mokap.es", null, "search", "text to search for"));
-		assertNull(build("api.mokap.es", "XXXXXX", null, "text to search for"));
+		assertNull(build(null, "XXXXXX", "text to search for"));
+		assertNull(build("api.mokap.es/backend", null, "text to search for"));
 	}
 
-	private String build(String backendUrl, String backendApiKey,
-			String backendSearch, String query) {
+	private String build(String backendUrl, String backendApiKey, String query) {
 		ReleaseInfo releaseInfo = new ReleaseInfo();
 		releaseInfo.setBackendURL(backendUrl);
 		releaseInfo.setBackendApiKey(backendApiKey);
-		releaseInfo.setBackendSearchServlet(backendSearch);
 
 		SearchRequest searchRequest = new SearchRequest();
 		searchRequest.setQ(query);

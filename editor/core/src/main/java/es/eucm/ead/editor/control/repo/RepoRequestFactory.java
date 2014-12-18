@@ -162,11 +162,6 @@ public class RepoRequestFactory {
 			backendUrl = "http://" + backendUrl;
 		}
 
-		// Append "/"
-		if (!backendUrl.endsWith("/")) {
-			backendUrl = backendUrl + "/";
-		}
-
 		return backendUrl;
 	}
 
@@ -193,37 +188,8 @@ public class RepoRequestFactory {
 			return null;
 		}
 
-		String className = request.getClass().getSimpleName();
-		if (className.contains("Request")) {
-			className = className.substring(0, className.indexOf("Request"));
-		}
-		String propertyName = "backend" + className + "Servlet";
-		String serviceName = null;
-		for (Field field : ClassReflection.getDeclaredFields(ReleaseInfo.class)) {
-			if (field.getName().equals(propertyName)) {
-				try {
-					field.setAccessible(true);
-					serviceName = (String) field.get(releaseInfo);
-					break;
-				} catch (Exception e) {
-					Gdx.app.debug(LOG_TAG,
-							"Error occurred while building service url", e);
-				}
-			}
-		}
-
-		if (serviceName == null) {
-			Gdx.app.debug(LOG_TAG,
-					"Error occurred while building service url: baseUrl could not be resolved");
-			return null;
-		}
-
-		if (serviceName.startsWith("/")) {
-			serviceName = serviceName.substring(1, serviceName.length());
-		}
-
-		url += serviceName;
-		if (!serviceName.endsWith("?")) {
+		// Append "?"
+		if (!url.endsWith("?")) {
 			url += "?";
 		}
 
