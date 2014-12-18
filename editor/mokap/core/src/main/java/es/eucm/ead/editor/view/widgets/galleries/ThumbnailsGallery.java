@@ -70,7 +70,7 @@ public abstract class ThumbnailsGallery extends AbstractWidget implements
 
 	protected Gallery gallery;
 
-	private Button add;
+	private Button actionButton;
 
 	public ThumbnailsGallery(float rows, int columns, Assets assets, Skin skin,
 			I18N i18N) {
@@ -85,9 +85,15 @@ public abstract class ThumbnailsGallery extends AbstractWidget implements
 
 	public ThumbnailsGallery(float rows, int columns, Assets assets, Skin skin,
 			I18N i18N, GalleryStyle galleryStyle) {
+		this(rows, columns, assets, skin, i18N, galleryStyle,
+				SkinConstants.IC_ADD);
+	}
+
+	public ThumbnailsGallery(float rows, int columns, Assets assets, Skin skin,
+			I18N i18N, GalleryStyle galleryStyle, String actionIcon) {
 		addActor(gallery = new Gallery(rows, columns, galleryStyle));
-		addActor(add = WidgetBuilder.button(SkinConstants.STYLE_ADD));
-		prepareAddButton(add);
+		addActor(actionButton = WidgetBuilder.circleButton(actionIcon));
+		prepareAddButton(actionButton);
 		this.assets = assets;
 		this.skin = skin;
 		this.i18N = i18N;
@@ -106,9 +112,11 @@ public abstract class ThumbnailsGallery extends AbstractWidget implements
 	@Override
 	public void layout() {
 		setBounds(gallery, 0, 0, getWidth(), getHeight());
-		float width = getPrefWidth(add);
-		setBounds(add, getWidth() - width - WidgetBuilder.dpToPixels(32),
-				WidgetBuilder.dpToPixels(32), width, getPrefHeight(add));
+		float width = getPrefWidth(actionButton);
+		setBounds(actionButton,
+				getWidth() - width - WidgetBuilder.dpToPixels(32),
+				WidgetBuilder.dpToPixels(32), width,
+				getPrefHeight(actionButton));
 	}
 
 	public Cell addTile(String id, String title, String thumbnailPath) {

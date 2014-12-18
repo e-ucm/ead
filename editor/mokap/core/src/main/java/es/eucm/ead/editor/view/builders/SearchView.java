@@ -149,7 +149,7 @@ public class SearchView implements ViewBuilder, BackListener {
 		if (textField.isVisible()) {
 			hideTextField();
 		} else {
-			controller.action(ChangeView.class, FileView.class);
+			controller.action(ChangeView.class, ResourcesView.class);
 		}
 		return true;
 	}

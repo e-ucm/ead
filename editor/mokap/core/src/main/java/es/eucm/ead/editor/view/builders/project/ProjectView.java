@@ -43,7 +43,6 @@ import com.badlogic.gdx.scenes.scene2d.ui.Image;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
 import com.badlogic.gdx.scenes.scene2d.utils.Align;
-
 import es.eucm.ead.editor.control.Controller;
 import es.eucm.ead.editor.control.MokapController.BackListener;
 import es.eucm.ead.editor.control.Selection;
@@ -78,8 +77,9 @@ public class ProjectView implements ViewBuilder, BackListener, FieldListener {
 		this.controller = controller;
 		Skin skin = controller.getApplicationAssets().getSkin();
 		view = new LinearLayout(false);
+		view.background(skin.getDrawable(SkinConstants.DRAWABLE_GRAY_100));
 		view.add(buildToolbar(skin)).expandX();
-		view.add(new ProjectScenesGallery(2.35f, 3, controller))
+		view.add(new ProjectScenesGallery(1.75f, 3, controller))
 				.expand(true, true).top();
 	}
 

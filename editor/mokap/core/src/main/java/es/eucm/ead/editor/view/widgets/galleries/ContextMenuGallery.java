@@ -63,9 +63,20 @@ public abstract class ContextMenuGallery extends ThumbnailsGallery {
 	private ContextMenu contextMenu;
 
 	public ContextMenuGallery(float rows, int columns, Assets assets,
-			Controller controller) {
+			Controller controller, String actionIcon) {
 		super(rows, columns, assets, controller.getApplicationAssets()
-				.getSkin(), controller.getApplicationAssets().getI18N());
+				.getSkin(), controller.getApplicationAssets().getI18N(),
+				controller.getApplicationAssets().getSkin()
+						.get(GalleryStyle.class), actionIcon);
+		this.controller = controller;
+	}
+
+	public ContextMenuGallery(float rows, int columns, Assets assets,
+			Controller controller, String galleryStyle, String actionIcon) {
+		super(rows, columns, assets, controller.getApplicationAssets()
+				.getSkin(), controller.getApplicationAssets().getI18N(),
+				controller.getApplicationAssets().getSkin()
+						.get(galleryStyle, GalleryStyle.class), actionIcon);
 		this.controller = controller;
 	}
 

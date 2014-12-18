@@ -79,7 +79,8 @@ public class ProjectsGallery extends ContextMenuGallery implements
 	private ProjectListener projectListener = new ProjectListener();
 
 	public ProjectsGallery(float rows, int columns, Controller c) {
-		super(rows, columns, c.getApplicationAssets(), c);
+		super(rows, columns, c.getApplicationAssets(), c,
+				SkinConstants.IC_ADD_MOKAP);
 		this.controller = c;
 
 		Button edit = WidgetBuilder.button(SkinConstants.IC_EDIT,

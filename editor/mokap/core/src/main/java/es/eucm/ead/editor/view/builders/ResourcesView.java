@@ -51,7 +51,7 @@ import es.eucm.ead.engine.I18N;
 /**
  * File view. A list with the children of a given file.
  */
-public class FileView implements ViewBuilder {
+public class ResourcesView implements ViewBuilder {
 
 	private LinearLayout view;
 
@@ -81,8 +81,6 @@ public class FileView implements ViewBuilder {
 		project.add(WidgetBuilder.toolbarIcon(SkinConstants.IC_GO, null,
 				ChangeView.class, SceneView.class));
 		project.addSpace();
-		project.add(WidgetBuilder.toolbarIcon(SkinConstants.IC_SEARCH,
-				i18N.m("search"), ChangeView.class, SearchView.class));
 
 		toolbar.addWidgets(project);
 		return toolbar;

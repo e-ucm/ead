@@ -44,6 +44,7 @@ import com.badlogic.gdx.scenes.scene2d.actions.Actions;
 import com.badlogic.gdx.scenes.scene2d.ui.Button;
 import com.badlogic.gdx.scenes.scene2d.utils.Align;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
+
 import es.eucm.ead.editor.control.Controller;
 import es.eucm.ead.editor.control.MokapController.BackListener;
 import es.eucm.ead.editor.control.Preferences;
@@ -51,23 +52,26 @@ import es.eucm.ead.editor.control.Selection;
 import es.eucm.ead.editor.control.Selection.Context;
 import es.eucm.ead.editor.control.actions.editor.AddLabel;
 import es.eucm.ead.editor.control.actions.editor.ChangeView;
+import es.eucm.ead.editor.control.actions.editor.ChooseFile;
 import es.eucm.ead.editor.control.actions.editor.CreateSceneThumbnail;
 import es.eucm.ead.editor.control.actions.editor.ShowContextMenu;
 import es.eucm.ead.editor.control.actions.editor.ShowInfoPanel;
 import es.eucm.ead.editor.control.actions.editor.ShowInfoPanel.TypePanel;
 import es.eucm.ead.editor.control.actions.editor.ShowToast;
 import es.eucm.ead.editor.control.actions.model.AddInteractiveZone;
+import es.eucm.ead.editor.control.actions.model.AddSceneElement;
 import es.eucm.ead.editor.control.actions.model.SetSelection;
 import es.eucm.ead.editor.control.actions.model.TakePicture;
 import es.eucm.ead.editor.model.Model.SelectionListener;
 import es.eucm.ead.editor.model.Q;
 import es.eucm.ead.editor.model.events.SelectionEvent;
+import es.eucm.ead.editor.platform.Platform.FileChooserListener;
 import es.eucm.ead.editor.view.ModelView;
 import es.eucm.ead.editor.view.SkinConstants;
-import es.eucm.ead.editor.view.builders.FileView;
+import es.eucm.ead.editor.view.builders.ResourcesView;
+import es.eucm.ead.editor.view.builders.scene.components.InteractionContext;
 import es.eucm.ead.editor.view.builders.scene.context.SceneElementContext;
 import es.eucm.ead.editor.view.builders.scene.draw.BrushStrokes;
-import es.eucm.ead.editor.view.builders.scene.components.InteractionContext;
 import es.eucm.ead.editor.view.builders.scene.play.TestGameView;
 import es.eucm.ead.editor.view.widgets.AbstractWidget;
 import es.eucm.ead.editor.view.widgets.CirclesMenu;
@@ -80,11 +84,11 @@ import es.eucm.ead.schema.entities.ModelEntity;
 import es.eucm.ead.schemax.Layer;
 
 public class SceneEditor extends BaseView implements ModelView,
-		SelectionListener, BackListener {
+		SelectionListener, BackListener, FileChooserListener {
 
 	public static final float ANIMATION_TIME = 0.3f;
 
-	public static final int INSERT = 0, PAINT = 2, FX = 3, INTERACTION = 5;
+	public static final int INSERT = 0, PAINT = 2;
 
 	public enum Mode {
 		COMPOSE, FX, INTERACTION, PLAY, DRAW,
@@ -349,14 +353,15 @@ public class SceneEditor extends BaseView implements ModelView,
 
 	private CirclesMenu buildAddButtons() {
 		CirclesMenu circlesMenu = WidgetBuilder.circlesMenu(Align.right,
-				new String[] { SkinConstants.IC_CLOUD, SkinConstants.IC_CAMERA,
-						SkinConstants.IC_BRUSH, SkinConstants.IC_TEXT,
-						SkinConstants.IC_ZONE, SkinConstants.IC_CLOSE },
-				new Class[] { ChangeView.class, TakePicture.class, null,
-						AddLabel.class, AddInteractiveZone.class, null },
-				new Object[][] { new Object[] { FileView.class },
-						new Object[] {}, new Object[] {}, new Object[] {},
-						new Object[] {}, null });
+				new String[] { SkinConstants.IC_ZONE, SkinConstants.IC_BRUSH,
+						SkinConstants.IC_TEXT, SkinConstants.IC_CAMERA,
+						SkinConstants.IC_PHOTO, SkinConstants.IC_CLOUD,
+						SkinConstants.IC_CLOSE }, new Class[] {
+						AddInteractiveZone.class, null, AddLabel.class,
+						TakePicture.class, ChooseFile.class, ChangeView.class,
+						null }, new Object[][] { null, null, null, null,
+						new Object[] { false, this },
+						new Object[] { ResourcesView.class }, null });
 
 		Actor zone = circlesMenu.findActor(SkinConstants.IC_ZONE);
 		WidgetBuilder.actionOnClick(zone, ShowInfoPanel.class, TypePanel.ZONES,
@@ -371,6 +376,20 @@ public class SceneEditor extends BaseView implements ModelView,
 		});
 
 		return circlesMenu;
+	}
+
+	@Override
+	public void fileChosen(String path) {
+		if (path != null && !path.trim().isEmpty()) {
+			addElementAndChangeView(path);
+		}
+	}
+
+	private void addElementAndChangeView(String elemPath) {
+		ModelEntity sceneElement = controller.getTemplates()
+				.createSceneElement(elemPath, false);
+		controller.action(AddSceneElement.class, sceneElement);
+		controller.action(ChangeView.class, SceneView.class);
 	}
 
 }

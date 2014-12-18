@@ -240,8 +240,12 @@ public class WidgetBuilder {
 
 	public static void actionOnClick(Actor actor, Class action, Object... args) {
 		if (action != null) {
-			actor.addListener(new ActionOnClickListener(controller, action,
-					args));
+			if (args == null) {
+				actor.addListener(new ActionOnClickListener(controller, action));
+			} else {
+				actor.addListener(new ActionOnClickListener(controller, action,
+						args));
+			}
 		}
 	}
 
@@ -265,9 +269,6 @@ public class WidgetBuilder {
 		}
 		Skin skin = controller.getApplicationAssets().getSkin();
 
-		ButtonStyle circleStyle = skin.get(SkinConstants.STYLE_CIRCLE,
-				ButtonStyle.class);
-
 		CirclesMenu menu = new CirclesMenu(align);
 
 		if (menu.isHorizontal()) {
@@ -276,15 +277,21 @@ public class WidgetBuilder {
 			menu.defaultWidgetsMargin(0, dpToPixels(8), 0, 0);
 		}
 		for (int i = 0; i < icons.length; i++) {
-			ImageButtonStyle imageButtonStyle = new ImageButtonStyle(
-					circleStyle);
-			imageButtonStyle.imageUp = skin.getDrawable(icons[i]);
-			ImageButton imageButton = new ImageButton(imageButtonStyle);
-			imageButton.setName(icons[i]);
+			ImageButton imageButton = circleButton(icons[i]);
 			actionOnClick(imageButton, actions[i], args[i]);
 			menu.add(imageButton);
 		}
 		return menu;
+	}
+
+	public static ImageButton circleButton(String icon) {
+		ButtonStyle circleStyle = skin.get(SkinConstants.STYLE_CIRCLE,
+				ButtonStyle.class);
+		ImageButtonStyle imageButtonStyle = new ImageButtonStyle(circleStyle);
+		imageButtonStyle.imageUp = skin.getDrawable(icon);
+		ImageButton imageButton = new ImageButton(imageButtonStyle);
+		imageButton.setName(icon);
+		return imageButton;
 	}
 
 	/**

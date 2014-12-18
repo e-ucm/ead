@@ -41,23 +41,22 @@ import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.utils.Array;
-
 import es.eucm.ead.editor.control.Controller;
 import es.eucm.ead.editor.control.actions.editor.ChangeView;
-import es.eucm.ead.editor.control.actions.editor.ChooseFile;
 import es.eucm.ead.editor.control.actions.editor.ExecuteWorker;
 import es.eucm.ead.editor.control.actions.model.AddSceneElement;
 import es.eucm.ead.editor.control.workers.LoadFiles;
 import es.eucm.ead.editor.control.workers.Worker.WorkerListener;
-import es.eucm.ead.editor.platform.Platform.FileChooserListener;
 import es.eucm.ead.editor.view.ModelView;
+import es.eucm.ead.editor.view.SkinConstants;
+import es.eucm.ead.editor.view.builders.SearchView;
 import es.eucm.ead.editor.view.builders.scene.SceneView;
 import es.eucm.ead.editor.view.widgets.WidgetBuilder;
-import es.eucm.ead.schema.entities.ModelEntity;
+import es.eucm.ead.editor.view.widgets.layouts.Gallery.GalleryStyle;
 import es.eucm.ead.schemax.ModelStructure;
 
 public class FileGallery extends ThumbnailsGallery implements WorkerListener,
-		ModelView, FileChooserListener {
+		ModelView {
 
 	private Array<String> loadedThumbnails = new Array<String>();
 	private Controller controller;
@@ -65,7 +64,9 @@ public class FileGallery extends ThumbnailsGallery implements WorkerListener,
 	public FileGallery(float rows, int columns, Controller controller) {
 		super(rows, columns, controller.getApplicationAssets(), controller
 				.getApplicationAssets().getSkin(), controller
-				.getApplicationAssets().getI18N());
+				.getApplicationAssets().getI18N(), controller
+				.getApplicationAssets().getSkin().get(GalleryStyle.class),
+				SkinConstants.IC_SEARCH);
 		this.controller = controller;
 	}
 
@@ -86,7 +87,7 @@ public class FileGallery extends ThumbnailsGallery implements WorkerListener,
 
 	@Override
 	protected void prepareAddButton(Actor actor) {
-		WidgetBuilder.actionOnClick(actor, ChooseFile.class, false, this);
+		WidgetBuilder.actionOnClick(actor, ChangeView.class, SearchView.class);
 	}
 
 	@Override
@@ -126,17 +127,9 @@ public class FileGallery extends ThumbnailsGallery implements WorkerListener,
 
 	}
 
-	@Override
-	public void fileChosen(String path) {
-		if (path != null && !path.trim().isEmpty()) {
-			addElementAndChangeView(path);
-		}
-	}
-
 	private void addElementAndChangeView(String elemPath) {
-		ModelEntity sceneElement = controller.getTemplates()
-				.createSceneElement(elemPath, false);
-		controller.action(AddSceneElement.class, sceneElement);
+		controller.action(AddSceneElement.class, controller.getTemplates()
+				.createSceneElement(elemPath, false));
 		controller.action(ChangeView.class, SceneView.class);
 	}
 }

@@ -70,6 +70,8 @@ public class HomeView implements ViewBuilder, BackListener {
 		this.controller = c;
 		view = new LinearLayout(false);
 		view.add(buildToolbar()).expandX();
+		view.background(controller.getApplicationAssets().getSkin()
+				.getDrawable(SkinConstants.DRAWABLE_GRAY_100));
 		view.add(content = new Container<Actor>().fill()).expand(true, true);
 		projectsGallery = new ProjectsGallery(1.65f, 3, c);
 	}
