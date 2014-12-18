@@ -428,8 +428,10 @@ public class Controller {
 	/**
 	 * The controller checks and updates pending tasks (e.g., state of
 	 * background tasks)
+	 * 
+	 * @return true if is done loading
 	 */
-	public void act(float delta) {
+	public boolean act(float delta) {
 		editorGameAssets.update();
 		applicationAssets.update();
 		backgroundExecutor.act();
@@ -440,6 +442,10 @@ public class Controller {
 				|| !applicationAssets.isDoneLoading()
 				|| workerExecutor.isWorking() || !backgroundExecutor.isDone()) {
 			Gdx.graphics.requestRendering();
+			return false;
 		}
+
+		return true;
 	}
+
 }

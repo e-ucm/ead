@@ -41,20 +41,28 @@ import com.badlogic.gdx.Files;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input.Buttons;
 import com.badlogic.gdx.Input.Keys;
+import com.badlogic.gdx.math.Interpolation;
 import com.badlogic.gdx.scenes.scene2d.Group;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.InputListener;
+import com.badlogic.gdx.scenes.scene2d.Touchable;
+import com.badlogic.gdx.scenes.scene2d.actions.Actions;
+import com.badlogic.gdx.scenes.scene2d.ui.Image;
 import com.badlogic.gdx.scenes.scene2d.ui.TextArea;
 
 import es.eucm.ead.editor.assets.ApplicationAssets;
 import es.eucm.ead.editor.control.engine.MobileEngineInitializer;
 import es.eucm.ead.editor.platform.Platform;
+import es.eucm.ead.editor.view.SkinConstants;
 import es.eucm.ead.editor.view.widgets.WidgetBuilder;
 import es.eucm.ead.engine.EngineInitializer;
 
 public class MokapController extends Controller {
 
 	public static final String EXPORT_EXTENSION = ".zip";
+
+	private static final float LOADING_TIME = 1.0f;
+	private Image loadingImage;
 
 	public static enum Dpi {
 		LDPI(150), MDPI(190), HDPI(270), XHDPI(Float.MAX_VALUE), XXHDPI(0), XXXHDPI(
@@ -141,6 +149,14 @@ public class MokapController extends Controller {
 				return super.keyDown(event, keycode);
 			}
 		});
+
+		loadingImage = new Image(getApplicationAssets().getSkin().getDrawable(
+				SkinConstants.DRAWABLE_LOGO_MINI));
+		loadingImage.setTouchable(Touchable.disabled);
+		loadingImage.setOrigin(loadingImage.getPrefWidth() * 0.5f,
+				loadingImage.getPrefHeight() * 0.5f);
+		float coordinate = WidgetBuilder.dpToPixels(32);
+		loadingImage.setPosition(coordinate, coordinate);
 	}
 
 	public void pause() {
@@ -176,4 +192,28 @@ public class MokapController extends Controller {
 		 */
 		boolean onBackPressed();
 	}
+
+	@Override
+	public boolean act(float delta) {
+		if (super.act(delta)) {
+			loadingImage.remove();
+			return true;
+		}
+
+		if (!getViews().modalsContainer.getChildren().contains(loadingImage,
+				true)) {
+			getViews().addToModalsContainer(loadingImage);
+			loadingImage.clearActions();
+			loadingImage
+					.addAction(Actions.forever(Actions.sequence(Actions
+							.rotateTo(0), Actions.rotateTo(-360, LOADING_TIME,
+							Interpolation.sineOut))));
+
+		} else {
+			loadingImage.toFront();
+		}
+
+		return false;
+	}
+
 }
