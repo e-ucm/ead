@@ -62,14 +62,24 @@ public class OpenProject extends EditorAction implements
 	}
 
 	@Override
-	public void perform(Object... args) {
-		String path = (String) (args.length == 1 ? args[0] : controller
-				.getModel().getSelection().getSingle(Selection.RESOURCE));
+	public boolean validate(Object... args) {
+		return super.validate(args)
+				&& controller.getApplicationAssets()
+						.resolve(getProjectPath(args)).exists();
+	}
 
+	@Override
+	public void perform(Object... args) {
+		String path = getProjectPath(args);
 		controller.getEditorGameAssets().setLoadingPath(path);
 		controller.getModel().reset();
 		controller.getEditorGameAssets().get(ModelStructure.GAME_FILE,
 				Object.class, this);
+	}
+
+	private String getProjectPath(Object... args) {
+		return (String) (args.length == 1 ? args[0] : controller.getModel()
+				.getSelection().getSingle(Selection.RESOURCE));
 	}
 
 	@Override

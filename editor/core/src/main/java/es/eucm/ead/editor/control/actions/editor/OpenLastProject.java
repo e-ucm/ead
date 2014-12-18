@@ -37,10 +37,8 @@
 package es.eucm.ead.editor.control.actions.editor;
 
 import com.badlogic.gdx.Gdx;
-
 import es.eucm.ead.editor.control.Preferences;
 import es.eucm.ead.editor.control.actions.EditorAction;
-import es.eucm.ead.editor.control.actions.EditorActionException;
 
 /**
  * Open the last known opened game. Used when the application is initiated.
@@ -64,9 +62,7 @@ public class OpenLastProject extends EditorAction {
 				Preferences.LAST_OPENED_GAME);
 
 		if (projectToOpenPath != null && !"".equals(projectToOpenPath)) {
-			try {
-				controller.action(OpenProject.class, projectToOpenPath);
-			} catch (EditorActionException eae) {
+			if (!controller.action(OpenProject.class, projectToOpenPath)) {
 				// the project is probably corrupt; complain but continue
 				Gdx.app.log("OpenLastProject", "Error opening '"
 						+ projectToOpenPath + "'; ignoring request");
