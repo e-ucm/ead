@@ -36,6 +36,7 @@
  */
 package es.eucm.ead.editor.control.actions.model;
 
+import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.files.FileHandle;
 
 import es.eucm.ead.editor.assets.EditorGameAssets;
@@ -95,32 +96,9 @@ public class TakePicture extends EditorAction {
 			if (result.equals(Result.SUCCES)) {
 				sceneElement = controller.getTemplates().createSceneElement(
 						pictureFile.path(), true);
-				controller.getBackgroundExecutor().submit(importElemTask,
-						dummyListener);
+				controller.action(AddSceneElement.class, sceneElement);
 			}
 		}
 	};
 
-	private final BackgroundTask<Boolean> importElemTask = new BackgroundTask<Boolean>() {
-
-		@Override
-		public Boolean call() throws Exception {
-			controller.action(AddSceneElement.class, sceneElement);
-			return true;
-		}
-	};
-
-	private final BackgroundTaskListener<Boolean> dummyListener = new BackgroundTaskListener<Boolean>() {
-
-		@Override
-		public void done(BackgroundExecutor backgroundExecutor, Boolean result) {
-
-		}
-
-		@Override
-		public void error(Throwable e) {
-
-		}
-
-	};
 }
