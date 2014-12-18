@@ -100,31 +100,44 @@ public class CopyToLibraryWorker extends Worker {
 			return true;
 		}
 		entityFolder.mkdirs();
-		FileHandle contentsFolder = entityFolder
+		FileHandle entityContents = entityFolder
 				.child(ModelStructure.CONTENTS_FOLDER);
-		this.contentsFolder.copyTo(contentsFolder);
-		FileHandle[] list = contentsFolder.list(".json");
-		if (list.length > 0) {
-			list[0].copyTo(contentsFolder.child(ModelStructure.ENTITY_FILE));
-			list[0].delete();
-
-			FileHandle thumbnailFile = entityFolder
-					.child(ModelStructure.THUMBNAIL_FILE);
-
-			thumbnail.copyTo(thumbnailFile);
-			String json = null;
-			try {
-				json = gameAssets.toJson(element, RepoElement.class);
-			} catch (SerializationException se) {
-				error(se);
+		this.contentsFolder.copyTo(entityContents);
+		FileHandle entityJson = entityContents
+				.child(ModelStructure.ENTITY_FILE);
+		if (!entityJson.exists()) {
+			FileHandle[] list = entityContents.list(".json");
+			if (list.length > 0) {
+				list[0].copyTo(entityJson);
+				list[0].delete();
+			} else {
+				error(new FileNotFoundException(
+						"Entity json file not found at "
+								+ entityContents.path()));
 				return true;
 			}
-			entityFolder.child(ModelStructure.DESCRIPTOR_FILE).writeString(
-					json, false);
-			result(true);
-		} else {
-			error(new FileNotFoundException("Entity json file not found"));
 		}
+
+		if (!thumbnail.exists()) {
+			error(new FileNotFoundException("Thumbnail image not found at "
+					+ thumbnail.path()));
+			return true;
+		}
+
+		FileHandle thumbnailFile = entityFolder
+				.child(ModelStructure.THUMBNAIL_FILE);
+
+		thumbnail.copyTo(thumbnailFile);
+		String json = null;
+		try {
+			json = gameAssets.toJson(element, RepoElement.class);
+		} catch (SerializationException se) {
+			error(se);
+			return true;
+		}
+		entityFolder.child(ModelStructure.DESCRIPTOR_FILE).writeString(json,
+				false);
+		result(true);
 		return true;
 	}
 
