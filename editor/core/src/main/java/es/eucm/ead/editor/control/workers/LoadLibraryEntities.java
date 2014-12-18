@@ -95,9 +95,12 @@ public class LoadLibraryEntities extends Worker {
 					.getEditorGameAssets()
 					.fromJson(RepoElement.class,
 							libraryEntity.child(ModelStructure.DESCRIPTOR_FILE));
-			result(repoElement.getEntityRef(),
-					repoElement.getNameList().get(0),
-					libraryEntity.child(ModelStructure.THUMBNAIL_FILE).path());
+			if (!controller.getLibraryManager().isMokap(repoElement)) {
+				result(repoElement.getEntityRef(), repoElement.getNameList()
+						.get(0),
+						libraryEntity.child(ModelStructure.THUMBNAIL_FILE)
+								.path());
+			}
 
 		} catch (Exception e) {
 			Gdx.app.error("LoadLibraryEntities",
