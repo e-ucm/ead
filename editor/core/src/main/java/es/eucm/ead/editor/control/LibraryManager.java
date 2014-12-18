@@ -38,6 +38,7 @@ package es.eucm.ead.editor.control;
 
 import com.badlogic.gdx.files.FileHandle;
 
+import es.eucm.ead.schema.editor.components.repo.RepoCategories;
 import es.eucm.ead.schema.editor.components.repo.RepoElement;
 import es.eucm.ead.schemax.ModelStructure;
 
@@ -79,11 +80,32 @@ public class LibraryManager {
 							.isFile()) {
 				FileHandle contentsFolder = elemFolder
 						.child(ModelStructure.CONTENTS_FOLDER);
-				if (contentsFolder.isDirectory()
-						&& contentsFolder.child(ModelStructure.ENTITY_FILE)
-								.file().isFile()) {
-					return true;
+				if (contentsFolder.isDirectory()) {
+
+					// Distinguish if the element is a mokap
+					if (isMokap(element)) {
+						return contentsFolder.child(ModelStructure.GAME_FILE)
+								.file().isFile();
+					}
+					return contentsFolder.child(ModelStructure.ENTITY_FILE)
+							.file().isFile();
 				}
+			}
+		}
+		return false;
+	}
+
+	/**
+	 * 
+	 * @param element
+	 * @return true if the element is a Mokap, false otherwise. This is achieved
+	 *         by asking if any of its categories is
+	 *         {@link RepoCategories#MOKAPS}.
+	 */
+	public boolean isMokap(RepoElement element) {
+		for (RepoCategories category : element.getCategoryList()) {
+			if (category == RepoCategories.MOKAPS) {
+				return true;
 			}
 		}
 		return false;

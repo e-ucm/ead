@@ -89,8 +89,7 @@ public class SearchRepoTest extends WorkerTest implements WorkerListener {
 		response.setResults(repoElems);
 
 		String json = gameAssets.toJson(response, SearchResponse.class);
-		URL = "http://" + controller.getReleaseInfo().getBackendURL() + "/"
-				+ controller.getReleaseInfo().getBackendSearchServlet() + "?q="
+		URL = "http://" + controller.getReleaseInfo().getBackendURL() + "?q="
 				+ TEXT_STRING + "&k="
 				+ controller.getReleaseInfo().getBackendApiKey();
 		platform.putHttpResponse(URL, json);

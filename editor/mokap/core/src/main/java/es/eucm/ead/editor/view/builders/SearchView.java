@@ -52,15 +52,18 @@ import es.eucm.ead.editor.control.Controller;
 import es.eucm.ead.editor.control.MokapController.BackListener;
 import es.eucm.ead.editor.control.actions.editor.ChangeView;
 import es.eucm.ead.editor.control.actions.editor.ExecuteWorker;
+import es.eucm.ead.editor.control.actions.model.AddLibraryReference;
 import es.eucm.ead.editor.control.workers.SearchRepo;
 import es.eucm.ead.editor.control.workers.Worker.WorkerListener;
 import es.eucm.ead.editor.view.SkinConstants;
+import es.eucm.ead.editor.view.builders.scene.SceneView;
 import es.eucm.ead.editor.view.widgets.IconButton;
 import es.eucm.ead.editor.view.widgets.MultiWidget;
+import es.eucm.ead.editor.view.widgets.RepoTile.RepoTileListener;
 import es.eucm.ead.editor.view.widgets.ScrollPane;
 import es.eucm.ead.editor.view.widgets.ScrollPane.ScrollPaneListener;
 import es.eucm.ead.editor.view.widgets.WidgetBuilder;
-import es.eucm.ead.editor.view.widgets.galleries.SearchGallery;
+import es.eucm.ead.editor.view.widgets.galleries.RepoGallery;
 import es.eucm.ead.editor.view.widgets.layouts.LinearLayout;
 import es.eucm.ead.engine.I18N;
 import es.eucm.ead.schema.editor.components.repo.RepoElement;
@@ -72,7 +75,7 @@ import es.eucm.ead.schema.editor.components.repo.response.SearchResponse;
 public class SearchView implements ViewBuilder, BackListener, WorkerListener {
 
 	private LinearLayout view;
-	private SearchGallery searchGallery;
+	private RepoGallery repoGallery;
 	private Controller controller;
 	private TextField textField;
 
@@ -80,23 +83,34 @@ public class SearchView implements ViewBuilder, BackListener, WorkerListener {
 	private boolean canSearch;
 
 	@Override
-	public void initialize(Controller controller) {
-		this.controller = controller;
+	public void initialize(Controller control) {
+		this.controller = control;
 		ApplicationAssets assets = controller.getApplicationAssets();
 		Skin skin = assets.getSkin();
 		I18N i18N = assets.getI18N();
 		view = new LinearLayout(false);
 		view.add(buildToolbar(skin, i18N)).expandX();
-		view.add(searchGallery = new SearchGallery(2.65f, 4, controller))
+		view.add(repoGallery = new RepoGallery(2.65f, 4, controller))
 				.expand(true, true).top();
 
-		searchGallery.addListener(new ScrollPaneListener() {
+		repoGallery.addListener(new ScrollPaneListener() {
 			@Override
 			public void hitEdge(ScrollPane scrollPane, Edge edge) {
 				if (canSearch && edge == Edge.BOTTOM) {
 					search();
 				}
 			}
+		});
+
+		repoGallery.addListener(new RepoTileListener() {
+
+			@Override
+			public void clickedInLibrary(RepoTileEvent event) {
+				controller.action(AddLibraryReference.class, event
+						.getRepoElement().getEntityRef());
+				controller.action(ChangeView.class, SceneView.class);
+			}
+
 		});
 	}
 
@@ -143,7 +157,7 @@ public class SearchView implements ViewBuilder, BackListener, WorkerListener {
 			@Override
 			public boolean keyUp(InputEvent event, int keycode) {
 				if (keycode == Keys.ENTER) {
-					searchGallery.clear();
+					repoGallery.clear();
 					controller.action(ExecuteWorker.class, SearchRepo.class,
 							SearchView.this, textField.getText());
 					hideTextField();
@@ -179,9 +193,11 @@ public class SearchView implements ViewBuilder, BackListener, WorkerListener {
 		Object firstResult = results[0];
 		if (!(firstResult instanceof SearchResponse)) {
 			RepoElement elem = (RepoElement) firstResult;
-			Pixmap repoThumbnail = (Pixmap) results[1];
-			Texture thumbnailTex = new Texture(repoThumbnail);
-			searchGallery.add(elem, repoThumbnail, thumbnailTex);
+			if (!controller.getLibraryManager().isMokap(elem)) {
+				Pixmap repoThumbnail = (Pixmap) results[1];
+				Texture thumbnailTex = new Texture(repoThumbnail);
+				repoGallery.add(elem, repoThumbnail, thumbnailTex);
+			}
 		} else {
 			currentResponse = (SearchResponse) firstResult;
 		}

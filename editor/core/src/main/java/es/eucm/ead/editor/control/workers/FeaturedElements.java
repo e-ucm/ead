@@ -34,48 +34,28 @@
  *      You should have received a copy of the GNU Lesser General Public License
  *      along with eAdventure.  If not, see <http://www.gnu.org/licenses/>.
  */
-package es.eucm.ead.editor.control.repo;
+package es.eucm.ead.editor.control.workers;
 
-import es.eucm.ead.editor.control.appdata.ReleaseInfo;
-import es.eucm.ead.engine.mock.MockApplication;
-import es.eucm.ead.schema.editor.components.repo.request.SearchRequest;
-import org.junit.Test;
-
-import static junit.framework.Assert.assertNull;
-import static org.junit.Assert.assertEquals;
+import es.eucm.ead.editor.control.repo.RepoRequestFactory;
+import es.eucm.ead.schema.editor.components.repo.RepoCategories;
+import es.eucm.ead.schema.editor.components.repo.request.FeaturedRequest;
 
 /**
- * Created by jtorrente on 27/11/14.
+ * <dl>
+ * <dt><strong>The input arguments are</strong></dt>
+ * <dd><strong>args[0]</strong> <em>String</em> The string to feature for (f
+ * param). E.g.: "all".
+ * </dl>
+ * 
+ * @see {@link SearchRepo}.
  */
-public class RepoRequestFactoryTest {
+public class FeaturedElements extends SearchRepo {
 
-	@Test
-	public void testNormal() {
-		assertEquals(
-				build("api.mokap.es/backend", "XXXXXX", "text to search for"),
-				"http://api.mokap.es/backend?q=text+to+search+for&k=XXXXXX");
-		assertEquals(
-				build("http://api.mokap.es/backend", "XXXXXX",
-						"text to search for"),
-				"http://api.mokap.es/backend?q=text+to+search+for&k=XXXXXX");
-	}
+	@Override
+	protected String buildUrl(String[] args, RepoRequestFactory requestFactory) {
+		FeaturedRequest searchRequest = new FeaturedRequest();
+		searchRequest.setCat(RepoCategories.MOKAPS.toString());
 
-	@Test
-	public void testBackendDataNotAvailable() {
-		MockApplication.initStatics();
-		assertNull(build(null, "XXXXXX", "text to search for"));
-		assertNull(build("api.mokap.es/backend", null, "text to search for"));
-	}
-
-	private String build(String backendUrl, String backendApiKey, String query) {
-		ReleaseInfo releaseInfo = new ReleaseInfo();
-		releaseInfo.setBackendURL(backendUrl);
-		releaseInfo.setBackendApiKey(backendApiKey);
-
-		SearchRequest searchRequest = new SearchRequest();
-		searchRequest.setQ(query);
-
-		return new RepoRequestFactory(releaseInfo)
-				.buildRequestURL(searchRequest);
+		return requestFactory.buildRequestURL(searchRequest);
 	}
 }

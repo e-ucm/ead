@@ -1,0 +1,15 @@
+{
+    "additionalProperties": false,
+    "javaType": "es.eucm.ead.schema.editor.components.repo.request.FeaturedRequest",
+    "extends":{
+        "$ref":"reporequest.json"
+    },
+    "properties": {
+        "f":{
+            "type":"string",
+            "description":"The string representing the type of feature"
+        }
+    },
+    "type": "object",
+    "description": "Encapsulates fields for creating featured requests"
+}

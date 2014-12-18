@@ -36,6 +36,8 @@
  */
 package es.eucm.ead.editor.view.builders.home;
 
+import com.badlogic.gdx.graphics.Pixmap;
+import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.ui.Container;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
@@ -43,19 +45,33 @@ import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
 
 import es.eucm.ead.editor.control.Controller;
 import es.eucm.ead.editor.control.MokapController.BackListener;
+import es.eucm.ead.editor.control.MokapViews;
 import es.eucm.ead.editor.control.Preferences;
+import es.eucm.ead.editor.control.actions.editor.ExecuteWorker;
 import es.eucm.ead.editor.control.actions.editor.Exit;
+import es.eucm.ead.editor.control.actions.editor.OpenProject;
 import es.eucm.ead.editor.control.actions.editor.ShowInfoPanel;
 import es.eucm.ead.editor.control.actions.editor.ShowInfoPanel.TypePanel;
+import es.eucm.ead.editor.control.workers.FeaturedElements;
+import es.eucm.ead.editor.control.workers.Worker.WorkerListener;
 import es.eucm.ead.editor.view.SkinConstants;
+import es.eucm.ead.editor.view.builders.PlayView;
 import es.eucm.ead.editor.view.builders.ViewBuilder;
+import es.eucm.ead.editor.view.builders.project.ProjectView;
+import es.eucm.ead.editor.view.widgets.RepoTile.RepoTileListener;
+import es.eucm.ead.editor.view.widgets.ScrollPane;
+import es.eucm.ead.editor.view.widgets.ScrollPane.ScrollPaneListener;
 import es.eucm.ead.editor.view.widgets.Tabs;
 import es.eucm.ead.editor.view.widgets.WidgetBuilder;
 import es.eucm.ead.editor.view.widgets.galleries.ProjectsGallery;
+import es.eucm.ead.editor.view.widgets.galleries.RepoGallery;
 import es.eucm.ead.editor.view.widgets.layouts.LinearLayout;
 import es.eucm.ead.engine.I18N;
+import es.eucm.ead.schema.editor.components.repo.RepoElement;
+import es.eucm.ead.schema.editor.components.repo.response.SearchResponse;
+import es.eucm.ead.schemax.ModelStructure;
 
-public class HomeView implements ViewBuilder, BackListener {
+public class HomeView implements ViewBuilder, BackListener, WorkerListener {
 
 	private Controller controller;
 
@@ -65,22 +81,49 @@ public class HomeView implements ViewBuilder, BackListener {
 
 	private ProjectsGallery projectsGallery;
 
+	private RepoGallery repoGallery;
+
 	@Override
-	public void initialize(Controller c) {
-		this.controller = c;
+	public void initialize(Controller control) {
+		this.controller = control;
 		view = new LinearLayout(false);
 		view.add(buildToolbar()).expandX();
 		view.background(controller.getApplicationAssets().getSkin()
 				.getDrawable(SkinConstants.DRAWABLE_GRAY_100));
 		view.add(content = new Container<Actor>().fill()).expand(true, true);
-		projectsGallery = new ProjectsGallery(1.65f, 3, c);
+
+		projectsGallery = new ProjectsGallery(1.65f, 3, control);
+
+		repoGallery = new RepoGallery(1.65f, 3, control);
+		repoGallery.addListener(new RepoTileListener() {
+
+			@Override
+			public void clickedInLibrary(RepoTileEvent event) {
+				((MokapViews) controller.getViews())
+						.setOpenGameClass(PlayView.class);
+				controller.action(
+						OpenProject.class,
+						controller
+								.getLibraryManager()
+								.getRepoElementLibraryFolder(
+										event.getRepoElement()).file()
+								.getAbsolutePath()
+								+ "/" + ModelStructure.CONTENTS_FOLDER);
+			}
+
+		});
+	}
+
+	private void search() {
+		controller.action(ExecuteWorker.class, FeaturedElements.class, this,
+				"all");
 	}
 
 	@Override
 	public Actor getView(Object... args) {
+		((MokapViews) controller.getViews())
+				.setOpenGameClass(ProjectView.class);
 		controller.getWorkerExecutor().cancelAll();
-		updateContent(0);
-		projectsGallery.load();
 		controller.getPreferences().putString(Preferences.LAST_OPENED_GAME, "");
 		controller.action(ShowInfoPanel.class, TypePanel.INTRODUCTION,
 				Preferences.HELP_INTRODUCTION);
@@ -89,7 +132,6 @@ public class HomeView implements ViewBuilder, BackListener {
 
 	@Override
 	public void release(Controller controller) {
-		updateContent(-1);
 		controller.getApplicationAssets().clear();
 	}
 
@@ -100,10 +142,15 @@ public class HomeView implements ViewBuilder, BackListener {
 	}
 
 	private void updateContent(int index) {
-		content.setActor(null);
 		switch (index) {
 		case 0:
 			content.setActor(projectsGallery);
+			projectsGallery.load();
+			break;
+		case 1:
+			content.setActor(repoGallery);
+			repoGallery.clear();
+			search();
 			break;
 		}
 	}
@@ -134,10 +181,44 @@ public class HomeView implements ViewBuilder, BackListener {
 		tabs.addListener(new ChangeListener() {
 			@Override
 			public void changed(ChangeEvent event, Actor actor) {
+				System.out.println("changededddd");
 				updateContent(tabs.getSelectedTabIndex());
 			}
 		});
 		return tabs;
+	}
+
+	@Override
+	public void start() {
+
+	}
+
+	@Override
+	public void result(Object... results) {
+		Object firstResult = results[0];
+		if (!(firstResult instanceof SearchResponse)) {
+			RepoElement elem = (RepoElement) firstResult;
+			if (controller.getLibraryManager().isMokap(elem)) {
+				Pixmap repoThumbnail = (Pixmap) results[1];
+				Texture thumbnailTex = new Texture(repoThumbnail);
+				repoGallery.add(elem, repoThumbnail, thumbnailTex);
+			}
+		}
+	}
+
+	@Override
+	public void done() {
+
+	}
+
+	@Override
+	public void error(Throwable ex) {
+
+	}
+
+	@Override
+	public void cancelled() {
+
 	}
 
 }
