@@ -42,25 +42,26 @@ import com.badlogic.gdx.graphics.Pixmap;
 import com.badlogic.gdx.graphics.PixmapIO;
 import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.scenes.scene2d.Actor;
+import com.badlogic.gdx.scenes.scene2d.Event;
+import com.badlogic.gdx.scenes.scene2d.EventListener;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.ui.ImageButton;
 import com.badlogic.gdx.scenes.scene2d.ui.ImageButton.ImageButtonStyle;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
+import com.badlogic.gdx.utils.Pools;
 
 import es.eucm.ead.editor.control.Controller;
 import es.eucm.ead.editor.control.DownloadManager.DownloadListener;
 import es.eucm.ead.editor.control.DownloadManager.DownloadWork;
-import es.eucm.ead.editor.control.actions.editor.ChangeView;
 import es.eucm.ead.editor.control.actions.editor.ExecuteWorker;
-import es.eucm.ead.editor.control.actions.model.AddLibraryReference;
 import es.eucm.ead.editor.control.workers.CopyToLibraryWorker;
 import es.eucm.ead.editor.control.workers.UnzipFile;
 import es.eucm.ead.editor.control.workers.Worker.WorkerListener;
 import es.eucm.ead.editor.utils.ProjectUtils;
 import es.eucm.ead.editor.view.SkinConstants;
-import es.eucm.ead.editor.view.builders.scene.SceneView;
 import es.eucm.ead.editor.view.listeners.workers.UnzipFileListener;
+import es.eucm.ead.editor.view.widgets.RepoTile.RepoTileListener.RepoTileEvent;
 import es.eucm.ead.schema.editor.components.repo.RepoElement;
 
 public class RepoTile extends Tile implements DownloadListener {
@@ -118,9 +119,7 @@ public class RepoTile extends Tile implements DownloadListener {
 				case DOWNLOADED:
 					break;
 				case IN_LIBRARY:
-					controller.action(AddLibraryReference.class,
-							element.getEntityRef());
-					controller.action(ChangeView.class, SceneView.class);
+					fireClickedInLibrary();
 					break;
 				case DOWNLOADING:
 				case IN_QUEUE:
@@ -132,6 +131,13 @@ public class RepoTile extends Tile implements DownloadListener {
 				}
 			}
 		});
+	}
+
+	private void fireClickedInLibrary() {
+		RepoTileEvent event = Pools.obtain(RepoTileEvent.class);
+		event.elem = element;
+		fire(event);
+		Pools.free(event);
 	}
 
 	private void initState() {
@@ -299,6 +305,55 @@ public class RepoTile extends Tile implements DownloadListener {
 		@Override
 		public void cancelled() {
 			RepoTile.this.cancelled();
+		}
+	}
+
+	/**
+	 * Listener for {@link RepoTileEvent} when an element is clicked after being
+	 * downloaded and imported to the library.
+	 */
+	abstract static public class RepoTileListener implements EventListener {
+		@Override
+		public boolean handle(Event event) {
+			if (event instanceof RepoTileEvent) {
+				clickedInLibrary((RepoTileEvent) event);
+				return true;
+			}
+			return false;
+		}
+
+		/**
+		 * Called when an element has been downloaded and imported to the
+		 * library correctly.
+		 * 
+		 * @param scrollPane
+		 *            the scroll pane that sent the event
+		 * @param edge
+		 *            what edge was hit
+		 */
+		abstract public void clickedInLibrary(RepoTileEvent event);
+
+		/**
+		 * Fired when a {@link RepoTile} has been clicked and the element has
+		 * been downloaded and unzipped.
+		 * 
+		 */
+		static public class RepoTileEvent extends Event {
+			private RepoElement elem = null;
+
+			@Override
+			public void reset() {
+				super.reset();
+				elem = null;
+			}
+
+			public RepoTileEvent() {
+			}
+
+			/** @return the element already imported to the library */
+			public RepoElement getRepoElement() {
+				return elem;
+			}
 		}
 	}
 }
