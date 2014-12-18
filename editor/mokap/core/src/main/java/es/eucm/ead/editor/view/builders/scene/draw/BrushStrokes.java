@@ -51,13 +51,14 @@ import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.InputListener;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.Pools;
+
 import es.eucm.ead.editor.assets.EditorGameAssets;
 import es.eucm.ead.editor.control.Controller;
 import es.eucm.ead.editor.view.builders.scene.SceneEditor;
-import es.eucm.ead.editor.view.builders.scene.draw.MeshHelper.PixmapRegion;
 import es.eucm.ead.editor.view.widgets.AbstractWidget;
 import es.eucm.ead.engine.I18N;
 import es.eucm.ead.engine.entities.EngineEntity;
+import es.eucm.ead.engine.systems.effects.transitions.Region;
 import es.eucm.ead.engine.utils.EngineUtils;
 import es.eucm.ead.schema.entities.ModelEntity;
 import es.eucm.ead.schemax.ModelStructure;
@@ -173,11 +174,10 @@ public class BrushStrokes extends AbstractWidget {
 			savingImage = gameAssets.resolve(savingPath + (++i) + ".png");
 		} while (savingImage.exists());
 
-		PixmapRegion currentPixmap = mesh.save(this.savePath = savingImage);
-		Pixmap pixmap = currentPixmap.pixmap;
+		Region region = mesh.save(this.savePath = savingImage);
 
-		stageToLocalCoordinates(TEMP.set(currentPixmap.x + pixmap.getWidth()
-				* .5f, currentPixmap.y + pixmap.getHeight() * .5f));
+		stageToLocalCoordinates(TEMP.set(region.x + region.w * .5f, region.y
+				+ region.h * .5f));
 		targetX = TEMP.x;
 		targetY = TEMP.y;
 

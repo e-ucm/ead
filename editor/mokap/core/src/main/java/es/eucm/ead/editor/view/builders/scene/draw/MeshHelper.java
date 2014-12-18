@@ -36,6 +36,8 @@
  */
 package es.eucm.ead.editor.view.builders.scene.draw;
 
+import java.io.IOException;
+
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.graphics.Camera;
@@ -64,6 +66,7 @@ import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.Disposable;
 import com.badlogic.gdx.utils.GdxRuntimeException;
 import com.badlogic.gdx.utils.ScreenUtils;
+
 import es.eucm.ead.editor.control.Actions;
 import es.eucm.ead.editor.control.Controller;
 import es.eucm.ead.editor.control.actions.editor.Redo;
@@ -71,8 +74,7 @@ import es.eucm.ead.editor.control.actions.editor.Undo;
 import es.eucm.ead.editor.control.commands.Command;
 import es.eucm.ead.editor.model.events.ModelEvent;
 import es.eucm.ead.editor.view.listeners.ActionListener;
-
-import java.io.IOException;
+import es.eucm.ead.engine.systems.effects.transitions.Region;
 
 /**
  * Handles all the necessary data required to draw brush strokes, undo/redo and
@@ -206,6 +208,7 @@ public class MeshHelper {
 
 	private ShaderProgram meshShader;
 	private Mesh mesh;
+	private Region savedRegion = new Region(-1, 0, 0, 0);
 
 	/**
 	 * Handles all the necessary data required to draw brush strokes, undo/redo
@@ -247,10 +250,48 @@ public class MeshHelper {
 	 *         something to save.
 	 */
 	boolean hasSomethingToSave() {
-		return this.currModifiedPixmap != null
+		if (this.currModifiedPixmap != null
 				&& this.currModifiedPixmap.pixmap != null
 				&& this.currModifiedPixmap.pixmap != this.flusher.pixmap
-				&& minX != Float.MAX_VALUE;
+				&& minX != Float.MAX_VALUE) {
+			updateSavingRegion();
+			return savedRegion.x != -1f;
+		}
+		return false;
+	}
+
+	/**
+	 * Checks if there are pixels to be saved and stores the region defined by
+	 * those pixels in a {@link Region}. If the modified pixmap is empty or
+	 * completely transparent, the {@link Region}'s x value will be set to -1.
+	 */
+	private void updateSavingRegion() {
+		Pixmap savedPixmap = this.currModifiedPixmap.pixmap;
+		int x, y, xMax, yMax;
+		x = y = Integer.MAX_VALUE;
+		xMax = yMax = Integer.MIN_VALUE;
+		int xPixels = savedPixmap.getWidth();
+		int yPixels = savedPixmap.getHeight();
+		for (int i = 0; i < xPixels; ++i) {
+			for (int j = 0; j < yPixels; ++j) {
+				int value = savedPixmap.getPixel(i, j);
+				float a = ((value & 0x000000ff)) / 255f;
+				if (a > 0) {
+					x = Math.min(x, i);
+					y = Math.min(y, j);
+					xMax = Math.max(xMax, i);
+					yMax = Math.max(yMax, j);
+				}
+			}
+		}
+		if (x < xMax && y < yMax) {
+			savedRegion.x = x;
+			savedRegion.y = y;
+			savedRegion.w = xMax - x;
+			savedRegion.h = yMax - y;
+		} else {
+			savedRegion.x = -1;
+		}
 	}
 
 	/**
@@ -273,23 +314,38 @@ public class MeshHelper {
 	 * 
 	 * @return
 	 */
-	PixmapRegion save(FileHandle file) {
-		final Pixmap savedPixmap = this.currModifiedPixmap.pixmap;
-
+	Region save(FileHandle file) {
+		Pixmap modifPixmap = this.currModifiedPixmap.pixmap;
+		PNG writer = null;
+		Pixmap savedPixmap = null;
 		try {
-			PNG writer = new PNG((int) (savedPixmap.getWidth()
-					* savedPixmap.getHeight() * 1.5f));
+			savedPixmap = new Pixmap(savedRegion.w, savedRegion.h,
+					modifPixmap.getFormat());
+
+			savedPixmap.drawPixmap(modifPixmap, 0, 0, savedRegion.x,
+					savedRegion.y, savedRegion.w, savedRegion.h);
+
+			savedRegion.x += currModifiedPixmap.x;
+			savedRegion.y += currModifiedPixmap.y;
 			// Guess at deflated size.
-			try {
-				writer.setFlipY(true);
-				writer.write(file, savedPixmap);
-			} finally {
-				writer.dispose();
-			}
+			writer = new PNG((int) (savedPixmap.getWidth()
+					* savedPixmap.getHeight() * 1.5f));
+			writer.setFlipY(true);
+			writer.write(file, savedPixmap);
 		} catch (IOException ex) {
 			throw new GdxRuntimeException("Error writing PNG: " + file, ex);
+		} finally {
+			if (writer != null) {
+				writer.dispose();
+				writer = null;
+			}
+			if (savedPixmap != null) {
+				savedPixmap.dispose();
+				savedPixmap = null;
+			}
 		}
-		return currModifiedPixmap;
+
+		return savedRegion;
 	}
 
 	/**
