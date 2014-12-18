@@ -42,7 +42,6 @@ import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 
 import es.eucm.ead.editor.assets.ApplicationAssets;
 import es.eucm.ead.editor.control.Controller;
-import es.eucm.ead.editor.control.workers.Worker.WorkerListener;
 import es.eucm.ead.editor.view.ModelView;
 import es.eucm.ead.editor.view.widgets.AbstractWidget;
 import es.eucm.ead.editor.view.widgets.RepoTile;
@@ -51,10 +50,8 @@ import es.eucm.ead.editor.view.widgets.layouts.Gallery;
 import es.eucm.ead.editor.view.widgets.layouts.Gallery.Cell;
 import es.eucm.ead.editor.view.widgets.layouts.Gallery.GalleryStyle;
 import es.eucm.ead.schema.editor.components.repo.RepoElement;
-import es.eucm.ead.schema.editor.components.repo.response.SearchResponse;
 
-public class SearchGallery extends AbstractWidget implements WorkerListener,
-		ModelView {
+public class SearchGallery extends AbstractWidget implements ModelView {
 
 	private Skin skin;
 
@@ -80,29 +77,15 @@ public class SearchGallery extends AbstractWidget implements WorkerListener,
 	}
 
 	@Override
-	public void start() {
-		clear();
-	}
-
-	@Override
 	public void clear() {
 		assets.clear();
 		gallery.clearChildren();
 	}
 
-	@Override
-	public void result(Object... results) {
-		Object firstResult = results[0];
-		if (!(firstResult instanceof SearchResponse)) {
-			RepoElement elem = (RepoElement) firstResult;
-			Pixmap repoThumbnail = (Pixmap) results[1];
-			Texture thumbnailTex = new Texture(repoThumbnail);
-			addTile(elem, thumbnailTex, repoThumbnail);
-			assets.addAsset(thumbnailTex.toString(), Texture.class,
-					thumbnailTex);
-			assets.addAsset(repoThumbnail.toString(), Pixmap.class,
-					repoThumbnail);
-		}
+	public void add(RepoElement elem, Pixmap repoThumbnail, Texture thumbnailTex) {
+		addTile(elem, thumbnailTex, repoThumbnail);
+		assets.addAsset(thumbnailTex.toString(), Texture.class, thumbnailTex);
+		assets.addAsset(repoThumbnail.toString(), Pixmap.class, repoThumbnail);
 	}
 
 	private Cell addTile(RepoElement elem, Texture thumbnailTexture,
@@ -113,20 +96,4 @@ public class SearchGallery extends AbstractWidget implements WorkerListener,
 
 		return gallery.add(tile);
 	}
-
-	@Override
-	public void done() {
-
-	}
-
-	@Override
-	public void error(Throwable ex) {
-
-	}
-
-	@Override
-	public void cancelled() {
-
-	}
-
 }
