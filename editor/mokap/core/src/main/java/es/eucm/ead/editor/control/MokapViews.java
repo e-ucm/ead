@@ -55,6 +55,8 @@ import es.eucm.ead.editor.view.builders.scene.SceneView;
 
 public class MokapViews extends Views implements BackListener {
 
+	private Class openGameClass;
+
 	public MokapViews(Controller controller, Group viewsCtr, Group modalsCtr) {
 		super(controller, viewsCtr, modalsCtr);
 		resendTouch = false;
@@ -121,8 +123,10 @@ public class MokapViews extends Views implements BackListener {
 				} else if (Selection.MOKAP_RESOURCE
 						.equals(event.getContextId())) {
 					if (getCurrentView() == null
-							|| getCurrentView().getClass() != ProjectView.class) {
-						controller.action(ChangeView.class, ProjectView.class);
+							|| getCurrentView().getClass() == HomeView.class) {
+						controller.action(ChangeView.class,
+								openGameClass == null ? ProjectView.class
+										: openGameClass);
 					}
 				}
 			}
@@ -138,5 +142,9 @@ public class MokapViews extends Views implements BackListener {
 				controller.action(ChangeView.class, HomeView.class);
 			}
 		}
+	}
+
+	public void setOpenGameClass(Class openGameClass) {
+		this.openGameClass = openGameClass;
 	}
 }
