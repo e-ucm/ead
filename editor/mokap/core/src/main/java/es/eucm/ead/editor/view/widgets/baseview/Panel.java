@@ -40,10 +40,10 @@ import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.Group;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.Touchable;
-import com.badlogic.gdx.scenes.scene2d.ui.ScrollPane;
 
 import es.eucm.ead.editor.view.listeners.GestureListener;
 import es.eucm.ead.editor.view.widgets.AbstractWidget;
+import es.eucm.ead.editor.view.widgets.ScrollPane;
 
 /**
  * A vertical panel, appearing from the side in {@link BaseView}
