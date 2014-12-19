@@ -44,7 +44,7 @@ import es.eucm.ead.editor.control.Controller;
 import es.eucm.ead.editor.control.actions.model.generic.SetField;
 import es.eucm.ead.editor.view.SkinConstants;
 import es.eucm.ead.editor.view.widgets.IconButton;
-import es.eucm.ead.editor.view.widgets.MultiRangeSlider;
+import es.eucm.ead.editor.view.widgets.RangeSlider;
 import es.eucm.ead.editor.view.widgets.WidgetBuilder;
 import es.eucm.ead.editor.view.widgets.layouts.LinearLayout;
 import es.eucm.ead.schema.editor.components.animations.BlinkAnimation;
@@ -54,7 +54,7 @@ import es.eucm.ead.schemax.FieldName;
 public class BlinkAnimationEditor extends
 		TransformAnimationEditor<BlinkAnimation> {
 
-	private MultiRangeSlider alpha;
+	private RangeSlider alpha;
 
 	public BlinkAnimationEditor(Controller c) {
 		super(c, ComponentIds.BLINK, "blink");
@@ -62,9 +62,9 @@ public class BlinkAnimationEditor extends
 		Skin skin = controller.getApplicationAssets().getSkin();
 
 		LinearLayout alphaRow = new LinearLayout(true);
-		alpha = new MultiRangeSlider(0.0f, 1.0f, 0.01f, false, skin);
+		alpha = new RangeSlider(0.0f, 1.0f, 0.01f, false, skin);
 
-		IconButton alphaImage = WidgetBuilder.icon(SkinConstants.IC_TONALITY,
+		IconButton alphaImage = WidgetBuilder.icon(SkinConstants.IC_ALPHA,
 				SkinConstants.STYLE_GRAY);
 
 		alphaRow.add(alphaImage).centerY();

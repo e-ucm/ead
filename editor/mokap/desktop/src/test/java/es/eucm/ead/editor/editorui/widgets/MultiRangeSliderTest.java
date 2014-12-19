@@ -45,7 +45,7 @@ import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
 
 import es.eucm.ead.editor.editorui.UITest;
-import es.eucm.ead.editor.view.widgets.MultiRangeSlider;
+import es.eucm.ead.editor.view.widgets.RangeSlider;
 import es.eucm.ead.engine.I18N;
 
 public class MultiRangeSliderTest extends UITest {
@@ -61,8 +61,8 @@ public class MultiRangeSliderTest extends UITest {
 
 		final Label label = new Label(minValue + " / " + maxValue, skin);
 
-		final MultiRangeSlider widget = new MultiRangeSlider(minValue,
-				maxValue, 1, false, skin);
+		final RangeSlider widget = new RangeSlider(minValue, maxValue, 1,
+				false, skin);
 		widget.addListener(new ChangeListener() {
 			@Override
 			public void changed(ChangeEvent event, Actor actor) {

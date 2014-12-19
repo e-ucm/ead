@@ -48,9 +48,9 @@ import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener.ChangeEvent;
 import com.badlogic.gdx.scenes.scene2d.utils.Drawable;
 import com.badlogic.gdx.utils.Pools;
 
-public class MultiRangeSlider extends AbstractWidget {
+public class RangeSlider extends AbstractWidget {
 
-	private MultiRangeSliderStyle style;
+	private RangeSliderStyle style;
 
 	private float min, max;
 	private float stepSize;
@@ -70,21 +70,21 @@ public class MultiRangeSlider extends AbstractWidget {
 	private float[] snapValues;
 	private float threshold;
 
-	public MultiRangeSlider(float min, float max, float stepSize,
-			boolean vertical, Skin skin) {
+	public RangeSlider(float min, float max, float stepSize, boolean vertical,
+			Skin skin) {
 		this(min, max, stepSize, vertical, skin.get("default-"
 				+ (vertical ? "vertical" : "horizontal"),
-				MultiRangeSliderStyle.class));
+				RangeSliderStyle.class));
 	}
 
-	public MultiRangeSlider(float min, float max, float stepSize,
-			boolean vertical, Skin skin, String styleName) {
+	public RangeSlider(float min, float max, float stepSize, boolean vertical,
+			Skin skin, String styleName) {
 		this(min, max, stepSize, vertical, skin.get(styleName,
-				MultiRangeSliderStyle.class));
+				RangeSliderStyle.class));
 	}
 
-	public MultiRangeSlider(float min, float max, float stepSize,
-			boolean vertical, MultiRangeSliderStyle style) {
+	public RangeSlider(float min, float max, float stepSize, boolean vertical,
+			RangeSliderStyle style) {
 
 		setStyle(style);
 
@@ -128,7 +128,7 @@ public class MultiRangeSlider extends AbstractWidget {
 
 			public void touchDragged(InputEvent event, float x, float y,
 					int pointer) {
-				getStage().cancelTouchFocusExcept(this, MultiRangeSlider.this);
+				getStage().cancelTouchFocusExcept(this, RangeSlider.this);
 
 				if (isKnobTouched == true) {
 					calculatePositionAndValue(x, y, true);
@@ -163,7 +163,7 @@ public class MultiRangeSlider extends AbstractWidget {
 		});
 	}
 
-	public void setStyle(MultiRangeSliderStyle style) {
+	public void setStyle(RangeSliderStyle style) {
 		if (style == null)
 			throw new IllegalArgumentException("style cannot be null.");
 		this.style = style;
@@ -174,7 +174,7 @@ public class MultiRangeSlider extends AbstractWidget {
 	 * Returns the slider's style. Modifying the returned style may not have an
 	 * effect until {@link #setStyle(SliderStyle)} is called.
 	 */
-	public MultiRangeSliderStyle getStyle() {
+	public RangeSliderStyle getStyle() {
 		return style;
 	}
 
@@ -190,9 +190,8 @@ public class MultiRangeSlider extends AbstractWidget {
 
 		final Drawable bg = style.background;
 		final Drawable knobBefore = style.knobBefore;
+		final Drawable knobBetween = style.knobBetween;
 		final Drawable knobAfter = style.knobAfter;
-		final Drawable knob2Before = style.knob2Before;
-		final Drawable knob2After = style.knob2After;
 
 		float x = getX();
 		float y = getY();
@@ -201,24 +200,19 @@ public class MultiRangeSlider extends AbstractWidget {
 
 		float knobHeight = style.knob.getMinHeight();
 		float knobWidth = style.knob.getMinWidth();
-		float knob2Height = style.knob2.getMinHeight();
-		float knob2Width = style.knob2.getMinWidth();
 
 		float value = getVisualValue();
 
 		float knobSize;
-		float knob2Size;
 		float sliderPosSize;
 
 		if (vertical) {
 			knobSize = knobHeight;
-			knob2Size = knob2Height;
 			sliderPosSize = height - (bg.getTopHeight() + bg.getBottomHeight());
 			bg.draw(batch, x + (int) ((width - bg.getMinWidth()) * 0.5f), y,
 					bg.getMinWidth(), height);
 		} else {
 			knobSize = knobWidth;
-			knob2Size = knob2Width;
 			sliderPosSize = width - (bg.getLeftWidth() + bg.getRightWidth());
 			bg.draw(batch, x, y + (int) ((height - bg.getMinHeight()) * 0.5f),
 					width, bg.getMinHeight());
@@ -232,9 +226,9 @@ public class MultiRangeSlider extends AbstractWidget {
 					+ bg.getBottomHeight();
 
 			sliderPos2 = (value2 - min) / (max - min)
-					* (sliderPosSize - knob2Size);
+					* (sliderPosSize - knobSize);
 			sliderPos2 = Math.max(0, sliderPos2);
-			sliderPos2 = Math.min(sliderPosSize - knob2Size, sliderPos2)
+			sliderPos2 = Math.min(sliderPosSize - knobSize, sliderPos2)
 					+ bg.getBottomHeight();
 
 			sliderPos = Math.min(sliderPos, sliderPos2 - knobSize);
@@ -242,7 +236,6 @@ public class MultiRangeSlider extends AbstractWidget {
 		}
 
 		float knobSizeHalf = knobSize * 0.5f;
-		float knobSize2Half = knob2Size * 0.5f;
 
 		// KNOB BEFORE AND AFTER
 		if (knobBefore != null) {
@@ -256,10 +249,15 @@ public class MultiRangeSlider extends AbstractWidget {
 							knobBefore.getMinHeight());
 		}
 		if (knobAfter != null) {
-			knobAfter.draw(batch, x + (int) (sliderPos + knobSizeHalf), y
+			knobAfter.draw(batch, x + (int) (sliderPos2 + knobSizeHalf), y
 					+ (int) ((height - knobAfter.getMinHeight()) * 0.5f), width
-					- (int) (sliderPos + knobSizeHalf),
+					- (int) (sliderPos2 + knobSizeHalf),
 					knobAfter.getMinHeight());
+		}
+		if (knobBetween != null) {
+			knobBetween.draw(batch, x + (int) (sliderPos + knobSizeHalf), y
+					+ (int) ((height - knobBetween.getMinHeight()) * 0.5f),
+					sliderPos2 - sliderPos, knobBetween.getMinHeight());
 		}
 
 		style.knob
@@ -267,34 +265,15 @@ public class MultiRangeSlider extends AbstractWidget {
 						(int) (y + (height - knobHeight) * 0.5f), knobWidth,
 						knobHeight);
 
-		// KNOB2 BEFORE AND AFTER
-		if (knob2Before != null) {
-			knob2Before.draw(batch, x,
-					y + (int) ((height - knob2Before.getMinHeight()) * 0.5f),
-					(int) (sliderPos2 + knobSize2Half),
-					knob2Before.getMinHeight());
-		}
-		if (knob2After != null) {
-			knob2After.draw(batch, x + (int) (sliderPos2 + knobSize2Half), y
-					+ (int) ((height - knob2After.getMinHeight()) * 0.5f),
-					width - (int) (sliderPos2 + knobSize2Half),
-					knob2After.getMinHeight());
-		}
-
-		style.knob2.draw(batch, (int) (x + sliderPos2),
-				(int) (y + (height - knob2Height) * 0.5f), knob2Width,
-				knob2Height);
+		style.knob
+				.draw(batch, (int) (x + sliderPos2),
+						(int) (y + (height - knobHeight) * 0.5f), knobWidth,
+						knobHeight);
 	}
 
 	private boolean calculatePositionAndValue(float x, float y,
 			boolean firstKnob) {
-		Drawable knob;
-
-		if (firstKnob) {
-			knob = style.knob;
-		} else {
-			knob = style.knob2;
-		}
+		Drawable knob = style.knob;
 
 		final Drawable bg = style.background;
 
@@ -353,13 +332,11 @@ public class MultiRangeSlider extends AbstractWidget {
 	}
 
 	private boolean isTouchingKnob(boolean firstKnob, float xpos) {
-		Drawable knob;
+		Drawable knob = style.knob;
 		float sliderPosition;
 		if (firstKnob) {
-			knob = style.knob;
 			sliderPosition = sliderPos;
 		} else {
-			knob = style.knob2;
 			sliderPosition = sliderPos2;
 		}
 
@@ -425,32 +402,12 @@ public class MultiRangeSlider extends AbstractWidget {
 		}
 	}
 
-	// GET PREF WIDTH FOR KNOB 2
-	public float getPrefWidth2() {
-		if (vertical) {
-			return Math.max(style.knob2.getMinWidth(),
-					style.background.getMinWidth());
-		} else {
-			return style.knob2.getMinHeight();
-		}
-	}
-
 	// GET PREF HEIGHT FOR KNOB
 	public float getPrefHeight() {
 		if (vertical) {
 			return style.knob.getMinWidth();
 		} else {
 			return Math.max(style.knob.getMinHeight(),
-					style.background.getMinHeight());
-		}
-	}
-
-	// GET PREF HEIGHT FOR KNOB2
-	public float getPrefHeight2() {
-		if (vertical) {
-			return style.knob2.getMinWidth();
-		} else {
-			return Math.max(style.knob2.getMinHeight(),
 					style.background.getMinHeight());
 		}
 	}
@@ -503,32 +460,27 @@ public class MultiRangeSlider extends AbstractWidget {
 		return value;
 	}
 
-	static public class MultiRangeSliderStyle {
+	static public class RangeSliderStyle {
 		/** The slider background, stretched only in one direction. */
 		public Drawable background;
 
-		public Drawable knob, knob2;
+		public Drawable knob;
 
 		/** Optional. */
-		public Drawable knobBefore, knobAfter;
+		public Drawable knobBefore, knobBetween, knobAfter;
 
-		/** Optional. */
-		public Drawable knob2Before, knob2After;
-
-		public MultiRangeSliderStyle() {
+		public RangeSliderStyle() {
 		}
 
-		public MultiRangeSliderStyle(Drawable background, Drawable knob,
+		public RangeSliderStyle(Drawable background, Drawable knob,
 				Drawable knob2) {
 			this.background = background;
 			this.knob = knob;
-			this.knob2 = knob2;
 		}
 
-		public MultiRangeSliderStyle(MultiRangeSliderStyle style) {
+		public RangeSliderStyle(RangeSliderStyle style) {
 			this.background = style.background;
 			this.knob = style.knob;
-			this.knob2 = style.knob2;
 		}
 	}
 }
