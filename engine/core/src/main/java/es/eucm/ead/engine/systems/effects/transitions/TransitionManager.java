@@ -60,6 +60,7 @@ public class TransitionManager extends Actor implements Disposable {
 	private Transition screenTransition;
 	private TextureRegion currTex;
 	private TextureRegion nexTex;
+	private Actor nextScreenActor;
 
 	private float percentageCompletion;
 	private float time;
@@ -88,55 +89,47 @@ public class TransitionManager extends Actor implements Disposable {
 	@Override
 	public void draw(Batch batch, float parentAlpha) {
 		batch.setColor(1f, 1f, 1f, 1f);
+		updateTexture(nextFbo, nexTex, nextScreenActor, batch);
 		screenTransition.render(batch, currTex, currentScreenRegion, nexTex,
 				nextScreenRegion, percentageCompletion);
 	}
 
-	public void takeCurrentScreenPicture(Stage stage) {
-		takeScreenPicture(currFbo, currTex, stage, null);
-	}
-
 	public void takeCurrentScreenPicture(Stage stage, Actor currentLayer) {
-		takeScreenPicture(currFbo, currTex, stage, currentLayer);
-	}
-
-	public void takeNextScreenPicture(Stage stage) {
-		takeScreenPicture(nextFbo, nexTex, stage, null);
-	}
-
-	public void takeNextScreenPicture(Stage stage, Actor nextLayer) {
-		takeScreenPicture(nextFbo, nexTex, stage, nextLayer);
-	}
-
-	private void takeScreenPicture(FrameBuffer fbo, TextureRegion region,
-			Stage stage, Actor actor) {
-		if (stage == null) {
-			stage = getStage();
-		}
+		Viewport viewport = stage.getViewport();
 		if (hasParent()) {
 			endTransition();
 		}
-		Viewport viewport = stage.getViewport();
-		if (fbo == null) {
+		if (currFbo == null) {
 			int w = viewport.getScreenWidth();
 			int h = viewport.getScreenHeight();
-			fbo = new FrameBuffer(Format.RGB888, w, h, false);
+			currFbo = new FrameBuffer(Format.RGB888, w, h, false);
+		}
+		Batch batch = stage.getBatch();
+		batch.begin();
+		updateTexture(currFbo, currTex, currentLayer, batch);
+		batch.end();
+	}
+
+	public void takeNextScreenPicture(Stage stage, Actor nextLayer) {
+		nextScreenActor = nextLayer;
+		Viewport viewport = stage.getViewport();
+		if (nextFbo == null) {
+			int w = viewport.getScreenWidth();
+			int h = viewport.getScreenHeight();
+			nextFbo = new FrameBuffer(Format.RGB888, w, h, false);
 			currentScreenRegion.w = w;
 			currentScreenRegion.h = h;
 		}
+	}
 
+	private void updateTexture(FrameBuffer fbo, TextureRegion region,
+			Actor actor, Batch batch) {
 		fbo.begin();
 		Gdx.gl20.glClear(GL20.GL_COLOR_BUFFER_BIT);
 		if (actor != null) {
-			Batch batch = stage.getBatch();
-			batch.begin();
 			actor.draw(batch, 1f);
-			batch.end();
-		} else {
-			stage.draw();
 		}
-		fbo.end(viewport.getScreenX(), viewport.getScreenY(),
-				viewport.getScreenWidth(), viewport.getScreenHeight());
+		fbo.end();
 		region.setRegion(fbo.getColorBufferTexture());
 		region.flip(false, true);
 	}

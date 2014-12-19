@@ -37,12 +37,13 @@
 package es.eucm.ead.editor.view.builders;
 
 import com.badlogic.gdx.scenes.scene2d.Actor;
+
 import es.eucm.ead.editor.control.Controller;
 import es.eucm.ead.editor.control.actions.editor.ShowToast;
 import es.eucm.ead.editor.control.engine.Engine;
 import es.eucm.ead.editor.exporter.Exporter;
 import es.eucm.ead.editor.model.Q;
-import es.eucm.ead.editor.view.widgets.EnginePlayer;
+import es.eucm.ead.editor.view.builders.scene.play.TestGameView;
 import es.eucm.ead.engine.assets.GameAssets;
 import es.eucm.ead.schema.editor.components.GameData;
 import es.eucm.ead.schema.entities.ModelEntity;
@@ -54,12 +55,12 @@ public class PlayView implements ViewBuilder {
 
 	private Controller controller;
 
-	private EnginePlayer enginePlayer;
+	private TestGameView enginePlayer;
 
 	@Override
 	public void initialize(final Controller controller) {
 		this.controller = controller;
-		enginePlayer = new EnginePlayer(controller.getEngine().getGameLoop());
+		enginePlayer = new TestGameView(controller.getEngine().getGameLoop());
 		enginePlayer.setFillParent(true);
 	}
 

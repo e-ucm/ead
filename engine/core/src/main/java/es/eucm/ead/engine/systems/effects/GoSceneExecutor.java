@@ -75,8 +75,9 @@ public class GoSceneExecutor extends EffectExecutor<GoScene> {
 			@Override
 			public void transitionFinished() {
 				gameLoop.setPlaying(true);
-				gameView.clearLayer(Layer.SCENE_CONTENT, true);
-				gameView.addEntityToLayer(Layer.SCENE_CONTENT, nextScreen);
+				Group layer = gameView.getLayer(Layer.SCENE_CONTENT)
+						.getGroup();
+				layer.setVisible(true);
 			}
 		});
 	}
@@ -113,11 +114,18 @@ public class GoSceneExecutor extends EffectExecutor<GoScene> {
 									EngineEntity engineEntity) {
 								nextScreen = engineEntity;
 								gameLoop.update(0);
+								gameView.clearLayer(Layer.SCENE_CONTENT, true);
+								gameView.addEntityToLayer(Layer.SCENE_CONTENT,
+										nextScreen);
+								layer.setVisible(false);
 								transitionManager.takeNextScreenPicture(
 										layer.getStage(),
 										engineEntity.getGroup());
 								gameLoop.setPlaying(false);
-								layer.addActor(transitionManager);
+
+								Group sceneLayer = gameView.getLayer(
+										Layer.SCENE).getGroup();
+								sceneLayer.addActor(transitionManager);
 								transitionManager
 										.startTransition(getTransition(
 												effect.getTransition(),

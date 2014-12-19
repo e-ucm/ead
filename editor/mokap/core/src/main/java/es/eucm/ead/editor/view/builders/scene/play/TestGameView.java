@@ -58,7 +58,7 @@ public class TestGameView extends DefaultGameView {
 
 	@Override
 	public void layout() {
-		Group group = getLayer(Layer.SCENE).getGroup();
+		Group group = getLayer(Layer.SCENE_CONTENT).getGroup();
 		float scaleX = getWidth() / (float) worldWidth;
 		float scaleY = getHeight() / (float) worldHeight;
 		float scale = Math.min(scaleX, scaleY);
