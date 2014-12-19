@@ -34,47 +34,52 @@
  *      You should have received a copy of the GNU Lesser General Public License
  *      along with eAdventure.  If not, see <http://www.gnu.org/licenses/>.
  */
-package es.eucm.ead.editor.control.engine.converters;
+package es.eucm.ead.editor.editorui.widgets;
 
-import es.eucm.ead.schema.components.tweens.BaseTween;
-import es.eucm.ead.schema.components.tweens.Tween;
-import es.eucm.ead.schema.components.tweens.Tween.EaseEquation;
-import es.eucm.ead.schema.components.tweens.Tween.EaseType;
-import es.eucm.ead.schema.editor.components.animations.TransformAnimation;
+import com.badlogic.gdx.backends.lwjgl.LwjglApplication;
+import com.badlogic.gdx.backends.lwjgl.LwjglApplicationConfiguration;
+import com.badlogic.gdx.scenes.scene2d.Actor;
+import com.badlogic.gdx.scenes.scene2d.ui.Label;
+import com.badlogic.gdx.scenes.scene2d.ui.Skin;
+import com.badlogic.gdx.scenes.scene2d.ui.Table;
+import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
 
-public abstract class TransformAnimationConverter<S extends TransformAnimation>
-		implements ComponentConverter<S, BaseTween> {
+import es.eucm.ead.editor.editorui.UITest;
+import es.eucm.ead.editor.view.widgets.RangeSlider;
+import es.eucm.ead.engine.I18N;
 
-	protected void setEase(S transform, Tween tween) {
-		switch (transform.getEase()) {
-		case LINEAR:
-			tween.setEaseEquation(EaseEquation.LINEAR);
-			break;
-		case CUBIC_IN:
-			tween.setEaseEquation(EaseEquation.CUBIC);
-			tween.setEaseType(EaseType.IN);
-			break;
-		case CUBIC_OUT:
-			tween.setEaseEquation(EaseEquation.CUBIC);
-			tween.setEaseType(EaseType.OUT);
-			break;
-		case CUBIC_IN_OUT:
-			tween.setEaseEquation(EaseEquation.CUBIC);
-			tween.setEaseType(EaseType.INOUT);
-			break;
-		case BOUNCE_IN:
-			tween.setEaseEquation(EaseEquation.BOUNCE);
-			tween.setEaseType(EaseType.IN);
-			break;
-		case BOUNCE_OUT:
-			tween.setEaseEquation(EaseEquation.BOUNCE);
-			tween.setEaseType(EaseType.OUT);
-			break;
-		}
+public class MultiRangeSliderTest extends UITest {
+
+	@Override
+	protected Actor buildUI(Skin skin, I18N i18n) {
+
+		int minValue = 0;
+		int maxValue = 100;
+
+		Table table = new Table();
+		table.setFillParent(true);
+
+		final Label label = new Label(minValue + " / " + maxValue, skin);
+
+		final RangeSlider widget = new RangeSlider(minValue, maxValue, 1,
+				false, skin);
+		widget.addListener(new ChangeListener() {
+			@Override
+			public void changed(ChangeEvent event, Actor actor) {
+				label.setText(widget.getValue() + " / " + widget.getValue2());
+			}
+		});
+		table.add(label);
+		table.row();
+		table.add(widget).expandX().fillX();
+
+		return table;
 	}
 
-	protected void setRepeatsAndYoyo(S transform, BaseTween tween) {
-		tween.setYoyo(transform.isYoyo());
-		tween.setRepeat(transform.getRepeat());
+	public static void main(String[] args) {
+		LwjglApplicationConfiguration config = new LwjglApplicationConfiguration();
+		config.width = 300;
+		config.height = 100;
+		new LwjglApplication(new MultiRangeSliderTest(), config);
 	}
 }

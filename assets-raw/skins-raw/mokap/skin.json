@@ -427,6 +427,13 @@
             "knob": "color_picker_knob"
         }
     },
+    "es.eucm.ead.editor.view.widgets.RangeSlider$RangeSliderStyle":{
+    	"default-horizontal": {
+            "background": "knob_after",
+            "knobBetween": "knob_before",
+            "knob": "knob"
+        }
+    },      
     "es.eucm.ead.editor.view.widgets.draw.SlideColorPicker$SlideColorPickerStyle": {
         "default": {
             "slider": "colorPicker"
@@ -741,5 +748,5 @@
             },
             "buttonsStyle": "dialog"
         }
-    }
+    }    
 }

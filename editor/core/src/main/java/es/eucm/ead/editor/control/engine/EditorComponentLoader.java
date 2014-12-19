@@ -41,11 +41,13 @@ import ashley.core.Component;
 import com.badlogic.gdx.utils.ObjectMap;
 
 import es.eucm.ead.editor.assets.EditorGameAssets;
+import es.eucm.ead.editor.control.engine.converters.BlinkAnimationConverter;
 import es.eucm.ead.editor.control.engine.converters.ComponentConverter;
 import es.eucm.ead.editor.control.engine.converters.MoveAnimationConverter;
 import es.eucm.ead.engine.ComponentLoader;
 import es.eucm.ead.engine.variables.VariablesManager;
 import es.eucm.ead.schema.components.ModelComponent;
+import es.eucm.ead.schema.editor.components.animations.BlinkAnimation;
 import es.eucm.ead.schema.editor.components.animations.MoveAnimation;
 
 public class EditorComponentLoader extends ComponentLoader {
@@ -57,6 +59,7 @@ public class EditorComponentLoader extends ComponentLoader {
 		super(gameAssets, variablesManager);
 		converters = new ObjectMap<Class, ComponentConverter>();
 		converters.put(MoveAnimation.class, new MoveAnimationConverter());
+		converters.put(BlinkAnimation.class, new BlinkAnimationConverter());
 	}
 
 	@Override

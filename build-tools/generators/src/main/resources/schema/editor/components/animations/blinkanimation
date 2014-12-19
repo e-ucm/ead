@@ -1,0 +1,20 @@
+{
+    "additionalProperties": false,
+    "javaType": "es.eucm.ead.schema.editor.components.animations.BlinkAnimation",
+    "extends": {
+        "$ref": "transformanimation.json"
+    },
+    "properties": {
+    	"startAlpha": {
+            "type": "number",
+            "default": 0,
+            "description": "The initial alpha of the animation."
+        },
+        "endAlpha": {
+            "type": "number",
+            "default": 1,
+            "description": "The final alpha of the animation."
+        }
+    },
+    "type": "object"
+}

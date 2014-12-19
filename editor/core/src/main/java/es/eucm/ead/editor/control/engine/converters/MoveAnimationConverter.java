@@ -57,6 +57,7 @@ public class MoveAnimationConverter extends
 		float screenSize = Math.max(height, width);
 		MoveTween moveTween = new MoveTween();
 		super.setEase(component, moveTween);
+		super.setRepeatsAndYoyo(component, moveTween);
 
 		moveTween.setRelative(true);
 

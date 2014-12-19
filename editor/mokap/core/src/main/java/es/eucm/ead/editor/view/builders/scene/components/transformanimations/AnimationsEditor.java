@@ -39,6 +39,7 @@ package es.eucm.ead.editor.view.builders.scene.components.transformanimations;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.utils.ObjectMap;
 import com.badlogic.gdx.utils.ObjectMap.Entry;
+
 import es.eucm.ead.editor.control.Controller;
 import es.eucm.ead.editor.model.Q;
 import es.eucm.ead.editor.view.SkinConstants;
@@ -62,8 +63,11 @@ public class AnimationsEditor extends ComponentEditor<ModelComponent> {
 	protected void buildContent() {
 		editors = new ObjectMap<String, TransformAnimationEditor>();
 		addTransformationAnimationEditor(new MoveAnimationEditor(controller));
+		addTransformationAnimationEditor(new BlinkAnimationEditor(controller));
+		
+		float pad = WidgetBuilder.dpToPixels(16);
 		for (Actor a : editors.values()) {
-			list.add(a).expandX().margin(WidgetBuilder.dpToPixels(16));
+			list.add(a).expandX().margin(pad, pad*0.5f, pad, pad*0.5f);
 		}
 	}
 
