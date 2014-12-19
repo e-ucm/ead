@@ -75,8 +75,7 @@ public class GoSceneExecutor extends EffectExecutor<GoScene> {
 			@Override
 			public void transitionFinished() {
 				gameLoop.setPlaying(true);
-				Group layer = gameView.getLayer(Layer.SCENE_CONTENT)
-						.getGroup();
+				Group layer = gameView.getLayer(Layer.SCENE_CONTENT).getGroup();
 				layer.setVisible(true);
 			}
 		});

@@ -64,10 +64,10 @@ public class AnimationsEditor extends ComponentEditor<ModelComponent> {
 		editors = new ObjectMap<String, TransformAnimationEditor>();
 		addTransformationAnimationEditor(new MoveAnimationEditor(controller));
 		addTransformationAnimationEditor(new BlinkAnimationEditor(controller));
-		
+
 		float pad = WidgetBuilder.dpToPixels(16);
 		for (Actor a : editors.values()) {
-			list.add(a).expandX().margin(pad, pad*0.5f, pad, pad*0.5f);
+			list.add(a).expandX().margin(pad, pad * 0.5f, pad, pad * 0.5f);
 		}
 	}
 
