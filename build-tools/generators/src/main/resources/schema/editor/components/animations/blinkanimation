@@ -5,15 +5,15 @@
         "$ref": "transformanimation.json"
     },
     "properties": {
-        "maxAlpha": {
-            "type": "number",
-            "default": 1,
-            "description": "Maximum alpha visibility"
-        },
-        "minAlpha": {
+    	"startAlpha": {
             "type": "number",
             "default": 0,
-            "description": "Minimum alpha visibility"
+            "description": "The initial alpha of the animation."
+        },
+        "endAlpha": {
+            "type": "number",
+            "default": 1,
+            "description": "The final alpha of the animation."
         }
     },
     "type": "object"

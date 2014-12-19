@@ -57,19 +57,19 @@ public class BlinkAnimationConverter extends
 		Array<BaseTween> blink = new Array<BaseTween>();
 
 		AlphaTween alphaTween = new AlphaTween();
-		alphaTween.setAlpha(component.getMinAlpha());
+		alphaTween.setAlpha(component.getStartAlpha());
 		alphaTween.setDuration(0f);
 
 		AlphaTween alphaTween2 = new AlphaTween();
-		alphaTween2.setAlpha(component.getMaxAlpha());
+		alphaTween2.setAlpha(component.getEndAlpha());
 		super.setEase(component, alphaTween2);
 		super.setRepeatsAndYoyo(component, blinkTween);
 
 		float speed = (MAX_SPEED_TIME - MIN_SPEED_TIME) * component.getSpeed()
 				+ MIN_SPEED_TIME;
 
-		alphaTween2.setDuration((component.getMaxAlpha() - component
-				.getMinAlpha()) * speed);
+		alphaTween2.setDuration((component.getEndAlpha() - component
+				.getStartAlpha()) * speed);
 
 		blink.addAll(alphaTween, alphaTween2);
 		blinkTween.setChildren(blink);
