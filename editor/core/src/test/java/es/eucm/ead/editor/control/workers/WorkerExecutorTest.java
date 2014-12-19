@@ -36,15 +36,16 @@
  */
 package es.eucm.ead.editor.control.workers;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
-
+import es.eucm.ead.editor.control.workers.Worker.WorkerListener;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
-import es.eucm.ead.editor.control.workers.Worker.WorkerListener;
+import java.util.concurrent.atomic.AtomicBoolean;
+
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
 
 public class WorkerExecutorTest {
 
@@ -65,7 +66,7 @@ public class WorkerExecutorTest {
 
 		Thread.sleep(3000);
 
-		assertTrue(t1.cancelled);
+		assertTrue(t1.cancelled.get());
 		assertEquals(t2.counter, 10);
 	}
 
@@ -77,10 +78,12 @@ public class WorkerExecutorTest {
 		workerExecutor.execute(InfiniteWorker.class, t1, true);
 		workerExecutor.execute(InfiniteWorker.class, t2, true);
 
-		Thread.sleep(500);
+		while (workerExecutor.isWorking()) {
+			Thread.sleep(500);
+		}
 
-		assertTrue(t1.cancelled && !t1.done);
-		assertTrue(t2.done && !t2.cancelled);
+		assertTrue(t1.cancelled.get() && !t1.done.get());
+		assertTrue(t2.done.get() && !t2.cancelled.get());
 		assertFalse(workerExecutor.isWorking());
 
 		workerExecutor.cancelAll();
@@ -90,16 +93,20 @@ public class WorkerExecutorTest {
 		workerExecutor.execute(InfiniteWorker.class, t1, false);
 		workerExecutor.execute(InfiniteWorker.class, t2, false);
 
-		Thread.sleep(500);
+		while (!t2.done.get()) {
+			Thread.sleep(500);
+		}
 
-		assertTrue(!t1.cancelled && !t1.done);
-		assertTrue(t2.done && !t2.cancelled);
+		assertTrue(!t1.cancelled.get() && !t1.done.get());
+		assertTrue(t2.done.get() && !t2.cancelled.get());
 
 		workerExecutor.cancel(InfiniteWorker.class, t1);
 
-		Thread.sleep(500);
+		while (!t1.cancelled.get()) {
+			Thread.sleep(500);
+		}
 
-		assertTrue(t1.cancelled && !t1.done);
+		assertTrue(t1.cancelled.get() && !t1.done.get());
 		assertFalse(workerExecutor.isWorking());
 	}
 
@@ -155,11 +162,11 @@ public class WorkerExecutorTest {
 
 	public class TestWorkerListener implements WorkerListener {
 
-		boolean cancelled;
+		AtomicBoolean cancelled = new AtomicBoolean(false);
 
 		int counter;
 
-		boolean done;
+		AtomicBoolean done = new AtomicBoolean(false);
 
 		@Override
 		public void start() {
@@ -173,7 +180,7 @@ public class WorkerExecutorTest {
 
 		@Override
 		public void done() {
-			done = true;
+			done.set(true);
 		}
 
 		@Override
@@ -183,7 +190,7 @@ public class WorkerExecutorTest {
 
 		@Override
 		public void cancelled() {
-			cancelled = true;
+			cancelled.set(true);
 		}
 	}
 }
