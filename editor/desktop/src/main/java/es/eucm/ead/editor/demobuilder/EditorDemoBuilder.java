@@ -157,6 +157,34 @@ public abstract class EditorDemoBuilder extends DemoBuilder {
 		}
 	}
 
+	protected Dimension getRendererDimension(Renderer component) {
+		int width = 0, height = 0;
+		if (component instanceof Image) {
+			Image image = (Image) component;
+			Dimension dim = getImageDimension(image.getUri());
+			width = dim.getWidth();
+			height = dim.getHeight();
+		} else if (component instanceof Frames) {
+			Frames frames = (Frames) component;
+			for (Frame frame : frames.getFrames()) {
+				Dimension frameDim = getRendererDimension(frame.getRenderer());
+				width = Math.max(width, frameDim.getWidth());
+				height = Math.max(height, frameDim.getHeight());
+			}
+		} else if (component instanceof States) {
+			States states = (States) component;
+			for (State state : states.getStates()) {
+				Dimension stateDim = getRendererDimension(state.getRenderer());
+				width = Math.max(width, stateDim.getWidth());
+				height = Math.max(height, stateDim.getHeight());
+			}
+		}
+		Dimension dimension = new Dimension();
+		dimension.setWidth(width);
+		dimension.setHeight(height);
+		return dimension;
+	}
+
 	protected Dimension getImageDimension(String imageUri) {
 		Dimension dimension = new Dimension();
 		Vector2 size = new Vector2();
