@@ -36,9 +36,12 @@
  */
 package es.eucm.ead.android;
 
+import java.io.IOException;
+import java.util.List;
+import java.util.Locale;
+
 import android.app.Activity;
 import android.app.AlertDialog;
-import android.app.ProgressDialog;
 import android.content.ComponentName;
 import android.content.Context;
 import android.content.DialogInterface;
@@ -52,27 +55,23 @@ import android.content.pm.PackageManager.NameNotFoundException;
 import android.content.pm.ResolveInfo;
 import android.database.Cursor;
 import android.net.Uri;
-import android.os.AsyncTask;
 import android.provider.MediaStore;
 import android.text.InputType;
 import android.widget.EditText;
+
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input.TextInputListener;
 import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.graphics.g2d.Batch;
 import com.google.android.gms.analytics.Tracker;
+
 import es.eucm.ead.android.EditorActivity.ActivityResultListener;
 import es.eucm.ead.editor.control.Controller;
 import es.eucm.ead.editor.platform.MokapPlatform;
 import es.eucm.ead.editor.platform.MokapPlatform.ImageCapturedListener.Result;
-import es.eucm.ead.editor.utils.ProjectUtils;
 import es.eucm.ead.engine.I18N;
 import es.eucm.ead.engine.android.AndroidImageUtils;
 import es.eucm.ead.engine.assets.GameAssets.ImageUtils;
-
-import java.io.IOException;
-import java.util.List;
-import java.util.Locale;
 
 public class AndroidPlatform extends MokapPlatform {
 
@@ -146,20 +145,30 @@ public class AndroidPlatform extends MokapPlatform {
 						public void result(int resultCode, final Intent data) {
 							if (resultCode == EditorActivity.RESULT_OK) {
 								if (data != null) {
-									String path = getStringFromIntent(activity,
-											data, MediaStore.Images.Media.DATA);
-									if (path != null) {
-										FileHandle file = Gdx.files
-												.absolute(path);
-										if (file.exists()) {
-											new DecodePictureTask(listener,
-													file).execute();
-										} else {
-											listener.fileChosen(null);
+									final String path = getStringFromIntent(
+											activity, data,
+											MediaStore.Images.Media.DATA);
+									Gdx.app.postRunnable(new Runnable() {
+
+										@Override
+										public void run() {
+											if (path != null) {
+												FileHandle file = Gdx.files
+														.absolute(path);
+												if (file.exists()) {
+
+													listener.fileChosen(file
+															.file()
+															.getAbsolutePath());
+
+												} else {
+													listener.fileChosen(null);
+												}
+											} else {
+												listener.fileChosen(null);
+											}
 										}
-									} else {
-										listener.fileChosen(null);
-									}
+									});
 								}
 							}
 						}
@@ -187,10 +196,16 @@ public class AndroidPlatform extends MokapPlatform {
 						public void result(int resultCode, final Intent data) {
 							if (resultCode == EditorActivity.RESULT_OK) {
 								if (data != null) {
-									String path = getStringFromIntent(
-											controller, activity, data,
-											MediaStore.Audio.Media.DATA);
-									listener.fileChosen(path);
+									Gdx.app.postRunnable(new Runnable() {
+
+										@Override
+										public void run() {
+											String path = getStringFromIntent(
+													controller, activity, data,
+													MediaStore.Audio.Media.DATA);
+											listener.fileChosen(path);
+										}
+									});
 								} else {
 									listener.fileChosen(null);
 								}
@@ -273,18 +288,22 @@ public class AndroidPlatform extends MokapPlatform {
 
 						@Override
 						public void result(int resultCode, final Intent data) {
-							Gdx.app.postRunnable(new Runnable() {
-								@Override
-								public void run() {
-									String picturePath = null;
-									if (data != null) {
-										picturePath = getStringFromIntent(
-												activity, data,
-												MediaStore.Images.Media.DATA);
+
+							if (resultCode == EditorActivity.RESULT_OK) {
+								Gdx.app.postRunnable(new Runnable() {
+									@Override
+									public void run() {
+										String picturePath = null;
+										if (data != null) {
+											picturePath = getStringFromIntent(
+													activity,
+													data,
+													MediaStore.Images.Media.DATA);
+										}
+										listener.fileChosen(picturePath);
 									}
-									listener.fileChosen(picturePath);
-								}
-							});
+								});
+							}
 						}
 					});
 		} else {
@@ -430,13 +449,19 @@ public class AndroidPlatform extends MokapPlatform {
 						CAPTURE_PHOTO, new ActivityResultListener() {
 
 							@Override
-							public void result(int resultCode, Intent data) {
-								if (resultCode == Activity.RESULT_OK) {
-									new DecodePictureTask(listener, photoFile)
-											.execute();
-								} else {
-									photoFile.delete();
-								}
+							public void result(final int resultCode, Intent data) {
+								Gdx.app.postRunnable(new Runnable() {
+
+									@Override
+									public void run() {
+										if (resultCode == Activity.RESULT_OK) {
+											listener.imageCaptured(Result.SUCCES);
+										} else {
+											photoFile.delete();
+											listener.imageCaptured(Result.UNKOWN);
+										}
+									}
+								});
 							}
 						});
 			} else {
@@ -446,97 +471,6 @@ public class AndroidPlatform extends MokapPlatform {
 			listener.imageCaptured(Result.NO_CAMERA);
 		}
 	}
-
-	public class DecodePictureTask extends AsyncTask<Void, Void, Boolean> {
-
-		private final PostRunnable postRunnable = new PostRunnable();
-		private ProgressDialog mPleaseWaitDialog = null;
-		private ImageCapturedListener captureListener;
-		private FileChooserListener fileListener;
-		private FileHandle file;
-
-		public DecodePictureTask(FileChooserListener listener, FileHandle file) {
-			this.fileListener = listener;
-			this.file = file;
-		}
-
-		public DecodePictureTask(ImageCapturedListener listener, FileHandle file) {
-			this.captureListener = listener;
-			this.file = file;
-		}
-
-		public void showDecodingDialog() {
-			if (mPleaseWaitDialog != null) {
-				return;
-			}
-
-			mPleaseWaitDialog = new ProgressDialog((EditorActivity) Gdx.app);
-			mPleaseWaitDialog.setIndeterminate(true);
-			mPleaseWaitDialog.show();
-		}
-
-		public void cancelDecodingDialog() {
-			if (mPleaseWaitDialog != null) {
-				mPleaseWaitDialog.dismiss();
-				mPleaseWaitDialog = null;
-			}
-		}
-
-		@Override
-		protected void onPostExecute(Boolean success) {
-			super.onPostExecute(success);
-			cancelDecodingDialog();
-			postRunnable.setSuccess(success);
-			Gdx.app.postRunnable(postRunnable);
-		}
-
-		private class PostRunnable implements Runnable {
-
-			private boolean success;
-
-			public void setSuccess(boolean success) {
-				this.success = success;
-			}
-
-			@Override
-			public void run() {
-				if (captureListener != null) {
-					Result result = Result.SUCCES;
-					if (!success) {
-						result = Result.UNKOWN;
-					}
-					captureListener.imageCaptured(result);
-				} else if (fileListener != null) {
-					fileListener.fileChosen(file.file().getAbsolutePath());
-					if (file.exists()) {
-						file.delete();
-					}
-				}
-				captureListener = null;
-				fileListener = null;
-				file = null;
-			}
-		}
-
-		@Override
-		protected void onPreExecute() {
-			super.onPreExecute();
-			showDecodingDialog();
-		}
-
-		@Override
-		protected Boolean doInBackground(Void... args) {
-			FileHandle sourceImage = file;
-			file = null;
-			if (captureListener == null) {
-				file = ProjectUtils.getNonExistentFile(sourceImage.parent(),
-						sourceImage.nameWithoutExtension(),
-						sourceImage.extension());
-			}
-
-			return getImageUtils().scale(sourceImage, file) != -1;
-		}
-	};
 
 	@Override
 	public void getMultilineTextInput(final TextInputListener listener,

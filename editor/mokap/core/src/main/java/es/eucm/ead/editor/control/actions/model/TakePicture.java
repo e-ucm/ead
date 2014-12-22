@@ -36,14 +36,10 @@
  */
 package es.eucm.ead.editor.control.actions.model;
 
-import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.files.FileHandle;
 
 import es.eucm.ead.editor.assets.EditorGameAssets;
 import es.eucm.ead.editor.control.actions.EditorAction;
-import es.eucm.ead.editor.control.background.BackgroundExecutor;
-import es.eucm.ead.editor.control.background.BackgroundExecutor.BackgroundTaskListener;
-import es.eucm.ead.editor.control.background.BackgroundTask;
 import es.eucm.ead.editor.platform.MokapPlatform;
 import es.eucm.ead.editor.platform.MokapPlatform.ImageCapturedListener;
 import es.eucm.ead.editor.utils.ProjectUtils;
