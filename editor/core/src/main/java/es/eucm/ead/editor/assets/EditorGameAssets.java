@@ -98,24 +98,6 @@ public class EditorGameAssets extends GameAssets {
 		toJson(object, null, null, resolve(path));
 	}
 
-	@Override
-	public FileHandle resolve(String path) {
-		if (path.startsWith("/") || path.indexOf(':') == 1) {
-			// Absolute file
-			return files.absolute(path);
-		}
-		if (isGamePathInternal()) {
-			return super.resolve(path);
-		}
-		FileHandle internal = files.internal(path);
-		if (checkFileExistence(internal)) {
-			return internal;
-		}
-		return files.absolute((getLoadingPath() == null
-				|| path.startsWith(getLoadingPath()) ? "" : getLoadingPath())
-				+ path);
-	}
-
 	/**
 	 * Copy and loads the asset in the given path to the project folder
 	 * 

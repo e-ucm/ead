@@ -156,23 +156,36 @@ public class GameAssets extends Assets implements ModelStructure {
 	 */
 	@Override
 	public FileHandle resolve(String path) {
+		FileHandle fileHandle = null;
 		if (path.startsWith("/") || path.indexOf(':') == 1) {
-			// Absolute file
-			return files.absolute(path);
-		} else if (loadingPath == null) {
-			// If no game path is set, just return an internal file
-			return files.internal(path);
-		} else {
-			// Relative file
-			FileHandle fh = gamePathInternal ? files.internal(loadingPath
-					+ path) : files.absolute(loadingPath + path);
-			if (checkFileExistence(fh)) {
-				return fh;
-			} else {
-				// Fallback: use internal file
-				return files.internal(path);
-			}
+			// Absolute file - don't check existence
+			fileHandle = files.absolute(path);
+			return fileHandle;
+
 		}
+
+		// Internal files. First, try appending loading path
+		if (isGamePathInternal()) {
+			fileHandle = files.internal(loadingPath + path);
+			if (fileHandle != null && checkFileExistence(fileHandle)) {
+				return fileHandle;
+			}
+
+		}
+
+		// Try internal without appending loading path
+		fileHandle = files.internal(path);
+		if (fileHandle != null && checkFileExistence(fileHandle)) {
+			return fileHandle;
+		}
+
+		// Last option: absolute, appending loading path (does not check
+		// existence)
+		String fullPath = (getLoadingPath() == null
+				|| path.startsWith(getLoadingPath()) ? "" : getLoadingPath())
+				+ path;
+
+		return files.absolute(fullPath);
 	}
 
 	/**
