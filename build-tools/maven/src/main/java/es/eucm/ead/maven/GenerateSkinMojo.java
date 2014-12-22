@@ -72,7 +72,7 @@ import java.io.File;
  * </pre>
  * <p/>
  * </code>
- *
+ * 
  * @author Ivan Martinez-Ortiz
  */
 @Mojo(name = "generate-skins", requiresProject = false, inheritByDefault = false)
@@ -238,7 +238,7 @@ public class GenerateSkinMojo extends AbstractMojo {
 	 * png files. Writing a generated font to files allows the possibility of
 	 * only generating the fonts when they are missing, otherwise loading from a
 	 * previously generated file.
-	 *
+	 * 
 	 * @param fontFile
 	 * @param fontSize
 	 * @param destiny
