@@ -198,8 +198,7 @@ public class SceneEditor extends BaseView implements ModelView,
 	@Override
 	public void toggleNavigation() {
 		super.toggleNavigation();
-		controller.action(CreateSceneThumbnail.class, getGroupEditor()
-				.getRootGroup());
+		createSceneThumbnail();
 	}
 
 	@Override
@@ -215,7 +214,13 @@ public class SceneEditor extends BaseView implements ModelView,
 
 	@Override
 	public void release() {
+		createSceneThumbnail();
 		controller.getModel().removeSelectionListener(this);
+	}
+
+	private void createSceneThumbnail() {
+		controller.action(CreateSceneThumbnail.class, getGroupEditor()
+				.getRootGroup());
 	}
 
 	@Override

@@ -72,6 +72,7 @@ import es.eucm.ead.editor.model.Q;
 import es.eucm.ead.editor.model.events.FieldEvent;
 import es.eucm.ead.editor.model.events.ListEvent;
 import es.eucm.ead.editor.model.events.SelectionEvent;
+import es.eucm.ead.editor.model.events.SelectionEvent.Type;
 import es.eucm.ead.editor.utils.Actions2;
 import es.eucm.ead.editor.view.ModelView;
 import es.eucm.ead.editor.view.SkinConstants;
@@ -517,7 +518,8 @@ public class SceneGroupEditor extends GroupEditor implements ModelView,
 		@Override
 		public void modelChanged(SelectionEvent event) {
 			String context = event.getContextId();
-			if (Selection.SCENE.equals(context)) {
+			if (Selection.SCENE.equals(context)
+					&& event.getType() == Type.FOCUSED) {
 				readSceneContext();
 			} else if (Selection.EDITED_GROUP.equals(context)) {
 				readEditedGroup();
