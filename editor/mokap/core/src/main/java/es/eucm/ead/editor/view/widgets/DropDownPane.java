@@ -108,13 +108,14 @@ public class DropDownPane extends Table {
 				body.addAction(Actions.sizeTo(bodyContent.getPrefWidth(),
 						bodyContent.getPrefHeight(), 0.40f,
 						Interpolation.exp5Out));
-				bodyContent.addAction(Actions.sequence(Actions.alpha(0),
-						Actions.delay(0.1f),
+				bodyContent.addAction(Actions.sequence(Actions.visible(true),
+						Actions.alpha(0), Actions.delay(0.1f),
 						Actions.alpha(1.0f, 0.4f, Interpolation.exp5Out)));
 			} else {
 				body.setSize(bodyContent.getPrefWidth(),
 						bodyContent.getPrefHeight());
 				bodyContent.getColor().a = 1.0f;
+				bodyContent.setVisible(true);
 			}
 		}
 	}
@@ -138,6 +139,7 @@ public class DropDownPane extends Table {
 			} else {
 				body.setHeight(0);
 				bodyContent.getColor().a = 0.0f;
+				bodyContent.setVisible(false);
 			}
 		}
 	}
