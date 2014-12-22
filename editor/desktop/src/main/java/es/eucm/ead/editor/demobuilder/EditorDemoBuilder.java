@@ -221,7 +221,7 @@ public abstract class EditorDemoBuilder extends DemoBuilder {
 				fh.parent().mkdirs();
 			}
 			Gdx.app.debug(LOG_TAG, "Saving to: " + fh.file().getAbsolutePath());
-			new Json().toJson(entry.getValue(), null, fh);
+			gameAssets.toJson(entry.getValue(), null, fh);
 		}
 	}
 
