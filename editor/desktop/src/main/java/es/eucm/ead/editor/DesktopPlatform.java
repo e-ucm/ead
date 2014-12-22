@@ -51,6 +51,8 @@ import es.eucm.ead.editor.platform.AbstractPlatform;
 import es.eucm.ead.editor.platform.Platform.FileChooserListener;
 import es.eucm.ead.editor.view.widgets.dialogs.FileChooserDialog;
 import es.eucm.ead.engine.I18N;
+import es.eucm.ead.engine.assets.GameAssets;
+import es.eucm.ead.engine.utils.DesktopImageUtils;
 
 import java.awt.*;
 
@@ -63,9 +65,11 @@ public class DesktopPlatform extends AbstractPlatform implements
 	private Controller controller;
 	private Stage stage;
 	private FileChooserListener fileChooserListener;
+	private DesktopImageUtils desktopImageUtils;
 
 	public DesktopPlatform() {
 		screenDimensions = new Vector2();
+		desktopImageUtils = new DesktopImageUtils();
 	}
 
 	public void initFileChooser(final Controller controller, Stage stage) {
@@ -163,5 +167,10 @@ public class DesktopPlatform extends AbstractPlatform implements
 	@Override
 	public void getMultilineTextInput(TextInputListener listener, String title,
 			String text, I18N i18n) {
+	}
+
+	@Override
+	public GameAssets.ImageUtils getImageUtils() {
+		return desktopImageUtils;
 	}
 }
