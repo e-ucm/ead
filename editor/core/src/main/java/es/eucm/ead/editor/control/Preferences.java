@@ -36,10 +36,10 @@
  */
 package es.eucm.ead.editor.control;
 
-import com.badlogic.gdx.utils.Array;
-
 import java.util.HashMap;
 import java.util.Map;
+
+import com.badlogic.gdx.utils.Array;
 
 /**
  * Editor preferences, saved across all game projects
@@ -68,6 +68,11 @@ public class Preferences {
 	public static final String CLIENT_ID = "clientId";
 
 	public static final String LAST_OPENED_GAME = "lastOpenedGame";
+
+	/**
+	 * Stores the pref. color from the {@link ColorPicker}.
+	 */
+	public static final String PREF_COLOR = "prefColor";
 
 	/**
 	 * Allows the user to disable update notifications
