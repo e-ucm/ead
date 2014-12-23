@@ -40,6 +40,8 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 
+import es.eucm.ead.editor.control.repo.RepoRequestFactory;
+import es.eucm.ead.schema.editor.components.repo.request.SearchRequest;
 import org.junit.Before;
 
 import com.badlogic.gdx.files.FileHandle;
@@ -89,9 +91,11 @@ public class SearchRepoTest extends WorkerTest implements WorkerListener {
 		response.setResults(repoElems);
 
 		String json = gameAssets.toJson(response, SearchResponse.class);
-		URL = "http://" + controller.getReleaseInfo().getBackendURL() + "?q="
-				+ TEXT_STRING + "&k="
-				+ controller.getReleaseInfo().getBackendApiKey();
+		SearchRequest searchRequest = new SearchRequest();
+		searchRequest.setQ(TEXT_STRING);
+
+		URL = new RepoRequestFactory(controller.getReleaseInfo())
+				.buildRequestURL(searchRequest);
 		platform.putHttpResponse(URL, json);
 	}
 
