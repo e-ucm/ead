@@ -366,7 +366,52 @@ public class Q {
 		if (thumbnailUrlList.size == 0) {
 			return "";
 		}
-		return thumbnailUrlList.peek();
+		// Iterate the list and pick the largest one.
+		int index = -1;
+		float maxWidth = Float.NEGATIVE_INFINITY;
+
+		// Should width list be empty or incomplete, use url paths
+		if (elem.getThumbnailWidthList().size != thumbnailUrlList.size) {
+			for (int i = 0; i < thumbnailUrlList.size; i++) {
+				String thumbnailUrl = thumbnailUrlList.get(i);
+				String thumbnailFileName = thumbnailUrl.substring(Math.max(
+						0,
+						Math.max(thumbnailUrl.lastIndexOf("\\"),
+								thumbnailUrl.lastIndexOf("/"))), thumbnailUrl
+						.lastIndexOf(".") >= 0 ? thumbnailUrl.lastIndexOf(".")
+						: thumbnailUrl.length());
+				if (thumbnailFileName.toLowerCase().indexOf("x") > 0) {
+					String widthStr = thumbnailFileName.substring(0,
+							thumbnailFileName.toLowerCase().indexOf("x"));
+					try {
+						int thumbnailWidth = Integer.parseInt(widthStr);
+						if (thumbnailWidth > maxWidth) {
+							index = i;
+							maxWidth = thumbnailWidth;
+						}
+					} catch (NumberFormatException ne) {
+						// Malformed url - do nothing but log it
+						Gdx.app.debug("Q", "thumbnail url malformed: "
+								+ thumbnailUrl);
+					}
+				}
+			}
+		}
+		// Otherwise, use width list
+		else {
+			for (int i = 0; i < elem.getThumbnailWidthList().size; i++) {
+				float thumbnailWidth = elem.getThumbnailWidthList().get(i);
+				if (thumbnailWidth > maxWidth) {
+					index = i;
+					maxWidth = thumbnailWidth;
+				}
+			}
+		}
+
+		if (index >= 0 && index < thumbnailUrlList.size) {
+			return thumbnailUrlList.get(index);
+		}
+		return thumbnailUrlList.get(0);
 	}
 
 	public static Color toLibgdxColor(es.eucm.ead.schema.data.Color modelColor) {
