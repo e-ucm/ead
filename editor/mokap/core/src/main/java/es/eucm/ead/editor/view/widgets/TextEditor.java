@@ -47,6 +47,7 @@ import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.scenes.scene2d.utils.Drawable;
 import com.badlogic.gdx.utils.Array;
 
+import es.eucm.ead.editor.control.Preferences;
 import es.eucm.ead.editor.control.Views;
 import es.eucm.ead.editor.view.SkinConstants;
 import es.eucm.ead.editor.view.widgets.draw.BrushStrokesPicker.BrushStrokesPickerStyle;
@@ -73,11 +74,12 @@ public class TextEditor extends ContextMenu {
 
 	protected Table top;
 
-	public TextEditor(Skin skin, I18N i18n) {
-		this(skin, skin.get(TextEditorStyle.class), i18n);
+	public TextEditor(Skin skin, I18N i18n, Preferences prefs) {
+		this(skin, skin.get(TextEditorStyle.class), i18n, prefs);
 	}
 
-	public TextEditor(Skin skin, TextEditorStyle style, I18N i18n) {
+	public TextEditor(Skin skin, TextEditorStyle style, I18N i18n,
+			Preferences prefs) {
 
 		float pad = WidgetBuilder.dpToPixels(8);
 		pad(pad);
@@ -98,7 +100,7 @@ public class TextEditor extends ContextMenu {
 		textContainer.setActor(label);
 		textContainer.fillX().width(0);
 
-		colorPicker = new ColorPickerPanel(skin, style.colorPickerStyle);
+		colorPicker = new ColorPickerPanel(skin, style.colorPickerStyle, prefs);
 		colorPicker.addListener(new ColorListener() {
 			@Override
 			public void colorChanged(ColorEvent event) {

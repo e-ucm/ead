@@ -50,6 +50,7 @@ import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.scenes.scene2d.utils.Drawable;
 import com.badlogic.gdx.utils.Pools;
 
+import es.eucm.ead.editor.control.Preferences;
 import es.eucm.ead.editor.control.Views;
 import es.eucm.ead.editor.view.SkinConstants;
 import es.eucm.ead.editor.view.widgets.ContextMenu;
@@ -74,11 +75,12 @@ public class BrushStrokesPicker extends ContextMenu {
 	private Slider slider;
 	private ColorPickerPanel colorPicker;
 
-	public BrushStrokesPicker(Skin skin) {
-		this(skin, skin.get(BrushStrokesPickerStyle.class));
+	public BrushStrokesPicker(Skin skin, Preferences prefs) {
+		this(skin, skin.get(BrushStrokesPickerStyle.class), prefs);
 	}
 
-	public BrushStrokesPicker(Skin skin, BrushStrokesPickerStyle style) {
+	public BrushStrokesPicker(Skin skin, BrushStrokesPickerStyle style,
+			Preferences prefs) {
 
 		float pad = WidgetBuilder.dpToPixels(8);
 		pad(pad);
@@ -114,7 +116,7 @@ public class BrushStrokesPicker extends ContextMenu {
 		final Image icon = iconButton.getIcon();
 		icon.setOrigin(Align.center);
 
-		colorPicker = new ColorPickerPanel(skin, style.colorPickerStyle);
+		colorPicker = new ColorPickerPanel(skin, style.colorPickerStyle, prefs);
 		colorPicker.addListener(new ColorListener() {
 			@Override
 			public void colorChanged(ColorEvent event) {

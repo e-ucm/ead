@@ -71,7 +71,8 @@ public class BrushStrokesPickerTest extends UITest {
 
 		container.add(size);
 
-		final BrushStrokesPicker contextMenu = new BrushStrokesPicker(skin);
+		final BrushStrokesPicker contextMenu = new BrushStrokesPicker(skin,
+				controller.getPreferences());
 		contextMenu.addListener(new SizeListener() {
 			@Override
 			public void sizeChanged(SizeEvent event) {
