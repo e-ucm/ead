@@ -93,12 +93,74 @@ public class FramesComponentTest {
 	}
 
 	@Test
+	public void testNestedFrames() {
+		FramesComponent level2A = new FramesComponent();
+		level2A.setSequence(new LinearSequence());
+		float leafDuration = 0.1F;
+		int level2AFrames = 3;
+		for (int i = 1; i <= level2AFrames; i++) {
+			level2A.addFrame(new MockRendererComponent(), leafDuration);
+		}
+
+		FramesComponent level2B = new FramesComponent();
+		level2B.setSequence(new LinearSequence());
+		int level2BFrames = 7;
+		for (int i = 1; i <= level2BFrames; i++) {
+			level2B.addFrame(new MockRendererComponent(), leafDuration);
+		}
+
+		FramesComponent level2C = new FramesComponent();
+		level2C.setSequence(new LinearSequence());
+		int level2CFrames = 7;
+		for (int i = 1; i <= level2CFrames; i++) {
+			level2C.addFrame(new MockRendererComponent(), leafDuration);
+		}
+
+		FramesComponent level1 = new FramesComponent();
+		level1.setSequence(new LinearSequence());
+		level1.addFrame(level2A, leafDuration * level2AFrames);
+		level1.addFrame(level2B, leafDuration * level2BFrames);
+		level1.addFrame(level2C, leafDuration * level2CFrames);
+
+		float actStep = leafDuration / 2.0F;
+
+		nestedFramesStep(actStep, level1, 0, level2A, 0, level2B, 0, level2C, 0);
+		for (int i = 1; i < level2AFrames * 2 - 1; i++) {
+			nestedFramesStep(actStep, level1, 0, level2A, (i + 1) / 2, level2B,
+					0, level2C, 0);
+		}
+		for (int i = 0; i < level2BFrames * 2; i++) {
+			nestedFramesStep(actStep, level1, 1, level2A, 0, level2B, i / 2,
+					level2C, 0);
+		}
+		for (int i = 0; i < level2CFrames * 2; i++) {
+			nestedFramesStep(actStep, level1, 2, level2A, 0, level2B, 0,
+					level2C, i / 2);
+		}
+	}
+
+	private void nestedFramesStep(float delta, FramesComponent level1,
+			int expectedLevel1Index, FramesComponent level2A,
+			int expectedLevel2AIndex, FramesComponent level2B,
+			int expectedLevel2BIndex, FramesComponent level2C,
+			int expectedLevel2CIndex) {
+		level1.act(delta);
+		assertEquals("First level FramesComponent not updated correctly",
+				expectedLevel1Index, level1.getCurrentFrameIndex());
+		assertEquals("Second level (A) FramesComponent not updated correctly",
+				expectedLevel2AIndex, level2A.getCurrentFrameIndex());
+		assertEquals("Second level (B) FramesComponent not updated correctly",
+				expectedLevel2BIndex, level2B.getCurrentFrameIndex());
+		assertEquals("Second level (C) FramesComponent not updated correctly",
+				expectedLevel2CIndex, level2C.getCurrentFrameIndex());
+	}
+
+	@Test
 	public void testZeroFramesDuration() {
 		FramesComponent frames = new FramesComponent();
 		for (int i = 0; i < 10; i++) {
 			frames.addFrame(new MockRendererComponent(), 0);
 		}
-		frames.setSequence(new LinearSequence());
 		frames.act(10);
 	}
 

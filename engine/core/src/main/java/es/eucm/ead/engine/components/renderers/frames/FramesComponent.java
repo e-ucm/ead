@@ -190,6 +190,7 @@ public class FramesComponent extends RendererComponent implements Poolable {
 
 		public void act(float delta) {
 			elapsedTime += delta;
+			renderer.act(delta);
 		}
 
 		public void setDuration(float duration) {
