@@ -73,14 +73,16 @@ public class PlanesDemo extends EditorDemoBuilder {
 	@Override
 	protected void doBuild() {
 		// Build game with one scene with background image
-		ModelEntity firstScene = singleSceneGame(assets[0]).getLastScene();
+		ModelEntity firstScene = singleSceneGame(assets[0]).centerOrigin()
+				.getLastScene();
+
 		// Add parallax to background
 		parallax(firstScene.getChildren().get(0), 0F);
 		// Create up and down rocks
 		entity(firstScene, assets[1], VerticalAlign.DOWN, HorizontalAlign.LEFT)
-				.parallax(0.5f);
+				.centerOrigin().parallax(0.5f);
 		entity(firstScene, assets[2], VerticalAlign.UP, HorizontalAlign.LEFT)
-				.parallax(0.5f);
+				.centerOrigin().parallax(0.5f);
 
 		/*
 		 * Add init behavior to the scene with two effects: 1) Register var that
@@ -96,6 +98,7 @@ public class PlanesDemo extends EditorDemoBuilder {
 
 		// Create the star (chases the tracked plane)
 		entity(firstScene, assets[3], 20, 400).tags("star");
+		centerOrigin();
 	}
 
 	@Override
@@ -220,6 +223,8 @@ public class PlanesDemo extends EditorDemoBuilder {
 		reusableEntity(uri, "images/planeRed1.png".replace("Red", color), -100,
 				0).frame("images/planeRed2.png".replace("Red", color), 0.2F)
 				.frame("images/planeRed3.png".replace("Red", color), 0.2F);
+
+		centerOrigin();
 
 		touchBehavior().changeVar(chasedPlaneVar, "$" + VarsContext.THIS_VAR)
 				.addComponent(makeEntitiesWithTagExp("star"),

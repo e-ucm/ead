@@ -593,33 +593,24 @@ public abstract class RepoLibraryBuilder extends EditorDemoBuilder {
 	public RepoLibraryBuilder adjustEntity(ModelEntity parent) {
 		// /////// Entity adjustments
 		// Calculate current dimension
-		Dimension actualDim = null;
-		for (ModelComponent component : parent.getComponents()) {
-			if (component instanceof Renderer) {
-				actualDim = getRendererDimension((Renderer) component);
-				break;
-			}
-		}
+		Dimension actualDim = adjustOrigin(parent);
 
-		if (actualDim == null || actualDim.getWidth() == 0
-				|| actualDim.getHeight() == 0) {
-			return this;
-		}
+		float actualHeight = 0;
+		float actualWidth = 0;
+		if (actualDim != null) {
+			actualHeight = actualDim.getHeight();
+			actualWidth = actualDim.getWidth();
 
-		float actualHeight = actualDim.getHeight();
-		float actualWidth = actualDim.getWidth();
-
-		for (ModelComponent component : parent.getComponents()) {
-			if (component instanceof RepoElement) {
-				((RepoElement) component).setWidth(actualWidth);
-				((RepoElement) component).setHeight(actualHeight);
-				break;
+			for (ModelComponent component : parent.getComponents()) {
+				if (component instanceof RepoElement) {
+					((RepoElement) component).setWidth(actualWidth);
+					((RepoElement) component).setHeight(actualHeight);
+					break;
+				}
 			}
 		}
 
 		// Center origin
-		parent.setOriginX(actualWidth / 2.0F);
-		parent.setOriginY(actualHeight / 2.0F);
 
 		// Update scale in case there is a max width or max height declared
 		float sy = 1.0F, sx = 1.0F;
