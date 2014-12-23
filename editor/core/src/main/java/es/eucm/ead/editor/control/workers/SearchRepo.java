@@ -145,8 +145,23 @@ public class SearchRepo extends RepoWorker {
 						thumbnailURL, byte[].class);
 
 				Pixmap pixmap = new Pixmap(httpResponse, 0, httpResponse.length);
-
 				if (pixmap != null) {
+					/*
+					 * Check height/width ratio to see if the thumbnail is
+					 * considerably taller than wide. If so, it is likely to be
+					 * a character, so better clip the pixmap square using the
+					 * upper part to ensure face is displayed
+					 */
+					int width = pixmap.getWidth();
+					int height = pixmap.getHeight();
+					float ratio = (height + 0.0F) / (width + 0.0F);
+					if (ratio >= 1.5F) {
+						Pixmap trimmedPixmap = new Pixmap(width, width,
+								pixmap.getFormat());
+						trimmedPixmap.drawPixmap(pixmap, 0, 0);
+						pixmap.dispose();
+						pixmap = trimmedPixmap;
+					}
 					result(elem, pixmap);
 				}
 			} catch (Exception e) {
