@@ -131,14 +131,14 @@
             "items":{
                 "type":"number"
             },
-            "description":"List with the width of the thumbnails. Should be filled in by the backend when building the response."
+            "description":"List with the width of the thumbnails. Deprecated since thumbnail names follow pattern widthXheight.png"
         },
         "thumbnailHeightList":{
             "type":"array",
             "items":{
                 "type":"number"
             },
-            "description":"List with the height of the thumbnails. Should be filled in by the backend when building the response."
+            "description":"List with the height of the thumbnails. Deprecated since thumbnail names follow pattern widthXheight.png"
         }
 
     },
