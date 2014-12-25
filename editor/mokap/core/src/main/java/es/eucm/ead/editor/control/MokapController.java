@@ -59,9 +59,6 @@ import es.eucm.ead.engine.EngineInitializer;
 
 public class MokapController extends Controller {
 
-	public static final String EXPORT_EXTENSION = ".zip";
-
-	private static final float LOADING_TIME = 1.0f;
 	private Image loadingImage;
 
 	public static enum Dpi {
