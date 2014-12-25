@@ -71,7 +71,7 @@ public class LabelTextEditor extends TextEditor implements
 	private es.eucm.ead.schema.components.controls.Label modelLabel;
 
 	public LabelTextEditor(final Skin skin, Controller c) {
-		super(skin, c.getApplicationAssets().getI18N());
+		super(skin, c.getApplicationAssets().getI18N(), c.getPreferences());
 
 		this.controller = c;
 		this.editorGameAssets = c.getEditorGameAssets();

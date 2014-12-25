@@ -392,7 +392,8 @@ public class GroupEditorToolbar extends MultiWidget implements ModelView {
 
 	private Actor buildBrushStrokesColorPicker(Skin skin, final Image pickerIcon) {
 		pickerIcon.setOrigin(Align.center);
-		BrushStrokesPicker colorPickerPanel = new BrushStrokesPicker(skin);
+		BrushStrokesPicker colorPickerPanel = new BrushStrokesPicker(skin,
+				controller.getPreferences());
 		colorPickerPanel.pack();
 		colorPickerPanel.setOriginY(colorPickerPanel.getHeight());
 		colorPickerPanel.addListener(new ColorListener() {

@@ -412,6 +412,10 @@ public class SlideColorPicker extends AbstractWidget {
 		this.sliderSpace = WidgetBuilder.dpToPixels(space);
 	}
 
+	public float[] HSBtoRGB(float hue, float saturation, float brightness) {
+		return HSBtoRGB(hue, saturation, brightness, tempValues);
+	}
+
 	/**
 	 * Converts the components of a color, as specified by the HSB model, to an
 	 * equivalent set of values for the default RGB model.

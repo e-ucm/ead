@@ -75,6 +75,8 @@ public class Q {
 
 	private static Controller controller;
 
+	private static final Color color = new Color();
+
 	private static I18N i18N;
 
 	public static void setController(Controller controller) {
@@ -360,7 +362,6 @@ public class Q {
 	}
 
 	public static Color toLibgdxColor(es.eucm.ead.schema.data.Color modelColor) {
-		Color color = new Color();
 		color.a = modelColor.getA();
 		color.r = modelColor.getR();
 		color.g = modelColor.getG();

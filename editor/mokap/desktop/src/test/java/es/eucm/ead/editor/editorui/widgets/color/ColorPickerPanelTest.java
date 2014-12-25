@@ -63,7 +63,9 @@ public class ColorPickerPanelTest extends UITest {
 		container.add(iconButton);
 		container.addSpace();
 
-		final ColorPickerPanel contextMenu = new ColorPickerPanel(skin);
+		final ColorPickerPanel contextMenu = new ColorPickerPanel(skin,
+				controller.getPreferences());
+		contextMenu.completeRowsIfPossible(container);
 		contextMenu.pack();
 
 		iconButton.addListener(new ClickListener() {

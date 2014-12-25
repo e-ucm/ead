@@ -47,7 +47,9 @@ import com.badlogic.gdx.scenes.scene2d.ui.WidgetGroup;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.scenes.scene2d.utils.Drawable;
 import com.badlogic.gdx.utils.Array;
+import com.badlogic.gdx.utils.SnapshotArray;
 
+import es.eucm.ead.editor.control.Preferences;
 import es.eucm.ead.editor.view.widgets.IconButton;
 import es.eucm.ead.editor.view.widgets.draw.SlideColorPicker.SlideColorPickerStyle;
 
@@ -81,28 +83,29 @@ public class ColorPickerPanel extends Table {
 
 	private ColorPickerPanelStyle style;
 
-	private int rows;
+	private Preferences prefs;
 
-	public ColorPickerPanel(Skin skin) {
-		this(skin, skin.get(ColorPickerPanelStyle.class));
+	public ColorPickerPanel(Skin skin, Preferences prefs) {
+		this(skin, skin.get(ColorPickerPanelStyle.class), prefs);
 	}
 
-	public ColorPickerPanel(Skin skin, String styleName) {
-		this(skin, skin.get(styleName, ColorPickerPanelStyle.class));
+	public ColorPickerPanel(Skin skin, String styleName, Preferences prefs) {
+		this(skin, skin.get(styleName, ColorPickerPanelStyle.class), prefs);
 	}
 
 	public ColorPickerPanel(Skin skin,
-			ColorPickerPanelStyle colorPickerPanelStyle) {
+			ColorPickerPanelStyle colorPickerPanelStyle, Preferences prefs) {
 		setBackground(colorPickerPanelStyle.background);
+		this.prefs = prefs;
 		this.skin = skin;
 		this.style = colorPickerPanelStyle;
 
+		picker = new SlideColorPicker(colorPickerPanelStyle);
 		colors = new Table();
 		for (int i = 0; i < DEFAULT_ROWS; ++i) {
 			addColorRow();
 		}
 		colors.addListener(colorClicked);
-		picker = new SlideColorPicker(colorPickerPanelStyle);
 
 		add(colors);
 		row();
@@ -122,6 +125,12 @@ public class ColorPickerPanel extends Table {
 				public void setChecked(boolean isChecked) {
 				}
 
+				@Override
+				public void setColor(float r, float g, float b, float a) {
+					super.setColor(r, g, b, a);
+					getIcon().setColor(r, g, b, a);
+				}
+
 				public void setColor(Color color) {
 					super.setColor(color);
 					getIcon().setColor(color);
@@ -132,7 +141,6 @@ public class ColorPickerPanel extends Table {
 			colors.add(image);
 		}
 		colors.row();
-		rows++;
 
 		colors.addListener(colorClicked);
 	}
@@ -143,17 +151,41 @@ public class ColorPickerPanel extends Table {
 
 	public void completeRowsIfPossible(WidgetGroup reference) {
 		reference.layout();
-		IconButton image = new IconButton(style.recentColorIcon, skin,
-				style.recentColorStyle);
+		IconButton image = (IconButton) colors.getChildren().first();
 
 		int rowsToAdd = Math.min(
 				(int) Math.floor((Gdx.graphics.getHeight() - reference
 						.getPrefHeight()) / image.getPrefHeight()), style.rows
-						- rows);
+						- colors.getRows());
 
 		for (int i = 0; i < rowsToAdd; i++) {
 			addColorRow();
 		}
+
+		SnapshotArray<Actor> children = colors.getChildren();
+		for (int i = 0, n = children.size; i < n; ++i) {
+			Actor actor = children.get(i);
+
+			int intCol = prefs.getInteger(Preferences.PREF_COLOR + i, -1);
+			if (intCol == -1) {
+				float[] rgb = picker.HSBtoRGB(i / (float) n, 1, 1);
+				actor.setColor(rgb[0], rgb[1], rgb[2], 1f);
+			} else {
+				Color.rgba8888ToColor(actor.getColor(), intCol);
+				actor.setColor(actor.getColor());
+			}
+		}
+	}
+
+	private void savePrefColors() {
+		SnapshotArray<Actor> children = colors.getChildren();
+		for (int i = 0, n = children.size; i < n; ++i) {
+			Actor actor = children.get(i);
+
+			prefs.putInteger(Preferences.PREF_COLOR + i,
+					Color.rgba8888(actor.getColor()));
+		}
+		prefs.flush();
 	}
 
 	public void initResources() {
@@ -182,6 +214,7 @@ public class ColorPickerPanel extends Table {
 			colors.getCells().first().getActor()
 					.setColor(picker.getPickedColor());
 		}
+		savePrefColors();
 	}
 
 	private boolean hasPickedColor() {
