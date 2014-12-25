@@ -48,6 +48,8 @@ import es.eucm.ead.editor.control.Controller;
 import es.eucm.ead.editor.control.MokapController;
 import es.eucm.ead.editor.control.actions.editor.OpenApplication;
 import es.eucm.ead.editor.control.actions.editor.Save;
+import es.eucm.ead.editor.model.Model;
+import es.eucm.ead.editor.model.events.LoadEvent;
 import es.eucm.ead.editor.platform.Platform;
 import es.eucm.ead.editor.view.SkinConstants;
 
@@ -66,13 +68,14 @@ public class MokapApplicationListener extends EditorApplicationListener {
 	@Override
 	public void create() {
 		Gdx.graphics.setContinuousRendering(false);
-		Timer.schedule(saveTask, 20, 20);
 		super.create();
 	}
 
 	@Override
 	protected void initialize() {
 		super.initialize();
+		controller.getModel().addLoadListener(
+				new UpdateSaveTaskAfterLoadUnload());
 		controller.action(OpenApplication.class);
 		stage.setActionsRequestRendering(true);
 		if (platform.isDebug()) {
@@ -158,6 +161,23 @@ public class MokapApplicationListener extends EditorApplicationListener {
 		public void run() {
 			Gdx.app.postRunnable(runnable);
 			Gdx.graphics.requestRendering();
+		}
+	}
+
+	/**
+	 * Make sure SaveTask is canceled when a game is unloaded, and resumed when
+	 * it a new one is loaded
+	 */
+	public class UpdateSaveTaskAfterLoadUnload implements
+			Model.ModelListener<LoadEvent> {
+		public void modelChanged(LoadEvent event) {
+			if (event.getType() == LoadEvent.Type.LOADED
+					&& !saveTask.isScheduled()) {
+				Timer.schedule(saveTask, 20, 20);
+			} else if (event.getType() == LoadEvent.Type.UNLOADED
+					&& saveTask.isScheduled()) {
+				saveTask.cancel();
+			}
 		}
 	}
 }
