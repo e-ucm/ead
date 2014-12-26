@@ -58,7 +58,7 @@ import es.eucm.ead.schema.editor.components.repo.response.SearchResponse;
 
 public class SearchRepoTest extends WorkerTest implements WorkerListener {
 
-	private static String URL = "";
+	private static String url = "";
 	private static final String TEXT_STRING = "text";
 	private static final int ELEMS = 10;
 
@@ -94,9 +94,9 @@ public class SearchRepoTest extends WorkerTest implements WorkerListener {
 		SearchRequest searchRequest = new SearchRequest();
 		searchRequest.setQ(TEXT_STRING);
 
-		URL = new RepoRequestFactory(controller.getReleaseInfo())
+		url = new RepoRequestFactory(controller.getReleaseInfo())
 				.buildRequestURL(searchRequest);
-		platform.putHttpResponse(URL, json);
+		platform.putHttpResponse(url, json);
 	}
 
 	@Override
