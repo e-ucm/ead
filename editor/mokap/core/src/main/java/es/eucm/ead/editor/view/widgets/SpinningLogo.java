@@ -54,30 +54,30 @@ import es.eucm.ead.editor.view.SkinConstants;
  */
 public class SpinningLogo extends Image {
 
-	private LoadingAnimation loadingAnimation;
+	private SpinningAnimation spinningAnimation;
 
 	public SpinningLogo(Skin skin) {
 		setTouchable(Touchable.disabled);
-		loadingAnimation = new LoadingAnimation(skin);
+		spinningAnimation = new SpinningAnimation(skin);
 	}
 
 	public void reset() {
-		loadingAnimation.resetAnimation();
+		spinningAnimation.resetAnimation();
 		clearActions();
-		addAction(loadingAnimation);
+		addAction(spinningAnimation);
 	}
 
 	/*
 	 * Inner class that controls the animation. Is responsible for updating the
 	 * current frame according to the timing.
 	 */
-	private class LoadingAnimation extends Action {
+	private class SpinningAnimation extends Action {
 
 		// Total amount of frames. This number should be as high as resources
 		// matching the pattern logo_spinning_XXa.png are in assets
 		public static final int N_FRAMES = 30;
 
-		public static final float FRAME_DURATION = 0.05F;
+		public static final float DEFAULT_FRAME_DURATION = 0.025F;
 
 		protected Array<Drawable> frames;
 
@@ -86,7 +86,7 @@ public class SpinningLogo extends Image {
 		private int currentFrameIndex;
 		private Drawable currentFrame;
 
-		private LoadingAnimation(Skin skin) {
+		private SpinningAnimation(Skin skin) {
 			initFrames(skin);
 			resetAnimation();
 		}
@@ -103,7 +103,7 @@ public class SpinningLogo extends Image {
 		public boolean act(float delta) {
 			while (delta > 0 && currentFrame != null) {
 				elapsedTime += delta;
-				delta = elapsedTime - FRAME_DURATION;
+				delta = elapsedTime - DEFAULT_FRAME_DURATION;
 				if (delta >= 0) {
 					elapsedTime = 0;
 					updateCurrentFrame((currentFrameIndex + 1) % frames.size);
