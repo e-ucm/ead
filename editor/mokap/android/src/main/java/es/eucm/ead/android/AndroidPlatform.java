@@ -132,91 +132,71 @@ public class AndroidPlatform extends MokapPlatform {
 	}
 
 	@Override
-	public void askForFile(final FileChooserListener listener) {
-
-		final EditorActivity activity = (EditorActivity) Gdx.app;
-		final Intent intent = new Intent(Intent.ACTION_PICK,
+	public void askForFile(FileChooserListener listener) {
+		String pathColumn = MediaStore.Images.Media.DATA;
+		Intent intent = new Intent(Intent.ACTION_PICK,
 				android.provider.MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
-		if (intent.resolveActivity(activity.getPackageManager()) != null) {
-			activity.startActivityForResult(intent, PICK_FILE,
-					new ActivityResultListener() {
-
-						@Override
-						public void result(int resultCode, final Intent data) {
-							if (resultCode == EditorActivity.RESULT_OK) {
-								if (data != null) {
-									final String path = getStringFromIntent(
-											activity, data,
-											MediaStore.Images.Media.DATA);
-									Gdx.app.postRunnable(new Runnable() {
-
-										@Override
-										public void run() {
-											if (path != null) {
-												FileHandle file = Gdx.files
-														.absolute(path);
-												if (file.exists()) {
-
-													listener.fileChosen(file
-															.file()
-															.getAbsolutePath());
-
-												} else {
-													listener.fileChosen(null);
-												}
-											} else {
-												listener.fileChosen(null);
-											}
-										}
-									});
-								}
-							}
-						}
-					});
-		}
+		selectFile(listener, null, pathColumn, intent);
 	}
 
 	@Override
-	public void askForAudio(final Controller controller,
-			final FileChooserListener listener) {
+	public void askForAudio(Controller controller, FileChooserListener listener) {
+		String pathColumn = MediaStore.Audio.Media.DATA;
 		I18N i18n = controller.getApplicationAssets().getI18N();
-		final EditorActivity activity = (EditorActivity) Gdx.app;
-		// final Intent intent = new Intent(Intent.ACTION_PICK,
-		// android.provider.MediaStore.Audio.Media.EXTERNAL_CONTENT_URI);
 		Intent intent = new Intent();
 		intent.setAction(Intent.ACTION_GET_CONTENT);
 		intent.setType("audio/*");
+		intent = Intent.createChooser(intent, i18n.m("edition.selectionAudio"));
+		selectFile(listener, i18n, pathColumn, intent);
+	}
+
+	private void selectFile(FileChooserListener listener, I18N i18n,
+			String pathColumn, Intent intent) {
+
+		EditorActivity activity = (EditorActivity) Gdx.app;
 		if (intent.resolveActivity(activity.getPackageManager()) != null) {
-			activity.startActivityForResult(
-					Intent.createChooser(intent,
-							i18n.m("edition.selectionAudio")), PICK_FILE,
-					new ActivityResultListener() {
-
-						@Override
-						public void result(int resultCode, final Intent data) {
-							if (resultCode == EditorActivity.RESULT_OK) {
-								if (data != null) {
-									Gdx.app.postRunnable(new Runnable() {
-
-										@Override
-										public void run() {
-											String path = getStringFromIntent(
-													controller, activity, data,
-													MediaStore.Audio.Media.DATA);
-											listener.fileChosen(path);
-										}
-									});
-								} else {
-									listener.fileChosen(null);
-								}
-							} else {
-								listener.fileChosen(null);
-							}
-						}
-					});
+			activity.startActivityForResult(intent, PICK_FILE,
+					new FileResultListener(listener, pathColumn, this));
 		} else {
 			listener.fileChosen(null);
 		}
+	}
+
+	private static class FileResultListener implements ActivityResultListener {
+
+		private AndroidPlatform androidPlatform;
+		private FileChooserListener listener;
+		private String pathColumn;
+
+		public FileResultListener(FileChooserListener listener,
+				String pathColumn, AndroidPlatform androidPlatform) {
+			this.listener = listener;
+			this.pathColumn = pathColumn;
+			this.androidPlatform = androidPlatform;
+		}
+
+		@Override
+		public void result(int resultCode, final Intent data) {
+			if (resultCode == EditorActivity.RESULT_OK) {
+				if (data != null) {
+					Gdx.app.postRunnable(new Runnable() {
+
+						@Override
+						public void run() {
+							EditorActivity activity = (EditorActivity) Gdx.app;
+							String path = androidPlatform.getStringFromIntent(
+									activity, data, pathColumn);
+							listener.fileChosen(path);
+						}
+					});
+				} else {
+					listener.fileChosen(null);
+				}
+			} else {
+				listener.fileChosen(null);
+			}
+		}
+
 	}
 
 	@Override
@@ -371,11 +351,6 @@ public class AndroidPlatform extends MokapPlatform {
 
 	private String getStringFromIntent(Context context, Intent data,
 			String pathColumn) {
-		return this.getStringFromIntent(null, context, data, pathColumn);
-	}
-
-	private String getStringFromIntent(Controller controller, Context context,
-			Intent data, String pathColumn) {
 		try {
 			Uri selectedImage = data.getData();
 			String[] filePathColumn = { pathColumn };
