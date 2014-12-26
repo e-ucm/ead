@@ -444,4 +444,41 @@ public class Q {
 		return Q.getComponent(controller.getModel().getGame(), GameData.class)
 				.getWidth();
 	}
+
+	/**
+	 * Builds a copy name from the given name, that is not present the passed
+	 * list.
+	 * 
+	 * @return null if name is null or the empty string.
+	 */
+	public static String buildCopyName(String name, Array<String> existingNames) {
+		if (name != null && !name.isEmpty()) {
+			String copySuffix = i18N.m("copy_suffix");
+
+			if (pattern == null) {
+				String regex = ".*\\(" + copySuffix + "\\s?(\\d*)\\)$";
+				pattern = Pattern.compile(regex);
+			}
+
+			String prefix;
+			int count;
+			Matcher matcher = pattern.matcher(name);
+			if (matcher.find()) {
+				int start = matcher.start(1);
+				String number = matcher.group(1);
+				count = number.isEmpty() ? 2 : (Integer.parseInt(number));
+				prefix = name.substring(0, start);
+			} else {
+				prefix = name + " (" + copySuffix + " ";
+				count = 1;
+			}
+
+			String copyName;
+			do {
+				copyName = prefix + count++ + ")";
+			} while (existingNames.contains(copyName, false));
+			return copyName;
+		}
+		return null;
+	}
 }
