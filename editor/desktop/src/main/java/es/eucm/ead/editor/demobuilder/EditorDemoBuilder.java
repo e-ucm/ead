@@ -52,10 +52,12 @@ import es.eucm.ead.engine.assets.GameAssets;
 import es.eucm.ead.engine.demobuilder.DemoBuilder;
 import es.eucm.ead.engine.utils.DesktopImageUtils;
 import es.eucm.ead.engine.utils.ZipUtils;
+import es.eucm.ead.schema.components.ModelComponent;
 import es.eucm.ead.schema.data.Dimension;
 import es.eucm.ead.schema.data.shape.Polygon;
+import es.eucm.ead.schema.editor.components.repo.RepoElement;
 import es.eucm.ead.schema.entities.ModelEntity;
-import es.eucm.ead.schema.renderers.Image;
+import es.eucm.ead.schema.renderers.*;
 
 import java.io.InputStream;
 import java.util.HashMap;
@@ -157,6 +159,34 @@ public abstract class EditorDemoBuilder extends DemoBuilder {
 		}
 	}
 
+	protected Dimension getRendererDimension(Renderer component) {
+		int width = 0, height = 0;
+		if (component instanceof Image) {
+			Image image = (Image) component;
+			Dimension dim = getImageDimension(image.getUri());
+			width = dim.getWidth();
+			height = dim.getHeight();
+		} else if (component instanceof Frames) {
+			Frames frames = (Frames) component;
+			for (Frame frame : frames.getFrames()) {
+				Dimension frameDim = getRendererDimension(frame.getRenderer());
+				width = Math.max(width, frameDim.getWidth());
+				height = Math.max(height, frameDim.getHeight());
+			}
+		} else if (component instanceof States) {
+			States states = (States) component;
+			for (State state : states.getStates()) {
+				Dimension stateDim = getRendererDimension(state.getRenderer());
+				width = Math.max(width, stateDim.getWidth());
+				height = Math.max(height, stateDim.getHeight());
+			}
+		}
+		Dimension dimension = new Dimension();
+		dimension.setWidth(width);
+		dimension.setHeight(height);
+		return dimension;
+	}
+
 	protected Dimension getImageDimension(String imageUri) {
 		Dimension dimension = new Dimension();
 		Vector2 size = new Vector2();
@@ -164,6 +194,32 @@ public abstract class EditorDemoBuilder extends DemoBuilder {
 		dimension.setWidth((int) size.x);
 		dimension.setHeight((int) size.y);
 		return dimension;
+	}
+
+	protected Dimension adjustOrigin(ModelEntity entity) {
+		// /////// Entity adjustments
+		// Calculate current dimension
+		Dimension actualDim = null;
+		for (ModelComponent component : entity.getComponents()) {
+			if (component instanceof Renderer) {
+				actualDim = getRendererDimension((Renderer) component);
+				break;
+			}
+		}
+
+		if (actualDim == null || actualDim.getWidth() == 0
+				|| actualDim.getHeight() == 0) {
+			return null;
+		}
+
+		float actualHeight = actualDim.getHeight();
+		float actualWidth = actualDim.getWidth();
+
+		// Center origin
+		entity.setOriginX(actualWidth / 2.0F);
+		entity.setOriginY(actualHeight / 2.0F);
+
+		return actualDim;
 	}
 
 	// ////////////////////////////////////////////////////
@@ -221,7 +277,7 @@ public abstract class EditorDemoBuilder extends DemoBuilder {
 				fh.parent().mkdirs();
 			}
 			Gdx.app.debug(LOG_TAG, "Saving to: " + fh.file().getAbsolutePath());
-			new Json().toJson(entry.getValue(), null, fh);
+			gameAssets.toJson(entry.getValue(), null, fh);
 		}
 	}
 
@@ -362,6 +418,30 @@ public abstract class EditorDemoBuilder extends DemoBuilder {
 		super.entity(parent, imageUri, verticalAlign, horizontalAlign,
 				(float) imageDim.getWidth(), (float) imageDim.getHeight());
 		return this;
+	}
+
+	/**
+	 * Calculates the width and height of the given {@code entity} and adjusts
+	 * its origin to be centered (width/2, height/2).
+	 * 
+	 * @param entity
+	 *            The entity whose origin is to be centered
+	 * @return This object, for chaining calls
+	 */
+	public EditorDemoBuilder centerOrigin(ModelEntity entity) {
+		adjustOrigin(entity);
+		return this;
+	}
+
+	/**
+	 * Calculates the width and height of the last entity added and adjusts its
+	 * origin to be centered (width/2, height/2). Equivalent to
+	 * {@code centerOrigin(getLastEntity())}
+	 * 
+	 * @return This object, for chaining calls
+	 */
+	public EditorDemoBuilder centerOrigin() {
+		return centerOrigin(getLastEntity());
 	}
 
 	@Override

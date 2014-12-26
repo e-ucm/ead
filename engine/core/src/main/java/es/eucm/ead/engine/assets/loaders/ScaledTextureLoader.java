@@ -83,7 +83,12 @@ public class ScaledTextureLoader
 	@Override
 	public Array<AssetDescriptor> getDependencies(String fileName,
 			FileHandle file, AssetLoaderParameters<ScaledTexture> parameter) {
-		FileHandle imageFile = file.sibling(file.nameWithoutExtension());
+		String imageName = fileName;
+		if (fileName.toLowerCase().endsWith(".tex")) {
+			imageName = fileName.substring(0, fileName.lastIndexOf("."));
+		}
+
+		FileHandle imageFile = gameAssets.resolve(imageName);
 		imageUtils.imageSize(imageFile, size);
 		if (imageUtils.validSize(size)) {
 			scale = 1.0f;

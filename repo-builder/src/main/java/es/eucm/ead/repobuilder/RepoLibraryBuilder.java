@@ -593,33 +593,24 @@ public abstract class RepoLibraryBuilder extends EditorDemoBuilder {
 	public RepoLibraryBuilder adjustEntity(ModelEntity parent) {
 		// /////// Entity adjustments
 		// Calculate current dimension
-		Dimension actualDim = null;
-		for (ModelComponent component : parent.getComponents()) {
-			if (component instanceof Renderer) {
-				actualDim = getRendererDimension((Renderer) component);
-				break;
-			}
-		}
+		Dimension actualDim = adjustOrigin(parent);
 
-		if (actualDim == null || actualDim.getWidth() == 0
-				|| actualDim.getHeight() == 0) {
-			return this;
-		}
+		float actualHeight = 0;
+		float actualWidth = 0;
+		if (actualDim != null) {
+			actualHeight = actualDim.getHeight();
+			actualWidth = actualDim.getWidth();
 
-		float actualHeight = actualDim.getHeight();
-		float actualWidth = actualDim.getWidth();
-
-		for (ModelComponent component : parent.getComponents()) {
-			if (component instanceof RepoElement) {
-				((RepoElement) component).setWidth(actualWidth);
-				((RepoElement) component).setHeight(actualHeight);
-				break;
+			for (ModelComponent component : parent.getComponents()) {
+				if (component instanceof RepoElement) {
+					((RepoElement) component).setWidth(actualWidth);
+					((RepoElement) component).setHeight(actualHeight);
+					break;
+				}
 			}
 		}
 
 		// Center origin
-		parent.setOriginX(actualWidth / 2.0F);
-		parent.setOriginY(actualHeight / 2.0F);
 
 		// Update scale in case there is a max width or max height declared
 		float sy = 1.0F, sx = 1.0F;
@@ -899,34 +890,6 @@ public abstract class RepoLibraryBuilder extends EditorDemoBuilder {
 			parsedTags.add(es);
 		}
 		return parsedTags;
-	}
-
-	private Dimension getRendererDimension(Renderer component) {
-		int width = 0, height = 0;
-		if (component instanceof Image) {
-			Image image = (Image) component;
-			Dimension dim = getImageDimension(image.getUri());
-			width = dim.getWidth();
-			height = dim.getHeight();
-		} else if (component instanceof Frames) {
-			Frames frames = (Frames) component;
-			for (Frame frame : frames.getFrames()) {
-				Dimension frameDim = getRendererDimension(frame.getRenderer());
-				width = Math.max(width, frameDim.getWidth());
-				height = Math.max(height, frameDim.getHeight());
-			}
-		} else if (component instanceof States) {
-			States states = (States) component;
-			for (State state : states.getStates()) {
-				Dimension stateDim = getRendererDimension(state.getRenderer());
-				width = Math.max(width, stateDim.getWidth());
-				height = Math.max(height, stateDim.getHeight());
-			}
-		}
-		Dimension dimension = new Dimension();
-		dimension.setWidth(width);
-		dimension.setHeight(height);
-		return dimension;
 	}
 
 	/*
