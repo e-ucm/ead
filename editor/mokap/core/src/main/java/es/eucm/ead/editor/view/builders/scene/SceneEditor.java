@@ -386,15 +386,14 @@ public class SceneEditor extends BaseView implements ModelView,
 	@Override
 	public void fileChosen(String path) {
 		if (path != null && !path.trim().isEmpty()) {
-			addElementAndChangeView(path);
+			addElement(path);
 		}
 	}
 
-	private void addElementAndChangeView(String elemPath) {
+	private void addElement(String elemPath) {
 		ModelEntity sceneElement = controller.getTemplates()
 				.createSceneElement(elemPath, false);
 		controller.action(AddSceneElement.class, sceneElement);
-		controller.action(ChangeView.class, SceneView.class);
 	}
 
 }

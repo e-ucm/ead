@@ -167,7 +167,7 @@ public class Templates {
 
 		EditorGameAssets assets = controller.getEditorGameAssets();
 		String newPath = assets.copyToProjectIfNeeded(imagePath, Texture.class);
-		final ModelEntity sceneElement = new ModelEntity();
+		ModelEntity sceneElement = new ModelEntity();
 		controller
 				.getPlatform()
 				.getImageUtils()
