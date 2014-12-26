@@ -72,7 +72,7 @@ public class Rename extends EditorAction implements TextInputListener {
 		if (modelEntity != null) {
 			I18N i18n = controller.getApplicationAssets().getI18N();
 			Gdx.input.getTextInput(this, i18n.m("change_title"),
-					Q.getTitle(modelEntity), "");
+					Q.getTitle(modelEntity, ""), "");
 		}
 	}
 

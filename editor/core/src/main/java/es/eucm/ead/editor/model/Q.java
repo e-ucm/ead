@@ -43,7 +43,6 @@ import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.reflect.ClassReflection;
 import com.badlogic.gdx.utils.reflect.ReflectionException;
-
 import es.eucm.ead.editor.control.Controller;
 import es.eucm.ead.engine.I18N;
 import es.eucm.ead.engine.assets.Assets.AssetLoadedCallback;
@@ -68,6 +67,9 @@ import es.eucm.ead.schema.editor.data.Cell;
 import es.eucm.ead.schema.entities.ModelEntity;
 import es.eucm.ead.schemax.ModelStructure;
 
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+
 /**
  * A class with statics methods to query parts of the model
  */
@@ -78,6 +80,8 @@ public class Q {
 	private static final Color color = new Color();
 
 	private static I18N i18N;
+
+	private static Pattern pattern;
 
 	public static void setController(Controller controller) {
 		Q.controller = controller;
@@ -138,19 +142,23 @@ public class Q {
 	}
 
 	/**
-	 * Returns the {@link Documentation#name} attribute of the model entity. If
-	 * not set or set to the empty string, the value in "untitled" i18n key is
-	 * returned
+	 * Returns the {@link Documentation#name} attribute of the model entity. Can
+	 * be null
 	 */
 	public static String getTitle(ModelEntity modelEntity) {
+		return getTitle(modelEntity, null);
+	}
+
+	/**
+	 * Returns the {@link Documentation#name} attribute of the model entity. If
+	 * null, default value is returned
+	 */
+	public static String getTitle(ModelEntity modelEntity, String defaultValue) {
 		if (modelEntity == null) {
-			return "";
+			return defaultValue;
 		}
-		Documentation documentation = getComponent(modelEntity,
-				Documentation.class);
-		return documentation.getName() == null
-				|| documentation.getName().isEmpty() ? i18N.m("untitled")
-				: documentation.getName();
+		String title = getComponent(modelEntity, Documentation.class).getName();
+		return title == null || title.isEmpty() ? defaultValue : title;
 	}
 
 	/**
