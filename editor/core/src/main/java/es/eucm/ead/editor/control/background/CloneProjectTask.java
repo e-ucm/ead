@@ -38,15 +38,14 @@ package es.eucm.ead.editor.control.background;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.files.FileHandle;
+import com.badlogic.gdx.utils.Array;
+
 import es.eucm.ead.editor.control.Controller;
 import es.eucm.ead.editor.model.Q;
 import es.eucm.ead.editor.utils.ProjectUtils;
 import es.eucm.ead.schema.editor.components.GameData;
 import es.eucm.ead.schema.entities.ModelEntity;
 import es.eucm.ead.schemax.ModelStructure;
-
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
 /**
  * Creates a sibling duplicate of a file/folder, and returns an array with: the
@@ -55,19 +54,21 @@ import java.util.regex.Pattern;
  */
 public class CloneProjectTask extends BackgroundTask<Object[]> {
 
-	private static Pattern pattern;
-
 	private Controller controller;
 
 	private String path;
+
+	private Array<String> projectNames;
 
 	/**
 	 * @param path
 	 *            an absolute path to the file/folder to duplicate
 	 */
-	public CloneProjectTask(Controller controller, String path) {
+	public CloneProjectTask(Controller controller, String path,
+			Array<String> projectNames) {
 		this.controller = controller;
 		this.path = path;
+		this.projectNames = projectNames;
 	}
 
 	@Override
@@ -81,29 +82,8 @@ public class CloneProjectTask extends BackgroundTask<Object[]> {
 		ModelEntity game = controller.getEditorGameAssets().fromJson(
 				ModelEntity.class, duplicate.child(ModelStructure.GAME_FILE));
 
-		String copySuffix = controller.getApplicationAssets().getI18N()
-				.m("copy_suffix");
-
-		if (pattern == null) {
-			String regex = ".*\\(" + copySuffix + "\\s?(\\d*)\\)$";
-			pattern = Pattern.compile(regex);
-		}
-
-		String newTitle = Q.getTitle(game);
-
-		Matcher matcher = pattern.matcher(newTitle);
-		if (matcher.find()) {
-			int start = matcher.start(1);
-			String number = matcher.group(1);
-			String count = number.isEmpty() ? " 2" : ""
-					+ (Integer.parseInt(number) + 1);
-			newTitle = newTitle.substring(0, start) + count + ")";
-		} else {
-			newTitle += " (" + copySuffix + ")";
-		}
-
+		String newTitle = Q.buildCopyName(Q.getTitle(game), projectNames);
 		Q.setTitle(game, newTitle);
-
 		String initialScene = Q.getComponent(game, GameData.class)
 				.getInitialScene();
 		controller.getEditorGameAssets().toJson(game, null,

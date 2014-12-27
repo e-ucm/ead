@@ -36,6 +36,8 @@
  */
 package es.eucm.ead.editor.control.actions.editor;
 
+import com.badlogic.gdx.utils.Array;
+
 import es.eucm.ead.editor.control.Selection;
 import es.eucm.ead.editor.control.actions.EditorAction;
 import es.eucm.ead.editor.control.background.BackgroundExecutor.BackgroundTaskListener;
@@ -50,23 +52,27 @@ import es.eucm.ead.editor.control.background.CloneProjectTask;
  * *
  * <dd><strong>args[0]</strong> <em>{@link BackgroundTaskListener}</em> Will be
  * notified with the path of the cloned project once it's finished cloning</dd>
- * <dd><strong>args[1]</strong> <em>String (optional)</em> path to the project
+ * <dd><strong>args[1]</strong> <em>Array</em> A list with the existing project
+ * names. It will be used to generate an unique name</dd>
+ * <dd><strong>args[2]</strong> <em>String (optional)</em> path to the project
  * to clone. If it is not set, it uses the path in {@link Selection#RESOURCE}</dd>
  * </dl>
  */
 public class CloneProject extends EditorAction {
 
 	public CloneProject() {
-		super(true, false, new Class[] { BackgroundTaskListener.class },
-				new Class[] { BackgroundTaskListener.class, String.class });
+		super(true, false, new Class[] { BackgroundTaskListener.class,
+				Array.class }, new Class[] { BackgroundTaskListener.class,
+				Array.class, String.class });
 	}
 
 	@Override
 	public void perform(Object... args) {
 		BackgroundTaskListener<Object[]> listener = (BackgroundTaskListener<Object[]>) args[0];
-		String path = (String) (args.length == 2 ? args[1] : controller
+		String path = (String) (args.length == 3 ? args[2] : controller
 				.getModel().getSelection().getSingle(Selection.RESOURCE));
 		controller.getBackgroundExecutor().submit(
-				new CloneProjectTask(controller, path), listener);
+				new CloneProjectTask(controller, path, (Array) args[1]),
+				listener);
 	}
 }

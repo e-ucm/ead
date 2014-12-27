@@ -136,7 +136,8 @@ public class ProjectView implements ViewBuilder, BackListener, FieldListener {
 	}
 
 	private void readTitle() {
-		title.setText(Q.getTitle(controller.getModel().getGame()));
+		title.setText(Q.getTitle(controller.getModel().getGame(), controller
+				.getApplicationAssets().getI18N().m("untitled")));
 	}
 
 	@Override

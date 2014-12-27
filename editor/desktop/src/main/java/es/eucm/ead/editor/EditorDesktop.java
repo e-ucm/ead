@@ -198,8 +198,9 @@ public class EditorDesktop extends EditorApplicationListener {
 					Documentation documentation = Q.getComponent(event
 							.getModel().getGame(), Documentation.class);
 					String title = Q.getTitle(event.getModel().getGame());
-					platform.setTitle(i18N.m("application.title", title,
-							controller.getEditorGameAssets().getLoadingPath()));
+					platform.setTitle(i18N.m("application.title",
+							title == null ? "" : title, controller
+									.getEditorGameAssets().getLoadingPath()));
 					event.getModel().addFieldListener(documentation,
 							titleListener);
 					break;

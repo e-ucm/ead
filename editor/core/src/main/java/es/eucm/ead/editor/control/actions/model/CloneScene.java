@@ -36,15 +36,15 @@
  */
 package es.eucm.ead.editor.control.actions.model;
 
+import com.badlogic.gdx.utils.Array;
+import com.badlogic.gdx.utils.Pools;
 import es.eucm.ead.editor.control.Selection;
 import es.eucm.ead.editor.control.actions.ModelAction;
 import es.eucm.ead.editor.control.commands.Command;
 import es.eucm.ead.editor.control.commands.ResourceCommand.AddResourceCommand;
 import es.eucm.ead.editor.model.Model;
 import es.eucm.ead.editor.model.Q;
-import es.eucm.ead.engine.I18N;
 import es.eucm.ead.schema.editor.components.Date;
-import es.eucm.ead.schema.editor.components.Documentation;
 import es.eucm.ead.schema.entities.ModelEntity;
 import es.eucm.ead.schemax.entities.ResourceCategory;
 
@@ -56,48 +56,31 @@ public class CloneScene extends ModelAction {
 
 	@Override
 	public Command perform(Object... args) {
-		I18N i18n = controller.getApplicationAssets().getI18N();
 		ModelEntity scene = (ModelEntity) controller.getModel().getSelection()
 				.getSingle(Selection.SCENE);
-
 		ModelEntity copy = controller.getEditorGameAssets().copy(scene);
-
-		String sceneName = Q.getComponent(scene, Documentation.class).getName();
-		if (sceneName == null) {
-			sceneName = "";
-		}
-		String sceneSuffix = " " + i18n.m("scene.copy").toLowerCase();
-
-		String name = sceneName;
-		int index = name.indexOf(sceneSuffix);
-		if (index == -1) {
-			name += sceneSuffix;
-		} else {
-			name = name.substring(0, index) + sceneSuffix;
-		}
-
-		int cont = 1;
 		Model model = controller.getModel();
-		for (Model.Resource res : model.getResources(ResourceCategory.SCENE)
-				.values()) {
-			String resName = Q.getComponent((ModelEntity) res.getObject(),
-					Documentation.class).getName();
-			if (resName != null && resName.startsWith(name)) {
-				++cont;
+		String sceneTitle = Q.getTitle(scene);
+
+		if (sceneTitle != null && !sceneTitle.isEmpty()) {
+			Array<String> titles = Pools.obtain(Array.class);
+			for (Model.Resource res : model
+					.getResources(ResourceCategory.SCENE).values()) {
+				String title = Q.getTitle((ModelEntity) res.getObject());
+				if (title != null && !title.isEmpty()) {
+					titles.add(title);
+				}
 			}
-		}
 
-		if (cont > 1) {
-			name += " " + cont;
+			Q.setTitle(copy, Q.buildCopyName(sceneTitle, titles));
+			titles.clear();
+			Pools.free(titles);
 		}
-
 		String sceneId = model.createId(ResourceCategory.SCENE);
-		Q.getComponent(copy, Documentation.class).setName(name);
 		Q.getComponent(copy, Date.class).setDate(
 				System.currentTimeMillis() + "");
 
 		return new AddResourceCommand(controller.getModel(), sceneId, copy,
 				ResourceCategory.SCENE);
 	}
-
 }

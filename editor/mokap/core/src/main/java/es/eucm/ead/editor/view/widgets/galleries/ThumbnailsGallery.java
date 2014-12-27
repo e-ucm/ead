@@ -125,8 +125,6 @@ public abstract class ThumbnailsGallery extends AbstractWidget implements
 		pendingTextures.put(thumbnailPath, thumbnail);
 		loadThumbnail(thumbnailPath);
 		image.setName(thumbnailPath);
-
-		title = title == null || "".equals(title) ? i18N.m("untitled") : title;
 		Tile tile = WidgetBuilder.tile(image, title);
 		tile.setName(id);
 		prepareGalleryItem(tile, id);

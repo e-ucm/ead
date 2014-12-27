@@ -39,6 +39,7 @@ package es.eucm.ead.editor.view.widgets.galleries;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.ui.Button;
+import com.badlogic.gdx.utils.Array;
 
 import es.eucm.ead.editor.control.Controller;
 import es.eucm.ead.editor.control.Selection;
@@ -78,6 +79,8 @@ public class ProjectsGallery extends ContextMenuGallery implements
 
 	private ProjectListener projectListener = new ProjectListener();
 
+	private final Array<String> projectNames = new Array<String>();
+
 	public ProjectsGallery(float rows, int columns, Controller c) {
 		super(rows, columns, c.getApplicationAssets(), c,
 				SkinConstants.IC_ADD_MOKAP);
@@ -88,7 +91,7 @@ public class ProjectsGallery extends ContextMenuGallery implements
 
 		Button clone = WidgetBuilder.button(SkinConstants.IC_CLONE,
 				i18N.m("clone"), SkinConstants.STYLE_CONTEXT,
-				CloneProject.class, this);
+				CloneProject.class, this, projectNames);
 
 		Button delete = WidgetBuilder.button(SkinConstants.IC_DELETE,
 				i18N.m("delete"), SkinConstants.STYLE_CONTEXT);
@@ -104,6 +107,12 @@ public class ProjectsGallery extends ContextMenuGallery implements
 										.m("project.deleted"), time } });
 
 		setContextMenu(edit, clone, delete);
+	}
+
+	@Override
+	public Cell addTile(String id, String title, String thumbnailPath) {
+		projectNames.add(title);
+		return super.addTile(id, title, thumbnailPath);
 	}
 
 	@Override
@@ -204,6 +213,17 @@ public class ProjectsGallery extends ContextMenuGallery implements
 								GameData.class).getInitialScene()));
 	}
 
+	private void removeProject(String id) {
+		ModelEntity game = controller.getEditorGameAssets().fromJson(
+				ModelEntity.class,
+				Gdx.files.absolute(id).child(ModelStructure.GAME_FILE));
+		projectNames.removeValue(Q.getTitle(game), false);
+		Actor actor = findActor(id);
+		if (actor != null) {
+			actor.getParent().remove();
+		}
+	}
+
 	class ProjectListener implements ModelListener<ResourceEvent> {
 
 		@Override
@@ -214,10 +234,7 @@ public class ProjectsGallery extends ContextMenuGallery implements
 					addProject(event.getId());
 					break;
 				case REMOVED:
-					Actor actor = findActor(event.getId());
-					if (actor != null) {
-						actor.getParent().remove();
-					}
+					removeProject(event.getId());
 					break;
 				}
 			}

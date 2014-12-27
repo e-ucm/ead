@@ -107,7 +107,12 @@ public class Tile extends AbstractWidget {
 	}
 
 	public void setText(String text) {
-		label.setText(text);
+		if (text == null || text.isEmpty()) {
+			labelContainer.setVisible(false);
+		} else {
+			labelContainer.setVisible(true);
+			label.setText(text);
+		}
 	}
 
 	@Override
