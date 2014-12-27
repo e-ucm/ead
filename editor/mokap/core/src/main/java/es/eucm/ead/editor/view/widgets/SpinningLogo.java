@@ -54,9 +54,83 @@ import es.eucm.ead.editor.view.SkinConstants;
  */
 public class SpinningLogo extends Image {
 
+	/*
+	 * Convenience values to be passed as second argument in {@link
+	 * #SpinningLogo(Skin skin, float frameDuration, float size, float x, float
+	 * y)}
+	 */
+	public static final float FRAME_DURATION_FAST = 0.012F;
+	public static final float FRAME_DURATION_NORMAL = 0.025F;
+	public static final float FRAME_DURATION_SLOW = 0.05F;
+	public static final float FRAME_DURATION_VERYSLOW = 0.1F;
+	public static final float FRAME_DURATION_DEFAULT = FRAME_DURATION_NORMAL;
+
+	/*
+	 * Convenience values to be passed as third argument in {@link
+	 * #SpinningLogo(Skin skin, float frameDuration, float size, float x, float
+	 * y)}
+	 */
+	public static final float AUTO_SIZE = -1;
+
+	/*
+	 * Convenience values to be passed as fourth or fifth arguments in {@link
+	 * #SpinningLogo(Skin skin, float frameDuration, float size, float x, float
+	 * y)}
+	 */
+	public static final float DEFAULT_XY = 32;
+
 	private SpinningAnimation spinningAnimation;
 
+	// Init configuration
+	private float frameDuration;
+	private float x;
+	private float y;
+	private float size;
+
+	/**
+	 * Creates a default 'spinning logo' animation with the next settings:
+	 * <ul>
+	 * <li>Default frame duration ({@link #FRAME_DURATION_DEFAULT})</li>
+	 * <li>Auto size (will look small)</li>
+	 * <li>Location ({@value #DEFAULT_XY}DP,{@value #DEFAULT_XY}DP) on screen</li>
+	 * </ul>
+	 * 
+	 * @param skin
+	 */
 	public SpinningLogo(Skin skin) {
+		this(skin, FRAME_DURATION_DEFAULT, AUTO_SIZE, DEFAULT_XY, DEFAULT_XY);
+	}
+
+	/**
+	 * Creates a custom version of the 'spinning logo' animation.
+	 * 
+	 * @param skin
+	 *            Skin used to load drawables
+	 * @param frameDuration
+	 *            The time, in seconds, each frame is displayed on screen. The
+	 *            smaller this number is, the faster the logo spins. Convenience
+	 *            values are provided: {@link #FRAME_DURATION_NORMAL},
+	 *            {@link #FRAME_DURATION_FAST}, {@link #FRAME_DURATION_SLOW},
+	 *            {@link #FRAME_DURATION_VERYSLOW}
+	 * @param size
+	 *            The size, in density pixels, this widget should have. If
+	 *            {@link #AUTO_SIZE} is provided, then the widget will calculate
+	 *            its own size (small).
+	 * @param x
+	 *            The x position on screen, in density pixels. If
+	 *            {@link #DEFAULT_XY} is passed, then the logo will be placed
+	 *            {@value #DEFAULT_XY}DP to the left edge of the window.
+	 * @param y
+	 *            The y position on screen, in density pixels. If
+	 *            {@link #DEFAULT_XY} is passed, then the logo will be placed
+	 *            {@value #DEFAULT_XY}DP to the bottom edge of the window.
+	 */
+	public SpinningLogo(Skin skin, float frameDuration, float size, float x,
+			float y) {
+		this.frameDuration = frameDuration;
+		this.x = WidgetBuilder.dpToPixels(x);
+		this.y = WidgetBuilder.dpToPixels(y);
+		this.size = size;
 		setTouchable(Touchable.disabled);
 		spinningAnimation = new SpinningAnimation(skin);
 	}
@@ -76,8 +150,6 @@ public class SpinningLogo extends Image {
 		// Total amount of frames. This number should be as high as resources
 		// matching the pattern logo_spinning_XXa.png are in assets
 		public static final int N_FRAMES = 30;
-
-		public static final float DEFAULT_FRAME_DURATION = 0.025F;
 
 		protected Array<Drawable> frames;
 
@@ -103,7 +175,7 @@ public class SpinningLogo extends Image {
 		public boolean act(float delta) {
 			while (delta > 0 && currentFrame != null) {
 				elapsedTime += delta;
-				delta = elapsedTime - DEFAULT_FRAME_DURATION;
+				delta = elapsedTime - frameDuration;
 				if (delta >= 0) {
 					elapsedTime = 0;
 					updateCurrentFrame((currentFrameIndex + 1) % frames.size);
@@ -116,8 +188,15 @@ public class SpinningLogo extends Image {
 			currentFrameIndex = newIndex;
 			currentFrame = frames.get(currentFrameIndex);
 			SpinningLogo.this.setDrawable(currentFrame);
-			SpinningLogo.this.setSize(SpinningLogo.this.getPrefWidth(),
-					SpinningLogo.this.getPrefHeight());
+			if (size == AUTO_SIZE) {
+				SpinningLogo.this.setSize(SpinningLogo.this.getPrefWidth(),
+						SpinningLogo.this.getPrefHeight());
+			} else {
+				SpinningLogo.this
+						.setSize(
+								WidgetBuilder.dpToPixels(size),
+								WidgetBuilder.dpToPixels(size) * 0.99601593625498007968127490039841F);
+			}
 			SpinningLogo.this.setOrigin(
 					SpinningLogo.this.getPrefWidth() * 0.5f,
 					SpinningLogo.this.getPrefHeight() * 0.5f);
@@ -129,9 +208,11 @@ public class SpinningLogo extends Image {
 		// (resources end with an 'a' because otherwise the packer interprets
 		// the _number termination as a 9 patch or something.
 		private void initFrames(Skin skin) {
+			boolean large = size != AUTO_SIZE;
 			frames = new Array<Drawable>();
 			for (int i = 1; i <= N_FRAMES; i++) {
-				String drawableString = SkinConstants.DRAWABLE_LOGO_SPINNING
+				String drawableString = (large ? SkinConstants.DRAWABLE_LOGO_SPINNING_LARGE
+						: SkinConstants.DRAWABLE_LOGO_SPINNING)
 						+ (i < 10 ? "0" : "") + i + "a";
 				Drawable drawable = skin.getDrawable(drawableString);
 				frames.add(drawable);
