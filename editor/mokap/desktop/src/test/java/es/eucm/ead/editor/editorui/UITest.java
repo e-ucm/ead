@@ -94,6 +94,8 @@ public abstract class UITest implements ApplicationListener {
 
 	protected MokapDesktopPlatform platform;
 
+	protected Actor actor;
+
 	@Override
 	public void create() {
 		Gdx.app.setLogLevel(Application.LOG_DEBUG);
@@ -113,7 +115,7 @@ public abstract class UITest implements ApplicationListener {
 		platform.setBatch(stage.getBatch());
 		Gdx.input.setInputProcessor(stage);
 		ApplicationAssets assets = controller.getApplicationAssets();
-		Actor actor = buildUI(assets.getSkin(), assets.getI18N());
+		actor = buildUI(assets.getSkin(), assets.getI18N());
 		if (actor instanceof WidgetGroup) {
 			((WidgetGroup) actor).setFillParent(true);
 		}
