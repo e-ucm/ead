@@ -204,6 +204,21 @@ public class Model {
 	 * 
 	 * @return the Resource or {@code null} if it wasn't found.
 	 */
+	public Resource getResourceFromObject(Object object) {
+		for (ResourceCategory category : ResourceCategory.values()) {
+			Resource resource = getResourceFromObject(object, category);
+			if (resource != null) {
+				return resource;
+			}
+		}
+		return null;
+	}
+
+	/**
+	 * Returns the resource object with the given object in the given category.
+	 * 
+	 * @return the Resource or {@code null} if it wasn't found.
+	 */
 	public Resource getResourceFromObject(Object object,
 			ResourceCategory resourceCategory) {
 		Map<String, Resource> resources = getResources(resourceCategory);
@@ -212,7 +227,6 @@ public class Model {
 				return resource;
 			}
 		}
-		Gdx.app.error("Model", "No resource with object " + object);
 		return null;
 	}
 

@@ -38,9 +38,9 @@ package es.eucm.ead.editor.control.commands;
 
 import es.eucm.ead.editor.model.Model;
 import es.eucm.ead.editor.model.Model.Resource;
+import es.eucm.ead.editor.model.events.ModelEvent;
 import es.eucm.ead.editor.model.events.ResourceEvent;
 import es.eucm.ead.editor.model.events.ResourceEvent.Type;
-import es.eucm.ead.editor.model.events.ModelEvent;
 import es.eucm.ead.schema.entities.ModelEntity;
 import es.eucm.ead.schemax.entities.ResourceCategory;
 
@@ -106,7 +106,7 @@ public class ResourceCommand extends Command {
 
 	@Override
 	public boolean modifiesResource() {
-		return false;
+		return true;
 	}
 
 	@Override

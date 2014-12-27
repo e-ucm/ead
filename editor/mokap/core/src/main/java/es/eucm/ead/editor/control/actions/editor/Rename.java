@@ -41,6 +41,7 @@ import com.badlogic.gdx.Input.TextInputListener;
 
 import es.eucm.ead.editor.control.actions.EditorAction;
 import es.eucm.ead.editor.control.actions.model.generic.SetField;
+import es.eucm.ead.editor.model.Model.Resource;
 import es.eucm.ead.editor.model.Q;
 import es.eucm.ead.engine.I18N;
 import es.eucm.ead.schema.editor.components.Documentation;
@@ -61,6 +62,8 @@ public class Rename extends EditorAction implements TextInputListener {
 
 	private ModelEntity modelEntity;
 
+	private Resource resource;
+
 	public Rename() {
 		super(true, false, String.class);
 	}
@@ -69,8 +72,10 @@ public class Rename extends EditorAction implements TextInputListener {
 	public void perform(Object... args) {
 		modelEntity = (ModelEntity) controller.getModel().getSelection()
 				.getSingle((String) args[0]);
+		resource = null;
 		if (modelEntity != null) {
 			I18N i18n = controller.getApplicationAssets().getI18N();
+			resource = controller.getModel().getResourceFromObject(modelEntity);
 			Gdx.input.getTextInput(this, i18n.m("change_title"),
 					Q.getTitle(modelEntity), "");
 		}
@@ -80,6 +85,9 @@ public class Rename extends EditorAction implements TextInputListener {
 	public void input(String text) {
 		Documentation doc = Q.getComponent(modelEntity, Documentation.class);
 		controller.action(SetField.class, doc, FieldName.NAME, text);
+		if (resource != null) {
+			resource.setModified(true);
+		}
 		Gdx.graphics.requestRendering();
 	}
 
