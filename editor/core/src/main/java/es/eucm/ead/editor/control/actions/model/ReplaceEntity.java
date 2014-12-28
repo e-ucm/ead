@@ -42,33 +42,34 @@ import es.eucm.ead.editor.control.actions.ModelAction;
 import es.eucm.ead.editor.control.commands.CompositeCommand;
 import es.eucm.ead.editor.control.commands.ListCommand.AddToListCommand;
 import es.eucm.ead.editor.control.commands.ListCommand.RemoveFromListCommand;
-import es.eucm.ead.editor.model.Q;
-import es.eucm.ead.schema.editor.components.Parent;
 import es.eucm.ead.schema.entities.ModelEntity;
 
 /**
  * Replaces an {@link ModelEntity} with another.
  * <dl>
  * <dt><strong>Arguments</strong></dt>
- * <dd><strong>args[0]</strong> <em>{@link ModelEntity}</em> the entity to be
+ * <dd><strong>args[0]</strong> <em>{@link ModelEntity}</em> the parent of the
+ * entity to be replaced</dd>
+ * <dd><strong>args[1]</strong> <em>{@link ModelEntity}</em> the entity to be
  * replaced</dd>
- * <dd><strong>args[1]</strong> <em>{@link ModelEntity}</em> the entity that
+ * <dd><strong>args[2]</strong> <em>{@link ModelEntity}</em> the entity that
  * replaces the first one</dd>
  * </dl>
  */
 public class ReplaceEntity extends ModelAction {
 
 	public ReplaceEntity() {
-		super(true, false, ModelEntity.class, ModelEntity.class);
+		super(true, false, ModelEntity.class, ModelEntity.class,
+				ModelEntity.class);
 	}
 
 	@Override
 	public CompositeCommand perform(Object... args) {
 		CompositeCommand compositeCommand = new CompositeCommand();
-		ModelEntity current = (ModelEntity) args[0];
-		ModelEntity newEntity = (ModelEntity) args[1];
+		ModelEntity parent = (ModelEntity) args[0];
+		ModelEntity current = (ModelEntity) args[1];
+		ModelEntity newEntity = (ModelEntity) args[2];
 
-		ModelEntity parent = Q.getComponent(current, Parent.class).getParent();
 		Array<ModelEntity> children = parent.getChildren();
 		int indexOf = children.indexOf(current, true);
 		compositeCommand.addCommand(new RemoveFromListCommand(parent, children,
