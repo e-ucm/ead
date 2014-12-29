@@ -11,6 +11,11 @@
             "description":"Number provided by the backend that uniquely identifies each element. Should only filled by the backend."
         },
 
+        "thumbnailUrl":{
+            "type":"string",
+            "description":"Absolute url pointing to the thumbnail that better suits the client for this element. This information should be added at runtime by the backend, who knows how to retrieve binary files associated to a given element, taking into account the width and height provided by the client in the request, if present."
+        },
+
         "contentsUrl":{
             "type":"string",
             "description": "Absolute url pointing to the zip with the contents of the element. Should be filled in by the backend when building a response, who knows how to store and retrieve binary files for elements."
@@ -29,6 +34,7 @@
             "type":"string",
             "description":"URL associated to the author of the resource. Can be used for author recognition"
         },
+
         "publisher":{
             "type":"string",
             "description":"Organization that published the element (e.g. mokap, freepik, openclipart)"
@@ -108,39 +114,7 @@
                 "type":"string"
             },
             "description":"List with language codes (Strings) for the names defined in {@link #nameList}. "
-        },
-
-        "thumbnailPathList":{
-            "type":"array",
-            "items":{
-                "type":"string"
-            },
-            "description":"List with relative paths to the thumbnails this element has. Deprecated. Temporarily used for backwards-compatibility. {@link #thumbnailUrlList} should be used instead."
-        },
-
-        "thumbnailUrlList":{
-            "type":"array",
-            "items":{
-                "type":"string"
-            },
-            "description":"List with absolute urls pointing to the different versions of the thumbnails available for this element. This information should be added at runtime by the backend, who knows how to retrieve binary files associated to a given element."
-        },
-
-        "thumbnailWidthList":{
-            "type":"array",
-            "items":{
-                "type":"number"
-            },
-            "description":"List with the width of the thumbnails. Deprecated since thumbnail names follow pattern widthXheight.png"
-        },
-        "thumbnailHeightList":{
-            "type":"array",
-            "items":{
-                "type":"number"
-            },
-            "description":"List with the height of the thumbnails. Deprecated since thumbnail names follow pattern widthXheight.png"
         }
-
     },
     "type": "object",
     "description": "A simple editor component for elements that are meant to be shared and reused through the repository."
