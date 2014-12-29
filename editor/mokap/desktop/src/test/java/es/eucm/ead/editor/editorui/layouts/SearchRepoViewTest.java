@@ -82,7 +82,7 @@ public class SearchRepoViewTest extends UITest {
 			RepoElement elem = new RepoElement();
 			elem.getNameList().add("RepoElem " + i);
 			String currentThumbnail = i + ".png";
-			elem.getThumbnailUrlList().add(currentThumbnail);
+			elem.setThumbnailUrl(currentThumbnail);
 			repoElems.add(elem);
 			platform.putHttpResponse(currentThumbnail, bytes);
 			String contents = i + ".zip";

@@ -80,7 +80,7 @@ public class SearchRepoTest extends WorkerTest implements WorkerListener {
 		for (int i = 0; i < ELEMS; ++i) {
 			RepoElement elem = new RepoElement();
 			String currentThumbnail = i + ".png";
-			elem.getThumbnailUrlList().add(currentThumbnail);
+			elem.setThumbnailUrl(currentThumbnail);
 			repoElems.add(elem);
 			platform.putHttpResponse(currentThumbnail, bytes);
 		}
