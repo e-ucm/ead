@@ -132,6 +132,23 @@ public class Gallery extends ScrollPane {
 		}
 	}
 
+	/**
+	 * @return Preferred thumbnail width, in real pixels, calculated according
+	 *         to current number of columns in the grid and screen width
+	 */
+	public int getPreferredThumbnailWidth() {
+		return Math.round(grid.getColumnWidth());
+	}
+
+	/**
+	 * @return Preferred thumbnail height, in real pixels, calculated according
+	 *         to current number of rows in the grid and screen height
+	 */
+	public int getPreferredThumbnailHeight() {
+		float prefHeight = grid.getPrefRowHeight();
+		return Math.round(Math.max(prefHeight, grid.rowHeight(0, prefHeight)));
+	}
+
 	public static class Grid extends AbstractWidget {
 
 		private int columns;
@@ -145,9 +162,13 @@ public class Gallery extends ScrollPane {
 			this.rows = rows;
 		}
 
+		public float getColumnWidth() {
+			return (getWidth() - pad) / columns;
+		}
+
 		@Override
 		public void layout() {
-			float columnWidth = (getWidth() - pad) / columns;
+			float columnWidth = getColumnWidth();
 			float prefRowHeight = getPrefRowHeight();
 			float y = Math.max(getPrefHeight(), getHeight() - prefRowHeight)
 					- pad;
@@ -164,7 +185,7 @@ public class Gallery extends ScrollPane {
 			}
 		}
 
-		private float rowHeight(int fromIndex, float prefRowHeight) {
+		public float rowHeight(int fromIndex, float prefRowHeight) {
 			float currentRowHeight = 0;
 			for (int i = fromIndex; i < fromIndex + columns
 					&& i < getChildren().size; i++) {
@@ -180,7 +201,7 @@ public class Gallery extends ScrollPane {
 			return currentRowHeight;
 		}
 
-		private float getPrefRowHeight() {
+		public float getPrefRowHeight() {
 			return (getParent().getHeight() - pad) / rows;
 		}
 
