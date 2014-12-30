@@ -58,6 +58,7 @@ import android.net.Uri;
 import android.provider.MediaStore;
 import android.text.InputType;
 import android.widget.EditText;
+import android.widget.Toast;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input.TextInputListener;
@@ -85,14 +86,7 @@ public class AndroidPlatform extends MokapPlatform {
 
 	private enum Editor {
 
-		PIXLREXPRESS("Pixlr Express", "com.pixlr.express"), PHOTOEDITOR(
-				"Photo Editor", "com.iudesk.android.photo.editor",
-				"app.activity"), IMAGEEDITOR("Image Editor",
-				"com.pcvirt.ImageEditor");
-
-		private static Editor fromName(int idx) {
-			return values()[idx];
-		}
+		PIXLREXPRESS("Pixlr Express", "com.pixlr.express");
 
 		private final String name, packageName, editPackage;
 
@@ -111,18 +105,11 @@ public class AndroidPlatform extends MokapPlatform {
 
 	private Tracker tracker;
 
-	private final String[] names;
-
 	private ImageUtils imageUtils;
 
 	public AndroidPlatform(Context context, Tracker tracker) {
 		this.tracker = tracker;
 		this.context = context;
-
-		Editor[] values = Editor.values();
-		names = new String[values.length];
-		for (int i = 0; i < values.length; ++i)
-			names[i] = values[i].name;
 	}
 
 	@Override
@@ -162,78 +149,25 @@ public class AndroidPlatform extends MokapPlatform {
 		}
 	}
 
-	private static class FileResultListener implements ActivityResultListener {
-
-		private AndroidPlatform androidPlatform;
-		private FileChooserListener listener;
-		private String pathColumn;
-
-		public FileResultListener(FileChooserListener listener,
-				String pathColumn, AndroidPlatform androidPlatform) {
-			this.listener = listener;
-			this.pathColumn = pathColumn;
-			this.androidPlatform = androidPlatform;
-		}
-
-		@Override
-		public void result(int resultCode, final Intent data) {
-			if (resultCode == EditorActivity.RESULT_OK) {
-				if (data != null) {
-					Gdx.app.postRunnable(new Runnable() {
-
-						@Override
-						public void run() {
-							EditorActivity activity = (EditorActivity) Gdx.app;
-							String path = androidPlatform.getStringFromIntent(
-									activity, data, pathColumn);
-							listener.fileChosen(path);
-						}
-					});
-				} else {
-					listener.fileChosen(null);
-				}
-			} else {
-				listener.fileChosen(null);
-			}
-		}
-
+	@Override
+	public void editImage(I18N i18n, String imagePath,
+			FileChooserListener listener) {
+		Editor editor = Editor.PIXLREXPRESS;
+		checkPackageInstalledAndStart(editor, i18n, imagePath, listener);
 	}
 
-	@Override
-	public void editImage(final I18N i18n, final String image,
-			final FileChooserListener listener) {
+	private void checkPackageInstalledAndStart(Editor editor, final I18N i18n,
+			String imagePath, FileChooserListener listener) {
+
 		final EditorActivity activity = (EditorActivity) Gdx.app;
 
-		activity.handler.post(new Runnable() {
-
-			@Override
-			public void run() {
-				showItemsAlert(activity, i18n.m("edition.chooseEditor"), names,
-						new OnClickListener() {
-
-							@Override
-							public void onClick(DialogInterface diagIface,
-									int idx) {
-								Editor editor = Editor.fromName(idx);
-								checkPackageInstalledAndStart(activity,
-										editor.packageName, editor.editPackage,
-										i18n, image, listener);
-							}
-						});
-			}
-		});
-	}
-
-	private void checkPackageInstalledAndStart(final EditorActivity activity,
-			final String editorPackageName, final String editorEditPackage,
-			I18N i18n, String image, final FileChooserListener listener) {
-		if (isPackageInstalled(editorPackageName, activity)) {
+		if (isPackageInstalled(editor.packageName, activity)) {
 			// The user has the selected editor installed, so
 			// let's start the edition
 
-			Uri imageToEditUri = Uri.fromFile(Gdx.files.absolute(image).file());
-			final Intent editIntent = new Intent(Intent.ACTION_EDIT,
-					imageToEditUri);
+			Uri imageToEditUri = Uri.fromFile(Gdx.files.absolute(imagePath)
+					.file());
+			Intent editIntent = new Intent(Intent.ACTION_EDIT, imageToEditUri);
 
 			editIntent.setDataAndType(imageToEditUri, IMAGE_TO_EDIT_MIME_TYPE);
 
@@ -247,7 +181,7 @@ public class AndroidPlatform extends MokapPlatform {
 						app.activityInfo.applicationInfo.toString() + " "
 								+ app.activityInfo.name);
 
-				if ((app.activityInfo.name).contains(editorEditPackage)) {
+				if ((app.activityInfo.name).contains(editor.editPackage)) {
 					ActivityInfo editActivity = app.activityInfo;
 					ComponentName name = new ComponentName(
 							editActivity.applicationInfo.packageName,
@@ -257,65 +191,35 @@ public class AndroidPlatform extends MokapPlatform {
 					break;
 				}
 			}
-			if (activityList.isEmpty() || !componentFound) {
+			if (!componentFound) {
 				Gdx.app.log(PLATFORM_TAG,
 						"the Activity for the requested aplication was not found ");
+				listener.fileChosen(null);
 				return;
 			}
 
+			if (imagePath.endsWith(".png")) {
+				activity.post(new Runnable() {
+					@Override
+					public void run() {
+						Toast.makeText(activity, i18n.m("save.as.png"),
+								Toast.LENGTH_LONG).show();
+					}
+				});
+			}
+
 			activity.startActivityForResult(editIntent, EDIT_FILE,
-					new ActivityResultListener() {
-
-						@Override
-						public void result(int resultCode, final Intent data) {
-
-							if (resultCode == EditorActivity.RESULT_OK) {
-								Gdx.app.postRunnable(new Runnable() {
-									@Override
-									public void run() {
-										String picturePath = null;
-										if (data != null) {
-											picturePath = getStringFromIntent(
-													activity,
-													data,
-													MediaStore.Images.Media.DATA);
-										}
-										listener.fileChosen(picturePath);
-									}
-								});
-							}
-						}
-					});
+					new FileResultListener(listener,
+							MediaStore.Images.Media.DATA, this));
 		} else {
 			// The user doesn't have the selected editor
 			// installed, so let's ask him if he wants to install
 			// it
 
 			Gdx.app.log(PLATFORM_TAG,
-					"the user doesn't have any supported editors");
-			showMessageDialog(activity, i18n.m("edition.editorNotFound"),
-					i18n.m("edition.installEditor"), i18n.m("accept"),
-					i18n.m("cancel"), new OnClickListener() {
+					"the user doesn't have the editor intalled");
 
-						@Override
-						public void onClick(DialogInterface dialog, int which) {
-							try {
-								// This URI will start GooglePlay application
-								activity.startActivity(new Intent(
-										Intent.ACTION_VIEW, Uri
-												.parse("market://details?id="
-														+ editorPackageName)));
-							} catch (android.content.ActivityNotFoundException anfe) {
-								// If the user doesn't have Google Play
-								// application installed this will start the
-								// default browser
-								activity.startActivity(new Intent(
-										Intent.ACTION_VIEW,
-										Uri.parse("http://play.google.com/store/apps/details?id="
-												+ editorPackageName)));
-							}
-						}
-					});
+			activity.post(new AskForInstall(editor, i18n, this));
 		}
 	}
 
@@ -327,15 +231,6 @@ public class AndroidPlatform extends MokapPlatform {
 		} catch (NameNotFoundException e) {
 			return false;
 		}
-	}
-
-	private void showItemsAlert(EditorActivity activity, String text,
-			String[] items, DialogInterface.OnClickListener listener) {
-
-		AlertDialog.Builder builder = new AlertDialog.Builder(activity)
-				.setTitle(text).setItems(items, listener);
-
-		builder.create().show();
 	}
 
 	private void showMessageDialog(Context ctx, String title, String text,
@@ -566,5 +461,85 @@ public class AndroidPlatform extends MokapPlatform {
 	@Override
 	public ImageUtils getImageUtils() {
 		return imageUtils;
+	}
+
+	private static class FileResultListener implements ActivityResultListener {
+
+		private AndroidPlatform androidPlatform;
+		private FileChooserListener listener;
+		private String pathColumn;
+
+		public FileResultListener(FileChooserListener listener,
+				String pathColumn, AndroidPlatform androidPlatform) {
+			this.listener = listener;
+			this.pathColumn = pathColumn;
+			this.androidPlatform = androidPlatform;
+		}
+
+		@Override
+		public void result(int resultCode, final Intent data) {
+			if (resultCode == EditorActivity.RESULT_OK) {
+				if (data != null) {
+					Gdx.app.postRunnable(new Runnable() {
+
+						@Override
+						public void run() {
+							EditorActivity activity = (EditorActivity) Gdx.app;
+							String path = androidPlatform.getStringFromIntent(
+									activity, data, pathColumn);
+							listener.fileChosen(path);
+						}
+					});
+				} else {
+					listener.fileChosen(null);
+				}
+			} else {
+				listener.fileChosen(null);
+			}
+		}
+	}
+
+	private static class AskForInstall implements Runnable {
+
+		private I18N i18n;
+		private Editor editor;
+		private AndroidPlatform androidPlatform;
+
+		public AskForInstall(Editor editor, I18N i18n,
+				AndroidPlatform androidPlatform) {
+			this.androidPlatform = androidPlatform;
+			this.editor = editor;
+			this.i18n = i18n;
+		}
+
+		@Override
+		public void run() {
+			final EditorActivity activity = (EditorActivity) Gdx.app;
+			androidPlatform.showMessageDialog(activity, editor.name + " "
+					+ i18n.m("not.found").toLowerCase(), i18n.m("install.it"),
+					i18n.m("accept"), i18n.m("cancel"), new OnClickListener() {
+
+						@Override
+						public void onClick(DialogInterface dialog, int which) {
+							try {
+								// This URI will start GooglePlay
+								// application
+								activity.startActivity(new Intent(
+										Intent.ACTION_VIEW, Uri
+												.parse("market://details?id="
+														+ editor.packageName)));
+							} catch (android.content.ActivityNotFoundException anfe) {
+								// If the user doesn't have Google Play
+								// application installed this will start
+								// the
+								// default browser
+								activity.startActivity(new Intent(
+										Intent.ACTION_VIEW,
+										Uri.parse("http://play.google.com/store/apps/details?id="
+												+ editor.packageName)));
+							}
+						}
+					});
+		}
 	}
 }

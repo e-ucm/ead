@@ -56,18 +56,20 @@ public class ReplaceEntityTest extends ActionTest {
 		controller.action(SetSelection.class, null, Selection.EDITED_GROUP,
 				new ModelEntity());
 
+		ModelEntity scene = (ModelEntity) controller.getModel().getSelection()
+				.getSingle(Selection.EDITED_GROUP);
+
 		ModelEntity replacedEntity = new ModelEntity();
 		controller.action(AddSceneElement.class, replacedEntity);
 
 		ModelEntity newEntity = new ModelEntity();
-		controller.action(ReplaceEntity.class, replacedEntity, newEntity);
+		controller
+				.action(ReplaceEntity.class, scene, replacedEntity, newEntity);
 
-		ModelEntity scene = (ModelEntity) controller.getModel().getSelection()
-				.getSingle(Selection.EDITED_GROUP);
 		Array<ModelEntity> parentChildren = scene.getChildren();
 
 		assertFalse("Failed to remove the replaced entity.",
-				parentChildren.contains(replacedEntity, false));
+				parentChildren.contains(replacedEntity, true));
 		assertTrue("Failed to add the new entity",
 				parentChildren.contains(newEntity, false));
 

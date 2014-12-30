@@ -52,6 +52,7 @@ import es.eucm.ead.editor.control.Preferences;
 import es.eucm.ead.editor.control.Selection;
 import es.eucm.ead.editor.control.actions.editor.AddPaintedElement;
 import es.eucm.ead.editor.control.actions.editor.Copy;
+import es.eucm.ead.editor.control.actions.editor.LaunchImageEditor;
 import es.eucm.ead.editor.control.actions.editor.Paste;
 import es.eucm.ead.editor.control.actions.editor.Redo;
 import es.eucm.ead.editor.control.actions.editor.ShowContextMenu;
@@ -241,6 +242,8 @@ public class GroupEditorToolbar extends MultiWidget implements ModelView {
 					controller
 							.action(ShowContextMenu.class, edit, textFontPane);
 					textFontPane.prepare(sceneEditor);
+				} else if (Q.hasImage(sceneElement)) {
+					controller.action(LaunchImageEditor.class);
 				} else if (Q.isGroup(sceneElement)) {
 					event.stop();
 					Actor actor = sceneEditor.getGroupEditor().findActor(
@@ -450,7 +453,8 @@ public class GroupEditorToolbar extends MultiWidget implements ModelView {
 					&& entity.getChildren().size > 0);
 			editButton.setSelectedWidget(0);
 			editVisible.setVisible(entity != null
-					&& (Q.hasComponent(entity, Label.class) || entity
+					&& (Q.hasImage(entity)
+							|| Q.hasComponent(entity, Label.class) || entity
 							.getChildren().size > 1));
 		}
 	}
