@@ -150,7 +150,8 @@ public class AndroidPlatform extends MokapPlatform {
 	}
 
 	@Override
-	public void editImage(I18N i18n, String imagePath, FileChooserListener listener) {
+	public void editImage(I18N i18n, String imagePath,
+			FileChooserListener listener) {
 		Editor editor = Editor.PIXLREXPRESS;
 		checkPackageInstalledAndStart(editor, i18n, imagePath, listener);
 	}
@@ -164,7 +165,8 @@ public class AndroidPlatform extends MokapPlatform {
 			// The user has the selected editor installed, so
 			// let's start the edition
 
-			Uri imageToEditUri = Uri.fromFile(Gdx.files.absolute(imagePath).file());
+			Uri imageToEditUri = Uri.fromFile(Gdx.files.absolute(imagePath)
+					.file());
 			Intent editIntent = new Intent(Intent.ACTION_EDIT, imageToEditUri);
 
 			editIntent.setDataAndType(imageToEditUri, IMAGE_TO_EDIT_MIME_TYPE);
