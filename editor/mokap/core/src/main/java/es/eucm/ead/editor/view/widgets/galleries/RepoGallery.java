@@ -101,7 +101,7 @@ public class RepoGallery extends AbstractWidget implements ModelView {
 	 *         to current number of columns in the grid and screen width
 	 */
 	public int getPreferredThumbnailWidth() {
-		return gallery.getPreferredThumbnailWidth();
+		return gallery.getPreferredCellWidth();
 	}
 
 	/**
@@ -109,6 +109,6 @@ public class RepoGallery extends AbstractWidget implements ModelView {
 	 *         to current number of rows in the grid and screen height
 	 */
 	public int getPreferredThumbnailHeight() {
-		return gallery.getPreferredThumbnailHeight();
+		return gallery.getPreferredCellHeight();
 	}
 }

@@ -133,18 +133,18 @@ public class Gallery extends ScrollPane {
 	}
 
 	/**
-	 * @return Preferred thumbnail width, in real pixels, calculated according
-	 *         to current number of columns in the grid and screen width
+	 * @return Preferred cell width, in real pixels, calculated according to
+	 *         current number of columns in the grid and screen width
 	 */
-	public int getPreferredThumbnailWidth() {
+	public int getPreferredCellWidth() {
 		return Math.round(grid.getColumnWidth());
 	}
 
 	/**
-	 * @return Preferred thumbnail height, in real pixels, calculated according
-	 *         to current number of rows in the grid and screen height
+	 * @return Preferred cell height, in real pixels, calculated according to
+	 *         current number of rows in the grid and screen height
 	 */
-	public int getPreferredThumbnailHeight() {
+	public int getPreferredCellHeight() {
 		float prefHeight = grid.getPrefRowHeight();
 		return Math.round(Math.max(prefHeight, grid.rowHeight(0, prefHeight)));
 	}
