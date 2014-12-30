@@ -54,6 +54,7 @@ public class FeaturedElements extends SearchRepo {
 	@Override
 	protected String buildUrl(String[] args, RepoRequestFactory requestFactory) {
 		FeaturedRequest searchRequest = new FeaturedRequest();
+		setPreferredThumbnailWidthAndHeight(args, searchRequest);
 		searchRequest.setCat(RepoCategories.MOKAPS.toString());
 
 		return requestFactory.buildRequestURL(searchRequest);

@@ -362,11 +362,7 @@ public class Q {
 	}
 
 	public static String getRepoElementThumbnailUrl(RepoElement elem) {
-		Array<String> thumbnailUrlList = elem.getThumbnailUrlList();
-		if (thumbnailUrlList.size == 0) {
-			return "";
-		}
-		return thumbnailUrlList.peek();
+		return elem.getThumbnailUrl();
 	}
 
 	public static Color toLibgdxColor(es.eucm.ead.schema.data.Color modelColor) {

@@ -40,6 +40,8 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 
+import es.eucm.ead.editor.control.repo.RepoRequestFactory;
+import es.eucm.ead.schema.editor.components.repo.request.SearchRequest;
 import org.junit.Before;
 
 import com.badlogic.gdx.files.FileHandle;
@@ -56,7 +58,7 @@ import es.eucm.ead.schema.editor.components.repo.response.SearchResponse;
 
 public class SearchRepoTest extends WorkerTest implements WorkerListener {
 
-	private static String URL = "";
+	private static String url = "";
 	private static final String TEXT_STRING = "text";
 	private static final int ELEMS = 10;
 
@@ -78,7 +80,7 @@ public class SearchRepoTest extends WorkerTest implements WorkerListener {
 		for (int i = 0; i < ELEMS; ++i) {
 			RepoElement elem = new RepoElement();
 			String currentThumbnail = i + ".png";
-			elem.getThumbnailUrlList().add(currentThumbnail);
+			elem.setThumbnailUrl(currentThumbnail);
 			repoElems.add(elem);
 			platform.putHttpResponse(currentThumbnail, bytes);
 		}
@@ -89,10 +91,12 @@ public class SearchRepoTest extends WorkerTest implements WorkerListener {
 		response.setResults(repoElems);
 
 		String json = gameAssets.toJson(response, SearchResponse.class);
-		URL = "http://" + controller.getReleaseInfo().getBackendURL() + "?q="
-				+ TEXT_STRING + "&k="
-				+ controller.getReleaseInfo().getBackendApiKey();
-		platform.putHttpResponse(URL, json);
+		SearchRequest searchRequest = new SearchRequest();
+		searchRequest.setQ(TEXT_STRING);
+
+		url = new RepoRequestFactory(controller.getReleaseInfo())
+				.buildRequestURL(searchRequest);
+		platform.putHttpResponse(url, json);
 	}
 
 	@Override

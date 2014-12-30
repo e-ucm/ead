@@ -123,10 +123,15 @@ public class SearchView implements ViewBuilder, BackListener, WorkerListener {
 		canSearch = false;
 		if (currentResponse != null) {
 			controller.action(ExecuteWorker.class, SearchRepo.class, this,
-					textField.getText(), currentResponse.getSearchCursor());
+					textField.getText(),
+					repoGallery.getPreferredThumbnailWidth(),
+					repoGallery.getPreferredThumbnailHeight(),
+					currentResponse.getSearchCursor());
 		} else {
 			controller.action(ExecuteWorker.class, SearchRepo.class, this,
-					textField.getText());
+					textField.getText(),
+					repoGallery.getPreferredThumbnailWidth(),
+					repoGallery.getPreferredThumbnailHeight());
 		}
 	}
 
@@ -159,7 +164,9 @@ public class SearchView implements ViewBuilder, BackListener, WorkerListener {
 				if (keycode == Keys.ENTER) {
 					repoGallery.clear();
 					controller.action(ExecuteWorker.class, SearchRepo.class,
-							SearchView.this, textField.getText());
+							SearchView.this, textField.getText(),
+							repoGallery.getPreferredThumbnailWidth(),
+							repoGallery.getPreferredThumbnailHeight());
 					hideTextField();
 					return true;
 				}

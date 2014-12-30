@@ -46,6 +46,7 @@ import com.badlogic.gdx.utils.SerializationException;
 import es.eucm.ead.editor.control.repo.RepoRequestFactory;
 import es.eucm.ead.editor.model.Q;
 import es.eucm.ead.schema.editor.components.repo.RepoElement;
+import es.eucm.ead.schema.editor.components.repo.request.RepoRequest;
 import es.eucm.ead.schema.editor.components.repo.request.SearchRequest;
 import es.eucm.ead.schema.editor.components.repo.response.SearchResponse;
 
@@ -56,7 +57,11 @@ import es.eucm.ead.schema.editor.components.repo.response.SearchResponse;
  * <dt><strong>The input arguments are</strong></dt>
  * <dd><strong>args[0]</strong> <em>String</em> The string to search for (q
  * param). E.g.: "tree".
- * <dd><strong>args[1]</strong> (Optional) <em>String</em> The cursor provided
+ * <dd><strong>args[1]</strong> (Optional) <em>String</em> The preferred width
+ * for thumbnails, in pixels. E.g.: "512".
+ * <dd><strong>args[2]</strong> (Optional) <em>String</em> The preferred height
+ * for thumbnails, in pixels. E.g.: "512".
+ * <dd><strong>args[3]</strong> (Optional) <em>String</em> The cursor provided
  * by the backend for paginated searching (c param)
  * </dl>
  * <dl>
@@ -68,7 +73,7 @@ import es.eucm.ead.schema.editor.components.repo.response.SearchResponse;
  * </dl>
  * <strong>Rest of results:</strong> <dd>
  * <strong>args[0]</strong> <em>RepoElement</em> the element. <dd>
- * <strong>args[1]</strong> <em>String</em> pixmap of the thmbnail of the
+ * <strong>args[1]</strong> <em>String</em> pixmap of the thumbnail of the
  * element.</dd> </dl>
  */
 public class SearchRepo extends RepoWorker {
@@ -145,8 +150,23 @@ public class SearchRepo extends RepoWorker {
 						thumbnailURL, byte[].class);
 
 				Pixmap pixmap = new Pixmap(httpResponse, 0, httpResponse.length);
-
 				if (pixmap != null) {
+					/*
+					 * Check height/width ratio to see if the thumbnail is
+					 * considerably taller than wide. If so, it is likely to be
+					 * a character, so better clip the pixmap square using the
+					 * upper part to ensure face is displayed
+					 */
+					int width = pixmap.getWidth();
+					int height = pixmap.getHeight();
+					float ratio = (height + 0.0F) / (width + 0.0F);
+					if (ratio >= 1.5F) {
+						Pixmap trimmedPixmap = new Pixmap(width, width,
+								pixmap.getFormat());
+						trimmedPixmap.drawPixmap(pixmap, 0, 0);
+						pixmap.dispose();
+						pixmap = trimmedPixmap;
+					}
 					result(elem, pixmap);
 				}
 			} catch (Exception e) {
@@ -162,9 +182,25 @@ public class SearchRepo extends RepoWorker {
 	protected String buildUrl(String[] args, RepoRequestFactory requestFactory) {
 		SearchRequest searchRequest = new SearchRequest();
 		searchRequest.setQ(args[0]);
-		if (args.length > 1) {
-			searchRequest.setC(args[1]);
+		setPreferredThumbnailWidthAndHeight(args, searchRequest);
+		if (args.length > 3) {
+			searchRequest.setC(args[3]);
 		}
 		return requestFactory.buildRequestURL(searchRequest);
+	}
+
+	protected void setPreferredThumbnailWidthAndHeight(String[] args,
+			RepoRequest searchRequest) {
+		if (args.length > 2) {
+			try {
+				searchRequest.setW(Integer.parseInt(args[1]) + "");
+				searchRequest.setH(Integer.parseInt(args[2]) + "");
+			} catch (NumberFormatException e) {
+				// Log it
+				Gdx.app.debug(SEARCH_REPO_TAG,
+						"Invalid preferred thumbnail width or height: "
+								+ args[1] + "  " + args[2]);
+			}
+		}
 	}
 }

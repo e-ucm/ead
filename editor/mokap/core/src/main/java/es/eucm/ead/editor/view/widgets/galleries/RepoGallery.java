@@ -95,4 +95,20 @@ public class RepoGallery extends AbstractWidget implements ModelView {
 
 		return gallery.add(tile);
 	}
+
+	/**
+	 * @return Preferred thumbnail width, in real pixels, calculated according
+	 *         to current number of columns in the grid and screen width
+	 */
+	public int getPreferredThumbnailWidth() {
+		return gallery.getPreferredCellWidth();
+	}
+
+	/**
+	 * @return Preferred thumbnail height, in real pixels, calculated according
+	 *         to current number of rows in the grid and screen height
+	 */
+	public int getPreferredThumbnailHeight() {
+		return gallery.getPreferredCellHeight();
+	}
 }
