@@ -36,11 +36,13 @@
  */
 package es.eucm.ead.engine.android;
 
+import android.graphics.BitmapFactory;
 import com.badlogic.gdx.files.FileHandle;
-import com.badlogic.gdx.graphics.Pixmap;
 import com.badlogic.gdx.math.Vector2;
 import es.eucm.ead.engine.EngineApplicationListener;
 import es.eucm.ead.engine.assets.GameAssets;
+
+import java.io.InputStream;
 
 /**
  * Simple Application Listener for standalone Android mokaps. It basically
@@ -61,8 +63,13 @@ public class EngineAndroidApplicationListener extends EngineApplicationListener 
 		imageUtils = new GameAssets.ImageUtils() {
 			@Override
 			public boolean imageSize(FileHandle fileHandle, Vector2 size) {
-				Pixmap pixmap = new Pixmap(fileHandle);
-				size.set(pixmap.getWidth(), pixmap.getHeight());
+				BitmapFactory.Options options = new BitmapFactory.Options();
+				options.inJustDecodeBounds = true;
+				InputStream decodedFis = fileHandle.read();
+				BitmapFactory.decodeStream(decodedFis, null, options);
+				int imageHeight = options.outHeight;
+				int imageWidth = options.outWidth;
+				size.set(imageWidth, imageHeight);
 				return true;
 			}
 
