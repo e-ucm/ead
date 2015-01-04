@@ -15,6 +15,16 @@
         </dependency>
         <dependency>
             <groupId>es.e-ucm.ead</groupId>
+            <artifactId>engine-desktop</artifactId>
+            <version>${project.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>es.e-ucm.ead</groupId>
+            <artifactId>engine-android</artifactId>
+            <version>${project.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>es.e-ucm.ead</groupId>
             <artifactId>editor-schema</artifactId>
             <version>${project.version}</version>
         </dependency>
@@ -39,6 +49,27 @@
             <groupId>es.e-ucm.ead</groupId>
             <artifactId>engine-core</artifactId>
             <version>${project.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>com.badlogicgames.gdx</groupId>
+            <artifactId>gdx-backend-lwjgl</artifactId>
+            <version>1.4.2-SNAPSHOT</version>
+        </dependency>
+        <!-- To run maven from Java -->
+        <dependency>
+            <groupId>org.apache.maven</groupId>
+            <artifactId>maven-embedder</artifactId>
+            <version>3.1.1</version>
+        </dependency>
+        <dependency>
+            <groupId>org.eclipse.aether</groupId>
+            <artifactId>aether-connector-wagon</artifactId>
+            <version>0.9.0.M2</version>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.maven.wagon</groupId>
+            <artifactId>wagon-http-lightweight</artifactId>
+            <version>2.5</version>
         </dependency>
     </dependencies>
 </project>
