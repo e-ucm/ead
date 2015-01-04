@@ -71,9 +71,8 @@ public class ApkResource {
 	 * @param artifactId
 	 *            The artifactId used for the pom (e.g. game-of-thrones). If
 	 *            {@code null}, an artifactId containing only lowercase letters,
-	 *            dashes and digits is generated automatically from the
-	 * @param appName
-	 *            .
+	 *            dashes and digits is generated automatically from the {}@code
+	 *            appName}
 	 * @param appName
 	 *            The name of the application, in a user-friendly format (e.g.
 	 *            Game Of Thrones). Cannot be {@code null}.
@@ -94,9 +93,7 @@ public class ApkResource {
 	 *            package. If null, a package name is automatically generated.
 	 *            The default package name created will always start with
 	 *            {@value #DEFAULT_PACKAGE_PARENT}, followed by a subpackage
-	 *            created from the
-	 * @param appName
-	 *            .
+	 *            created from the {@code appName}
 	 * @param appName
 	 *            The name of the application, in a user-friendly format (e.g.
 	 *            Game Of Thrones). Cannot be {@code null}.
