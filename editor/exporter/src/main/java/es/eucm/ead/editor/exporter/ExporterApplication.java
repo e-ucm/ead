@@ -154,7 +154,7 @@ public class ExporterApplication {
 	 *             If {@code directory} is not valid
 	 */
 	private static void loadAllEntities(Json json, FileHandle directory,
-			Map<String, Object> entities) {
+			Map<String, Object> entities, String prefix) {
 		if (directory == null || !directory.exists()
 				|| !directory.isDirectory())
 			throw new RuntimeException(
@@ -164,10 +164,14 @@ public class ExporterApplication {
 
 		for (FileHandle child : directory.list()) {
 			if (child.isDirectory()) {
-				loadAllEntities(json, child, entities);
-			} else if (JsonExtension.hasJsonExtension(child.extension())) {
-				ModelEntity newScene = json.fromJson(ModelEntity.class, child);
-				entities.put(child.nameWithoutExtension(), newScene);
+				loadAllEntities(json, child, entities, prefix + child.name()
+						+ "/");
+			} else if (JsonExtension.hasJsonExtension(child.extension())
+					&& !child.name().toLowerCase()
+							.equals(ModelStructure.DESCRIPTOR_FILE)) {
+				ModelEntity newScene = json.fromJson(ModelEntity.class, null,
+						child);
+				entities.put(prefix + child.name(), newScene);
 			}
 
 		}
