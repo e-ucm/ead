@@ -36,6 +36,7 @@
  */
 package es.eucm.ead.engine.android;
 
+import com.badlogic.gdx.Gdx;
 import es.eucm.ead.engine.EngineApplicationListener;
 
 import android.os.Bundle;
@@ -43,15 +44,26 @@ import android.os.Bundle;
 import com.badlogic.gdx.backends.android.AndroidApplication;
 import com.badlogic.gdx.backends.android.AndroidApplicationConfiguration;
 
-public class EAdEngineActivity extends AndroidApplication {
+public class EngineActivity extends AndroidApplication {
 
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		AndroidApplicationConfiguration config = new AndroidApplicationConfiguration();
-		EngineApplicationListener engineApplicationListener = new EngineApplicationListener(
-				new AndroidImageUtils());
+		config.useAccelerometer = false;
+		config.useImmersiveMode = false;
+		config.hideStatusBar = true;
+		config.useWakelock = true;
+		config.useCompass = false;
+
+		final EngineApplicationListener engineApplicationListener = new EngineAndroidApplicationListener();
 		initialize(engineApplicationListener, config);
-		// engineApplicationListener.loadGame("", true);
+		Gdx.app.postRunnable(new Runnable() {
+
+			@Override
+			public void run() {
+				engineApplicationListener.getGameLoader().loadGame("", true);
+			}
+		});
 	}
 }
