@@ -39,6 +39,8 @@ package es.eucm.ead.editor.view.widgets.draw;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.scenes.scene2d.Actor;
+import com.badlogic.gdx.scenes.scene2d.Event;
+import com.badlogic.gdx.scenes.scene2d.EventListener;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.ui.Cell;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
@@ -47,6 +49,7 @@ import com.badlogic.gdx.scenes.scene2d.ui.WidgetGroup;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.scenes.scene2d.utils.Drawable;
 import com.badlogic.gdx.utils.Array;
+import com.badlogic.gdx.utils.Pools;
 import com.badlogic.gdx.utils.SnapshotArray;
 
 import es.eucm.ead.editor.control.Preferences;
@@ -72,6 +75,11 @@ public class ColorPickerPanel extends Table {
 					.getUserObject());
 			Color color = listenerActor.getColor();
 			colorPicker.picker.updateSlidersTo(color);
+			ColorClickedEvent colorClicked = Pools
+					.obtain(ColorClickedEvent.class);
+			colorClicked.color = color;
+			colorPicker.fire(colorClicked);
+			Pools.free(colorClicked);
 		};
 	};
 
@@ -225,6 +233,46 @@ public class ColorPickerPanel extends Table {
 			}
 		}
 		return false;
+	}
+
+	/**
+	 * Base class to listen to {@link ColorClickedEvent}s produced by
+	 * {@link ColorPickerPanel}.
+	 */
+	public static class ColorClickedListener implements EventListener {
+
+		@Override
+		public boolean handle(Event event) {
+			if (event instanceof ColorClickedEvent) {
+				colorClicked((ColorClickedEvent) event);
+			}
+			return true;
+		}
+
+		/**
+		 * The color has been clicked.
+		 */
+		public void colorClicked(ColorClickedEvent event) {
+
+		}
+	}
+
+	/**
+	 * Fired when one of the recent colors has been clicked.
+	 */
+	public static class ColorClickedEvent extends Event {
+
+		private Color color;
+
+		public Color getColor() {
+			return color;
+		}
+
+		@Override
+		public void reset() {
+			super.reset();
+			this.color = null;
+		}
 	}
 
 	/**
