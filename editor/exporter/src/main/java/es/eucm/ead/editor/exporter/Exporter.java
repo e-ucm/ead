@@ -37,9 +37,11 @@
 package es.eucm.ead.editor.exporter;
 
 import java.awt.image.BufferedImage;
+import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.OutputStream;
+import java.util.Collections;
 import java.util.Map;
 import java.util.zip.ZipOutputStream;
 
@@ -66,7 +68,7 @@ import es.eucm.ead.schemax.FieldName;
 import es.eucm.ead.schemax.ModelStructure;
 import es.eucm.ead.schemax.JsonExtension;
 import es.eucm.ead.schemax.Layer;
-import org.apache.maven.cli.MavenCli;
+import org.apache.maven.shared.invoker.*;
 
 import javax.imageio.ImageIO;
 
@@ -227,6 +229,10 @@ public class Exporter {
 	 * @param source
 	 *            The full path of the folder containing the game project. This
 	 *            is required to copy the source images and other binaries.
+	 * @param mavenPath
+	 *            The full path to the system directory where maven is installed
+	 *            (e.g. "/dev/maven/"). If null, exporter tries to resolve it
+	 *            from system's MAVEN_HOME and MVN_HOME environment variables
 	 * @param assetsProjectPath
 	 *            Full (absolute) path to the folder that contains bindings.json
 	 *            and skins/engine, as those assets must be added to the
@@ -236,15 +242,11 @@ public class Exporter {
 	 *            this package had not been used before for other standalone
 	 *            mokap, as Google Play do not allow two apps with the same main
 	 *            package. If null, a package name is automatically generated
-	 *            from the
-	 * @param appName
-	 *            .
+	 *            from the appName
 	 * @param artifactId
 	 *            The artifactId used for the pom. If {@code null}, an
 	 *            artifactId containing only lowercase letters, dashes and
-	 *            digits is generated automatically from the
-	 * @param appName
-	 *            .
+	 *            digits is generated automatically from the appName
 	 * @param appName
 	 *            The name of the application, in a user-friendly format (e.g.
 	 *            Game Of Thrones). Cannot be {@code null}.
@@ -266,7 +268,7 @@ public class Exporter {
 	 *            A simple callback to provide updates on the exportation
 	 *            progress. May be {@code null}.
 	 */
-	public void exportAsApk(String destiny, String source,
+	public void exportAsApk(String destiny, String source, String mavenPath,
 			String assetsProjectPath, String packageName, String artifactId,
 			String appName, String pathToAppIcons,
 			Iterable<Map.Entry<String, Object>> entities,
@@ -337,11 +339,21 @@ public class Exporter {
 				callback.progress(30,
 						"  5) Invoking maven to create APK. This step may take a while ");
 			}
-			MavenCli cli = new MavenCli();
-			if (0 == cli
-					.doMain(new String[] { "-Pandroid-build", "clean",
-							"install" }, mavenProjectDir.path(), System.out,
-							System.out)) {
+
+			InvocationRequest request = new DefaultInvocationRequest();
+
+			request.setPomFile(mavenProjectDir.child("pom.xml").file());
+			request.setGoals(Collections.singletonList("install"));
+			request.setProfiles(Collections.singletonList("android-build"));
+
+			Invoker invoker = new DefaultInvoker();
+			File mavenHome = findMavenDir(mavenPath);
+			if (mavenHome != null) {
+				invoker.setMavenHome(mavenHome);
+			}
+			InvocationResult result = invoker.execute(request);
+			if (result.getExitCode() == 0) {
+
 				if (callback != null) {
 					callback.progress(95, "    APK successfully generated");
 				}
@@ -372,6 +384,25 @@ public class Exporter {
 			return;
 		}
 
+	}
+
+	private File findMavenDir(String path) {
+		if (path == null) {
+			path = System.getenv("MAVEN_HOME");
+		}
+		if (path == null) {
+			path = System.getenv("MVN_HOME");
+		}
+		if (path != null && path.toLowerCase().endsWith("bin")
+				|| path.toLowerCase().endsWith("bin/")
+				|| path.toLowerCase().endsWith("bin\\")) {
+			path = path.substring(0,
+					Math.max(path.lastIndexOf("/"), path.lastIndexOf("\\")));
+		}
+		if (path != null) {
+			return new File(path);
+		}
+		return null;
 	}
 
 	private FileHandle createMavenProject(String packageName,
@@ -476,6 +507,7 @@ public class Exporter {
 				BufferedImage tmp = new BufferedImage(apkIcon.getResolution(),
 						apkIcon.getResolution(), BufferedImage.TRANSLUCENT);
 				tmp.createGraphics().drawImage(
+
 						iconBI.getScaledInstance(apkIcon.getResolution(),
 								apkIcon.getResolution(),
 								BufferedImage.SCALE_SMOOTH), 0, 0, null);

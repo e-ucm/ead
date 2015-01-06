@@ -38,6 +38,7 @@ package es.eucm.ead.editor;
 
 import com.badlogic.gdx.files.FileHandle;
 import es.eucm.ead.editor.exporter.ExporterApplication;
+import es.eucm.ead.editor.exporter.ExporterFiles;
 import es.eucm.ead.engine.utils.ZipUtils;
 
 /**
@@ -47,7 +48,9 @@ import es.eucm.ead.engine.utils.ZipUtils;
  */
 public class ExportAsApkTest {
 	public static void main(String[] args) {
-		SimpleFilesForTesting files = new SimpleFilesForTesting();
+		System.out
+				.println("** Do not forget to install maven and setup MAVEN_HOME env variable before running this test!! **");
+		ExporterFiles files = new ExporterFiles();
 		FileHandle projectDir = FileHandle.tempDirectory("test");
 		projectDir.mkdirs();
 		ZipUtils.unzip(files.internal("export/got.zip"), projectDir);
@@ -58,7 +61,7 @@ public class ExportAsApkTest {
 		FileHandle target = FileHandle.tempDirectory("got").child("got.apk");
 		target.parent().mkdirs();
 
-		ExporterApplication.exportAsApk(projectDir.path(), null, null,
+		ExporterApplication.exportAsApk(projectDir.path(), null, null, null,
 				"Game Of Thrones", thumbnail.path(), target.path());
 	}
 }

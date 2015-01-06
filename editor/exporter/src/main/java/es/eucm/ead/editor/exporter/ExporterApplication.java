@@ -36,17 +36,17 @@
  */
 package es.eucm.ead.editor.exporter;
 
-import com.badlogic.gdx.backends.lwjgl.LwjglFiles;
+//import com.badlogic.gdx.backends.lwjgl.LwjglFiles;
 import com.badlogic.gdx.files.FileHandle;
+import com.badlogic.gdx.graphics.Pixmap;
+import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.utils.Json;
 import com.badlogic.gdx.utils.SerializationException;
 import es.eucm.ead.engine.assets.GameAssets;
-import es.eucm.ead.engine.utils.DesktopImageUtils;
 import es.eucm.ead.engine.utils.ZipUtils;
 import es.eucm.ead.schema.entities.ModelEntity;
 import es.eucm.ead.schemax.JsonExtension;
 import es.eucm.ead.schemax.ModelStructure;
-import org.lwjgl.Sys;
 
 import java.util.*;
 
@@ -81,20 +81,20 @@ public class ExporterApplication {
 	 *            The full path to the game project. Cannot be null. It is
 	 *            expected to be a folder with an editor-valid game project.
 	 *            E.g.: ("/Users/aUser/eadgames/agame/")
+	 * @param mavenPath
+	 *            The full path to the system directory where maven is installed
+	 *            (e.g. "/dev/maven/"). If null, exporter tries to resolve it
+	 *            from system's environment variables
 	 * @param packageName
 	 *            The main package for the application. It is important that
 	 *            this package had not been used before for other standalone
 	 *            mokap, as Google Play do not allow two apps with the same main
 	 *            package. If null, a package name is automatically generated
-	 *            from the
-	 * @param appName
-	 *            .
+	 *            from the appName.
 	 * @param artifactId
 	 *            The artifactId used for the pom. If {@code null}, an
 	 *            artifactId containing only lowercase letters, dashes and
-	 *            digits is generated automatically from the
-	 * @param appName
-	 *            .
+	 *            digits is generated automatically from the appName.
 	 * @param appName
 	 *            The name of the application, in a user-friendly format (e.g.
 	 *            Game Of Thrones). Cannot be {@code null}.
@@ -115,12 +115,12 @@ public class ExporterApplication {
 	 *            "/Users/aUser/eadexports/techdemo.apk"
 	 * @return True if the exportation completed successfully, false otherwise
 	 */
-	public static boolean exportAsApk(String projectPath, String packageName,
-			String artifactId, String appName, String pathToAppIcons,
-			String destinationPath) {
+	public static boolean exportAsApk(String projectPath, String mavenPath,
+			String packageName, String artifactId, String appName,
+			String pathToAppIcons, String destinationPath) {
 
 		return new ExportToApk(projectPath, destinationPath, packageName,
-				artifactId, appName, pathToAppIcons).run();
+				artifactId, appName, pathToAppIcons, mavenPath).run();
 	}
 
 	/**
@@ -216,7 +216,7 @@ public class ExporterApplication {
 		String engineLibPath = null;
 
 		// Apk properties
-		String packageName = null, artifactId = null, appName = null, appNameList = null, pathToAppIcons = null, pathToAppIconsList = null;
+		String packageName = null, artifactId = null, appName = null, appNameList = null, pathToAppIcons = null, pathToAppIconsList = null, mavenPath = null;
 
 		if (args != null) {
 
@@ -226,6 +226,9 @@ public class ExporterApplication {
 				} else if (args[i].toLowerCase().equals("-engine-lib")
 						&& i + 1 < args.length) {
 					engineLibPath = args[i + 1];
+				} else if (args[i].toLowerCase().equals("-maven-dir")
+						&& i + 1 < args.length) {
+					mavenPath = args[i + 1];
 				} else if (args[i].toLowerCase().equals("-project")
 						&& i + 1 < args.length) {
 					projectPath = args[i + 1];
@@ -322,13 +325,13 @@ public class ExporterApplication {
 
 					if (formatList.toLowerCase().contains("apk")) {
 						if (projects.size() == 1) {
-							ExporterApplication.exportAsApk(path, packageName,
-									artifactId, appName, pathToAppIcons,
-									targets.get(i));
+							ExporterApplication.exportAsApk(path, mavenPath,
+									packageName, artifactId, appName,
+									pathToAppIcons, targets.get(i));
 						} else {
-							ExporterApplication.exportAsApk(path, null, null,
-									appNames.get(i), appIcons.get(i),
-									targets.get(i));
+							ExporterApplication.exportAsApk(path, mavenPath,
+									null, null, appNames.get(i),
+									appIcons.get(i), targets.get(i));
 						}
 					}
 				}
@@ -370,11 +373,13 @@ public class ExporterApplication {
 		System.out.println();
 		System.out.println("\tWhere [OPTIONS] has the next syntax:");
 		System.out
-				.println("\t\t[-format-list LIST_OF_FORMATS] [-engine-lib PATH_TO_THE_ENGINE_LIB] [-app-name APP_NAME_FOR_APK] [-app-name-list COMMA-SEPARATED_LIST_OF_APPNAMES_FOR_APK] [-app-icons PATH_TO_ICONS_FOR_APK] [-app-icons-list COMMA-SEPARATED_LIST_OF_PATH_TO_ICONS_FOR_APK] [-package NAME_OF_APK_PACKAGE] [-artifact MAVEN_ARTIFACT_OF_APK]  ");
+				.println("\t\t[-format-list LIST_OF_FORMATS] [-engine-lib PATH_TO_THE_ENGINE_LIB] [-maven-dir PATH_TO_MAVEN_INSTALLATION_DIR] [-app-name APP_NAME_FOR_APK] [-app-name-list COMMA-SEPARATED_LIST_OF_APPNAMES_FOR_APK] [-app-icons PATH_TO_ICONS_FOR_APK] [-app-icons-list COMMA-SEPARATED_LIST_OF_PATH_TO_ICONS_FOR_APK] [-package NAME_OF_APK_PACKAGE] [-artifact MAVEN_ARTIFACT_OF_APK]  ");
 		System.out
 				.println("\t\t\t-format-list LIST_OF_FORMATS\t\tMust provide the exportation formats. Possible options: jar | apk | jar,apk. If not specified, only jar format is produced");
 		System.out
-				.println("\t\t\t-engine-lib PATH_TO_THE_ENGINE_LIB\t\tNeeded only if JAR format is selected.");
+				.println("\t\t\t-engine-lib PATH_TO_THE_ENGINE_LIB\t\tNeeded only if JAR format is selected. Must point to the jar file containing the engine plus all dependencies");
+		System.out
+				.println("\t\t\t-maven-dir PATH_TO_MAVEN_INSTALLATION_DIR\t\tNeeded only if APK format is selected. Must point to the path where maven is installed in the system. Can be omitted if MAVEN_HOME or MVN_HOME environment variables are set up");
 		System.out
 				.println("\t\t\t-app-name APP_NAME_FOR_APK\t\tNeeded only if APK format is selected. Provides a user-friendly name for the application (e.g. Game Of Thrones)");
 		System.out
@@ -416,8 +421,8 @@ public class ExporterApplication {
 			FileHandle projectFileHandle = new FileHandle(projectPath);
 
 			// Try to load all game entities
-			GameAssets gameAssets = new GameAssets(new LwjglFiles(),
-					new DesktopImageUtils()) {
+			GameAssets gameAssets = new GameAssets(new ExporterFiles(),
+					new ExporterImageUtils()) {
 				protected FileHandle[] resolveBindings() {
 					return new FileHandle[] { resolve("bindings.json"),
 							resolve("editor-bindings.json") };
@@ -471,15 +476,17 @@ public class ExporterApplication {
 		private String artifactId;
 		private String appName;
 		private String pathToAppIcons;
+		private String mavenPath;
 
 		private ExportToApk(String projectPath, String destinationPath,
 				String packageName, String artifactId, String appName,
-				String pathToAppIcons) {
+				String pathToAppIcons, String mavenPath) {
 			super(projectPath, destinationPath);
 			this.packageName = packageName;
 			this.artifactId = artifactId;
 			this.appName = appName;
 			this.pathToAppIcons = pathToAppIcons;
+			this.mavenPath = mavenPath;
 		}
 
 		@Override
@@ -492,9 +499,10 @@ public class ExporterApplication {
 					+ projectPath);
 			System.out
 					.println("-------------------------------------------------------------------");
-			exporter.exportAsApk(destinationPath, projectPath, gameAssets
-					.resolve("assets").path(), packageName, artifactId,
-					appName, pathToAppIcons, entities.entrySet(), callback);
+			exporter.exportAsApk(destinationPath, projectPath, mavenPath,
+					gameAssets.resolve("assets").path(), packageName,
+					artifactId, appName, pathToAppIcons, entities.entrySet(),
+					callback);
 		}
 	}
 
@@ -520,6 +528,29 @@ public class ExporterApplication {
 					.println("-------------------------------------------------------------------");
 			exporter.exportAsJar(destinationPath, projectPath, engineJarPath,
 					entities.entrySet(), new DefaultCallback());
+		}
+	}
+
+	private static class ExporterImageUtils implements GameAssets.ImageUtils
+
+	{
+
+		@Override
+		public boolean imageSize(FileHandle fileHandle, Vector2 size) {
+			Pixmap pixmap = new Pixmap(fileHandle);
+			size.set(pixmap.getWidth(), pixmap.getHeight());
+			return true;
+		}
+
+		@Override
+		public boolean validSize(Vector2 size) {
+			return true;
+		}
+
+		@Override
+		public float scale(FileHandle src, FileHandle target) {
+			src.copyTo(target);
+			return 1.0f;
 		}
 	}
 }
