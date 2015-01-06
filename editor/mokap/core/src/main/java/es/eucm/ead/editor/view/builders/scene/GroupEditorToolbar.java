@@ -83,6 +83,8 @@ import es.eucm.ead.editor.view.widgets.WidgetBuilder;
 import es.eucm.ead.editor.view.widgets.draw.BrushStrokesPicker;
 import es.eucm.ead.editor.view.widgets.draw.BrushStrokesPicker.SizeEvent;
 import es.eucm.ead.editor.view.widgets.draw.BrushStrokesPicker.SizeListener;
+import es.eucm.ead.editor.view.widgets.draw.ColorPickerPanel.ColorClickedEvent;
+import es.eucm.ead.editor.view.widgets.draw.ColorPickerPanel.ColorClickedListener;
 import es.eucm.ead.editor.view.widgets.draw.SlideColorPicker.ColorEvent;
 import es.eucm.ead.editor.view.widgets.draw.SlideColorPicker.ColorListener;
 import es.eucm.ead.editor.view.widgets.layouts.LinearLayout;
@@ -413,6 +415,12 @@ public class GroupEditorToolbar extends MultiWidget implements ModelView {
 			public void sizeChanged(SizeEvent event) {
 				pickerIcon.setScale(event.getCompletion());
 				brushStrokes.setRadius(event.getCompletion());
+			}
+		});
+		colorPickerPanel.addListener(new ColorClickedListener() {
+			@Override
+			public void colorClicked(ColorClickedEvent event) {
+				controller.getViews().hideModal();
 			}
 		});
 		colorPickerPanel.setPickedColor(brushStrokes.getInitialColor());
