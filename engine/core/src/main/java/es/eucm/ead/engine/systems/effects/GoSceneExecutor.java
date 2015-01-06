@@ -67,26 +67,52 @@ public class GoSceneExecutor extends EffectExecutor<GoScene> {
 
 	private EngineEntity nextScreen;
 
-	public GoSceneExecutor(EntitiesLoader entitiesLoader, GameView gameVw) {
+	/*
+	 * If set to false (default), gameView's world dimensions are used to
+	 * determine width and height of screen captures during transitions. If
+	 * true, stage's viewport is used instead.
+	 */
+	protected boolean useViewport = false;
+
+	public GoSceneExecutor(EntitiesLoader entitiesLoader, GameView gameView) {
+		this(entitiesLoader, gameView, false);
+	}
+
+	public GoSceneExecutor(EntitiesLoader entitiesLoader, GameView gameView,
+			boolean useViewport) {
 		this.transitionManager = new TransitionManager();
 		this.entitiesLoader = entitiesLoader;
-		this.gameView = gameVw;
+		this.gameView = gameView;
+		this.useViewport = useViewport;
 		transitionManager.addListener(new EndListener() {
 			@Override
 			public void transitionFinished() {
 				gameLoop.setPlaying(true);
-				Group layer = gameView.getLayer(Layer.SCENE_CONTENT).getGroup();
+				Group layer = GoSceneExecutor.this.gameView.getLayer(
+						Layer.SCENE_CONTENT).getGroup();
 				layer.setVisible(true);
 			}
 		});
 	}
 
+	protected int getScreenWidth(Group layer) {
+		return useViewport ? layer.getStage().getViewport().getScreenWidth()
+				: gameView.getWorldWidth();
+	}
+
+	protected int getScreenHeight(Group layer) {
+		return useViewport ? layer.getStage().getViewport().getScreenHeight()
+				: gameView.getWorldHeight();
+	}
+
 	@Override
 	public void execute(Entity target, final GoScene effect) {
 		final Group layer = gameView.getLayer(Layer.SCENE_CONTENT).getGroup();
+
 		if (layer.getChildren().size == 1) {
 			Actor actor = layer.getChildren().get(0);
-			transitionManager.takeCurrentScreenPicture(layer.getStage(), actor);
+			transitionManager.takeCurrentScreenPicture(getScreenWidth(layer),
+					getScreenHeight(layer), layer.getStage(), actor);
 			Object o = actor.getUserObject();
 			if (o instanceof EngineEntity) {
 				((EngineEntity) o).add(gameLoop
@@ -117,8 +143,10 @@ public class GoSceneExecutor extends EffectExecutor<GoScene> {
 								gameView.addEntityToLayer(Layer.SCENE_CONTENT,
 										nextScreen);
 								layer.setVisible(false);
+
 								transitionManager.takeNextScreenPicture(
-										layer.getStage(),
+										getScreenWidth(layer),
+										getScreenHeight(layer),
 										engineEntity.getGroup());
 								gameLoop.setPlaying(false);
 
