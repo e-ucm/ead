@@ -10,17 +10,12 @@
     <dependencies>
         <dependency>
             <groupId>es.e-ucm.ead</groupId>
+            <artifactId>engine-core</artifactId>
+            <version>${project.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>es.e-ucm.ead</groupId>
             <artifactId>engine-schema</artifactId>
-            <version>${project.version}</version>
-        </dependency>
-        <dependency>
-            <groupId>es.e-ucm.ead</groupId>
-            <artifactId>engine-desktop</artifactId>
-            <version>${project.version}</version>
-        </dependency>
-        <dependency>
-            <groupId>es.e-ucm.ead</groupId>
-            <artifactId>engine-android</artifactId>
             <version>${project.version}</version>
         </dependency>
         <dependency>
@@ -46,10 +41,6 @@
             <scope>test</scope>
         </dependency>
         <dependency>
-            <groupId>es.e-ucm.ead</groupId>
-            <artifactId>engine-core</artifactId>
-            <version>${project.version}</version>
-        </dependency>
         <!-- To run maven from Java -->
         <dependency>
             <groupId>org.apache.maven</groupId>
