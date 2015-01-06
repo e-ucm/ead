@@ -50,11 +50,6 @@
             <artifactId>engine-core</artifactId>
             <version>${project.version}</version>
         </dependency>
-        <dependency>
-            <groupId>com.badlogicgames.gdx</groupId>
-            <artifactId>gdx-backend-lwjgl</artifactId>
-            <version>1.4.2-SNAPSHOT</version>
-        </dependency>
         <!-- To run maven from Java -->
         <dependency>
             <groupId>org.apache.maven</groupId>

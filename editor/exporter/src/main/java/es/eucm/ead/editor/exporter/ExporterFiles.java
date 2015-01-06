@@ -34,57 +34,55 @@
  *      You should have received a copy of the GNU Lesser General Public License
  *      along with eAdventure.  If not, see <http://www.gnu.org/licenses/>.
  */
-package es.eucm.ead.editor;
+package es.eucm.ead.editor.exporter;
 
 import com.badlogic.gdx.Files;
 import com.badlogic.gdx.files.FileHandle;
-import com.badlogic.gdx.utils.GdxRuntimeException;
 
 import java.io.File;
 
 /**
- * Simple implementation of LibGdx's {@link com.badlogic.gdx.Files} interface.
- * It is needed to locate the engine lib used for testing the exportation in
- * {@link ExporterTest} regardless where the test is being launched from.
+ * Literally a copy of libgdx's LwjglFiles. Thanks to its authors:
  * 
- * This class is a literal copy of MockFiles, which is not accessible from this
- * project.
+ * @author mzechner
+ * @author Nathan Sweet
  * 
- * Created by Javier Torrente on 4/04/14.
+ *         Created by Javier Torrente on 4/04/14.
  */
-public class SimpleFilesForTesting implements Files {
-
+public final class ExporterFiles implements Files {
 	static public final String externalPath = System.getProperty("user.home")
-			+ "/";
+			+ File.separator;
+	static public final String localPath = new File("").getAbsolutePath()
+			+ File.separator;
 
 	@Override
 	public FileHandle getFileHandle(String fileName, FileType type) {
-		return new SimpleFileHandle(fileName, type);
+		return new ExporterFileHandle(fileName, type);
 	}
 
 	@Override
 	public FileHandle classpath(String path) {
-		return new SimpleFileHandle(path, FileType.Classpath);
+		return new ExporterFileHandle(path, FileType.Classpath);
 	}
 
 	@Override
 	public FileHandle internal(String path) {
-		return new SimpleFileHandle(path, FileType.Internal);
+		return new ExporterFileHandle(path, FileType.Internal);
 	}
 
 	@Override
 	public FileHandle external(String path) {
-		return new SimpleFileHandle(path, FileType.External);
+		return new ExporterFileHandle(path, FileType.External);
 	}
 
 	@Override
 	public FileHandle absolute(String path) {
-		return new SimpleFileHandle(path, FileType.Absolute);
+		return new ExporterFileHandle(path, FileType.Absolute);
 	}
 
 	@Override
 	public FileHandle local(String path) {
-		return new SimpleFileHandle(path, FileType.Local);
+		return new ExporterFileHandle(path, FileType.Local);
 	}
 
 	@Override
@@ -99,53 +97,11 @@ public class SimpleFilesForTesting implements Files {
 
 	@Override
 	public String getLocalStoragePath() {
-		return "";
+		return localPath;
 	}
 
 	@Override
 	public boolean isLocalStorageAvailable() {
 		return true;
 	}
-
-	public class SimpleFileHandle extends FileHandle {
-		public SimpleFileHandle(String fileName, Files.FileType type) {
-			super(fileName, type);
-		}
-
-		public SimpleFileHandle(File file, Files.FileType type) {
-			super(file, type);
-		}
-
-		public FileHandle child(String name) {
-			if (file.getPath().length() == 0)
-				return new SimpleFileHandle(new File(name), type);
-			return new SimpleFileHandle(new File(file, name), type);
-		}
-
-		public FileHandle sibling(String name) {
-			if (file.getPath().length() == 0)
-				throw new GdxRuntimeException(
-						"Cannot get the sibling of the root.");
-			return new SimpleFileHandle(new File(file.getParent(), name), type);
-		}
-
-		public FileHandle parent() {
-			File parent = file.getParentFile();
-			if (parent == null) {
-				if (type == Files.FileType.Absolute)
-					parent = new File("/");
-				else
-					parent = new File("");
-			}
-			return new SimpleFileHandle(parent, type);
-		}
-
-		public File file() {
-			if (type == Files.FileType.External)
-				return new File(SimpleFilesForTesting.externalPath,
-						file.getPath());
-			return file;
-		}
-	}
-
 }
