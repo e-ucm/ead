@@ -38,7 +38,6 @@ package es.eucm.ead.editor.view.builders.scene.components;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Texture;
-import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.math.Interpolation;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
@@ -47,6 +46,8 @@ import com.badlogic.gdx.scenes.scene2d.ui.Image;
 import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.scenes.scene2d.ui.SelectBox;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
+import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
+import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.utils.Array;
 
@@ -62,7 +63,6 @@ import es.eucm.ead.editor.view.widgets.WidgetBuilder;
 import es.eucm.ead.editor.view.widgets.layouts.LinearLayout;
 import es.eucm.ead.editor.view.widgets.selectors.SceneSelector;
 import es.eucm.ead.editor.view.widgets.selectors.Selector.SelectorListener;
-import es.eucm.ead.editor.view.widgets.selectors.TransitionDrawable;
 import es.eucm.ead.editor.view.widgets.selectors.TransitionSelector;
 import es.eucm.ead.engine.assets.Assets;
 import es.eucm.ead.engine.assets.Assets.AssetLoadedCallback;
@@ -82,11 +82,11 @@ public class LinkEditor extends ComponentEditor<Behavior> implements
 
 	private SceneSelector sceneSelector;
 
-	private Tile tile, transitionTile;
+	private Tile tile;
+
+	private TextButton transitionName;
 
 	private TextureDrawable thumbnail;
-
-	private TransitionDrawable transitionPreview;
 
 	private String sceneId;
 
@@ -99,15 +99,6 @@ public class LinkEditor extends ComponentEditor<Behavior> implements
 	private TransitionSelector transitionSelector;
 
 	private SelectBox<String> duration;
-
-	private AssetLoadedCallback<Texture> currentThumbnail = new AssetLoadedCallback<Texture>() {
-
-		@Override
-		public void loaded(String fileName, Texture asset) {
-			transitionPreview.setCurrentTexture(asset);
-
-		}
-	};
 
 	public LinkEditor(Controller controller) {
 		super(SkinConstants.IC_LINK, controller.getApplicationAssets()
@@ -157,12 +148,11 @@ public class LinkEditor extends ComponentEditor<Behavior> implements
 		speedOptions.add(i18N.m("slow"));
 		duration = new SelectBox<String>(skin);
 		duration.setItems(speedOptions);
-		duration.addListener(new com.badlogic.gdx.scenes.scene2d.utils.ChangeListener() {
+		duration.addListener(new ChangeListener() {
 
 			@Override
 			public void changed(ChangeEvent event, Actor actor) {
 				float duration = getDuration();
-				transitionPreview.setTransition(transition, duration);
 				controller.action(SetField.class, goScene, FieldName.DURATION,
 						duration);
 			}
@@ -174,52 +164,21 @@ public class LinkEditor extends ComponentEditor<Behavior> implements
 
 		list.add(velTable).expandX();
 
-		transitionTile = new Tile(controller.getApplicationAssets().getSkin()) {
-			@Override
-			public float getPrefHeight() {
-				return LinkEditor.this.getHeight() / 2.38f;
-			}
-		};
-		transitionTile.setBackground(new Image(
-				transitionPreview = new TransitionDrawable()) {
-			@Override
-			public void draw(Batch batch, float parentAlpha) {
-				if (clipBegin(getX(), getY(), getWidth(), getHeight())) {
-					super.draw(batch, parentAlpha);
-					batch.flush();
-					clipEnd();
-				}
-			}
-		});
 		transition = Transition.FADE_IN;
-		transitionTile.setText(transition.toString());
-		list.add(transitionTile).expandX();
-		transitionTile.addListener(new ClickListener() {
+		transitionName = new TextButton(i18N.m(transition.toString()),
+				controller.getApplicationAssets().getSkin());
+		transitionName.getLabel().setEllipsis(true);
+		transitionName.getLabelCell().width(0);
+		list.add(transitionName).expandX();
+		final TransitionSelectorListener transitionSelectorListener = new TransitionSelectorListener();
+		transitionName.addListener(new ClickListener() {
 			@Override
 			public void clicked(InputEvent event, float x, float y) {
-				transitionSelector.prepare(new SelectorListener<String>() {
-
-					@Override
-					public void selected(String selected) {
-
-						transition = Transition.fromValue(selected);
-						setTransition();
-
-						controller.action(SetField.class, goScene,
-								FieldName.TRANSITION,
-								Transition.fromValue(selected));
-						hideSelector(transitionSelector);
-
-					}
-
-					@Override
-					public void cancelled() {
-						hideSelector(transitionSelector);
-					}
-				}, transition.toString(), sceneId);
 				transitionSelector.addAction(Actions.moveTo(0, 0, 0.57f,
 						Interpolation.exp5Out));
 				controller.getViews().addToModalsContainer(transitionSelector);
+				transitionSelector.prepare(transitionSelectorListener,
+						transition.toString(), sceneId);
 			}
 		});
 
@@ -238,7 +197,7 @@ public class LinkEditor extends ComponentEditor<Behavior> implements
 		transition = goScene.getTransition();
 		if (transition == null) {
 			transition = Transition.FADE_IN;
-			transitionTile.setText(i18N.m(transition.toString()));
+			transitionName.setText(i18N.m(transition.toString()));
 		}
 		updateDurationSlider(goScene.getDuration());
 		if (sceneId == null) {
@@ -275,6 +234,7 @@ public class LinkEditor extends ComponentEditor<Behavior> implements
 		ModelEntity scene = (ModelEntity) controller.getModel()
 				.getResource(sceneId, ResourceCategory.SCENE).getObject();
 
+		updateTransitionName();
 		tile.setText(Q.getTitle(scene));
 		this.thumbnailPath = Q.getThumbnailPath(scene);
 
@@ -282,16 +242,10 @@ public class LinkEditor extends ComponentEditor<Behavior> implements
 
 		controller.action(SetField.class, goScene, FieldName.SCENE_ID, sceneId);
 
-		setTransition();
-
 	}
 
-	private void setTransition() {
-		ModelEntity selectedScene = (ModelEntity) controller.getModel()
-				.getSelection().getSingle(Selection.SCENE);
-		Q.getThumbnailTexture(selectedScene, currentThumbnail);
-		transitionTile.setText(i18N.m(transition.toString()));
-		transitionPreview.setTransition(transition, getDuration());
+	private void updateTransitionName() {
+		transitionName.setText(i18N.m(transition.toString()));
 	}
 
 	@Override
@@ -320,7 +274,6 @@ public class LinkEditor extends ComponentEditor<Behavior> implements
 	@Override
 	public void loaded(String fileName, Texture asset) {
 		thumbnail.setTexture(asset);
-		transitionPreview.setNextTexture(asset);
 	}
 
 	public String getTooltip() {
@@ -353,11 +306,31 @@ public class LinkEditor extends ComponentEditor<Behavior> implements
 	@Override
 	public void loaded(String fileName, Texture asset, Assets assets) {
 		thumbnail.setTexture(asset);
-		transitionPreview.setNextTexture(asset);
 	}
 
 	@Override
 	public void unloaded(String fileName, Assets assets) {
 		thumbnail.setTexture(null);
+	}
+
+	private class TransitionSelectorListener implements
+			SelectorListener<String> {
+
+		@Override
+		public void selected(String selected) {
+
+			transition = Transition.fromValue(selected);
+			updateTransitionName();
+
+			controller.action(SetField.class, goScene, FieldName.TRANSITION,
+					Transition.fromValue(selected));
+			hideSelector(transitionSelector);
+
+		}
+
+		@Override
+		public void cancelled() {
+			hideSelector(transitionSelector);
+		}
 	}
 }
