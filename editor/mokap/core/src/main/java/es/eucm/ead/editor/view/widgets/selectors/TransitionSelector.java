@@ -36,12 +36,12 @@
  */
 package es.eucm.ead.editor.view.widgets.selectors;
 
+import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.ui.Container;
 import com.badlogic.gdx.scenes.scene2d.ui.Image;
-import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.scenes.scene2d.ui.SelectBox;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
@@ -58,6 +58,8 @@ import es.eucm.ead.editor.view.widgets.AbstractWidget;
 import es.eucm.ead.editor.view.widgets.MultiWidget;
 import es.eucm.ead.editor.view.widgets.WidgetBuilder;
 import es.eucm.ead.editor.view.widgets.layouts.LinearGallery;
+import es.eucm.ead.editor.view.widgets.layouts.LinearGallery.FocusEvent;
+import es.eucm.ead.editor.view.widgets.layouts.LinearGallery.FocusListener;
 import es.eucm.ead.editor.view.widgets.layouts.LinearLayout;
 import es.eucm.ead.engine.I18N;
 import es.eucm.ead.engine.assets.Assets;
@@ -99,8 +101,6 @@ public class TransitionSelector extends LinearLayout implements
 			}
 		});
 
-		buttons.add(new Label(i18N.m("select.transition"), skin,
-				SkinConstants.STYLE_TOOLBAR));
 		buttons.addSpace();
 		buttons.add(box = new SelectBox<String>(skin,
 				SkinConstants.STYLE_TOOLBAR));
@@ -112,8 +112,19 @@ public class TransitionSelector extends LinearLayout implements
 		transitionSelector.addListener(new ChangeListener() {
 			@Override
 			public void changed(ChangeEvent event, Actor actor) {
-				box.setSelected(i18N.m(transitionSelector.gallery
-						.getCurrentPage().getName()));
+				Actor currentPage = transitionSelector.gallery.getCurrentPage();
+				box.setSelected(i18N.m(currentPage.getName()));
+			}
+		});
+		transitionSelector.addListener(new FocusListener() {
+			@Override
+			public void focusGained(FocusEvent event) {
+				for (TransitionDrawable drawable : transitionSelector.pendingCurrentTextures) {
+					drawable.setUpdate(false);
+				}
+
+				Image image = (Image) ((Container) event.getActor()).getActor();
+				((TransitionDrawable) image.getDrawable()).setUpdate(true);
 			}
 		});
 		box.getSelection().setProgrammaticChangeEvents(false);
@@ -128,14 +139,36 @@ public class TransitionSelector extends LinearLayout implements
 
 	public class SelectTransitionsGallery extends AbstractWidget {
 
-		protected Skin skin;
+		private Skin skin;
 
-		protected I18N i18N;
+		private I18N i18N;
 
-		protected Array<TransitionDrawable> pendingCurrentTextures = new Array<TransitionDrawable>();
-		protected Array<TransitionDrawable> pendingNextTextures = new Array<TransitionDrawable>();
+		private Array<TransitionDrawable> pendingCurrentTextures = new Array<TransitionDrawable>();
+		private Array<TransitionDrawable> pendingNextTextures = new Array<TransitionDrawable>();
 
-		protected LinearGallery gallery;
+		private LinearGallery gallery;
+
+		private UpdateSelected updateSelected = new UpdateSelected();
+
+		private AssetLoadedCallback<Texture> currentTexturesCallback = new AssetLoadedCallback<Texture>() {
+
+			@Override
+			public void loaded(String fileName, Texture asset) {
+				for (TransitionDrawable drawable : pendingCurrentTextures) {
+					drawable.setCurrentTexture(asset);
+				}
+			}
+		};
+
+		private AssetLoadedCallback<Texture> nextTexturesCallback = new AssetLoadedCallback<Texture>() {
+
+			@Override
+			public void loaded(String fileName, Texture asset) {
+				for (TransitionDrawable drawable : pendingNextTextures) {
+					drawable.setNextTexture(asset);
+				}
+			}
+		};
 
 		public SelectTransitionsGallery(Assets assets, Skin skin, I18N i18N) {
 			addActor(gallery = new LinearGallery(skin,
@@ -189,30 +222,14 @@ public class TransitionSelector extends LinearLayout implements
 					}
 				});
 			}
-			box.setSelected(i18N.m((String) args[0]));
 
-			Q.getThumbnailTexture(selectedScene,
-					new AssetLoadedCallback<Texture>() {
+			updateSelected.index = box.getItems().indexOf(
+					i18N.m((String) args[0]), false);
+			Gdx.app.postRunnable(updateSelected);
 
-						@Override
-						public void loaded(String fileName, Texture asset) {
-							for (TransitionDrawable drawable : pendingCurrentTextures) {
-								drawable.setCurrentTexture(asset);
-							}
+			Q.getThumbnailTexture(selectedScene, currentTexturesCallback);
 
-						}
-					});
-
-			Q.getThumbnailTexture(nextScene,
-					new AssetLoadedCallback<Texture>() {
-
-						@Override
-						public void loaded(String fileName, Texture asset) {
-							for (TransitionDrawable drawable : pendingNextTextures) {
-								drawable.setNextTexture(asset);
-							}
-						}
-					});
+			Q.getThumbnailTexture(nextScene, nextTexturesCallback);
 
 		}
 
@@ -227,5 +244,14 @@ public class TransitionSelector extends LinearLayout implements
 	public boolean onBackPressed() {
 		selectorListener.cancelled();
 		return true;
+	}
+
+	private class UpdateSelected implements Runnable {
+		private int index;
+
+		@Override
+		public void run() {
+			transitionSelector.gallery.scrollToPage(index);
+		}
 	}
 }

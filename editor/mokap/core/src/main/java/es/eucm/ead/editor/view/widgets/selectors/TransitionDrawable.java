@@ -48,6 +48,8 @@ import es.eucm.ead.schema.effects.GoScene.Transition;
 
 public class TransitionDrawable extends BaseDrawable {
 
+	private boolean update = true;
+
 	private TextureRegion currScreen = new TextureRegion();
 	private Region region = new Region(0, 0, 0, 0);
 	private TextureRegion nextScreen = new TextureRegion();
@@ -82,20 +84,25 @@ public class TransitionDrawable extends BaseDrawable {
 			region.y = (int) y;
 			region.w = (int) width;
 			region.h = (int) height;
-			// ongoing transition
-			float duration = transition.getDuration();
-			// update progress of ongoing transition
-			time += Gdx.graphics.getDeltaTime();
-			if (time > duration) {
-				percentageCompletion = 1f;
-				float tempDuration = duration * 1.5f;
-				if (time > tempDuration) {
-					endTransition();
+			if (update) {
+				// ongoing transition
+				float duration = transition.getDuration();
+				// update progress of ongoing transition
+				time += Gdx.graphics.getDeltaTime();
+				if (time > duration) {
+					percentageCompletion = 1f;
+					float tempDuration = duration * 1.5f;
+					if (time > tempDuration) {
+						endTransition();
+					}
+				} else {
+					// render transition effect to screen
+					percentageCompletion = time / duration;
+
 				}
 			} else {
-				// render transition effect to screen
-				percentageCompletion = time / duration;
-
+				percentageCompletion = 0f;
+				time = 0f;
 			}
 			this.transition.render(batch, currScreen, region, nextScreen,
 					region, percentageCompletion);
@@ -118,6 +125,10 @@ public class TransitionDrawable extends BaseDrawable {
 	@Override
 	public float getMinHeight() {
 		return region.h;
+	}
+
+	public void setUpdate(boolean update) {
+		this.update = update;
 	}
 
 }
