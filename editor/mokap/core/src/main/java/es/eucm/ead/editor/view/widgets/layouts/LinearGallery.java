@@ -37,12 +37,15 @@
 package es.eucm.ead.editor.view.widgets.layouts;
 
 import com.badlogic.gdx.scenes.scene2d.Actor;
+import com.badlogic.gdx.scenes.scene2d.Event;
+import com.badlogic.gdx.scenes.scene2d.EventListener;
 import com.badlogic.gdx.scenes.scene2d.ui.ScrollPane;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener.ChangeEvent;
 import com.badlogic.gdx.scenes.scene2d.utils.Drawable;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.Pools;
+import com.badlogic.gdx.utils.SnapshotArray;
 
 import es.eucm.ead.editor.view.widgets.AbstractWidget;
 import es.eucm.ead.editor.view.widgets.WidgetBuilder;
@@ -59,7 +62,7 @@ public class LinearGallery extends ScrollPane {
 
 	private Pages content;
 
-	private boolean wasPanDragFling = false;
+	private boolean wasPanDragFling = false, needsFocus = true;
 
 	public LinearGallery(Skin skin, String background) {
 		this(skin.getDrawable(background));
@@ -86,6 +89,19 @@ public class LinearGallery extends ScrollPane {
 		float cx = getScrollX() + getParent().getWidth() * .5f;
 		float cy = getScrollY() + getParent().getHeight() * .5f;
 		checkCurrentPage(cx, cy);
+		if (currentPage != null
+				&& needsFocus
+				&& !(getVelocityX() != 0 || isPanning() || getScrollX() != getVisualScrollX())) {
+			needsFocus = false;
+			fireFocus();
+		}
+	}
+
+	private void fireFocus() {
+		FocusEvent event = Pools.obtain(FocusEvent.class);
+		event.actor = currentPage;
+		fire(event);
+		Pools.free(event);
 	}
 
 	private void checkCurrentPage(float cx, float cy) {
@@ -93,6 +109,7 @@ public class LinearGallery extends ScrollPane {
 			Actor visibleActor = getVisibleActor(cx, cy);
 			if (visibleActor != null) {
 				currentPage = visibleActor;
+				needsFocus = true;
 				fireChanged();
 			}
 		}
@@ -120,6 +137,46 @@ public class LinearGallery extends ScrollPane {
 	private boolean isVisible(Actor actor, float cx, float cy) {
 		return (cx > actor.getX() && cx <= actor.getRight()
 				&& cy > actor.getY() && cy <= actor.getTop());
+	}
+
+	/**
+	 * Base class to listen to {@link FocusEvent}s produced by
+	 * {@link LinearGallery}.
+	 */
+	public static class FocusListener implements EventListener {
+
+		@Override
+		public boolean handle(Event event) {
+			if (event instanceof FocusEvent) {
+				focusGained((FocusEvent) event);
+			}
+			return true;
+		}
+
+		/**
+		 * The focus has been gained.
+		 */
+		public void focusGained(FocusEvent event) {
+
+		}
+	}
+
+	/**
+	 * Fired when one of the pages has gained focus, after the scroll has ended.
+	 */
+	public static class FocusEvent extends Event {
+
+		private Actor actor;
+
+		public Actor getActor() {
+			return actor;
+		}
+
+		@Override
+		public void reset() {
+			super.reset();
+			this.actor = null;
+		}
 	}
 
 	protected int scrollToPage() {
@@ -172,6 +229,11 @@ public class LinearGallery extends ScrollPane {
 
 	public void add(Actor actor) {
 		content.addActor(actor);
+	}
+
+	@Override
+	public SnapshotArray<Actor> getChildren() {
+		return content.getChildren();
 	}
 
 	private static class Pages extends AbstractWidget {

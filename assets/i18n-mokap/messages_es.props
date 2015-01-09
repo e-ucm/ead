@@ -90,7 +90,6 @@ scene.last_scene_deleted = No puedes borrar la única escena de tu mokap
 scene.none_selected = Ninguna escena seleccionada
 search = Buscar
 select.scene = Selecciona una escena
-select.transition = Selecciona una transición
 send.to.back = Enviar detrás
 sliceHorizontal = Cortes horizontales
 sliceVertical = Cortes verticales
