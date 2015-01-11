@@ -36,12 +36,17 @@
  */
 package es.eucm.ead.editor.exporter;
 
+//import com.badlogic.gdx.backends.lwjgl.LwjglFiles;
 import com.badlogic.gdx.files.FileHandle;
+import com.badlogic.gdx.graphics.Pixmap;
+import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.utils.Json;
 import com.badlogic.gdx.utils.SerializationException;
+import es.eucm.ead.engine.assets.GameAssets;
 import es.eucm.ead.engine.utils.ZipUtils;
 import es.eucm.ead.schema.entities.ModelEntity;
 import es.eucm.ead.schemax.JsonExtension;
+import es.eucm.ead.schemax.ModelStructure;
 
 import java.util.*;
 
@@ -68,7 +73,55 @@ public class ExporterApplication {
 	 */
 	public static final String SEPARATOR = ",";
 
-	private static boolean exported = false;
+	/**
+	 * Exports the given game project to the given destination as a standalone
+	 * Android APK. It uses Maven.
+	 * 
+	 * @param projectPath
+	 *            The full path to the game project. Cannot be null. It is
+	 *            expected to be a folder with an editor-valid game project.
+	 *            E.g.: ("/Users/aUser/eadgames/agame/")
+	 * @param mavenPath
+	 *            The full path to the system directory where maven is installed
+	 *            (e.g. "/dev/maven/"). If null, exporter tries to resolve it
+	 *            from system's environment variables
+	 * @param packageName
+	 *            The main package for the application. It is important that
+	 *            this package had not been used before for other standalone
+	 *            mokap, as Google Play do not allow two apps with the same main
+	 *            package. If null, a package name is automatically generated
+	 *            from the appName.
+	 * @param artifactId
+	 *            The artifactId used for the pom. If {@code null}, an
+	 *            artifactId containing only lowercase letters, dashes and
+	 *            digits is generated automatically from the appName.
+	 * @param appName
+	 *            The name of the application, in a user-friendly format (e.g.
+	 *            Game Of Thrones). Cannot be {@code null}.
+	 * @param pathToAppIcons
+	 *            Full (absolute) path to either a PNG file or a directory
+	 *            containing several PNG files that will be used to generate the
+	 *            launcher icons for the apk. If {@code pathToAppIcons} is a
+	 *            directory, the PNG images it contains are scanned and assigned
+	 *            to the most suitable version (dpi) of the launcher icon. This
+	 *            way it is possible to provide alternative versions of the
+	 *            launcher icon. To the extent that is possible, available icons
+	 *            are scaled down to create any missing icons of lower
+	 *            resolution. Icons of higher resolution are never
+	 *            auto-generated, as no image is ever scaled up.
+	 * 
+	 * @param destinationPath
+	 *            The full path to export the game to. Cannot be null. E.g.:
+	 *            "/Users/aUser/eadexports/techdemo.apk"
+	 * @return True if the exportation completed successfully, false otherwise
+	 */
+	public static boolean exportAsApk(String projectPath, String mavenPath,
+			String packageName, String artifactId, String appName,
+			String pathToAppIcons, String destinationPath) {
+
+		return new ExportToApk(projectPath, destinationPath, packageName,
+				artifactId, appName, pathToAppIcons, mavenPath).run();
+	}
 
 	/**
 	 * Exports the given game project to the given destination using the engine
@@ -91,48 +144,13 @@ public class ExporterApplication {
 	 */
 	public static boolean exportAsJar(String projectPath, String engineJarPath,
 			String destinationPath) {
+		return new ExportToJar(projectPath, destinationPath, engineJarPath)
+				.run();
+	}
 
-		exported = false;
-
-		Map<String, Object> entities = new HashMap<String, Object>();
-		FileHandle projectFileHandle = new FileHandle(projectPath);
-
-		// Try to load all game entities
-		Json json = new Json();
-		try {
-			loadAllEntities(json, projectFileHandle, entities);
-		} catch (SerializationException serializationException) {
-			System.err
-					.println("[ERROR] A serialization exception occurred while exporting "
-							+ projectPath
-							+ ". The project could not be exported.");
-			return false;
-		}
-
-		// Export
-		Exporter exporter = new Exporter(json);
-		exporter.exportAsJar(destinationPath, projectPath, engineJarPath,
-				entities.entrySet(), new ExportCallback() {
-					@Override
-					public void error(String errorMessage) {
-						System.err.println("[ERROR] " + errorMessage);
-					}
-
-					@Override
-					public void progress(int percentage, String currentTask) {
-						System.out.println("[" + percentage + "] "
-								+ currentTask);
-					}
-
-					@Override
-					public void complete(String completionMessage) {
-						System.out.println("[EXPORTATION COMPLETE] "
-								+ completionMessage);
-						exported = true;
-					}
-				});
-
-		return exported;
+	private static void loadAllEntities(Json json, FileHandle directory,
+			Map<String, Object> entities) {
+		loadAllEntities(json, directory, entities, "");
 	}
 
 	/**
@@ -154,7 +172,7 @@ public class ExporterApplication {
 	 *             If {@code directory} is not valid
 	 */
 	private static void loadAllEntities(Json json, FileHandle directory,
-			Map<String, Object> entities) {
+			Map<String, Object> entities, String prefix) {
 		if (directory == null || !directory.exists()
 				|| !directory.isDirectory())
 			throw new RuntimeException(
@@ -164,10 +182,14 @@ public class ExporterApplication {
 
 		for (FileHandle child : directory.list()) {
 			if (child.isDirectory()) {
-				loadAllEntities(json, child, entities);
-			} else if (JsonExtension.hasJsonExtension(child.extension())) {
-				ModelEntity newScene = json.fromJson(ModelEntity.class, child);
-				entities.put(child.nameWithoutExtension(), newScene);
+				loadAllEntities(json, child, entities, prefix + child.name()
+						+ "/");
+			} else if (JsonExtension.hasJsonExtension(child.extension())
+					&& !child.name().toLowerCase()
+							.equals(ModelStructure.DESCRIPTOR_FILE)) {
+				ModelEntity newScene = json.fromJson(ModelEntity.class, null,
+						child);
+				entities.put(prefix + child.name(), newScene);
 			}
 
 		}
@@ -179,19 +201,22 @@ public class ExporterApplication {
 	 * @param args
 	 */
 	public static void main(String[] args) {
-
-		String engineLibPath = null;
-
+		// Common properties
 		String projectPath = null;
 		String projectPathList = null;
 
 		String destinyPath = null;
 		String destinyPathList = null;
 
-		String format = "jar";
-		String formatList = null;
+		String formatList = "jar";
 
 		boolean help = false;
+
+		// Jar properties
+		String engineLibPath = null;
+
+		// Apk properties
+		String packageName = null, artifactId = null, appName = null, appNameList = null, pathToAppIcons = null, pathToAppIconsList = null, mavenPath = null;
 
 		if (args != null) {
 
@@ -201,6 +226,9 @@ public class ExporterApplication {
 				} else if (args[i].toLowerCase().equals("-engine-lib")
 						&& i + 1 < args.length) {
 					engineLibPath = args[i + 1];
+				} else if (args[i].toLowerCase().equals("-maven-dir")
+						&& i + 1 < args.length) {
+					mavenPath = args[i + 1];
 				} else if (args[i].toLowerCase().equals("-project")
 						&& i + 1 < args.length) {
 					projectPath = args[i + 1];
@@ -215,44 +243,54 @@ public class ExporterApplication {
 					destinyPathList = args[i + 1];
 				} else if (args[i].toLowerCase().equals("-format")
 						&& i + 1 < args.length) {
-					format = args[i + 1];
+					formatList = args[i + 1];
 				} else if (args[i].toLowerCase().equals("-format-list")
 						&& i + 1 < args.length) {
 					formatList = args[i + 1];
+				} else if (args[i].toLowerCase().equals("-package")
+						&& i + 1 < args.length) {
+					packageName = args[i + 1];
+				} else if (args[i].toLowerCase().equals("-artifact")
+						&& i + 1 < args.length) {
+					artifactId = args[i + 1];
+				} else if (args[i].toLowerCase().equals("-app-name")
+						&& i + 1 < args.length) {
+					appName = args[i + 1];
+				} else if (args[i].toLowerCase().equals("-app-name-list")
+						&& i + 1 < args.length) {
+					appNameList = args[i + 1];
+				} else if (args[i].toLowerCase().equals("-app-icons")
+						&& i + 1 < args.length) {
+					pathToAppIcons = args[i + 1];
+				} else if (args[i].toLowerCase().equals("-app-icons-list")
+						&& i + 1 < args.length) {
+					pathToAppIconsList = args[i + 1];
 				}
 			}
-
 		}
 
 		// If there are missing arguments, or if the "-help" argument was
 		// introduced, print out usage instructions and return
-		if (help || engineLibPath == null || projectPath == null
-				&& projectPathList == null || destinyPath == null
-				&& destinyPathList == null) {
+		if (help
+				|| projectPath == null
+				&& projectPathList == null
+				|| destinyPath == null
+				&& destinyPathList == null
+				|| formatList.toLowerCase().contains("jar")
+				&& engineLibPath == null
+				|| formatList.toLowerCase().contains("apk")
+				&& (appName == null && appNameList == null || pathToAppIcons == null
+						&& pathToAppIconsList == null)) {
 			printUsage();
 		} else {
 
-			List<String> projects = new ArrayList<String>();
-			List<String> targets = new ArrayList<String>();
-
-			if (projectPath != null) {
-				projects.add(projectPath);
-			}
-			if (destinyPath != null) {
-				targets.add(destinyPath);
-			}
-
-			if (projectPathList != null) {
-				for (String path : projectPathList.split(SEPARATOR)) {
-					projects.add(path);
-				}
-			}
-
-			if (destinyPathList != null) {
-				for (String path : destinyPathList.split(SEPARATOR)) {
-					targets.add(path);
-				}
-			}
+			List<String> projects = createListFromArg(projectPath,
+					projectPathList);
+			List<String> targets = createListFromArg(destinyPath,
+					destinyPathList);
+			List<String> appNames = createListFromArg(appName, appNameList);
+			List<String> appIcons = createListFromArg(pathToAppIcons,
+					pathToAppIconsList);
 
 			// Check that in total, the number of projects and the number of
 			// target files match. Otherwise print out usage instructions and
@@ -279,8 +317,23 @@ public class ExporterApplication {
 										+ projects.get(i)
 										+ "\" is neither a folder or a zip file!");
 					}
-					ExporterApplication.exportAsJar(path, engineLibPath,
-							targets.get(i));
+
+					if (formatList.toLowerCase().contains("jar")) {
+						ExporterApplication.exportAsJar(path, engineLibPath,
+								targets.get(i));
+					}
+
+					if (formatList.toLowerCase().contains("apk")) {
+						if (projects.size() == 1) {
+							ExporterApplication.exportAsApk(path, mavenPath,
+									packageName, artifactId, appName,
+									pathToAppIcons, targets.get(i));
+						} else {
+							ExporterApplication.exportAsApk(path, mavenPath,
+									null, null, appNames.get(i),
+									appIcons.get(i), targets.get(i));
+						}
+					}
 				}
 
 			}
@@ -288,22 +341,216 @@ public class ExporterApplication {
 
 	}
 
+	private static List<String> createListFromArg(String singleArg,
+			String listArg) {
+		List<String> toReturn = new ArrayList<String>();
+		if (singleArg != null) {
+			toReturn.add(singleArg);
+		}
+		if (listArg != null) {
+			for (String arg : listArg.split(SEPARATOR)) {
+				toReturn.add(arg);
+			}
+		}
+		return toReturn;
+	}
+
 	private static void printUsage() {
 		System.out
-				.println("This utility allows exporting one or several eAdventure2 game projects to JAR format at the same time.");
+				.println("This utility allows exporting one or several mokap game projects to JAR or APK format at the same time.");
 		System.out.println();
-		System.out.println("\tSyntax:");
+		System.out.println("\tNotes:");
+		System.out.println("----------");
 		System.out
-				.println("\t\tjava es.eucm.ead.editor.exporter.ExporterApplication -engine-lib [PATH TO THE ENGINE LIB] -project [PATH TO THE GAME PROJECT] -target [PATH TO THE JAR OUTPUT]");
+				.println("\t\tTake into account that to export as APK you need to have Maven installed and configured in your system!");
+		System.out.println("\tSyntax:");
+		System.out.println("----------");
+		System.out
+				.println("\t\tjava es.eucm.ead.editor.exporter.ExporterApplication [OPTIONS] -project PATH_TO_THE_GAME_PROJECT -target PATH_TO_THE_OUTPUT_FILE");
 		System.out.println("\tOr:");
 		System.out
-				.println("\t\tjava es.eucm.ead.editor.exporter.ExporterApplication -engine-lib [PATH TO THE ENGINE LIB] -project-list [COMMA-SEPARATED PATHS TO THE GAME PROJECTS] -target-list [COMMA-SEPARATED PATHS TO THE JAR OUTPUTS]");
+				.println("\t\tjava es.eucm.ead.editor.exporter.ExporterApplication [OPTIONS] -project-list COMMA-SEPARATED_PATHS_TO_THE_GAME_PROJECTS -target-list COMMA-SEPARATED_PATHS_TO_THE_OUTPUTS");
+		System.out.println();
+		System.out.println("\tWhere [OPTIONS] has the next syntax:");
+		System.out
+				.println("\t\t[-format-list LIST_OF_FORMATS] [-engine-lib PATH_TO_THE_ENGINE_LIB] [-maven-dir PATH_TO_MAVEN_INSTALLATION_DIR] [-app-name APP_NAME_FOR_APK] [-app-name-list COMMA-SEPARATED_LIST_OF_APPNAMES_FOR_APK] [-app-icons PATH_TO_ICONS_FOR_APK] [-app-icons-list COMMA-SEPARATED_LIST_OF_PATH_TO_ICONS_FOR_APK] [-package NAME_OF_APK_PACKAGE] [-artifact MAVEN_ARTIFACT_OF_APK]  ");
+		System.out
+				.println("\t\t\t-format-list LIST_OF_FORMATS\t\tMust provide the exportation formats. Possible options: jar | apk | jar,apk. If not specified, only jar format is produced");
+		System.out
+				.println("\t\t\t-engine-lib PATH_TO_THE_ENGINE_LIB\t\tNeeded only if JAR format is selected. Must point to the jar file containing the engine plus all dependencies");
+		System.out
+				.println("\t\t\t-maven-dir PATH_TO_MAVEN_INSTALLATION_DIR\t\tNeeded only if APK format is selected. Must point to the path where maven is installed in the system. Can be omitted if MAVEN_HOME or MVN_HOME environment variables are set up");
+		System.out
+				.println("\t\t\t-app-name APP_NAME_FOR_APK\t\tNeeded only if APK format is selected. Provides a user-friendly name for the application (e.g. Game Of Thrones)");
+		System.out
+				.println("\t\t\t-app-name-list COMMA-SEPARATED_LIST_OF_APPNAMES_FOR_APK\t\tList alternative to -app-name if multiple targets are used");
+		System.out
+				.println("\t\t\t-app-icons PATH_TO_ICONS_FOR_APK\t\tNeeded only if APK format is selected. Provides an absolute path to a PNG image, or a directory containing PNG images, to be used to generate icons for the APK.");
+		System.out
+				.println("\t\t\t-app-icons-list COMMA-SEPARATED_LIST_OF_PATH_TO_ICONS_FOR_APK\t\tNeeded only if APK format is selected. List alternative to -app-icons if multiple targets are used");
+		System.out
+				.println("\t\t\t-package NAME_OF_APK_PACKAGE\t\tOptional. Specify only if you want to override auto-generated package name for APK exportation (Google Play uses this package to identify apps)");
+		System.out
+				.println("\t\t\t-artifact MAVEN_ARTIFACT_OF_APK\t\tOptional. Specify only for APK exportation.");
 		System.out.println();
 		System.out.println("\tExamples:");
+		System.out
+				.println("\t\tjava es.eucm.ead.editor.exporter.ExporterApplication -format-list apk -app-name \"Game Of Thrones\" -app-icons /User/Home/got/icons -project /User/Home/got/game -target /User/Home/got/app.apk");
 		System.out
 				.println("\t\tjava es.eucm.ead.editor.exporter.ExporterApplication -engine-lib \"C:/Users/Javier Torrente/.m2/repository/es/e-ucm/ead/engine-desktop/1.0-SNAPSHOT/engine-desktop-1.0-SNAPSHOT-jar-with-dependencies.jar\" -project \"C:\\Users\\Javier Torrente\\GIT_REPOS\\ead\\engine\\desktop\\src\\test\\"
 						+ "resources\\techdemo\\\" -target \"C:\\Users\\Javier Torrente\\Downloads\\Exports\\techdemo.jar\"");
 		System.out
 				.println("\t\tjava es.eucm.ead.editor.exporter.ExporterApplication -engine-lib \"C:/Users/Javier Torrente/.m2/repository/es/e-ucm/ead/engine-desktop/1.0-SNAPSHOT/engine-desktop-1.0-SNAPSHOT-jar-with-dependencies.jar\" -project-list \"C:\\Users\\Javier Torrente\\GIT_REPOS\\ead\\engine\\desktop\\src\\test\\resources\\techdemo,C:\\Users\\Javier Torrente\\GIT_REPOS\\parity2.0\\src\\main\\resources\\parity2.0\" -target-list \"C:\\Users\\Javier Torrente\\Downloads\\Exports\\techdemo.jar,C:\\Users\\Javier Torrente\\Downloads\\Exports\\parity.jar\"");
+	}
+
+	private abstract static class ExportMethod {
+
+		protected static boolean exported = false;
+
+		private String projectPath;
+		private String destinationPath;
+
+		public ExportMethod(String projectPath, String destinationPath) {
+			this.projectPath = projectPath;
+			this.destinationPath = destinationPath;
+		}
+
+		public boolean run() {
+			exported = false;
+			Map<String, Object> entities = new HashMap<String, Object>();
+			FileHandle projectFileHandle = new FileHandle(projectPath);
+
+			// Try to load all game entities
+			GameAssets gameAssets = new GameAssets(new ExporterFiles(),
+					new ExporterImageUtils()) {
+				protected FileHandle[] resolveBindings() {
+					return new FileHandle[] { resolve("bindings.json"),
+							resolve("editor-bindings.json") };
+				}
+			};
+			try {
+				loadAllEntities(gameAssets, projectFileHandle, entities);
+			} catch (SerializationException serializationException) {
+				System.err
+						.println("[ERROR] A serialization exception occurred while exporting "
+								+ projectPath
+								+ ". The project could not be exported.");
+				return false;
+			}
+
+			// Export
+			Exporter exporter = new Exporter(gameAssets);
+			doExport(projectPath, destinationPath, entities, gameAssets,
+					exporter, new DefaultCallback());
+			return exported;
+		}
+
+		protected abstract void doExport(String projectPath,
+				String destinationPath, Map<String, Object> entities,
+				GameAssets gameAssets, Exporter exporter,
+				ExportCallback callback);
+
+		protected class DefaultCallback implements ExportCallback {
+			@Override
+			public void error(String errorMessage) {
+				System.err.println("[ERROR] " + errorMessage);
+			}
+
+			@Override
+			public void progress(int percentage, String currentTask) {
+				System.out.println("[" + percentage + "] " + currentTask);
+			}
+
+			@Override
+			public void complete(String completionMessage) {
+				System.out.println("[EXPORTATION COMPLETE] "
+						+ completionMessage);
+				exported = true;
+			}
+		}
+	}
+
+	private static class ExportToApk extends ExportMethod {
+
+		private String packageName;
+		private String artifactId;
+		private String appName;
+		private String pathToAppIcons;
+		private String mavenPath;
+
+		private ExportToApk(String projectPath, String destinationPath,
+				String packageName, String artifactId, String appName,
+				String pathToAppIcons, String mavenPath) {
+			super(projectPath, destinationPath);
+			this.packageName = packageName;
+			this.artifactId = artifactId;
+			this.appName = appName;
+			this.pathToAppIcons = pathToAppIcons;
+			this.mavenPath = mavenPath;
+		}
+
+		@Override
+		protected void doExport(String projectPath, String destinationPath,
+				Map<String, Object> entities, GameAssets gameAssets,
+				Exporter exporter, ExportCallback callback) {
+			System.out
+					.println("-------------------------------------------------------------------");
+			System.out.println("  Starting generation of APK from "
+					+ projectPath);
+			System.out
+					.println("-------------------------------------------------------------------");
+			exporter.exportAsApk(destinationPath, projectPath, mavenPath,
+					gameAssets.resolve("assets").path(), packageName,
+					artifactId, appName, pathToAppIcons, entities.entrySet(),
+					callback);
+		}
+	}
+
+	private static class ExportToJar extends ExportMethod {
+
+		private String engineJarPath;
+
+		private ExportToJar(String projectPath, String destinationPath,
+				String engineJarPath) {
+			super(projectPath, destinationPath);
+			this.engineJarPath = engineJarPath;
+		}
+
+		@Override
+		protected void doExport(String projectPath, String destinationPath,
+				Map<String, Object> entities, GameAssets gameAssets,
+				Exporter exporter, ExportCallback callback) {
+			System.out
+					.println("-------------------------------------------------------------------");
+			System.out.println("  Starting generation of JAR from "
+					+ projectPath);
+			System.out
+					.println("-------------------------------------------------------------------");
+			exporter.exportAsJar(destinationPath, projectPath, engineJarPath,
+					entities.entrySet(), new DefaultCallback());
+		}
+	}
+
+	private static class ExporterImageUtils implements GameAssets.ImageUtils
+
+	{
+
+		@Override
+		public boolean imageSize(FileHandle fileHandle, Vector2 size) {
+			Pixmap pixmap = new Pixmap(fileHandle);
+			size.set(pixmap.getWidth(), pixmap.getHeight());
+			return true;
+		}
+
+		@Override
+		public boolean validSize(Vector2 size) {
+			return true;
+		}
+
+		@Override
+		public float scale(FileHandle src, FileHandle target) {
+			src.copyTo(target);
+			return 1.0f;
+		}
 	}
 }

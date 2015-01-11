@@ -36,9 +36,12 @@
  */
 package es.eucm.ead.editor.exporter;
 
+import java.awt.image.BufferedImage;
+import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.OutputStream;
+import java.util.Collections;
 import java.util.Map;
 import java.util.zip.ZipOutputStream;
 
@@ -65,6 +68,9 @@ import es.eucm.ead.schemax.FieldName;
 import es.eucm.ead.schemax.ModelStructure;
 import es.eucm.ead.schemax.JsonExtension;
 import es.eucm.ead.schemax.Layer;
+import org.apache.maven.shared.invoker.*;
+
+import javax.imageio.ImageIO;
 
 /**
  * This class contains the functionality for exporting a given game project to a
@@ -213,10 +219,335 @@ public class Exporter {
 	}
 
 	/**
-	 * Exports the given game project, defined as an {@code editorGame} plus a
-	 * map of an {@code editorScenes}, as a single self-contained jar file that
-	 * can be run. The output jarfile generated embeds the engine library with
-	 * dependencies and also the contents of the game.
+	 * Exports the given game project, defined as a collection of entities, as a
+	 * single self-contained apk file that can be deployed and run on standalone
+	 * mode in any Android device.
+	 * 
+	 * @param destiny
+	 *            The full path of the destiny APK file where the output is to
+	 *            be saved.
+	 * @param source
+	 *            The full path of the folder containing the game project. This
+	 *            is required to copy the source images and other binaries.
+	 * @param mavenPath
+	 *            The full path to the system directory where maven is installed
+	 *            (e.g. "/dev/maven/"). If null, exporter tries to resolve it
+	 *            from system's MAVEN_HOME and MVN_HOME environment variables
+	 * @param assetsProjectPath
+	 *            Full (absolute) path to the folder that contains bindings.json
+	 *            and skins/engine, as those assets must be added to the
+	 *            application.
+	 * @param packageName
+	 *            The main package for the application. It is important that
+	 *            this package had not been used before for other standalone
+	 *            mokap, as Google Play do not allow two apps with the same main
+	 *            package. If null, a package name is automatically generated
+	 *            from the appName
+	 * @param artifactId
+	 *            The artifactId used for the pom. If {@code null}, an
+	 *            artifactId containing only lowercase letters, dashes and
+	 *            digits is generated automatically from the appName
+	 * @param appName
+	 *            The name of the application, in a user-friendly format (e.g.
+	 *            Game Of Thrones). Cannot be {@code null}.
+	 * @param pathToAppIcons
+	 *            Full (absolute) path to either a PNG file or a directory
+	 *            containing several PNG files that will be used to generate the
+	 *            launcher icons for the apk. If {@code pathToAppIcons} is a
+	 *            directory, the PNG images it contains are scanned and assigned
+	 *            to the most suitable version (dpi) of the launcher icon. This
+	 *            way it is possible to provide alternative versions of the
+	 *            launcher icon. To the extent that is possible, available icons
+	 *            are scaled down to create any missing icons of lower
+	 *            resolution. Icons of higher resolution are never
+	 *            auto-generated, as no image is ever scaled up.
+	 * @param entities
+	 *            An iterator to access in read-only mode all the
+	 *            {@link ModelEntity}s of the game (scenes, game, etc.)
+	 * @param callback
+	 *            A simple callback to provide updates on the exportation
+	 *            progress. May be {@code null}.
+	 */
+	public void exportAsApk(String destiny, String source, String mavenPath,
+			String assetsProjectPath, String packageName, String artifactId,
+			String appName, String pathToAppIcons,
+			Iterable<Map.Entry<String, Object>> entities,
+			ExportCallback callback) {
+		try {
+			if (callback != null) {
+				callback.progress(0, "  1) Generating temp maven project");
+			}
+
+			// Create basic structure for Maven project
+			FileHandle mavenProjectDir = createMavenProject(packageName,
+					artifactId, appName);
+			if (callback != null) {
+				callback.progress(5,
+						"    Maven project successfully created at: "
+								+ mavenProjectDir.path());
+			}
+
+			// Save game to assets subdir
+			if (callback != null) {
+				callback.progress(5, "  2) Saving game to assets/ ");
+			}
+			FileHandle assetsDir = mavenProjectDir.child("assets");
+			assetsDir.mkdirs();
+			saveGameForExport(assetsDir, entities);
+			FileHandle sourceFile = new FileHandle(source);
+			copyNonJsonFiles(assetsDir, sourceFile);
+			if (callback != null) {
+				callback.progress(15, "    Game saved correctly ");
+			}
+
+			// Copy engine skin and bindings
+			if (callback != null) {
+				callback.progress(15,
+						"  3) Copying bindings.json and skins/engine to assets/ ");
+			}
+			FileHandle assetsProjectFileHandle = new FileHandle(
+					assetsProjectPath);
+			assetsProjectFileHandle.child("bindings.json").copyTo(
+					assetsDir.child("bindings.json"));
+			assetsProjectFileHandle.child("skins/engine").copyTo(
+					assetsDir.child("skins/engine"));
+			if (callback != null) {
+				callback.progress(20, "    Files copied correctly");
+			}
+
+			// Process and copy app icons
+			if (callback != null) {
+				callback.progress(20, "  4) Generating app icons from "
+						+ pathToAppIcons);
+			}
+			String iconsGenerated = processAndCopyAppIcons(mavenProjectDir,
+					pathToAppIcons);
+			if (iconsGenerated == null) {
+				if (callback != null) {
+					callback.error("** NO ICONS WERE GENERATED **. Apk cannot be created without at least one launcher icon. Please revise you have specified at least one valid app icon in PNG format");
+				}
+				return;
+			}
+
+			if (callback != null) {
+				callback.progress(30, "    Next icons successfully generated: "
+						+ iconsGenerated);
+			}
+
+			// Compile using maven
+			if (callback != null) {
+				callback.progress(30,
+						"  5) Invoking maven to create APK. This step may take a while ");
+			}
+
+			InvocationRequest request = new DefaultInvocationRequest();
+
+			request.setPomFile(mavenProjectDir.child("pom.xml").file());
+			request.setGoals(Collections.singletonList("install"));
+			request.setProfiles(Collections.singletonList("android-build"));
+
+			Invoker invoker = new DefaultInvoker();
+			File mavenHome = findMavenDir(mavenPath);
+			if (mavenHome != null) {
+				invoker.setMavenHome(mavenHome);
+			}
+			InvocationResult result = invoker.execute(request);
+			if (result.getExitCode() == 0) {
+
+				if (callback != null) {
+					callback.progress(95, "    APK successfully generated");
+				}
+
+				// Copy output to destiny
+				if (callback != null) {
+					callback.progress(95, "  6) Copying apk to " + destiny);
+				}
+				FileHandle output = mavenProjectDir.child("target").child(
+						ApkResource.OUTPUT_FILENAME + ".apk");
+				output.copyTo(new FileHandle(destiny));
+				if (callback != null) {
+					callback.progress(100,
+							"    Apk successfully copied to destiny. Cleaning temp folder");
+					mavenProjectDir.deleteDirectory();
+					callback.complete("**** SUCCESS ****");
+				}
+			}
+			// Maven build returned error
+			else {
+				callback.error("An error occurred when building maven project generated. Make sure you have Maven installed and configured correctly. Also make sure all ead and libgdx artifacts are correctly installed");
+			}
+
+		} catch (Exception e) {
+			callback.error("Error occurred. Build aborted. Exception message: "
+					+ e.getMessage());
+			e.printStackTrace();
+			return;
+		}
+
+	}
+
+	private File findMavenDir(String path) {
+		if (path == null) {
+			path = System.getenv("MAVEN_HOME");
+		}
+		if (path == null) {
+			path = System.getenv("MVN_HOME");
+		}
+		if (path != null && path.toLowerCase().endsWith("bin")
+				|| path.toLowerCase().endsWith("bin/")
+				|| path.toLowerCase().endsWith("bin\\")) {
+			path = path.substring(0,
+					Math.max(path.lastIndexOf("/"), path.lastIndexOf("\\")));
+		}
+		if (path != null) {
+			return new File(path);
+		}
+		return null;
+	}
+
+	private FileHandle createMavenProject(String packageName,
+			String artifactId, String appName) {
+		// Create temp dir
+		FileHandle mavenProjectDir = FileHandle.tempDirectory("exporter-apk");
+		// Write pom.xml, AndroidManifest.xml, res/layout/main.xml and
+		// res/values/strings.xml
+		mavenProjectDir.child("pom.xml").writeString(
+				ApkResource.getPom(artifactId, appName), false, "UTF-8");
+		mavenProjectDir.child("AndroidManifest.xml").writeString(
+				ApkResource.getAndroidManifest(packageName, appName), false,
+				"UTF-8");
+		FileHandle resDir = mavenProjectDir.child("res");
+		resDir.mkdirs();
+		FileHandle layoutDir = resDir.child("layout");
+		layoutDir.mkdirs();
+		layoutDir.child("main.xml").writeString(ApkResource.getLayoutMain(),
+				false, "UTF-8");
+		FileHandle valuesDir = resDir.child("values");
+		valuesDir.child("strings.xml").writeString(
+				ApkResource.getValuesStrings(appName), false, "UTF-8");
+
+		return mavenProjectDir;
+	}
+
+	/*
+	 * Searches pathToAppIcons for PNG files. Uses these images to generate as
+	 * many launcher icons as possible by copying and scaling down.
+	 */
+	private String processAndCopyAppIcons(FileHandle mavenProjectDir,
+			String pathToAppIcons) {
+		FileHandle[] availableIconFileHandles = new FileHandle[ApkIcon.values().length];
+		BufferedImage[] availableIconImages = new BufferedImage[ApkIcon
+				.values().length];
+
+		FileHandle appIcon = new FileHandle(pathToAppIcons);
+		if (appIcon.isDirectory()) {
+			for (FileHandle icon : appIcon.list()) {
+				if (icon.extension().toLowerCase().equals("png")) {
+					processIcon(mavenProjectDir, icon,
+							availableIconFileHandles, availableIconImages);
+				}
+			}
+		} else if (appIcon.extension().toLowerCase().equals("png")) {
+			processIcon(mavenProjectDir, appIcon, availableIconFileHandles,
+					availableIconImages);
+		}
+
+		// Use buffered images to create non existing icons
+		for (int i = availableIconFileHandles.length - 1; i >= 0; i--) {
+			FileHandle bigIconFileHandle = availableIconFileHandles[i];
+			if (bigIconFileHandle == null) {
+				continue;
+			}
+			int j = i - 1;
+			while (j >= 0 && availableIconFileHandles[j] == null) {
+				ApkIcon targetIcon = ApkIcon.values()[j];
+				int resolution = targetIcon.getResolution();
+				BufferedImage targetImage = new BufferedImage(resolution,
+						resolution, BufferedImage.TRANSLUCENT);
+				targetImage.createGraphics().drawImage(
+						availableIconImages[i].getScaledInstance(resolution,
+								resolution, BufferedImage.SCALE_SMOOTH), 0, 0,
+						null);
+				targetImage.flush();
+				availableIconImages[j] = targetImage;
+				availableIconFileHandles[j] = writeIcon(targetImage,
+						targetIcon, mavenProjectDir);
+				j--;
+			}
+			i = j + 1;
+		}
+
+		String logMessageToReturn = null;
+		for (int i = 0; i < availableIconFileHandles.length; i++) {
+			if (availableIconFileHandles[i] != null) {
+				logMessageToReturn = (logMessageToReturn == null ? ""
+						: logMessageToReturn + ",")
+						+ ApkIcon.values()[i].getName();
+			}
+		}
+		return logMessageToReturn;
+	}
+
+	private void processIcon(FileHandle mavenProjectDir, FileHandle icon,
+			FileHandle[] availableIconFileHandles,
+			BufferedImage[] availableIconImages) {
+		try {
+			BufferedImage iconBI = ImageIO.read(icon.file());
+			ApkIcon apkIcon = ApkIcon.fromResolution(iconBI.getWidth());
+
+			if (apkIcon == null) {
+				return;
+			}
+			int position = apkIcon.ordinal();
+			FileHandle drawableDir = mavenProjectDir.child("res").child(
+					apkIcon.getPath());
+			drawableDir.mkdirs();
+
+			if (apkIcon.getResolution() < iconBI.getWidth()) {
+				BufferedImage tmp = new BufferedImage(apkIcon.getResolution(),
+						apkIcon.getResolution(), BufferedImage.TRANSLUCENT);
+				tmp.createGraphics().drawImage(
+
+						iconBI.getScaledInstance(apkIcon.getResolution(),
+								apkIcon.getResolution(),
+								BufferedImage.SCALE_SMOOTH), 0, 0, null);
+				tmp.flush();
+				iconBI = tmp;
+				availableIconFileHandles[position] = writeIcon(iconBI, apkIcon,
+						mavenProjectDir);
+			} else {
+				availableIconFileHandles[position] = drawableDir
+						.child(ApkResource.APP_ICON_NAME + ".png");
+				icon.copyTo(availableIconFileHandles[position]);
+			}
+
+			availableIconImages[position] = iconBI;
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+	}
+
+	private FileHandle writeIcon(BufferedImage targetImage, ApkIcon targetIcon,
+			FileHandle mavenProjectDir) {
+		FileHandle resDir = mavenProjectDir.child("res");
+		FileHandle drawableDir = resDir.child(targetIcon.getPath());
+		drawableDir.mkdirs();
+		FileHandle targetIconFileHandle = drawableDir
+				.child(ApkResource.APP_ICON_NAME + ".png");
+		try {
+			ImageIO.write(targetImage, "png", targetIconFileHandle.file());
+			return targetIconFileHandle;
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+		return null;
+	}
+
+	/**
+	 * Exports the given game project, defined as a collection of entities, as a
+	 * single self-contained jar file that can be run. The output jarfile
+	 * generated embeds the engine library with dependencies and also the
+	 * contents of the game.
 	 * 
 	 * @param destiny
 	 *            The full path of the destiny jar file where the output is to

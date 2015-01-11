@@ -50,7 +50,7 @@ import java.util.HashMap;
 
 public class EngineApplicationListener implements ApplicationListener {
 
-	private Stage stage;
+	protected Stage stage;
 
 	private GameLoop gameLoop;
 
@@ -62,7 +62,7 @@ public class EngineApplicationListener implements ApplicationListener {
 
 	private DefaultGameView gameView;
 
-	private ImageUtils imageUtils;
+	protected ImageUtils imageUtils;
 
 	public EngineApplicationListener(ImageUtils imageUtils) {
 		this.imageUtils = imageUtils;

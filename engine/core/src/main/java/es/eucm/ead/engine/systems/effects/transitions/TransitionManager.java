@@ -94,15 +94,14 @@ public class TransitionManager extends Actor implements Disposable {
 				nextScreenRegion, percentageCompletion);
 	}
 
-	public void takeCurrentScreenPicture(Stage stage, Actor currentLayer) {
-		Viewport viewport = stage.getViewport();
+	public void takeCurrentScreenPicture(int screenWidth, int screenHeight,
+			Stage stage, Actor currentLayer) {
 		if (hasParent()) {
 			endTransition();
 		}
 		if (currFbo == null) {
-			int w = viewport.getScreenWidth();
-			int h = viewport.getScreenHeight();
-			currFbo = new FrameBuffer(Format.RGB888, w, h, false);
+			currFbo = new FrameBuffer(Format.RGB888, screenWidth, screenHeight,
+					false);
 		}
 		Batch batch = stage.getBatch();
 		batch.begin();
@@ -110,15 +109,14 @@ public class TransitionManager extends Actor implements Disposable {
 		batch.end();
 	}
 
-	public void takeNextScreenPicture(Stage stage, Actor nextLayer) {
+	public void takeNextScreenPicture(int screenWidth, int screenHeight,
+			Actor nextLayer) {
 		nextScreenActor = nextLayer;
-		Viewport viewport = stage.getViewport();
 		if (nextFbo == null) {
-			int w = viewport.getScreenWidth();
-			int h = viewport.getScreenHeight();
-			nextFbo = new FrameBuffer(Format.RGB888, w, h, false);
-			currentScreenRegion.w = w;
-			currentScreenRegion.h = h;
+			nextFbo = new FrameBuffer(Format.RGB888, screenWidth, screenHeight,
+					false);
+			currentScreenRegion.w = screenWidth;
+			currentScreenRegion.h = screenHeight;
 		}
 	}
 

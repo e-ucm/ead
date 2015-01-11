@@ -41,6 +41,7 @@ import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.Json;
 import es.eucm.ead.editor.exporter.ExportCallback;
 import es.eucm.ead.editor.exporter.Exporter;
+import es.eucm.ead.editor.exporter.ExporterFiles;
 import es.eucm.ead.schema.components.behaviors.Behavior;
 import es.eucm.ead.schema.components.behaviors.events.Init;
 import es.eucm.ead.schema.components.behaviors.events.Touch;
@@ -258,7 +259,7 @@ public class ExporterTest {
 		}
 
 		// Copy jar lite file to a temp location
-		FileHandle sourceJarLite = new SimpleFilesForTesting()
+		FileHandle sourceJarLite = new ExporterFiles()
 				.internal(ENGINE_LIB_PATH);
 
 		FileHandle tempJarLite = FileHandle.tempFile("eadexport-jar");

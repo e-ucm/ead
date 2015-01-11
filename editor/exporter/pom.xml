@@ -10,6 +10,11 @@
     <dependencies>
         <dependency>
             <groupId>es.e-ucm.ead</groupId>
+            <artifactId>engine-core</artifactId>
+            <version>${project.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>es.e-ucm.ead</groupId>
             <artifactId>engine-schema</artifactId>
             <version>${project.version}</version>
         </dependency>
@@ -35,10 +40,19 @@
             <classifier>natives-desktop</classifier>
             <scope>test</scope>
         </dependency>
+        <!-- To run Maven from Java. Requires to have maven installed on disk -->
         <dependency>
-            <groupId>es.e-ucm.ead</groupId>
-            <artifactId>engine-core</artifactId>
-            <version>${project.version}</version>
+            <groupId>org.apache.maven.shared</groupId>
+            <artifactId>maven-invoker</artifactId>
+            <type>jar</type>
+            <version>2.1.1</version>
         </dependency>
     </dependencies>
+    <build>
+        <resources>
+            <resource>
+                <directory>../../assets</directory>
+            </resource>
+        </resources>
+    </build>
 </project>

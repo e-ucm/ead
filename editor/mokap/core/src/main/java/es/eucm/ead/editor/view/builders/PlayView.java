@@ -61,7 +61,6 @@ public class PlayView implements ViewBuilder {
 	public void initialize(final Controller controller) {
 		this.controller = controller;
 		enginePlayer = new TestGameView(controller.getEngine().getGameLoop());
-		enginePlayer.setFillParent(true);
 	}
 
 	@Override
