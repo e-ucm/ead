@@ -58,8 +58,8 @@ public class DownloadManager {
 	public void download(DownloadWork work) {
 		work.listener.queued();
 		work.workerListener = new DownloadWorkListener(work.listener);
-		controller.action(ExecuteWorker.class, DownloadFile.class,
-				work.workerListener, false, work.uri, work.outputFile);
+		controller.action(ExecuteWorker.class, DownloadFile.class, false,
+				work.workerListener, work.uri, work.outputFile);
 	}
 
 	public void cancel(DownloadWork work) {

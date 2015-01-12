@@ -46,11 +46,11 @@ import es.eucm.ead.editor.control.workers.Worker.WorkerListener;
  * <dl>
  * <dt><strong>Arguments</strong></dt>
  * <dd><strong>args[0]</strong> <em>{@link Class}</em> Worker class</dd>
- * <dd><strong>args[1]</strong> <em>{@link WorkerListener}</em> A listener for
- * the worker</dd>
- * <dd><strong>args[2]</strong> <em>Optional {@link Boolean}</em> If the
+ * <dd><strong>args[1]</strong> <em>Optional {@link Boolean}</em> If the
  * previous workers with the same class should be cancelled (true) or this
  * worker should be appended among the others</dd>
+ * <dd><strong>args[1 or 2]</strong> <em>{@link WorkerListener}</em> A listener
+ * for the worker</dd>
  * <dd><strong>args[2 or 3]...</strong> <em>{@link Object}</em> Arguments passed
  * to the worker</dd>
  * </dl>
@@ -59,24 +59,28 @@ public class ExecuteWorker extends EditorAction {
 
 	@Override
 	public boolean validate(Object... args) {
-		return args.length > 1 && args[0] instanceof Class
-				&& args[1] instanceof WorkerListener;
+		return args.length > 1
+				&& args[0] instanceof Class
+				&& (args[1] instanceof WorkerListener || (args[1] instanceof Boolean && args[2] instanceof WorkerListener));
 	}
 
 	@Override
 	public void perform(Object... args) {
 		boolean cancelOthers = true;
 		int index = 2;
+		int listenerIndex = 1;
 		if (args.length > 2) {
-			if (args[2] instanceof Boolean) {
+			if (args[1] instanceof Boolean) {
 				index = 3;
-				cancelOthers = (Boolean) args[2];
+				listenerIndex = 2;
+				cancelOthers = (Boolean) args[1];
 			}
 		}
 		Object[] workerArguments = new Object[args.length - index];
 		System.arraycopy(args, index, workerArguments, 0,
 				workerArguments.length);
 		controller.getWorkerExecutor().execute((Class) args[0],
-				(WorkerListener) args[1], cancelOthers, workerArguments);
+				(WorkerListener) args[listenerIndex], cancelOthers,
+				workerArguments);
 	}
 }

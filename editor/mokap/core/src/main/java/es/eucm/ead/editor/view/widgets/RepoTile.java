@@ -184,8 +184,8 @@ public class RepoTile extends Tile implements DownloadListener {
 		if (state == State.DOWNLOADING) {
 			state = State.DOWNLOADED;
 			FileHandle entityFolder = tempDownloadFolder.child("contents");
-			controller.action(ExecuteWorker.class, UnzipFile.class,
-					new UnzipAndCopyEntityListener(entityFolder), false,
+			controller.action(ExecuteWorker.class, UnzipFile.class, false,
+					new UnzipAndCopyEntityListener(entityFolder),
 					work.getOutputFile(), entityFolder);
 		} else {
 			error("Downloaded from an invalid state: " + state);
@@ -266,7 +266,7 @@ public class RepoTile extends Tile implements DownloadListener {
 		@Override
 		public void unzipped() {
 			controller.action(ExecuteWorker.class, CopyToLibraryWorker.class,
-					new CopyToLibraryListener(), false, outputFolder, element,
+					false, new CopyToLibraryListener(), outputFolder, element,
 					thumbnailFile);
 		}
 
