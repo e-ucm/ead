@@ -67,10 +67,7 @@ public class AddInteractiveZone extends ModelAction {
 
 		empty.setShape(rectangle);
 
-		ModelEntity zone = Q
-				.createCenteredEntity(controller, size, size, empty);
-		zone.setOriginX(size / 2.0f);
-		zone.setOriginY(size / 2.0f);
+		ModelEntity zone = Q.createCenteredEntity(size, size, empty);
 
 		return controller.getActions().getAction(AddSceneElement.class)
 				.perform(zone);

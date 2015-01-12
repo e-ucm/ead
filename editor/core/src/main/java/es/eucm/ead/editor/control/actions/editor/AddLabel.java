@@ -104,8 +104,8 @@ public class AddLabel extends EditorAction implements Input.TextInputListener {
 
 		TextBounds bounds = labelStyle.font.getMultiLineBounds(label.getText());
 
-		ModelEntity textLabel = Q.createCenteredEntity(controller,
-				bounds.height, bounds.width, label);
+		ModelEntity textLabel = Q.createCenteredEntity(bounds.width,
+				bounds.height, label);
 
 		controller.action(AddSceneElement.class, textLabel);
 	}
