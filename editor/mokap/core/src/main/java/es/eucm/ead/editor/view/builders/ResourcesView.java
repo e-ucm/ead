@@ -40,12 +40,15 @@ import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.ui.Container;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 
-import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
+import es.eucm.ead.editor.assets.ApplicationAssets;
 import es.eucm.ead.editor.control.Controller;
+import es.eucm.ead.editor.control.MokapController.BackListener;
 import es.eucm.ead.editor.control.actions.editor.ChangeView;
 import es.eucm.ead.editor.view.SkinConstants;
 import es.eucm.ead.editor.view.builders.scene.SceneView;
 import es.eucm.ead.editor.view.widgets.Tabs;
+import es.eucm.ead.editor.view.widgets.Tabs.TabEvent;
+import es.eucm.ead.editor.view.widgets.Tabs.TabListener;
 import es.eucm.ead.editor.view.widgets.WidgetBuilder;
 import es.eucm.ead.editor.view.widgets.galleries.LibraryGallery;
 import es.eucm.ead.editor.view.widgets.galleries.ProjectResourcesGallery;
@@ -55,7 +58,9 @@ import es.eucm.ead.engine.I18N;
 /**
  * File view. A list with the children of a given file.
  */
-public class ResourcesView implements ViewBuilder {
+public class ResourcesView implements ViewBuilder, BackListener {
+
+	private Controller controller;
 
 	private LinearLayout view;
 
@@ -69,8 +74,10 @@ public class ResourcesView implements ViewBuilder {
 
 	@Override
 	public void initialize(Controller controller) {
-		Skin skin = controller.getApplicationAssets().getSkin();
-		I18N i18N = controller.getApplicationAssets().getI18N();
+		this.controller = controller;
+		ApplicationAssets applicationAssets = controller.getApplicationAssets();
+		Skin skin = applicationAssets.getSkin();
+		I18N i18N = applicationAssets.getI18N();
 		view = new LinearLayout(false);
 		view.background(controller.getApplicationAssets().getSkin()
 				.getDrawable(SkinConstants.DRAWABLE_GRAY_100));
@@ -94,10 +101,11 @@ public class ResourcesView implements ViewBuilder {
 		tabs = new Tabs(skin);
 		tabs.setItems(i18N.m("project").toUpperCase(), i18N.m("library")
 				.toUpperCase());
-		tabs.addListener(new ChangeListener() {
+		tabs.addListener(new TabListener() {
+
 			@Override
-			public void changed(ChangeEvent event, Actor actor) {
-				updateContent(tabs.getSelectedTabIndex());
+			public void changed(TabEvent event) {
+				updateContent(event.getTabIndex());
 			}
 		});
 		return tabs;
@@ -108,12 +116,12 @@ public class ResourcesView implements ViewBuilder {
 		switch (index) {
 		case 0:
 			container.setActor(projectResources);
-			projectResources.release();
+			libraryGallery.release();
 			projectResources.prepare();
 			break;
 		case 1:
 			container.setActor(libraryGallery);
-			libraryGallery.release();
+			projectResources.release();
 			libraryGallery.prepare();
 			break;
 		}
@@ -126,5 +134,11 @@ public class ResourcesView implements ViewBuilder {
 				ChangeView.class, SceneView.class));
 		toolbar.add(buildTabs(skin, i18N)).expandX();
 		return toolbar;
+	}
+
+	@Override
+	public boolean onBackPressed() {
+		controller.action(ChangeView.class, SceneView.class);
+		return true;
 	}
 }
