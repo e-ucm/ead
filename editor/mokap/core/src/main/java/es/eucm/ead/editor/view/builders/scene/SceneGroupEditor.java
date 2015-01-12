@@ -39,6 +39,7 @@ package es.eucm.ead.editor.view.builders.scene;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.math.Interpolation;
+import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.Group;
@@ -63,6 +64,7 @@ import es.eucm.ead.editor.control.actions.editor.ShowInfoPanel;
 import es.eucm.ead.editor.control.actions.editor.ShowInfoPanel.TypePanel;
 import es.eucm.ead.editor.control.actions.editor.ShowModal;
 import es.eucm.ead.editor.control.actions.editor.ShowToast;
+import es.eucm.ead.editor.control.actions.model.SetScenePosition;
 import es.eucm.ead.editor.control.actions.model.SetSelection;
 import es.eucm.ead.editor.model.Model;
 import es.eucm.ead.editor.model.Model.FieldListener;
@@ -85,6 +87,7 @@ import es.eucm.ead.engine.entities.EngineEntity;
 import es.eucm.ead.engine.entities.actors.EntityGroup;
 import es.eucm.ead.schema.components.ModelComponent;
 import es.eucm.ead.schema.editor.components.GameData;
+import es.eucm.ead.schema.editor.components.SceneEditState;
 import es.eucm.ead.schema.entities.ModelEntity;
 import es.eucm.ead.schemax.FieldName;
 
@@ -105,6 +108,8 @@ public class SceneGroupEditor extends GroupEditor implements ModelView,
 
 	private SceneEditor sceneEditor;
 
+	private SceneContainerListener sceneContainerListener = new SceneContainerListener();
+
 	private TransformationFieldListener transformationListener = new TransformationFieldListener();
 
 	private ChildrenListListener childrenListListener = new ChildrenListListener();
@@ -121,14 +126,20 @@ public class SceneGroupEditor extends GroupEditor implements ModelView,
 
 	private ImageButton fitButton;
 
-	public SceneGroupEditor(Controller c, final SceneEditor sceneEditor) {
-		super(c.getApplicationAssets().getSkin());
+	public SceneGroupEditor(Controller control, final SceneEditor sceneEditor) {
+		super(control.getApplicationAssets().getSkin());
 		this.sceneEditor = sceneEditor;
-		this.controller = c;
+		this.controller = control;
 		this.model = controller.getModel();
 		this.entitiesLoader = controller.getEngine().getEntitiesLoader();
 		addListener(new EditStateMachine(sceneEditor, this, selectionGroup));
 		addListener(new SceneListener(controller));
+		addListener(new GroupListener() {
+			@Override
+			public void containerUpdated(GroupEvent event, Group container) {
+				updateEditState();
+			}
+		});
 		addListener(new ActorGestureListener() {
 
 			private final float DISTANCE_HELP_X = AbstractWidget
@@ -228,12 +239,11 @@ public class SceneGroupEditor extends GroupEditor implements ModelView,
 		readSceneContext();
 		readEditedGroup();
 		readSelection();
-		fitButton.setVisible(false);
-		fit(false);
 	}
 
 	@Override
 	public void release() {
+		model.removeListenerFromAllTargets(sceneContainerListener);
 		model.removeListenerFromAllTargets(transformationListener);
 		model.removeListenerFromAllTargets(childrenListListener);
 		model.removeListenerFromAllTargets(labelListener);
@@ -244,6 +254,8 @@ public class SceneGroupEditor extends GroupEditor implements ModelView,
 	}
 
 	protected void readSceneContext() {
+		model.removeListener(Q.getComponent(sceneEntity, SceneEditState.class),
+				sceneContainerListener);
 		sceneEntity = (ModelEntity) model.getSelection().getSingle(
 				Selection.SCENE);
 		if (sceneEntity != null) {
@@ -251,7 +263,16 @@ public class SceneGroupEditor extends GroupEditor implements ModelView,
 			GameData gameData = Q.getComponent(controller.getModel().getGame(),
 					GameData.class);
 
+			controller.getModel().addFieldListener(
+					Q.getComponent(sceneEntity, SceneEditState.class),
+					sceneContainerListener);
 			addListeners(scene.getGroup());
+
+			SceneEditState state = Q.getComponent(sceneEntity,
+					SceneEditState.class);
+			sceneContainer.setPosition(state.getX(), state.getY());
+			fitButton.setVisible(!MathUtils.isZero(state.getX())
+					|| !MathUtils.isZero(state.getY()));
 
 			scene.getGroup().setSize(gameData.getWidth(), gameData.getHeight());
 			setRootGroup(scene.getGroup());
@@ -296,6 +317,13 @@ public class SceneGroupEditor extends GroupEditor implements ModelView,
 		}
 		actors.clear();
 		Pools.free(actors);
+	}
+
+	private void updateEditState() {
+		if (sceneEntity != null) {
+			controller.action(SetScenePosition.class, sceneEntity,
+					sceneContainer.getX(), sceneContainer.getY());
+		}
 	}
 
 	public Actor findActor(ModelEntity entity) {
@@ -421,6 +449,33 @@ public class SceneGroupEditor extends GroupEditor implements ModelView,
 				}
 				break;
 			}
+		}
+	}
+
+	/**
+	 * Handles transformation in the scene container
+	 */
+	public class SceneContainerListener implements FieldListener {
+
+		private final Array<String> TRANSFORMATION_FIELDS = new Array<String>(
+				new String[] { FieldName.X, FieldName.Y });
+
+		@Override
+		public boolean listenToField(String fieldName) {
+			return TRANSFORMATION_FIELDS.contains(fieldName, false);
+		}
+
+		@Override
+		public void modelChanged(FieldEvent event) {
+			float value = (Float) event.getValue();
+			if (FieldName.X.equals(event.getField()))
+				sceneContainer.addAction(Actions2.moveToX(value, TIME,
+						Interpolation.exp5Out));
+			else if (FieldName.Y.equals(event.getField()))
+				sceneContainer.addAction(Actions2.moveToY(value, TIME,
+						Interpolation.exp5Out));
+
+			fitButton.setVisible(!MathUtils.isZero(value));
 		}
 	}
 
