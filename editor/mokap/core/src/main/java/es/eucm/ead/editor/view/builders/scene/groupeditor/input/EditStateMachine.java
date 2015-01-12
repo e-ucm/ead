@@ -113,6 +113,11 @@ public class EditStateMachine extends InputStateMachine {
 		sceneEditor.exitFullScreen();
 	}
 
+	void exitPan() {
+		exitFullScreen();
+		groupEditor.fireContainerUpdated();
+	}
+
 	void unsetActors() {
 		this.selectionBox = null;
 		this.actor = null;

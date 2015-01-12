@@ -65,5 +65,6 @@ public class CameraPanState extends InputState {
 	@Override
 	public void exit() {
 		stateMachine.exitFullScreen();
+		stateMachine.exitPan();
 	}
 }
