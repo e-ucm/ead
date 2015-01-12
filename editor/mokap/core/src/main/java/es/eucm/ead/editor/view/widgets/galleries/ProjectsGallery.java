@@ -81,10 +81,10 @@ public class ProjectsGallery extends ContextMenuGallery implements
 
 	private final Array<String> projectNames = new Array<String>();
 
-	public ProjectsGallery(float rows, int columns, Controller c) {
-		super(rows, columns, c.getApplicationAssets(), c,
+	public ProjectsGallery(float rows, int columns, Controller control) {
+		super(rows, columns, control.getApplicationAssets(), control,
 				SkinConstants.IC_ADD_MOKAP);
-		this.controller = c;
+		this.controller = control;
 
 		Button edit = WidgetBuilder.button(SkinConstants.IC_EDIT,
 				i18N.m("edit"), SkinConstants.STYLE_CONTEXT, OpenProject.class);
