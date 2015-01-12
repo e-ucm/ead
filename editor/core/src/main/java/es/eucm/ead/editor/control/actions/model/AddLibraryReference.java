@@ -36,9 +36,13 @@
  */
 package es.eucm.ead.editor.control.actions.model;
 
+import com.badlogic.gdx.files.FileHandle;
+
+import es.eucm.ead.editor.assets.EditorGameAssets;
 import es.eucm.ead.editor.control.Controller;
 import es.eucm.ead.editor.control.actions.ModelAction;
 import es.eucm.ead.editor.control.commands.Command;
+import es.eucm.ead.editor.model.Q;
 import es.eucm.ead.schema.components.Reference;
 import es.eucm.ead.schema.editor.components.repo.RepoElement;
 import es.eucm.ead.schema.entities.ModelEntity;
@@ -51,7 +55,7 @@ import es.eucm.ead.schemax.ModelStructure;
  * <dl>
  * <dt><strong>Arguments</strong></dt>
  * <dd><strong>args[0] </strong> <em>{@link String}</em> The {@link RepoElement}
- * already imported to the local library.</dd>
+ * reference already imported to the local library.</dd>
  * </dl>
  * </p>
  * 
@@ -73,11 +77,32 @@ public class AddLibraryReference extends ModelAction {
 
 	@Override
 	public Command perform(Object... args) {
-		ModelEntity entity = new ModelEntity();
 		Reference ref = new Reference();
 		ref.setId(args[0] + "/" + ModelStructure.CONTENTS_FOLDER
 				+ ModelStructure.ENTITY_FILE);
-		entity.getComponents().add(ref);
+
+		EditorGameAssets assets = controller.getEditorGameAssets();
+		String id = ref.getId();
+		int lastIndex = id.lastIndexOf("/") + 1;
+		String referenceLoadingPath = id.substring(0, lastIndex);
+
+		// Load reference's data so we can center the container.
+		ModelEntity refEntity = null;
+		if (assets.isLoaded(referenceLoadingPath, ModelEntity.class)) {
+			refEntity = assets.get(referenceLoadingPath, ModelEntity.class);
+		} else {
+			FileHandle jsonFile = assets.absolute(controller.getPlatform()
+					.getLibraryFolder() + id);
+			if (jsonFile.exists()) {
+				refEntity = assets.fromJson(ModelEntity.class, jsonFile);
+				assets.addAsset(referenceLoadingPath, ModelEntity.class,
+						refEntity);
+			}
+		}
+
+		ModelEntity entity = Q.createCenteredEntity(
+				refEntity.getOriginX() * 2f, refEntity.getOriginY() * 2f, ref);
+
 		return addSceneElement.perform(entity);
 	}
 }
