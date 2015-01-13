@@ -83,19 +83,29 @@ public class DownloadFile extends Worker {
 
 	@Override
 	protected void prepare() {
-		String URL = (String) args[0];
+		String URL = null;
+		input = null;
+
+		if (args[0] instanceof String) {
+			URL = (String) args[0];
+		} else {
+			input = (InputStream) args[0];
+		}
+
 		dstFile = (FileHandle) args[1];
 
 		completion = 0f;
 		total = 0;
-		input = null;
 		output = null;
 		connection = null;
+
 		try {
-			connection = controller.getPlatform().sendHttpGetRequest(URL,
-					HttpURLConnection.class);
-			lengthOfFile = connection.getContentLength();
-			input = connection.getInputStream();
+			if (input == null) {
+				connection = controller.getPlatform().sendHttpGetRequest(URL,
+						HttpURLConnection.class);
+				lengthOfFile = connection.getContentLength();
+				input = connection.getInputStream();
+			}
 			result(.1f);
 			output = dstFile.write(false);
 		} catch (Exception e) {
@@ -118,11 +128,12 @@ public class DownloadFile extends Worker {
 					float completed = (total / (float) lengthOfFile);
 					if (completed == 1f || completed - completion > THRESHOLD) {
 						completion = completed;
-						result(.1f + completed * .9f);
+						result(Math.min(.1f + completed * .9f, 0.95f));
 					}
 				} else {
 					output.flush();
 					closeStreams();
+					result(1f);
 				}
 			} catch (Exception e) {
 				Gdx.app.error(DOWNLOAD_TAG, "Exception while downloading file "
