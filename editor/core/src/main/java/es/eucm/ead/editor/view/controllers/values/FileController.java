@@ -71,7 +71,7 @@ public class FileController extends ValueController<FileWidget, String>
 				if (folder) {
 					platform.askForFolder(FileController.this);
 				} else {
-					platform.askForFile(FileController.this);
+					platform.askForFile(controller, FileController.this);
 				}
 				return true;
 			}
@@ -100,7 +100,7 @@ public class FileController extends ValueController<FileWidget, String>
 	}
 
 	@Override
-	public void fileChosen(String path) {
+	public void fileChosen(String path, Result result) {
 		if (path != null) {
 			widgetUpdatedValue(path);
 		}

@@ -48,7 +48,6 @@ import es.eucm.ead.editor.control.actions.model.SetSelection;
 import es.eucm.ead.editor.model.Q;
 import es.eucm.ead.editor.platform.Platform.FileChooserListener;
 import es.eucm.ead.editor.utils.ProjectUtils;
-import es.eucm.ead.engine.I18N;
 import es.eucm.ead.schema.entities.ModelEntity;
 import es.eucm.ead.schema.renderers.Image;
 
@@ -89,12 +88,12 @@ public class LaunchImageEditor extends EditorAction implements
 			return;
 		}
 		savedImageAbsolutePatth = imageFile.file().getAbsolutePath();
-		I18N i18n = controller.getApplicationAssets().getI18N();
-		controller.getPlatform().editImage(i18n, savedImageAbsolutePatth, this);
+		controller.getPlatform().editImage(controller, savedImageAbsolutePatth,
+				this);
 	}
 
 	@Override
-	public void fileChosen(String path) {
+	public void fileChosen(String path, Result result) {
 		if (path == null) {
 			// Something went wrong
 			Gdx.app.error(LOG_TAG,

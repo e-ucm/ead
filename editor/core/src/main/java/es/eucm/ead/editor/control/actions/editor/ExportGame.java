@@ -135,10 +135,10 @@ public class ExportGame extends EnabledOnLoadAction {
 
 		// If the destiny path is not specified, ask the user.
 		if (jarPath == null) {
-			controller.getPlatform().askForFile(
+			controller.getPlatform().askForFile(controller,
 					new Platform.FileChooserListener() {
 						@Override
-						public void fileChosen(String path) {
+						public void fileChosen(String path, Result result) {
 							jarPath = path;
 							doPerform();
 						}

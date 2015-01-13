@@ -75,14 +75,16 @@ public class FileChooserDialog extends Dialog {
 			@Override
 			public void clicked(InputEvent event, float x, float y) {
 				FileChooserDialog.this.fileChooserListener.fileChosen(files
-						.getSelectedFile().path());
+						.getSelectedFile().path(),
+						FileChooserListener.Result.SUCCESS);
 			}
 		});
 
 		button(cancelString).addListener(new ClickListener() {
 			@Override
 			public void clicked(InputEvent event, float x, float y) {
-				FileChooserDialog.this.fileChooserListener.fileChosen(null);
+				FileChooserDialog.this.fileChooserListener.fileChosen(null,
+						null);
 			}
 		});
 	}

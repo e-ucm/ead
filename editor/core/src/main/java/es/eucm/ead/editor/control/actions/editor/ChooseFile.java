@@ -67,7 +67,7 @@ public class ChooseFile extends EditorAction {
 		if (folder) {
 			platform.askForFolder(listener);
 		} else {
-			platform.askForFile(listener);
+			platform.askForFile(controller, listener);
 		}
 	}
 

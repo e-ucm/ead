@@ -211,10 +211,10 @@ public abstract class EditorUITest implements ApplicationListener {
 	private void addSceneElement() {
 		controller.action(ChooseFile.class, false, new FileChooserListener() {
 			@Override
-			public void fileChosen(String path) {
-				ModelEntity sceneElemenet = controller.getTemplates()
+			public void fileChosen(String path, Result result) {
+				ModelEntity sceneElement = controller.getTemplates()
 						.createSceneElement(path, false);
-				controller.action(AddSceneElement.class, sceneElemenet);
+				controller.action(AddSceneElement.class, sceneElement);
 			}
 		});
 	}

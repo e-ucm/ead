@@ -46,7 +46,7 @@ import es.eucm.ead.engine.I18N;
 public abstract class MokapPlatform extends AbstractPlatform {
 
 	@Override
-	public void askForFile(FileChooserListener listener) {
+	public void askForFile(Controller controller, FileChooserListener listener) {
 
 	}
 
@@ -61,7 +61,8 @@ public abstract class MokapPlatform extends AbstractPlatform {
 	}
 
 	@Override
-	public void editImage(I18N i18n, String image, FileChooserListener listener) {
+	public void editImage(Controller controller, String image,
+			FileChooserListener listener) {
 
 	}
 
