@@ -88,7 +88,7 @@ public class BrushStrokesPicker extends ContextMenu {
 		setBackground(style.background);
 		slider = new Slider(MIN_SIZE, MAX_SIZE, STEP_SIZE, false, skin,
 				style.sizeSliderStyleName);
-		slider.addListener(new ClickListener() {
+		slider.addInputListener(new ClickListener() {
 
 			@Override
 			public void clicked(InputEvent event, float x, float y) {

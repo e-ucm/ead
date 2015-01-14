@@ -160,7 +160,7 @@ public class SlideColorPicker extends AbstractWidget {
 		};
 		hueSlider.setValue(SLIDER_MAX_VALUE);
 		hueSlider.setUserObject(this);
-		hueSlider.addListener(listener);
+		hueSlider.addInputListener(listener);
 
 		saturationSlider = new Slider(0, SLIDER_MAX_VALUE, 1, false,
 				new SliderStyle(sliderStyle)) {
@@ -171,7 +171,7 @@ public class SlideColorPicker extends AbstractWidget {
 		};
 		saturationSlider.setValue(SLIDER_MAX_VALUE);
 		saturationSlider.setUserObject(this);
-		saturationSlider.addListener(listener);
+		saturationSlider.addInputListener(listener);
 
 		brightnessSlider = new Slider(0, SLIDER_MAX_VALUE, 1, false,
 				new SliderStyle(sliderStyle)) {
@@ -182,7 +182,7 @@ public class SlideColorPicker extends AbstractWidget {
 		};
 		brightnessSlider.setValue(SLIDER_MAX_VALUE);
 		brightnessSlider.setUserObject(this);
-		brightnessSlider.addListener(listener);
+		brightnessSlider.addInputListener(listener);
 		color.set(Color.RED);
 
 		addActor(hueSlider);
