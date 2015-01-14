@@ -140,7 +140,7 @@ public class AnimationTest extends EngineTest implements MockEffectListener {
 				new RotateEffectToTween());
 
 		tweenSystem.registerBaseTweenCreator(EffectTween.class,
-				new EffectTweenCreator(effectsSystem));
+				new EffectTweenCreator(gameLoop, effectsSystem));
 		tweenSystem.registerBaseTweenCreator(MoveTween.class,
 				new MoveTweenCreator());
 		tweenSystem.registerBaseTweenCreator(ScaleTween.class,
