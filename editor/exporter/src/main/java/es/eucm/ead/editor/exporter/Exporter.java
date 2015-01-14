@@ -43,6 +43,7 @@ import java.io.IOException;
 import java.io.OutputStream;
 import java.util.Collections;
 import java.util.Map;
+import java.util.Properties;
 import java.util.zip.ZipOutputStream;
 
 import com.badlogic.gdx.Gdx;
@@ -562,6 +563,10 @@ public class Exporter {
 	 * @param entities
 	 *            An iterator to access in read-only mode all the
 	 *            {@link ModelEntity}s of the game (scenes, game, etc.)
+	 * @param windowWidth
+	 * @param windowHeight
+	 *            Not-null windowWidth and windowHeight specify a fixed window
+	 *            size for the game. If null, the game will just run fullscreen.
 	 * @param callback
 	 *            A simple callback to provide updates on the exportation
 	 *            progress. May be null.
@@ -569,7 +574,7 @@ public class Exporter {
 
 	public void exportAsJar(String destiny, String source,
 			String engineLibPath, Iterable<Map.Entry<String, Object>> entities,
-			ExportCallback callback) {
+			Integer windowWidth, Integer windowHeight, ExportCallback callback) {
 
 		if (engineLibPath == null || !new FileHandle(engineLibPath).exists()) {
 			if (callback != null)
@@ -583,6 +588,21 @@ public class Exporter {
 		// Create a temp directory that will hold the copy of the game (/)
 		FileHandle tempDir = FileHandle.tempDirectory("ead-export-");
 		tempDir.mkdirs();
+		// If not null windowWidth and windowHeight are provided, create
+		// apparguments file and store it
+		if (windowWidth != null && windowHeight != null) {
+			Properties properties = new Properties();
+			properties.setProperty("WindowWidth", "" + windowWidth);
+			properties.setProperty("WindowHeight", "" + windowHeight);
+			FileHandle appArgumentsFile = tempDir.child("app_arguments.txt");
+			try {
+				properties.store(appArgumentsFile.write(false),
+						"Settings for EngineJarGame");
+			} catch (IOException e) {
+				// If anything goes wrong, just delete it
+				appArgumentsFile.delete();
+			}
+		}
 		// Create a subfolder that means the root of the game in the Jar
 		// (/assets/)
 		FileHandle tempGameDir = tempDir.child(ModelStructure.JAR_GAME_FOLDER);
