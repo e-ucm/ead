@@ -39,6 +39,8 @@ package es.eucm.ead.engine.systems.tweens.tweencreators;
 import aurelienribon.tweenengine.BaseTween;
 import aurelienribon.tweenengine.Tween;
 import aurelienribon.tweenengine.TweenCallback;
+import es.eucm.ead.engine.GameLoop;
+import es.eucm.ead.engine.components.EffectsComponent;
 import es.eucm.ead.engine.entities.EngineEntity;
 import es.eucm.ead.engine.systems.EffectsSystem;
 import es.eucm.ead.schema.components.tweens.EffectTween;
@@ -47,7 +49,10 @@ public class EffectTweenCreator extends TweenCreator<EffectTween> {
 
 	private EffectsSystem system;
 
-	public EffectTweenCreator(EffectsSystem system) {
+	private GameLoop engine;
+
+	public EffectTweenCreator(GameLoop engine, EffectsSystem system) {
+		this.engine = engine;
 		this.system = system;
 	}
 
@@ -68,7 +73,10 @@ public class EffectTweenCreator extends TweenCreator<EffectTween> {
 					@Override
 					public void onEvent(int arg0, BaseTween<?> arg1) {
 						if (arg0 == START) {
-							system.executeEffectList(schemaTween.getEffects());
+							EffectsComponent comp = engine.addAndGetComponent(
+									owner, EffectsComponent.class);
+							comp.addBehavior(null, schemaTween.getEffects());
+							system.processEntity(owner, 0F);
 						}
 					}
 				});
