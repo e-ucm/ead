@@ -47,7 +47,7 @@ package es.eucm.ead.editor.exporter;
  */
 public enum ApkIcon {
 	LDPI("ldpi", 36), MDPI("mdpi", 48), HDPI("hdpi", 72), XHDPI("xhdpi", 96), XXHDPI(
-			"xxhdpi", 144), XXXHDPI("xxxhdpi", 192), XXXXHDPI("xxxxhdpi", 240);
+			"xxhdpi", 144), XXXHDPI("xxxhdpi", 192);
 
 	private String suffix;
 	private int resolution;
