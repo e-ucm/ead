@@ -38,6 +38,8 @@ package es.eucm.ead.editor.view.widgets;
 
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.math.Interpolation;
+import com.badlogic.gdx.scenes.scene2d.Event;
+import com.badlogic.gdx.scenes.scene2d.EventListener;
 import com.badlogic.gdx.scenes.scene2d.actions.Actions;
 import com.badlogic.gdx.scenes.scene2d.ui.Cell;
 import com.badlogic.gdx.scenes.scene2d.ui.Image;
@@ -47,6 +49,7 @@ import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
 import com.badlogic.gdx.scenes.scene2d.ui.TextButton.TextButtonStyle;
 import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener.ChangeEvent;
 import com.badlogic.gdx.scenes.scene2d.utils.Drawable;
+import com.badlogic.gdx.utils.Pools;
 
 /**
  * Tabs widget that fires {@link ChangeEvent}s when the selected item changes.
@@ -141,6 +144,7 @@ public class Tabs extends Table {
 					return;
 				}
 				selectedTab = this;
+				fireTabChanged();
 				for (Cell cell : Tabs.this.getCells()) {
 					TextButton btn = (TextButton) cell.getActor();
 					if (btn != this) {
@@ -183,6 +187,52 @@ public class Tabs extends Table {
 			}
 			getLabel().setColor(color);
 			super.setChecked(isChecked);
+		}
+
+		private void fireTabChanged() {
+			TabEvent event = Pools.obtain(TabEvent.class);
+			event.index = getSelectedTabIndex();
+			fire(event);
+			Pools.free(event);
+		}
+	}
+
+	/**
+	 * Listener for {@link TabEvent}s.
+	 */
+	abstract static public class TabListener implements EventListener {
+		@Override
+		public boolean handle(Event event) {
+			if (event instanceof TabEvent) {
+				changed((TabEvent) event);
+				return true;
+			}
+			return false;
+		}
+
+		/**
+		 * Invoked when the tab has changed its current selected tab.
+		 */
+		abstract public void changed(TabEvent event);
+
+	}
+
+	/**
+	 * Fired when a {@link Tab} widget has changed the selected tab.
+	 * 
+	 */
+	static public class TabEvent extends Event {
+
+		private int index;
+
+		@Override
+		public void reset() {
+			super.reset();
+			index = 0;
+		}
+
+		public int getTabIndex() {
+			return index;
 		}
 	}
 }

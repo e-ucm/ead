@@ -186,7 +186,12 @@ public class SearchView implements ViewBuilder, BackListener, WorkerListener {
 
 	@Override
 	public boolean onBackPressed() {
-		controller.action(ChangeView.class, ResourcesView.class);
+		Stage stage = repoGallery.getStage();
+		if (stage.getKeyboardFocus() == textField) {
+			hideTextField();
+		} else {
+			controller.action(ChangeView.class, ResourcesView.class);
+		}
 		return true;
 	}
 

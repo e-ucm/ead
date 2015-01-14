@@ -41,7 +41,7 @@ import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.ui.Container;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
-import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
+
 import es.eucm.ead.editor.control.Controller;
 import es.eucm.ead.editor.control.MokapController.BackListener;
 import es.eucm.ead.editor.control.Preferences;
@@ -56,6 +56,8 @@ import es.eucm.ead.editor.view.SkinConstants;
 import es.eucm.ead.editor.view.builders.ViewBuilder;
 import es.eucm.ead.editor.view.widgets.RepoTile.RepoTileListener;
 import es.eucm.ead.editor.view.widgets.Tabs;
+import es.eucm.ead.editor.view.widgets.Tabs.TabEvent;
+import es.eucm.ead.editor.view.widgets.Tabs.TabListener;
 import es.eucm.ead.editor.view.widgets.WidgetBuilder;
 import es.eucm.ead.editor.view.widgets.galleries.ProjectsGallery;
 import es.eucm.ead.editor.view.widgets.galleries.RepoGallery;
@@ -167,11 +169,11 @@ public class HomeView implements ViewBuilder, BackListener, WorkerListener {
 		tabs = new Tabs(skin);
 		tabs.setItems(i18N.m("my.mokaps").toUpperCase(), i18N.m("community")
 				.toUpperCase());
-		tabs.addListener(new ChangeListener() {
+		tabs.addListener(new TabListener() {
+
 			@Override
-			public void changed(ChangeEvent event, Actor actor) {
-				System.out.println("changededddd");
-				updateContent(tabs.getSelectedTabIndex());
+			public void changed(TabEvent event) {
+				updateContent(event.getTabIndex());
 			}
 		});
 		return tabs;
