@@ -148,6 +148,6 @@ public class EffectTweenTest extends TweenTest implements MockEffectListener {
 		effectsSystem.registerEffectExecutor(MockEffect.class,
 				new MockEffectExecutor());
 
-		return new EffectTweenCreator(effectsSystem);
+		return new EffectTweenCreator(gameLoop, effectsSystem);
 	}
 }
