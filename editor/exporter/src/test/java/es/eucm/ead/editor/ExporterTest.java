@@ -41,6 +41,7 @@ import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.Json;
 import es.eucm.ead.editor.exporter.ExportCallback;
 import es.eucm.ead.editor.exporter.Exporter;
+import es.eucm.ead.editor.exporter.ExporterApplication;
 import es.eucm.ead.editor.exporter.ExporterFiles;
 import es.eucm.ead.schema.components.behaviors.Behavior;
 import es.eucm.ead.schema.components.behaviors.events.Init;
@@ -69,6 +70,7 @@ import java.io.InputStreamReader;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Map.Entry;
+import java.util.Properties;
 import java.util.Random;
 import java.util.jar.JarEntry;
 import java.util.jar.JarFile;
@@ -85,14 +87,14 @@ import static org.junit.Assert.fail;
 public class ExporterTest {
 
 	/**
-	 * Editor properties stored to disk by {@link #testExportAsJAR()}
+	 * Editor properties stored to disk
 	 */
 	public static final int WIDTH = 1200;
 	public static final int HEIGHT = 800;
 	public static final String INITIAL_SCENE = "scene2";
 
 	/**
-	 * Editor properties set by {@link #testExportAsJAR()}
+	 * Editor properties set
 	 */
 	public static final String APP_VERSION = "9.9.9";
 
@@ -132,38 +134,42 @@ public class ExporterTest {
 			+ "}],event:{class:es.eucm.ead.schema.components.behaviors.events.Init}}]}";
 
 	@Test
+	public void test() {
+		// Test width default and specific window sizes
+		testExportAsJAR(null, null);
+		testExportAsJAR(1280, 800);
+	}
+
 	/**
-	 * Tests {@link Exporter#exportAsJar(String, String, String)},
-	 * which indirectly serves for testing
-	 * ExportGame action, which is the way the editor
-	 * uses the exporter to generate jar files (internal use), and also
-	 * {@link ExporterApplication}, a simple tool
-	 * that allows exporting the games through bash (external use).
-	 *
-	 * This test does as follows:
-	 * 1) Creates a new ModelEntity as editor game that has set properties
-	 *    that are defined either in {@link ModelEntity} or in the
-	 *    {@link GameData} component. Also creates
-	 *    a scene map with 5 scenes that also have engine and editor
-	 *    components. The scenes have scene elements that reference
-	 *    images (see {@link #TEST_IMAGES}).
-	 *
+	 * Tests {@link Exporter#exportAsJar}, which indirectly serves for testing
+	 * ExportGame action, which is the way the editor uses the exporter to
+	 * generate jar files (internal use), and also {@link ExporterApplication},
+	 * a simple tool that allows exporting the games through bash (external
+	 * use).
+	 * 
+	 * This test does as follows: 1) Creates a new ModelEntity as editor game
+	 * that has set properties that are defined either in {@link ModelEntity} or
+	 * in the {@link GameData} component. Also creates a scene map with 5 scenes
+	 * that also have engine and editor components. The scenes have scene
+	 * elements that reference images (see {@link #TEST_IMAGES}).
+	 * 
 	 * 2) Saves the game and scenes to disk using a simple {@link Json} object.
-	 *    Also creates several fake images using BufferedImage, which are referenced in the
-	 *    game definition created in (1), and copies them to the temp
-	 *    directory the game and scenes are saved to. This tests that
-	 *    {@link Exporter#copyNonJsonFiles(FileHandle, FileHandle)}
-	 *    works properly.
-	 *
-	 * 3) Calls {@link Exporter#exportAsJar(String, String, String)} which in turns
-	 *    exports the game.
-	 *
-	 * 4) VALIDATION. Once the exportation process completes, the number of entries in the target jar file is
-	 *    compared to those expected. Also, the contents of the game.json file present in the target jar
-	 *    file produced are read and compared to those expected, to test that no editor
-	 *    information is included. If any of these comparisons fail, this test fails.
+	 * Also creates several fake images using BufferedImage, which are
+	 * referenced in the game definition created in (1), and copies them to the
+	 * temp directory the game and scenes are saved to. This tests that
+	 * {@link Exporter#copyNonJsonFiles(FileHandle, FileHandle)} works properly.
+	 * 
+	 * 3) Calls {@link Exporter#exportAsJar} which in turns exports the game.
+	 * 
+	 * 4) VALIDATION. Once the exportation process completes, the number of
+	 * entries in the target jar file is compared to those expected. Also, the
+	 * contents of the game.json file present in the target jar file produced
+	 * are read and compared to those expected, to test that no editor
+	 * information is included. If any of these comparisons fail, this test
+	 * fails.
 	 */
-	public void testExportAsJAR() {
+	public void testExportAsJAR(final Integer windowWidth,
+			final Integer windowHeight) {
 		// Make initialization of the model
 		Map<String, Object> modelEntityMap = new HashMap<String, Object>();
 		ModelEntity editorGame = new ModelEntity();
@@ -278,7 +284,8 @@ public class ExporterTest {
 		exporter.exportAsJar(destinyJAR.file().getAbsolutePath(), tempDir
 				.file().getAbsolutePath(),
 				tempJarLite.file().getAbsolutePath(),
-				modelEntityMap.entrySet(), new ExportCallback() {
+				modelEntityMap.entrySet(), windowWidth, windowHeight,
+				new ExportCallback() {
 					@Override
 					public void error(String errorMessage) {
 						fail(errorMessage);
@@ -347,6 +354,32 @@ public class ExporterTest {
 									assertEquals(setViewport.getWidth(), 1200);
 									assertEquals(setViewport.getHeight(), 800);
 								}
+								// If the entry read is the "app_arguments.txt"
+								// file, then check it had to be produced and
+								// that it is OK
+								if (entry.getName().equals("app_arguments.txt")) {
+
+									if (windowWidth == null
+											|| windowHeight == null) {
+										fail("app_arguments.txt file should not be present, since window width and height are null");
+									} else {
+										// Read file
+										JarFile jarFile = new JarFile(
+												destinyJAR.file());
+										InputStream appProperties = jarFile
+												.getInputStream(entry);
+										Properties properties = new Properties();
+										properties.load(appProperties);
+										assertEquals(
+												"" + windowWidth,
+												properties
+														.getProperty("WindowWidth"));
+										assertEquals(
+												"" + windowHeight,
+												properties
+														.getProperty("WindowHeight"));
+									}
+								}
 								nEntries++;
 							}
 							inputStream.close();
@@ -369,9 +402,12 @@ public class ExporterTest {
 							}
 						}
 
+						int nJarEntries = (windowWidth != null && windowHeight != null) ? N_JAR_ENTRIES + 1
+								: N_JAR_ENTRIES;
+
 						assertEquals("The number of jar entries read ("
 								+ nEntries + ") is not the expected ("
-								+ N_JAR_ENTRIES + ")", nEntries, N_JAR_ENTRIES);
+								+ nJarEntries + ")", nEntries, nJarEntries);
 
 						tempDir.deleteDirectory();
 						destinyJAR.delete();
