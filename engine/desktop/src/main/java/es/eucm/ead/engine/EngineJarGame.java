@@ -36,9 +36,6 @@
  */
 package es.eucm.ead.engine;
 
-import com.badlogic.gdx.Application;
-import com.badlogic.gdx.Gdx;
-
 import javax.imageio.ImageIO;
 import java.awt.*;
 import java.awt.image.BufferedImage;
@@ -74,13 +71,13 @@ public class EngineJarGame {
 	 * for the application. Any image found under this folder will be treated as
 	 * an icon.
 	 */
-	public static final String APP_ICONS_PATH = "appicons/";
+	public static final String APP_ICONS_PATH = "/appicons/";
 
 	/**
 	 * Internal Java properties file with settings (e.g. window size). May not
 	 * be present. (Note: update Exporter if this value changes)
 	 */
-	public static final String APP_ARGUMENTS = "app_arguments.txt";
+	public static final String APP_ARGUMENTS = "/app_arguments.txt";
 
 	/**
 	 * Property key for setting a fixed window width. If provided,
@@ -114,7 +111,6 @@ public class EngineJarGame {
 		}
 		// Run the game
 		engine.run(GAME_PATH, true);
-		Gdx.app.setLogLevel(Application.LOG_DEBUG);
 	}
 
 	/**
@@ -142,8 +138,9 @@ public class EngineJarGame {
 					BufferedImage bufferedImage = ImageIO.read(inputStream);
 					list.add(bufferedImage);
 				} catch (IOException e) {
-					Gdx.app.debug(EngineJarGame.class.getCanonicalName(),
-							"Exception reading icon: " + iconPath, e);
+					System.out.println(EngineJarGame.class.getCanonicalName()
+							+ ": Exception reading icon: " + iconPath);
+					e.printStackTrace();
 				}
 			}
 		}
@@ -174,24 +171,26 @@ public class EngineJarGame {
 						dim.setSize(screenWidth, screenHeight);
 						return dim;
 					} catch (NumberFormatException e) {
-						Gdx.app.debug(
-								EngineJarGame.class.getCanonicalName(),
-								"Bad screen width (W) or height (H)".replace(
-										"W", "" + screenWidthStr).replace("H",
-										"" + screenHeightStr), e);
+						System.out.println(EngineJarGame.class
+								.getCanonicalName()
+								+ ": Bad screen width (W) or height (H)"
+										.replace("W", "" + screenWidthStr)
+										.replace("H", "" + screenHeightStr));
+						e.printStackTrace();
 					}
 
 				}
 			} catch (IOException e) {
-				Gdx.app.debug(EngineJarGame.class.getCanonicalName(),
-						"Exception reading " + APP_ARGUMENTS, e);
+				System.out.println(EngineJarGame.class.getCanonicalName()
+						+ ": Exception reading " + APP_ARGUMENTS);
+				e.printStackTrace();
 			}
 		}
 
 		// By default, return screen size
 		// Determine the size of the window for the game to be full screen
-		Gdx.app.debug(EngineJarGame.class.getCanonicalName(),
-				"Using default window size (full screen)");
+		System.out.println(EngineJarGame.class.getCanonicalName()
+				+ ": Using default window size (full screen)");
 		int screenWidth = Toolkit.getDefaultToolkit().getScreenSize().width;
 		int screenHeight = Toolkit.getDefaultToolkit().getScreenSize().height;
 		Dimension dim = new Dimension();
