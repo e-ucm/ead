@@ -53,11 +53,15 @@ import com.badlogic.gdx.scenes.scene2d.utils.Drawable;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.Pools;
 
+import es.eucm.ead.editor.utils.Actions2;
+import es.eucm.ead.editor.view.builders.scene.SceneGroupEditor;
 import es.eucm.ead.editor.view.builders.scene.groupeditor.GroupEditor.GroupEvent.Type;
 import es.eucm.ead.editor.view.widgets.AbstractWidget;
 import es.eucm.ead.engine.utils.EngineUtils;
 
 public class GroupEditor extends AbstractWidget {
+
+	public static final float TIME = 0.25f;
 
 	public static final float NEAR_CM = 1.0f;
 
@@ -79,7 +83,7 @@ public class GroupEditor extends AbstractWidget {
 
 	private boolean onlySelection;
 
-	protected AbstractWidget sceneContainer;
+	private AbstractWidget sceneContainer;
 
 	private Container sceneBackground;
 
@@ -155,6 +159,24 @@ public class GroupEditor extends AbstractWidget {
 
 	public void pan(float deltaX, float deltaY) {
 		sceneContainer.moveBy(deltaX, deltaY);
+	}
+
+	public void panToX(float x, boolean animated) {
+		if (animated) {
+			sceneContainer.addAction(Actions2.moveToX(x, TIME,
+					Interpolation.exp5Out));
+		} else {
+			sceneContainer.setX(x);
+		}
+	}
+
+	public void panToY(float y, boolean animated) {
+		if (animated) {
+			sceneContainer.addAction(Actions2.moveToY(y, TIME,
+					Interpolation.exp5Out));
+		} else {
+			sceneContainer.setY(y);
+		}
 	}
 
 	/**
@@ -447,7 +469,7 @@ public class GroupEditor extends AbstractWidget {
 	public void fireContainerUpdated() {
 		GroupEvent groupEvent = Pools.obtain(GroupEvent.class);
 		groupEvent.setType(Type.containerUpdated);
-		groupEvent.setParent(editedGroup);
+		groupEvent.setParent(sceneContainer);
 		fire(groupEvent);
 		Pools.free(groupEvent);
 	}

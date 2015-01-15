@@ -82,11 +82,6 @@ public class SetScenePosition extends ModelAction {
 
 	private FieldCommand getTransparentFieldCommand(Object object,
 			String fieldName, Object newValue) {
-		return new FieldCommand(object, fieldName, newValue) {
-			@Override
-			public boolean isTransparent() {
-				return true;
-			}
-		};
+		return new FieldCommand(object, fieldName, newValue, false, true);
 	}
 }

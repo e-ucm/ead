@@ -64,7 +64,6 @@ import es.eucm.ead.editor.control.actions.editor.ShowInfoPanel;
 import es.eucm.ead.editor.control.actions.editor.ShowInfoPanel.TypePanel;
 import es.eucm.ead.editor.control.actions.editor.ShowModal;
 import es.eucm.ead.editor.control.actions.editor.ShowToast;
-import es.eucm.ead.editor.control.actions.model.SetScenePosition;
 import es.eucm.ead.editor.control.actions.model.SetSelection;
 import es.eucm.ead.editor.model.Model;
 import es.eucm.ead.editor.model.Model.FieldListener;
@@ -94,8 +93,6 @@ import es.eucm.ead.schemax.FieldName;
 public class SceneGroupEditor extends GroupEditor implements ModelView,
 		BackListener {
 
-	public static final float TIME = 0.25f;
-
 	private Controller controller;
 
 	private Model model;
@@ -108,7 +105,7 @@ public class SceneGroupEditor extends GroupEditor implements ModelView,
 
 	private SceneEditor sceneEditor;
 
-	private SceneContainerListener sceneContainerListener = new SceneContainerListener();
+	private SceneEditListener sceneEditListener = new SceneEditListener();
 
 	private TransformationFieldListener transformationListener = new TransformationFieldListener();
 
@@ -134,12 +131,6 @@ public class SceneGroupEditor extends GroupEditor implements ModelView,
 		this.entitiesLoader = controller.getEngine().getEntitiesLoader();
 		addListener(new EditStateMachine(sceneEditor, this, selectionGroup));
 		addListener(new SceneListener(controller));
-		addListener(new GroupListener() {
-			@Override
-			public void containerUpdated(GroupEvent event, Group container) {
-				updateEditState();
-			}
-		});
 		addListener(new ActorGestureListener() {
 
 			private final float DISTANCE_HELP_X = AbstractWidget
@@ -243,7 +234,7 @@ public class SceneGroupEditor extends GroupEditor implements ModelView,
 
 	@Override
 	public void release() {
-		model.removeListenerFromAllTargets(sceneContainerListener);
+		model.removeListenerFromAllTargets(sceneEditListener);
 		model.removeListenerFromAllTargets(transformationListener);
 		model.removeListenerFromAllTargets(childrenListListener);
 		model.removeListenerFromAllTargets(labelListener);
@@ -254,8 +245,11 @@ public class SceneGroupEditor extends GroupEditor implements ModelView,
 	}
 
 	protected void readSceneContext() {
-		model.removeListener(Q.getComponent(sceneEntity, SceneEditState.class),
-				sceneContainerListener);
+		if (sceneEntity != null) {
+			model.removeListener(
+					Q.getComponent(sceneEntity, SceneEditState.class),
+					sceneEditListener);
+		}
 		sceneEntity = (ModelEntity) model.getSelection().getSingle(
 				Selection.SCENE);
 		if (sceneEntity != null) {
@@ -263,14 +257,13 @@ public class SceneGroupEditor extends GroupEditor implements ModelView,
 			GameData gameData = Q.getComponent(controller.getModel().getGame(),
 					GameData.class);
 
-			controller.getModel().addFieldListener(
-					Q.getComponent(sceneEntity, SceneEditState.class),
-					sceneContainerListener);
-			addListeners(scene.getGroup());
-
 			SceneEditState state = Q.getComponent(sceneEntity,
 					SceneEditState.class);
-			sceneContainer.setPosition(state.getX(), state.getY());
+			controller.getModel().addFieldListener(state, sceneEditListener);
+			addListeners(scene.getGroup());
+
+			panToX(state.getX(), false);
+			panToY(state.getY(), false);
 			fitButton.setVisible(!MathUtils.isZero(state.getX())
 					|| !MathUtils.isZero(state.getY()));
 
@@ -317,13 +310,6 @@ public class SceneGroupEditor extends GroupEditor implements ModelView,
 		}
 		actors.clear();
 		Pools.free(actors);
-	}
-
-	private void updateEditState() {
-		if (sceneEntity != null) {
-			controller.action(SetScenePosition.class, sceneEntity,
-					sceneContainer.getX(), sceneContainer.getY());
-		}
 	}
 
 	public Actor findActor(ModelEntity entity) {
@@ -453,9 +439,10 @@ public class SceneGroupEditor extends GroupEditor implements ModelView,
 	}
 
 	/**
-	 * Handles transformation in the scene container
+	 * Handles transformation in the {@link SceneEditState} of the current
+	 * scene.
 	 */
-	public class SceneContainerListener implements FieldListener {
+	public class SceneEditListener implements FieldListener {
 
 		private final Array<String> TRANSFORMATION_FIELDS = new Array<String>(
 				new String[] { FieldName.X, FieldName.Y });
@@ -469,11 +456,9 @@ public class SceneGroupEditor extends GroupEditor implements ModelView,
 		public void modelChanged(FieldEvent event) {
 			float value = (Float) event.getValue();
 			if (FieldName.X.equals(event.getField()))
-				sceneContainer.addAction(Actions2.moveToX(value, TIME,
-						Interpolation.exp5Out));
+				panToX(value, true);
 			else if (FieldName.Y.equals(event.getField()))
-				sceneContainer.addAction(Actions2.moveToY(value, TIME,
-						Interpolation.exp5Out));
+				panToY(value, true);
 
 			fitButton.setVisible(!MathUtils.isZero(value));
 		}

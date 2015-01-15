@@ -48,6 +48,8 @@ import es.eucm.ead.editor.model.events.ModelEvent;
  */
 public class FieldCommand extends Command {
 
+	private boolean transparent;
+
 	protected Object oldValue;
 
 	protected Object newValue;
@@ -61,7 +63,12 @@ public class FieldCommand extends Command {
 	private Field field;
 
 	public FieldCommand(Object target, String fieldName, Object newValue) {
-		this(target, fieldName, newValue, false);
+		this(target, fieldName, newValue, false, false);
+	}
+
+	public FieldCommand(Object target, String fieldName, Object newValue,
+			boolean combine) {
+		this(target, fieldName, newValue, combine, false);
 	}
 
 	/**
@@ -75,12 +82,13 @@ public class FieldCommand extends Command {
 	 *            {@link es.eucm.ead.schemax.FieldName}
 	 */
 	public FieldCommand(Object target, String fieldName, Object newValue,
-			boolean combine) {
+			boolean combine, boolean transparent) {
 		this.newValue = newValue;
 		this.fieldName = fieldName;
 		this.target = target;
 		this.combine = combine;
 		this.field = getField(target, fieldName);
+		this.transparent = transparent;
 	}
 
 	public String getFieldName() {
@@ -139,6 +147,11 @@ public class FieldCommand extends Command {
 	@Override
 	public boolean modifiesResource() {
 		return true;
+	}
+
+	@Override
+	public boolean isTransparent() {
+		return transparent;
 	}
 
 	@Override
