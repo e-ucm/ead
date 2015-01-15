@@ -127,13 +127,15 @@ public class Templates {
 	 * Creates an element in the center of the screen.
 	 * 
 	 * @param imagePath
+	 * @param fill
+	 *            if true the image will be scaled to fill the entire screen.
 	 * @return
 	 */
-	public ModelEntity createSceneElement(String imagePath, boolean filled) {
+	public ModelEntity createSceneElement(String imagePath, boolean fill) {
 		GameData data = Q.getComponent(controller.getModel().getGame(),
 				GameData.class);
 		return createSceneElement(imagePath, data.getWidth() * .5f,
-				data.getHeight() * .5f, filled);
+				data.getHeight() * .5f, fill);
 	}
 
 	/**
@@ -160,12 +162,12 @@ public class Templates {
 	 *            the center x coordinate of the scene element
 	 * @param y
 	 *            the center y coordinate of the scene element
-	 * @param filled
-	 *            if the element should be filled
+	 * @param fill
+	 *            if the element should be scaled to fill the entire screen.
 	 * @return the scene element created
 	 */
 	public ModelEntity createSceneElement(String imagePath, float x, float y,
-			final boolean filled) {
+			boolean fill) {
 
 		EditorGameAssets assets = controller.getEditorGameAssets();
 		String newPath = assets.copyToProjectIfNeeded(imagePath, Texture.class);
@@ -177,7 +179,7 @@ public class Templates {
 						size);
 
 		ModelEntity sceneElement = createSceneElement();
-		if (filled) {
+		if (fill) {
 			GameData data = Q.getComponent(controller.getModel().getGame(),
 					GameData.class);
 			Vector2 vector = Scaling.fill.apply(size.x, size.y,

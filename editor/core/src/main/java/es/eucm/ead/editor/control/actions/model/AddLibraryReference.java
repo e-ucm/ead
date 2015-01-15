@@ -100,8 +100,8 @@ public class AddLibraryReference extends ModelAction {
 			}
 		}
 
-		ModelEntity entity = Q.createCenteredEntity(
-				refEntity.getOriginX() * 2f, refEntity.getOriginY() * 2f, ref);
+		ModelEntity entity = Q.createCenteredEntity(refEntity.getOriginX(),
+				refEntity.getOriginY(), ref);
 
 		return addSceneElement.perform(entity);
 	}
