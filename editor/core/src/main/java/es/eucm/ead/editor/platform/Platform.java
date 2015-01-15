@@ -140,7 +140,7 @@ public interface Platform {
 	public interface FileChooserListener {
 
 		public static enum Result {
-			SUCCESS, NOT_FOUND("not.found"), NO_CONNECTION("no.connection");
+			SUCCESS, NOT_FOUND("not.found"), NO_CONNECTION("no.connection"), CANCELLED;
 
 			private String i18nKey;
 

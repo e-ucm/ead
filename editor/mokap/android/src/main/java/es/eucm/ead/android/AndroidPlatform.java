@@ -532,40 +532,8 @@ public class AndroidPlatform extends MokapPlatform {
 												.getDownloadManager()
 												.download(
 														new DownloadManager.DownloadWork(
-																new DownloadManager.DownloadListener() {
-																	@Override
-																	public void queued() {
-
-																	}
-
-																	@Override
-																	public void started() {
-
-																	}
-
-																	@Override
-																	public void completion(
-																			float completion) {
-
-																	}
-
-																	@Override
-																	public void downloaded() {
-																		listener.fileChosen(
-																				file.path(),
-																				FileChooserListener.Result.SUCCESS);
-																	}
-
-																	@Override
-																	public void cancelled() {
-																		showToast("download.cancelled");
-																	}
-
-																	@Override
-																	public void error() {
-																		showToast("download.error");
-																	}
-																}, input, file));
+																createDownloadListener(file),
+																input, file));
 									} catch (FileNotFoundException e) {
 										showToast(FileChooserListener.Result.NOT_FOUND
 												.getI18nKey());
@@ -588,6 +556,42 @@ public class AndroidPlatform extends MokapPlatform {
 
 		private void showToast(String i18nKey) {
 			controller.action(ShowToast.class, i18N.m(i18nKey));
+		}
+
+		private DownloadManager.DownloadListener createDownloadListener(
+				final FileHandle file) {
+			return new DownloadManager.DownloadListener() {
+				@Override
+				public void queued() {
+
+				}
+
+				@Override
+				public void started() {
+
+				}
+
+				@Override
+				public void completion(float completion) {
+
+				}
+
+				@Override
+				public void downloaded() {
+					listener.fileChosen(file.path(),
+							FileChooserListener.Result.SUCCESS);
+				}
+
+				@Override
+				public void cancelled() {
+					showToast("download.cancelled");
+				}
+
+				@Override
+				public void error() {
+					showToast("download.error");
+				}
+			};
 		}
 	}
 

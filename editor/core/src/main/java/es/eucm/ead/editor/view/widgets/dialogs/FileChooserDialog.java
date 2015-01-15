@@ -84,7 +84,7 @@ public class FileChooserDialog extends Dialog {
 			@Override
 			public void clicked(InputEvent event, float x, float y) {
 				FileChooserDialog.this.fileChooserListener.fileChosen(null,
-						null);
+						FileChooserListener.Result.CANCELLED);
 			}
 		});
 	}

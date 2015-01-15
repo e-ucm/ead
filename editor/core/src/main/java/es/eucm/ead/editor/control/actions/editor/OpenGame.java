@@ -93,7 +93,7 @@ public class OpenGame extends EditorAction implements FileChooserListener,
 		if (args.length == 0) {
 			controller.action(ChooseFile.class, true, this);
 		} else {
-			fileChosen(args[0].toString(), null);
+			fileChosen(args[0].toString(), Result.SUCCESS);
 		}
 	}
 

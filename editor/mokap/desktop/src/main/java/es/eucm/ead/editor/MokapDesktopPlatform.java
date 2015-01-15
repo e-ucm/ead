@@ -82,7 +82,8 @@ public class MokapDesktopPlatform extends MokapPlatform {
 				Gdx.app.postRunnable(new Runnable() {
 					@Override
 					public void run() {
-						listener.fileChosen(text, null);
+						listener.fileChosen(text,
+								FileChooserListener.Result.SUCCESS);
 
 					}
 				});
@@ -102,7 +103,7 @@ public class MokapDesktopPlatform extends MokapPlatform {
 
 			@Override
 			public void input(String text) {
-				listener.fileChosen(text, null);
+				listener.fileChosen(text, FileChooserListener.Result.SUCCESS);
 			}
 
 			@Override

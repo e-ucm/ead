@@ -83,11 +83,11 @@ public class DownloadFile extends Worker {
 
 	@Override
 	protected void prepare() {
-		String URL = null;
+		String url = null;
 		input = null;
 
 		if (args[0] instanceof String) {
-			URL = (String) args[0];
+			url = (String) args[0];
 		} else {
 			input = (InputStream) args[0];
 		}
@@ -101,7 +101,7 @@ public class DownloadFile extends Worker {
 
 		try {
 			if (input == null) {
-				connection = controller.getPlatform().sendHttpGetRequest(URL,
+				connection = controller.getPlatform().sendHttpGetRequest(url,
 						HttpURLConnection.class);
 				lengthOfFile = connection.getContentLength();
 				input = connection.getInputStream();

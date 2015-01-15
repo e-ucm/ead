@@ -154,7 +154,7 @@ public class DesktopPlatform extends AbstractPlatform implements
 					Preferences.FILE_CHOOSER_LAST_FOLDER, path);
 		}
 		if (fileChooserListener != null) {
-			fileChooserListener.fileChosen(path, null);
+			fileChooserListener.fileChosen(path, Result.SUCCESS);
 		}
 		fileChooser.remove();
 	}
