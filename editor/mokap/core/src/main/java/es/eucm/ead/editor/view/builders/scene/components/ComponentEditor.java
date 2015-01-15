@@ -38,6 +38,7 @@ package es.eucm.ead.editor.view.builders.scene.components;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
+import com.badlogic.gdx.scenes.scene2d.InputListener;
 import com.badlogic.gdx.scenes.scene2d.ui.ScrollPane;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
@@ -51,6 +52,7 @@ import es.eucm.ead.editor.model.Q;
 import es.eucm.ead.editor.view.ModelView;
 import es.eucm.ead.editor.view.SkinConstants;
 import es.eucm.ead.editor.view.builders.scene.context.SceneElementContext;
+import es.eucm.ead.editor.view.widgets.AbstractWidget;
 import es.eucm.ead.editor.view.widgets.IconButton;
 import es.eucm.ead.editor.view.widgets.WidgetBuilder;
 import es.eucm.ead.editor.view.widgets.layouts.LinearLayout;
@@ -60,6 +62,8 @@ import es.eucm.ead.schema.entities.ModelEntity;
 
 public abstract class ComponentEditor<T extends ModelComponent> extends
 		ScrollPane implements ModelView {
+
+	public static final float AREA_CM = 1.0f;
 
 	protected Controller controller;
 
@@ -77,7 +81,6 @@ public abstract class ComponentEditor<T extends ModelComponent> extends
 			Controller cont) {
 		super(new LinearLayout(false));
 		setScrollingDisabled(true, false);
-		setCancelTouchFocus(false);
 		list = (LinearLayout) getWidget();
 		this.icon = icon;
 		this.controller = cont;
@@ -111,6 +114,39 @@ public abstract class ComponentEditor<T extends ModelComponent> extends
 		buildContent();
 
 		list.addSpace(WidgetBuilder.dpToPixels(48));
+
+		addListener(new InputListener() {
+
+			private float lastX;
+
+			private float lastY;
+
+			@Override
+			public boolean touchDown(InputEvent event, float x, float y,
+					int pointer, int button) {
+				lastX = x;
+				lastY = y;
+				return true;
+			}
+
+			@Override
+			public void touchDragged(InputEvent event, float x, float y,
+					int pointer) {
+				if (x > lastX
+						&& Math.abs(y - lastY) < AbstractWidget
+								.cmToYPixels(AREA_CM)) {
+					setCancelTouchFocus(false);
+				} else {
+					setCancelTouchFocus(true);
+				}
+			}
+
+			@Override
+			public void touchUp(InputEvent event, float x, float y,
+					int pointer, int button) {
+				setCancelTouchFocus(true);
+			}
+		});
 	}
 
 	@Override

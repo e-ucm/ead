@@ -75,8 +75,38 @@ public class Slider extends com.badlogic.gdx.scenes.scene2d.ui.Slider {
 			@Override
 			public void touchDragged(InputEvent event, float x, float y,
 					int pointer) {
-				getStage().cancelTouchFocusExcept(this, Slider.this);
+				getStage().cancelTouchFocusExcept(
+						Slider.this.getListeners().first(), Slider.this);
 				inputListener.touchDragged(event, x, y, pointer);
+			}
+		});
+	}
+
+	public boolean addInputListener(final InputListener listener) {
+		final InputListener inputListener = (InputListener) getListeners().get(
+				0);
+		clearListeners();
+		return addListener(new InputListener() {
+			@Override
+			public boolean touchDown(InputEvent event, float x, float y,
+					int pointer, int button) {
+				inputListener.touchDown(event, x, y, pointer, button);
+				listener.touchDown(event, x, y, pointer, button);
+				return true;
+			}
+
+			@Override
+			public void touchUp(InputEvent event, float x, float y,
+					int pointer, int button) {
+				inputListener.touchUp(event, x, y, pointer, button);
+				listener.touchUp(event, x, y, pointer, button);
+			}
+
+			@Override
+			public void touchDragged(InputEvent event, float x, float y,
+					int pointer) {
+				inputListener.touchDragged(event, x, y, pointer);
+				listener.touchDragged(event, x, y, pointer);
 			}
 		});
 	}
