@@ -42,11 +42,13 @@ import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.utils.Scaling;
 import com.badlogic.gdx.utils.reflect.ClassReflection;
 import com.badlogic.gdx.utils.reflect.ReflectionException;
+
 import es.eucm.ead.editor.assets.EditorGameAssets;
 import es.eucm.ead.editor.model.Q;
 import es.eucm.ead.schema.editor.components.Date;
 import es.eucm.ead.schema.editor.components.Documentation;
 import es.eucm.ead.schema.editor.components.GameData;
+import es.eucm.ead.schema.editor.components.SceneEditState;
 import es.eucm.ead.schema.effects.GoScene;
 import es.eucm.ead.schema.entities.ModelEntity;
 import es.eucm.ead.schema.renderers.Image;
@@ -125,13 +127,15 @@ public class Templates {
 	 * Creates an element in the center of the screen.
 	 * 
 	 * @param imagePath
+	 * @param fill
+	 *            if true the image will be scaled to fill the entire screen.
 	 * @return
 	 */
-	public ModelEntity createSceneElement(String imagePath, boolean filled) {
+	public ModelEntity createSceneElement(String imagePath, boolean fill) {
 		GameData data = Q.getComponent(controller.getModel().getGame(),
 				GameData.class);
 		return createSceneElement(imagePath, data.getWidth() * .5f,
-				data.getHeight() * .5f, filled);
+				data.getHeight() * .5f, fill);
 	}
 
 	/**
@@ -158,26 +162,24 @@ public class Templates {
 	 *            the center x coordinate of the scene element
 	 * @param y
 	 *            the center y coordinate of the scene element
-	 * @param filled
-	 *            if the element should be filled
+	 * @param fill
+	 *            if the element should be scaled to fill the entire screen.
 	 * @return the scene element created
 	 */
 	public ModelEntity createSceneElement(String imagePath, float x, float y,
-			final boolean filled) {
+			boolean fill) {
 
 		EditorGameAssets assets = controller.getEditorGameAssets();
 		String newPath = assets.copyToProjectIfNeeded(imagePath, Texture.class);
-		ModelEntity sceneElement = new ModelEntity();
 		controller
 				.getPlatform()
 				.getImageUtils()
 				.imageSize(
 						controller.getApplicationAssets().absolute(imagePath),
 						size);
-		// Center the origin
-		sceneElement.setOriginX(size.x * .5f);
-		sceneElement.setOriginY(size.y * .5f);
-		if (filled) {
+
+		ModelEntity sceneElement = createSceneElement();
+		if (fill) {
 			GameData data = Q.getComponent(controller.getModel().getGame(),
 					GameData.class);
 			Vector2 vector = Scaling.fill.apply(size.x, size.y,
@@ -185,11 +187,32 @@ public class Templates {
 			sceneElement.setScaleX(vector.x / size.x);
 			sceneElement.setScaleY(vector.y / size.y);
 		}
-		sceneElement.setX(x - sceneElement.getOriginX());
-		sceneElement.setY(y - sceneElement.getOriginY());
+
+		// Center the origin
+		sceneElement.setOriginX(size.x * .5f);
+		sceneElement.setOriginY(size.y * .5f);
+		sceneElement.setX(sceneElement.getX() + x - sceneElement.getOriginX());
+		sceneElement.setY(sceneElement.getY() + y - sceneElement.getOriginY());
+
 		Image renderer = new Image();
 		renderer.setUri(newPath);
 		sceneElement.getComponents().add(renderer);
+
+		return sceneElement;
+	}
+
+	/**
+	 * 
+	 * @return an element positioned at the bottom left corner of the current
+	 *         scene container.
+	 */
+	public ModelEntity createSceneElement() {
+		ModelEntity sceneElement = new ModelEntity();
+		SceneEditState state = Q.getComponent((ModelEntity) controller
+				.getModel().getSelection().getSingle(Selection.SCENE),
+				SceneEditState.class);
+		sceneElement.setX(-state.getX());
+		sceneElement.setY(-state.getY());
 		return sceneElement;
 	}
 

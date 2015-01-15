@@ -36,42 +36,52 @@
  */
 package es.eucm.ead.editor.control.actions.model;
 
-import com.badlogic.gdx.math.MathUtils;
-
 import es.eucm.ead.editor.control.actions.ModelAction;
 import es.eucm.ead.editor.control.commands.Command;
+import es.eucm.ead.editor.control.commands.CompositeCommand;
+import es.eucm.ead.editor.control.commands.FieldCommand;
 import es.eucm.ead.editor.model.Q;
-import es.eucm.ead.schema.data.shape.Rectangle;
-import es.eucm.ead.schema.editor.components.GameData;
+import es.eucm.ead.schema.editor.components.SceneEditState;
 import es.eucm.ead.schema.entities.ModelEntity;
-import es.eucm.ead.schema.renderers.EmptyRenderer;
+import es.eucm.ead.schemax.FieldName;
 
 /**
  * 
- * Adds a new {@link ModelEntity} with a {@link EmptyRenderer} in the current
- * edited scene.
+ * <p>
+ * Sets {@link SceneEditState} component position of a given scene.
+ * <dl>
+ * <dt><strong>Arguments</strong></dt>
+ * <dd><strong>args[0] </strong> <em>{@link ModelEntity}</em> the scene whose
+ * {@link SceneEditState} component position will be changed.</dd>
+ * <dd><strong>args[1] </strong> <em>{@link Float}</em> The new X position.</dd>
+ * <dd><strong>args[2] </strong> <em>{@link Float}</em> The new Y position.</dd>
+ * </dl>
+ * </p>
+ * 
  */
-public class AddInteractiveZone extends ModelAction {
+public class SetScenePosition extends ModelAction {
+
+	public SetScenePosition() {
+		super(true, false, ModelEntity.class, Float.class, Float.class);
+	}
 
 	@Override
 	public Command perform(Object... args) {
-		GameData gameData = Q.getComponent(controller.getModel().getGame(),
-				GameData.class);
+		SceneEditState state = Q.getComponent((ModelEntity) args[0],
+				SceneEditState.class);
 
-		int size = MathUtils.round(gameData.getHeight() * 0.25f);
+		CompositeCommand compositeCommand = new CompositeCommand();
 
-		EmptyRenderer empty = new EmptyRenderer();
-		Rectangle rectangle = new Rectangle();
-		rectangle.setHeight(size);
-		rectangle.setWidth(size);
+		compositeCommand.addCommand(getTransparentFieldCommand(state,
+				FieldName.X, (Float) args[1]));
+		compositeCommand.addCommand(getTransparentFieldCommand(state,
+				FieldName.Y, (Float) args[2]));
 
-		empty.setShape(rectangle);
-
-		float originXY = size * .5f;
-		ModelEntity zone = Q.createCenteredEntity(originXY, originXY, empty);
-
-		return controller.getActions().getAction(AddSceneElement.class)
-				.perform(zone);
+		return compositeCommand;
 	}
 
+	private FieldCommand getTransparentFieldCommand(Object object,
+			String fieldName, Object newValue) {
+		return new FieldCommand(object, fieldName, newValue, false, true);
+	}
 }

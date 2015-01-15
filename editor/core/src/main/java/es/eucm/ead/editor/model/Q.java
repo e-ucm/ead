@@ -306,19 +306,19 @@ public class Q {
 	/**
 	 * Returns a new Entity positioned in the center of the device
 	 */
-	public static ModelEntity createCenteredEntity(Controller controller,
-			float height, float width, ModelComponent... components) {
+	public static ModelEntity createCenteredEntity(float originX,
+			float originY, ModelComponent component) {
 		GameData gameData = getComponent(controller.getModel().getGame(),
 				GameData.class);
 
-		ModelEntity entity = new ModelEntity();
+		ModelEntity entity = controller.getTemplates().createSceneElement();
 
-		entity.setX((gameData.getWidth() - width) / 2);
-		entity.setY((gameData.getHeight() - height) / 2);
-		entity.setOriginX(width / 2.0f);
-		entity.setOriginY(height / 2.0f);
+		entity.setX(entity.getX() + gameData.getWidth() * .5f - originX);
+		entity.setY(entity.getY() + gameData.getHeight() * .5f - originY);
+		entity.setOriginX(originX);
+		entity.setOriginY(originY);
 
-		entity.getComponents().addAll(components);
+		entity.getComponents().add(component);
 
 		return entity;
 	}

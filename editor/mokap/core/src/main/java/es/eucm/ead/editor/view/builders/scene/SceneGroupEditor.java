@@ -39,6 +39,7 @@ package es.eucm.ead.editor.view.builders.scene;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.math.Interpolation;
+import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.Group;
@@ -85,13 +86,12 @@ import es.eucm.ead.engine.entities.EngineEntity;
 import es.eucm.ead.engine.entities.actors.EntityGroup;
 import es.eucm.ead.schema.components.ModelComponent;
 import es.eucm.ead.schema.editor.components.GameData;
+import es.eucm.ead.schema.editor.components.SceneEditState;
 import es.eucm.ead.schema.entities.ModelEntity;
 import es.eucm.ead.schemax.FieldName;
 
 public class SceneGroupEditor extends GroupEditor implements ModelView,
 		BackListener {
-
-	public static final float TIME = 0.25f;
 
 	private Controller controller;
 
@@ -104,6 +104,8 @@ public class SceneGroupEditor extends GroupEditor implements ModelView,
 	private ModelEntity sceneEntity;
 
 	private SceneEditor sceneEditor;
+
+	private SceneEditListener sceneEditListener = new SceneEditListener();
 
 	private TransformationFieldListener transformationListener = new TransformationFieldListener();
 
@@ -121,10 +123,10 @@ public class SceneGroupEditor extends GroupEditor implements ModelView,
 
 	private ImageButton fitButton;
 
-	public SceneGroupEditor(Controller c, final SceneEditor sceneEditor) {
-		super(c.getApplicationAssets().getSkin());
+	public SceneGroupEditor(Controller control, final SceneEditor sceneEditor) {
+		super(control.getApplicationAssets().getSkin());
 		this.sceneEditor = sceneEditor;
-		this.controller = c;
+		this.controller = control;
 		this.model = controller.getModel();
 		this.entitiesLoader = controller.getEngine().getEntitiesLoader();
 		addListener(new EditStateMachine(sceneEditor, this, selectionGroup));
@@ -228,12 +230,11 @@ public class SceneGroupEditor extends GroupEditor implements ModelView,
 		readSceneContext();
 		readEditedGroup();
 		readSelection();
-		fitButton.setVisible(false);
-		fit(false);
 	}
 
 	@Override
 	public void release() {
+		model.removeListenerFromAllTargets(sceneEditListener);
 		model.removeListenerFromAllTargets(transformationListener);
 		model.removeListenerFromAllTargets(childrenListListener);
 		model.removeListenerFromAllTargets(labelListener);
@@ -244,6 +245,11 @@ public class SceneGroupEditor extends GroupEditor implements ModelView,
 	}
 
 	protected void readSceneContext() {
+		if (sceneEntity != null) {
+			model.removeListener(
+					Q.getComponent(sceneEntity, SceneEditState.class),
+					sceneEditListener);
+		}
 		sceneEntity = (ModelEntity) model.getSelection().getSingle(
 				Selection.SCENE);
 		if (sceneEntity != null) {
@@ -251,7 +257,15 @@ public class SceneGroupEditor extends GroupEditor implements ModelView,
 			GameData gameData = Q.getComponent(controller.getModel().getGame(),
 					GameData.class);
 
+			SceneEditState state = Q.getComponent(sceneEntity,
+					SceneEditState.class);
+			controller.getModel().addFieldListener(state, sceneEditListener);
 			addListeners(scene.getGroup());
+
+			panToX(state.getX(), false);
+			panToY(state.getY(), false);
+			fitButton.setVisible(!MathUtils.isZero(state.getX())
+					|| !MathUtils.isZero(state.getY()));
 
 			scene.getGroup().setSize(gameData.getWidth(), gameData.getHeight());
 			setRootGroup(scene.getGroup());
@@ -421,6 +435,32 @@ public class SceneGroupEditor extends GroupEditor implements ModelView,
 				}
 				break;
 			}
+		}
+	}
+
+	/**
+	 * Handles transformation in the {@link SceneEditState} of the current
+	 * scene.
+	 */
+	public class SceneEditListener implements FieldListener {
+
+		private final Array<String> TRANSFORMATION_FIELDS = new Array<String>(
+				new String[] { FieldName.X, FieldName.Y });
+
+		@Override
+		public boolean listenToField(String fieldName) {
+			return TRANSFORMATION_FIELDS.contains(fieldName, false);
+		}
+
+		@Override
+		public void modelChanged(FieldEvent event) {
+			float value = (Float) event.getValue();
+			if (FieldName.X.equals(event.getField()))
+				panToX(value, true);
+			else if (FieldName.Y.equals(event.getField()))
+				panToY(value, true);
+
+			fitButton.setVisible(!MathUtils.isZero(value));
 		}
 	}
 

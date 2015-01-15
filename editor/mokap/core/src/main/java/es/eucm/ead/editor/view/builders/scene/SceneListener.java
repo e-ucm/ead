@@ -43,6 +43,7 @@ import com.badlogic.gdx.utils.Array;
 import es.eucm.ead.editor.control.Controller;
 import es.eucm.ead.editor.control.Selection;
 import es.eucm.ead.editor.control.actions.model.ExitGroupEdition;
+import es.eucm.ead.editor.control.actions.model.SetScenePosition;
 import es.eucm.ead.editor.control.actions.model.SetSelection;
 import es.eucm.ead.editor.control.actions.model.scene.ActorTransformToEntity;
 import es.eucm.ead.editor.control.actions.model.scene.MultipleActorTransformToEntity;
@@ -135,5 +136,12 @@ public class SceneListener extends GroupListener {
 		controller.getCommands().popStack(true);
 		controller.action(ExitGroupEdition.class, parent, oldGroup,
 				simplifiedGroup);
+	}
+
+	@Override
+	public void containerUpdated(GroupEvent event, Group container) {
+		controller.action(SetScenePosition.class, controller.getModel()
+				.getSelection().getSingle(Selection.SCENE), container.getX(),
+				container.getY());
 	}
 }
