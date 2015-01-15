@@ -156,7 +156,8 @@ public class ExportGame extends EnabledOnLoadAction {
 						exporter.exportAsJar(jarPath, controller
 								.getEditorGameAssets().getLoadingPath(),
 								engineLibraryPath, controller.getModel()
-										.listNamedObjects(), callback);
+										.listNamedObjects(), null, null,
+								callback);
 						return null;
 					}
 				},

@@ -220,7 +220,7 @@ public abstract class RepoLibraryBuilder extends EditorDemoBuilder {
 		if (properties.get(ENGINE_JAR_FOR_PREVIEW) != null) {
 			exporter.exportAsJar(destiny.path(), tempFolder.path(),
 					properties.get(ENGINE_JAR_FOR_PREVIEW),
-					allEntities.entrySet(), new ExportCallback() {
+					allEntities.entrySet(), null, null, new ExportCallback() {
 						@Override
 						public void error(String errorMessage) {
 

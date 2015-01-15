@@ -62,6 +62,6 @@ public class ExportAsApkTest {
 		target.parent().mkdirs();
 
 		ExporterApplication.exportAsApk(projectDir.path(), null, null, null,
-				"Game Of Thrones", thumbnail.path(), target.path());
+				null, "Game Of Thrones", thumbnail.path(), target.path());
 	}
 }

@@ -36,9 +36,6 @@
  */
 package es.eucm.ead.engine;
 
-import com.badlogic.gdx.Application;
-import com.badlogic.gdx.Gdx;
-
 import javax.imageio.ImageIO;
 import java.awt.*;
 import java.awt.image.BufferedImage;
@@ -67,14 +64,34 @@ public class EngineJarGame {
 	 * Relative path of the folder that contains the game assets (game.json,
 	 * scenes/sceneX.json...)
 	 */
-	private static final String GAME_PATH = "assets/";
+	public static final String GAME_PATH = "assets/";
 
 	/**
 	 * Relative path to the folder that contains the images to be used as icons
 	 * for the application. Any image found under this folder will be treated as
 	 * an icon.
 	 */
-	private static final String APP_ICONS_PATH = "appicons/";
+	public static final String APP_ICONS_PATH = "/appicons/";
+
+	/**
+	 * Internal Java properties file with settings (e.g. window size). May not
+	 * be present. (Note: update Exporter if this value changes)
+	 */
+	public static final String APP_ARGUMENTS = "/app_arguments.txt";
+
+	/**
+	 * Property key for setting a fixed window width. If provided,
+	 * {@link #WINDOW_HEIGHT} must be present too. (Note: update Exporter if
+	 * this value changes)
+	 */
+	public static final String WINDOW_WIDTH = "WindowWidth";
+
+	/**
+	 * Property key for setting a fixed window height. If provided,
+	 * {@link #WINDOW_WIDTH} must be present too. (Note: update Exporter if this
+	 * value changes)
+	 */
+	public static final String WINDOW_HEIGHT = "WindowHeight";
 
 	/**
 	 * App icon filenames supported
@@ -83,11 +100,10 @@ public class EngineJarGame {
 			"64.png", "128.png", "256.png", "512.png", "1024.png" };
 
 	public static void main(String args[]) {
-		// Determine the size of the window for the game to be full screen
-		int screenWidth = Toolkit.getDefaultToolkit().getScreenSize().width;
-		int screenHeight = Toolkit.getDefaultToolkit().getScreenSize().height;
 		// Create the engine
-		EngineDesktop engine = new EngineDesktop(screenWidth, screenHeight);
+		Dimension windowSize = getWindowSize();
+		EngineDesktop engine = new EngineDesktop(windowSize.width,
+				windowSize.height);
 		// Load and set app icons
 		List<? extends Image> icons = loadApplicationIcons();
 		if (icons.size() > 0) {
@@ -95,7 +111,6 @@ public class EngineJarGame {
 		}
 		// Run the game
 		engine.run(GAME_PATH, true);
-		Gdx.app.setLogLevel(Application.LOG_DEBUG);
 	}
 
 	/**
@@ -123,11 +138,63 @@ public class EngineJarGame {
 					BufferedImage bufferedImage = ImageIO.read(inputStream);
 					list.add(bufferedImage);
 				} catch (IOException e) {
-					Gdx.app.debug(EngineJarGame.class.getCanonicalName(),
-							"Exception reading icon: " + iconPath, e);
+					System.out.println(EngineJarGame.class.getCanonicalName()
+							+ ": Exception reading icon: " + iconPath);
+					e.printStackTrace();
 				}
 			}
 		}
 		return list;
+	}
+
+	/*
+	 * Calculates window size. It tries to determine window's width and height
+	 * from an internal properties file but, if unreadable or not provided, just
+	 * uses the full size of the screen
+	 */
+	private static Dimension getWindowSize() {
+		InputStream inputStream = EngineJarGame.class
+				.getResourceAsStream(APP_ARGUMENTS);
+		if (inputStream != null) {
+			Properties properties = new Properties();
+			try {
+				properties.load(inputStream);
+				Object screenWidthStr = properties.get(WINDOW_WIDTH);
+				Object screenHeightStr = properties.get(WINDOW_HEIGHT);
+				if (screenWidthStr != null && screenHeightStr != null) {
+					try {
+						Integer screenWidth = Integer.parseInt(""
+								+ screenWidthStr);
+						Integer screenHeight = Integer.parseInt(""
+								+ screenHeightStr);
+						Dimension dim = new Dimension();
+						dim.setSize(screenWidth, screenHeight);
+						return dim;
+					} catch (NumberFormatException e) {
+						System.out.println(EngineJarGame.class
+								.getCanonicalName()
+								+ ": Bad screen width (W) or height (H)"
+										.replace("W", "" + screenWidthStr)
+										.replace("H", "" + screenHeightStr));
+						e.printStackTrace();
+					}
+
+				}
+			} catch (IOException e) {
+				System.out.println(EngineJarGame.class.getCanonicalName()
+						+ ": Exception reading " + APP_ARGUMENTS);
+				e.printStackTrace();
+			}
+		}
+
+		// By default, return screen size
+		// Determine the size of the window for the game to be full screen
+		System.out.println(EngineJarGame.class.getCanonicalName()
+				+ ": Using default window size (full screen)");
+		int screenWidth = Toolkit.getDefaultToolkit().getScreenSize().width;
+		int screenHeight = Toolkit.getDefaultToolkit().getScreenSize().height;
+		Dimension dim = new Dimension();
+		dim.setSize(screenWidth, screenHeight);
+		return dim;
 	}
 }
