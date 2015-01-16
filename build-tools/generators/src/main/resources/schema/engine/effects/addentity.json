@@ -26,12 +26,12 @@
         "x":{
             "type":"number",
             "description":"Overrides the x position of the entity on the screen. By default (-30000), entity's x value is used",
-            "default": -30000
+            "default": "NaN"
         },
         "y":{
             "type":"number",
             "description":"Overrides the y position of the entity on the screen. By default (-30000), entity's y value is used",
-            "default": -30000
+            "default": "NaN"
         }
     },
     "description": "An effect that adds a new entity. The entity to be added can is provided by referring to another file, using the {@code entityUri} property. The effect also supports in-out animation. The total time the entity is shown is determined as: {@code durationIn}+{@code duration}+{@code durationOut}.",

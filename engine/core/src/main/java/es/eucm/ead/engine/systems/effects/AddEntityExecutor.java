@@ -62,8 +62,6 @@ import es.eucm.ead.schema.effects.RemoveEntity;
  */
 public class AddEntityExecutor extends EffectExecutor<AddEntity> {
 
-	private static final float NOT_OVERRIDE_COORDINATES = -30000.0F;
-
 	private EntitiesLoader entitiesLoader;
 
 	private VariablesManager variablesManager;
@@ -107,11 +105,11 @@ public class AddEntityExecutor extends EffectExecutor<AddEntity> {
 			ownerEngineEntity.getGroup().addActor(entityToAdd.getGroup());
 
 			// Override entity's default x and y, if specified by the effect
-			if (effect.getX() != NOT_OVERRIDE_COORDINATES) {
+			if (!Float.isNaN(effect.getX())) {
 				entityToAdd.getGroup().setX(effect.getX());
 			}
 
-			if (effect.getY() != NOT_OVERRIDE_COORDINATES) {
+			if (!Float.isNaN(effect.getY())) {
 				entityToAdd.getGroup().setY(effect.getY());
 			}
 
