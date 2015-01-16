@@ -175,6 +175,8 @@ public class AddEntityTest extends EngineTest implements EntityListener {
 		AddEntity addEntity = new AddEntity();
 		// Create entity and get it copied to temp path
 		ModelEntity modelEntity = new ModelEntity();
+		modelEntity.setX(10);
+		modelEntity.setY(10);
 		json.toJson(modelEntity, null, null, tempFile);
 		addEntity.setEntityUri(tempFile.path());
 		EngineEntity parentEntity = entitiesLoader
@@ -195,10 +197,41 @@ public class AddEntityTest extends EngineTest implements EntityListener {
 						.getValue(VarsContext.RESERVED_NEWEST_ENTITY_VAR));
 		assertEquals("Entity added should have no components", 0,
 				entityAdded.getComponents().size);
+		// Check x and y are not overriden
+		assertEquals("X and Y should be those specified in the entity", 10,
+				entityAdded.getGroup().getX(), 0.001F);
+		assertEquals("X and Y should be those specified in the entity", 10,
+				entityAdded.getGroup().getY(), 0.001F);
 		// Check the entity is still there after a long time
 		gameLoop.update(1000);
 		gameLoop.update(1000);
 		assertEquals("There should be 2 entities yet", 2, count);
+	}
+
+	@Test
+	public void testOverrideXY() {
+		AddEntity addEntity = new AddEntity();
+		addEntity.setX(20);
+		addEntity.setY(20);
+		// Create entity and get it copied to temp path
+		ModelEntity modelEntity = new ModelEntity();
+		modelEntity.setX(10);
+		modelEntity.setY(10);
+		json.toJson(modelEntity, null, null, tempFile);
+		addEntity.setEntityUri(tempFile.path());
+		EngineEntity parentEntity = entitiesLoader
+				.toEngineEntity(new ModelEntity());
+		addEntityExecutor.execute(parentEntity, addEntity);
+		gameAssets.getAssetManager().finishLoading();
+		gameLoop.update(0);
+		// Get added entity
+		EngineEntity entityAdded = (EngineEntity) parentEntity.getGroup()
+				.getChildren().get(0).getUserObject();
+		// Check x and y are overriden by those specified in the effect
+		assertEquals("X and Y should be those specified in the effect", 20,
+				entityAdded.getGroup().getX(), 0.001F);
+		assertEquals("X and Y should be those specified in the effect", 20,
+				entityAdded.getGroup().getY(), 0.001F);
 	}
 
 	@Test

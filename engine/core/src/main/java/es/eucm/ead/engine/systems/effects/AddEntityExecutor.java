@@ -104,6 +104,15 @@ public class AddEntityExecutor extends EffectExecutor<AddEntity> {
 			EngineEntity ownerEngineEntity = (EngineEntity) target;
 			ownerEngineEntity.getGroup().addActor(entityToAdd.getGroup());
 
+			// Override entity's default x and y, if specified by the effect
+			if (!Float.isNaN(effect.getX())) {
+				entityToAdd.getGroup().setX(effect.getX());
+			}
+
+			if (!Float.isNaN(effect.getY())) {
+				entityToAdd.getGroup().setY(effect.getY());
+			}
+
 			// Update newest entity var
 			variablesManager.globalNewestEntityVar(entityToAdd);
 

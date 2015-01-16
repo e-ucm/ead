@@ -22,8 +22,18 @@
         "animationOut":{
             "$ref": "../components/tweens/basetween.json",
             "description": "A timeline that is applied to the entity when it is removed to the scene, if any."
+        },
+        "x":{
+            "type":"number",
+            "description":"Overrides the x position of the entity on the screen. By default (-30000), entity's x value is used",
+            "default": "NaN"
+        },
+        "y":{
+            "type":"number",
+            "description":"Overrides the y position of the entity on the screen. By default (-30000), entity's y value is used",
+            "default": "NaN"
         }
     },
-    "description": "An effect that adds a new entity. The entity to be added can be provided either inside the effect, using the {@code entity} property, or by referring to another file, using the {@code entityRef} property. If both are specified, {@code entity} has priority. The effect also supports in-out animation. The total time the entity is shown is determined as: {@code durationIn}+{@code duration}+{@code durationOut}.",
+    "description": "An effect that adds a new entity. The entity to be added can is provided by referring to another file, using the {@code entityUri} property. The effect also supports in-out animation. The total time the entity is shown is determined as: {@code durationIn}+{@code duration}+{@code durationOut}.",
     "type": "object"
 }
