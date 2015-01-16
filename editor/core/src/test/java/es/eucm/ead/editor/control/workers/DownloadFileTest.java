@@ -62,6 +62,8 @@ public class DownloadFileTest extends WorkerTest implements WorkerListener {
 
 	private FileHandle dstFile;
 
+	private FileHandle dstFile2;
+
 	@Before
 	public void buildInputStream() {
 
@@ -76,9 +78,14 @@ public class DownloadFileTest extends WorkerTest implements WorkerListener {
 	public void testWorker() {
 		FileHandle directory = Gdx.files.external("");
 		dstFile = ProjectUtils.getNonExistentFile(directory,
-				image.nameWithoutExtension(), image.extension());
-		controller.action(ExecuteWorker.class, DownloadFile.class, this, URL,
-				dstFile);
+				image.nameWithoutExtension() + "1", image.extension());
+		controller.action(ExecuteWorker.class, DownloadFile.class, false, this,
+				URL, dstFile);
+
+		dstFile2 = ProjectUtils.getNonExistentFile(directory,
+				image.nameWithoutExtension() + "2", image.extension());
+		controller.action(ExecuteWorker.class, DownloadFile.class, false, this,
+				image.read(), dstFile2);
 	}
 
 	@Override
@@ -86,6 +93,10 @@ public class DownloadFileTest extends WorkerTest implements WorkerListener {
 		assertTrue(dstFile.exists());
 		assertEquals(dstFile.length(), image.length());
 		dstFile.delete();
+
+		assertTrue(dstFile2.exists());
+		assertEquals(dstFile2.length(), image.length());
+		dstFile2.delete();
 	}
 
 	@Override

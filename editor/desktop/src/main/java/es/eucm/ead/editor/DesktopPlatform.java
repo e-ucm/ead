@@ -99,7 +99,7 @@ public class DesktopPlatform extends AbstractPlatform implements
 	}
 
 	@Override
-	public void askForFile(FileChooserListener listener) {
+	public void askForFile(Controller controller, FileChooserListener listener) {
 		showFileChooser(listener);
 	}
 
@@ -144,7 +144,7 @@ public class DesktopPlatform extends AbstractPlatform implements
 	}
 
 	@Override
-	public void fileChosen(String path) {
+	public void fileChosen(String path, Result result) {
 		if (path == null) {
 			controller.getPreferences().putString(
 					Preferences.FILE_CHOOSER_LAST_FOLDER,
@@ -154,13 +154,14 @@ public class DesktopPlatform extends AbstractPlatform implements
 					Preferences.FILE_CHOOSER_LAST_FOLDER, path);
 		}
 		if (fileChooserListener != null) {
-			fileChooserListener.fileChosen(path);
+			fileChooserListener.fileChosen(path, Result.SUCCESS);
 		}
 		fileChooser.remove();
 	}
 
 	@Override
-	public void editImage(I18N i18n, String image, FileChooserListener listener) {
+	public void editImage(Controller controller, String image,
+			FileChooserListener listener) {
 		// Nothing to do
 	}
 

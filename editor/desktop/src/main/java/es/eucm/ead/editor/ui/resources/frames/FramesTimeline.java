@@ -59,7 +59,7 @@ public class FramesTimeline extends FocusItemList implements
 	}
 
 	@Override
-	public void fileChosen(String path) {
+	public void fileChosen(String path, Result result) {
 		if (path != null) {
 			controller.action(AddFrames.class, path, null, frames);
 		}

@@ -42,6 +42,8 @@ import es.eucm.ead.editor.control.actions.editor.ExecuteWorker;
 import es.eucm.ead.editor.control.workers.DownloadFile;
 import es.eucm.ead.editor.control.workers.Worker.WorkerListener;
 
+import java.io.InputStream;
+
 /**
  * Manages the active downloads and also allows to add new ones or cancel active
  * ones.
@@ -58,8 +60,10 @@ public class DownloadManager {
 	public void download(DownloadWork work) {
 		work.listener.queued();
 		work.workerListener = new DownloadWorkListener(work.listener);
+
 		controller.action(ExecuteWorker.class, DownloadFile.class, false,
-				work.workerListener, work.uri, work.outputFile);
+				work.workerListener, work.uri == null ? work.inputStream
+						: work.uri, work.outputFile);
 	}
 
 	public void cancel(DownloadWork work) {
@@ -117,6 +121,7 @@ public class DownloadManager {
 	public static class DownloadWork {
 		private DownloadListener listener;
 		private FileHandle outputFile;
+		private InputStream inputStream;
 		private String uri;
 		private DownloadWorkListener workerListener;
 
@@ -124,6 +129,13 @@ public class DownloadManager {
 				FileHandle outputFile) {
 			this.listener = listener;
 			this.uri = uri;
+			this.outputFile = outputFile;
+		}
+
+		public DownloadWork(DownloadListener listener, InputStream input,
+				FileHandle outputFile) {
+			this.listener = listener;
+			this.inputStream = input;
 			this.outputFile = outputFile;
 		}
 

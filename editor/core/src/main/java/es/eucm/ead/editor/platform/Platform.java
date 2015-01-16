@@ -61,7 +61,7 @@ public interface Platform {
 	 *            listener processing the result. The listener will receive a
 	 *            null if no file was selected (e.g., the action was cancelled)
 	 */
-	void askForFile(FileChooserListener listener);
+	void askForFile(Controller controller, FileChooserListener listener);
 
 	/**
 	 * Asks for a folder in the platform file system
@@ -87,7 +87,8 @@ public interface Platform {
 	 * 
 	 * @param image
 	 */
-	void editImage(I18N i18n, String image, final FileChooserListener listener);
+	void editImage(Controller controller, String image,
+			final FileChooserListener listener);
 
 	/**
 	 * Sets the size for the platform. In desktop, the window's size, in
@@ -137,14 +138,32 @@ public interface Platform {
 	String getLibraryFolder();
 
 	public interface FileChooserListener {
+
+		public static enum Result {
+			SUCCESS, NOT_FOUND("not.found"), NO_CONNECTION("no.connection"), CANCELLED;
+
+			private String i18nKey;
+
+			private Result() {
+				this(null);
+			}
+
+			private Result(String i18nKey) {
+				this.i18nKey = i18nKey;
+			}
+
+			public String getI18nKey() {
+				return i18nKey;
+			}
+		}
+
 		/**
 		 * 
 		 * @param path
 		 *            the path chosen. Remember that the path can be in
 		 *            different formats (C:\\user, /home/user/, ...)
 		 */
-		void fileChosen(String path);
-
+		void fileChosen(String path, Result result);
 	}
 
 	/**

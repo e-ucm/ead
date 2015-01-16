@@ -36,7 +36,9 @@
  */
 package es.eucm.ead.android;
 
+import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.io.InputStream;
 import java.util.List;
 import java.util.Locale;
 
@@ -54,6 +56,8 @@ import android.content.pm.PackageManager;
 import android.content.pm.PackageManager.NameNotFoundException;
 import android.content.pm.ResolveInfo;
 import android.database.Cursor;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
 import android.net.Uri;
 import android.provider.MediaStore;
 import android.text.InputType;
@@ -68,11 +72,15 @@ import com.google.android.gms.analytics.Tracker;
 
 import es.eucm.ead.android.EditorActivity.ActivityResultListener;
 import es.eucm.ead.editor.control.Controller;
+import es.eucm.ead.editor.control.DownloadManager;
+import es.eucm.ead.editor.control.actions.editor.ShowToast;
 import es.eucm.ead.editor.platform.MokapPlatform;
 import es.eucm.ead.editor.platform.MokapPlatform.ImageCapturedListener.Result;
+import es.eucm.ead.editor.utils.ProjectUtils;
 import es.eucm.ead.engine.I18N;
 import es.eucm.ead.engine.android.AndroidImageUtils;
 import es.eucm.ead.engine.assets.GameAssets.ImageUtils;
+import es.eucm.ead.schemax.ModelStructure;
 
 public class AndroidPlatform extends MokapPlatform {
 
@@ -119,11 +127,11 @@ public class AndroidPlatform extends MokapPlatform {
 	}
 
 	@Override
-	public void askForFile(FileChooserListener listener) {
+	public void askForFile(Controller controller, FileChooserListener listener) {
 		String pathColumn = MediaStore.Images.Media.DATA;
 		Intent intent = new Intent(Intent.ACTION_PICK,
 				android.provider.MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
-		selectFile(listener, null, pathColumn, intent);
+		selectFile(controller, listener, pathColumn, intent);
 	}
 
 	@Override
@@ -134,32 +142,35 @@ public class AndroidPlatform extends MokapPlatform {
 		intent.setAction(Intent.ACTION_GET_CONTENT);
 		intent.setType("audio/*");
 		intent = Intent.createChooser(intent, i18n.m("edition.selectionAudio"));
-		selectFile(listener, i18n, pathColumn, intent);
+		selectFile(controller, listener, pathColumn, intent);
 	}
 
-	private void selectFile(FileChooserListener listener, I18N i18n,
-			String pathColumn, Intent intent) {
+	private void selectFile(Controller controller,
+			FileChooserListener listener, String pathColumn, Intent intent) {
 
 		EditorActivity activity = (EditorActivity) Gdx.app;
 		if (intent.resolveActivity(activity.getPackageManager()) != null) {
 			activity.startActivityForResult(intent, PICK_FILE,
-					new FileResultListener(listener, pathColumn, this));
+					new FileResultListener(controller, listener, pathColumn,
+							this));
 		} else {
-			listener.fileChosen(null);
+			listener.fileChosen(null, FileChooserListener.Result.NOT_FOUND);
 		}
 	}
 
 	@Override
-	public void editImage(I18N i18n, String imagePath,
+	public void editImage(Controller controller, String imagePath,
 			FileChooserListener listener) {
 		Editor editor = Editor.PIXLREXPRESS;
-		checkPackageInstalledAndStart(editor, i18n, imagePath, listener);
+		checkPackageInstalledAndStart(editor, controller, imagePath, listener);
 	}
 
-	private void checkPackageInstalledAndStart(Editor editor, final I18N i18n,
-			String imagePath, FileChooserListener listener) {
+	private void checkPackageInstalledAndStart(Editor editor,
+			Controller controller, String imagePath,
+			FileChooserListener listener) {
 
 		final EditorActivity activity = (EditorActivity) Gdx.app;
+		final I18N i18n = controller.getApplicationAssets().getI18N();
 
 		if (isPackageInstalled(editor.packageName, activity)) {
 			// The user has the selected editor installed, so
@@ -194,7 +205,7 @@ public class AndroidPlatform extends MokapPlatform {
 			if (!componentFound) {
 				Gdx.app.log(PLATFORM_TAG,
 						"the Activity for the requested aplication was not found ");
-				listener.fileChosen(null);
+				listener.fileChosen(null, FileChooserListener.Result.NOT_FOUND);
 				return;
 			}
 
@@ -209,7 +220,7 @@ public class AndroidPlatform extends MokapPlatform {
 			}
 
 			activity.startActivityForResult(editIntent, EDIT_FILE,
-					new FileResultListener(listener,
+					new FileResultListener(controller, listener,
 							MediaStore.Images.Media.DATA, this));
 		} else {
 			// The user doesn't have the selected editor
@@ -468,9 +479,14 @@ public class AndroidPlatform extends MokapPlatform {
 		private AndroidPlatform androidPlatform;
 		private FileChooserListener listener;
 		private String pathColumn;
+		private Controller controller;
+		private I18N i18N;
 
-		public FileResultListener(FileChooserListener listener,
-				String pathColumn, AndroidPlatform androidPlatform) {
+		public FileResultListener(Controller controller,
+				FileChooserListener listener, String pathColumn,
+				AndroidPlatform androidPlatform) {
+			this.controller = controller;
+			this.i18N = controller.getApplicationAssets().getI18N();
 			this.listener = listener;
 			this.pathColumn = pathColumn;
 			this.androidPlatform = androidPlatform;
@@ -487,15 +503,95 @@ public class AndroidPlatform extends MokapPlatform {
 							EditorActivity activity = (EditorActivity) Gdx.app;
 							String path = androidPlatform.getStringFromIntent(
 									activity, data, pathColumn);
-							listener.fileChosen(path);
+							if (path == null) {
+								Context context = ((EditorActivity) Gdx.app)
+										.getContext();
+								ConnectivityManager connectivity = (ConnectivityManager) context
+										.getSystemService(Context.CONNECTIVITY_SERVICE);
+								NetworkInfo state = connectivity
+										.getActiveNetworkInfo();
+
+								if (state == null || !state.isConnected()) {
+									showToast(FileChooserListener.Result.NO_CONNECTION
+											.getI18nKey());
+								} else {
+									String url = data.getDataString();
+									try {
+										InputStream input = context
+												.getContentResolver()
+												.openInputStream(Uri.parse(url));
+										final FileHandle file = ProjectUtils.getNonExistentFile(
+												controller
+														.getApplicationAssets()
+														.absolute(
+																controller
+																		.getLoadingPath()
+																		+ ModelStructure.IMAGES_FOLDER),
+												i18N.m("image"), ".png");
+										controller
+												.getDownloadManager()
+												.download(
+														new DownloadManager.DownloadWork(
+																createDownloadListener(file),
+																input, file));
+									} catch (FileNotFoundException e) {
+										showToast(FileChooserListener.Result.NOT_FOUND
+												.getI18nKey());
+									}
+								}
+
+							} else {
+								listener.fileChosen(path,
+										FileChooserListener.Result.SUCCESS);
+							}
 						}
 					});
 				} else {
-					listener.fileChosen(null);
+					showToast(FileChooserListener.Result.NOT_FOUND.getI18nKey());
 				}
 			} else {
-				listener.fileChosen(null);
+				showToast(FileChooserListener.Result.NOT_FOUND.getI18nKey());
 			}
+		}
+
+		private void showToast(String i18nKey) {
+			controller.action(ShowToast.class, i18N.m(i18nKey));
+		}
+
+		private DownloadManager.DownloadListener createDownloadListener(
+				final FileHandle file) {
+			return new DownloadManager.DownloadListener() {
+				@Override
+				public void queued() {
+
+				}
+
+				@Override
+				public void started() {
+
+				}
+
+				@Override
+				public void completion(float completion) {
+
+				}
+
+				@Override
+				public void downloaded() {
+					listener.fileChosen(file.path(),
+							FileChooserListener.Result.SUCCESS);
+				}
+
+				@Override
+				public void cancelled() {
+					showToast("download.cancelled");
+				}
+
+				@Override
+				public void error() {
+					showToast("download.error");
+				}
+			};
 		}
 	}
 

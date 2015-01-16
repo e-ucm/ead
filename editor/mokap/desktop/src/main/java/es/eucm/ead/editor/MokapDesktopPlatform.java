@@ -73,7 +73,8 @@ public class MokapDesktopPlatform extends MokapPlatform {
 	}
 
 	@Override
-	public void askForFile(final FileChooserListener listener) {
+	public void askForFile(Controller controller,
+			final FileChooserListener listener) {
 		Gdx.input.getTextInput(new TextInputListener() {
 
 			@Override
@@ -81,7 +82,8 @@ public class MokapDesktopPlatform extends MokapPlatform {
 				Gdx.app.postRunnable(new Runnable() {
 					@Override
 					public void run() {
-						listener.fileChosen(text);
+						listener.fileChosen(text,
+								FileChooserListener.Result.SUCCESS);
 
 					}
 				});
@@ -101,7 +103,7 @@ public class MokapDesktopPlatform extends MokapPlatform {
 
 			@Override
 			public void input(String text) {
-				listener.fileChosen(text);
+				listener.fileChosen(text, FileChooserListener.Result.SUCCESS);
 			}
 
 			@Override

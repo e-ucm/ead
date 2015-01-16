@@ -84,23 +84,27 @@ public class MockPlatform extends AbstractPlatform {
 	}
 
 	@Override
-	public void askForFile(FileChooserListener listener) {
+	public void askForFile(Controller controller, FileChooserListener listener) {
 		if (pathsStack.size > 0) {
-			listener.fileChosen(pathsStack.pop());
+			listener.fileChosen(pathsStack.pop(),
+					FileChooserListener.Result.SUCCESS);
 			return;
 		}
 		File file = createTempFile(false);
-		listener.fileChosen(file.getAbsolutePath());
+		listener.fileChosen(file.getAbsolutePath(),
+				FileChooserListener.Result.SUCCESS);
 	}
 
 	@Override
 	public void askForFolder(FileChooserListener listener) {
 		if (pathsStack.size > 0) {
-			listener.fileChosen(pathsStack.pop());
+			listener.fileChosen(pathsStack.pop(),
+					FileChooserListener.Result.SUCCESS);
 			return;
 		}
 		File file = createTempFile(true);
-		listener.fileChosen(file.getAbsolutePath());
+		listener.fileChosen(file.getAbsolutePath(),
+				FileChooserListener.Result.SUCCESS);
 	}
 
 	@Override
@@ -166,7 +170,8 @@ public class MockPlatform extends AbstractPlatform {
 	}
 
 	@Override
-	public void editImage(I18N i18n, String image, FileChooserListener listener) {
+	public void editImage(Controller controller, String image,
+			FileChooserListener listener) {
 		// Nothing to do
 	}
 

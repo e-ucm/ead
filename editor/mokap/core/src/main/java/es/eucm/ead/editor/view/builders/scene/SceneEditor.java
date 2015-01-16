@@ -44,20 +44,13 @@ import com.badlogic.gdx.scenes.scene2d.actions.Actions;
 import com.badlogic.gdx.scenes.scene2d.ui.Button;
 import com.badlogic.gdx.scenes.scene2d.utils.Align;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
-
 import es.eucm.ead.editor.control.Controller;
 import es.eucm.ead.editor.control.MokapController.BackListener;
 import es.eucm.ead.editor.control.Preferences;
 import es.eucm.ead.editor.control.Selection;
 import es.eucm.ead.editor.control.Selection.Context;
-import es.eucm.ead.editor.control.actions.editor.AddLabel;
-import es.eucm.ead.editor.control.actions.editor.ChangeView;
-import es.eucm.ead.editor.control.actions.editor.ChooseFile;
-import es.eucm.ead.editor.control.actions.editor.CreateSceneThumbnail;
-import es.eucm.ead.editor.control.actions.editor.ShowContextMenu;
-import es.eucm.ead.editor.control.actions.editor.ShowInfoPanel;
+import es.eucm.ead.editor.control.actions.editor.*;
 import es.eucm.ead.editor.control.actions.editor.ShowInfoPanel.TypePanel;
-import es.eucm.ead.editor.control.actions.editor.ShowToast;
 import es.eucm.ead.editor.control.actions.model.AddInteractiveZone;
 import es.eucm.ead.editor.control.actions.model.AddSceneElement;
 import es.eucm.ead.editor.control.actions.model.SetSelection;
@@ -384,7 +377,7 @@ public class SceneEditor extends BaseView implements ModelView,
 	}
 
 	@Override
-	public void fileChosen(String path) {
+	public void fileChosen(String path, Result result) {
 		if (path != null && !path.trim().isEmpty()) {
 			addElement(path);
 		}
