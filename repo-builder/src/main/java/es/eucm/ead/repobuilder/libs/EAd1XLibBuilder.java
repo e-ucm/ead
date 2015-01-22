@@ -315,8 +315,8 @@ public abstract class EAd1XLibBuilder extends RepoLibraryBuilder {
 						states.getStates().add(state);
 						stateTag(parsedTags, state, assetType);
 						if (!defaultSelected) {
-							state.getStates()
-									.add(StatesComponent.DEFAULT_STATE);
+							state.getStates().add(
+									StatesComponent.DEFAULT_STATE_TAG);
 							defaultSelected = true;
 							if (assetValue.toLowerCase().endsWith("png")
 									|| assetValue.toLowerCase().endsWith("jpg")

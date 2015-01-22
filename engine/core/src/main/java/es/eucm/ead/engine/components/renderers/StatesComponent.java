@@ -46,75 +46,61 @@ public class StatesComponent extends RendererComponent {
 	 * If any state has this tag, it is set for preview. If several states have
 	 * this tag, the last one added will be picked.
 	 */
-	public static final String DEFAULT_STATE = "default";
+	public static final String DEFAULT_STATE_TAG = "default";
 
 	private Array<State> states;
 
-	protected RendererComponent currentRenderer;
-
-	private Array<String> currentState;
+	protected State currentState;
 
 	public StatesComponent() {
 		states = new Array<State>();
 	}
 
-	public void addRenderer(Array<String> state, RendererComponent renderer) {
-		states.add(new State(state, renderer));
-		currentState = new Array<String>();
-		if (currentRenderer == null) {
-			currentRenderer = renderer;
-		}
-		if (state.contains(DEFAULT_STATE, false)) {
-			currentRenderer = renderer;
-		}
-	}
-
-	public void addState(String state) {
-		if (!currentState.contains(state, false)) {
-			currentState.add(state);
-			int maxCount = 0;
-			for (State s : states) {
-				int count = s.count(currentState);
-				if (count > maxCount) {
-					maxCount = count;
-					currentRenderer = s.getRendererComponent();
-				}
-			}
+	public void addRenderer(Array<String> stateTags, RendererComponent renderer) {
+		State newState = new State(stateTags, renderer);
+		states.add(newState);
+		if (currentState == null
+				|| stateTags.contains(DEFAULT_STATE_TAG, false)) {
+			currentState = newState;
 		}
 	}
 
 	@Override
 	public void draw(Batch batch) {
-		if (currentRenderer != null) {
-			currentRenderer.draw(batch);
+		if (currentState != null && currentState.rendererComponent != null) {
+			currentState.rendererComponent.draw(batch);
 		}
 	}
 
 	@Override
 	public Array<Polygon> getCollider() {
-		return currentRenderer.getCollider();
+		return currentState == null || currentState.rendererComponent == null ? null
+				: currentState.rendererComponent.getCollider();
 	}
 
 	@Override
 	public void act(float delta) {
-		if (currentRenderer != null) {
-			currentRenderer.act(delta);
+		if (currentState != null && currentState.rendererComponent != null) {
+			currentState.rendererComponent.act(delta);
 		}
 	}
 
 	@Override
 	public float getWidth() {
-		return currentRenderer == null ? 0 : currentRenderer.getWidth();
+		return currentState == null || currentState.rendererComponent == null ? 0
+				: currentState.rendererComponent.getWidth();
 	}
 
 	@Override
 	public float getHeight() {
-		return currentRenderer == null ? 0 : currentRenderer.getHeight();
+		return currentState == null || currentState.rendererComponent == null ? 0
+				: currentState.rendererComponent.getHeight();
 	}
 
 	@Override
 	public boolean hit(float x, float y) {
-		return currentRenderer != null && currentRenderer.hit(x, y);
+		return currentState != null && currentState.rendererComponent != null
+				&& currentState.rendererComponent.hit(x, y);
 	}
 
 	private static final class State {
