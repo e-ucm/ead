@@ -1,0 +1,15 @@
+{
+    "additionalProperties": false,
+    "extends": {
+        "$ref": "effect.json"
+    },
+    "javaType": "es.eucm.ead.schema.effects.ChangeState",
+    "properties": {
+        "stateTag":{
+            "type":"string",
+            "description": "Defines the state to be set for the entity's states renderer"
+        }
+    },
+    "description": "This effects allows changing states in states renderers. A ChangeState effect will resolve the target field (see Effect) and try to set up the state with the given tag (stateTag) in all of those that have a states renderer. If an entity does not have a States renderer component, nothing happens and no exception is thrown.",
+    "type": "object"
+}
