@@ -103,6 +103,25 @@ public class StatesComponent extends RendererComponent {
 				&& currentState.rendererComponent.hit(x, y);
 	}
 
+	/**
+	 * Updates the current state to the first one in the list that is not the
+	 * current state and has the given {@code stateTag}. Nothing happens if
+	 * stateTag is null, or if no state contains the tag.
+	 * 
+	 * @param stateTag
+	 *            The tag identifying the new state
+	 * @return True if state was updated, false otherwise
+	 */
+	public boolean changeState(String stateTag) {
+		for (State state : states) {
+			if (state.states.contains(stateTag, false) && state != currentState) {
+				currentState = state;
+				return true;
+			}
+		}
+		return false;
+	}
+
 	private static final class State {
 
 		private Array<String> states;
