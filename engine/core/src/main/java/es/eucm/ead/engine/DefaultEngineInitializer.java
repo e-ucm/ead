@@ -229,7 +229,7 @@ public class DefaultEngineInitializer implements EngineInitializer {
 				new AddComponentExecutor(componentLoader));
 		effectsSystem.registerEffectExecutor(GoTo.class, new GoToExecutor());
 		effectsSystem.registerEffectExecutor(RemoveComponent.class,
-				new RemoveComponentExecutor(componentLoader));
+				new RemoveComponentExecutor(componentLoader, tweenSystem));
 		effectsSystem.registerEffectExecutor(RemoveEntity.class,
 				new RemoveEntityExecutor());
 		effectsSystem.registerEffectExecutor(ChangeEntityProperty.class,
