@@ -104,7 +104,7 @@ public class FramesComponent extends RendererComponent implements Poolable {
 
 	/**
 	 * Adds a new frame with the given renderer. If {@code duration == 0}, the
-	 * frames is ignored.
+	 * frame is ignored.
 	 */
 	public void addFrame(RendererComponent renderer, float duration) {
 		if (duration > 0) {
