@@ -8,7 +8,8 @@
     "properties": {
         "volume": {
             "type": "number",
-            "description": "The volume of the sound. [0..1]"
+            "description": "The volume of the sound. [0..1]",
+            "default": 1.0
         },
         "loop":{
         	"type": "boolean",
