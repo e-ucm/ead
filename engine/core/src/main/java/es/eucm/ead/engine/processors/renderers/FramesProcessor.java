@@ -81,6 +81,8 @@ public class FramesProcessor extends RendererProcessor<Frames> {
 			frames.setSequence(new YoyoSequence());
 			break;
 		}
+		// Call restart() so the initial frame is set
+		frames.restart();
 		return frames;
 	}
 

@@ -66,6 +66,14 @@ public class FramesComponent extends RendererComponent implements Poolable {
 	}
 
 	@Override
+	public void restart() {
+		setCurrentFrameIndex(function.getFirst(frames.size));
+		if (currentFrame != null) {
+			currentFrame.restart();
+		}
+	}
+
+	@Override
 	public void draw(Batch batch) {
 		if (getCurrentFrame() != null) {
 			getCurrentFrame().draw(batch);
@@ -134,7 +142,7 @@ public class FramesComponent extends RendererComponent implements Poolable {
 			currentFrame.act(delta);
 			delta = currentFrame.surplusTime();
 			if (delta >= 0) {
-				currentFrame.reset();
+				currentFrame.restart();
 				setCurrentFrameIndex(function.getNextIndex(currentFrameIndex,
 						frames.size));
 			}
@@ -221,8 +229,9 @@ public class FramesComponent extends RendererComponent implements Poolable {
 		 * isDone() returns true, so the next time the frame is to be rendered
 		 * it is still alive
 		 */
-		public void reset() {
+		public void restart() {
 			elapsedTime = 0;
+			renderer.restart();
 		}
 	}
 

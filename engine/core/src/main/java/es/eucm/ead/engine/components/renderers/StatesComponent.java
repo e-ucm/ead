@@ -116,6 +116,7 @@ public class StatesComponent extends RendererComponent {
 		for (State state : states) {
 			if (state.states.contains(stateTag, false) && state != currentState) {
 				currentState = state;
+				currentState.restart();
 				return true;
 			}
 		}
@@ -145,6 +146,10 @@ public class StatesComponent extends RendererComponent {
 				}
 			}
 			return count;
+		}
+
+		public void restart() {
+			rendererComponent.restart();
 		}
 	}
 }
