@@ -163,6 +163,7 @@ public class DemoLauncher extends JFrame {
 		registerDemo(new PlanesDemo());
 		registerDemo(new MeetingAFriendDemo());
 		registerDemo(new SpineDemo());
+		registerDemo(new ShadersDemo());
 	}
 
 	private void registerDemo(EditorDemoBuilder demoBuilder) {
