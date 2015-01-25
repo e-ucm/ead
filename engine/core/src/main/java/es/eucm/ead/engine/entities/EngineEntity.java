@@ -43,8 +43,10 @@ import com.badlogic.gdx.scenes.scene2d.Group;
 import com.badlogic.gdx.utils.Pool.Poolable;
 import com.badlogic.gdx.utils.Pools;
 import es.eucm.ead.engine.GameLoop;
+import es.eucm.ead.engine.components.ShaderComponent;
 import es.eucm.ead.engine.components.physics.BoundingAreaComponent;
 import es.eucm.ead.engine.components.renderers.RendererComponent;
+import es.eucm.ead.engine.entities.actors.EntityGroup;
 import es.eucm.ead.schema.entities.ModelEntity;
 
 /**
@@ -59,6 +61,15 @@ public class EngineEntity extends Entity implements Poolable {
 
 	private GameLoop gameLoop;
 
+	private ShaderComponent shader;
+
+	public void setShader(ShaderComponent shader) {
+		this.shader = shader;
+		if (this.group instanceof EntityGroup) {
+			((EntityGroup) this.group).setShader(shader);
+		}
+	}
+
 	public EngineEntity(GameLoop gameLoop) {
 		this.gameLoop = gameLoop;
 	}
@@ -70,6 +81,9 @@ public class EngineEntity extends Entity implements Poolable {
 		}
 		group.setUserObject(this);
 		this.group = group;
+		if (this.group instanceof EntityGroup) {
+			((EntityGroup) this.group).setShader(shader);
+		}
 		readModelEntity();
 		updateBoundingArea();
 	}
