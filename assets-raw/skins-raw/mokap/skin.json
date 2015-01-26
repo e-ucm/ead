@@ -447,13 +447,7 @@
         "default": {
             "font": "default_font",
             "fontColorSelected": "black",
-            "selection": "transparent_bg",
-            "fontColorUnselected": "black"
-        },
-        "gray": {
-            "font": "default_font",
-            "fontColorSelected": "black",
-            "selection": "light_gray_bg",
+            "selection": "list_selection",
             "fontColorUnselected": "dark_gray"
         }
     },
@@ -485,7 +479,7 @@
             "font": "default_font",
             "fontColor": "white",
             "scrollStyle": "pane",
-            "listStyle": "gray"
+            "listStyle": "default"
         },
         "context": {
             "background": "black_spinner",
