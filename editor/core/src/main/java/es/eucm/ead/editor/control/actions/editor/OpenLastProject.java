@@ -37,8 +37,10 @@
 package es.eucm.ead.editor.control.actions.editor;
 
 import com.badlogic.gdx.Gdx;
+
 import es.eucm.ead.editor.control.Preferences;
 import es.eucm.ead.editor.control.actions.EditorAction;
+import es.eucm.ead.editor.control.actions.editor.OpenLastProject.ErrorCallback.Result;
 
 /**
  * Open the last known opened game. Used when the application is initiated.
@@ -46,30 +48,60 @@ import es.eucm.ead.editor.control.actions.EditorAction;
  * <dt><strong>Arguments</strong></dt>
  * <dd><strong>args[0]</strong> <em>Class</em> Class of the view to show if
  * there is no last known game.</dd>
+ * <dd><strong>args[1]</strong> Optional <em>ErrorCallback</em> A callback
+ * notified in case of error.</dd>
  * </dl>
  */
 public class OpenLastProject extends EditorAction {
 
 	public OpenLastProject() {
-		super(true, true, Class.class);
+		super(true, true, new Class[] { Class.class }, new Class[] {
+				Class.class, ErrorCallback.class });
 	}
 
 	@Override
 	public void perform(Object... args) {
 		Class elseView = (Class) args[0];
+		ErrorCallback callback = args.length == 2 ? (ErrorCallback) args[1]
+				: null;
 
 		String projectToOpenPath = controller.getPreferences().getString(
 				Preferences.LAST_OPENED_GAME);
 
 		if (projectToOpenPath != null && !"".equals(projectToOpenPath)) {
-			if (!controller.action(OpenProject.class, projectToOpenPath)) {
-				// the project is probably corrupt; complain but continue
-				Gdx.app.log("OpenLastProject", "Error opening '"
+			if (!controller.getApplicationAssets().absolute(projectToOpenPath)
+					.exists()) {
+				// the project was deleted
+				handleError(callback, Result.PROJECT_NOT_FOUND, elseView,
+						projectToOpenPath);
+			} else if (!controller.action(OpenProject.class, projectToOpenPath)) {
+				// the project is probably corrupt; complain but
+				// continue
+				Gdx.app.error("OpenLastProject", "Error opening '"
 						+ projectToOpenPath + "'; ignoring request");
-				controller.action(ChangeView.class, elseView);
+				handleError(callback, Result.PROJECT_CORRUPTED, elseView,
+						projectToOpenPath);
+
 			}
 		} else {
 			controller.action(ChangeView.class, elseView);
 		}
+	}
+
+	private void handleError(ErrorCallback callback, Result result,
+			Class elseView, String projectPath) {
+		controller.action(ChangeView.class, elseView);
+		if (callback != null) {
+			callback.error(result, projectPath);
+		}
+	}
+
+	public interface ErrorCallback {
+
+		public static enum Result {
+			PROJECT_NOT_FOUND, PROJECT_CORRUPTED;
+		}
+
+		void error(Result result, String projectPath);
 	}
 }

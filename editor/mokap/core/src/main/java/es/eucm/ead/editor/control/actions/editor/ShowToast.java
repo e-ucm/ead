@@ -112,7 +112,7 @@ public class ShowToast extends EditorAction implements CommandListener {
 		undo.setVisible(showUndo);
 
 		toast.pack();
-		Group modalsContainer = controller.getViews().getViewsContainer();
+		Group modalsContainer = controller.getViews().getModalsContainer();
 		float x = modalsContainer.getWidth() / 2.0f - toast.getWidth() / 2.0f;
 		float y = modalsContainer.getHeight() / 10.0f;
 		toast.setPosition(x, y);

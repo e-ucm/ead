@@ -311,7 +311,11 @@
         "toast_action": {
             "font": "default_font",
             "fontColor": "deep_orange"
-        }
+        },
+        "dialog": {
+            "font": "big_font",
+            "fontColor": "gray"
+        }        
     },
     "com.badlogic.gdx.scenes.scene2d.ui.Button$ButtonStyle": {
         "default": {
@@ -681,10 +685,7 @@
     "es.eucm.ead.editor.view.widgets.Tile$TileStyle": {
         "default": {
             "labelBackground": "semi_transparent_bg",
-            "labelStyle": {
-                "font": "default_font",
-                "fontColor": "white"
-            }
+            "labelStyle": "toast"
         }
     },
     "es.eucm.ead.editor.view.widgets.layouts.Gallery$GalleryStyle": {
@@ -733,10 +734,7 @@
     "es.eucm.ead.editor.view.widgets.modals.SpinnerModal$SpinnerModalStyle": {
         "default": {
             "background": "page",
-            "textStyle": {
-                "font": "big_font",
-                "fontColor": "gray"
-            },
+            "textStyle": "dialog",
             "numberStyle": "big",
             "upStyle": {
                 "imageUp": "orange_arrow_up",
@@ -748,5 +746,12 @@
             },
             "buttonsStyle": "dialog"
         }
-    }    
+    } ,
+    "es.eucm.ead.editor.view.widgets.modals.TextDialog$TextDialogStyle": {
+        "default": {
+            "background": "page",
+            "textStyle": "edition",
+            "buttonStyle": "dialog"
+        }
+    }   
 }

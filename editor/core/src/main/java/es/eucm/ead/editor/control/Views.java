@@ -206,6 +206,10 @@ public class Views implements ModelListener<LoadEvent> {
 		return viewsContainer;
 	}
 
+	public Group getModalsContainer() {
+		return modalsContainer;
+	}
+
 	public Actor getKeyboardFocus() {
 		return viewsContainer.getStage().getKeyboardFocus();
 	}

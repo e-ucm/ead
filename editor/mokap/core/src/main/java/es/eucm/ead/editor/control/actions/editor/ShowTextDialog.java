@@ -36,64 +36,48 @@
  */
 package es.eucm.ead.editor.control.actions.editor;
 
+import com.badlogic.gdx.scenes.scene2d.ui.Skin;
+
+import es.eucm.ead.editor.assets.ApplicationAssets;
+import es.eucm.ead.editor.control.Controller;
 import es.eucm.ead.editor.control.actions.EditorAction;
-import es.eucm.ead.editor.control.actions.editor.OpenLastProject.ErrorCallback;
-import es.eucm.ead.editor.platform.MokapPlatform;
-import es.eucm.ead.editor.platform.Platform;
-import es.eucm.ead.editor.utils.ProjectUtils;
-import es.eucm.ead.editor.view.builders.home.HomeView;
+import es.eucm.ead.editor.view.widgets.modals.ModalContainer;
+import es.eucm.ead.editor.view.widgets.modals.TextDialog;
 
 /**
  * <p>
- * Tries to open the last opened game or
- * {@link Platform#getApplicationArguments()}[0] if any.
+ * Shows a text dialog in the center of the screen.
  * </p>
  * <dl>
  * <dt><strong>Arguments</strong></dt>
- * <dd><strong>None</strong></dd>
+ * <dd><strong>args[0]</strong> <em>String</em> the text to be shown.</dd>
  * </dl>
- */
-public class OpenApplication extends EditorAction {
+ **/
+public class ShowTextDialog extends EditorAction {
 
-	public OpenApplication() {
-		super(true, false);
+	private TextDialog spinnerModal;
+
+	private ModalContainer container;
+
+	public ShowTextDialog() {
+		super(true, false, String.class);
+	}
+
+	@Override
+	public void initialize(Controller controller) {
+		super.initialize(controller);
+		ApplicationAssets applicationAssets = controller.getApplicationAssets();
+		Skin skin = applicationAssets.getSkin();
+		container = new ModalContainer(skin, spinnerModal = new TextDialog(
+				skin, applicationAssets.getI18N()));
 	}
 
 	@Override
 	public void perform(Object... args) {
+		String text = (String) args[0];
 
-		MokapPlatform platform = (MokapPlatform) controller.getPlatform();
-		Object[] appArgs = platform.getApplicationArguments();
-		String importProjectPath = (appArgs == null || appArgs.length != 1) ? null
-				: (String) appArgs[0];
+		spinnerModal.setText(text);
 
-		Class elseView = HomeView.class;
-		if (importProjectPath != null && !importProjectPath.isEmpty()
-				&& importProjectPath.endsWith(ProjectUtils.ZIP_EXTENSION)) {
-			controller.action(ImportProject.class, elseView);
-		} else {
-			controller.action(OpenLastProject.class, elseView,
-					new ShowErrorToastCallback());
-		}
-	}
-
-	private class ShowErrorToastCallback implements ErrorCallback {
-
-		private static final String PROJECT_NOT_FOUND = "project.not.found";
-		private static final String PROJECT_IS_CORRUPTED = "project.is.corrupted";
-
-		@Override
-		public void error(Result result, String projectPath) {
-			String message;
-			if (result == Result.PROJECT_NOT_FOUND) {
-				message = PROJECT_NOT_FOUND;
-
-			} else {
-				message = PROJECT_IS_CORRUPTED;
-
-			}
-			controller.action(ShowTextDialog.class, controller
-					.getApplicationAssets().getI18N().m(message, projectPath));
-		}
+		controller.getViews().showModal(container, 0, 0);
 	}
 }
