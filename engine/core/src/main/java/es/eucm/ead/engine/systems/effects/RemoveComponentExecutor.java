@@ -39,6 +39,8 @@ package es.eucm.ead.engine.systems.effects;
 import ashley.core.Entity;
 import com.badlogic.gdx.Gdx;
 import es.eucm.ead.engine.ComponentLoader;
+import es.eucm.ead.engine.components.TweensComponent;
+import es.eucm.ead.engine.systems.tweens.TweenSystem;
 import es.eucm.ead.schema.effects.RemoveComponent;
 
 /**
@@ -53,8 +55,15 @@ public class RemoveComponentExecutor extends EffectExecutor<RemoveComponent> {
 	 */
 	private ComponentLoader componentLoader;
 
-	public RemoveComponentExecutor(ComponentLoader componentLoader) {
+	/**
+	 * Needed to force stopping animations if {@link TweensComponent} is removed
+	 */
+	private TweenSystem tweenSystem;
+
+	public RemoveComponentExecutor(ComponentLoader componentLoader,
+			TweenSystem tweenSystem) {
 		this.componentLoader = componentLoader;
+		this.tweenSystem = tweenSystem;
 	}
 
 	@Override
@@ -64,6 +73,9 @@ public class RemoveComponentExecutor extends EffectExecutor<RemoveComponent> {
 				.getComponent());
 		if (componentClass != null) {
 			target.remove(componentClass);
+			if (componentClass == TweensComponent.class) {
+				tweenSystem.stopAnimations(target);
+			}
 		} else {
 			Gdx.app.error(
 					"RemoveComponentExecutor",

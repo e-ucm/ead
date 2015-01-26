@@ -81,7 +81,8 @@ public class AddRemoveComponentTest extends EffectTest {
 		addComponentExecutor = new AddComponentExecutor(componentLoader);
 		addComponentExecutor.initialize(gameLoop);
 
-		removeComponentExecutor = new RemoveComponentExecutor(componentLoader);
+		removeComponentExecutor = new RemoveComponentExecutor(componentLoader,
+				null);
 		removeComponentExecutor.initialize(gameLoop);
 
 		// Create a simple entity

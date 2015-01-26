@@ -102,6 +102,17 @@ public class TweenSystem extends IteratingSystem implements EntityListener {
 		tweenManager.update(deltaTime);
 	}
 
+	/**
+	 * Stops all animations associated to the given entity.
+	 */
+	public void stopAnimations(Entity entity) {
+		if (entity instanceof EngineEntity) {
+			tweenManager.killTarget(((EngineEntity) entity).getGroup());
+		} else {
+			tweenManager.killTarget(entity);
+		}
+	}
+
 	@Override
 	public void processEntity(Entity entity, float deltaTime) {
 		TweensComponent tweens = entity.getComponent(TweensComponent.class);
@@ -124,11 +135,7 @@ public class TweenSystem extends IteratingSystem implements EntityListener {
 	@Override
 	// Just kill all animations related to this entity
 	public void entityRemoved(Entity entity) {
-		if (entity instanceof EngineEntity) {
-			tweenManager.killTarget(((EngineEntity) entity).getGroup());
-		} else {
-			tweenManager.killTarget(entity);
-		}
+		stopAnimations(entity);
 	}
 
 	/**
