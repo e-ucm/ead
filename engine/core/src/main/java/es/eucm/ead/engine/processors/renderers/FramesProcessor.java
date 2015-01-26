@@ -41,6 +41,7 @@ import es.eucm.ead.engine.GameLoop;
 import es.eucm.ead.engine.assets.GameAssets;
 import es.eucm.ead.engine.components.renderers.RendererComponent;
 import es.eucm.ead.engine.components.renderers.frames.FramesComponent;
+import es.eucm.ead.engine.components.renderers.frames.sequences.LastFrameSequence;
 import es.eucm.ead.engine.components.renderers.frames.sequences.LinearSequence;
 import es.eucm.ead.engine.components.renderers.frames.sequences.RandomSequence;
 import es.eucm.ead.engine.components.renderers.frames.sequences.YoyoSequence;
@@ -54,6 +55,8 @@ public class FramesProcessor extends RendererProcessor<Frames> {
 	private LinearSequence linearSequence = new LinearSequence();
 
 	private RandomSequence randomSequence = new RandomSequence();
+
+	private LastFrameSequence lastFrameSequence = new LastFrameSequence();
 
 	public FramesProcessor(GameLoop engine, GameAssets gameAssets,
 			ComponentLoader componentLoader) {
@@ -80,7 +83,12 @@ public class FramesProcessor extends RendererProcessor<Frames> {
 			// Yoyo sequences cannot be shared since they hold state
 			frames.setSequence(new YoyoSequence());
 			break;
+		case LASTFRAME:
+			frames.setSequence(lastFrameSequence);
+			break;
 		}
+		// Call restart() so the initial frame is set
+		frames.restart();
 		return frames;
 	}
 

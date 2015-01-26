@@ -41,6 +41,7 @@ import com.badlogic.gdx.math.Polygon;
 import com.badlogic.gdx.utils.Array;
 import es.eucm.ead.engine.components.renderers.RendererComponent;
 import es.eucm.ead.engine.components.renderers.frames.FramesComponent;
+import es.eucm.ead.engine.components.renderers.frames.sequences.LastFrameSequence;
 import es.eucm.ead.engine.components.renderers.frames.sequences.LinearSequence;
 import es.eucm.ead.engine.components.renderers.frames.sequences.YoyoSequence;
 import org.junit.Test;
@@ -48,6 +49,27 @@ import org.junit.Test;
 import static org.junit.Assert.assertEquals;
 
 public class FramesComponentTest {
+
+	@Test
+	public void testLastFrameSquence() {
+		FramesComponent frames = new FramesComponent();
+		for (int i = 0; i < 10; i++) {
+			frames.addFrame(new MockRendererComponent(), 1);
+		}
+		frames.setSequence(new LastFrameSequence());
+
+		frames.act(0.5f);
+		for (int i = 0; i < 10; i++) {
+			assertEquals(i, frames.getCurrentFrameIndex());
+			System.out.print(i + ", ");
+			frames.act(1);
+		}
+		for (int i = 0; i < 10; i++) {
+			assertEquals(9, frames.getCurrentFrameIndex());
+			System.out.print(i + ", ");
+			frames.act(1);
+		}
+	}
 
 	@Test
 	public void testYoyoSquence() {

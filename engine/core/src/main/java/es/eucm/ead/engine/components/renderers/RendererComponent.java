@@ -57,6 +57,14 @@ public abstract class RendererComponent extends Component {
 	}
 
 	/**
+	 * If the renderer component keeps some sort of state (e.g. current frame),
+	 * this makes it go back to the original state as when it was created.
+	 */
+	public void restart() {
+
+	}
+
+	/**
 	 * Draws the renderer
 	 */
 	public abstract void draw(Batch batch);
