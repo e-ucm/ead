@@ -203,7 +203,7 @@ public class GenerateSkinMojo extends AbstractMojo {
 		FileHandle common = skinRaw.child("common");
 		for (FileHandle dpi : skinRaw.list()) {
 			if (dpi.isDirectory() && !"common".equals(dpi.name())
-					&& !"svg".equals(dpi.name())) {
+					&& !"svg".equals(dpi.name()) && !"9patch".equals(dpi.name())) {
 				FileHandle skinFolder = skinRoot.child(skinRaw.name() + '-'
 						+ dpi.name());
 				skinFolder.mkdirs();
