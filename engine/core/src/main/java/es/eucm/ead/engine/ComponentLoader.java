@@ -47,6 +47,7 @@ import com.badlogic.gdx.utils.reflect.ClassReflection;
 import com.badlogic.gdx.utils.reflect.ReflectionException;
 import es.eucm.ead.engine.assets.GameAssets;
 import es.eucm.ead.engine.components.MultiComponent;
+import es.eucm.ead.engine.components.ShaderComponent;
 import es.eucm.ead.engine.components.controls.ControlComponent;
 import es.eucm.ead.engine.components.renderers.RendererComponent;
 import es.eucm.ead.engine.entities.EngineEntity;
@@ -238,8 +239,9 @@ public class ComponentLoader {
 						container.setTransform(true);
 						entity.setGroup(container);
 					}
+				} else if (c instanceof ShaderComponent) {
+					entity.setShader((ShaderComponent) c);
 				}
-
 			}
 		}
 	}

@@ -45,9 +45,11 @@ import com.badlogic.gdx.utils.Array;
 
 import es.eucm.ead.engine.GameLoop;
 import es.eucm.ead.engine.assets.ScaledTexture;
+import es.eucm.ead.engine.components.renderers.shape.RectangleRendererComponent;
 import es.eucm.ead.engine.components.renderers.shape.ShapeRendererComponent;
 import es.eucm.ead.engine.components.renderers.shape.ShapeToPixmap;
 import es.eucm.ead.engine.utils.ShapeToCollider;
+import es.eucm.ead.schema.data.shape.Rectangle;
 import es.eucm.ead.schema.renderers.ShapeRenderer;
 
 /**
@@ -66,8 +68,20 @@ public class ShapeRendererProcessor extends RendererProcessor<ShapeRenderer> {
 
 	@Override
 	public Component getComponent(ShapeRenderer component) {
-		ShapeRendererComponent shapeRendererComponent = gameLoop
-				.createComponent(ShapeRendererComponent.class);
+		ShapeRendererComponent shapeRendererComponent;
+
+		if (component.getShape() instanceof Rectangle) {
+			Rectangle rectangle = (Rectangle) component.getShape();
+
+			RectangleRendererComponent rectangleRenderer = gameLoop
+					.createComponent(RectangleRendererComponent.class);
+			rectangleRenderer.setWidth(rectangle.getWidth());
+			rectangleRenderer.setHeight(rectangle.getHeight());
+			shapeRendererComponent = rectangleRenderer;
+		} else {
+			shapeRendererComponent = gameLoop
+					.createComponent(ShapeRendererComponent.class);
+		}
 		// Set collider
 		Array<Polygon> collider = new Array<Polygon>();
 		collider.add(ShapeToCollider.buildShapeCollider(component.getShape(),

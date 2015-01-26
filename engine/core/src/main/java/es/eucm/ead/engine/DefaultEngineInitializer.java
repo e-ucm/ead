@@ -45,6 +45,7 @@ import es.eucm.ead.engine.processors.CamerasProcessor;
 import es.eucm.ead.engine.processors.ConversationProcessor;
 import es.eucm.ead.engine.processors.PathProcessor;
 import es.eucm.ead.engine.processors.RefProcessor;
+import es.eucm.ead.engine.processors.ShaderProcessor;
 import es.eucm.ead.engine.processors.TagsProcessor;
 import es.eucm.ead.engine.processors.TouchabilityProcessor;
 import es.eucm.ead.engine.processors.VisibilityProcessor;
@@ -116,6 +117,7 @@ import es.eucm.ead.schema.components.Animation;
 import es.eucm.ead.schema.components.PathBoundary;
 import es.eucm.ead.schema.components.RefComponent;
 import es.eucm.ead.schema.components.Reference;
+import es.eucm.ead.schema.components.Shader;
 import es.eucm.ead.schema.components.Tags;
 import es.eucm.ead.schema.components.Touchability;
 import es.eucm.ead.schema.components.Visibility;
@@ -385,6 +387,8 @@ public class DefaultEngineInitializer implements EngineInitializer {
 				new SpineAnimationProcessor(gameLoop, gameAssets));
 		componentLoader.registerComponentProcessor(Reference.class,
 				new ReferenceProcessor(gameLoop, gameAssets, entitiesLoader));
+		componentLoader.registerComponentProcessor(Shader.class,
+				new ShaderProcessor(gameLoop, gameAssets));
 	}
 
 	private static class LanguageVariableListener implements

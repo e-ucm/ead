@@ -53,7 +53,9 @@ import es.eucm.ead.engine.utils.DesktopImageUtils;
 import es.eucm.ead.engine.utils.ZipUtils;
 import es.eucm.ead.schema.components.ModelComponent;
 import es.eucm.ead.schema.data.Dimension;
+import es.eucm.ead.schema.data.Parameter;
 import es.eucm.ead.schema.data.shape.Polygon;
+import es.eucm.ead.schema.data.shape.Rectangle;
 import es.eucm.ead.schema.entities.ModelEntity;
 import es.eucm.ead.schema.renderers.*;
 
@@ -279,7 +281,7 @@ public abstract class EditorDemoBuilder extends DemoBuilder {
 		}
 	}
 
-	/*
+	/**
 	 * Creates the output folder and extracts contents from the zip. Needed
 	 * before building
 	 */
@@ -287,13 +289,15 @@ public abstract class EditorDemoBuilder extends DemoBuilder {
 		rootFolder = FileHandle.tempDirectory(root);
 		rootFolder.mkdirs();
 
-		gameAssets.setLoadingPath("", true);
-		ZipUtils.unzip(gameAssets.resolve(root + ".zip"), rootFolder);
+		FileHandle zip = gameAssets.resolve(root + ".zip");
+		if (zip.exists()) {
+			ZipUtils.unzip(zip, rootFolder);
 
-		if (convertPNGs) {
-			ImgUtils.convertPNGs(rootFolder);
+			if (convertPNGs) {
+				ImgUtils.convertPNGs(rootFolder);
+			}
+
 		}
-
 		gameAssets.setLoadingPath(rootFolder.file().getAbsolutePath(), false);
 	}
 
@@ -447,5 +451,21 @@ public abstract class EditorDemoBuilder extends DemoBuilder {
 		Image image = super.createImage(uri);
 		image.setCollider(createSchemaCollider(uri));
 		return image;
+	}
+
+	protected ShapeRenderer rectangle(int width, int height) {
+		ShapeRenderer shapeRenderer = new ShapeRenderer();
+		Rectangle rectangle = new Rectangle();
+		rectangle.setWidth(width);
+		rectangle.setHeight(height);
+		shapeRenderer.setShape(rectangle);
+		return shapeRenderer;
+	}
+
+	protected Parameter param(String name, String value) {
+		Parameter parameter = new Parameter();
+		parameter.setName(name);
+		parameter.setValue(value);
+		return parameter;
 	}
 }

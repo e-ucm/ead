@@ -8,7 +8,7 @@
     },
     "properties": {
         "paint": {
-            "default": "0xFFFFFFFF",
+            "default": "FFFFFFFF",
             "description": "Shape paint",
             "type": "string"
         },
