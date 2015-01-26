@@ -37,7 +37,6 @@
 package es.eucm.ead.editor.control.actions.editor;
 
 import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.utils.GdxRuntimeException;
 
 import es.eucm.ead.editor.control.Preferences;
 import es.eucm.ead.editor.control.actions.EditorAction;
@@ -73,13 +72,15 @@ public class OpenLastProject extends EditorAction {
 			if (!controller.getApplicationAssets().absolute(projectToOpenPath)
 					.exists()) {
 				// the project was deleted
-				handleError(callback, Result.PROJECT_NOT_FOUND, elseView);
+				handleError(callback, Result.PROJECT_NOT_FOUND, elseView,
+						projectToOpenPath);
 			} else if (!controller.action(OpenProject.class, projectToOpenPath)) {
 				// the project is probably corrupt; complain but
 				// continue
 				Gdx.app.error("OpenLastProject", "Error opening '"
 						+ projectToOpenPath + "'; ignoring request");
-				handleError(callback, Result.PROJECT_CORRUPTED, elseView);
+				handleError(callback, Result.PROJECT_CORRUPTED, elseView,
+						projectToOpenPath);
 
 			}
 		} else {
@@ -88,10 +89,10 @@ public class OpenLastProject extends EditorAction {
 	}
 
 	private void handleError(ErrorCallback callback, Result result,
-			Class elseView) {
+			Class elseView, String projectPath) {
 		controller.action(ChangeView.class, elseView);
 		if (callback != null) {
-			callback.error(result);
+			callback.error(result, projectPath);
 		}
 	}
 
@@ -101,6 +102,6 @@ public class OpenLastProject extends EditorAction {
 			PROJECT_NOT_FOUND, PROJECT_CORRUPTED;
 		}
 
-		void error(Result result);
+		void error(Result result, String projectPath);
 	}
 }

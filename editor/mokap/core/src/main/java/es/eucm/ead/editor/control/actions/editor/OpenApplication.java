@@ -37,6 +37,7 @@
 package es.eucm.ead.editor.control.actions.editor;
 
 import es.eucm.ead.editor.control.actions.EditorAction;
+import es.eucm.ead.editor.control.actions.editor.OpenLastProject.ErrorCallback;
 import es.eucm.ead.editor.platform.MokapPlatform;
 import es.eucm.ead.editor.platform.Platform;
 import es.eucm.ead.editor.utils.ProjectUtils;
@@ -71,7 +72,28 @@ public class OpenApplication extends EditorAction {
 				&& importProjectPath.endsWith(ProjectUtils.ZIP_EXTENSION)) {
 			controller.action(ImportProject.class, elseView);
 		} else {
-			controller.action(OpenLastProject.class, elseView);
+			controller.action(OpenLastProject.class, elseView,
+					new ShowErrorToastCallback());
+		}
+	}
+
+	private class ShowErrorToastCallback implements ErrorCallback {
+
+		private static final String PROJECT_NOT_FOUND = "project.not.found";
+		private static final String PROJECT_IS_CORRUPTED = "project.is.corrupted";
+
+		@Override
+		public void error(Result result, String projectPath) {
+			String message;
+			if (result == Result.PROJECT_NOT_FOUND) {
+				message = PROJECT_NOT_FOUND;
+
+			} else {
+				message = PROJECT_IS_CORRUPTED;
+
+			}
+			controller.action(ShowTextDialog.class, controller
+					.getApplicationAssets().getI18N().m(message, projectPath));
 		}
 	}
 }
