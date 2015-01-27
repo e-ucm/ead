@@ -543,12 +543,11 @@ public class VariablesManager {
 	}
 
 	/**
-	 * Reads the expressions and variables contained in the given text
+	 * Reads the expressions and variables contained in the given text. Arrays
+	 * are not cleared in the method
 	 */
 	public void readExpressions(String text, Array<String> expressions,
 			Array<String> variables) {
-		variables.clear();
-		expressions.clear();
 		int i = -2;
 		while (i < text.length() && i != -1) {
 			i = text.indexOf(EXPRESSION_DELIMITER, i + 1);
@@ -568,7 +567,11 @@ public class VariablesManager {
 		}
 	}
 
-	private void readVariables(String expression, Array<String> variables) {
+	/**
+	 * Adds the variables in the expression to the given list. The list is not
+	 * cleared.
+	 */
+	public void readVariables(String expression, Array<String> variables) {
 		int i = -2;
 		while (i < expression.length() && i != -1) {
 			i = expression.indexOf(VAR_PREFIX, i);

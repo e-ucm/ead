@@ -45,6 +45,7 @@ import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.GdxRuntimeException;
 import com.vividsolutions.jts.geom.Geometry;
 import es.eucm.ead.editor.DesktopPlatform;
+import es.eucm.ead.editor.model.Q;
 import es.eucm.ead.editor.utils.GeometryUtils;
 import es.eucm.ead.engine.EngineDesktop;
 import es.eucm.ead.engine.assets.GameAssets;
@@ -52,12 +53,22 @@ import es.eucm.ead.engine.demobuilder.DemoBuilder;
 import es.eucm.ead.engine.utils.DesktopImageUtils;
 import es.eucm.ead.engine.utils.ZipUtils;
 import es.eucm.ead.schema.components.ModelComponent;
+import es.eucm.ead.schema.components.behaviors.Behavior;
+import es.eucm.ead.schema.components.behaviors.events.Init;
 import es.eucm.ead.schema.data.Dimension;
 import es.eucm.ead.schema.data.Parameter;
 import es.eucm.ead.schema.data.shape.Polygon;
 import es.eucm.ead.schema.data.shape.Rectangle;
+import es.eucm.ead.schema.effects.ChangeVar.Context;
 import es.eucm.ead.schema.entities.ModelEntity;
-import es.eucm.ead.schema.renderers.*;
+import es.eucm.ead.schema.renderers.Frame;
+import es.eucm.ead.schema.renderers.Frames;
+import es.eucm.ead.schema.renderers.Image;
+import es.eucm.ead.schema.renderers.Renderer;
+import es.eucm.ead.schema.renderers.ShapeRenderer;
+import es.eucm.ead.schema.renderers.State;
+import es.eucm.ead.schema.renderers.States;
+import es.eucm.ead.schemax.ModelStructure;
 
 import java.io.InputStream;
 import java.util.HashMap;
@@ -468,4 +479,19 @@ public abstract class EditorDemoBuilder extends DemoBuilder {
 		parameter.setValue(value);
 		return parameter;
 	}
+
+	public EditorDemoBuilder initVar(String variable, String expression) {
+		ModelEntity game = entities.get(ModelStructure.GAME_FILE);
+		Behavior behavior = (Behavior) Q.getComponentById(game, "initVars");
+		if (behavior == null) {
+			behavior = new Behavior();
+			behavior.setId("initVars");
+			behavior.setEvent(new Init());
+			game.getComponents().add(behavior);
+		}
+		behavior.getEffects().add(
+				makeChangeVar(variable, expression, Context.GLOBAL));
+		return this;
+	}
+
 }

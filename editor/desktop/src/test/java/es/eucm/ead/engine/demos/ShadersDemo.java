@@ -79,12 +79,9 @@ public class ShadersDemo extends EditorDemoBuilder {
 		rectangle.setX(400);
 
 		shader = new Shader();
-		shader.setUri("gradient.fragment");
+		shader.setUri("daycicle.fragment");
 
-		shader.getUniforms().add(param("point1", "0,0"));
-		shader.getUniforms().add(param("point2", "1,1"));
-		shader.getUniforms().add(param("color1", "1,1,1,1"));
-		shader.getUniforms().add(param("color2", "0,0,0,1"));
+		shader.getUniforms().add(param("time", "7.9"));
 
 		rectangle.getComponents().add(shader);
 

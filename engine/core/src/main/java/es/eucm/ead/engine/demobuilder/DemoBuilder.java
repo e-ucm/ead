@@ -695,7 +695,7 @@ public abstract class DemoBuilder {
 	 * @param effects
 	 *            Effects to launch each {@code time} seconds.
 	 */
-	public DemoBuilder infiniteTimer(ModelEntity parent, int time,
+	public DemoBuilder infiniteTimer(ModelEntity parent, float time,
 			Effect... effects) {
 		Timer timer = new Timer();
 		timer.setTime(time);

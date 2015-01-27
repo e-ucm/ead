@@ -47,10 +47,14 @@ public class ShaderComponent extends Component implements Poolable {
 
 	private ShaderProgram shaderProgram;
 
-	private ObjectMap<String, float[]> uniforms = new ObjectMap<String, float[]>();
+	private ObjectMap<String, Object> uniforms = new ObjectMap<String, Object>();
 
 	public void setUniform(String name, float[] values) {
 		uniforms.put(name, values);
+	}
+
+	public void setUniform(String name, float value) {
+		uniforms.put(name, value);
 	}
 
 	public ShaderProgram getShaderProgram() {
@@ -68,20 +72,25 @@ public class ShaderComponent extends Component implements Poolable {
 	}
 
 	public void prepare() {
-		for (Entry<String, float[]> entry : uniforms.entries()) {
-			switch (entry.value.length) {
-			case 1:
-				shaderProgram.setUniformf(entry.key, entry.value[0]);
-				break;
-			case 2:
-				shaderProgram.setUniform2fv(entry.key, entry.value, 0, 2);
-				break;
-			case 3:
-				shaderProgram.setUniform3fv(entry.key, entry.value, 0, 3);
-				break;
-			case 4:
-				shaderProgram.setUniform4fv(entry.key, entry.value, 0, 4);
-				break;
+		for (Entry<String, Object> entry : uniforms.entries()) {
+			if (entry.value.getClass().isArray()) {
+				float[] value = (float[]) entry.value;
+				switch (value.length) {
+				case 1:
+					shaderProgram.setUniformf(entry.key, value[0]);
+					break;
+				case 2:
+					shaderProgram.setUniform2fv(entry.key, value, 0, 2);
+					break;
+				case 3:
+					shaderProgram.setUniform3fv(entry.key, value, 0, 3);
+					break;
+				case 4:
+					shaderProgram.setUniform4fv(entry.key, value, 0, 4);
+					break;
+				}
+			} else {
+				shaderProgram.setUniformf(entry.key, (Float) entry.value);
 			}
 		}
 	}

@@ -67,6 +67,8 @@ public abstract class TextComponent<T extends Actor> extends
 	@Override
 	public void setText(String text) {
 		this.currentText = text;
+		expressions.clear();
+		variables.clear();
 		variablesManager.readExpressions(text, expressions, variables);
 
 		variablesManager.removeListener(this);

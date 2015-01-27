@@ -57,8 +57,8 @@ public class ScaledTexture extends BaseDrawable {
 	public void draw(Batch batch, float x, float y, float width, float height) {
 		int textureWidth = texture.getWidth();
 		int textureHeight = texture.getHeight();
-		batch.draw(texture, x, y, 0, 0, textureWidth, textureHeight, scale,
-				scale, 0, 0, 0, textureWidth, textureHeight, false, false);
+		batch.draw(texture, x, y, 0, 0, width, height, scale, scale, 0, 0, 0,
+				textureWidth, textureHeight, false, false);
 	}
 
 	public float getWidth() {
