@@ -68,6 +68,7 @@ import es.eucm.ead.engine.processors.renderers.ImageProcessor;
 import es.eucm.ead.engine.processors.renderers.ShapeRendererProcessor;
 import es.eucm.ead.engine.processors.renderers.SpineAnimationProcessor;
 import es.eucm.ead.engine.processors.renderers.StatesProcessor;
+import es.eucm.ead.engine.processors.templates.TemplateRendererProcessor;
 import es.eucm.ead.engine.processors.tweens.TweensProcessor;
 import es.eucm.ead.engine.systems.EffectsSystem;
 import es.eucm.ead.engine.systems.KeyPressedSystem;
@@ -89,7 +90,21 @@ import es.eucm.ead.engine.systems.conversations.NodeSystem;
 import es.eucm.ead.engine.systems.conversations.OptionRuntimeNode;
 import es.eucm.ead.engine.systems.conversations.OptionsSystem;
 import es.eucm.ead.engine.systems.conversations.WaitRuntimeNode;
-import es.eucm.ead.engine.systems.effects.*;
+import es.eucm.ead.engine.systems.effects.AddComponentExecutor;
+import es.eucm.ead.engine.systems.effects.AddEntityExecutor;
+import es.eucm.ead.engine.systems.effects.ChangeEntityPropertyExecutor;
+import es.eucm.ead.engine.systems.effects.ChangeStateExecutor;
+import es.eucm.ead.engine.systems.effects.ChangeVarExecutor;
+import es.eucm.ead.engine.systems.effects.EndGameExecutor;
+import es.eucm.ead.engine.systems.effects.GoSceneExecutor;
+import es.eucm.ead.engine.systems.effects.GoToExecutor;
+import es.eucm.ead.engine.systems.effects.PlaySoundExecutor;
+import es.eucm.ead.engine.systems.effects.RemoveComponentExecutor;
+import es.eucm.ead.engine.systems.effects.RemoveEntityExecutor;
+import es.eucm.ead.engine.systems.effects.SetCameraExecutor;
+import es.eucm.ead.engine.systems.effects.SetViewportExecutor;
+import es.eucm.ead.engine.systems.effects.TrackEffectExecutor;
+import es.eucm.ead.engine.systems.effects.TriggerConversationExecutor;
 import es.eucm.ead.engine.systems.effects.controlstructures.ForEachExecutor;
 import es.eucm.ead.engine.systems.effects.controlstructures.IfExecutor;
 import es.eucm.ead.engine.systems.effects.controlstructures.IfThenElseIfExecutor;
@@ -147,7 +162,25 @@ import es.eucm.ead.schema.components.tweens.MoveTween;
 import es.eucm.ead.schema.components.tweens.RotateTween;
 import es.eucm.ead.schema.components.tweens.ScaleTween;
 import es.eucm.ead.schema.components.tweens.Timeline;
-import es.eucm.ead.schema.effects.*;
+import es.eucm.ead.schema.effects.AddComponent;
+import es.eucm.ead.schema.effects.AddEntity;
+import es.eucm.ead.schema.effects.AlphaEffect;
+import es.eucm.ead.schema.effects.ChangeEntityProperty;
+import es.eucm.ead.schema.effects.ChangeState;
+import es.eucm.ead.schema.effects.ChangeVar;
+import es.eucm.ead.schema.effects.EndGame;
+import es.eucm.ead.schema.effects.GoScene;
+import es.eucm.ead.schema.effects.GoTo;
+import es.eucm.ead.schema.effects.MoveEffect;
+import es.eucm.ead.schema.effects.PlaySound;
+import es.eucm.ead.schema.effects.RemoveComponent;
+import es.eucm.ead.schema.effects.RemoveEntity;
+import es.eucm.ead.schema.effects.RotateEffect;
+import es.eucm.ead.schema.effects.ScaleEffect;
+import es.eucm.ead.schema.effects.SetCamera;
+import es.eucm.ead.schema.effects.SetViewport;
+import es.eucm.ead.schema.effects.TrackEffect;
+import es.eucm.ead.schema.effects.TriggerConversation;
 import es.eucm.ead.schema.effects.controlstructures.ForEach;
 import es.eucm.ead.schema.effects.controlstructures.If;
 import es.eucm.ead.schema.effects.controlstructures.IfThenElseIf;
@@ -160,6 +193,7 @@ import es.eucm.ead.schema.renderers.Image;
 import es.eucm.ead.schema.renderers.ShapeRenderer;
 import es.eucm.ead.schema.renderers.SpineAnimation;
 import es.eucm.ead.schema.renderers.States;
+import es.eucm.ead.schema.renderers.TemplateRenderer;
 
 /**
  * Default initializer. Used by default engine and editor.
@@ -389,6 +423,9 @@ public class DefaultEngineInitializer implements EngineInitializer {
 				new ReferenceProcessor(gameLoop, gameAssets, entitiesLoader));
 		componentLoader.registerComponentProcessor(Shader.class,
 				new ShaderProcessor(gameLoop, gameAssets));
+		componentLoader.registerComponentProcessor(TemplateRenderer.class,
+				new TemplateRendererProcessor(gameLoop, gameAssets,
+						variablesManager, entitiesLoader.getComponentLoader()));
 	}
 
 	private static class LanguageVariableListener implements
