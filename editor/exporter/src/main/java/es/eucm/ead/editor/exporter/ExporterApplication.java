@@ -114,7 +114,9 @@ public class ExporterApplication {
 	 *            are scaled down to create any missing icons of lower
 	 *            resolution. Icons of higher resolution are never
 	 *            auto-generated, as no image is ever scaled up.
-	 * 
+	 * @param fullScreen
+	 *            If true, the game occupies the whole screen but there is no
+	 *            guarantee that game aspect ratio will be respected.
 	 * @param destinationPath
 	 *            The full path to export the game to. Cannot be null. E.g.:
 	 *            "/Users/aUser/eadexports/techdemo.apk"
@@ -122,11 +124,12 @@ public class ExporterApplication {
 	 */
 	public static boolean exportAsApk(String projectPath, String mavenPath,
 			String assetsProjectPath, String packageName, String artifactId,
-			String appName, String pathToAppIcons, String destinationPath) {
+			String appName, String pathToAppIcons, boolean fullScreen,
+			String destinationPath) {
 
 		return new ExportToApk(projectPath, destinationPath, packageName,
 				artifactId, appName, pathToAppIcons, mavenPath,
-				assetsProjectPath).run();
+				assetsProjectPath, fullScreen).run();
 	}
 
 	/**
@@ -227,6 +230,7 @@ public class ExporterApplication {
 
 		// Apk properties
 		String packageName = null, artifactId = null, appName = null, appNameList = null, pathToAppIcons = null, pathToAppIconsList = null, mavenPath = null, assetsProjectPath = null;
+		boolean fullScreen = true;
 
 		if (args != null) {
 
@@ -298,6 +302,14 @@ public class ExporterApplication {
 				} else if (args[i].toLowerCase().equals("-app-icons-list")
 						&& i + 1 < args.length) {
 					pathToAppIconsList = args[i + 1];
+				} else if (args[i].toLowerCase().equals("-full-screen")
+						&& i + 1 < args.length) {
+					fullScreen = "true".equals(args[i + 1])
+							|| "TRUE".equals(args[i + 1])
+							|| "yes".equals(args[i + 1])
+							|| "YES".equals(args[i + 1])
+							|| "y".equals(args[i + 1])
+							|| "y".equals(args[i + 1]);
 				}
 			}
 		}
@@ -364,12 +376,13 @@ public class ExporterApplication {
 						if (projects.size() == 1) {
 							ExporterApplication.exportAsApk(path, mavenPath,
 									assetsProjectPath, packageName, artifactId,
-									appName, pathToAppIcons, targets.get(i));
+									appName, pathToAppIcons, fullScreen,
+									targets.get(i));
 						} else {
 							ExporterApplication.exportAsApk(path, mavenPath,
 									assetsProjectPath, null, null,
 									appNames.get(i), appIcons.get(i),
-									targets.get(i));
+									fullScreen, targets.get(i));
 						}
 					}
 				}
@@ -411,7 +424,7 @@ public class ExporterApplication {
 		System.out.println();
 		System.out.println("\tWhere [OPTIONS] has the next syntax:");
 		System.out
-				.println("\t\t[-format-list LIST_OF_FORMATS] [-engine-lib PATH_TO_THE_ENGINE_LIB] [-window-width WINDOW_WIDTH] [-window-height WINDOW_HEIGHT] [-maven-dir PATH_TO_MAVEN_INSTALLATION_DIR] [-assets-project-dir PATH_TO_ASSETS_PROJECT_DIR] [-app-name APP_NAME_FOR_APK] [-app-name-list COMMA-SEPARATED_LIST_OF_APPNAMES_FOR_APK] [-app-icons PATH_TO_ICONS_FOR_APK] [-app-icons-list COMMA-SEPARATED_LIST_OF_PATH_TO_ICONS_FOR_APK] [-package NAME_OF_APK_PACKAGE] [-artifact MAVEN_ARTIFACT_OF_APK]  ");
+				.println("\t\t[-format-list LIST_OF_FORMATS] [-engine-lib PATH_TO_THE_ENGINE_LIB] [-window-width WINDOW_WIDTH] [-window-height WINDOW_HEIGHT] [-full-screen TRUE|FALSE] [-maven-dir PATH_TO_MAVEN_INSTALLATION_DIR] [-assets-project-dir PATH_TO_ASSETS_PROJECT_DIR] [-app-name APP_NAME_FOR_APK] [-app-name-list COMMA-SEPARATED_LIST_OF_APPNAMES_FOR_APK] [-app-icons PATH_TO_ICONS_FOR_APK] [-app-icons-list COMMA-SEPARATED_LIST_OF_PATH_TO_ICONS_FOR_APK] [-package NAME_OF_APK_PACKAGE] [-artifact MAVEN_ARTIFACT_OF_APK]  ");
 		System.out
 				.println("\t\t\t-format-list LIST_OF_FORMATS\t\tMust provide the exportation formats. Possible options: jar | apk | jar,apk. If not specified, only jar format is produced");
 		System.out
@@ -420,6 +433,8 @@ public class ExporterApplication {
 				.println("\t\t\t-window-width WINDOW_WIDTH\t\t(Optional). Needed only if JAR format is selected. Specifies a fixed window size for the game");
 		System.out
 				.println("\t\t\t-window-height WINDOW_HEIGHT\t\t(Optional). Needed only if JAR format is selected. Specifies a fixed window size for the game");
+		System.out
+				.println("\t\t\t-full-screen TRUE|FALSE\t\t(Optional). Needed only if APK format is selected. Specifies if the game must run fullscreen (true) or keep aspect ratio (false). By default this is set to true");
 		System.out
 				.println("\t\t\t-maven-dir PATH_TO_MAVEN_INSTALLATION_DIR\t\tNeeded only if APK format is selected. Must point to the path where maven is installed in the system. Can be omitted if MAVEN_HOME or MVN_HOME environment variables are set up");
 		System.out
@@ -522,11 +537,12 @@ public class ExporterApplication {
 		private String pathToAppIcons;
 		private String mavenPath;
 		private String assetsProjectPath;
+		private boolean fullScreen;
 
 		private ExportToApk(String projectPath, String destinationPath,
 				String packageName, String artifactId, String appName,
 				String pathToAppIcons, String mavenPath,
-				String assetsProjectPath) {
+				String assetsProjectPath, boolean fullScreen) {
 			super(projectPath, destinationPath);
 			this.packageName = packageName;
 			this.artifactId = artifactId;
@@ -534,6 +550,7 @@ public class ExporterApplication {
 			this.pathToAppIcons = pathToAppIcons;
 			this.mavenPath = mavenPath;
 			this.assetsProjectPath = assetsProjectPath;
+			this.fullScreen = fullScreen;
 		}
 
 		@Override
@@ -555,7 +572,7 @@ public class ExporterApplication {
 					.println("-------------------------------------------------------------------");
 			exporter.exportAsApk(destinationPath, projectPath, mavenPath,
 					currentAssetsProjectPath, packageName, artifactId, appName,
-					pathToAppIcons, entities.entrySet(), callback);
+					pathToAppIcons, fullScreen, entities.entrySet(), callback);
 		}
 	}
 
