@@ -160,6 +160,7 @@ public class DemoLauncher extends JFrame {
 	 * Modify this method to add new demos to the launcher
 	 */
 	private void registerDemos() {
+		registerDemo(new CoolDemo());
 		registerDemo(new PlanesDemo());
 		registerDemo(new MeetingAFriendDemo());
 		registerDemo(new SpineDemo());

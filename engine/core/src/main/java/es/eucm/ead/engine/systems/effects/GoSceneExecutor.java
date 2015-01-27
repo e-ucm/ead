@@ -91,6 +91,9 @@ public class GoSceneExecutor extends EffectExecutor<GoScene> {
 				Group layer = GoSceneExecutor.this.gameView.getLayer(
 						Layer.SCENE_CONTENT).getGroup();
 				layer.setVisible(true);
+				GoSceneExecutor.this.gameView.updateWorldSize(
+						GoSceneExecutor.this.gameView.getWorldWidth(),
+						GoSceneExecutor.this.gameView.getWorldHeight());
 			}
 		});
 	}

@@ -61,6 +61,9 @@ import es.eucm.ead.schema.effects.AddComponent;
 import es.eucm.ead.schema.effects.AddEntity;
 import es.eucm.ead.schema.effects.ChangeVar;
 import es.eucm.ead.schema.effects.Effect;
+import es.eucm.ead.schema.effects.GoScene;
+import es.eucm.ead.schema.effects.GoScene.Transition;
+import es.eucm.ead.schema.effects.PlaySound;
 import es.eucm.ead.schema.effects.SetViewport;
 import es.eucm.ead.schema.effects.TriggerConversation;
 import es.eucm.ead.schema.effects.controlstructures.ControlStructure;
@@ -146,6 +149,7 @@ public abstract class DemoBuilder {
 	protected int sceneCount;
 	protected float gameWidth;
 	protected float gameHeight;
+	private String lastSceneId;
 
 	public DemoBuilder() {
 		entities = new HashMap<String, ModelEntity>();
@@ -182,6 +186,13 @@ public abstract class DemoBuilder {
 	 */
 	public ModelEntity getLastScene() {
 		return lastScene;
+	}
+
+	/**
+	 * @return the id of the last scene created through {@link #scene(String)}
+	 */
+	public String getLastSceneId() {
+		return lastSceneId;
 	}
 
 	/**
@@ -352,8 +363,8 @@ public abstract class DemoBuilder {
 		if (imageUri != null) {
 			lastScene.getChildren().add(entity(imageUri, 0, 0).getLastEntity());
 		}
-		String sceneId = DEFAULT_SCENE_PREF + (sceneCount++) + JSON;
-		entities.put(sceneId, lastScene);
+		lastSceneId = DEFAULT_SCENE_PREF + (sceneCount++) + JSON;
+		entities.put(lastSceneId, lastScene);
 		return this;
 	}
 
@@ -975,6 +986,24 @@ public abstract class DemoBuilder {
 		return this;
 	}
 
+	public DemoBuilder playSound(String sound) {
+		playSound(getLastComponent(), sound);
+		return this;
+	}
+
+	public DemoBuilder playSound(Object container, String sound) {
+		effect(container, makePlaySound(sound));
+		return this;
+	}
+
+	public PlaySound makePlaySound(String sound) {
+		PlaySound playSound = new PlaySound();
+		playSound.setUri(sound);
+		playSound.setLoop(false);
+		playSound.setVolume(1.0f);
+		return playSound;
+	}
+
 	/**
 	 * Creates an {@link es.eucm.ead.schema.effects.AddComponent} effect with
 	 * the given {@code target} and {@code componentToAdd} and adds it to the
@@ -1214,6 +1243,15 @@ public abstract class DemoBuilder {
 	 */
 	public String makeEntitiesWithTagExp(String tag) {
 		return "(collection (hastag $entity s" + tag + "))";
+	}
+
+	public GoScene makeGoScene(String sceneId, Transition transition,
+			float duration) {
+		GoScene goScene = new GoScene();
+		goScene.setSceneId(sceneId);
+		goScene.setTransition(transition);
+		goScene.setDuration(duration);
+		return goScene;
 	}
 
 	public enum HorizontalAlign {

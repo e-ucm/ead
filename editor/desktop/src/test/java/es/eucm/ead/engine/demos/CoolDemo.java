@@ -36,15 +36,32 @@
  */
 package es.eucm.ead.engine.demos;
 
-import com.badlogic.gdx.Application;
-import com.badlogic.gdx.Gdx;
-import es.eucm.ead.engine.EngineDesktop;
+import es.eucm.ead.editor.demobuilder.EditorDemoBuilder;
+import es.eucm.ead.schema.effects.GoScene.Transition;
+import es.eucm.ead.schema.entities.ModelEntity;
 
-public class CoolDemo {
+/**
+ * Created by angel on 29/11/14.
+ */
+public class CoolDemo extends EditorDemoBuilder {
 
-	public static void main(String args[]) {
-		EngineDesktop engine = new EngineDesktop(1066, 600);
-		engine.run("cooldemo", true);
-		Gdx.app.setLogLevel(Application.LOG_DEBUG);
+	public CoolDemo() {
+		super("cooldemo");
+	}
+
+	@Override
+	public String getDescription() {
+		return "Demo with some things";
+	}
+
+	@Override
+	protected void doBuild() {
+		ModelEntity bee = game(800, 600).scene("map.png")
+				.entity("bee.png", 200, 200).getLastEntity();
+		scene("map.png").entity("p1_stand.png", 200, 200).touchBehavior()
+				.playSound("sound.wav");
+		String sceneId = getLastSceneId();
+		touchBehavior(bee,
+				makeGoScene(sceneId, Transition.SLICE_VERTICAL, 2.0f));
 	}
 }
