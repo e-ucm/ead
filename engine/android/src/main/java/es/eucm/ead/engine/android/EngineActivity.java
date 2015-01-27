@@ -36,7 +36,10 @@
  */
 package es.eucm.ead.engine.android;
 
+import android.content.pm.ActivityInfo;
+import android.content.pm.PackageManager;
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.backends.android.surfaceview.FixedResolutionStrategy;
 import es.eucm.ead.engine.EngineApplicationListener;
 
 import android.os.Bundle;
@@ -46,10 +49,46 @@ import com.badlogic.gdx.backends.android.AndroidApplicationConfiguration;
 
 public class EngineActivity extends AndroidApplication {
 
+	/**
+	 * Key corresponding to the meta-data value that determines the fixed width
+	 * of the GLSurfaceView. If the value for this meta-data key is -1, or it is
+	 * not present in the activity, the surface will be stretched full screen.
+	 */
+	public static final String CANVAS_WIDTH = "CanvasWidth";
+	/**
+	 * Key corresponding to the meta-data value that determines the fixed height
+	 * of the GLSurfaceView. If the value for this meta-data key is -1, or it is
+	 * not present in the activity, the surface will be stretched full screen.
+	 */
+	public static final String CANVAS_HEIGHT = "CanvasHeight";
+
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
+
+		// Read canvas width and height
+		int canvasWidth = -1;
+		int canvasHeight = -1;
+
+		try {
+			ActivityInfo ai = getPackageManager().getActivityInfo(
+					getComponentName(),
+					PackageManager.GET_ACTIVITIES
+							| PackageManager.GET_META_DATA);
+			Bundle bundle = ai.metaData;
+			canvasWidth = bundle.getInt(CANVAS_WIDTH);
+			canvasHeight = bundle.getInt(CANVAS_HEIGHT);
+		} catch (Exception e) {
+			errorReadingCanvasSize(e);
+		}
+
 		AndroidApplicationConfiguration config = new AndroidApplicationConfiguration();
+
+		if (canvasHeight > 0 && canvasWidth > 0) {
+			config.resolutionStrategy = new FixedResolutionStrategy(
+					canvasWidth, canvasHeight);
+		}
+
 		config.useAccelerometer = false;
 		config.useImmersiveMode = false;
 		config.hideStatusBar = true;
@@ -65,5 +104,11 @@ public class EngineActivity extends AndroidApplication {
 				engineApplicationListener.getGameLoader().loadGame("", true);
 			}
 		});
+	}
+
+	private void errorReadingCanvasSize(Exception e) {
+		System.err
+				.println("Error reading canvas size. Either it is not accessible or it is bad formatted.");
+		e.printStackTrace();
 	}
 }
