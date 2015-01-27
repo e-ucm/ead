@@ -1,0 +1,9 @@
+{
+    "additionalProperties": false,
+    "javaType": "es.eucm.ead.schema.components.circuits.chips.RectangleChip",
+    "type": "object",
+    "description": "Rectangle renderer generator. Has as inputs width and height",
+    "extends": {
+        "$ref": "../chip.json"
+    }
+}
