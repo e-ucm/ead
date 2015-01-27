@@ -47,11 +47,17 @@ import es.eucm.ead.engine.processors.ComponentProcessor;
 import es.eucm.ead.engine.processors.templates.circuits.ChipFactory;
 import es.eucm.ead.engine.processors.templates.circuits.CircuitComponent;
 import es.eucm.ead.engine.processors.templates.circuits.TemplateRendererComponent;
+import es.eucm.ead.engine.processors.templates.circuits.EntityChipFactory;
+import es.eucm.ead.engine.processors.templates.circuits.RectangleChipFactory;
+import es.eucm.ead.engine.processors.templates.circuits.ShaderChipFactory;
 import es.eucm.ead.engine.variables.VariablesManager;
 import es.eucm.ead.schema.components.circuits.Chip;
 import es.eucm.ead.schema.components.circuits.Circuit;
 import es.eucm.ead.schema.components.circuits.Generator;
 import es.eucm.ead.schema.components.circuits.Wire;
+import es.eucm.ead.schema.components.circuits.chips.EntityChip;
+import es.eucm.ead.schema.components.circuits.chips.RectangleChip;
+import es.eucm.ead.schema.components.circuits.chips.ShaderChip;
 import es.eucm.ead.schema.data.Parameter;
 import es.eucm.ead.schema.renderers.TemplateRenderer;
 
@@ -73,6 +79,11 @@ public class TemplateRendererProcessor extends
 		this.gameAssets = gameAssets;
 		this.variableManager = variablesManager;
 		chipFactories = new ObjectMap<Class, ChipFactory>();
+		chipFactories.put(EntityChip.class, new EntityChipFactory());
+		chipFactories.put(RectangleChip.class, new RectangleChipFactory(
+				componentLoader));
+		chipFactories.put(ShaderChip.class, new ShaderChipFactory(
+				componentLoader));
 	}
 
 	@Override
