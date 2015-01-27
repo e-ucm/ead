@@ -1,0 +1,26 @@
+{
+    "additionalProperties": false,
+    "javaType": "es.eucm.ead.schema.renderers.TemplateRenderer",
+    "type": "object",
+    "extends": {
+        "$ref": "renderer.json"
+    },
+    "description": "This template adds a renderer to the entity. Renderer is obtained from a circuit.",
+    "properties": {
+        "uri": {
+            "type": "string",
+            "description": "The uri to the circuit template"
+        },
+        "inputs": {
+            "type": "array",
+            "items": {
+                "$ref": "../../data/parameter.json"
+            },
+            "description": "Inputs for the circuit. Each parameter represents a (input, expression) pair"
+        },
+        "output": {
+            "type": "string",
+            "description": "Identifier of the renderer output in the circuit "
+        }
+    }
+}
