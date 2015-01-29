@@ -852,6 +852,19 @@ public abstract class DemoBuilder {
 		return this;
 	}
 
+	public DemoBuilder moveTween(ModelEntity parent, float xOffset,
+			float yOffset) {
+		MoveTween moveTween = new MoveTween();
+		moveTween.setX(xOffset);
+		moveTween.setY(yOffset);
+		moveTween.setRelative(true);
+		moveTween.setRepeat(-1);
+		moveTween.setYoyo(true);
+		moveTween.setDuration(2.0f);
+		parent.getComponents().add(moveTween);
+		return this;
+	}
+
 	/**
 	 * Adds the given {@link es.eucm.ead.schema.data.Parameter} to the last
 	 * component added to {@link #entities}.
@@ -1247,10 +1260,16 @@ public abstract class DemoBuilder {
 
 	public GoScene makeGoScene(String sceneId, Transition transition,
 			float duration) {
+		return makeGoScene(sceneId, transition, duration, false);
+	}
+
+	public GoScene makeGoScene(String sceneId, Transition transition,
+			float duration, boolean updateGameLoop) {
 		GoScene goScene = new GoScene();
 		goScene.setSceneId(sceneId);
 		goScene.setTransition(transition);
 		goScene.setDuration(duration);
+		goScene.setUpdateGameLoop(updateGameLoop);
 		return goScene;
 	}
 
