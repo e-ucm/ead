@@ -55,6 +55,10 @@ import es.eucm.ead.engine.variables.VariablesManager;
  */
 public class Engine {
 
+	private VariablesManager variablesManager;
+
+	private EditorGameAssets editorGameAssets;
+
 	private EntitiesLoader entitiesLoader;
 
 	private GameLoop gameLoop;
@@ -63,17 +67,18 @@ public class Engine {
 
 	private GameLoader gameLoader;
 
-	public Engine(Controller controller, EngineInitializer engineInitializer) {
+	private boolean running;
+
+	public Engine(Controller controller) {
 		this.gameLoop = new GameLoop();
 		gameLoop.setPlaying(false);
 		this.gameView = new FacadeGameView();
 
-		EditorGameAssets editorGameAssets = controller.getEditorGameAssets();
+		editorGameAssets = controller.getEditorGameAssets();
 		Accessor accessor = new Accessor();
 		OperationsFactory operationsFactory = new OperationsFactory(gameLoop,
 				accessor, gameView);
-		VariablesManager variablesManager = new VariablesManager(accessor,
-				operationsFactory);
+		variablesManager = new VariablesManager(accessor, operationsFactory);
 
 		ComponentLoader componentLoader = new EditorComponentLoader(
 				editorGameAssets, variablesManager);
@@ -82,7 +87,9 @@ public class Engine {
 		this.entitiesLoader = new EntitiesLoader(gameLoop, editorGameAssets,
 				componentLoader);
 		gameLoader = new GameLoader(editorGameAssets, entitiesLoader);
+	}
 
+	public void init(EngineInitializer engineInitializer) {
 		engineInitializer.init(editorGameAssets, gameLoop, entitiesLoader,
 				gameView, variablesManager);
 	}
@@ -118,6 +125,7 @@ public class Engine {
 	 * Plays the engine, with the given game
 	 */
 	public void play() {
+		running = true;
 		gameView.clearAllLayers();
 		gameLoop.setPlaying(true);
 		Gdx.graphics.setContinuousRendering(true);
@@ -127,8 +135,13 @@ public class Engine {
 	 * Stops the engine
 	 */
 	public void stop() {
+		running = false;
 		gameView.clearAllLayers();
 		gameLoop.setPlaying(false);
 		Gdx.graphics.setContinuousRendering(false);
+	}
+
+	public boolean isRunning() {
+		return running;
 	}
 }

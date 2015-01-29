@@ -77,10 +77,9 @@ public class MobileEngineInitializer extends DefaultEngineInitializer {
 			VariablesManager variablesManager, EntitiesLoader entitiesLoader) {
 		super.registerComponents(componentLoader, gameAssets, gameLoop,
 				variablesManager, entitiesLoader);
-		componentLoader.registerComponentProcessor(
-				EmptyRenderer.class,
-				new EditorEmptyRendererProcessor(gameLoop, controller
-						.getApplicationAssets()));
+		componentLoader.registerComponentProcessor(EmptyRenderer.class,
+				new EditorEmptyRendererProcessor(controller.getEngine(),
+						gameLoop, controller.getApplicationAssets()));
 		componentLoader
 				.registerComponentProcessor(Frames.class,
 						new EditorFramesProcessor(gameLoop, gameAssets,

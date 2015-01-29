@@ -87,10 +87,9 @@ public class EditorEngineInitializer extends DefaultEngineInitializer {
 				Label.class,
 				new EditableLabelProccesor(gameLoop, controller
 						.getEditorGameAssets(), variablesManager, controller));
-		componentLoader.registerComponentProcessor(
-				EmptyRenderer.class,
-				new EditorEmptyRendererProcessor(gameLoop, controller
-						.getApplicationAssets()));
+		componentLoader.registerComponentProcessor(EmptyRenderer.class,
+				new EditorEmptyRendererProcessor(controller.getEngine(),
+						gameLoop, controller.getApplicationAssets()));
 		componentLoader.registerComponentProcessor(Reference.class,
 				new EditorReferenceProcessor(gameLoop, gameAssets,
 						entitiesLoader, controller.getPlatform()));
