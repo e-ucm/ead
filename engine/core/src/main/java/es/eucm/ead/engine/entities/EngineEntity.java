@@ -116,7 +116,9 @@ public class EngineEntity extends Entity implements Poolable {
 		flags = 0;
 		if (group != null) {
 			group.remove();
-			for (Actor child : group.getChildren()) {
+			Actor[] children = group.getChildren().begin();
+			for (int i = 0, n = group.getChildren().size; i < n; i++) {
+				Actor child = children[i];
 				Object o = child.getUserObject();
 				if (o instanceof EngineEntity) {
 					gameLoop.removeEntity((EngineEntity) o);
