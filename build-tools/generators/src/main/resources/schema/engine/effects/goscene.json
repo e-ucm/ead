@@ -17,15 +17,26 @@
             "type": "number",
             "description": "the duration of the transition in seconds."
         },
+        "waitLoading": {
+            "type": "boolean",
+            "description": "If true, the scene does not change until the next scene is fully loaded",
+            "default": true
+        },
+        "updateGameLoop": {
+            "type": "boolean",
+            "description": "If true, the game loop is updated during the transition",
+            "default": false
+        },
         "transition": {
-		    "type": "string",
-		    "description": "The transition type.",
-		    "enum": ["none", "fadeIn", "fadeOut", "scaleDown", "scaleUp",
-        		"slideLeft", "slideRight", "slideUp", "slideDown", "slideRandom",
-        		"slideOverLeftIn", "slideOverRightIn", "slideOverUpIn", "slideOverDownIn", "slideOverRandomIn",
-        		"slideOverLeftOut", "slideOverRightOut", "slideOverUpOut", "slideOverDownOut", "slideOverRandomOut",
-        		"sliceHorizontal", "sliceVertical"],
-        	"default": "none"
+            "type": "string",
+            "description": "The transition type.",
+            "enum": ["none", "fadeIn", "fadeOut", "scaleDown", "scaleUp",
+                "slideLeft", "slideRight", "slideUp", "slideDown", "slideRandom",
+                "slideOverLeftIn", "slideOverRightIn", "slideOverUpIn", "slideOverDownIn", "slideOverRandomIn",
+                "slideOverLeftOut", "slideOverRightOut", "slideOverUpOut", "slideOverDownOut", "slideOverRandomOut",
+                "sliceHorizontal", "sliceVertical"
+            ],
+            "default": "none"
         }
     },
     "type": "object"
