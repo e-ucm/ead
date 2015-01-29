@@ -40,13 +40,13 @@ import es.eucm.ead.editor.control.Controller;
 import es.eucm.ead.editor.processors.EditorEmptyRendererProcessor;
 import es.eucm.ead.editor.processors.EditorFramesProcessor;
 import es.eucm.ead.editor.processors.EditorReferenceProcessor;
-import es.eucm.ead.engine.*;
+import es.eucm.ead.engine.ComponentLoader;
+import es.eucm.ead.engine.DefaultEngineInitializer;
+import es.eucm.ead.engine.EntitiesLoader;
+import es.eucm.ead.engine.GameLoop;
 import es.eucm.ead.engine.assets.GameAssets;
-import es.eucm.ead.engine.systems.EffectsSystem;
-import es.eucm.ead.engine.systems.effects.GoSceneExecutor;
 import es.eucm.ead.engine.variables.VariablesManager;
 import es.eucm.ead.schema.components.Reference;
-import es.eucm.ead.schema.effects.GoScene;
 import es.eucm.ead.schema.renderers.EmptyRenderer;
 import es.eucm.ead.schema.renderers.Frames;
 
@@ -56,19 +56,6 @@ public class MobileEngineInitializer extends DefaultEngineInitializer {
 
 	public MobileEngineInitializer(Controller controller) {
 		this.controller = controller;
-	}
-
-	@Override
-	protected void registerSystems(final GameAssets gameAssets,
-			final GameLoop gameLoop, final EntitiesLoader entitiesLoader,
-			final GameView gameView, final VariablesManager variablesManager) {
-		super.registerSystems(gameAssets, gameLoop, entitiesLoader, gameView,
-				variablesManager);
-		EffectsSystem effectsSystem = gameLoop.getSystem(EffectsSystem.class);
-		// Tell GoSceneExecutor to configure TransitionManager to use viewport
-		// to calculate widths and heights (editor mode)
-		effectsSystem.registerEffectExecutor(GoScene.class,
-				new GoSceneExecutor(entitiesLoader, gameView, true));
 	}
 
 	@Override

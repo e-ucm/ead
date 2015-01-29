@@ -41,10 +41,12 @@ import ashley.core.Entity;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.Group;
+import com.badlogic.gdx.utils.viewport.Viewport;
 
 import es.eucm.ead.engine.EntitiesLoader;
+import es.eucm.ead.engine.EntitiesLoader.EntityLoadedCallback;
 import es.eucm.ead.engine.GameView;
-import es.eucm.ead.engine.components.RemoveEntityComponent;
+import es.eucm.ead.engine.assets.GameAssets;
 import es.eucm.ead.engine.entities.EngineEntity;
 import es.eucm.ead.engine.systems.effects.transitions.Fade;
 import es.eucm.ead.engine.systems.effects.transitions.None;
@@ -57,7 +59,8 @@ import es.eucm.ead.engine.systems.effects.transitions.TransitionManager.Transiti
 import es.eucm.ead.schema.effects.GoScene;
 import es.eucm.ead.schemax.Layer;
 
-public class GoSceneExecutor extends EffectExecutor<GoScene> {
+public class GoSceneExecutor extends EffectExecutor<GoScene> implements
+		EntityLoadedCallback {
 
 	private TransitionManager transitionManager;
 
@@ -65,115 +68,74 @@ public class GoSceneExecutor extends EffectExecutor<GoScene> {
 
 	private GameView gameView;
 
-	private EngineEntity nextScreen;
-
-	/*
-	 * If set to false (default), gameView's world dimensions are used to
-	 * determine width and height of screen captures during transitions. If
-	 * true, stage's viewport is used instead.
-	 */
-	protected boolean useViewport = false;
-
-	public GoSceneExecutor(EntitiesLoader entitiesLoader, GameView gameView) {
-		this(entitiesLoader, gameView, false);
-	}
-
 	public GoSceneExecutor(EntitiesLoader entitiesLoader, GameView gameView,
-			boolean useViewport) {
-		this.transitionManager = new TransitionManager();
+			GameAssets gameAssets) {
+		this.transitionManager = new TransitionManager(gameAssets);
 		this.entitiesLoader = entitiesLoader;
 		this.gameView = gameView;
-		this.useViewport = useViewport;
 		transitionManager.addListener(new EndListener() {
 			@Override
 			public void transitionFinished() {
-				gameLoop.setPlaying(true);
-				Group layer = GoSceneExecutor.this.gameView.getLayer(
-						Layer.SCENE_CONTENT).getGroup();
-				layer.setVisible(true);
-				GoSceneExecutor.this.gameView.updateWorldSize(
-						GoSceneExecutor.this.gameView.getWorldWidth(),
-						GoSceneExecutor.this.gameView.getWorldHeight());
+				finish();
 			}
 		});
 	}
 
-	protected int getScreenWidth(Group layer) {
-		return useViewport ? layer.getStage().getViewport().getScreenWidth()
-				: gameView.getWorldWidth();
-	}
-
-	protected int getScreenHeight(Group layer) {
-		return useViewport ? layer.getStage().getViewport().getScreenHeight()
-				: gameView.getWorldHeight();
-	}
-
 	@Override
 	public void execute(Entity target, final GoScene effect) {
-		final Group layer = gameView.getLayer(Layer.SCENE_CONTENT).getGroup();
-
-		if (layer.getChildren().size == 1) {
-			Actor actor = layer.getChildren().get(0);
-			transitionManager.takeCurrentScreenPicture(getScreenWidth(layer),
-					getScreenHeight(layer), layer.getStage(), actor);
-			Object o = actor.getUserObject();
-			if (o instanceof EngineEntity) {
-				((EngineEntity) o).add(gameLoop
-						.createComponent(RemoveEntityComponent.class));
-			} else {
-				Gdx.app.error("GoSceneExecutor",
-						"Scene layer doesn't have an entity as first child");
-			}
-		}
-
 		if (effect.getSceneId() == null) {
 			Gdx.app.error("GoSceneExecutor",
 					"Scene id set to null. Effect was skipped");
 			return;
 		}
 
+		Group sceneLayer = gameView.getLayer(Layer.SCENE_CONTENT).getGroup();
+		Viewport vp = sceneLayer.getStage().getViewport();
+		transitionManager.setViewport(vp.getScreenX(), vp.getScreenY(),
+				vp.getScreenWidth(), vp.getScreenHeight(),
+				gameView.getWorldX(), gameView.getWorldY(),
+				gameView.getWorldWidth(), gameView.getWorldHeight());
+
+		transitionManager.setTransition(
+				effect.isWaitLoading(),
+				getTransition(effect.getTransition(), effect.getDuration(),
+						false));
+		gameLoop.setPlaying(effect.isUpdateGameLoop());
+
+		if (sceneLayer.getChildren().size == 1) {
+			Actor currentScene = sceneLayer.getChildren().get(0);
+			transitionManager.setCurrentScene(currentScene.getStage()
+					.getBatch(), currentScene);
+		}
+
+		gameView.clearLayer(Layer.SCENE_CONTENT, true);
+		sceneLayer.addActor(transitionManager);
+
 		Gdx.app.postRunnable(new Runnable() {
 			@Override
 			public void run() {
 				entitiesLoader.loadEntity(effect.getSceneId(),
-						new EntitiesLoader.EntityLoadedCallback() {
-							@Override
-							public void loaded(String path,
-									EngineEntity engineEntity) {
-								nextScreen = engineEntity;
-								gameLoop.update(0);
-								gameView.clearLayer(Layer.SCENE_CONTENT, true);
-								gameView.addEntityToLayer(Layer.SCENE_CONTENT,
-										nextScreen);
-								layer.setVisible(false);
-
-								transitionManager.takeNextScreenPicture(
-										getScreenWidth(layer),
-										getScreenHeight(layer),
-										engineEntity.getGroup());
-								gameLoop.setPlaying(false);
-
-								Group sceneLayer = gameView.getLayer(
-										Layer.SCENE).getGroup();
-								sceneLayer.addActor(transitionManager);
-								transitionManager
-										.startTransition(getTransition(
-												effect.getTransition(),
-												effect.getDuration(), false));
-							}
-
-							@Override
-							public void pathNotFound(String path) {
-								gameLoop.setPlaying(true);
-								sceneNotFound(path);
-							}
-						});
+						GoSceneExecutor.this);
 			}
 		});
 	}
 
-	protected void sceneNotFound(String path) {
+	@Override
+	public void loaded(String path, EngineEntity nextScene) {
+		gameView.addEntityToLayer(Layer.SCENE_CONTENT, nextScene);
+		transitionManager.toFront();
+		transitionManager.setNextScene(nextScene.getGroup());
+	}
+
+	@Override
+	public void pathNotFound(String path) {
 		Gdx.app.error("GoSceneExecutor", "No scene found in " + path);
+		finish();
+	}
+
+	protected void finish() {
+		transitionManager.remove();
+		gameLoop.setPlaying(true);
 	}
 
 	public static Transition getTransition(GoScene.Transition modelTransition,
