@@ -78,4 +78,16 @@ public interface GameView {
 	int getWorldWidth();
 
 	int getWorldHeight();
+
+	int getPixelsWidth();
+
+	int getPixelsHeight();
+
+	int getScreenX();
+
+	int getScreenY();
+
+	int getScreenWidth();
+
+	int getScreenHeight();
 }

@@ -207,6 +207,36 @@ public class DefaultGameView extends WidgetGroup implements GameView {
 		return worldHeight;
 	}
 
+	@Override
+	public int getPixelsWidth() {
+		return getScreenWidth();
+	}
+
+	@Override
+	public int getPixelsHeight() {
+		return getScreenHeight();
+	}
+
+	@Override
+	public int getScreenX() {
+		return getStage().getViewport().getScreenX();
+	}
+
+	@Override
+	public int getScreenY() {
+		return getStage().getViewport().getScreenY();
+	}
+
+	@Override
+	public int getScreenWidth() {
+		return getStage().getViewport().getScreenWidth();
+	}
+
+	@Override
+	public int getScreenHeight() {
+		return getStage().getViewport().getScreenHeight();
+	}
+
 	/**
 	 * Just to differentiate layer entities from regular entities more easily.
 	 * This also prevents accidental removals since the game loop does not

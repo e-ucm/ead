@@ -41,7 +41,6 @@ import ashley.core.Entity;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.Group;
-import com.badlogic.gdx.utils.viewport.Viewport;
 
 import es.eucm.ead.engine.EntitiesLoader;
 import es.eucm.ead.engine.EntitiesLoader.EntityLoadedCallback;
@@ -90,11 +89,11 @@ public class GoSceneExecutor extends EffectExecutor<GoScene> implements
 		}
 
 		Group sceneLayer = gameView.getLayer(Layer.SCENE_CONTENT).getGroup();
-		Viewport vp = sceneLayer.getStage().getViewport();
-		transitionManager.setViewport(vp.getScreenX(), vp.getScreenY(),
-				vp.getScreenWidth(), vp.getScreenHeight(),
-				gameView.getWorldX(), gameView.getWorldY(),
-				gameView.getWorldWidth(), gameView.getWorldHeight());
+		transitionManager.setViewport(gameView.getScreenX(),
+				gameView.getScreenY(), gameView.getScreenWidth(),
+				gameView.getScreenHeight(), gameView.getPixelsWidth(),
+				gameView.getPixelsHeight(), gameView.getWorldWidth(),
+				gameView.getWorldHeight());
 
 		transitionManager.setTransition(
 				effect.isWaitLoading(),

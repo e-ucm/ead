@@ -63,7 +63,7 @@ public class TransitionManager extends Actor implements Disposable {
 	private Transition transition;
 
 	private int screenX, screenY, screenWidth, screenHeight, worldWidth,
-			worldHeight, worldX, worldY;
+			worldHeight, pixelsWidth, pixelsHeight;
 
 	private float percentageCompletion;
 
@@ -78,16 +78,16 @@ public class TransitionManager extends Actor implements Disposable {
 	}
 
 	public void setViewport(int screenX, int screenY, int screenWidth,
-			int screenHeight, int worldX, int worldY, int worldWidth,
-			int worldHeight) {
+			int screenHeight, int worldX, int worldY, int pixelsWidth,
+			int pixelsHeight) {
 		this.screenX = screenX;
 		this.screenY = screenY;
 		this.screenWidth = screenWidth;
 		this.screenHeight = screenHeight;
-		this.worldWidth = worldWidth;
-		this.worldHeight = worldHeight;
-		this.worldX = worldX;
-		this.worldY = worldY;
+		this.worldWidth = pixelsWidth;
+		this.worldHeight = pixelsHeight;
+		this.pixelsWidth = worldX;
+		this.pixelsHeight = worldY;
 	}
 
 	public void setTransition(boolean waitLoading, Transition transition) {
@@ -99,9 +99,6 @@ public class TransitionManager extends Actor implements Disposable {
 
 	public void setCurrentScene(Batch batch, Actor currentScene) {
 		next.setScene(null);
-		if (hasParent()) {
-			endTransition();
-		}
 		current.setScene(currentScene);
 		batch.begin();
 		current.updateTexture(batch);
@@ -122,7 +119,6 @@ public class TransitionManager extends Actor implements Disposable {
 
 	@Override
 	public void draw(Batch batch, float parentAlpha) {
-		// Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
 		if (next.scene != null) {
 			next.updateTexture(batch);
 			transition.render(batch, current.textureRegion, current.region,
@@ -169,15 +165,13 @@ public class TransitionManager extends Actor implements Disposable {
 
 		public void setScene(Actor scene) {
 			this.scene = scene;
-			region.x = worldX;
-			region.y = worldY;
 			region.w = worldWidth;
 			region.h = worldHeight;
 			if (frameBuffer == null || frameBuffer.getHeight() != screenHeight
 					|| frameBuffer.getWidth() != screenWidth) {
 				dispose();
-				frameBuffer = new FrameBuffer(Format.RGB888, screenWidth,
-						screenHeight, false);
+				frameBuffer = new FrameBuffer(Format.RGB888, pixelsWidth,
+						pixelsHeight, false);
 				textureRegion.setRegion(frameBuffer.getColorBufferTexture());
 				textureRegion.flip(false, true);
 			}
