@@ -42,6 +42,7 @@ import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.util.Collections;
+import java.util.Iterator;
 import java.util.Map;
 import java.util.Properties;
 import java.util.zip.ZipOutputStream;
@@ -58,11 +59,13 @@ import es.eucm.ead.engine.utils.ZipUtils;
 import es.eucm.ead.schema.components.ModelComponent;
 import es.eucm.ead.schema.components.behaviors.Behavior;
 import es.eucm.ead.schema.components.behaviors.events.Init;
+import es.eucm.ead.schema.data.Dimension;
 import es.eucm.ead.schema.editor.components.GameData;
 import es.eucm.ead.schema.editor.components.VariableDef;
 import es.eucm.ead.schema.editor.components.Variables;
 import es.eucm.ead.schema.effects.AddEntity;
 import es.eucm.ead.schema.effects.ChangeVar;
+import es.eucm.ead.schema.effects.Effect;
 import es.eucm.ead.schema.effects.SetViewport;
 import es.eucm.ead.schema.entities.ModelEntity;
 import es.eucm.ead.schemax.FieldName;
@@ -262,6 +265,11 @@ public class Exporter {
 	 *            are scaled down to create any missing icons of lower
 	 *            resolution. Icons of higher resolution are never
 	 *            auto-generated, as no image is ever scaled up.
+	 * @param fullScreen
+	 *            If true, the resulting App will run in fullscreen mode. It is
+	 *            not guaranteed that game aspect ratio will be respected under
+	 *            such circumstances. If false, the App forces the canvas to be
+	 *            exactly the same size of the game.
 	 * @param entities
 	 *            An iterator to access in read-only mode all the
 	 *            {@link ModelEntity}s of the game (scenes, game, etc.)
@@ -271,7 +279,7 @@ public class Exporter {
 	 */
 	public void exportAsApk(String destiny, String source, String mavenPath,
 			String assetsProjectPath, String packageName, String artifactId,
-			String appName, String pathToAppIcons,
+			String appName, String pathToAppIcons, boolean fullScreen,
 			Iterable<Map.Entry<String, Object>> entities,
 			ExportCallback callback) {
 		try {
@@ -280,8 +288,13 @@ public class Exporter {
 			}
 
 			// Create basic structure for Maven project
+			Dimension gameDim = null;
+			if (!fullScreen) {
+				gameDim = getGameDimension(entities);
+			}
 			FileHandle mavenProjectDir = createMavenProject(packageName,
-					artifactId, appName);
+					artifactId, appName, fullScreen ? -1 : gameDim.getWidth(),
+					fullScreen ? -1 : gameDim.getHeight());
 			if (callback != null) {
 				callback.progress(5,
 						"    Maven project successfully created at: "
@@ -387,6 +400,42 @@ public class Exporter {
 
 	}
 
+	private Dimension getGameDimension(
+			Iterable<Map.Entry<String, Object>> entities) {
+		Iterator iterator = entities.iterator();
+		while (iterator.hasNext()) {
+			Map.Entry<String, Object> entry = (Map.Entry<String, Object>) (iterator
+					.next());
+			if (entry.getValue() instanceof ModelEntity) {
+				ModelEntity entity = (ModelEntity) entry.getValue();
+				for (ModelComponent component : entity.getComponents()) {
+					if (component instanceof GameData) {
+						GameData gameData = (GameData) component;
+						Dimension dimension = new Dimension();
+						dimension.setWidth(gameData.getWidth());
+						dimension.setHeight(gameData.getHeight());
+						return dimension;
+					} else if (component instanceof Behavior) {
+						Behavior b = (Behavior) component;
+						if (b.getEvent() instanceof Init) {
+							for (Effect e : b.getEffects()) {
+								if (e instanceof SetViewport) {
+									SetViewport setViewport = (SetViewport) e;
+									Dimension dimension = new Dimension();
+									dimension.setWidth(setViewport.getWidth());
+									dimension
+											.setHeight(setViewport.getHeight());
+									return dimension;
+								}
+							}
+						}
+					}
+				}
+			}
+		}
+		return null;
+	}
+
 	private File findMavenDir(String path) {
 		if (path == null) {
 			path = System.getenv("MAVEN_HOME");
@@ -407,16 +456,17 @@ public class Exporter {
 	}
 
 	private FileHandle createMavenProject(String packageName,
-			String artifactId, String appName) {
+			String artifactId, String appName, int canvasWidth, int canvasHeight) {
 		// Create temp dir
 		FileHandle mavenProjectDir = FileHandle.tempDirectory("exporter-apk");
 		// Write pom.xml, AndroidManifest.xml, res/layout/main.xml and
 		// res/values/strings.xml
 		mavenProjectDir.child("pom.xml").writeString(
 				ApkResource.getPom(artifactId, appName), false, "UTF-8");
-		mavenProjectDir.child("AndroidManifest.xml").writeString(
-				ApkResource.getAndroidManifest(packageName, appName), false,
-				"UTF-8");
+		String manifest = ApkResource.getAndroidManifest(packageName, appName,
+				canvasWidth, canvasHeight);
+		mavenProjectDir.child("AndroidManifest.xml").writeString(manifest,
+				false, "UTF-8");
 		FileHandle resDir = mavenProjectDir.child("res");
 		resDir.mkdirs();
 		FileHandle layoutDir = resDir.child("layout");

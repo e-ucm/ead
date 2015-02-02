@@ -97,12 +97,19 @@ public class ApkResource {
 	 * @param appName
 	 *            The name of the application, in a user-friendly format (e.g.
 	 *            Game Of Thrones). Cannot be {@code null}.
+	 * @param canvasWidth
+	 *            Canvas width to be passed to the EngineActivity.
+	 * @param canvasHeight
+	 *            Canvas height to be passed to the EngineActivity.
 	 */
-	public static String getAndroidManifest(String packageName, String appName) {
+	public static String getAndroidManifest(String packageName, String appName,
+			int canvasWidth, int canvasHeight) {
 		if (packageName == null) {
 			packageName = appNameToPackage(appName);
 		}
-		return ANDROID_MANIFEST.replaceAll(PACKAGE_PLACEHOLDER, packageName);
+		return ANDROID_MANIFEST.replaceAll(PACKAGE_PLACEHOLDER, packageName)
+				.replaceAll(CANVAS_WIDTH_VALUE, "" + canvasWidth)
+				.replaceAll(CANVAS_HEIGHT_VALUE, "" + canvasHeight);
 	}
 
 	/**
@@ -129,6 +136,11 @@ public class ApkResource {
 
 	// Fully qualified name of engine activity that launches the game.
 	private static final String ENGINE_ACTIVITY = "es.eucm.ead.engine.android.EngineActivity";
+	/*
+	 * Meta-data keys EngineActivity expects to provide canvas width and height
+	 */
+	private static final String CANVAS_WIDTH_KEY = "CanvasWidth";
+	private static final String CANVAS_HEIGHT_KEY = "CanvasHeight";
 
 	private static final String DEFAULT_PACKAGE_PARENT = "es.eucm.mokaps";
 
@@ -136,6 +148,8 @@ public class ApkResource {
 	private static final String ARTIFACTID_PLACEHOLDER = "##ARTIFACTID##";
 	private static final String PACKAGE_PLACEHOLDER = "##PACKAGE##";
 	private static final String APPNAME_PLACEHOLDER = "##APPNAME##";
+	private static final String CANVAS_WIDTH_VALUE = "##CANVASWIDTH##";
+	private static final String CANVAS_HEIGHT_VALUE = "##CANVASHEIGHT##";
 
 	// ///////////////////////////////
 	// PRIVATE METHODS
@@ -193,8 +207,17 @@ public class ApkResource {
 			+ "                <action android:name=\"android.intent.action.MAIN\"/>\n"
 			+ "                <category android:name=\"android.intent.category.LAUNCHER\"/>\n"
 			+ "            </intent-filter>\n"
-			+ "        </activity>\n"
-			+ "    </application>\n" + "</manifest>";
+			+ "            <meta-data android:name=\""
+			+ CANVAS_WIDTH_KEY
+			+ "\" android:value=\""
+			+ CANVAS_WIDTH_VALUE
+			+ "\" />"
+			+ "            <meta-data android:name=\""
+			+ CANVAS_HEIGHT_KEY
+			+ "\" android:value=\""
+			+ CANVAS_HEIGHT_VALUE
+			+ "\" />"
+			+ "        </activity>\n" + "    </application>\n" + "</manifest>";
 
 	private static final String LAYOUT_MAIN = "<?xml version=\"1.0\" encoding=\"utf-8\"?>\n"
 			+ "<LinearLayout xmlns:android=\"http://schemas.android.com/apk/res/android\"\n"

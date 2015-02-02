@@ -61,7 +61,9 @@ public class ExportAsApkTest {
 		FileHandle target = FileHandle.tempDirectory("got").child("got.apk");
 		target.parent().mkdirs();
 
-		ExporterApplication.exportAsApk(projectDir.path(), null, null, null,
-				null, "Game Of Thrones", thumbnail.path(), target.path());
+		ExporterApplication
+				.exportAsApk(projectDir.path(), null, null, null, null,
+						"Game Of Thrones", thumbnail.path(), false,
+						target.path());
 	}
 }
