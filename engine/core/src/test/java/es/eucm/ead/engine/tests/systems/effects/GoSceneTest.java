@@ -51,18 +51,17 @@ public class GoSceneTest extends EffectTest {
 	@Before
 	public void setUp() {
 		super.setUp();
-		effectsSystem
-				.registerEffectExecutor(GoScene.class,
-						goSceneExecutor = new GoSceneExecutor(entitiesLoader,
-								gameView) {
-							protected int getScreenWidth(Group layer) {
-								return 0;
-							}
+		effectsSystem.registerEffectExecutor(GoScene.class,
+				goSceneExecutor = new GoSceneExecutor(entitiesLoader, gameView,
+						gameAssets) {
+					protected int getScreenWidth(Group layer) {
+						return 0;
+					}
 
-							protected int getScreenHeight(Group layer) {
-								return 0;
-							}
-						});
+					protected int getScreenHeight(Group layer) {
+						return 0;
+					}
+				});
 	}
 
 	@Test
@@ -73,6 +72,7 @@ public class GoSceneTest extends EffectTest {
 			goSceneExecutor.execute(null, goScene);
 			gameAssets.getAssetManager().finishLoading();
 		} catch (Exception e) {
+			e.printStackTrace();
 			fail("Exception should not be thrown");
 		}
 	}

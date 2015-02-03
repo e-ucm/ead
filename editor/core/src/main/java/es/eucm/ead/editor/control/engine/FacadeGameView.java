@@ -88,4 +88,34 @@ public class FacadeGameView implements GameView {
 	public int getWorldHeight() {
 		return gameView.getWorldHeight();
 	}
+
+	@Override
+	public int getPixelsWidth() {
+		return gameView.getPixelsWidth();
+	}
+
+	@Override
+	public int getPixelsHeight() {
+		return gameView.getPixelsHeight();
+	}
+
+	@Override
+	public int getScreenX() {
+		return gameView.getScreenX();
+	}
+
+	@Override
+	public int getScreenY() {
+		return gameView.getScreenY();
+	}
+
+	@Override
+	public int getScreenWidth() {
+		return gameView.getScreenWidth();
+	}
+
+	@Override
+	public int getScreenHeight() {
+		return gameView.getScreenHeight();
+	}
 }

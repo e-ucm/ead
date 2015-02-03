@@ -45,6 +45,7 @@ import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable;
 
 import es.eucm.ead.editor.assets.ApplicationAssets;
 import es.eucm.ead.editor.components.EditorEmptyRendererComponent;
+import es.eucm.ead.editor.control.engine.Engine;
 import es.eucm.ead.engine.GameLoop;
 import es.eucm.ead.engine.processors.renderers.EmptyRendererProcessor;
 import es.eucm.ead.schema.renderers.EmptyRenderer;
@@ -56,9 +57,12 @@ public class EditorEmptyRendererProcessor extends EmptyRendererProcessor {
 
 	private SpriteDrawable drawable;
 
-	public EditorEmptyRendererProcessor(GameLoop engine,
+	private Engine engine;
+
+	public EditorEmptyRendererProcessor(Engine engine, GameLoop gameLoop,
 			ApplicationAssets applicationAssets) {
-		super(engine);
+		super(gameLoop);
+		this.engine = engine;
 		TextureRegionDrawable blank = (TextureRegionDrawable) applicationAssets
 				.getSkin().getDrawable("blank");
 		Sprite sprite = new Sprite(blank.getRegion());
@@ -71,7 +75,7 @@ public class EditorEmptyRendererProcessor extends EmptyRendererProcessor {
 		EditorEmptyRendererComponent emptyRendererComponent = gameLoop
 				.createComponent(EditorEmptyRendererComponent.class);
 		emptyRendererComponent.setDrawable(drawable);
-		emptyRendererComponent.setGameLoop(gameLoop);
+		emptyRendererComponent.setEngine(engine);
 		read(emptyRendererComponent, component);
 		return emptyRendererComponent;
 	}

@@ -165,7 +165,8 @@ public class Controller {
 		// Get the release info from editor assets
 		this.releaseInfo = applicationAssets.loadReleaseInfo();
 		this.shortcutsMap = new ShortcutsMap(this);
-		this.engine = new Engine(this, buildEngineInitializer());
+		this.engine = new Engine(this);
+		engine.init(buildEngineInitializer());
 		setTracker(viewsContainer, modalsContainer);
 		setClipboard();
 		loadPreferences();

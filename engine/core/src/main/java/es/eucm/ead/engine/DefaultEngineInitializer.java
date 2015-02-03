@@ -222,7 +222,7 @@ public class DefaultEngineInitializer implements EngineInitializer {
 		gameLoop.addSystem(effectsSystem);
 
 		effectsSystem.registerEffectExecutor(GoScene.class,
-				new GoSceneExecutor(entitiesLoader, gameView));
+				new GoSceneExecutor(entitiesLoader, gameView, gameAssets));
 		effectsSystem.registerEffectExecutor(EndGame.class,
 				new EndGameExecutor());
 		effectsSystem.registerEffectExecutor(ChangeVar.class,

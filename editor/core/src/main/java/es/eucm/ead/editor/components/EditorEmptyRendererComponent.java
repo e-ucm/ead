@@ -38,17 +38,17 @@ package es.eucm.ead.editor.components;
 
 import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.scenes.scene2d.utils.Drawable;
-import es.eucm.ead.engine.GameLoop;
+import es.eucm.ead.editor.control.engine.Engine;
 import es.eucm.ead.engine.components.renderers.frames.EmptyRendererComponent;
 
 public class EditorEmptyRendererComponent extends EmptyRendererComponent {
 
-	private GameLoop gameLoop;
+	private Engine engine;
 
 	private Drawable drawable;
 
-	public void setGameLoop(GameLoop gameLoop) {
-		this.gameLoop = gameLoop;
+	public void setEngine(Engine engine) {
+		this.engine = engine;
 	}
 
 	public void setDrawable(Drawable drawable) {
@@ -57,7 +57,7 @@ public class EditorEmptyRendererComponent extends EmptyRendererComponent {
 
 	@Override
 	public void draw(Batch batch) {
-		if (!gameLoop.isPlaying() && getCollider() != null) {
+		if (!engine.isRunning() && getCollider() != null) {
 			drawable.draw(batch, 0, 0, width, height);
 		}
 	}

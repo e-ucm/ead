@@ -45,105 +45,98 @@ import com.badlogic.gdx.graphics.glutils.FrameBuffer;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.Event;
 import com.badlogic.gdx.scenes.scene2d.EventListener;
-import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.utils.Disposable;
 import com.badlogic.gdx.utils.Pools;
-import com.badlogic.gdx.utils.viewport.Viewport;
+import es.eucm.ead.engine.assets.GameAssets;
 
 /**
  * Manages a {@link Transition} between the current screen and the next screen.
  */
 public class TransitionManager extends Actor implements Disposable {
 
-	private Region currentScreenRegion, nextScreenRegion;
-	private FrameBuffer currFbo, nextFbo;
-	private Transition screenTransition;
-	private TextureRegion currTex;
-	private TextureRegion nexTex;
-	private Actor nextScreenActor;
+	private GameAssets gameAssets;
+
+	private TransitionFrame current;
+
+	private TransitionFrame next;
+
+	private Transition transition;
+
+	private int screenX, screenY, screenWidth, screenHeight, worldWidth,
+			worldHeight, pixelsWidth, pixelsHeight;
 
 	private float percentageCompletion;
+
+	private boolean waitLoading;
+
 	private float time;
 
-	public TransitionManager() {
-		nexTex = new TextureRegion();
-		currTex = new TextureRegion();
-		currentScreenRegion = new Region(0, 0, 0, 0);
-		nextScreenRegion = currentScreenRegion;
+	public TransitionManager(GameAssets gameAssets) {
+		this.gameAssets = gameAssets;
+		current = new TransitionFrame();
+		next = new TransitionFrame();
 	}
 
-	public void act(float delta) {
+	public void setViewport(int screenX, int screenY, int screenWidth,
+			int screenHeight, int worldX, int worldY, int pixelsWidth,
+			int pixelsHeight) {
+		this.screenX = screenX;
+		this.screenY = screenY;
+		this.screenWidth = screenWidth;
+		this.screenHeight = screenHeight;
+		this.worldWidth = pixelsWidth;
+		this.worldHeight = pixelsHeight;
+		this.pixelsWidth = worldX;
+		this.pixelsHeight = worldY;
+	}
 
-		// ongoing transition
-		float duration = screenTransition.getDuration();
-		// update progress of ongoing transition
-		time += delta;
-		if (time > duration) {
-			endTransition();
-		} else {
-			// render transition effect to screen
-			percentageCompletion = time / duration;
+	public void setTransition(boolean waitLoading, Transition transition) {
+		this.waitLoading = waitLoading;
+		this.transition = transition;
+		time = 0f;
+		percentageCompletion = 0;
+	}
+
+	public void setCurrentScene(Batch batch, Actor currentScene) {
+		next.setScene(null);
+		current.setScene(currentScene);
+		batch.begin();
+		current.updateTexture(batch);
+		batch.end();
+	}
+
+	@Override
+	public void act(float delta) {
+		if (next.scene != null && (!waitLoading || gameAssets.isDoneLoading())) {
+			time += delta;
+			if (time > transition.getDuration()) {
+				endTransition();
+			} else {
+				percentageCompletion = time / transition.getDuration();
+			}
 		}
 	}
 
 	@Override
 	public void draw(Batch batch, float parentAlpha) {
-		batch.setColor(1f, 1f, 1f, 1f);
-		updateTexture(nextFbo, nexTex, nextScreenActor, batch);
-		screenTransition.render(batch, currTex, currentScreenRegion, nexTex,
-				nextScreenRegion, percentageCompletion);
-	}
-
-	public void takeCurrentScreenPicture(int screenWidth, int screenHeight,
-			Stage stage, Actor currentLayer) {
-		if (hasParent()) {
-			endTransition();
-		}
-		if (currFbo == null) {
-			currFbo = new FrameBuffer(Format.RGB888, screenWidth, screenHeight,
-					false);
-		}
-		Batch batch = stage.getBatch();
-		batch.begin();
-		updateTexture(currFbo, currTex, currentLayer, batch);
-		batch.end();
-	}
-
-	public void takeNextScreenPicture(int screenWidth, int screenHeight,
-			Actor nextLayer) {
-		nextScreenActor = nextLayer;
-		if (nextFbo == null) {
-			nextFbo = new FrameBuffer(Format.RGB888, screenWidth, screenHeight,
-					false);
-			currentScreenRegion.w = screenWidth;
-			currentScreenRegion.h = screenHeight;
+		if (next.scene != null) {
+			next.updateTexture(batch);
+			transition.render(batch, current.textureRegion, current.region,
+					next.textureRegion, next.region, percentageCompletion);
+		} else {
+			batch.draw(current.textureRegion, current.region.x,
+					current.region.y, current.region.w, current.region.h);
 		}
 	}
 
-	private void updateTexture(FrameBuffer fbo, TextureRegion region,
-			Actor actor, Batch batch) {
-		fbo.begin();
-		Gdx.gl20.glClear(GL20.GL_COLOR_BUFFER_BIT);
-		if (actor != null) {
-			actor.draw(batch, 1f);
-		}
-		fbo.end();
-		region.setRegion(fbo.getColorBufferTexture());
-		region.flip(false, true);
-	}
-
-	public void startTransition(Transition screenTransition) {
-		this.screenTransition = screenTransition;
-		time = 0f;
-		percentageCompletion = 0;
+	public void setNextScene(Actor nextScene) {
+		next.setScene(nextScene);
 	}
 
 	private void endTransition() {
 		remove();
-		screenTransition.end();
+		transition.end();
 		dispose();
-		// transition has just finished
-		// switch screens
 		EndEvent event = Pools.obtain(EndEvent.class);
 		fire(event);
 		Pools.free(event);
@@ -151,13 +144,44 @@ public class TransitionManager extends Actor implements Disposable {
 
 	@Override
 	public void dispose() {
-		if (currFbo != null) {
-			currFbo.dispose();
-			currFbo = null;
+		current.dispose();
+		next.dispose();
+	}
+
+	public class TransitionFrame {
+		Region region = new Region(0, 0, 0, 0);
+		TextureRegion textureRegion = new TextureRegion();
+		FrameBuffer frameBuffer;
+		Actor scene;
+
+		void updateTexture(Batch batch) {
+			if (scene != null) {
+				frameBuffer.begin();
+				Gdx.gl20.glClear(GL20.GL_COLOR_BUFFER_BIT);
+				scene.draw(batch, 1f);
+				frameBuffer.end(screenX, screenY, screenWidth, screenHeight);
+			}
 		}
-		if (nextFbo != null) {
-			nextFbo.dispose();
-			nextFbo = null;
+
+		public void setScene(Actor scene) {
+			this.scene = scene;
+			region.w = worldWidth;
+			region.h = worldHeight;
+			if (frameBuffer == null || frameBuffer.getHeight() != screenHeight
+					|| frameBuffer.getWidth() != screenWidth) {
+				dispose();
+				frameBuffer = new FrameBuffer(Format.RGB888, pixelsWidth,
+						pixelsHeight, false);
+				textureRegion.setRegion(frameBuffer.getColorBufferTexture());
+				textureRegion.flip(false, true);
+			}
+		}
+
+		public void dispose() {
+			if (frameBuffer != null) {
+				frameBuffer.dispose();
+			}
+			frameBuffer = null;
 		}
 	}
 

@@ -36,13 +36,19 @@
  */
 package es.eucm.ead.editor.view.builders.scene.play;
 
+import com.badlogic.gdx.graphics.g2d.Batch;
+import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.scenes.scene2d.Group;
-
+import com.badlogic.gdx.scenes.scene2d.utils.ScissorStack;
 import es.eucm.ead.engine.DefaultGameView;
 import es.eucm.ead.engine.GameLoop;
 import es.eucm.ead.schemax.Layer;
 
 public class TestGameView extends DefaultGameView {
+
+	private Rectangle gameViewport = new Rectangle();
+
+	private Rectangle stageViewport = new Rectangle();
 
 	public TestGameView(GameLoop gameLoop) {
 		super(gameLoop);
@@ -57,6 +63,16 @@ public class TestGameView extends DefaultGameView {
 	}
 
 	@Override
+	public void drawChildren(Batch batch, float parentAlpha) {
+		getStage().calculateScissors(gameViewport, stageViewport);
+		if (ScissorStack.pushScissors(stageViewport)) {
+			super.drawChildren(batch, parentAlpha);
+			batch.flush();
+			ScissorStack.popScissors();
+		}
+	}
+
+	@Override
 	public void layout() {
 		Group group = getLayer(Layer.SCENE_CONTENT).getGroup();
 		float scaleX = getWidth() / (float) worldWidth;
@@ -68,5 +84,16 @@ public class TestGameView extends DefaultGameView {
 
 		group.setPosition(diffX, diffY);
 		group.setScale(scale);
+		gameViewport.set(diffX, diffY, worldWidth * scale, worldHeight * scale);
+	}
+
+	@Override
+	public int getPixelsWidth() {
+		return (int) gameViewport.getWidth();
+	}
+
+	@Override
+	public int getPixelsHeight() {
+		return (int) gameViewport.getHeight();
 	}
 }
