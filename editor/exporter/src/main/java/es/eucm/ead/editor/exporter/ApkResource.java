@@ -250,7 +250,7 @@ public class ApkResource {
 			+ "    <packaging>apk</packaging>\n"
 			+ "    <properties>\n"
 			+ "        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>\n"
-			+ "        <gdx.version>1.5.0</gdx.version>\n"
+			+ "        <gdx.version>1.5.3</gdx.version>\n"
 			+ "        <android.version>4.1.1.4</android.version>\n"
 			+ "        <android.platform.version>19</android.platform.version>\n"
 			+ "        <android.editor.version>4.1.1.4</android.editor.version>\n"

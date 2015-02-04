@@ -14,7 +14,7 @@
     <url>http://github.com/e-ucm/ead</url>
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-        <gdx.version>1.5.0</gdx.version>
+        <gdx.version>1.5.3</gdx.version>
         <android.version>4.1.1.4</android.version>
         <android.platform.version>19</android.platform.version>
         <android.editor.version>4.1.1.4</android.editor.version>
