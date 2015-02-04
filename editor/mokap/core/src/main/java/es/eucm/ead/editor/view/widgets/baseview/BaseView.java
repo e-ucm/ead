@@ -44,10 +44,8 @@ import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.Touchable;
 import com.badlogic.gdx.scenes.scene2d.actions.Actions;
 import com.badlogic.gdx.scenes.scene2d.actions.MoveByAction;
-import com.badlogic.gdx.scenes.scene2d.ui.ImageButton;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.utils.Drawable;
-
 import es.eucm.ead.editor.view.listeners.GestureListener;
 import es.eucm.ead.editor.view.widgets.AbstractWidget;
 
@@ -93,7 +91,7 @@ public class BaseView extends AbstractWidget {
 
 	public BaseView(BaseViewStyle style) {
 		addActor(selectionContext = new SelectionContext());
-		addActor(navigation = new Navigation(style));
+		addActor(navigation = buildNavigation(style));
 		lockPanels = false;
 		lockContext = false;
 
@@ -173,6 +171,10 @@ public class BaseView extends AbstractWidget {
 		}
 
 		return -1;
+	}
+
+	protected Navigation buildNavigation(BaseViewStyle style) {
+		return new Navigation(style);
 	}
 
 	/**
