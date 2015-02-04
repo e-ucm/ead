@@ -183,6 +183,6 @@ public interface SkinConstants {
 	public static final String IC_SEGMENT_MIDDLE = "ic_segment_middle";
 	public static final String IC_ARROW = "ic_arrow";
 	public static final String IC_ADD_SCENE = "ic_add_scene";
-    public static final String DRAWABLE_CUP = "cup";
-    public static final String DRAWABLE_PENCIL = "pencil";
+	public static final String DRAWABLE_CUP = "cup";
+	public static final String DRAWABLE_PENCIL = "pencil";
 }
