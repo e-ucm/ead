@@ -92,6 +92,8 @@ public class CreateSceneThumbnail extends EditorAction {
 
 	private Model model;
 
+	private Group root = new Group();
+
 	public CreateSceneThumbnail() {
 		super(true, false, new Class[] { ModelEntity.class },
 				new Class[] { Group.class });
@@ -121,6 +123,12 @@ public class CreateSceneThumbnail extends EditorAction {
 			sceneGroup = (Group) args[0];
 			scene = Q.getModelEntity(sceneGroup);
 		}
+
+		Group parent = sceneGroup.getParent();
+		int index = sceneGroup.getZIndex();
+
+		root.addActor(sceneGroup);
+
 		int width = (int) (Gdx.graphics.getHeight() - Gdx.graphics.getDensity() * 56);
 		int height = (int) (Gdx.graphics.getHeight() / 2.15f);
 
@@ -131,9 +139,13 @@ public class CreateSceneThumbnail extends EditorAction {
 		Gdx.gl.glClearColor(1f, 1f, 1f, 1f);
 		Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
 		batch.begin();
-		sceneGroup.draw(batch, 1.0f);
+		root.draw(batch, 1.0f);
 		batch.end();
 		frameBuffer.end();
+
+		if (parent != null) {
+			parent.addActorAt(index, sceneGroup);
+		}
 
 		if (sceneEngineEntity != null) {
 			gameLoop.removeEntity(sceneEngineEntity);
