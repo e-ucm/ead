@@ -77,6 +77,7 @@ public class LoadingIndicator extends Group {
 		Pixmap dotPixmap = new ShapeToPixmap().createShape(shapeRenderer);
 		Texture dotTexture = new Texture(dotPixmap);
 		TextureRegion textureRegion = new TextureRegion(dotTexture);
+		dotPixmap.dispose();
 		TextureRegionDrawable drawable = new TextureRegionDrawable(
 				textureRegion);
 
