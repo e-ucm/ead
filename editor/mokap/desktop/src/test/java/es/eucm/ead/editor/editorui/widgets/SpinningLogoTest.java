@@ -42,7 +42,6 @@ import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.Group;
 import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
-import com.badlogic.gdx.utils.Array;
 import es.eucm.ead.editor.editorui.UITest;
 import es.eucm.ead.editor.view.widgets.SpinningLogo;
 import es.eucm.ead.engine.I18N;
@@ -52,36 +51,17 @@ import es.eucm.ead.engine.I18N;
  */
 public class SpinningLogoTest extends UITest {
 
-	private Array<SpinningLogo> spinningLogoArray = new Array<SpinningLogo>();
-
-	@Override
-	public void create() {
-		super.create();
-		for (SpinningLogo spinningLogo : spinningLogoArray) {
-			spinningLogo.reset();
-		}
-	}
-
 	@Override
 	protected Actor buildUI(Skin skin, I18N i18n) {
 		Group group = new Group();
 
 		// Default
-		spinningLogoArray.add(new SpinningLogo(skin));
-		group.addActor(spinningLogoArray.get(0));
+		group.addActor(new SpinningLogo(skin));
 		Label defaultLogo = new Label("Default", skin);
 		defaultLogo.setX(40);
 		defaultLogo.setY(10);
 		group.addActor(defaultLogo);
 
-		// Custom size, fast, custom location
-		spinningLogoArray.add(new SpinningLogo(skin,
-				SpinningLogo.FRAME_DURATION_FAST, 250, 200, 300));
-		group.addActor(spinningLogoArray.get(1));
-		Label customLogo = new Label("Custom size, fast, custom location", skin);
-		customLogo.setX(40);
-		customLogo.setY(430);
-		group.addActor(customLogo);
 		return group;
 	}
 

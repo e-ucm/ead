@@ -47,8 +47,6 @@ public interface SkinConstants {
 	public static final String COLOR_GRAY = "gray";
 
 	public static final String DRAWABLE_LOGO = "logo";
-	public static final String DRAWABLE_LOGO_SPINNING = "logo_spinning_";
-	public static final String DRAWABLE_LOGO_SPINNING_LARGE = "logo_spinning_large_";
 	public static final String DRAWABLE_BLANK = "blank";
 	public static final String DRAWABLE_GRAY_100 = "gray_100_bg";
 	public static final String DRAWABLE_SEMI_BLANK = "blank75";
@@ -185,4 +183,6 @@ public interface SkinConstants {
 	public static final String IC_SEGMENT_MIDDLE = "ic_segment_middle";
 	public static final String IC_ARROW = "ic_arrow";
 	public static final String IC_ADD_SCENE = "ic_add_scene";
+    public static final String DRAWABLE_CUP = "cup";
+    public static final String DRAWABLE_PENCIL = "pencil";
 }
