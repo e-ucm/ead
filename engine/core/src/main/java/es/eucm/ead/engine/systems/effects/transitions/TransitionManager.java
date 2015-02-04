@@ -71,10 +71,24 @@ public class TransitionManager extends Actor implements Disposable {
 
 	private float time;
 
+	private Actor loadingIndicator;
+
 	public TransitionManager(GameAssets gameAssets) {
 		this.gameAssets = gameAssets;
 		current = new TransitionFrame();
 		next = new TransitionFrame();
+		createLoadingIndicator();
+	}
+
+	/*
+	 * Just a simple three-dots animation that is displayed on the bottom left
+	 * corner during a transition if and only if the transition forces to wait
+	 * until the next scene is loaded (waitLoading==true)
+	 */
+	private void createLoadingIndicator() {
+		loadingIndicator = new LoadingIndicator();
+		loadingIndicator.setX(25 * Gdx.graphics.getDensity());
+		loadingIndicator.setY(25 * Gdx.graphics.getDensity());
 	}
 
 	public void setViewport(int screenX, int screenY, int screenWidth,
@@ -107,6 +121,10 @@ public class TransitionManager extends Actor implements Disposable {
 
 	@Override
 	public void act(float delta) {
+		if (waitLoading) {
+			loadingIndicator.act(delta);
+		}
+
 		if (next.scene != null && (!waitLoading || gameAssets.isDoneLoading())) {
 			time += delta;
 			if (time > transition.getDuration()) {
@@ -126,6 +144,10 @@ public class TransitionManager extends Actor implements Disposable {
 		} else {
 			batch.draw(current.textureRegion, current.region.x,
 					current.region.y, current.region.w, current.region.h);
+		}
+
+		if (waitLoading) {
+			loadingIndicator.draw(batch, parentAlpha);
 		}
 	}
 
