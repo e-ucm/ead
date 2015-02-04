@@ -107,7 +107,7 @@ public class FramesImage extends Image {
 	 *            its own size (small).
 	 */
 	public FramesImage(Skin skin, String drawablePrefix, float frameDuration,
-                       float size) {
+			float size) {
 		this.frameDuration = frameDuration;
 		this.size = size;
 		setTouchable(Touchable.disabled);
@@ -176,8 +176,7 @@ public class FramesImage extends Image {
 								WidgetBuilder.dpToPixels(size),
 								WidgetBuilder.dpToPixels(size) * 0.99601593625498007968127490039841F);
 			}
-			FramesImage.this.setOrigin(
-					FramesImage.this.getPrefWidth() * 0.5f,
+			FramesImage.this.setOrigin(FramesImage.this.getPrefWidth() * 0.5f,
 					FramesImage.this.getPrefHeight() * 0.5f);
 			float coordinate = WidgetBuilder.dpToPixels(32);
 			FramesImage.this.setPosition(coordinate, coordinate);
