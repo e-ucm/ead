@@ -52,9 +52,7 @@ import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.utils.Drawable;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.Pools;
-
 import es.eucm.ead.editor.utils.Actions2;
-import es.eucm.ead.editor.view.builders.scene.SceneGroupEditor;
 import es.eucm.ead.editor.view.builders.scene.groupeditor.GroupEditor.GroupEvent.Type;
 import es.eucm.ead.editor.view.widgets.AbstractWidget;
 import es.eucm.ead.engine.utils.EngineUtils;
@@ -203,6 +201,7 @@ public class GroupEditor extends AbstractWidget {
 
 	@Override
 	protected void drawChildren(Batch batch, float parentAlpha) {
+		batch.setColor(Color.WHITE);
 		if (style.background != null) {
 			style.background.draw(batch, 0, 0, getWidth(), getHeight());
 		}
