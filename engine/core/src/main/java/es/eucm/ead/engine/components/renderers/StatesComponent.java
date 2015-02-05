@@ -123,6 +123,15 @@ public class StatesComponent extends RendererComponent {
 		return false;
 	}
 
+	@Override
+	public void reset() {
+		for (State state : states) {
+			state.rendererComponent.reset();
+		}
+		states.clear();
+		currentState = null;
+	}
+
 	private static final class State {
 
 		private Array<String> states;

@@ -40,11 +40,13 @@ import ashley.core.Component;
 import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.math.Polygon;
 import com.badlogic.gdx.utils.Array;
+import com.badlogic.gdx.utils.Pool;
 
 /**
  * Base class for renderer components
  */
-public abstract class RendererComponent extends Component {
+public abstract class RendererComponent extends Component implements
+		Pool.Poolable {
 
 	/**
 	 * Updates the renderer
