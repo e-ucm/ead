@@ -207,6 +207,11 @@ public class FramesComponentTest {
 		public Array<Polygon> getCollider() {
 			return null;
 		}
+
+		@Override
+		public void reset() {
+
+		}
 	}
 
 }

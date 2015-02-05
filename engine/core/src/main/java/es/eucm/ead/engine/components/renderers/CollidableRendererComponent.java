@@ -63,6 +63,9 @@ public abstract class CollidableRendererComponent extends RendererComponent
 
 	@Override
 	public void reset() {
-		collider = null;
+		if (collider != null) {
+			collider.clear();
+			collider = null;
+		}
 	}
 }

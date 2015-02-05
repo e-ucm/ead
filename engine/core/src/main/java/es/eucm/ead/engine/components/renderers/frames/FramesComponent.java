@@ -40,13 +40,14 @@ import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.math.Polygon;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.Pool.Poolable;
+import com.badlogic.gdx.utils.Pools;
 import es.eucm.ead.engine.components.renderers.RendererComponent;
 import es.eucm.ead.engine.components.renderers.frames.sequences.Sequence;
 
 /**
  * Created by Javier Torrente on 2/02/14.
  */
-public class FramesComponent extends RendererComponent implements Poolable {
+public class FramesComponent extends RendererComponent {
 
 	protected Array<Frame> frames;
 	private int currentFrameIndex;
@@ -237,9 +238,13 @@ public class FramesComponent extends RendererComponent implements Poolable {
 
 	@Override
 	public void reset() {
+		for (Frame frame : frames) {
+			Pools.free(frame.renderer);
+		}
 		frames.clear();
 		currentFrame = null;
 		currentFrameIndex = 0;
+		function = null;
 	}
 
 }

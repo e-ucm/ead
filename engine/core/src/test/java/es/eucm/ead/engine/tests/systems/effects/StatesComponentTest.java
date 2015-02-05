@@ -201,5 +201,10 @@ public class StatesComponentTest extends EngineTest implements EntityListener {
 			collider.add(newPolygon);
 			return collider;
 		}
+
+		@Override
+		public void reset() {
+
+		}
 	}
 }
