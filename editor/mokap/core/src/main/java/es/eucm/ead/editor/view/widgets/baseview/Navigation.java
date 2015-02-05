@@ -51,7 +51,7 @@ import es.eucm.ead.editor.view.widgets.baseview.BaseView.BaseViewStyle;
  * Navigation panel, with a background that slowly appears/dissapear when the
  * panel shows/hide
  */
-class Navigation extends Panel {
+public class Navigation extends Panel {
 
 	private BaseViewStyle style;
 

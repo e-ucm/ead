@@ -71,6 +71,7 @@ import es.eucm.ead.editor.view.widgets.CirclesMenu;
 import es.eucm.ead.editor.view.widgets.MultiWidget;
 import es.eucm.ead.editor.view.widgets.WidgetBuilder;
 import es.eucm.ead.editor.view.widgets.baseview.BaseView;
+import es.eucm.ead.editor.view.widgets.baseview.Navigation;
 import es.eucm.ead.engine.EntitiesLoader;
 import es.eucm.ead.schema.editor.components.GameData;
 import es.eucm.ead.schema.entities.ModelEntity;
@@ -170,6 +171,17 @@ public class SceneEditor extends BaseView implements ModelView,
 		lockContextOnly(true);
 	}
 
+	@Override
+	protected Navigation buildNavigation(BaseViewStyle style) {
+		return new Navigation(style) {
+			@Override
+			public void show() {
+				super.show();
+				createSceneThumbnail();
+			}
+		};
+	}
+
 	public SceneGroupEditor getGroupEditor() {
 		return sceneGroupEditor;
 	}
@@ -186,12 +198,6 @@ public class SceneEditor extends BaseView implements ModelView,
 						- WidgetBuilder.dpToPixels(32),
 				addButton.getY() + addButton.getPrefHeight()
 						+ WidgetBuilder.dpToPixels(32));
-	}
-
-	@Override
-	public void toggleNavigation() {
-		super.toggleNavigation();
-		createSceneThumbnail();
 	}
 
 	@Override
