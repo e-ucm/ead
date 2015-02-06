@@ -180,7 +180,7 @@ public class ComponentLoader {
 	/**
 	 * Converts a model component into an engine component
 	 */
-	public Component toEngineComponent(ModelComponent component) {
+	public <T extends Component> T toEngineComponent(ModelComponent component) {
 		ComponentProcessor componentProcessor = componentProcessorMap
 				.get(component.getClass());
 		if (componentProcessor != null) {
@@ -198,7 +198,7 @@ public class ComponentLoader {
 				modelToEngineComponents.put(component.getClass(),
 						engineComponent.getClass());
 			}
-			return engineComponent;
+			return (T) engineComponent;
 		}
 		return null;
 	}

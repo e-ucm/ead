@@ -1,0 +1,9 @@
+{
+    "additionalProperties": false,
+    "javaType": "es.eucm.ead.schema.components.circuits.chips.EntityChip",
+    "type": "object",
+    "description": "Generates an entity. Has as inputs all transformation values (x, y, scaleY, scaleX, rotation, originX, originY), renderer and shader.",
+    "extends": {
+        "$ref": "../chip.json"
+    }
+}

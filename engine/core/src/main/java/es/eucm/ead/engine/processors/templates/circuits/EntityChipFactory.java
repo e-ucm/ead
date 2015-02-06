@@ -34,64 +34,41 @@
  *      You should have received a copy of the GNU Lesser General Public License
  *      along with eAdventure.  If not, see <http://www.gnu.org/licenses/>.
  */
-package es.eucm.ead.engine.components;
+package es.eucm.ead.engine.processors.templates.circuits;
 
-import ashley.core.Component;
+import es.eucm.ead.engine.components.ShaderComponent;
+import es.eucm.ead.engine.components.renderers.RendererComponent;
+import es.eucm.ead.engine.entities.actors.RendererActor;
+import es.eucm.ead.schema.components.circuits.chips.EntityChip;
 
-import com.badlogic.gdx.graphics.glutils.ShaderProgram;
-import com.badlogic.gdx.utils.ObjectMap;
-import com.badlogic.gdx.utils.ObjectMap.Entry;
-import com.badlogic.gdx.utils.Pool.Poolable;
-
-public class ShaderComponent extends Component implements Poolable {
-
-	private ShaderProgram shaderProgram;
-
-	private ObjectMap<String, Object> uniforms = new ObjectMap<String, Object>();
-
-	public void setUniform(String name, float[] values) {
-		uniforms.put(name, values);
-	}
-
-	public void setUniform(String name, float value) {
-		uniforms.put(name, value);
-	}
-
-	public ShaderProgram getShaderProgram() {
-		return shaderProgram;
-	}
-
-	public void setShaderProgram(ShaderProgram shaderProgram) {
-		this.shaderProgram = shaderProgram;
-	}
+public class EntityChipFactory implements ChipFactory<EntityChip> {
 
 	@Override
-	public void reset() {
-		shaderProgram = null;
-		uniforms.clear();
+	public ChipComponent build(EntityChip chip) {
+		return new EntityChipComponent();
 	}
 
-	public void prepare() {
-		for (Entry<String, Object> entry : uniforms.entries()) {
-			if (entry.value.getClass().isArray()) {
-				float[] value = (float[]) entry.value;
-				switch (value.length) {
-				case 1:
-					shaderProgram.setUniformf(entry.key, value[0]);
-					break;
-				case 2:
-					shaderProgram.setUniform2fv(entry.key, value, 0, 2);
-					break;
-				case 3:
-					shaderProgram.setUniform3fv(entry.key, value, 0, 3);
-					break;
-				case 4:
-					shaderProgram.setUniform4fv(entry.key, value, 0, 4);
-					break;
-				}
-			} else {
-				shaderProgram.setUniformf(entry.key, (Float) entry.value);
-			}
+	public static class EntityChipComponent extends ChipComponent {
+
+		private RendererActor rendererActor = new RendererActor();
+
+		@Override
+		protected void calculateOutputs() {
+			rendererActor.setShader(this.<ShaderComponent> getInput("shader",
+					null));
+			rendererActor.setRenderer(this.<RendererComponent> getInput(
+					"renderer", null));
+			rendererActor.setPosition(getInput("x", 0f), getInput("y", 0f));
+			rendererActor.setScale(getInput("scaleX", 1f),
+					getInput("scaleY", 1f));
+			rendererActor.setRotation(getInput("rotation", 0f));
+			rendererActor.setOrigin(getInput("originX", 0f),
+					getInput("originY", 0f));
+			setOutput("entity", rendererActor);
+		}
+
+		@Override
+		public void reset() {
 		}
 	}
 }

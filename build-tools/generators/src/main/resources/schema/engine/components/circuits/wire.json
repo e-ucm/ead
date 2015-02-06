@@ -1,0 +1,19 @@
+{
+    "additionalProperties": false,
+    "javaType": "es.eucm.ead.schema.components.circuits.Wire",
+    "type": "object",
+    "description": "A connection between an output and an inputs inside a circuit.",
+    "properties": {
+        "output": {
+            "type": "string",
+            "description": "Output identifier. Value in this output will be transmitted to the inputs."
+        },
+        "inputs": {
+            "type": "array",
+            "items": {
+                "type": "string"
+            },
+            "description": "Inputs connected to the output"
+        }
+    }
+}

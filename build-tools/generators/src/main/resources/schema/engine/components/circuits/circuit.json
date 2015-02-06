@@ -1,0 +1,43 @@
+{
+    "additionalProperties": false,
+    "javaType": "es.eucm.ead.schema.components.circuits.Circuit",
+    "type": "object",
+    "description": "A cricuit have some inputs and produces some outputs. Inputs and outputs can be different objects: colors, floats, renderers, entities, etc.",
+    "properties": {
+        "inputs": {
+            "type": "array",
+            "items": {
+                "type": "string"
+            },
+            "description": "Inputs identifiers"
+        },
+        "outputs": {
+            "type": "array",
+            "items": {
+                "type": "string"
+            },
+            "description": "Outputs identifiers"
+        },
+        "generators": {
+            "type": "array",
+            "items": {
+                "$ref": "generator.json"
+            },
+            "description": "Generators in the circuit. A generator produces a constant value in the circuit, and only have outputs."
+        },
+        "chips": {
+            "type": "array",
+            "items": {
+                "$ref": "chip.json"
+            },
+            "description": "Chips in the circuit. A chip produces some values from its inputs."
+        },
+        "wires": {
+            "type": "array",
+            "items": {
+                "$ref": "wire.json"
+            },
+            "description": "Connections in the circuit. A wire can connect circuit input/output with generators and chips."
+        }
+    }
+}

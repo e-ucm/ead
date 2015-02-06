@@ -1,0 +1,17 @@
+{
+    "additionalProperties": false,
+    "javaType": "es.eucm.ead.schema.components.circuits.Generator",
+    "type": "object",
+    "description": "Generates a constant value in a circuit.",
+    "properties": {
+        "name": {
+            "type": "string",
+            "description": "Identifier of the generator"
+        },
+        "value": {
+            "type": "object",
+            "javaType": "java.lang.Object",
+            "description": "The value generated"
+        }
+    }
+}

@@ -1,0 +1,15 @@
+{
+    "additionalProperties": false,
+    "javaType": "es.eucm.ead.schema.components.circuits.chips.ShaderChip",
+    "type": "object",
+    "description": "Shader generator. This chips have as inputs all the uniform parameters in the shader",
+    "extends": {
+        "$ref": "../chip.json"
+    },
+    "properties": {
+        "shader": {
+            "$ref": "../../shader.json",
+            "description": "Shader component returned by the chip."
+        }
+    }
+}

@@ -1,0 +1,12 @@
+{
+    "additionalProperties": false,
+    "javaType": "es.eucm.ead.schema.components.circuits.Chip",
+    "type": "object",
+    "description": "A chip with some inputs that produces some outputs. Each subtype has implicit input and outputs.",
+    "properties": {
+        "name": {
+            "type": "string",
+            "description": "Identifier of the chip."
+        }
+    }
+}

@@ -34,64 +34,53 @@
  *      You should have received a copy of the GNU Lesser General Public License
  *      along with eAdventure.  If not, see <http://www.gnu.org/licenses/>.
  */
-package es.eucm.ead.engine.components;
+package es.eucm.ead.engine.processors.templates.circuits;
 
-import ashley.core.Component;
-
-import com.badlogic.gdx.graphics.glutils.ShaderProgram;
-import com.badlogic.gdx.utils.ObjectMap;
 import com.badlogic.gdx.utils.ObjectMap.Entry;
-import com.badlogic.gdx.utils.Pool.Poolable;
+import com.badlogic.gdx.utils.Pools;
 
-public class ShaderComponent extends Component implements Poolable {
+import es.eucm.ead.engine.ComponentLoader;
+import es.eucm.ead.engine.components.ShaderComponent;
+import es.eucm.ead.schema.components.circuits.chips.ShaderChip;
 
-	private ShaderProgram shaderProgram;
+public class ShaderChipFactory implements ChipFactory<ShaderChip> {
 
-	private ObjectMap<String, Object> uniforms = new ObjectMap<String, Object>();
+	private ComponentLoader componentLoader;
 
-	public void setUniform(String name, float[] values) {
-		uniforms.put(name, values);
-	}
-
-	public void setUniform(String name, float value) {
-		uniforms.put(name, value);
-	}
-
-	public ShaderProgram getShaderProgram() {
-		return shaderProgram;
-	}
-
-	public void setShaderProgram(ShaderProgram shaderProgram) {
-		this.shaderProgram = shaderProgram;
+	public ShaderChipFactory(ComponentLoader componentLoader) {
+		this.componentLoader = componentLoader;
 	}
 
 	@Override
-	public void reset() {
-		shaderProgram = null;
-		uniforms.clear();
+	public ChipComponent build(ShaderChip chip) {
+		ShaderComponent shaderComponent = componentLoader
+				.toEngineComponent(chip.getShader());
+		return new ShaderChipComponent(shaderComponent);
 	}
 
-	public void prepare() {
-		for (Entry<String, Object> entry : uniforms.entries()) {
-			if (entry.value.getClass().isArray()) {
-				float[] value = (float[]) entry.value;
-				switch (value.length) {
-				case 1:
-					shaderProgram.setUniformf(entry.key, value[0]);
-					break;
-				case 2:
-					shaderProgram.setUniform2fv(entry.key, value, 0, 2);
-					break;
-				case 3:
-					shaderProgram.setUniform3fv(entry.key, value, 0, 3);
-					break;
-				case 4:
-					shaderProgram.setUniform4fv(entry.key, value, 0, 4);
-					break;
+	public static class ShaderChipComponent extends ChipComponent {
+
+		private ShaderComponent shader;
+
+		public ShaderChipComponent(ShaderComponent shader) {
+			this.shader = shader;
+		}
+
+		@Override
+		protected void calculateOutputs() {
+			for (Entry<String, Object> entry : inputs) {
+				if (entry.value.getClass().isArray()) {
+					shader.setUniform(entry.key, (float[]) entry.value);
+				} else {
+					shader.setUniform(entry.key, (Float) entry.value);
 				}
-			} else {
-				shaderProgram.setUniformf(entry.key, (Float) entry.value);
 			}
+			setOutput("shader", shader);
+		}
+
+		@Override
+		public void reset() {
+			Pools.free(shader);
 		}
 	}
 }
