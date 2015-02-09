@@ -1,0 +1,27 @@
+{
+    "additionalProperties": false,
+    "javaType": "es.eucm.ead.schema.editor.components.templates.Attribute",
+    "properties": {
+        "name": {
+            "type": "string",
+            "description": "The attribute name."
+        },
+        "defaultValue": {
+            "type": "number",
+            "description": "The default value of the attribute"
+        },
+        "min": {
+                    "type": "number",
+                    "description": "min value"
+                },
+        "max": {
+            "type": "number",
+            "description": "max value"
+        },
+        "step": {
+            "type": "number",
+            "description": "step value"
+        }
+    },
+    "type": "object"
+}
