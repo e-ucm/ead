@@ -39,8 +39,6 @@ package es.eucm.ead.engine.expressions;
 import es.eucm.ead.engine.expressions.operators.OperationsFactory;
 
 import java.util.Stack;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
 /**
  * An expression parser. Uses a simplified, typed, lisp-like syntax.
@@ -48,9 +46,6 @@ import java.util.regex.Pattern;
  * @author mfreire
  */
 public class Parser {
-
-	private static final Pattern operatorPattern = Pattern
-			.compile("\\s*([?a-zA-Z_+*/~^%/&|-]+)");
 
 	private static Expression createAtom(String s) {
 		if (s.startsWith(VariableRef.REF_PREFIX)) {
@@ -118,17 +113,21 @@ public class Parser {
 					}
 					if (next == '(') {
 						// open new child with next word
-						Matcher m = operatorPattern.matcher(expression);
-						if (m.find(pos)) {
-							Operation op = operationsFactory.createOperation(m
-									.group(1));
+						while (expression.charAt(pos) == ' ') {
+							pos++;
+						}
+						int spaceIndex = expression.indexOf(' ', pos);
+						if (spaceIndex != -1) {
+							String operator = expression.substring(pos,
+									spaceIndex);
+							Operation op = operationsFactory
+									.createOperation(operator);
 							if (op == null) {
 								throw new IllegalArgumentException(
-										"No such operator: '" + m.group(1)
-												+ "'");
+										"No such operator: '" + operator + "'");
 							}
 							stack.push(op);
-							pos = m.end();
+							pos = spaceIndex + 1;
 						} else {
 							throw new IllegalArgumentException(
 									"Expected an operator");

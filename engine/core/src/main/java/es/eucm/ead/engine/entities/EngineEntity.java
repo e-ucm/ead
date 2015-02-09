@@ -36,12 +36,13 @@
  */
 package es.eucm.ead.engine.entities;
 
-import ashley.core.Component;
-import ashley.core.Entity;
+import com.badlogic.ashley.core.Component;
+import com.badlogic.ashley.core.Entity;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.Group;
 import com.badlogic.gdx.utils.Pool.Poolable;
 import com.badlogic.gdx.utils.Pools;
+import com.badlogic.gdx.utils.reflect.ClassReflection;
 import es.eucm.ead.engine.GameLoop;
 import es.eucm.ead.engine.components.ShaderComponent;
 import es.eucm.ead.engine.components.physics.BoundingAreaComponent;
@@ -63,15 +64,15 @@ public class EngineEntity extends Entity implements Poolable {
 
 	private ShaderComponent shader;
 
+	public EngineEntity(GameLoop gameLoop) {
+		this.gameLoop = gameLoop;
+	}
+
 	public void setShader(ShaderComponent shader) {
 		this.shader = shader;
 		if (this.group instanceof EntityGroup) {
 			((EntityGroup) this.group).setShader(shader);
 		}
-	}
-
-	public EngineEntity(GameLoop gameLoop) {
-		this.gameLoop = gameLoop;
 	}
 
 	public void setGroup(Group group) {
@@ -145,13 +146,14 @@ public class EngineEntity extends Entity implements Poolable {
 	}
 
 	@Override
-	public Component remove(Class<? extends Component> componentType) {
-		Component component = super.remove(componentType);
+	protected Component removeInternal(Class<? extends Component> componentType) {
+		Component component = super.removeInternal(componentType);
 		if (component != null) {
 			Pools.free(component);
 		}
 
-		if (componentType.isAssignableFrom(RendererComponent.class)) {
+		if (ClassReflection.isAssignableFrom(componentType,
+				RendererComponent.class)) {
 			updateBoundingArea();
 		}
 		return component;
@@ -162,7 +164,7 @@ public class EngineEntity extends Entity implements Poolable {
 	 * ancestors to update their respective bounding areas.
 	 */
 	public void updateBoundingArea() {
-		if (hasComponent(BoundingAreaComponent.class)) {
+		if (getComponent(BoundingAreaComponent.class) != null) {
 			getComponent(BoundingAreaComponent.class).update(this);
 			if (getGroup() != null
 					&& getGroup().getParent() != null
