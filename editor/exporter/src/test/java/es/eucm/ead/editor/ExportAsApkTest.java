@@ -37,9 +37,10 @@
 package es.eucm.ead.editor;
 
 import com.badlogic.gdx.files.FileHandle;
+
 import es.eucm.ead.editor.exporter.ExporterApplication;
 import es.eucm.ead.editor.exporter.ExporterFiles;
-import es.eucm.ead.engine.utils.ZipUtils;
+import es.eucm.utils.gdx.ZipUtils;
 
 /**
  * Demonstrates how to build standalone mokap APKs.

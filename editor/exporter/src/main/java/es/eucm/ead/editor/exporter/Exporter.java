@@ -36,17 +36,6 @@
  */
 package es.eucm.ead.editor.exporter;
 
-import java.awt.image.BufferedImage;
-import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.IOException;
-import java.io.OutputStream;
-import java.util.Collections;
-import java.util.Iterator;
-import java.util.Map;
-import java.util.Properties;
-import java.util.zip.ZipOutputStream;
-
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.utils.Array;
@@ -54,8 +43,6 @@ import com.badlogic.gdx.utils.Json;
 import com.badlogic.gdx.utils.reflect.ClassReflection;
 import com.badlogic.gdx.utils.reflect.Field;
 import com.badlogic.gdx.utils.reflect.ReflectionException;
-
-import es.eucm.ead.engine.utils.ZipUtils;
 import es.eucm.ead.schema.components.ModelComponent;
 import es.eucm.ead.schema.components.behaviors.Behavior;
 import es.eucm.ead.schema.components.behaviors.events.Init;
@@ -69,12 +56,27 @@ import es.eucm.ead.schema.effects.Effect;
 import es.eucm.ead.schema.effects.SetViewport;
 import es.eucm.ead.schema.entities.ModelEntity;
 import es.eucm.ead.schemax.FieldName;
-import es.eucm.ead.schemax.ModelStructure;
 import es.eucm.ead.schemax.JsonExtension;
 import es.eucm.ead.schemax.Layer;
-import org.apache.maven.shared.invoker.*;
+import es.eucm.ead.schemax.ModelStructure;
+import es.eucm.utils.gdx.ZipUtils;
+import org.apache.maven.shared.invoker.DefaultInvocationRequest;
+import org.apache.maven.shared.invoker.DefaultInvoker;
+import org.apache.maven.shared.invoker.InvocationRequest;
+import org.apache.maven.shared.invoker.InvocationResult;
+import org.apache.maven.shared.invoker.Invoker;
 
 import javax.imageio.ImageIO;
+import java.awt.image.BufferedImage;
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.IOException;
+import java.io.OutputStream;
+import java.util.Collections;
+import java.util.Iterator;
+import java.util.Map;
+import java.util.Properties;
+import java.util.zip.ZipOutputStream;
 
 /**
  * This class contains the functionality for exporting a given game project to a

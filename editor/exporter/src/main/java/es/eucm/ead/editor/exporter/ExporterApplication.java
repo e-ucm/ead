@@ -42,12 +42,15 @@ import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.utils.Json;
 import com.badlogic.gdx.utils.SerializationException;
 import es.eucm.ead.engine.assets.GameAssets;
-import es.eucm.ead.engine.utils.ZipUtils;
 import es.eucm.ead.schema.entities.ModelEntity;
 import es.eucm.ead.schemax.JsonExtension;
 import es.eucm.ead.schemax.ModelStructure;
+import es.eucm.utils.gdx.ZipUtils;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 /**
  * This class is meant to be a convenient utility for exporting games from the

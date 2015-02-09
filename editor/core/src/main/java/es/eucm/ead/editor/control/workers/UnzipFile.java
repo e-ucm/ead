@@ -37,9 +37,7 @@
 package es.eucm.ead.editor.control.workers;
 
 import com.badlogic.gdx.files.FileHandle;
-
-import es.eucm.ead.editor.assets.ApplicationAssets;
-import es.eucm.ead.engine.utils.ZipUtils;
+import es.eucm.utils.gdx.ZipUtils;
 
 /**
  * Uncompresses a given .zip file.
