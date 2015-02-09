@@ -277,8 +277,8 @@
                 </dependencies>
             </plugin>
             <plugin>
-                <groupId>es.e-ucm.ead</groupId>
-                <artifactId>xml-maven-plugin</artifactId>
+                <groupId>es.e-ucm</groupId>
+                <artifactId>xml-formatter</artifactId>
                 <version>1.0-SNAPSHOT</version>
                 <executions>
                     <execution>
