@@ -36,8 +36,8 @@
  */
 package es.eucm.ead.engine;
 
-import ashley.core.Entity;
-import ashley.core.EntityListener;
+import com.badlogic.ashley.core.Entity;
+import com.badlogic.ashley.core.EntityListener;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import es.eucm.ead.engine.entities.EngineEntity;
 import es.eucm.ead.engine.mock.MockEngineComponent;
@@ -167,7 +167,7 @@ public class GameViewTest extends EngineTest {
 			if (actor.getUserObject() != null
 					&& actor.getUserObject() instanceof EngineEntity) {
 				EngineEntity entity = (EngineEntity) actor.getUserObject();
-				if (entity.hasComponent(MockEngineComponent.class)) {
+				if (entity.getComponent(MockEngineComponent.class) != null) {
 					sum += entity.getComponent(MockEngineComponent.class)
 							.getFloatAttribute();
 				}

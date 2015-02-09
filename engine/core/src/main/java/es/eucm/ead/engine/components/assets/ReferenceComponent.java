@@ -36,11 +36,8 @@
  */
 package es.eucm.ead.engine.components.assets;
 
-import ashley.core.Component;
-
 import com.badlogic.gdx.scenes.scene2d.Group;
 import com.badlogic.gdx.utils.Pool;
-
 import es.eucm.ead.engine.components.controls.ControlComponent;
 
 /**
@@ -53,11 +50,6 @@ public class ReferenceComponent extends ControlComponent<Group> implements
 
 	public void setGroup(Group group) {
 		this.group = group;
-	}
-
-	@Override
-	public boolean combine(Component other) {
-		return false;
 	}
 
 	@Override

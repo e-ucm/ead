@@ -238,7 +238,7 @@ public class GameAssets extends Assets implements ModelStructure {
 					addClassTag(ClassReflection.getSimpleName(schemaClass)
 							.toLowerCase(), schemaClass);
 				} catch (ReflectionException e) {
-					Gdx.app.error(this.getClass().getCanonicalName(),
+					Gdx.app.error(this.getClass().toString(),
 							"Error loading bindings", e);
 				}
 			}

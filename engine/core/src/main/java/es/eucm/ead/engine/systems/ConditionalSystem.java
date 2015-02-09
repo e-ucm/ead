@@ -36,9 +36,9 @@
  */
 package es.eucm.ead.engine.systems;
 
-import ashley.core.Entity;
-import ashley.core.Family;
-import ashley.systems.IteratingSystem;
+import com.badlogic.ashley.core.Entity;
+import com.badlogic.ashley.core.Family;
+import com.badlogic.ashley.systems.IteratingSystem;
 import es.eucm.ead.engine.GameLoop;
 import es.eucm.ead.engine.systems.behaviors.TimersSystem;
 import es.eucm.ead.engine.variables.VariablesManager;

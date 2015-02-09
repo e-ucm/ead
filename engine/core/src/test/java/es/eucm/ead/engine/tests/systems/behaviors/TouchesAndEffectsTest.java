@@ -36,7 +36,7 @@
  */
 package es.eucm.ead.engine.tests.systems.behaviors;
 
-import ashley.core.Entity;
+import com.badlogic.ashley.core.Entity;
 import com.badlogic.gdx.utils.Array;
 import es.eucm.ead.engine.GameLoop;
 import es.eucm.ead.engine.components.EffectsComponent;

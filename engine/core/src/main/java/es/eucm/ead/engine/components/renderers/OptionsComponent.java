@@ -36,7 +36,7 @@
  */
 package es.eucm.ead.engine.components.renderers;
 
-import ashley.core.Component;
+import com.badlogic.ashley.core.Component;
 
 import com.badlogic.gdx.utils.Array;
 import es.eucm.ead.schema.components.conversation.Conversation;

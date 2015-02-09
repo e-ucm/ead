@@ -36,7 +36,7 @@
  */
 package es.eucm.ead.engine.processors;
 
-import ashley.core.Component;
+import com.badlogic.ashley.core.Component;
 import com.badlogic.gdx.math.Matrix3;
 import com.badlogic.gdx.math.Polygon;
 import es.eucm.ead.engine.GameLoop;

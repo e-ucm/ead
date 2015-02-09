@@ -36,8 +36,8 @@
  */
 package es.eucm.ead.engine.tests.systems;
 
-import ashley.core.Entity;
-import ashley.core.Family;
+import com.badlogic.ashley.core.Entity;
+import com.badlogic.ashley.core.Family;
 import es.eucm.ead.engine.EngineTest;
 import es.eucm.ead.engine.GameLoop;
 import es.eucm.ead.engine.systems.ConditionalSystem;
@@ -95,7 +95,7 @@ public class ConditionalSystemTest extends EngineTest {
 
 		public ConditionalSystemForTest(GameLoop engine,
 				VariablesManager variablesManager) {
-			super(engine, variablesManager, Family.getFamilyFor());
+			super(engine, variablesManager, Family.all().get());
 		}
 
 		@Override

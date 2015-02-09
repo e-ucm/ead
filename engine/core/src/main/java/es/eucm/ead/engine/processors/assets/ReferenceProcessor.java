@@ -36,7 +36,7 @@
  */
 package es.eucm.ead.engine.processors.assets;
 
-import ashley.core.Component;
+import com.badlogic.ashley.core.Component;
 
 import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.scenes.scene2d.Group;

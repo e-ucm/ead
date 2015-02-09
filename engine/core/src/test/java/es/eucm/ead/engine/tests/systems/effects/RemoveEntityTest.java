@@ -36,8 +36,8 @@
  */
 package es.eucm.ead.engine.tests.systems.effects;
 
-import ashley.core.Entity;
-import ashley.core.EntityListener;
+import com.badlogic.ashley.core.Entity;
+import com.badlogic.ashley.core.EntityListener;
 import aurelienribon.tweenengine.TweenManager;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.utils.reflect.ClassReflection;

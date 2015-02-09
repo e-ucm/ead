@@ -36,7 +36,7 @@
  */
 package es.eucm.ead.engine.processors;
 
-import ashley.core.Component;
+import com.badlogic.ashley.core.Component;
 import es.eucm.ead.engine.GameLoop;
 import es.eucm.ead.engine.components.TouchabilityComponent;
 import es.eucm.ead.schema.components.Touchability;

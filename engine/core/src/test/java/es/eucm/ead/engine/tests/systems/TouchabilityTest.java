@@ -36,17 +36,9 @@
  */
 package es.eucm.ead.engine.tests.systems;
 
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
-
-import org.junit.Before;
-import org.junit.Test;
-
-import ashley.core.Entity;
-import ashley.core.Family;
-
-import com.badlogic.gdx.utils.IntMap;
-
+import com.badlogic.ashley.core.Entity;
+import com.badlogic.ashley.core.Family;
+import com.badlogic.ashley.utils.ImmutableArray;
 import es.eucm.ead.engine.EngineTest;
 import es.eucm.ead.engine.components.TouchabilityComponent;
 import es.eucm.ead.engine.entities.EngineEntity;
@@ -54,6 +46,11 @@ import es.eucm.ead.engine.processors.TouchabilityProcessor;
 import es.eucm.ead.engine.systems.TouchabilitySystem;
 import es.eucm.ead.schema.components.Touchability;
 import es.eucm.ead.schema.entities.ModelEntity;
+import org.junit.Before;
+import org.junit.Test;
+
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
 
 /**
  * Tests {@link TouchabilitySystem}.
@@ -84,10 +81,10 @@ public class TouchabilityTest extends EngineTest {
 		entity.getComponents().add(touchability);
 
 		entitiesLoader.toEngineEntity(entity);
-		IntMap<Entity> entityIntMap = gameLoop.getEntitiesFor(Family
-				.getFamilyFor(TouchabilityComponent.class));
-		EngineEntity engineEntity = (EngineEntity) entityIntMap.entries()
-				.next().value;
+		ImmutableArray<Entity> entityIntMap = gameLoop.getEntitiesFor(Family
+				.all(TouchabilityComponent.class).get());
+		EngineEntity engineEntity = (EngineEntity) entityIntMap.iterator()
+				.next();
 		assertTrue(engineEntity.getGroup().isTouchable());
 
 		gameLoop.update(1);

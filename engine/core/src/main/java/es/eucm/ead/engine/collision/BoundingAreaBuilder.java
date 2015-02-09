@@ -36,7 +36,7 @@
  */
 package es.eucm.ead.engine.collision;
 
-import ashley.core.Component;
+import com.badlogic.ashley.core.Component;
 import com.badlogic.gdx.math.Circle;
 import com.badlogic.gdx.math.ConvexHull;
 import com.badlogic.gdx.math.Polygon;

@@ -36,9 +36,9 @@
  */
 package es.eucm.ead.engine.systems.positiontracking;
 
-import ashley.core.Entity;
-import ashley.core.Family;
-import ashley.systems.IteratingSystem;
+import com.badlogic.ashley.core.Entity;
+import com.badlogic.ashley.core.Family;
+import com.badlogic.ashley.systems.IteratingSystem;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Vector2;
@@ -60,7 +60,7 @@ public class MoveByEntitySystem extends IteratingSystem {
 
 	public MoveByEntitySystem(GameLoop gameLoop,
 			VariablesManager variablesManager) {
-		this(Family.getFamilyFor(MoveByEntityComponent.class), gameLoop,
+		this(Family.all(MoveByEntityComponent.class).get(), gameLoop,
 				variablesManager);
 	}
 

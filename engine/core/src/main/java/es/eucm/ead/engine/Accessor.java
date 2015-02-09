@@ -36,9 +36,14 @@
  */
 package es.eucm.ead.engine;
 
-import ashley.core.Component;
+import com.badlogic.ashley.core.Component;
+import com.badlogic.ashley.utils.Bag;
 import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.utils.*;
+import com.badlogic.gdx.utils.Array;
+import com.badlogic.gdx.utils.IntMap;
+import com.badlogic.gdx.utils.ObjectMap;
+import com.badlogic.gdx.utils.Pool;
+import com.badlogic.gdx.utils.Pools;
 import com.badlogic.gdx.utils.reflect.ClassReflection;
 import com.badlogic.gdx.utils.reflect.Field;
 import com.badlogic.gdx.utils.reflect.ReflectionException;
@@ -51,8 +56,6 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
 /**
  * This class is meant to provide a convenient utility for accessing a model
@@ -687,16 +690,16 @@ public class Accessor {
 	 *         {@code fullId.length()} if not found
 	 */
 	private int getNextSeparatorAt(String fullId, int start) {
+		return minIndex(fullId, start, OBJECT_SEPARATOR, LIST_SEPARATOR[0],
+				MAP_SEPARATOR[0]);
+	}
 
-		String propertyId = fullId.substring(start);
+	private int minIndex(String fullId, int start, String... separators) {
 		int nextSeparator = fullId.length();
-
-		Pattern pattern = Pattern.compile(Pattern.quote(OBJECT_SEPARATOR) + "|"
-				+ Pattern.quote(LIST_SEPARATOR[0]) + "|"
-				+ Pattern.quote(MAP_SEPARATOR[0]));
-		Matcher matcher = pattern.matcher(propertyId);
-		if (matcher.find()) {
-			nextSeparator = matcher.start() + start;
+		for (String c : separators) {
+			int index = fullId.indexOf(c, start);
+			nextSeparator = index == -1 ? nextSeparator : Math.min(
+					nextSeparator, index);
 		}
 		return nextSeparator;
 	}
@@ -896,7 +899,7 @@ public class Accessor {
 			int start) {
 		// Check parent is a Map
 		if (!(object instanceof Map) && !(object instanceof ObjectMap)
-				&& !(object instanceof IntMap)) {
+				&& !(object instanceof IntMap) && !(object instanceof Bag)) {
 			throw new AccessorException(
 					fullId,
 					"Object before position "
@@ -916,6 +919,9 @@ public class Accessor {
 		} else if (object instanceof IntMap) {
 			wrapper = Pools.obtain(IntMapWrapper.class);
 			((IntMapWrapper) wrapper).set((IntMap) object);
+		} else if (object instanceof Bag) {
+			wrapper = Pools.obtain(BagWrapper.class);
+			((BagWrapper) wrapper).setBag((Bag) object);
 		}
 		return wrapper;
 	}
@@ -1039,6 +1045,35 @@ public class Accessor {
 		@Override
 		public void put(Object key, Object value) {
 			map.put(key, value);
+		}
+	}
+
+	public static class BagWrapper implements AbstractMapWrapper {
+
+		private HashMap<Class, Object> map = new HashMap<Class, Object>();
+
+		public void setBag(Bag bag) {
+			map.clear();
+			for (int i = 0; i < bag.size(); i++) {
+				if (bag.get(i) != null) {
+					map.put(bag.get(i).getClass(), bag.get(i));
+				}
+			}
+		}
+
+		@Override
+		public Class getKeyType() {
+			return Component.class;
+		}
+
+		@Override
+		public Object get(Object key) {
+			return map.get(key);
+		}
+
+		@Override
+		public void put(Object key, Object value) {
+			throw new RuntimeException("Can't set a value in Bag");
 		}
 	}
 

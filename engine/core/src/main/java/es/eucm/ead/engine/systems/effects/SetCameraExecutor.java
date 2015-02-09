@@ -36,11 +36,11 @@
  */
 package es.eucm.ead.engine.systems.effects;
 
-import ashley.core.Entity;
-import ashley.core.Family;
+import com.badlogic.ashley.core.Entity;
+import com.badlogic.ashley.core.Family;
+import com.badlogic.ashley.utils.ImmutableArray;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.math.MathUtils;
-import com.badlogic.gdx.utils.IntMap;
 import es.eucm.ead.engine.GameView;
 import es.eucm.ead.engine.components.CamerasComponent;
 import es.eucm.ead.engine.components.TweensComponent;
@@ -118,19 +118,18 @@ public class SetCameraExecutor extends EffectExecutor<SetCamera> {
 	public void execute(Entity target, SetCamera effect) {
 		// Get camera
 		EngineEntity cameraEntity = gameView.getLayer(Layer.CAMERA);
-		IntMap<Entity> entitiesWithCameras = gameLoop.getEntitiesFor(Family
-				.getFamilyFor(CamerasComponent.class));
+		ImmutableArray<Entity> entitiesWithCameras = gameLoop
+				.getEntitiesFor(Family.all(CamerasComponent.class).get());
 		EngineEntity sceneEntity;
 		if (entitiesWithCameras == null
-				|| entitiesWithCameras.size == 0
-				|| (sceneEntity = (EngineEntity) entitiesWithCameras.values()
-						.next()) == null) {
+				|| entitiesWithCameras.size() == 0
+				|| (sceneEntity = (EngineEntity) entitiesWithCameras.get(0)) == null) {
 			Gdx.app.log(LOG_TAG,
 					"There are no cameras available. Effect will be skipped.");
 			return;
 		}
 
-		if (!sceneEntity.hasComponent(CamerasComponent.class)) {
+		if (sceneEntity.getComponent(CamerasComponent.class) == null) {
 			Gdx.app.log(LOG_TAG, "No cameras in scene. Effect will be skipped.");
 			return;
 		}

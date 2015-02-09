@@ -36,8 +36,8 @@
  */
 package es.eucm.ead.engine.systems.behaviors;
 
-import ashley.core.Entity;
-import ashley.core.Family;
+import com.badlogic.ashley.core.Entity;
+import com.badlogic.ashley.core.Family;
 
 import com.badlogic.gdx.utils.SnapshotArray;
 
@@ -52,8 +52,7 @@ import es.eucm.ead.engine.variables.VariablesManager;
 public class TimersSystem extends BehaviorSystem {
 
 	public TimersSystem(GameLoop engine, VariablesManager variablesManager) {
-		super(engine, variablesManager, Family
-				.getFamilyFor(TimersComponent.class));
+		super(engine, variablesManager, Family.all(TimersComponent.class).get());
 	}
 
 	@Override

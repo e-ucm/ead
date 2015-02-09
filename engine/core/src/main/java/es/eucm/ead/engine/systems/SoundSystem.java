@@ -36,9 +36,9 @@
  */
 package es.eucm.ead.engine.systems;
 
-import ashley.core.Entity;
-import ashley.core.Family;
-import ashley.systems.IteratingSystem;
+import com.badlogic.ashley.core.Entity;
+import com.badlogic.ashley.core.Family;
+import com.badlogic.ashley.systems.IteratingSystem;
 import es.eucm.ead.engine.components.assets.SoundComponent;
 import es.eucm.ead.engine.entities.EngineEntity;
 import es.eucm.ead.engine.variables.VariablesManager;
@@ -58,7 +58,7 @@ public class SoundSystem extends IteratingSystem {
 	public VariablesManager variablesManager;
 
 	public SoundSystem(VariablesManager variablesManager) {
-		super(Family.getFamilyFor(SoundComponent.class));
+		super(Family.all(SoundComponent.class).get());
 		this.variablesManager = variablesManager;
 	}
 

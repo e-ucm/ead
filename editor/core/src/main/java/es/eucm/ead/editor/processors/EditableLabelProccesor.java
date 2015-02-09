@@ -36,7 +36,7 @@
  */
 package es.eucm.ead.editor.processors;
 
-import ashley.core.Component;
+import com.badlogic.ashley.core.Component;
 
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.ui.TextField.TextFieldStyle;

@@ -36,9 +36,9 @@
  */
 package es.eucm.ead.engine.systems;
 
-import ashley.core.Entity;
-import ashley.core.Family;
-import ashley.systems.IteratingSystem;
+import com.badlogic.ashley.core.Entity;
+import com.badlogic.ashley.core.Family;
+import com.badlogic.ashley.systems.IteratingSystem;
 import com.badlogic.gdx.math.Vector2;
 import es.eucm.ead.engine.components.PathFinderComponent;
 import es.eucm.ead.engine.components.WalkComponent;
@@ -50,7 +50,7 @@ import es.eucm.ead.engine.entities.EngineEntity;
 public class PathSystem extends IteratingSystem {
 
 	public PathSystem() {
-		super(Family.getFamilyFor(WalkComponent.class));
+		super(Family.all(WalkComponent.class).get());
 	}
 
 	@Override

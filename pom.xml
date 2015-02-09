@@ -20,8 +20,8 @@
         <android.editor.version>4.1.1.4</android.editor.version>
         <android.editor.platform.version>19</android.editor.platform.version>
         <android.maven.version>3.9.0-rc.1</android.maven.version>
-        <gwt.version>2.5.0</gwt.version>
-        <gwt.maven.version>2.5.0</gwt.maven.version>
+        <gwt.version>2.6.0</gwt.version>
+        <gwt.maven.version>2.6.0</gwt.maven.version>
         <network.version>0.1-SNAPSHOT</network.version>
         <java.version>1.6</java.version>
     </properties>
@@ -307,11 +307,6 @@
             </plugin>
         </plugins>
     </build>
-    <modules>
-        <module>build-tools/support</module>
-        <module>build-tools/maven</module>
-        <module>build-tools/xml-maven</module>
-    </modules>
     <profiles>
         <profile>
             <id>run-editor</id>
@@ -342,21 +337,20 @@
                 <module>build-tools/maven</module>
                 <module>build-tools/maven-gitlog-plugin-ext</module>
                 <module>build-tools/android</module>
+                <module>utils/gdx/java</module>
                 <module>engine/schema</module>
                 <module>engine/core</module>
                 <module>engine/desktop</module>
                 <module>engine/android</module>
-                <!--<module>engine/html</module> -->
+                <module>engine/html</module>
                 <module>editor/schema</module>
                 <module>editor/core</module>
-                <module>editor/importer</module>
                 <module>editor/desktop</module>
+                <module>editor/importer</module>
                 <module>editor/exporter</module>
-                <!-- mokap -->
                 <module>editor/mokap/core</module>
                 <module>editor/mokap/android</module>
                 <module>editor/mokap/desktop</module>
-                <!-- repo -->
                 <module>repo-builder</module>
             </modules>
         </profile>

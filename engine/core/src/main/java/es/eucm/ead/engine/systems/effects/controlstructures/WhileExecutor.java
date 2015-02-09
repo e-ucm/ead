@@ -36,7 +36,7 @@
  */
 package es.eucm.ead.engine.systems.effects.controlstructures;
 
-import ashley.core.Entity;
+import com.badlogic.ashley.core.Entity;
 import es.eucm.ead.engine.systems.EffectsSystem;
 import es.eucm.ead.engine.variables.VariablesManager;
 import es.eucm.ead.schema.effects.controlstructures.While;

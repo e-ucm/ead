@@ -150,7 +150,7 @@ public class PathFinder {
 		// store a world-transformed copy of pathBoundary, keep all
 		// boundaryPoints
 		// for segment match
-		pathBoundary = new Polygon(pathBoundary.getVertices().clone());
+		pathBoundary = new Polygon(PathUtils.clone(pathBoundary.getVertices()));
 		this.pathBoundary = pathBoundary;
 		PathUtils.transformPolygons(viewToWorld, pathBoundary);
 		this.boundaryPoints = PathUtils.polygonToPointsCircular(pathBoundary);

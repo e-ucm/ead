@@ -36,8 +36,9 @@
  */
 package es.eucm.ead.engine;
 
-import ashley.core.Entity;
-import ashley.core.Family;
+import com.badlogic.ashley.core.Entity;
+import com.badlogic.ashley.core.Family;
+import com.badlogic.ashley.utils.ImmutableArray;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.IntMap;
@@ -195,11 +196,10 @@ public class AccessorTest extends EngineTest {
 		}
 
 		boolean notEmptyMap = false;
-		IntMap<Entity> map = gameLoop.getEntitiesFor(Family
-				.getFamilyFor(VisibilityComponent.class));
-		for (IntMap.Entry<Entity> entry : map.entries()) {
+		ImmutableArray<Entity> map = gameLoop.getEntitiesFor(Family.all(
+				VisibilityComponent.class).get());
+		for (Entity entity : map) {
 			notEmptyMap = true;
-			Entity entity = entry.value;
 			accessor.getRootObjects().clear();
 			accessor.getRootObjects().put("$_this", entity);
 			assertTrue(accessor.get("$_this.group.x") instanceof Float);

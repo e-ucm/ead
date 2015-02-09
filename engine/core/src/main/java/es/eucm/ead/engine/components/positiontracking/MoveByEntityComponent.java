@@ -36,7 +36,7 @@
  */
 package es.eucm.ead.engine.components.positiontracking;
 
-import ashley.core.Component;
+import com.badlogic.ashley.core.Component;
 import es.eucm.ead.engine.entities.EngineEntity;
 import es.eucm.ead.schema.components.positiontracking.MoveByEntity;
 

@@ -210,7 +210,7 @@ public class PathUtils {
 		Matrix3 v123 = new Matrix3(new float[] { v[0].x, v[0].y, 1, v[1].x,
 				v[1].y, 1, v[2].x, v[2].y, 1 });
 		Vector3 v4 = new Vector3(new float[] { v[3].x, v[3].y, 1 });
-		float[] M = v123.val.clone();
+		float[] M = clone(v123.val);
 		v4.mul(v123.inv());
 		// scale by solutions
 		for (int i = 0; i < 3; i++) {
@@ -220,6 +220,14 @@ public class PathUtils {
 		}
 		Matrix3 bti = new Matrix3(M);
 		return bti;
+	}
+
+	public static float[] clone(float[] f) {
+		float[] clone = new float[f.length];
+		for (int i = 0; i < clone.length; i++) {
+			clone[i] = f[i];
+		}
+		return clone;
 	}
 
 	/**

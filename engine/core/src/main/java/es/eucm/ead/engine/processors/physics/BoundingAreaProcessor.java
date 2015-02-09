@@ -36,7 +36,7 @@
  */
 package es.eucm.ead.engine.processors.physics;
 
-import ashley.core.Component;
+import com.badlogic.ashley.core.Component;
 import es.eucm.ead.engine.GameLoop;
 import es.eucm.ead.engine.components.physics.BoundingAreaComponent;
 import es.eucm.ead.engine.processors.ComponentProcessor;

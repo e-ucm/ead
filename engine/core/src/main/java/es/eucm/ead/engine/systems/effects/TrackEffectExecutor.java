@@ -39,7 +39,7 @@ package es.eucm.ead.engine.systems.effects;
 import java.util.HashMap;
 import java.util.Map;
 
-import ashley.core.Entity;
+import com.badlogic.ashley.core.Entity;
 
 import com.badlogic.gdx.utils.Array;
 

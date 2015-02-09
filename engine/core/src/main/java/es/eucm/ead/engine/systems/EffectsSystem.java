@@ -36,8 +36,9 @@
  */
 package es.eucm.ead.engine.systems;
 
-import ashley.core.Entity;
-import ashley.core.Family;
+import com.badlogic.ashley.core.ComponentMapper;
+import com.badlogic.ashley.core.Entity;
+import com.badlogic.ashley.core.Family;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.utils.Array;
 import es.eucm.ead.engine.GameLoop;
@@ -63,10 +64,13 @@ public class EffectsSystem extends ConditionalSystem {
 
 	private GameAssets gameAssets;
 
+	private final ComponentMapper<EffectsComponent> effects = ComponentMapper
+			.getFor(EffectsComponent.class);
+
 	public EffectsSystem(GameLoop engine, VariablesManager variablesManager,
 			GameAssets gameAssets) {
-		super(engine, variablesManager, Family
-				.getFamilyFor(EffectsComponent.class), Integer.MAX_VALUE);
+		super(engine, variablesManager, Family.all(EffectsComponent.class)
+				.get(), Integer.MAX_VALUE);
 		effectExecutorMap = new HashMap<Class, EffectExecutor>();
 		this.gameAssets = gameAssets;
 	}
@@ -79,8 +83,7 @@ public class EffectsSystem extends ConditionalSystem {
 
 	@Override
 	public void doProcessEntity(Entity entity, float delta) {
-		EffectsComponent effectsComponent = entity
-				.getComponent(EffectsComponent.class);
+		EffectsComponent effectsComponent = effects.get(entity);
 		executeEffectList(effectsComponent.getEffectList());
 		entity.remove(EffectsComponent.class);
 	}

@@ -36,7 +36,7 @@
  */
 package es.eucm.ead.engine.components;
 
-import ashley.core.Component;
+import com.badlogic.ashley.core.Component;
 
 public class I18nTextComponent extends Component {
 

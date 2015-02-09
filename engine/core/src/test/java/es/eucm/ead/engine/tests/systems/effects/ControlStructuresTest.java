@@ -36,7 +36,7 @@
  */
 package es.eucm.ead.engine.tests.systems.effects;
 
-import ashley.core.Entity;
+import com.badlogic.ashley.core.Entity;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.reflect.ClassReflection;
 import com.badlogic.gdx.utils.reflect.ReflectionException;

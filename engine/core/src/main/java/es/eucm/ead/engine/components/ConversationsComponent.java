@@ -36,7 +36,7 @@
  */
 package es.eucm.ead.engine.components;
 
-import ashley.core.Component;
+import com.badlogic.ashley.core.Component;
 import com.badlogic.gdx.utils.Pool.Poolable;
 import es.eucm.ead.schema.components.conversation.Conversation;
 

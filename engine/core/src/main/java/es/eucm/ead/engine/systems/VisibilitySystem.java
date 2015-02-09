@@ -36,8 +36,8 @@
  */
 package es.eucm.ead.engine.systems;
 
-import ashley.core.Entity;
-import ashley.core.Family;
+import com.badlogic.ashley.core.Entity;
+import com.badlogic.ashley.core.Family;
 import es.eucm.ead.engine.GameLoop;
 import es.eucm.ead.engine.components.VisibilityComponent;
 import es.eucm.ead.engine.entities.EngineEntity;
@@ -52,8 +52,8 @@ import es.eucm.ead.engine.variables.VariablesManager;
 public class VisibilitySystem extends ConditionalSystem {
 
 	public VisibilitySystem(GameLoop engine, VariablesManager variablesManager) {
-		super(engine, variablesManager, Family
-				.getFamilyFor(VisibilityComponent.class), 0);
+		super(engine, variablesManager, Family.all(VisibilityComponent.class)
+				.get(), 0);
 	}
 
 	@Override

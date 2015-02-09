@@ -36,7 +36,7 @@
  */
 package es.eucm.ead.engine.components.physics;
 
-import ashley.core.Component;
+import com.badlogic.ashley.core.Component;
 
 public class VelocityComponent extends Component {
 

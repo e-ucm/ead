@@ -111,9 +111,9 @@ public class TimersTest extends BehaviorTest implements MockEffectListener {
 		gameLoop.update(0); // One more cycle so the effect system can actually
 							// execute the effects
 		assertTrue("Effect wasn't executed", executed == 1);
-		assertFalse(
+		assertNull(
 				"Entity shouldn't have a timer component, since all timer should be finished",
-				entity.hasComponent(TimersComponent.class));
+				entity.getComponent(TimersComponent.class));
 	}
 
 	@Test
@@ -128,9 +128,9 @@ public class TimersTest extends BehaviorTest implements MockEffectListener {
 		}
 		gameLoop.update(10);
 		assertTrue("Effect wasn't executed", executed == repeats);
-		assertFalse(
+		assertNull(
 				"Entity shouldn't have a timer component, since all timer should be finished",
-				entity.hasComponent(TimersComponent.class));
+				entity.getComponent(TimersComponent.class));
 	}
 
 	@Test
@@ -177,9 +177,9 @@ public class TimersTest extends BehaviorTest implements MockEffectListener {
 		gameLoop.update(0.5f);
 		gameLoop.update(0);
 		assertEquals(executed, 4);
-		assertFalse(
+		assertNull(
 				"Entity shouldn't have a timer component, since all timer should be finished",
-				entity.hasComponent(TimersComponent.class));
+				entity.getComponent(TimersComponent.class));
 	}
 
 	@Override

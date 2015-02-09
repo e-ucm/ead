@@ -36,8 +36,8 @@
  */
 package es.eucm.ead.engine.systems.positiontracking;
 
-import ashley.core.Entity;
-import ashley.core.Family;
+import com.badlogic.ashley.core.Entity;
+import com.badlogic.ashley.core.Family;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Vector2;
@@ -57,7 +57,7 @@ public class ChaseEntitySystem extends MoveByEntitySystem {
 
 	public ChaseEntitySystem(GameLoop gameLoop,
 			VariablesManager variablesManager) {
-		super(Family.getFamilyFor(ChaseEntityComponent.class), gameLoop,
+		super(Family.all(ChaseEntityComponent.class).get(), gameLoop,
 				variablesManager);
 	}
 
@@ -149,15 +149,16 @@ public class ChaseEntitySystem extends MoveByEntitySystem {
 	}
 
 	private BoundingAreaComponent getBoundingArea(EngineEntity entity) {
-		if (!entity.hasComponent(BoundingAreaComponent.class)) {
+		if (entity.getComponent(BoundingAreaComponent.class) == null) {
 			BoundingAreaComponent boundingArea = gameLoop
 					.createComponent(BoundingAreaComponent.class);
 			boundingArea.set(true);
 			entity.add(boundingArea);
 			boundingArea.update(entity);
-
+			return boundingArea;
+		} else {
+			return entity.getComponent(BoundingAreaComponent.class);
 		}
-		return entity.getComponent(BoundingAreaComponent.class);
 	}
 
 	private void move(EngineEntity chasing, EngineEntity target, float speedX,

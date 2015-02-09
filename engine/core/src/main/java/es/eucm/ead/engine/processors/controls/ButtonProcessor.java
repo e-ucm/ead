@@ -36,7 +36,7 @@
  */
 package es.eucm.ead.engine.processors.controls;
 
-import ashley.core.Component;
+import com.badlogic.ashley.core.Component;
 import com.badlogic.gdx.scenes.scene2d.ui.Button.ButtonStyle;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import es.eucm.ead.engine.GameLoop;

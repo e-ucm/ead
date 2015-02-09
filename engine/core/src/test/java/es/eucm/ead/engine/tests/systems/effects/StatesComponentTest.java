@@ -36,10 +36,10 @@
  */
 package es.eucm.ead.engine.tests.systems.effects;
 
-import ashley.core.Component;
-import ashley.core.Entity;
-import ashley.core.EntityListener;
-import ashley.core.Family;
+import com.badlogic.ashley.core.Component;
+import com.badlogic.ashley.core.Entity;
+import com.badlogic.ashley.core.EntityListener;
+import com.badlogic.ashley.core.Family;
 import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.math.Polygon;
 import com.badlogic.gdx.utils.Array;
@@ -112,10 +112,11 @@ public class StatesComponentTest extends EngineTest implements EntityListener {
 				"default" });
 		ChangeState effect = new ChangeState();
 		effect.setStateTag("tag1");
-		changeStateExecutor.execute(
-				gameLoop.getEntitiesFor(
-						Family.getFamilyFor(StatesComponent.class)).iterator()
-						.next().value, effect);
+		changeStateExecutor
+				.execute(
+						gameLoop.getEntitiesFor(
+								Family.all(StatesComponent.class).get())
+								.iterator().next(), effect);
 		assertEquals(100, sc.getHeight(), 0.001F);
 	}
 

@@ -36,16 +36,33 @@
  */
 package es.eucm.ead.engine.html;
 
-import es.eucm.ead.engine.Engine;
-
 import com.badlogic.gdx.ApplicationListener;
 import com.badlogic.gdx.backends.gwt.GwtApplication;
 import com.badlogic.gdx.backends.gwt.GwtApplicationConfiguration;
+import com.badlogic.gdx.files.FileHandle;
+import com.badlogic.gdx.math.Vector2;
+import es.eucm.ead.engine.EngineApplicationListener;
+import es.eucm.ead.engine.assets.GameAssets.ImageUtils;
 
 public class EAdEngineHtml extends GwtApplication {
 	@Override
 	public ApplicationListener getApplicationListener() {
-		return new Engine();
+		return new EngineApplicationListener(new ImageUtils() {
+			@Override
+			public boolean imageSize(FileHandle fileHandle, Vector2 size) {
+				return false;
+			}
+
+			@Override
+			public boolean validSize(Vector2 size) {
+				return false;
+			}
+
+			@Override
+			public float scale(FileHandle src, FileHandle target) {
+				return 0;
+			}
+		});
 	}
 
 	@Override
