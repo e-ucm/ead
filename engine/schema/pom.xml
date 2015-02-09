@@ -45,19 +45,14 @@
         </resources>
         <plugins>
             <plugin>
-                <groupId>org.codehaus.mojo</groupId>
-                <artifactId>build-helper-maven-plugin</artifactId>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-source-plugin</artifactId>
                 <executions>
                     <execution>
-                        <phase>generate-sources</phase>
+                        <id>attach-sources</id>
                         <goals>
-                            <goal>add-source</goal>
+                            <goal>jar</goal>
                         </goals>
-                        <configuration>
-                            <sources>
-                                <source>${project.build.directory}/generated-sources/pom/</source>
-                            </sources>
-                        </configuration>
                     </execution>
                 </executions>
             </plugin>

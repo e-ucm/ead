@@ -34,41 +34,44 @@
  *      You should have received a copy of the GNU Lesser General Public License
  *      along with eAdventure.  If not, see <http://www.gnu.org/licenses/>.
  */
-package es.eucm.ead.engine.html;
+package com.badlogic.gdx.graphics.g2d.freetype;
 
-import com.badlogic.gdx.ApplicationListener;
-import com.badlogic.gdx.backends.gwt.GwtApplication;
-import com.badlogic.gdx.backends.gwt.GwtApplicationConfiguration;
 import com.badlogic.gdx.files.FileHandle;
-import com.badlogic.gdx.math.Vector2;
-import es.eucm.ead.engine.EngineApplicationListener;
-import es.eucm.ead.engine.assets.GameAssets.ImageUtils;
+import com.badlogic.gdx.graphics.Texture.TextureFilter;
+import com.badlogic.gdx.graphics.g2d.BitmapFont;
+import com.badlogic.gdx.graphics.g2d.PixmapPacker;
+import com.badlogic.gdx.utils.Disposable;
 
-public class EAdEngineHtml extends GwtApplication {
-	@Override
-	public ApplicationListener getApplicationListener() {
-		return new EngineApplicationListener(new ImageUtils() {
-			@Override
-			public boolean imageSize(FileHandle fileHandle, Vector2 size) {
-				return false;
-			}
+public class FreeTypeFontGenerator implements Disposable {
 
-			@Override
-			public boolean validSize(Vector2 size) {
-				return false;
-			}
+	public FreeTypeFontGenerator(FileHandle font) {
+	}
 
-			@Override
-			public float scale(FileHandle src, FileHandle target) {
-				return 0;
-			}
-		});
+	public BitmapFont generateFont(FreeTypeFontParameter parameter) {
+		return null;
 	}
 
 	@Override
-	public GwtApplicationConfiguration getConfig() {
-		GwtApplicationConfiguration config = new GwtApplicationConfiguration(
-				800, 600);
-		return config;
+	public void dispose() {
+
+	}
+
+	public static class FreeTypeFontParameter {
+		/** The size in pixels */
+		public int size = 16;
+		/** The characters the font should contain */
+		public String characters = "ABC";
+		/** Whether the font should include kerning */
+		public boolean kerning = true;
+		/** The optional PixmapPacker to use */
+		public PixmapPacker packer = null;
+		/** Whether to flip the font vertically */
+		public boolean flip = false;
+		/** Whether or not to generate mip maps for the resulting texture */
+		public boolean genMipMaps = false;
+		/** Minification filter */
+		public TextureFilter minFilter = TextureFilter.Nearest;
+		/** Magnification filter */
+		public TextureFilter magFilter = TextureFilter.Nearest;
 	}
 }
