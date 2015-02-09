@@ -36,12 +36,12 @@
  */
 package es.eucm.ead.engine;
 
-import ashley.core.Component;
-import ashley.core.Engine;
-import ashley.core.Entity;
+import com.badlogic.ashley.core.Component;
+import com.badlogic.ashley.core.Engine;
+import com.badlogic.ashley.core.Entity;
 import com.badlogic.gdx.utils.Pool;
 import com.badlogic.gdx.utils.Pools;
-import es.eucm.ead.engine.components.EffectsComponent;
+import com.badlogic.gdx.utils.reflect.ClassReflection;
 import es.eucm.ead.engine.entities.EngineEntity;
 
 /**
@@ -97,26 +97,11 @@ public class GameLoop extends Engine {
 	public void removeEntity(Entity entity) {
 		super.removeEntity(entity);
 
-		if (EngineEntity.class.isAssignableFrom(entity.getClass())) {
-			EngineEntity pooledEntity = EngineEntity.class.cast(entity);
+		if (ClassReflection.isAssignableFrom(EngineEntity.class,
+				entity.getClass())) {
+			EngineEntity pooledEntity = (EngineEntity) entity;
 			entityPool.free(pooledEntity);
 		}
-	}
-
-	/**
-	 * A basic method for retrieving all entities added to the engine at a
-	 * specific moment.
-	 * 
-	 * Note: this method should only be used for "reading" entities. For adding
-	 * or removing entities, use {@link #addEntity(ashley.core.Entity)} and
-	 * {@link #removeEntity(ashley.core.Entity)} instead. For getting all
-	 * entities that have a specific component, use
-	 * {@link #getEntitiesFor(ashley.core.Family)}.
-	 * 
-	 * @return An Entity structure that can be iterated through.
-	 */
-	public Iterable<Entity> getAllEntities() {
-		return entities;
 	}
 
 	/**
@@ -146,8 +131,10 @@ public class GameLoop extends Engine {
 	 */
 	public <T extends Component> T addAndGetComponent(Entity entity,
 			Class<T> componentType) {
-		if (!entity.hasComponent(componentType)) {
-			entity.add(createComponent(componentType));
+		if (entity.getComponent(componentType) == null) {
+			T component = createComponent(componentType);
+			entity.add(component);
+			return component;
 		}
 
 		return entity.getComponent(componentType);

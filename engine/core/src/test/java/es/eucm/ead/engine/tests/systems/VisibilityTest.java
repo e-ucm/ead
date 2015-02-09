@@ -36,9 +36,9 @@
  */
 package es.eucm.ead.engine.tests.systems;
 
-import ashley.core.Entity;
-import ashley.core.Family;
-import com.badlogic.gdx.utils.IntMap;
+import com.badlogic.ashley.core.Entity;
+import com.badlogic.ashley.core.Family;
+import com.badlogic.ashley.utils.ImmutableArray;
 import es.eucm.ead.engine.EngineTest;
 import es.eucm.ead.engine.components.VisibilityComponent;
 import es.eucm.ead.engine.entities.EngineEntity;
@@ -88,10 +88,10 @@ public class VisibilityTest extends EngineTest {
 		entity.getComponents().add(visibility);
 
 		entitiesLoader.toEngineEntity(entity);
-		IntMap<Entity> entityIntMap = gameLoop.getEntitiesFor(Family
-				.getFamilyFor(VisibilityComponent.class));
-		EngineEntity engineEntity = (EngineEntity) entityIntMap.entries()
-				.next().value;
+		ImmutableArray<Entity> entityIntMap = gameLoop.getEntitiesFor(Family
+				.all(VisibilityComponent.class).get());
+		EngineEntity engineEntity = (EngineEntity) entityIntMap.iterator()
+				.next();
 		assertTrue(engineEntity.getGroup().isVisible());
 
 		gameLoop.update(1);

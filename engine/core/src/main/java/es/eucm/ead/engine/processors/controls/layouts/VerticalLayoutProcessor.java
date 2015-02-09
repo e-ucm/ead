@@ -36,7 +36,7 @@
  */
 package es.eucm.ead.engine.processors.controls.layouts;
 
-import ashley.core.Component;
+import com.badlogic.ashley.core.Component;
 import com.badlogic.gdx.scenes.scene2d.ui.VerticalGroup;
 import es.eucm.ead.engine.ComponentLoader;
 import es.eucm.ead.engine.GameLoop;

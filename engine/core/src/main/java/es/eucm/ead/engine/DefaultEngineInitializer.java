@@ -36,8 +36,8 @@
  */
 package es.eucm.ead.engine;
 
-import ashley.core.Entity;
-import ashley.core.Family;
+import com.badlogic.ashley.core.Entity;
+import com.badlogic.ashley.core.Family;
 import es.eucm.ead.engine.assets.GameAssets;
 import es.eucm.ead.engine.components.I18nTextComponent;
 import es.eucm.ead.engine.processors.AnimationProcessor;
@@ -412,8 +412,8 @@ public class DefaultEngineInitializer implements EngineInitializer {
 		@Override
 		public void variableChanged(String variableName, Object value) {
 			gameAssets.getI18N().setLang(value + "");
-			for (Entity entity : gameLoop.getEntitiesFor(
-					Family.getFamilyFor(I18nTextComponent.class)).values()) {
+			for (Entity entity : gameLoop.getEntitiesFor(Family.all(
+					I18nTextComponent.class).get())) {
 				I18nTextComponent text = entity
 						.getComponent(I18nTextComponent.class);
 				text.getText().setText(

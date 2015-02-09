@@ -36,8 +36,8 @@
  */
 package es.eucm.ead.engine.systems.effects;
 
-import ashley.core.Component;
-import ashley.core.Entity;
+import com.badlogic.ashley.core.Component;
+import com.badlogic.ashley.core.Entity;
 import es.eucm.ead.engine.ComponentLoader;
 import es.eucm.ead.engine.entities.EngineEntity;
 import es.eucm.ead.schema.effects.AddComponent;

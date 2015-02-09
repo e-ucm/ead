@@ -36,7 +36,7 @@
  */
 package es.eucm.ead.engine.components.controls;
 
-import ashley.core.Component;
+import com.badlogic.ashley.core.Component;
 
 import com.badlogic.gdx.scenes.scene2d.Actor;
 

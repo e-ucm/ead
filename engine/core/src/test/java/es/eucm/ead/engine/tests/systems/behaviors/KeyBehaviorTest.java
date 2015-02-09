@@ -54,10 +54,11 @@ import es.eucm.ead.schema.components.behaviors.events.Key;
 import es.eucm.ead.schema.entities.ModelEntity;
 import org.junit.Before;
 import org.junit.Test;
+
 import java.util.Map;
 
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 
 public class KeyBehaviorTest extends BehaviorTest implements MockEffectListener {
@@ -121,9 +122,9 @@ public class KeyBehaviorTest extends BehaviorTest implements MockEffectListener 
 		gameLoop.update(0); // One more cycle so the effect system can actually
 		// execute the effects
 		assertTrue("Effect wasn't executed", executed == 1);
-		assertFalse(
+		assertNull(
 				"Entity shouldn't have a Keyboard Interaction component, since all Keyboard Interactions should be finished",
-				entity.hasComponent(KeyPressedComponent.class));
+				entity.getComponent(KeyPressedComponent.class));
 	}
 
 	@Test
@@ -142,9 +143,9 @@ public class KeyBehaviorTest extends BehaviorTest implements MockEffectListener 
 		gameLoop.update(0); // One more cycle so the effect system can actually
 		// execute the effects
 		assertTrue("Effect wasn't executed", executed == 0);
-		assertFalse(
+		assertNull(
 				"Entity shouldn't have a Keyboard Interaction component, since all Keyboard Interactions should be finished",
-				entity.hasComponent(KeyPressedComponent.class));
+				entity.getComponent(KeyPressedComponent.class));
 	}
 
 	@Test
@@ -167,9 +168,9 @@ public class KeyBehaviorTest extends BehaviorTest implements MockEffectListener 
 		gameLoop.update(0); // One more cycle so the effect system can actually
 		// execute the effects
 		assertEquals("Effect wasn't executed", 2, executed);
-		assertFalse(
+		assertNull(
 				"Entity shouldn't have a Keyboard Pressed component, since all Keyboard Interactions should be finished",
-				entity.hasComponent(KeyPressedComponent.class));
+				entity.getComponent(KeyPressedComponent.class));
 
 	}
 

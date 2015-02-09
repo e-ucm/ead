@@ -36,7 +36,7 @@
  */
 package es.eucm.ead.engine.processors.controls;
 
-import ashley.core.Component;
+import com.badlogic.ashley.core.Component;
 
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;

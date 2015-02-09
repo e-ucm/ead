@@ -36,10 +36,10 @@
  */
 package es.eucm.ead.engine.expressions.operators;
 
-import ashley.core.Entity;
-import ashley.core.Family;
+import com.badlogic.ashley.core.Entity;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.Pools;
+import es.eucm.ead.engine.DefaultGameView.EngineLayer;
 import es.eucm.ead.engine.GameLoop;
 import es.eucm.ead.engine.expressions.ExpressionEvaluationException;
 import es.eucm.ead.engine.expressions.Operation;
@@ -122,26 +122,27 @@ public class EntityCollection extends Operation {
 
 		// Iterate through entities
 		Array<Entity> entities = new Array<Entity>();
-		Iterator<Entity> allEntities = engine
-				.getEntitiesFor(Family.getFamilyFor()).values().iterator();
+		Iterator<Entity> allEntities = engine.getEntities().iterator();
 		try {
 			while (allEntities.hasNext()) {
 				Entity otherEntity = allEntities.next();
 				// Set entity
-				tempContext.setValue(varName, otherEntity);
-				// Evaluate expression
-				Object expResult = (children.size() > 1 ? second() : first())
-						.evaluate(tempContext);
-				if (!(expResult instanceof Boolean)) {
-					throw new ExpressionEvaluationException(
-							"Expected condition (boolean expression) operand in "
-									+ getName()
-									+ ". The expression did not return a boolean",
-							this);
-				}
-				Boolean matches = (Boolean) expResult;
-				if (matches) {
-					entities.add(otherEntity);
+				if (!(otherEntity instanceof EngineLayer)) {
+					tempContext.setValue(varName, otherEntity);
+					// Evaluate expression
+					Object expResult = (children.size() > 1 ? second()
+							: first()).evaluate(tempContext);
+					if (!(expResult instanceof Boolean)) {
+						throw new ExpressionEvaluationException(
+								"Expected condition (boolean expression) operand in "
+										+ getName()
+										+ ". The expression did not return a boolean",
+								this);
+					}
+					Boolean matches = (Boolean) expResult;
+					if (matches) {
+						entities.add(otherEntity);
+					}
 				}
 			}
 		} catch (Exception e) {

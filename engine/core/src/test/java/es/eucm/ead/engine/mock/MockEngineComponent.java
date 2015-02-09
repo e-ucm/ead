@@ -36,7 +36,7 @@
  */
 package es.eucm.ead.engine.mock;
 
-import ashley.core.Component;
+import com.badlogic.ashley.core.Component;
 
 public class MockEngineComponent extends Component {
 

@@ -36,8 +36,8 @@
  */
 package es.eucm.ead.engine.systems.behaviors;
 
-import ashley.core.Entity;
-import ashley.core.Family;
+import com.badlogic.ashley.core.Entity;
+import com.badlogic.ashley.core.Family;
 import es.eucm.ead.engine.GameLoop;
 import es.eucm.ead.engine.components.EffectsComponent;
 import es.eucm.ead.engine.systems.ConditionalSystem;

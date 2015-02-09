@@ -36,9 +36,9 @@
  */
 package es.eucm.ead.engine.systems.conversations;
 
-import ashley.core.Entity;
-import ashley.core.Family;
-import ashley.systems.IteratingSystem;
+import com.badlogic.ashley.core.Entity;
+import com.badlogic.ashley.core.Family;
+import com.badlogic.ashley.systems.IteratingSystem;
 import es.eucm.ead.engine.EntitiesLoader;
 import es.eucm.ead.engine.GameView;
 import es.eucm.ead.engine.assets.GameAssets;
@@ -63,7 +63,7 @@ public class OptionsSystem extends IteratingSystem {
 
 	public OptionsSystem(GameAssets gameAssets, EntitiesLoader entitiesLoader,
 			GameView gameView) {
-		super(Family.getFamilyFor(OptionsComponent.class));
+		super(Family.all(OptionsComponent.class).get());
 		this.gameAssets = gameAssets;
 		this.entitiesLoader = entitiesLoader;
 		this.gameView = gameView;

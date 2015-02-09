@@ -36,9 +36,9 @@
  */
 package es.eucm.ead.engine.systems.conversations;
 
-import ashley.core.Entity;
-import ashley.core.Family;
-import ashley.systems.IteratingSystem;
+import com.badlogic.ashley.core.Entity;
+import com.badlogic.ashley.core.Family;
+import com.badlogic.ashley.systems.IteratingSystem;
 
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.scenes.scene2d.Actor;
@@ -71,7 +71,7 @@ public class LineSystem extends IteratingSystem {
 
 	public LineSystem(GameAssets gameAssets, EntitiesLoader entitiesLoader,
 			GameView gameView) {
-		super(Family.getFamilyFor(LineComponent.class));
+		super(Family.all(LineComponent.class).get());
 		this.gameAssets = gameAssets;
 		this.entitiesLoader = entitiesLoader;
 		this.gameView = gameView;

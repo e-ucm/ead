@@ -36,7 +36,7 @@
  */
 package es.eucm.ead.engine.components;
 
-import ashley.core.Component;
+import com.badlogic.ashley.core.Component;
 
 /**
  * Just marks an entity for later removal. Created by Javier Torrente on

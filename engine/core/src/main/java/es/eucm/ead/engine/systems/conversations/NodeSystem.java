@@ -36,9 +36,9 @@
  */
 package es.eucm.ead.engine.systems.conversations;
 
-import ashley.core.Entity;
-import ashley.core.Family;
-import ashley.systems.IteratingSystem;
+import com.badlogic.ashley.core.Entity;
+import com.badlogic.ashley.core.Family;
+import com.badlogic.ashley.systems.IteratingSystem;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.utils.Pools;
 import es.eucm.ead.engine.GameLoop;
@@ -57,7 +57,7 @@ public class NodeSystem extends IteratingSystem {
 	private Map<Class, Class> nodeClasses;
 
 	public NodeSystem(GameLoop gameLoop) {
-		super(Family.getFamilyFor(NodeComponent.class));
+		super(Family.all(NodeComponent.class).get());
 		this.gameLoop = gameLoop;
 		nodeClasses = new HashMap<Class, Class>();
 	}

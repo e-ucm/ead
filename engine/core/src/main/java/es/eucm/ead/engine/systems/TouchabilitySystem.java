@@ -36,8 +36,8 @@
  */
 package es.eucm.ead.engine.systems;
 
-import ashley.core.Entity;
-import ashley.core.Family;
+import com.badlogic.ashley.core.Entity;
+import com.badlogic.ashley.core.Family;
 
 import com.badlogic.gdx.scenes.scene2d.Touchable;
 
@@ -53,8 +53,8 @@ import es.eucm.ead.engine.variables.VariablesManager;
 public class TouchabilitySystem extends ConditionalSystem {
 
 	public TouchabilitySystem(GameLoop engine, VariablesManager variablesManager) {
-		super(engine, variablesManager, Family
-				.getFamilyFor(TouchabilityComponent.class), 0);
+		super(engine, variablesManager, Family.all(TouchabilityComponent.class)
+				.get(), 0);
 	}
 
 	@Override

@@ -36,7 +36,7 @@
  */
 package es.eucm.ead.engine.processors.renderers;
 
-import ashley.core.Component;
+import com.badlogic.ashley.core.Component;
 
 import com.badlogic.gdx.math.Polygon;
 import com.badlogic.gdx.utils.Array;

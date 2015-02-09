@@ -37,7 +37,7 @@
  */
 package es.eucm.ead.engine.systems.effects;
 
-import ashley.core.Entity;
+import com.badlogic.ashley.core.Entity;
 import com.badlogic.gdx.Gdx;
 import es.eucm.ead.engine.Accessor;
 import es.eucm.ead.engine.variables.VariablesManager;

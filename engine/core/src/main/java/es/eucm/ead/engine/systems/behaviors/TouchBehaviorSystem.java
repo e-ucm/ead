@@ -36,8 +36,8 @@
  */
 package es.eucm.ead.engine.systems.behaviors;
 
-import ashley.core.Entity;
-import ashley.core.Family;
+import com.badlogic.ashley.core.Entity;
+import com.badlogic.ashley.core.Family;
 import es.eucm.ead.engine.GameLoop;
 import es.eucm.ead.engine.components.TouchedComponent;
 import es.eucm.ead.engine.components.behaviors.TouchesComponent;
@@ -54,8 +54,8 @@ public class TouchBehaviorSystem extends BehaviorSystem {
 
 	public TouchBehaviorSystem(GameLoop engine,
 			VariablesManager variablesManager) {
-		super(engine, variablesManager, Family.getFamilyFor(
-				TouchedComponent.class, TouchesComponent.class));
+		super(engine, variablesManager, Family.all(TouchedComponent.class,
+				TouchesComponent.class).get());
 	}
 
 	@Override

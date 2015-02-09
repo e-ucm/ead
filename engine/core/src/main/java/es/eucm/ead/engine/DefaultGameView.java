@@ -36,6 +36,7 @@
  */
 package es.eucm.ead.engine;
 
+import com.badlogic.ashley.core.ComponentMapper;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.Group;
@@ -119,9 +120,12 @@ public class DefaultGameView extends WidgetGroup implements GameView {
 
 	private void initKeyboardListener() {
 		addListener(new InputListener() {
+			final ComponentMapper<KeyPressedComponent> keyPressed = ComponentMapper
+					.getFor(KeyPressedComponent.class);
+
 			public boolean keyDown(InputEvent event, int keycode) {
 				EngineEntity entity = getLayer(Layer.SCENE);
-				if (!entity.hasComponent(KeyPressedComponent.class)) {
+				if (!keyPressed.has(entity)) {
 					entity.add(gameLoop
 							.createComponent(KeyPressedComponent.class));
 				}

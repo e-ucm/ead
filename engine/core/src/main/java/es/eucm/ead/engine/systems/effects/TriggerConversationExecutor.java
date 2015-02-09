@@ -36,9 +36,9 @@
  */
 package es.eucm.ead.engine.systems.effects;
 
-import ashley.core.Entity;
-import ashley.core.Family;
-import com.badlogic.gdx.utils.IntMap;
+import com.badlogic.ashley.core.Entity;
+import com.badlogic.ashley.core.Family;
+import com.badlogic.ashley.utils.ImmutableArray;
 import es.eucm.ead.engine.GameLoop;
 import es.eucm.ead.engine.components.ConversationsComponent;
 import es.eucm.ead.engine.components.NodeComponent;
@@ -48,13 +48,13 @@ import es.eucm.ead.schema.effects.TriggerConversation;
 public class TriggerConversationExecutor extends
 		EffectExecutor<TriggerConversation> {
 
-	private IntMap<Entity> conversationsEntities;
+	private ImmutableArray<Entity> conversationsEntities;
 
 	@Override
 	public void initialize(GameLoop gameLoop) {
 		super.initialize(gameLoop);
-		conversationsEntities = gameLoop.getEntitiesFor(Family
-				.getFamilyFor(ConversationsComponent.class));
+		conversationsEntities = gameLoop.getEntitiesFor(Family.all(
+				ConversationsComponent.class).get());
 	}
 
 	@Override
@@ -64,7 +64,7 @@ public class TriggerConversationExecutor extends
 		ConversationsComponent conversations = target
 				.getComponent(ConversationsComponent.class);
 		if (conversations == null) {
-			for (Entity entity : conversationsEntities.values()) {
+			for (Entity entity : conversationsEntities) {
 				conversations = entity
 						.getComponent(ConversationsComponent.class);
 

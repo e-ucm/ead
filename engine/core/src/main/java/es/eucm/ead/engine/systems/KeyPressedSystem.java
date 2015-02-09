@@ -36,11 +36,10 @@
  */
 package es.eucm.ead.engine.systems;
 
-import ashley.core.Entity;
-import ashley.core.Family;
-import ashley.systems.IteratingSystem;
+import com.badlogic.ashley.core.Entity;
+import com.badlogic.ashley.core.Family;
+import com.badlogic.ashley.systems.IteratingSystem;
 import es.eucm.ead.engine.components.KeyPressedComponent;
-import es.eucm.ead.engine.components.TouchedComponent;
 
 /**
  * Removed touched components from all entities. This system has the lowest
@@ -49,7 +48,7 @@ import es.eucm.ead.engine.components.TouchedComponent;
 public class KeyPressedSystem extends IteratingSystem {
 
 	public KeyPressedSystem() {
-		super(Family.getFamilyFor(KeyPressedComponent.class), Integer.MAX_VALUE);
+		super(Family.all(KeyPressedComponent.class).get(), Integer.MAX_VALUE);
 	}
 
 	@Override

@@ -36,7 +36,7 @@
  */
 package es.eucm.ead.engine.systems.effects;
 
-import ashley.core.Entity;
+import com.badlogic.ashley.core.Entity;
 import com.badlogic.gdx.math.Vector2;
 import es.eucm.ead.engine.components.PathFinderComponent;
 import es.eucm.ead.engine.components.WalkComponent;

@@ -76,7 +76,6 @@ public class EffectTweenCreator extends TweenCreator<EffectTween> {
 							EffectsComponent comp = engine.addAndGetComponent(
 									owner, EffectsComponent.class);
 							comp.addBehavior(null, schemaTween.getEffects());
-							system.processEntity(owner, 0F);
 						}
 					}
 				});

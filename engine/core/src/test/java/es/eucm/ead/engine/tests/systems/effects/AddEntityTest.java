@@ -36,9 +36,9 @@
  */
 package es.eucm.ead.engine.tests.systems.effects;
 
-import ashley.core.Entity;
-import ashley.core.EntityListener;
 import aurelienribon.tweenengine.Tween;
+import com.badlogic.ashley.core.Entity;
+import com.badlogic.ashley.core.EntityListener;
 import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.scenes.scene2d.Group;
 import com.badlogic.gdx.utils.Json;
@@ -82,8 +82,8 @@ import java.util.HashMap;
 import java.util.Map;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
-import static org.junit.Assert.assertTrue;
 
 /**
  * Tests {@link AddEntity} effects but also serves as a good test bed for
@@ -195,8 +195,8 @@ public class AddEntityTest extends EngineTest implements EntityListener {
 		assertEquals("Newest entity did not update", entityAdded,
 				variablesManager
 						.getValue(VarsContext.RESERVED_NEWEST_ENTITY_VAR));
-		assertEquals("Entity added should have no components", 0,
-				entityAdded.getComponents().size);
+		assertEquals("Entity added should have no components", 0, entityAdded
+				.getComponents().size());
 		// Check x and y are not overriden
 		assertEquals("X and Y should be those specified in the entity", 10,
 				entityAdded.getGroup().getX(), 0.001F);
@@ -257,9 +257,9 @@ public class AddEntityTest extends EngineTest implements EntityListener {
 		assertEquals("Newest entity did not update", entityAdded,
 				variablesManager
 						.getValue(VarsContext.RESERVED_NEWEST_ENTITY_VAR));
-		assertTrue(
+		assertNotNull(
 				"Entity added should have a timers component to get the entity removed",
-				entityAdded.hasComponent(TimersComponent.class));
+				entityAdded.getComponent(TimersComponent.class));
 		// Check the entity gets removed after 2 seconds
 		gameLoop.update(1);
 		assertEquals("There should be 2 entities yet", 2, count);
@@ -299,8 +299,8 @@ public class AddEntityTest extends EngineTest implements EntityListener {
 		// Get added entity
 		EngineEntity entityAdded = (EngineEntity) parentEntity.getGroup()
 				.getChildren().get(0).getUserObject();
-		assertTrue("Entity added should have a tweens component",
-				entityAdded.hasComponent(TweensComponent.class));
+		assertNotNull("Entity added should have a tweens component",
+				entityAdded.getComponent(TweensComponent.class));
 		gameAssets.getAssetManager().finishLoading();
 		gameLoop.update(0);
 		// Check animation is active
@@ -359,10 +359,10 @@ public class AddEntityTest extends EngineTest implements EntityListener {
 		// Get added entity
 		EngineEntity entityAdded = (EngineEntity) parentEntity.getGroup()
 				.getChildren().get(0).getUserObject();
-		assertTrue("Entity added should have a tweens component",
-				entityAdded.hasComponent(TweensComponent.class));
-		assertTrue("Entity added should have a timers component",
-				entityAdded.hasComponent(TimersComponent.class));
+		assertNotNull("Entity added should have a tweens component",
+				entityAdded.getComponent(TweensComponent.class));
+		assertNotNull("Entity added should have a timers component",
+				entityAdded.getComponent(TimersComponent.class));
 		gameLoop.update(0);
 		// Check animation is active
 		gameLoop.update(0.5F);

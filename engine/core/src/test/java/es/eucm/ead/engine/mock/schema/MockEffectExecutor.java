@@ -36,7 +36,7 @@
  */
 package es.eucm.ead.engine.mock.schema;
 
-import ashley.core.Entity;
+import com.badlogic.ashley.core.Entity;
 import es.eucm.ead.engine.systems.effects.EffectExecutor;
 
 public class MockEffectExecutor extends EffectExecutor<MockEffect> {

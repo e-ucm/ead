@@ -36,7 +36,7 @@
  */
 package es.eucm.ead.engine.processors.tweens;
 
-import ashley.core.Component;
+import com.badlogic.ashley.core.Component;
 import es.eucm.ead.engine.GameLoop;
 import es.eucm.ead.engine.components.TweensComponent;
 import es.eucm.ead.engine.processors.ComponentProcessor;

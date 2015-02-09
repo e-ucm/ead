@@ -36,7 +36,7 @@
  */
 package es.eucm.ead.engine.systems.effects;
 
-import ashley.core.Entity;
+import com.badlogic.ashley.core.Entity;
 import es.eucm.ead.engine.components.renderers.StatesComponent;
 import es.eucm.ead.schema.effects.ChangeState;
 

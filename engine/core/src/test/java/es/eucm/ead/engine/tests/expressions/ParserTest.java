@@ -42,7 +42,7 @@
 
 package es.eucm.ead.engine.tests.expressions;
 
-import ashley.core.Entity;
+import com.badlogic.ashley.core.Entity;
 import com.badlogic.gdx.utils.Array;
 import es.eucm.ead.engine.EngineTest;
 import es.eucm.ead.engine.components.TagsComponent;

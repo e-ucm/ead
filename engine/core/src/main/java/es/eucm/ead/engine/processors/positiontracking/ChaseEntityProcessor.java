@@ -36,7 +36,7 @@
  */
 package es.eucm.ead.engine.processors.positiontracking;
 
-import ashley.core.Component;
+import com.badlogic.ashley.core.Component;
 import es.eucm.ead.engine.GameLoop;
 import es.eucm.ead.engine.components.positiontracking.ChaseEntityComponent;
 import es.eucm.ead.engine.processors.ComponentProcessor;

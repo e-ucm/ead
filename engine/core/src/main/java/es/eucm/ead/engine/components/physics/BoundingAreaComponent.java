@@ -36,7 +36,7 @@
  */
 package es.eucm.ead.engine.components.physics;
 
-import ashley.core.Component;
+import com.badlogic.ashley.core.Component;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.utils.Pools;
 import es.eucm.ead.engine.collision.AreaWrapper;

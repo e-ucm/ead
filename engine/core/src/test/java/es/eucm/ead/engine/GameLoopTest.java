@@ -36,7 +36,7 @@
  */
 package es.eucm.ead.engine;
 
-import ashley.core.Component;
+import com.badlogic.ashley.core.Component;
 import com.badlogic.gdx.scenes.scene2d.Group;
 import es.eucm.ead.engine.entities.EngineEntity;
 import org.junit.Before;

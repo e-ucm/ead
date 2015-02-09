@@ -36,9 +36,9 @@
  */
 package es.eucm.ead.engine.systems;
 
-import ashley.core.Entity;
-import ashley.core.Family;
-import ashley.systems.IteratingSystem;
+import com.badlogic.ashley.core.Entity;
+import com.badlogic.ashley.core.Family;
+import com.badlogic.ashley.systems.IteratingSystem;
 import com.badlogic.gdx.scenes.scene2d.Group;
 import es.eucm.ead.engine.components.physics.VelocityComponent;
 import es.eucm.ead.engine.entities.EngineEntity;
@@ -46,7 +46,7 @@ import es.eucm.ead.engine.entities.EngineEntity;
 public class VelocitySystem extends IteratingSystem {
 
 	public VelocitySystem() {
-		super(Family.getFamilyFor(VelocityComponent.class));
+		super(Family.all(VelocityComponent.class).get());
 	}
 
 	@Override

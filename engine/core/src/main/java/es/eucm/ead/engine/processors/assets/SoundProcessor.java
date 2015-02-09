@@ -36,7 +36,7 @@
  */
 package es.eucm.ead.engine.processors.assets;
 
-import ashley.core.Component;
+import com.badlogic.ashley.core.Component;
 import es.eucm.ead.engine.GameLoop;
 import es.eucm.ead.engine.assets.Assets.AssetLoadedCallback;
 import es.eucm.ead.engine.assets.GameAssets;

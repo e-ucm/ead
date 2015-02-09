@@ -36,13 +36,12 @@
  */
 package es.eucm.ead.engine.systems.behaviors;
 
-import com.badlogic.gdx.utils.IntMap;
-import es.eucm.ead.engine.components.behaviors.KeysComponent;
-import es.eucm.ead.engine.components.behaviors.events.RuntimeKey;
-import ashley.core.Entity;
-import ashley.core.Family;
+import com.badlogic.ashley.core.Entity;
+import com.badlogic.ashley.core.Family;
 import es.eucm.ead.engine.GameLoop;
 import es.eucm.ead.engine.components.KeyPressedComponent;
+import es.eucm.ead.engine.components.behaviors.KeysComponent;
+import es.eucm.ead.engine.components.behaviors.events.RuntimeKey;
 import es.eucm.ead.engine.variables.VariablesManager;
 
 /**
@@ -52,8 +51,8 @@ import es.eucm.ead.engine.variables.VariablesManager;
 public class KeyBehaviorSystem extends BehaviorSystem {
 
 	public KeyBehaviorSystem(GameLoop engine, VariablesManager variablesSystem) {
-		super(engine, variablesSystem, Family
-				.getFamilyFor(KeyPressedComponent.class));
+		super(engine, variablesSystem, Family.all(KeyPressedComponent.class)
+				.get());
 	}
 
 	@Override
@@ -62,19 +61,14 @@ public class KeyBehaviorSystem extends BehaviorSystem {
 				.getComponent(KeyPressedComponent.class);
 
 		for (RuntimeKey keyEvent : pressed.getKeyEvents()) {
-			// Searching for entities that have key interactions defined that
-			// respond to the event you have read
-			IntMap<Entity> entities = gameLoop.getEntitiesFor(Family
-					.getFamilyFor(KeysComponent.class));
-
-			for (IntMap.Entry<Entity> currentEntity : entities.entries()) {
-				KeysComponent keysComponent = currentEntity.value
+			for (Entity currentEntity : gameLoop.getEntitiesFor(Family.all(
+					KeysComponent.class).get())) {
+				KeysComponent keysComponent = currentEntity
 						.getComponent((KeysComponent.class));
 				for (RuntimeKey runtimeKeys : keysComponent.getBehaviors()) {
 
 					if (keyEvent.compareEvents(runtimeKeys)) {
-						addEffects(currentEntity.value,
-								runtimeKeys.getEffects());
+						addEffects(currentEntity, runtimeKeys.getEffects());
 					}
 				}
 			}

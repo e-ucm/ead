@@ -36,7 +36,7 @@
  */
 package es.eucm.ead.engine.expressions.operators;
 
-import ashley.core.Entity;
+import com.badlogic.ashley.core.Entity;
 import com.badlogic.gdx.utils.reflect.ClassReflection;
 import es.eucm.ead.engine.components.TagsComponent;
 import es.eucm.ead.engine.expressions.ExpressionEvaluationException;
@@ -67,7 +67,7 @@ class HasTag extends AbstractBooleanOperation {
 		}
 
 		Entity entity = (Entity) o1;
-		if (entity != null && entity.hasComponent(TagsComponent.class)) {
+		if (entity.getComponent(TagsComponent.class) != null) {
 			TagsComponent tags = entity.getComponent(TagsComponent.class);
 
 			// Check second argument is String and retrieve it (tag name)

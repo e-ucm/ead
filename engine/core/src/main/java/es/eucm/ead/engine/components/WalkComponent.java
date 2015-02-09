@@ -36,7 +36,7 @@
  */
 package es.eucm.ead.engine.components;
 
-import ashley.core.Component;
+import com.badlogic.ashley.core.Component;
 import com.badlogic.gdx.math.Vector2;
 import es.eucm.ead.engine.paths.PathFinder;
 

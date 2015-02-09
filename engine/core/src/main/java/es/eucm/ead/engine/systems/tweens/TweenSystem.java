@@ -36,11 +36,11 @@
  */
 package es.eucm.ead.engine.systems.tweens;
 
-import ashley.core.Engine;
-import ashley.core.Entity;
-import ashley.core.EntityListener;
-import ashley.core.Family;
-import ashley.systems.IteratingSystem;
+import com.badlogic.ashley.core.Engine;
+import com.badlogic.ashley.core.Entity;
+import com.badlogic.ashley.core.EntityListener;
+import com.badlogic.ashley.core.Family;
+import com.badlogic.ashley.systems.IteratingSystem;
 import aurelienribon.tweenengine.Tween;
 import aurelienribon.tweenengine.TweenManager;
 import com.badlogic.gdx.scenes.scene2d.Group;
@@ -65,7 +65,7 @@ public class TweenSystem extends IteratingSystem implements EntityListener {
 	private Map<Class, BaseTweenCreator> baseTweenCreators;
 
 	public TweenSystem() {
-		super(Family.getFamilyFor(TweensComponent.class));
+		super(Family.all(TweensComponent.class).get());
 		tweenManager = new TweenManager();
 		Tween.registerAccessor(Group.class, new GroupAccessor());
 		Tween.registerAccessor(FieldWrapper.class, new FieldAccessor());
