@@ -1,0 +1,14 @@
+{
+    "additionalProperties": false,
+    "javaType": "es.eucm.ead.schema.editor.components.templates.TemplateAttributes",
+    "properties": {
+        "attributes": {
+            "type": "array",
+            "items" : {
+                "$ref" : "attribute.json"
+            },
+            "description": "attributes list"
+        }
+    },
+    "type": "object"
+}

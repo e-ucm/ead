@@ -361,6 +361,11 @@
             "down": "pressed_48_bg",
             "font": "default_font",
             "fontColor": "white"
+        },
+        "template": {
+            "down": "pressed_48_bg",
+            "font": "default_font",
+            "fontColor": "light_gray"
         }
     },
     "com.badlogic.gdx.scenes.scene2d.ui.ImageButton$ImageButtonStyle": {
@@ -429,6 +434,10 @@
         },
         "colorPicker": {
             "knob": "color_picker_knob"
+        },
+        "template": {
+            "background": "knob_background",
+            "knobBefore": "knob_before_mokap"
         }
     },
     "es.eucm.ead.editor.view.widgets.RangeSlider$RangeSliderStyle":{

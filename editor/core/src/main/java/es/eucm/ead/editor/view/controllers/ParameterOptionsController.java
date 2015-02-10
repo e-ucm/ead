@@ -95,10 +95,10 @@ public class ParameterOptionsController<T extends Parameters> extends
 		}
 	}
 
-	private void setParameterValue(String field, String value) {
+	private void setParameterValue(String field, Object value) {
 		ParameterOptionController option = (ParameterOptionController) optionControllers
 				.get(field);
-		option.setExpression(value);
+		option.setExpression((String) value);
 	}
 
 	/**

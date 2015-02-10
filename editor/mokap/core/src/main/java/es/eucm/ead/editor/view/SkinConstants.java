@@ -59,6 +59,8 @@ public interface SkinConstants {
 	public static final String DRAWABLE_TEXT_FIELD = "text_field";
 	public static final String DRAWABLE_TOOLBAR = "toolbar";
 	public static final String DRAWABLE_BROWN_TOOLBAR = "brown_toolbar";
+	public static final String DRAWABLE_CUP = "cup";
+	public static final String DRAWABLE_PENCIL = "pencil";
 
 	public static final String STYLE_DEFAULT = "default";
 	public static final String STYLE_CONTEXT = "context";
@@ -83,6 +85,7 @@ public interface SkinConstants {
 	public static final String STYLE_SELECTION = "selection";
 	public static final String STYLE_DIALOG = "dialog";
 	public static final String STYLE_ORANGE = "orange";
+	public static final String STYLE_TEMPLATE = "template";
 
 	public static final String TABLET_GAME = "tablet_game";
 	public static final String TABLET_CARD = "tablet_card";
@@ -183,6 +186,7 @@ public interface SkinConstants {
 	public static final String IC_SEGMENT_MIDDLE = "ic_segment_middle";
 	public static final String IC_ARROW = "ic_arrow";
 	public static final String IC_ADD_SCENE = "ic_add_scene";
-	public static final String DRAWABLE_CUP = "cup";
-	public static final String DRAWABLE_PENCIL = "pencil";
+
+	public static final String IC_RANDOM = "ic_random";
+
 }

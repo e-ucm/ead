@@ -92,7 +92,7 @@ public class ShaderProcessor extends ComponentProcessor<Shader> {
 		shaderComponent.setShaderProgram(shaderProgram);
 
 		for (Parameter parameter : shader.getUniforms()) {
-			String[] parts = parameter.getValue().split(",");
+			String[] parts = ((String) parameter.getValue()).split(",");
 			float[] values = new float[parts.length];
 			for (int i = 0; i < parts.length; i++) {
 				values[i] = Float.parseFloat(parts[i]);

@@ -62,8 +62,8 @@ public class EngineUtils {
 			Parameters clone = (Parameters) assets.fromJson(clazz,
 					assets.toJson(parameters, clazz));
 			for (Parameter parameter : clone.getParameters()) {
-				Object value = variablesManager.evaluateExpression(parameter
-						.getValue());
+				Object value = variablesManager
+						.evaluateExpression((String) parameter.getValue());
 				variablesManager.getAccessor().set(clone, parameter.getName(),
 						value);
 			}
