@@ -300,7 +300,6 @@
                 <module>engine/core</module>
                 <module>engine/desktop</module>
                 <module>engine/android</module>
-                <module>engine/html</module>
                 <module>editor/schema</module>
                 <module>editor/core</module>
                 <module>editor/desktop</module>
@@ -324,6 +323,10 @@
                     <plugin>
                         <groupId>com.googlecode.maven-java-formatter-plugin</groupId>
                         <artifactId>maven-java-formatter-plugin</artifactId>
+                    </plugin>
+                    <plugin>
+                        <groupId>es.e-ucm.ead</groupId>
+                        <artifactId>ead-maven-plugin</artifactId>
                     </plugin>
                 </plugins>
             </build>
