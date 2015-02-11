@@ -19,7 +19,7 @@
         <android.platform.version>19</android.platform.version>
         <android.editor.version>4.1.1.4</android.editor.version>
         <android.editor.platform.version>19</android.editor.platform.version>
-        <android.maven.version>3.9.0-rc.1</android.maven.version>
+        <android.maven.version>4.1.0</android.maven.version>
         <gwt.version>2.6.0</gwt.version>
         <gwt.maven.version>2.6.0</gwt.maven.version>
         <network.version>0.1-SNAPSHOT</network.version>
@@ -137,16 +137,6 @@
         <pluginManagement>
             <plugins>
                 <plugin>
-                    <groupId>com.googlecode.maven-java-formatter-plugin</groupId>
-                    <artifactId>maven-java-formatter-plugin</artifactId>
-                    <version>0.4</version>
-                </plugin>
-                <plugin>
-                    <groupId>com.mycila</groupId>
-                    <artifactId>license-maven-plugin</artifactId>
-                    <version>2.6</version>
-                </plugin>
-                <plugin>
                     <artifactId>maven-deploy-plugin</artifactId>
                     <version>2.7</version>
                 </plugin>
@@ -172,6 +162,115 @@
                     <artifactId>build-helper-maven-plugin</artifactId>
                     <version>1.8</version>
                 </plugin>
+                <!-- Java formatter -->
+                <plugin>
+                    <groupId>com.googlecode.maven-java-formatter-plugin</groupId>
+                    <artifactId>maven-java-formatter-plugin</artifactId>
+                    <version>0.4</version>
+                    <configuration>
+                        <compilerCompliance>${java.version}</compilerCompliance>
+                        <compilerSource>${java.version}</compilerSource>
+                        <configFile>eclipse-formatter.xml</configFile>
+                        <lineEnding>KEEP</lineEnding>
+                    </configuration>
+                    <executions>
+                        <execution>
+                            <phase>install</phase>
+                            <goals>
+                                <goal>format</goal>
+                            </goals>
+                        </execution>
+                    </executions>
+                    <dependencies>
+                        <dependency>
+                            <groupId>es.e-ucm.ead</groupId>
+                            <artifactId>build-tools-support</artifactId>
+                            <version>1.0-SNAPSHOT</version>
+                        </dependency>
+                    </dependencies>
+                </plugin>
+                <!-- Check licenses in header -->
+                <plugin>
+                    <groupId>com.mycila</groupId>
+                    <artifactId>license-maven-plugin</artifactId>
+                    <version>2.6</version>
+                    <configuration>
+                        <basedir>${project.parent.basedir}</basedir>
+                        <header>LICENSE.txt</header>
+                        <strictCheck>true</strictCheck>
+                        <failIfMissing>false</failIfMissing>
+                        <aggregate>true</aggregate>
+                        <excludes>
+                            <!-- readme files -->
+                            <exclude>COPYING</exclude>
+                            <exclude>LICENSES</exclude>
+                            <!-- point-files and (non-folder) root-files -->
+                            <exclude>*.*</exclude>
+                            <exclude>**/.*</exclude>
+                            <!-- binary libraries -->
+                            <exclude>**/*.so</exclude>
+                            <!-- text, xml, string-files -->
+                            <exclude>**/*.txt</exclude>
+                            <exclude>**/*.xml</exclude>
+                            <exclude>**/*.props</exclude>
+                            <exclude>**/*.properties</exclude>
+                            <!-- media, fonts, shaders -->
+                            <exclude>**/*.fnt</exclude>
+                            <exclude>**/*.ttf</exclude>
+                            <exclude>**/*.atlas</exclude>
+                            <exclude>**/*.glsl</exclude>
+                            <exclude>**/*.svg</exclude>
+                            <exclude>**/*.psd</exclude>
+                            <exclude>**/*.ai</exclude>
+                            <!-- android-related: proguard config, R-files -->
+                            <exclude>**/*.cfg</exclude>
+                            <exclude>**/R.java</exclude>
+                            <exclude>**/gen-external-apklibs/**</exclude>
+                            <!-- ios related: vs solution, apple prop-list -->
+                            <exclude>**/*.sln</exclude>
+                            <exclude>**/*.plist</exclude>
+                            <exclude>**/*.csproj</exclude>
+                            <!-- scripts -->
+                            <exclude>**/*.bat</exclude>
+                            <exclude>**/*.sh</exclude>
+                            <exclude>**/*.command</exclude>
+                            <!-- resources and web -->
+                            <exclude>**/resources/**</exclude>
+                            <exclude>**/webapp/**</exclude>
+                        </excludes>
+                    </configuration>
+                    <executions>
+                        <execution>
+                            <id>check-headers</id>
+                            <phase>install</phase>
+                            <goals>
+                                <goal>format</goal>
+                            </goals>
+                        </execution>
+                    </executions>
+                    <dependencies>
+                        <dependency>
+                            <groupId>es.e-ucm.ead</groupId>
+                            <artifactId>build-tools-support</artifactId>
+                            <version>1.0-SNAPSHOT</version>
+                        </dependency>
+                    </dependencies>
+                </plugin>
+                <plugin>
+                    <groupId>es.e-ucm.ead</groupId>
+                    <artifactId>ead-maven-plugin</artifactId>
+                    <version>1.0-SNAPSHOT</version>
+                    <inherited>false</inherited>
+                    <executions>
+                        <execution>
+                            <id>generate-skins</id>
+                            <phase>prepare-package</phase>
+                            <goals>
+                                <goal>generate-skins</goal>
+                            </goals>
+                        </execution>
+                    </executions>
+                </plugin>
             </plugins>
         </pluginManagement>
         <plugins>
@@ -184,150 +283,11 @@
                     <target>${java.version}</target>
                 </configuration>
             </plugin>
-            <!-- Java formatter -->
-            <plugin>
-                <groupId>com.googlecode.maven-java-formatter-plugin</groupId>
-                <artifactId>maven-java-formatter-plugin</artifactId>
-                <configuration>
-                    <compilerCompliance>${java.version}</compilerCompliance>
-                    <compilerSource>${java.version}</compilerSource>
-                    <configFile>eclipse-formatter.xml</configFile>
-                    <lineEnding>KEEP</lineEnding>
-                </configuration>
-                <executions>
-                    <execution>
-                        <phase>install</phase>
-                        <goals>
-                            <goal>format</goal>
-                        </goals>
-                    </execution>
-                </executions>
-                <dependencies>
-                    <dependency>
-                        <groupId>es.e-ucm.ead</groupId>
-                        <artifactId>build-tools-support</artifactId>
-                        <version>1.0-SNAPSHOT</version>
-                    </dependency>
-                </dependencies>
-            </plugin>
-            <!-- Check licenses in header -->
-            <plugin>
-                <groupId>com.mycila</groupId>
-                <artifactId>license-maven-plugin</artifactId>
-                <configuration>
-                    <basedir>${project.parent.basedir}</basedir>
-                    <header>LICENSE.txt</header>
-                    <strictCheck>true</strictCheck>
-                    <failIfMissing>false</failIfMissing>
-                    <aggregate>true</aggregate>
-                    <excludes>
-                        <!-- readme files -->
-                        <exclude>COPYING</exclude>
-                        <exclude>LICENSES</exclude>
-                        <!-- point-files and (non-folder) root-files -->
-                        <exclude>*.*</exclude>
-                        <exclude>**/.*</exclude>
-                        <!-- binary libraries -->
-                        <exclude>**/*.so</exclude>
-                        <!-- text, xml, string-files -->
-                        <exclude>**/*.txt</exclude>
-                        <exclude>**/*.xml</exclude>
-                        <exclude>**/*.props</exclude>
-                        <exclude>**/*.properties</exclude>
-                        <!-- media, fonts, shaders -->
-                        <exclude>**/*.fnt</exclude>
-                        <exclude>**/*.ttf</exclude>
-                        <exclude>**/*.atlas</exclude>
-                        <exclude>**/*.glsl</exclude>
-                        <exclude>**/*.svg</exclude>
-                        <exclude>**/*.psd</exclude>
-                        <exclude>**/*.ai</exclude>
-                        <!-- android-related: proguard config, R-files -->
-                        <exclude>**/*.cfg</exclude>
-                        <exclude>**/R.java</exclude>
-                        <!-- ios related: vs solution, apple prop-list -->
-                        <exclude>**/*.sln</exclude>
-                        <exclude>**/*.plist</exclude>
-                        <exclude>**/*.csproj</exclude>
-                        <!-- scripts -->
-                        <exclude>**/*.bat</exclude>
-                        <exclude>**/*.sh</exclude>
-                        <exclude>**/*.command</exclude>
-                        <!-- resources and web -->
-                        <exclude>**/resources/**</exclude>
-                        <exclude>**/webapp/**</exclude>
-                    </excludes>
-                </configuration>
-                <executions>
-                    <execution>
-                        <id>check-headers</id>
-                        <phase>install</phase>
-                        <goals>
-                            <goal>format</goal>
-                            <goal>check</goal>
-                        </goals>
-                    </execution>
-                </executions>
-                <dependencies>
-                    <dependency>
-                        <groupId>es.e-ucm.ead</groupId>
-                        <artifactId>build-tools-support</artifactId>
-                        <version>1.0-SNAPSHOT</version>
-                    </dependency>
-                </dependencies>
-            </plugin>
-            <plugin>
-                <groupId>es.e-ucm</groupId>
-                <artifactId>xml-formatter</artifactId>
-                <version>1.0-SNAPSHOT</version>
-                <executions>
-                    <execution>
-                        <id>reformat-poms</id>
-                        <phase>prepare-package</phase>
-                        <goals>
-                            <goal>format-xml</goal>
-                        </goals>
-                    </execution>
-                </executions>
-            </plugin>
-            <plugin>
-                <groupId>es.e-ucm.ead</groupId>
-                <artifactId>ead-maven-plugin</artifactId>
-                <version>1.0-SNAPSHOT</version>
-                <inherited>false</inherited>
-                <executions>
-                    <execution>
-                        <id>generate-skins</id>
-                        <phase>prepare-package</phase>
-                        <goals>
-                            <goal>generate-skins</goal>
-                        </goals>
-                    </execution>
-                </executions>
-            </plugin>
         </plugins>
     </build>
     <profiles>
         <profile>
-            <id>run-editor</id>
-            <modules>
-                <module>engine/schema</module>
-                <module>editor/schema</module>
-                <module>engine/core</module>
-                <module>engine/desktop</module>
-                <module>editor/core</module>
-                <module>editor/exporter</module>
-                <module>editor/desktop</module>
-            </modules>
-        </profile>
-        <profile>
-            <!-- Profile to generate the Java schema code from JSON Schema in build-tools/resources -->
-            <id>build-schema</id>
-            <modules>
-                <module>build-tools/generators</module>
-            </modules>
-        </profile>
-        <profile>
+            <!-- Default profile.Contains all project modules -->
             <id>default</id>
             <activation>
                 <activeByDefault>true</activeByDefault>
@@ -335,8 +295,6 @@
             <modules>
                 <module>build-tools/generators</module>
                 <module>build-tools/maven</module>
-                <module>build-tools/maven-gitlog-plugin-ext</module>
-                <module>build-tools/android</module>
                 <module>utils/gdx/java</module>
                 <module>engine/schema</module>
                 <module>engine/core</module>
@@ -353,49 +311,78 @@
                 <module>editor/mokap/desktop</module>
                 <module>repo-builder</module>
             </modules>
-        </profile>
-        <profile>
-            <id>do-nightly-release</id>
-            <properties>
-                <release.channel>nightly</release.channel>
-                <timestamp>${maven.build.timestamp}</timestamp>
-                <maven.build.timestamp.format>yyyyMMddHHmm</maven.build.timestamp.format>
-            </properties>
             <build>
                 <plugins>
                     <plugin>
-                        <artifactId>maven-deploy-plugin</artifactId>
-                        <configuration>
-                            <skip>true</skip>
-                        </configuration>
+                        <groupId>com.mycila</groupId>
+                        <artifactId>license-maven-plugin</artifactId>
+                    </plugin>
+                    <plugin>
+                        <groupId>es.e-ucm</groupId>
+                        <artifactId>xml-formatter</artifactId>
+                    </plugin>
+                    <plugin>
+                        <groupId>com.googlecode.maven-java-formatter-plugin</groupId>
+                        <artifactId>maven-java-formatter-plugin</artifactId>
                     </plugin>
                 </plugins>
             </build>
+        </profile>
+        <profile>
+            <id>model</id>
             <modules>
-                <module>build-tools/maven-gitlog-plugin-ext</module>
-                <module>engine/desktop</module>
-                <module>editor/desktop</module>
+                <module>build-tools/generators</module>
+                <module>engine/schema</module>
+                <module>editor/schema</module>
             </modules>
         </profile>
-        <!-- This profile generates editor-android apk -->
         <profile>
-            <id>mokap-android</id>
+            <id>engine</id>
             <modules>
-                <module>engine/schema</module>
                 <module>engine/core</module>
-                <module>editor/mokap/core</module>
-                <module>editor/mokap/android/</module>
+                <module>engine/android</module>
+                <module>engine/desktop</module>
+            </modules>
+            <build>
+                <plugins>
+                    <plugin>
+                        <groupId>com.googlecode.maven-java-formatter-plugin</groupId>
+                        <artifactId>maven-java-formatter-plugin</artifactId>
+                    </plugin>
+                </plugins>
+            </build>
+        </profile>
+        <profile>
+            <id>html</id>
+            <modules>
+                <module>engine/core</module>
+                <module>engine/android</module>
+                <module>engine/desktop</module>
+                <module>engine/html</module>
             </modules>
         </profile>
         <profile>
             <id>mokap</id>
             <modules>
-                <module>engine/schema</module>
-                <module>engine/core</module>
                 <module>editor/core</module>
                 <module>editor/mokap/core</module>
                 <module>editor/mokap/desktop</module>
-                <module>editor/mokap/android/</module>
+                <module>editor/mokap/android</module>
+            </modules>
+            <build>
+                <plugins>
+                    <plugin>
+                        <groupId>com.googlecode.maven-java-formatter-plugin</groupId>
+                        <artifactId>maven-java-formatter-plugin</artifactId>
+                    </plugin>
+                </plugins>
+            </build>
+        </profile>
+        <profile>
+            <!-- Profile to generate the Java schema code from JSON Schema in build-tools/resources -->
+            <id>build-schema</id>
+            <modules>
+                <module>build-tools/generators</module>
             </modules>
         </profile>
     </profiles>
