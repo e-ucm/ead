@@ -38,6 +38,7 @@ package es.eucm.ead.editor.control.workers;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.files.FileHandle;
+import es.eucm.ead.editor.model.Q;
 import es.eucm.ead.schema.editor.components.repo.RepoElement;
 import es.eucm.ead.schemax.ModelStructure;
 
@@ -96,8 +97,8 @@ public class LoadLibraryEntities extends Worker {
 					.fromJson(RepoElement.class,
 							libraryEntity.child(ModelStructure.DESCRIPTOR_FILE));
 			if (!controller.getLibraryManager().isMokap(repoElement)) {
-				result(repoElement.getEntityRef(), repoElement.getNameList()
-						.get(0),
+				result(repoElement.getEntityRef(),
+						Q.getRepoElementName(repoElement),
 						libraryEntity.child(ModelStructure.THUMBNAIL_FILE)
 								.path());
 			}
