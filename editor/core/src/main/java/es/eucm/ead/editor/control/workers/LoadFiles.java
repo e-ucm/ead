@@ -95,13 +95,10 @@ public class LoadFiles extends Worker {
 		FileHandle file = projectPaths.removeIndex(0);
 		if (ProjectUtils.isSupportedImage(file)) {
 			FileHandle thumbnail = thumbnailsFolder.child(file.name());
-			String thumbnailPath = file.path();
+			String thumbnailPath = thumbnail.path();
 			if (!thumbnail.exists()
 					|| thumbnail.lastModified() < file.lastModified()) {
-				if (controller.getPlatform().getImageUtils()
-						.scale(file, thumbnail) != -1) {
-					thumbnailPath = thumbnail.path();
-				}
+				controller.getPlatform().getImageUtils().scale(file, thumbnail);
 			}
 			result(file.path(), file.nameWithoutExtension(), thumbnailPath);
 		}
