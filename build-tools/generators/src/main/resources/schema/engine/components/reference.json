@@ -6,9 +6,13 @@
         "$ref": "component.json"
     },
     "properties": {
-        "id": {
+        "folder": {
+          "type": "string",
+          "description": "Points to the folder of the reference. Appended to the library. E.g. /myEntity"
+        },
+        "entity": {
             "type": "string",
-            "description": "Used as base path for the entity's URI references (images, sounds...). The path to the referenced model entity. E.g. /myEntity/entity.json"
+            "description": "Points to the .json file of the element referenced. Appended to the folder path. E.g. /entity.json"
         }
     },
     "description": "A component that references another entity."
