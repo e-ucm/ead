@@ -113,6 +113,8 @@ public class Views implements ModelListener<LoadEvent> {
 						lastEvent.getButton());
 			}
 
+			setModalsTouchable(Touchable.disabled);
+
 		}
 	};
 
@@ -136,10 +138,10 @@ public class Views implements ModelListener<LoadEvent> {
 			Modal modal = ((Modal) currentModal);
 			if (modal.hideAlways() || lastEvent == null) {
 				modal.hide(hideModalsContainer);
-				setModalsTouchable(Touchable.disabled);
+				currentModal.setTouchable(Touchable.disabled);
 			} else if (!lastEvent.getTarget().isDescendantOf(currentModal)) {
 				modal.hide(hideModalsContainer);
-				setModalsTouchable(Touchable.disabled);
+				currentModal.setTouchable(Touchable.disabled);
 			}
 		} else {
 			hideModalsContainer.run();
@@ -152,14 +154,7 @@ public class Views implements ModelListener<LoadEvent> {
 	 */
 	protected boolean hideModalIfNeeded() {
 		if (isModalOpened()) {
-			setModalsTouchable(Touchable.disabled);
-			if (currentModal instanceof Modal) {
-				Modal modal = ((Modal) currentModal);
-				modal.hide(hideModalsContainer);
-			} else {
-				setModalsTouchable(Touchable.disabled);
-				hideModalsContainer.run();
-			}
+			hideModal(null);
 			return true;
 		}
 		return false;
@@ -170,7 +165,6 @@ public class Views implements ModelListener<LoadEvent> {
 	}
 
 	private void setModalsTouchable(Touchable touchable) {
-		currentModal.setTouchable(touchable);
 		modalsContainer
 				.setTouchable(touchable == Touchable.disabled ? Touchable.childrenOnly
 						: Touchable.enabled);
