@@ -44,6 +44,7 @@ import com.badlogic.gdx.graphics.Pixmap.Format;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.graphics.glutils.FrameBuffer;
+import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.Group;
 import com.badlogic.gdx.utils.Scaling;
 import com.badlogic.gdx.utils.ScreenUtils;
@@ -112,22 +113,42 @@ public class CreateSceneThumbnail extends EditorAction {
 	@Override
 	public void perform(Object... args) {
 		ModelEntity scene;
-		EngineEntity sceneEngineEntity = null;
-		Group sceneGroup;
+		CreateThumbnailListener listener;
 
 		if (args[0] instanceof ModelEntity) {
 			scene = (ModelEntity) args[0];
-			sceneEngineEntity = entitiesLoader.toEngineEntity(scene);
-			sceneGroup = sceneEngineEntity.getGroup();
+			EngineEntity sceneEngineEntity = entitiesLoader
+					.toEngineEntity(scene);
+			listener = new CreateThumbnailModelListener(sceneEngineEntity);
 		} else {
-			sceneGroup = (Group) args[0];
+			Group sceneGroup = (Group) args[0];
 			scene = Q.getModelEntity(sceneGroup);
+			Group parent = sceneGroup.getParent();
+			int index = sceneGroup.getZIndex();
+			FrameBuffer frameBuffer = drawActor(sceneGroup);
+			if (parent != null) {
+				parent.addActorAt(index, sceneGroup);
+			}
+			listener = new CreateThumbnailListener(frameBuffer);
 		}
 
-		Group parent = sceneGroup.getParent();
-		int index = sceneGroup.getZIndex();
+		FileHandle thumbnailsFolder = assets
+				.resolveProject(ModelStructure.THUMBNAILS_PATH);
+		thumbnailsFolder.mkdirs();
 
-		root.addActor(sceneGroup);
+		String thumbnailPath = Q.getThumbnailPath(model.getIdFor(scene));
+
+		Thumbnail thumbnail = Q.getComponent(scene, Thumbnail.class);
+		thumbnail.setPath(thumbnailPath);
+
+		listener.thumbnailPath = thumbnailPath;
+
+		controller.action(ExecuteWorker.class, StepsWorker.class, listener,
+				STEPS, assets);
+	}
+
+	private FrameBuffer drawActor(Actor actor) {
+		root.addActor(actor);
 
 		int width = (int) (Gdx.graphics.getHeight() - Gdx.graphics.getDensity() * 56);
 		int height = (int) (Gdx.graphics.getHeight() / 2.15f);
@@ -142,42 +163,23 @@ public class CreateSceneThumbnail extends EditorAction {
 		root.draw(batch, 1.0f);
 		batch.end();
 		frameBuffer.end();
-
-		if (parent != null) {
-			parent.addActorAt(index, sceneGroup);
-		}
-
-		if (sceneEngineEntity != null) {
-			gameLoop.removeEntity(sceneEngineEntity);
-		}
-
-		FileHandle thumbnailsFolder = assets
-				.resolveProject(ModelStructure.THUMBNAILS_PATH);
-		thumbnailsFolder.mkdirs();
-
-		String thumbnailPath = Q.getThumbnailPath(model.getIdFor(scene));
-
-		Thumbnail thumbnail = Q.getComponent(scene, Thumbnail.class);
-		thumbnail.setPath(thumbnailPath);
-
-		controller.action(ExecuteWorker.class, StepsWorker.class,
-				new CreateThumbnailWorkerListener(frameBuffer, thumbnailPath),
-				STEPS, assets);
+		return frameBuffer;
 	}
 
-	public class CreateThumbnailWorkerListener implements WorkerListener,
+	public class CreateThumbnailListener implements WorkerListener,
 			BackgroundTaskListener<String> {
 
-		private FrameBuffer frameBuffer;
+		protected FrameBuffer frameBuffer;
 
 		private String thumbnailPath;
 
 		private Pixmap[] pixmaps;
 
-		public CreateThumbnailWorkerListener(FrameBuffer frameBuffer,
-				String thumbnailPath) {
+		public CreateThumbnailListener() {
+		}
+
+		public CreateThumbnailListener(FrameBuffer frameBuffer) {
 			this.frameBuffer = frameBuffer;
-			this.thumbnailPath = thumbnailPath;
 		}
 
 		// Worker listener
@@ -224,6 +226,25 @@ public class CreateSceneThumbnail extends EditorAction {
 
 		@Override
 		public void cancelled() {
+		}
+	}
+
+	public class CreateThumbnailModelListener extends CreateThumbnailListener {
+
+		private EngineEntity engineEntity;
+
+		public CreateThumbnailModelListener(EngineEntity engineEntity) {
+			this.engineEntity = engineEntity;
+		}
+
+		@Override
+		public void result(Object... results) {
+			int step = (Integer) results[0];
+			if (step == 0) {
+				this.frameBuffer = drawActor(engineEntity.getGroup());
+				gameLoop.removeEntity(engineEntity);
+			}
+			super.result(results);
 		}
 	}
 }
