@@ -63,9 +63,9 @@ public class NavigationGallery extends ScenesGallery {
 	}
 
 	@Override
-	public Cell addTile(String id, String title, String thumbnailPath) {
+	public Cell addTile(Object id, String title, String thumbnailPath) {
 		Cell cell = super.addTile(id, title, thumbnailPath);
-		cell.setName(id);
+		cell.setName(id.toString());
 		return cell;
 	}
 

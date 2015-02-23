@@ -67,9 +67,9 @@ public class ReferenceProcessor extends ComponentProcessor<Reference> {
 		ReferenceComponent referenceComponent = gameLoop
 				.createComponent(ReferenceComponent.class);
 
-		String id = reference.getId();
-		int lastIndex = id.lastIndexOf("/") + 1;
-		String referenceLoadingPath = id.substring(0, lastIndex);
+		String id = reference.getFolder() + reference.getEntity();
+		String referenceLoadingPath = reference.getFolder()
+				+ ModelStructure.CONTENTS_FOLDER;
 		assets.setReferencePath(getLibraryPath() + referenceLoadingPath);
 
 		ModelEntity entity = null;

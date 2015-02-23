@@ -38,19 +38,94 @@ package es.eucm.ead.editor.control;
 
 import com.badlogic.gdx.files.FileHandle;
 
+import com.badlogic.gdx.utils.Array;
+import es.eucm.ead.schema.components.Reference;
 import es.eucm.ead.schema.editor.components.repo.RepoCategories;
 import es.eucm.ead.schema.editor.components.repo.RepoElement;
 import es.eucm.ead.schemax.ModelStructure;
+
+import java.io.File;
+import java.io.FileFilter;
 
 /**
  * Controls the downloaded {@link RepoElement}s.
  */
 public class LibraryManager {
 
+	private FileFilter onlyFolders = new FileFilter() {
+		@Override
+		public boolean accept(File pathname) {
+			return pathname.isDirectory();
+		}
+	};
+
 	private Controller controller;
 
 	public LibraryManager(Controller controller) {
 		this.controller = controller;
+	}
+
+	private String getRepoElementFolder(RepoElement element) {
+		Array<RepoCategories> categoryList = element.getCategoryList();
+		if (categoryList.size == 0) {
+			return element.getEntityRef();
+		}
+		return categoryList.first() + "/" + element.getEntityRef();
+	}
+
+	/**
+	 * 
+	 * @return an array with all the downloaded elements in the library
+	 */
+	public Array<FileHandle> listDownloadedElements() {
+		Array<FileHandle> elements = new Array<FileHandle>();
+		listDownloadedElements(getLibraryFolder(), elements);
+		return elements;
+	}
+
+	/**
+	 * Adds to the array all the elements available in the folder and all the
+	 * sub-folders that aren't {@link RepoElement}s.
+	 * 
+	 * @param folder
+	 * @param elements
+	 */
+	public void listDownloadedElements(FileHandle folder,
+			Array<FileHandle> elements) {
+		FileHandle[] list = folder.list(onlyFolders);
+		for (FileHandle file : list) {
+			if (file.child(ModelStructure.DESCRIPTOR_FILE).exists()) {
+				elements.add(file);
+			} else {
+				listDownloadedElements(file, elements);
+			}
+		}
+	}
+
+	/**
+	 * 
+	 * @param element
+	 * @return a {@link es.eucm.ead.schema.components.Reference} to a
+	 *         {@link es.eucm.ead.schema.editor.components.repo.RepoElement} in
+	 *         the library.
+	 */
+	public Reference buildReference(RepoElement element) {
+		Reference ref = new Reference();
+		ref.setFolder(getRepoElementFolder(element) + "/");
+		ref.setEntity(ModelStructure.CONTENTS_FOLDER
+				+ ModelStructure.ENTITY_FILE);
+		return ref;
+	}
+
+	/**
+	 * 
+	 * @return the {@link FileHandle} where the {@link RepoElement}s should be
+	 *         downloaded and stored.
+	 */
+	public FileHandle getLibraryFolder() {
+		FileHandle libraryFolder = controller.getApplicationAssets().absolute(
+				controller.getPlatform().getLibraryFolder());
+		return libraryFolder;
 	}
 
 	/**
@@ -60,9 +135,9 @@ public class LibraryManager {
 	 *         be downloaded and stored.
 	 */
 	public FileHandle getRepoElementLibraryFolder(RepoElement element) {
-		FileHandle libraryFolder = controller.getApplicationAssets().absolute(
-				controller.getPlatform().getLibraryFolder());
-		FileHandle entityFolder = libraryFolder.child(element.getEntityRef());
+		FileHandle libraryFolder = getLibraryFolder();
+		FileHandle entityFolder = libraryFolder
+				.child(getRepoElementFolder(element));
 		return entityFolder;
 	}
 

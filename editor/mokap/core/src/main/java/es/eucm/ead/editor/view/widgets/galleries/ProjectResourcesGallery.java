@@ -92,11 +92,11 @@ public class ProjectResourcesGallery extends ThumbnailsGallery implements
 	}
 
 	@Override
-	protected void prepareGalleryItem(Actor actor, final String elemPath) {
+	protected void prepareGalleryItem(Actor actor, final Object elemPath) {
 		actor.addListener(new ClickListener() {
 			@Override
 			public void clicked(InputEvent event, float x, float y) {
-				addElementAndChangeView(elemPath);
+				addElementAndChangeView(elemPath.toString());
 			}
 		});
 	}

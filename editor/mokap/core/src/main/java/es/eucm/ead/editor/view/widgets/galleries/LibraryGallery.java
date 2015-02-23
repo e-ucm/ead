@@ -69,8 +69,7 @@ public class LibraryGallery extends ThumbnailsGallery implements
 
 	@Override
 	public void prepare() {
-		controller.action(ExecuteWorker.class, LoadLibraryEntities.class, this,
-				controller.getPlatform().getLibraryFolder());
+		controller.action(ExecuteWorker.class, LoadLibraryEntities.class, this);
 	}
 
 	@Override
@@ -84,7 +83,7 @@ public class LibraryGallery extends ThumbnailsGallery implements
 	}
 
 	@Override
-	protected void prepareGalleryItem(Actor actor, String id) {
+	protected void prepareGalleryItem(Actor actor, Object id) {
 		WidgetBuilder.actionsOnClick(actor, new Class[] {
 				AddLibraryReference.class, ChangeView.class }, new Object[][] {
 				new Object[] { id }, new Object[] { SceneView.class } });
@@ -97,7 +96,7 @@ public class LibraryGallery extends ThumbnailsGallery implements
 
 	@Override
 	public void result(Object... results) {
-		addTile((String) results[0], (String) results[1], (String) results[2]);
+		addTile(results[0], (String) results[1], (String) results[2]);
 	}
 
 	@Override
