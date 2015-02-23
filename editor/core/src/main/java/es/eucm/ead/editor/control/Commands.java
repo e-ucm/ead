@@ -38,7 +38,9 @@ package es.eucm.ead.editor.control;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.utils.Array;
+import com.badlogic.gdx.utils.SnapshotArray;
 import es.eucm.ead.editor.control.commands.Command;
+import es.eucm.ead.editor.control.commands.EmptyCommand;
 import es.eucm.ead.editor.model.Model;
 import es.eucm.ead.editor.model.events.ModelEvent;
 
@@ -49,14 +51,15 @@ import java.util.Stack;
  */
 public class Commands {
 
-	private static final int COMMAND = 0, UNDO = 1, REDO = 2, SAVE = 3;
+	private static final int COMMAND = 0, UNDO = 1, REDO = 2, SAVE = 3,
+			POP = 4, PUSH = 5;
 
 	private static final Array<String> RESOURCE_CONTEXTS = new Array<String>(
 			new String[] { Selection.MOKAP_RESOURCE, Selection.RESOURCE });
 
 	private Model model;
 
-	private Array<CommandListener> commandListeners;
+	private SnapshotArray<CommandListener> commandListeners;
 
 	private Stack<CommandsStack> commandsStacks;
 
@@ -74,7 +77,7 @@ public class Commands {
 	 */
 	public Commands(Model model) {
 		this.model = model;
-		commandListeners = new Array<CommandListener>();
+		commandListeners = new SnapshotArray<CommandListener>();
 		this.commandsStacks = new Stack<CommandsStack>();
 		pushStack();
 	}
@@ -182,9 +185,7 @@ public class Commands {
 	public void pushStack(int maxCommands) {
 		currentCommandsStack = new CommandsStack(maxCommands);
 		commandsStacks.push(currentCommandsStack);
-		for (CommandListener listener : commandListeners) {
-			listener.contextPushed(this);
-		}
+		fire(PUSH, null);
 	}
 
 	/**
@@ -205,10 +206,7 @@ public class Commands {
 		} else {
 			currentCommandsStack = null;
 		}
-
-		for (CommandListener listener : commandListeners) {
-			listener.contextPopped(this, oldCommandsStack, merge);
-		}
+		fire(POP, null);
 	}
 
 	/**
@@ -234,7 +232,12 @@ public class Commands {
 	}
 
 	private void fire(int type, Command command) {
-		for (CommandListener listener : commandListeners) {
+		Object[] listeners = commandListeners.begin();
+		for (int i = 0; i < commandListeners.size; i++) {
+			CommandListener listener = (CommandListener) listeners[i];
+			if (command instanceof EmptyCommand) {
+				Gdx.app.debug("FUck", listener + "");
+			}
 			switch (type) {
 			case COMMAND:
 				listener.doCommand(this, command);
@@ -248,8 +251,15 @@ public class Commands {
 			case SAVE:
 				listener.savePointUpdated(this, savedPoint);
 				break;
+			case PUSH:
+				listener.contextPushed(this);
+				break;
+			case POP:
+				listener.contextPopped(this);
+				break;
 			}
 		}
+		commandListeners.end();
 	}
 
 	/**
@@ -415,12 +425,8 @@ public class Commands {
 
 		/**
 		 * A context was popped
-		 * 
-		 * @param merge
-		 *            if commands popped were merged
 		 */
-		void contextPopped(Commands commands, CommandsStack poppedContext,
-				boolean merge);
+		void contextPopped(Commands commands);
 
 	}
 
