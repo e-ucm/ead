@@ -38,6 +38,7 @@ package es.eucm.ead.editor.control;
 
 import com.badlogic.gdx.files.FileHandle;
 
+import es.eucm.ead.schema.components.Reference;
 import es.eucm.ead.schema.editor.components.repo.RepoCategories;
 import es.eucm.ead.schema.editor.components.repo.RepoElement;
 import es.eucm.ead.schemax.ModelStructure;
@@ -53,6 +54,36 @@ public class LibraryManager {
 		this.controller = controller;
 	}
 
+	private String getRepoElementFolder(RepoElement element) {
+		return element.getEntityRef();
+	}
+
+	/**
+	 * 
+	 * @param element
+	 * @return a {@link es.eucm.ead.schema.components.Reference} to a
+	 *         {@link es.eucm.ead.schema.editor.components.repo.RepoElement} in
+	 *         the library.
+	 */
+	public Reference buildReference(RepoElement element) {
+		Reference ref = new Reference();
+		ref.setFolder(getRepoElementFolder(element) + "/");
+		ref.setEntity(ModelStructure.CONTENTS_FOLDER
+				+ ModelStructure.ENTITY_FILE);
+		return ref;
+	}
+
+	/**
+	 * 
+	 * @return the {@link FileHandle} where the {@link RepoElement}s should be
+	 *         downloaded and stored.
+	 */
+	public FileHandle getLibraryFolder() {
+		FileHandle libraryFolder = controller.getApplicationAssets().absolute(
+				controller.getPlatform().getLibraryFolder());
+		return libraryFolder;
+	}
+
 	/**
 	 * 
 	 * @param element
@@ -60,9 +91,9 @@ public class LibraryManager {
 	 *         be downloaded and stored.
 	 */
 	public FileHandle getRepoElementLibraryFolder(RepoElement element) {
-		FileHandle libraryFolder = controller.getApplicationAssets().absolute(
-				controller.getPlatform().getLibraryFolder());
-		FileHandle entityFolder = libraryFolder.child(element.getEntityRef());
+		FileHandle libraryFolder = getLibraryFolder();
+		FileHandle entityFolder = libraryFolder
+				.child(getRepoElementFolder(element));
 		return entityFolder;
 	}
 
