@@ -54,8 +54,8 @@ import es.eucm.ead.schemax.ModelStructure;
  * Adds a reference to a library element to the current scene.
  * <dl>
  * <dt><strong>Arguments</strong></dt>
- * <dd><strong>args[0] </strong> <em>{@link String}</em> The {@link RepoElement}
- * reference already imported to the local library.</dd>
+ * <dd><strong>args[0] </strong> <em>{@link RepoElement}</em> The
+ * {@link RepoElement} already imported to the local library.</dd>
  * </dl>
  * </p>
  * 
@@ -65,7 +65,7 @@ public class AddLibraryReference extends ModelAction {
 	private AddSceneElement addSceneElement;
 
 	public AddLibraryReference() {
-		super(true, false, String.class);
+		super(true, false, RepoElement.class);
 	}
 
 	@Override
@@ -77,14 +77,13 @@ public class AddLibraryReference extends ModelAction {
 
 	@Override
 	public Command perform(Object... args) {
-		Reference ref = new Reference();
-		ref.setId(args[0] + "/" + ModelStructure.CONTENTS_FOLDER
-				+ ModelStructure.ENTITY_FILE);
+		Reference ref = controller.getLibraryManager().buildReference(
+				(RepoElement) args[0]);
 
 		EditorGameAssets assets = controller.getEditorGameAssets();
-		String id = ref.getId();
-		int lastIndex = id.lastIndexOf("/") + 1;
-		String referenceLoadingPath = id.substring(0, lastIndex);
+		String id = ref.getFolder() + ref.getEntity();
+		String referenceLoadingPath = ref.getFolder()
+				+ ModelStructure.CONTENTS_FOLDER;
 
 		// Load reference's data so we can center the container.
 		ModelEntity refEntity = null;

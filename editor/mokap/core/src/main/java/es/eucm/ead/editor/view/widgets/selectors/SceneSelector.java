@@ -109,9 +109,9 @@ public class SceneSelector extends LinearLayout implements Selector<String>,
 		}
 
 		@Override
-		public Cell addTile(String id, String title, String thumbnailPath) {
+		public Cell addTile(Object id, String title, String thumbnailPath) {
 			Cell cell = super.addTile(id, title, thumbnailPath);
-			cell.setName(id);
+			cell.setName(id.toString());
 			return cell;
 		}
 
@@ -121,14 +121,14 @@ public class SceneSelector extends LinearLayout implements Selector<String>,
 		}
 
 		@Override
-		protected void prepareGalleryItem(Actor actor, final String id) {
+		protected void prepareGalleryItem(Actor actor, final Object id) {
 			actor.addListener(new ClickListener() {
 				@Override
 				public void clicked(InputEvent event, float x, float y) {
 					gallery.uncheckAll();
 					Cell cell = (Cell) event.getListenerActor().getParent();
 					cell.checked(true);
-					selectorListener.selected(id);
+					selectorListener.selected(id.toString());
 				}
 			});
 		}

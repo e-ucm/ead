@@ -106,8 +106,8 @@ public class SearchView implements ViewBuilder, BackListener, WorkerListener {
 
 			@Override
 			public void clickedInLibrary(RepoTileEvent event) {
-				controller.action(AddLibraryReference.class, event
-						.getRepoElement().getEntityRef());
+				controller.action(AddLibraryReference.class,
+						event.getRepoElement());
 				controller.action(ChangeView.class, SceneView.class);
 			}
 

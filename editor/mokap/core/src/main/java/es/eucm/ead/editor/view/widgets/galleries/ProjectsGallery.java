@@ -110,7 +110,7 @@ public class ProjectsGallery extends ContextMenuGallery implements
 	}
 
 	@Override
-	public Cell addTile(String id, String title, String thumbnailPath) {
+	public Cell addTile(Object id, String title, String thumbnailPath) {
 		projectNames.add(title);
 		return super.addTile(id, title, thumbnailPath);
 	}
@@ -141,7 +141,7 @@ public class ProjectsGallery extends ContextMenuGallery implements
 	}
 
 	@Override
-	protected void prepareGalleryItem(Actor actor, String id) {
+	protected void prepareGalleryItem(Actor actor, Object id) {
 		WidgetBuilder.actionOnClick(actor, OpenProject.class, id);
 	}
 

@@ -135,9 +135,9 @@ public class ScenesGallery extends ContextMenuGallery implements
 	}
 
 	@Override
-	protected void prepareGalleryItem(Actor actor, String id) {
+	protected void prepareGalleryItem(Actor actor, Object id) {
 		WidgetBuilder.actionOnClick(actor, SetEditedScene.class, id, controller
-				.getModel().getResourceObject(id));
+				.getModel().getResourceObject(id.toString()));
 	}
 
 	@Override

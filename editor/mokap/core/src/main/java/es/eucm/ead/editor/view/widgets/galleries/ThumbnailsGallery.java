@@ -119,14 +119,14 @@ public abstract class ThumbnailsGallery extends AbstractWidget implements
 				getPrefHeight(actionButton));
 	}
 
-	public Cell addTile(String id, String title, String thumbnailPath) {
+	public Cell addTile(Object id, String title, String thumbnailPath) {
 		TextureDrawable thumbnail = new TextureDrawable();
 		Image image = new Image(thumbnail);
 		pendingTextures.put(thumbnailPath, thumbnail);
 		loadThumbnail(thumbnailPath);
 		image.setName(thumbnailPath);
 		Tile tile = WidgetBuilder.tile(image, title);
-		tile.setName(id);
+		tile.setName(id.toString());
 		prepareGalleryItem(tile, id);
 		return gallery.add(tile);
 	}
@@ -137,7 +137,7 @@ public abstract class ThumbnailsGallery extends AbstractWidget implements
 
 	protected abstract void prepareAddButton(Actor actor);
 
-	protected abstract void prepareGalleryItem(Actor actor, String id);
+	protected abstract void prepareGalleryItem(Actor actor, Object id);
 
 	@Override
 	public void loaded(String fileName, Texture asset) {

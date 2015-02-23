@@ -97,8 +97,7 @@ public class LoadLibraryEntities extends Worker {
 					.fromJson(RepoElement.class,
 							libraryEntity.child(ModelStructure.DESCRIPTOR_FILE));
 			if (!controller.getLibraryManager().isMokap(repoElement)) {
-				result(repoElement.getEntityRef(),
-						Q.getRepoElementName(repoElement),
+				result(repoElement, Q.getRepoElementName(repoElement),
 						libraryEntity.child(ModelStructure.THUMBNAIL_FILE)
 								.path());
 			}
