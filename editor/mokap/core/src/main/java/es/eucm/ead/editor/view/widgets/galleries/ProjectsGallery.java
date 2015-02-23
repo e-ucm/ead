@@ -97,14 +97,16 @@ public class ProjectsGallery extends ContextMenuGallery implements
 				i18N.m("delete"), SkinConstants.STYLE_CONTEXT);
 
 		float time = 10.0f;
+		// Order matters here. Making ShowToast execute first adds a command
+		// listener necessary for the correct execution of Delete Project
 		WidgetBuilder.actionsOnClick(
 				delete,
-				new Class[] { DeleteProject.class, ShowToast.class },
+				new Class[] { ShowToast.class, DeleteProject.class },
 				new Object[][] {
-						new Object[] { time },
 						new Object[] {
 								controller.getApplicationAssets().getI18N()
-										.m("project.deleted"), time } });
+										.m("project.deleted"), time },
+						new Object[] { time } });
 
 		setContextMenu(edit, clone, delete);
 	}
