@@ -38,6 +38,7 @@ package es.eucm.ead.editor.control.workers;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.files.FileHandle;
+import com.badlogic.gdx.utils.Array;
 import es.eucm.ead.editor.model.Q;
 import es.eucm.ead.schema.editor.components.repo.RepoElement;
 import es.eucm.ead.schemax.ModelStructure;
@@ -51,7 +52,8 @@ import java.io.FileFilter;
  * the results.
  * <dl>
  * <dt><strong>The result arguments are</strong></dt>
- * <dd><strong>args[0]</strong> <em>{@link String}</em> entity reference.
+ * <dd><strong>args[0]</strong> <em>{@link RepoElement}</em> the loaded
+ * RepoElement.
  * <dd><strong>args[1]</strong> <em>{@link String}</em> name of the entity.</dd>
  * <dd><strong>args[2]</strong> <em>{@link String}</em> path to the thumbnail of
  * the element.</dd>
@@ -59,9 +61,7 @@ import java.io.FileFilter;
  */
 public class LoadLibraryEntities extends Worker {
 
-	private int i = 0;
-
-	private FileHandle[] libraryEntities;
+	private Array<FileHandle> libraryEntities;
 
 	public LoadLibraryEntities() {
 		super(true, true);
@@ -69,28 +69,16 @@ public class LoadLibraryEntities extends Worker {
 
 	@Override
 	protected void prepare() {
-		FileHandle libraryFolder = controller.getApplicationAssets().absolute(
-				(String) getArg(0));
-		if (libraryFolder.exists()) {
-			libraryEntities = libraryFolder.list(new FileFilter() {
-				@Override
-				public boolean accept(File file) {
-					return file.isDirectory();
-				}
-			});
-		}
-
-		if (args.length == 2 && args[1] instanceof Integer) {
-			i = (Integer) args[1];
-		}
+		libraryEntities = controller.getLibraryManager()
+				.listDownloadedElements();
 	}
 
 	@Override
 	protected boolean step() {
-		if (libraryEntities == null || i >= libraryEntities.length) {
+		if (libraryEntities.size == 0) {
 			return true;
 		}
-		FileHandle libraryEntity = libraryEntities[i++];
+		FileHandle libraryEntity = libraryEntities.removeIndex(0);
 		try {
 			RepoElement repoElement = controller
 					.getEditorGameAssets()

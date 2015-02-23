@@ -69,8 +69,7 @@ public class LibraryGallery extends ThumbnailsGallery implements
 
 	@Override
 	public void prepare() {
-		controller.action(ExecuteWorker.class, LoadLibraryEntities.class, this,
-				controller.getPlatform().getLibraryFolder());
+		controller.action(ExecuteWorker.class, LoadLibraryEntities.class, this);
 	}
 
 	@Override

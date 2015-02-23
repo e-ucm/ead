@@ -38,15 +38,26 @@ package es.eucm.ead.editor.control;
 
 import com.badlogic.gdx.files.FileHandle;
 
+import com.badlogic.gdx.utils.Array;
 import es.eucm.ead.schema.components.Reference;
 import es.eucm.ead.schema.editor.components.repo.RepoCategories;
 import es.eucm.ead.schema.editor.components.repo.RepoElement;
 import es.eucm.ead.schemax.ModelStructure;
 
+import java.io.File;
+import java.io.FileFilter;
+
 /**
  * Controls the downloaded {@link RepoElement}s.
  */
 public class LibraryManager {
+
+	private FileFilter onlyFolders = new FileFilter() {
+		@Override
+		public boolean accept(File pathname) {
+			return pathname.isDirectory();
+		}
+	};
 
 	private Controller controller;
 
@@ -55,7 +66,40 @@ public class LibraryManager {
 	}
 
 	private String getRepoElementFolder(RepoElement element) {
-		return element.getEntityRef();
+		Array<RepoCategories> categoryList = element.getCategoryList();
+		if (categoryList.size == 0) {
+			return element.getEntityRef();
+		}
+		return categoryList.first() + "/" + element.getEntityRef();
+	}
+
+	/**
+	 * 
+	 * @return an array with all the downloaded elements in the library
+	 */
+	public Array<FileHandle> listDownloadedElements() {
+		Array<FileHandle> elements = new Array<FileHandle>();
+		listDownloadedElements(getLibraryFolder(), elements);
+		return elements;
+	}
+
+	/**
+	 * Adds to the array all the elements available in the folder and all the
+	 * sub-folders that aren't {@link RepoElement}s.
+	 * 
+	 * @param folder
+	 * @param elements
+	 */
+	public void listDownloadedElements(FileHandle folder,
+			Array<FileHandle> elements) {
+		FileHandle[] list = folder.list(onlyFolders);
+		for (FileHandle file : list) {
+			if (file.child(ModelStructure.DESCRIPTOR_FILE).exists()) {
+				elements.add(file);
+			} else {
+				listDownloadedElements(file, elements);
+			}
+		}
 	}
 
 	/**

@@ -39,6 +39,7 @@ package es.eucm.ead.editor.control.workers;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 
+import es.eucm.ead.schema.editor.components.repo.RepoCategories;
 import org.junit.Before;
 
 import com.badlogic.gdx.Application;
@@ -72,6 +73,7 @@ public class CopyToLibraryTest extends WorkerTest implements WorkerListener {
 		FileHandle medicPng = Gdx.files.internal("import_entity/medic.png");
 		thumbnailFile = medicPng;
 		element = new RepoElement();
+		element.getCategoryList().add(RepoCategories.ELEMENTS);
 		element.setEntityRef("restID");
 		medicPng.copyTo(contentsFolder);
 		Gdx.files.internal("import_entity/my_medic_def.json").copyTo(
