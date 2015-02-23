@@ -370,6 +370,21 @@
                 <module>editor/core</module>
                 <module>editor/mokap/core</module>
                 <module>editor/mokap/desktop</module>
+            </modules>
+            <build>
+                <plugins>
+                    <plugin>
+                        <groupId>com.googlecode.maven-java-formatter-plugin</groupId>
+                        <artifactId>maven-java-formatter-plugin</artifactId>
+                    </plugin>
+                </plugins>
+            </build>
+        </profile>
+        <profile>
+            <id>apk</id>
+            <modules>
+                <module>editor/core</module>
+                <module>editor/mokap/core</module>
                 <module>editor/mokap/android</module>
             </modules>
             <build>
