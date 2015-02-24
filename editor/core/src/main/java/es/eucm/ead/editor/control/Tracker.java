@@ -76,8 +76,7 @@ public class Tracker implements PreferenceListener {
 		bugrURL = controller.getReleaseInfo().getBugReportURL();
 		if (bugrURL == null) {
 			enabled = false;
-		} else if (!bugrURL.endsWith("/")) {
-			bugrURL += "/";
+		} else {
 			loadClientId();
 		}
 	}
