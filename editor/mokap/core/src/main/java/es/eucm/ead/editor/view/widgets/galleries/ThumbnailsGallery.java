@@ -36,6 +36,7 @@
  */
 package es.eucm.ead.editor.view.widgets.galleries;
 
+import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.ui.Button;
@@ -143,5 +144,11 @@ public abstract class ThumbnailsGallery extends AbstractWidget implements
 	public void loaded(String fileName, Texture asset) {
 		TextureDrawable drawable = pendingTextures.get(fileName);
 		drawable.setTexture(asset);
+	}
+
+	public void error(String fileName, Class type, Throwable exception) {
+		pendingTextures.remove(fileName);
+		Gdx.app.error("ThumbnailGallery", "Impossible to read thumbnail: "
+				+ fileName, exception);
 	}
 }

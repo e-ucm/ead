@@ -158,6 +158,11 @@ public class TransitionSelector extends LinearLayout implements
 					drawable.setCurrentTexture(asset);
 				}
 			}
+
+			@Override
+			public void error(String fileName, Class type, Throwable exception) {
+
+			}
 		};
 
 		private AssetLoadedCallback<Texture> nextTexturesCallback = new AssetLoadedCallback<Texture>() {
@@ -167,6 +172,10 @@ public class TransitionSelector extends LinearLayout implements
 				for (TransitionDrawable drawable : pendingNextTextures) {
 					drawable.setNextTexture(asset);
 				}
+			}
+
+			@Override
+			public void error(String fileName, Class type, Throwable exception) {
 			}
 		};
 

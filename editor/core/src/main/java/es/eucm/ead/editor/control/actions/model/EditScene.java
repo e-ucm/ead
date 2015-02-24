@@ -101,4 +101,10 @@ public class EditScene extends EditorAction implements
 	public void loaded(String fileName, Object asset) {
 		controller.action(SetEditedScene.class, fileName, asset, editGroup);
 	}
+
+	@Override
+	public void error(String fileName, Class type, Throwable exception) {
+		Gdx.app.error("EditScene", "Impossible to open scene in " + fileName,
+				exception);
+	}
 }

@@ -96,6 +96,12 @@ public class SceneWidget extends FocusButton {
 								new TextureRegion(asset)));
 					}
 
+					@Override
+					public void error(String fileName, Class type,
+							Throwable exception) {
+
+					}
+
 				});
 		Documentation documentation = Q
 				.getComponent(scene, Documentation.class);

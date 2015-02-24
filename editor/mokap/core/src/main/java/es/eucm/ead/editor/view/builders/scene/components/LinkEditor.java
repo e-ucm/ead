@@ -276,6 +276,10 @@ public class LinkEditor extends ComponentEditor<Behavior> implements
 		thumbnail.setTexture(asset);
 	}
 
+	@Override
+	public void error(String fileName, Class type, Throwable exception) {
+	}
+
 	public String getTooltip() {
 		return controller.getApplicationAssets().getI18N().m("link");
 	}

@@ -38,6 +38,7 @@ package es.eucm.ead.engine.processors.controls;
 
 import com.badlogic.ashley.core.Component;
 
+import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
@@ -81,6 +82,13 @@ public class ImageButtonProcessor extends ComponentProcessor<ImageButton> {
 									new TextureRegion(asset));
 							button.set(imageButtonStyle);
 						}
+
+						@Override
+						public void error(String fileName, Class type,
+								Throwable exception) {
+							Gdx.app.error("ImageButtonProcessor",
+									"Impossible to load " + fileName, exception);
+						}
 					});
 		}
 
@@ -93,6 +101,13 @@ public class ImageButtonProcessor extends ComponentProcessor<ImageButton> {
 							imageButtonStyle.imageDown = new TextureRegionDrawable(
 									new TextureRegion(asset));
 							button.set(imageButtonStyle);
+						}
+
+						@Override
+						public void error(String fileName, Class type,
+								Throwable exception) {
+							Gdx.app.error("ImageButtonProcessor",
+									"Impossible to load " + fileName, exception);
 						}
 					});
 		}

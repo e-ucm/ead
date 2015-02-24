@@ -37,6 +37,7 @@
 package es.eucm.ead.engine.processors.assets;
 
 import com.badlogic.ashley.core.Component;
+import com.badlogic.gdx.Gdx;
 import es.eucm.ead.engine.GameLoop;
 import es.eucm.ead.engine.assets.Assets.AssetLoadedCallback;
 import es.eucm.ead.engine.assets.GameAssets;
@@ -67,6 +68,14 @@ public class SoundProcessor extends ComponentProcessor<Sound> {
 								com.badlogic.gdx.audio.Sound asset) {
 							soundComponent.setSound(asset);
 						}
+
+						@Override
+						public void error(String fileName, Class type,
+								Throwable exception) {
+							Gdx.app.error("SoundProcessor",
+									"Impossible to play sound " + fileName,
+									exception);
+						}
 					});
 		} else {
 			gameAssets.get(sound.getUri(), com.badlogic.gdx.audio.Music.class,
@@ -75,6 +84,14 @@ public class SoundProcessor extends ComponentProcessor<Sound> {
 						public void loaded(String fileName,
 								com.badlogic.gdx.audio.Music asset) {
 							soundComponent.setMusic(asset);
+						}
+
+						@Override
+						public void error(String fileName, Class type,
+								Throwable exception) {
+							Gdx.app.error("SoundProcessor",
+									"Impossible to play music " + fileName,
+									exception);
 						}
 					});
 		}

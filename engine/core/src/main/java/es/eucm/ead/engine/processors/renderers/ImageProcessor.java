@@ -36,6 +36,7 @@
  */
 package es.eucm.ead.engine.processors.renderers;
 
+import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.math.Polygon;
 import com.badlogic.gdx.utils.Array;
 import es.eucm.ead.engine.GameLoop;
@@ -60,6 +61,13 @@ public class ImageProcessor extends RendererProcessor<Image> {
 					@Override
 					public void loaded(String fileName, ScaledTexture asset) {
 						imageComponent.setTexture(asset);
+					}
+
+					@Override
+					public void error(String fileName, Class type,
+							Throwable exception) {
+						Gdx.app.error("ImageProcessor", "Impossible to load "
+								+ fileName, exception);
 					}
 				});
 		createCollider(image, imageComponent);

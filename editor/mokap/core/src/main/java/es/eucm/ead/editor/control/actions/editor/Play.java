@@ -36,6 +36,7 @@
  */
 package es.eucm.ead.editor.control.actions.editor;
 
+import com.badlogic.gdx.Gdx;
 import es.eucm.ead.editor.control.Selection;
 import es.eucm.ead.editor.control.actions.EditorAction;
 import es.eucm.ead.editor.view.builders.PlayView;
@@ -68,5 +69,10 @@ public class Play extends EditorAction implements AssetLoadedCallback<Object> {
 		controller.getModel().putResource(ModelStructure.GAME_FILE,
 				ResourceCategory.GAME, asset);
 		controller.action(ChangeView.class, PlayView.class);
+	}
+
+	@Override
+	public void error(String fileName, Class type, Throwable exception) {
+		Gdx.app.error("Play", "Mokap is not playable", exception);
 	}
 }

@@ -76,6 +76,11 @@ public class DraggableGridLayoutTest extends EditorUITest {
 										new TextureRegion(asset)));
 							}
 
+							@Override
+							public void error(String fileName, Class type,
+									Throwable exception) {
+							}
+
 						});
 			} else {
 				image.setDrawable(skin.getDrawable("newscene48x48"));
