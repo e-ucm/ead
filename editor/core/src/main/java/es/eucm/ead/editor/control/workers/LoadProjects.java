@@ -36,16 +36,20 @@
  */
 package es.eucm.ead.editor.control.workers;
 
+import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.utils.Array;
 import es.eucm.ead.editor.control.Controller;
 import es.eucm.ead.editor.model.Q;
 import es.eucm.ead.editor.utils.ProjectUtils;
 import es.eucm.ead.engine.assets.Assets;
+import es.eucm.ead.engine.assets.Assets.AssetLoadedCallback;
 import es.eucm.ead.schema.editor.components.Documentation;
 import es.eucm.ead.schema.editor.components.GameData;
 import es.eucm.ead.schema.entities.ModelEntity;
 import es.eucm.ead.schemax.ModelStructure;
+
+import java.util.concurrent.atomic.AtomicInteger;
 
 /**
  * Load all the projects and their associated thumbnails. Thumbnails path are
@@ -56,6 +60,8 @@ public class LoadProjects extends Worker {
 	private Assets assets;
 
 	private Array<String> projectPaths;
+
+	private AtomicInteger results = new AtomicInteger();
 
 	public LoadProjects() {
 		super(true);
@@ -69,26 +75,22 @@ public class LoadProjects extends Worker {
 
 	@Override
 	protected void prepare() {
+		results.set(0);
 		FileHandle projectsFolder = assets.absolute(controller.getPlatform()
 				.getDefaultProjectsFolder());
 		if (projectsFolder.exists()) {
 			projectPaths = ProjectUtils.findProjects(projectsFolder);
+			results.set(projectPaths.size);
 		}
 	}
 
 	@Override
 	protected boolean step() {
-		if (projectPaths == null || projectPaths.size == 0) {
-			return true;
+		if (projectPaths != null && projectPaths.size > 0) {
+			String projectPath = projectPaths.removeIndex(0);
+			findGame(projectPath);
 		}
-		String projectPath = projectPaths.removeIndex(0);
-		ModelEntity game = findGame(projectPath);
-		if (game != null) {
-			result(projectPath, findTitle(game),
-					findThumbnail(game, projectPath));
-
-		}
-		return projectPaths.size == 0;
+		return results.get() == 0;
 	}
 
 	private String findTitle(ModelEntity game) {
@@ -106,21 +108,32 @@ public class LoadProjects extends Worker {
 		}
 	}
 
-	private ModelEntity findGame(String path) {
-		FileHandle game = assets.absolute(path).child(ModelStructure.GAME_FILE);
-		if (game.exists()) {
-			return assets.fromJson(ModelEntity.class, game);
-		} else {
-			return null;
+	private void findGame(String path) {
+		if (!path.endsWith("/")) {
+			path += "/";
 		}
-	}
+		assets.get(path + ModelStructure.GAME_FILE, Object.class,
+				new AssetLoadedCallback<Object>() {
+					@Override
+					public void loaded(String fileName, Object asset) {
+						results.decrementAndGet();
+						ModelEntity game = (ModelEntity) asset;
+						result(fileName,
+								findTitle(game),
+								findThumbnail(game, fileName.substring(
+										0,
+										fileName.length()
+												- ModelStructure.GAME_FILE
+														.length())));
+					}
 
-	private ModelEntity findScene(String projectPath, String scenePath) {
-		FileHandle scene = assets.absolute(projectPath).child(scenePath);
-		if (scene.exists()) {
-			return assets.fromJson(ModelEntity.class, scene);
-		} else {
-			return null;
-		}
+					@Override
+					public void error(String fileName, Class type,
+							Throwable exception) {
+						Gdx.app.error("LoadProjects", "Invalid in game in "
+								+ fileName);
+						results.decrementAndGet();
+					}
+				});
 	}
 }
