@@ -112,8 +112,13 @@ public class ProjectsGallery extends ContextMenuGallery implements
 
 	@Override
 	public Cell addTile(Object id, String title, String thumbnailPath) {
+		String tileId = id.toString();
+		if (tileId.endsWith(ModelStructure.GAME_FILE)) {
+			tileId = tileId.substring(0, tileId.length()
+					- ModelStructure.GAME_FILE.length());
+		}
 		projectNames.add(title);
-		return super.addTile(id, title, thumbnailPath);
+		return super.addTile(tileId, title, thumbnailPath);
 	}
 
 	@Override
