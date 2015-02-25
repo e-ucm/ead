@@ -70,8 +70,14 @@ public class JsonLoader<T> extends
 	@Override
 	public void loadAsync(AssetManager manager, String fileName,
 			FileHandle file, AssetLoaderParameters<T> parameter) {
-		object = gameAssets
-				.fromJson(clazz == Object.class ? null : clazz, file);
+		// FIXME temporary fix. Some of the files has erroneous '
+		String contents = file.readString().replace("'", "\"");
+		object = gameAssets.fromJson(clazz == Object.class ? null : clazz,
+				contents);
+		if (object == null) {
+			throw new RuntimeException(fileName
+					+ " name is an empty file. Impossible to load json");
+		}
 	}
 
 	@Override

@@ -37,12 +37,12 @@
 package es.eucm.ead.engine.processors.assets;
 
 import com.badlogic.ashley.core.Component;
-
-import com.badlogic.gdx.files.FileHandle;
+import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.scenes.scene2d.Group;
-
+import com.badlogic.gdx.utils.ObjectMap;
 import es.eucm.ead.engine.EntitiesLoader;
 import es.eucm.ead.engine.GameLoop;
+import es.eucm.ead.engine.assets.Assets.AssetLoadedCallback;
 import es.eucm.ead.engine.assets.GameAssets;
 import es.eucm.ead.engine.components.assets.ReferenceComponent;
 import es.eucm.ead.engine.processors.ComponentProcessor;
@@ -55,6 +55,9 @@ public class ReferenceProcessor extends ComponentProcessor<Reference> {
 	private EntitiesLoader loader;
 	private GameAssets assets;
 
+	private ObjectMap<String, Reference> pendingReferences = new ObjectMap<String, Reference>();
+	private ObjectMap<String, ReferenceComponent> pendingComponents = new ObjectMap<String, ReferenceComponent>();
+
 	public ReferenceProcessor(GameLoop engine, GameAssets assets,
 			EntitiesLoader loader) {
 		super(engine);
@@ -64,34 +67,41 @@ public class ReferenceProcessor extends ComponentProcessor<Reference> {
 
 	@Override
 	public Component getComponent(Reference reference) {
+
+		String id = getLibraryPath() + reference.getFolder()
+				+ reference.getEntity();
 		ReferenceComponent referenceComponent = gameLoop
 				.createComponent(ReferenceComponent.class);
+		pendingReferences.put(id, reference);
+		pendingComponents.put(id, referenceComponent);
 
-		String id = reference.getFolder() + reference.getEntity();
+		assets.get(id, Object.class, new AssetLoadedCallback<Object>() {
+			@Override
+			public void loaded(String fileName, Object asset) {
+				setGroup(fileName, (ModelEntity) asset);
+			}
+
+			@Override
+			public void error(String fileName, Class type, Throwable exception) {
+				pendingReferences.remove(fileName);
+				pendingComponents.remove(fileName);
+				Gdx.app.error("ReferenceProcessor", "Error loading reference "
+						+ exception);
+			}
+		});
+
+		return referenceComponent;
+	}
+
+	private void setGroup(String id, ModelEntity entity) {
+		Reference reference = pendingReferences.remove(id);
+		ReferenceComponent component = pendingComponents.remove(id);
 		String referenceLoadingPath = reference.getFolder()
 				+ ModelStructure.CONTENTS_FOLDER;
 		assets.setReferencePath(getLibraryPath() + referenceLoadingPath);
-
-		ModelEntity entity = null;
-		if (assets.isLoaded(referenceLoadingPath, ModelEntity.class)) {
-			entity = assets.get(referenceLoadingPath, ModelEntity.class);
-		} else {
-			FileHandle jsonFile = assets.resolve(getLibraryPath() + id);
-			if (assets.checkFileExistence(jsonFile)) {
-				entity = assets.fromJson(ModelEntity.class, jsonFile);
-				assets.addAsset(referenceLoadingPath, ModelEntity.class, entity);
-			}
-		}
-		Group group = null;
-		if (entity != null) {
-
-			group = loader.toEngineEntity(entity).getGroup();
-
-		}
+		Group group = loader.toEngineEntity(entity).getGroup();
 		assets.setReferencePath(null);
-		referenceComponent.setGroup(group);
-
-		return referenceComponent;
+		component.setGroup(group);
 	}
 
 	protected String getLibraryPath() {

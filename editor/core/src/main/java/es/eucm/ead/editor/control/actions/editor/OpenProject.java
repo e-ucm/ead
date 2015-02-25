@@ -36,6 +36,7 @@
  */
 package es.eucm.ead.editor.control.actions.editor;
 
+import com.badlogic.gdx.Gdx;
 import es.eucm.ead.editor.control.Preferences;
 import es.eucm.ead.editor.control.Selection;
 import es.eucm.ead.editor.control.actions.EditorAction;
@@ -98,5 +99,10 @@ public class OpenProject extends EditorAction implements
 		controller.action(SetSelection.class, Selection.MOKAP,
 				Selection.MOKAP_RESOURCE);
 		controller.action(LoadScenes.class);
+	}
+
+	@Override
+	public void error(String fileName, Class type, Throwable exception) {
+		Gdx.app.error("OpenProject", "Impossible to open game", exception);
 	}
 }

@@ -90,6 +90,11 @@ public class SceneEditionWidget extends LinearLayout implements FieldListener {
 			thumbnail.setDrawable(new TextureRegionDrawable(new TextureRegion(
 					asset)));
 		}
+
+		@Override
+		public void error(String fileName, Class type, Throwable exception) {
+
+		}
 	};
 
 	public SceneEditionWidget(Controller control) {

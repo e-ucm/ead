@@ -64,6 +64,7 @@ import es.eucm.ead.editor.view.ModelView;
 import es.eucm.ead.editor.view.SkinConstants;
 import es.eucm.ead.editor.view.widgets.WidgetBuilder;
 import es.eucm.ead.editor.view.widgets.layouts.Gallery.Cell;
+import es.eucm.ead.engine.assets.Assets.AssetLoadedCallback;
 import es.eucm.ead.engine.utils.EngineUtils;
 import es.eucm.ead.schema.editor.components.GameData;
 import es.eucm.ead.schema.entities.ModelEntity;
@@ -200,28 +201,51 @@ public class ProjectsGallery extends ContextMenuGallery implements
 	}
 
 	private void addProject(String id) {
-		ModelEntity game = controller.getEditorGameAssets().fromJson(
-				ModelEntity.class,
-				Gdx.files.absolute(id).child(ModelStructure.GAME_FILE));
 		if (!id.endsWith("/")) {
 			id += "/";
 		}
-		addTile(id,
-				Q.getTitle(game),
-				id
-						+ Q.getThumbnailPath(Q.getComponent(game,
-								GameData.class).getInitialScene()));
+		controller.getEditorGameAssets().get(id + ModelStructure.GAME_FILE,
+				Object.class, new AssetLoadedCallback<Object>() {
+					@Override
+					public void loaded(String fileName, Object asset) {
+						ModelEntity game = (ModelEntity) asset;
+						addTile(fileName,
+								Q.getTitle(game),
+								fileName
+										+ Q.getThumbnailPath(Q.getComponent(
+												game, GameData.class)
+												.getInitialScene()));
+					}
+
+					@Override
+					public void error(String fileName, Class type,
+							Throwable exception) {
+						Gdx.app.error("ProjectsGallery", "Invalid game in "
+								+ fileName);
+					}
+				});
 	}
 
 	private void removeProject(String id) {
-		ModelEntity game = controller.getEditorGameAssets().fromJson(
-				ModelEntity.class,
-				Gdx.files.absolute(id).child(ModelStructure.GAME_FILE));
-		projectNames.removeValue(Q.getTitle(game), false);
-		Actor actor = findActor(id);
-		if (actor != null) {
-			actor.getParent().remove();
-		}
+		controller.getEditorGameAssets().get(id, Object.class,
+				new AssetLoadedCallback<Object>() {
+					@Override
+					public void loaded(String fileName, Object asset) {
+						ModelEntity game = (ModelEntity) asset;
+						projectNames.removeValue(Q.getTitle(game), false);
+						Actor actor = findActor(fileName);
+						if (actor != null) {
+							actor.getParent().remove();
+						}
+					}
+
+					@Override
+					public void error(String fileName, Class type,
+							Throwable exception) {
+						Gdx.app.error("ProjectGallery", "Invalid game in "
+								+ fileName);
+					}
+				});
 	}
 
 	class ProjectListener implements ModelListener<ResourceEvent> {

@@ -44,7 +44,6 @@ import es.eucm.ead.engine.processors.AnimationProcessor;
 import es.eucm.ead.engine.processors.CamerasProcessor;
 import es.eucm.ead.engine.processors.ConversationProcessor;
 import es.eucm.ead.engine.processors.PathProcessor;
-import es.eucm.ead.engine.processors.RefProcessor;
 import es.eucm.ead.engine.processors.ShaderProcessor;
 import es.eucm.ead.engine.processors.TagsProcessor;
 import es.eucm.ead.engine.processors.TouchabilityProcessor;
@@ -89,7 +88,21 @@ import es.eucm.ead.engine.systems.conversations.NodeSystem;
 import es.eucm.ead.engine.systems.conversations.OptionRuntimeNode;
 import es.eucm.ead.engine.systems.conversations.OptionsSystem;
 import es.eucm.ead.engine.systems.conversations.WaitRuntimeNode;
-import es.eucm.ead.engine.systems.effects.*;
+import es.eucm.ead.engine.systems.effects.AddComponentExecutor;
+import es.eucm.ead.engine.systems.effects.AddEntityExecutor;
+import es.eucm.ead.engine.systems.effects.ChangeEntityPropertyExecutor;
+import es.eucm.ead.engine.systems.effects.ChangeStateExecutor;
+import es.eucm.ead.engine.systems.effects.ChangeVarExecutor;
+import es.eucm.ead.engine.systems.effects.EndGameExecutor;
+import es.eucm.ead.engine.systems.effects.GoSceneExecutor;
+import es.eucm.ead.engine.systems.effects.GoToExecutor;
+import es.eucm.ead.engine.systems.effects.PlaySoundExecutor;
+import es.eucm.ead.engine.systems.effects.RemoveComponentExecutor;
+import es.eucm.ead.engine.systems.effects.RemoveEntityExecutor;
+import es.eucm.ead.engine.systems.effects.SetCameraExecutor;
+import es.eucm.ead.engine.systems.effects.SetViewportExecutor;
+import es.eucm.ead.engine.systems.effects.TrackEffectExecutor;
+import es.eucm.ead.engine.systems.effects.TriggerConversationExecutor;
 import es.eucm.ead.engine.systems.effects.controlstructures.ForEachExecutor;
 import es.eucm.ead.engine.systems.effects.controlstructures.IfExecutor;
 import es.eucm.ead.engine.systems.effects.controlstructures.IfThenElseIfExecutor;
@@ -115,7 +128,6 @@ import es.eucm.ead.engine.variables.VarsContext;
 import es.eucm.ead.schema.assets.Sound;
 import es.eucm.ead.schema.components.Animation;
 import es.eucm.ead.schema.components.PathBoundary;
-import es.eucm.ead.schema.components.RefComponent;
 import es.eucm.ead.schema.components.Reference;
 import es.eucm.ead.schema.components.Shader;
 import es.eucm.ead.schema.components.Tags;
@@ -139,7 +151,6 @@ import es.eucm.ead.schema.components.physics.Velocity;
 import es.eucm.ead.schema.components.positiontracking.ChaseEntity;
 import es.eucm.ead.schema.components.positiontracking.MoveByEntity;
 import es.eucm.ead.schema.components.positiontracking.Parallax;
-import es.eucm.ead.schema.components.renderers.RefRenderer;
 import es.eucm.ead.schema.components.tweens.AlphaTween;
 import es.eucm.ead.schema.components.tweens.EffectTween;
 import es.eucm.ead.schema.components.tweens.FieldTween;
@@ -147,7 +158,25 @@ import es.eucm.ead.schema.components.tweens.MoveTween;
 import es.eucm.ead.schema.components.tweens.RotateTween;
 import es.eucm.ead.schema.components.tweens.ScaleTween;
 import es.eucm.ead.schema.components.tweens.Timeline;
-import es.eucm.ead.schema.effects.*;
+import es.eucm.ead.schema.effects.AddComponent;
+import es.eucm.ead.schema.effects.AddEntity;
+import es.eucm.ead.schema.effects.AlphaEffect;
+import es.eucm.ead.schema.effects.ChangeEntityProperty;
+import es.eucm.ead.schema.effects.ChangeState;
+import es.eucm.ead.schema.effects.ChangeVar;
+import es.eucm.ead.schema.effects.EndGame;
+import es.eucm.ead.schema.effects.GoScene;
+import es.eucm.ead.schema.effects.GoTo;
+import es.eucm.ead.schema.effects.MoveEffect;
+import es.eucm.ead.schema.effects.PlaySound;
+import es.eucm.ead.schema.effects.RemoveComponent;
+import es.eucm.ead.schema.effects.RemoveEntity;
+import es.eucm.ead.schema.effects.RotateEffect;
+import es.eucm.ead.schema.effects.ScaleEffect;
+import es.eucm.ead.schema.effects.SetCamera;
+import es.eucm.ead.schema.effects.SetViewport;
+import es.eucm.ead.schema.effects.TrackEffect;
+import es.eucm.ead.schema.effects.TriggerConversation;
 import es.eucm.ead.schema.effects.controlstructures.ForEach;
 import es.eucm.ead.schema.effects.controlstructures.If;
 import es.eucm.ead.schema.effects.controlstructures.IfThenElseIf;
@@ -335,9 +364,6 @@ public class DefaultEngineInitializer implements EngineInitializer {
 
 		componentLoader.registerComponentProcessor(Cameras.class,
 				new CamerasProcessor(gameLoop));
-		componentLoader.registerComponentProcessor(RefComponent.class,
-				new RefProcessor<RefComponent>(gameLoop, gameAssets,
-						componentLoader));
 
 		TweensProcessor tweensProcessor = new TweensProcessor(gameLoop);
 		componentLoader.registerComponentProcessor(AlphaTween.class,
@@ -364,14 +390,8 @@ public class DefaultEngineInitializer implements EngineInitializer {
 				new PathProcessor(gameLoop));
 		componentLoader.registerComponentProcessor(Cameras.class,
 				new CamerasProcessor(gameLoop));
-		componentLoader.registerComponentProcessor(RefComponent.class,
-				new RefProcessor<RefComponent>(gameLoop, gameAssets,
-						componentLoader));
 		componentLoader.registerComponentProcessor(Sound.class,
 				new SoundProcessor(gameLoop, gameAssets));
-		componentLoader.registerComponentProcessor(RefRenderer.class,
-				new RefProcessor<RefRenderer>(gameLoop, gameAssets,
-						componentLoader));
 		componentLoader.registerComponentProcessor(BoundingArea.class,
 				new BoundingAreaProcessor(gameLoop));
 		componentLoader.registerComponentProcessor(MoveByEntity.class,

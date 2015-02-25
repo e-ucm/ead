@@ -36,6 +36,7 @@
  */
 package es.eucm.ead.engine;
 
+import com.badlogic.gdx.Gdx;
 import es.eucm.ead.schemax.ModelStructure;
 import es.eucm.ead.engine.assets.Assets.AssetLoadedCallback;
 import es.eucm.ead.engine.assets.GameAssets;
@@ -83,5 +84,10 @@ public class GameLoader implements AssetLoadedCallback<Object> {
 	@Override
 	public void loaded(String fileName, Object modelEntity) {
 		entitiesLoader.toEngineEntity((ModelEntity) modelEntity);
+	}
+
+	@Override
+	public void error(String fileName, Class type, Throwable exception) {
+		Gdx.app.error("GameLoader", "Invalid game " + fileName, exception);
 	}
 }

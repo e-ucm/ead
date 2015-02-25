@@ -119,6 +119,12 @@ public class CreateThumbnailTest extends EditorUITest {
 								table.add(image);
 								table.row();
 							}
+
+							@Override
+							public void error(String fileName, Class type,
+									Throwable exception) {
+
+							}
 						});
 			}
 

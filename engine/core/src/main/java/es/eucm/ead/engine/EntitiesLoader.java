@@ -106,6 +106,12 @@ public class EntitiesLoader implements AssetLoadedCallback<Object> {
 		callback.loaded(fileName, toEngineEntity((ModelEntity) modelEntity));
 	}
 
+	@Override
+	public void error(String fileName, Class type, Throwable exception) {
+		EntityLoadedCallback callback = loading.remove(fileName);
+		callback.pathNotFound(fileName);
+	}
+
 	/**
 	 * This method converts the given {@code modelEntity} {@link ModelEntity}
 	 * into a fully functional runtime entity ({@link EngineEntity}). It also

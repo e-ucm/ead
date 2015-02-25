@@ -45,6 +45,7 @@ import es.eucm.ead.editor.model.Q;
 import es.eucm.ead.editor.platform.MockPlatform;
 import es.eucm.ead.schema.editor.components.GameData;
 import es.eucm.ead.schema.entities.ModelEntity;
+import es.eucm.ead.schemax.ModelStructure;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.fail;
@@ -104,16 +105,16 @@ public class LoadProjectsTest extends WorkerTest implements WorkerListener {
 		ModelEntity game = new ModelEntity();
 		Q.getComponent(game, GameData.class).setInitialScene("s.json");
 
-		controller.getApplicationAssets().toJson(game,
-				gameFolder.child("game.json"));
+		controller.getEditorGameAssets().toJson(game, null,
+				gameFolder.child(ModelStructure.GAME_FILE));
 
 		String thumbnailPath = Q.getThumbnailPath("s.json");
 		ModelEntity scene = new ModelEntity();
 
-		controller.getApplicationAssets().toJson(scene,
+		controller.getEditorGameAssets().toJson(scene, null,
 				gameFolder.child("s.json"));
 
-		paths.add(temp.child(gamePath).path());
+		paths.add(temp.child(gamePath).path() + "/" + ModelStructure.GAME_FILE);
 		paths.add(temp.child(gamePath).child(thumbnailPath).path());
 	}
 }

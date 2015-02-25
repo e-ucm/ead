@@ -118,6 +118,16 @@ public abstract class Assets extends Json implements FileHandleResolver,
 		assetManager.setErrorListener(this);
 		i18n = new I18N(this);
 		setLoader(Skin.class, new ExtendedSkinLoader(this));
+		assetManager.setErrorListener(new AssetErrorListener() {
+			@Override
+			public void error(AssetDescriptor asset, Throwable throwable) {
+				LoadedCallback loadedCallback = asset.params.loadedCallback;
+				if (loadedCallback instanceof ErrorCallback) {
+					((ErrorCallback) loadedCallback).errored(asset.fileName,
+							asset.type, throwable);
+				}
+			}
+		});
 	}
 
 	/**
@@ -152,6 +162,13 @@ public abstract class Assets extends Json implements FileHandleResolver,
 						@Override
 						public void loaded(String fileName, Skin asset) {
 							skin = asset;
+						}
+
+						@Override
+						public void error(String fileName, Class type,
+								Throwable exception) {
+							Gdx.app.error("Assets", "Impossible to load skin.",
+									exception);
 						}
 					});
 		}
@@ -475,10 +492,12 @@ public abstract class Assets extends Json implements FileHandleResolver,
 
 		void loaded(String fileName, T asset);
 
+		void error(String fileName, Class type, Throwable exception);
+
 	}
 
 	public class AssetParameters<T> extends AssetLoaderParameters<T> implements
-			LoadedCallback {
+			ErrorCallback {
 
 		private AssetLoadedCallback<T> assetLoadedCallback;
 
@@ -492,6 +511,11 @@ public abstract class Assets extends Json implements FileHandleResolver,
 				String fileName, Class clazz) {
 			Object asset = assetManager.get(fileName, clazz);
 			assetLoadedCallback.loaded(fileName, (T) asset);
+		}
+
+		@Override
+		public void errored(String filename, Class type, Throwable throwable) {
+			assetLoadedCallback.error(filename, type, throwable);
 		}
 	}
 
@@ -507,6 +531,10 @@ public abstract class Assets extends Json implements FileHandleResolver,
 
 		void unloaded(String fileName, Assets assets);
 
+	}
+
+	public interface ErrorCallback extends LoadedCallback {
+		public void errored(String filename, Class type, Throwable throwable);
 	}
 
 	/**

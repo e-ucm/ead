@@ -210,6 +210,11 @@ public class OpenGame extends EditorAction implements FileChooserListener,
 		controller.getModel().putResource(fileName, asset);
 	}
 
+	@Override
+	public void error(String fileName, Class type, Throwable exception) {
+		Gdx.app.error("OpenGame", "Error opening game", exception);
+	}
+
 	/**
 	 * If we added a new piece of data, and old projects does not have it. This
 	 * method tries to solve this problem.
