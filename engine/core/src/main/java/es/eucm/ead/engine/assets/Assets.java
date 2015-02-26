@@ -68,6 +68,7 @@ import com.badlogic.gdx.utils.SerializationException;
 
 import es.eucm.ead.engine.I18N;
 import es.eucm.ead.engine.assets.loaders.ExtendedSkinLoader;
+import es.eucm.ead.engine.gdx.URLFileHandle;
 
 /**
  * Abstract class for managing assets. In this context, any file required for
@@ -87,6 +88,8 @@ import es.eucm.ead.engine.assets.loaders.ExtendedSkinLoader;
  */
 public abstract class Assets extends Json implements FileHandleResolver,
 		AssetErrorListener {
+
+	public static final String URL_PATTERN = "^(https?:\\/\\/)([\\da-z\\.-]+)\\.([a-z\\.]{2,6})([\\/\\w \\.-]*)*\\/?$";
 
 	/**
 	 * Default time slot for loading assets.
@@ -249,6 +252,17 @@ public abstract class Assets extends Json implements FileHandleResolver,
 	 */
 	public <T> T fromJsonPath(Class<T> type, String path) {
 		return fromJson(type, resolve(path));
+	}
+
+	/**
+	 * @return a file handle for the url with the read operation. {@code null}
+	 *         if the url is not a valid url
+	 */
+	public URLFileHandle url(String url) {
+		if (url.matches(URL_PATTERN)) {
+			return new URLFileHandle(url);
+		}
+		return null;
 	}
 
 	@Override
