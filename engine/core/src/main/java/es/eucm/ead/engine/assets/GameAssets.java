@@ -44,7 +44,6 @@ import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.reflect.ClassReflection;
 import com.badlogic.gdx.utils.reflect.ReflectionException;
-
 import es.eucm.ead.engine.GameLoader;
 import es.eucm.ead.engine.assets.loaders.ScaledTextureLoader;
 import es.eucm.ead.schemax.ModelStructure;
@@ -156,7 +155,11 @@ public class GameAssets extends Assets implements ModelStructure {
 	 */
 	@Override
 	public FileHandle resolve(String path) {
-		FileHandle fileHandle = null;
+		FileHandle fileHandle = url(path);
+		if (fileHandle != null) {
+			return fileHandle;
+		}
+
 		if (path.startsWith("/") || path.indexOf(':') == 1) {
 			// Absolute file - don't check existence
 			fileHandle = files.absolute(path);

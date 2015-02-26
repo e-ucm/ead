@@ -135,9 +135,14 @@ public class ApplicationAssets extends Assets {
 
 	@Override
 	public FileHandle resolve(String path) {
-		FileHandle absolute = files.absolute(path);
-		if (absolute.exists()) {
-			return absolute;
+		FileHandle fileHandle = url(path);
+		if (fileHandle != null) {
+			return fileHandle;
+		}
+
+		fileHandle = files.absolute(path);
+		if (fileHandle.exists()) {
+			return fileHandle;
 		}
 		return files.internal(path);
 	}
