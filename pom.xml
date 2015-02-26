@@ -1,4 +1,6 @@
-<?xml version="1.0" encoding="UTF-8"?><project xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
     <parent>
         <groupId>org.sonatype.oss</groupId>
         <artifactId>oss-parent</artifactId>
@@ -10,7 +12,9 @@
     <version>1.0-SNAPSHOT</version>
     <packaging>pom</packaging>
     <name>eAdventure</name>
-    <description>eAdventure is a free and open source game framework (editor and engine) based on Java, with an emphasis on educational uses.</description>
+    <description>eAdventure is a free and open source game framework (editor and engine) based on Java, with an emphasis
+        on educational uses.
+    </description>
     <url>http://github.com/e-ucm/ead</url>
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
@@ -401,6 +405,12 @@
             <id>build-schema</id>
             <modules>
                 <module>build-tools/generators</module>
+            </modules>
+        </profile>
+        <profile>
+            <id>mokap-release</id>
+            <modules>
+                <module>editor/mokap/android</module>
             </modules>
         </profile>
     </profiles>

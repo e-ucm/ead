@@ -1,4 +1,6 @@
-<?xml version="1.0" encoding="UTF-8"?><project xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
     <modelVersion>4.0.0</modelVersion>
     <parent>
         <relativePath>../../../pom.xml</relativePath>
@@ -84,7 +86,7 @@
                 <plugin>
                     <groupId>org.apache.maven.plugins</groupId>
                     <artifactId>maven-jarsigner-plugin</artifactId>
-                    <version>1.2</version>
+                    <version>1.4</version>
                 </plugin>
                 <plugin>
                     <groupId>com.simpligility.maven.plugins</groupId>
@@ -114,7 +116,7 @@
                 <groupId>com.simpligility.maven.plugins</groupId>
                 <artifactId>android-maven-plugin</artifactId>
                 <configuration>
-                    <generateApk>true</generateApk>
+                    <generateApk>false</generateApk>
                     <androidManifestFile>${project.basedir}/AndroidManifest.xml</androidManifestFile>
                     <assetsDirectory>${project.basedir}/../../../assets</assetsDirectory>
                     <resourceDirectory>${project.basedir}/res</resourceDirectory>
@@ -135,7 +137,7 @@
     </build>
     <profiles>
         <profile>
-            <id>android-sign</id>
+            <id>mokap-release</id>
             <build>
                 <plugins>
                     <plugin>
@@ -171,12 +173,14 @@
                         <groupId>com.simpligility.maven.plugins</groupId>
                         <artifactId>android-maven-plugin</artifactId>
                         <configuration>
+                            <generateApk>true</generateApk>
                             <zipalign>
                                 <skip>false</skip>
                             </zipalign>
                             <sign>
                                 <debug>false</debug>
                             </sign>
+                            <release>true</release>
                         </configuration>
                         <executions>
                             <execution>
