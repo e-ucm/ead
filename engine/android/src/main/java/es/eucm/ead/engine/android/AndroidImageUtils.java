@@ -70,7 +70,7 @@ public class AndroidImageUtils implements ImageUtils {
 	public boolean imageSize(FileHandle fileHandle, Vector2 size) {
 		BitmapFactory.Options options = new Options();
 		options.inJustDecodeBounds = true;
-		BitmapFactory.decodeFile(fileHandle.file().getAbsolutePath(), options);
+		BitmapFactory.decodeStream(fileHandle.read(), null, options);
 		size.set(options.outWidth, options.outHeight);
 		return true;
 	}
