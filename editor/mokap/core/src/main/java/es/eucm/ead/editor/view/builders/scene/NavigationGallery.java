@@ -73,11 +73,7 @@ public class NavigationGallery extends ScenesGallery {
 	public void prepare() {
 		super.prepare();
 
-		for (Actor actor : gallery.getChildren()) {
-			if (actor instanceof Cell) {
-				((Cell) actor).checked(false);
-			}
-		}
+		gallery.uncheckAll();
 
 		Context context = controller.getModel().getSelection()
 				.getContext(Selection.SCENE);

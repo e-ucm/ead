@@ -130,7 +130,12 @@ public class ScenesGallery extends ContextMenuGallery implements
 	}
 
 	@Override
-	protected void prepareAddButton(Actor actor) {
+	public void loadContents(String search) {
+
+	}
+
+	@Override
+	protected void prepareActionButton(Actor actor) {
 		WidgetBuilder.actionOnClick(actor, AddScene.class);
 	}
 
@@ -169,14 +174,14 @@ public class ScenesGallery extends ContextMenuGallery implements
 
 		// Check if thumbnail exists. If not, create
 		if (assets.resolve(thumbnailPath).exists()) {
-			super.loadThumbnail(thumbnailPath);
+			super.loadThumbnail(id, thumbnailPath);
 		} else {
 			controller.action(CreateSceneThumbnail.class, scene);
 		}
 	}
 
 	@Override
-	protected void loadThumbnail(String path) {
+	protected void loadThumbnail(Object id, String path) {
 		// Do nothing
 	}
 

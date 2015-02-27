@@ -40,14 +40,9 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.ui.Button;
 import com.badlogic.gdx.utils.Array;
-
 import es.eucm.ead.editor.control.Controller;
 import es.eucm.ead.editor.control.Selection;
-import es.eucm.ead.editor.control.actions.editor.AddProject;
-import es.eucm.ead.editor.control.actions.editor.CloneProject;
-import es.eucm.ead.editor.control.actions.editor.ExecuteWorker;
-import es.eucm.ead.editor.control.actions.editor.OpenProject;
-import es.eucm.ead.editor.control.actions.editor.ShowToast;
+import es.eucm.ead.editor.control.actions.editor.*;
 import es.eucm.ead.editor.control.actions.model.DeleteProject;
 import es.eucm.ead.editor.control.actions.model.SetSelection;
 import es.eucm.ead.editor.control.background.BackgroundExecutor;
@@ -138,13 +133,14 @@ public class ProjectsGallery extends ContextMenuGallery implements
 	/**
 	 * Loads the projects in the gallery
 	 */
-	public void load() {
+	@Override
+	public void loadContents(String search) {
 		clear();
 		controller.action(ExecuteWorker.class, LoadProjects.class, this);
 	}
 
 	@Override
-	protected void prepareAddButton(Actor actor) {
+	protected void prepareActionButton(Actor actor) {
 		WidgetBuilder.actionOnClick(actor, AddProject.class);
 	}
 
@@ -200,7 +196,7 @@ public class ProjectsGallery extends ContextMenuGallery implements
 		gallery.uncheckAll();
 		if (resource != null) {
 			Cell cell = (Cell) EngineUtils.getDirectChild(gallery.getGrid(),
-					gallery.findActor(resource));
+					findActor(resource));
 			if (cell != null) {
 				cell.checked(true);
 			}

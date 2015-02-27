@@ -56,7 +56,7 @@ public class SceneSelector extends LinearLayout implements Selector<String>,
 
 	private SelectorListener<String> selectorListener;
 
-	private SelectScenesGallery gallery;
+	private SelectScenesGallery sceneGallery;
 
 	public SceneSelector(Controller controller) {
 		super(false);
@@ -83,16 +83,16 @@ public class SceneSelector extends LinearLayout implements Selector<String>,
 		buttons.addSpace();
 
 		add(toolbar).expandX();
-		add(gallery = new SelectScenesGallery(2.35f, 3, controller)).expand(
-				true, true);
+		add(sceneGallery = new SelectScenesGallery(2.35f, 3, controller))
+				.expand(true, true);
 	}
 
 	@Override
 	public void prepare(SelectorListener<String> selectorListener,
 			Object... args) {
 		this.selectorListener = selectorListener;
-		gallery.getGallery().uncheckAll();
-		gallery.prepare();
+		sceneGallery.getGallery().uncheckAll();
+		sceneGallery.prepare();
 		if (args.length > 0 && args[0] != null) {
 			Actor actor = findActor((String) args[0]);
 			if (actor instanceof Cell) {
@@ -116,7 +116,7 @@ public class SceneSelector extends LinearLayout implements Selector<String>,
 		}
 
 		@Override
-		protected void prepareAddButton(Actor actor) {
+		protected void prepareActionButton(Actor actor) {
 			actor.remove();
 		}
 

@@ -34,32 +34,27 @@
  *      You should have received a copy of the GNU Lesser General Public License
  *      along with eAdventure.  If not, see <http://www.gnu.org/licenses/>.
  */
-package es.eucm.ead.editor.view.widgets.galleries;
+package es.eucm.ead.editor.view.widgets.galleries.basegalleries;
 
 import com.badlogic.gdx.Gdx;
+import es.eucm.ead.editor.view.widgets.WidgetBuilder;
+import es.eucm.ead.editor.view.widgets.layouts.Gallery;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.ui.Button;
 import com.badlogic.gdx.scenes.scene2d.ui.Image;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.utils.ObjectMap;
-import es.eucm.ead.editor.view.SkinConstants;
 import es.eucm.ead.editor.view.drawables.TextureDrawable;
 import es.eucm.ead.editor.view.widgets.AbstractWidget;
 import es.eucm.ead.editor.view.widgets.Tile;
-import es.eucm.ead.editor.view.widgets.WidgetBuilder;
-import es.eucm.ead.editor.view.widgets.layouts.Gallery;
 import es.eucm.ead.editor.view.widgets.layouts.Gallery.Cell;
 import es.eucm.ead.editor.view.widgets.layouts.Gallery.GalleryStyle;
 import es.eucm.ead.engine.I18N;
 import es.eucm.ead.engine.assets.Assets;
-import es.eucm.ead.engine.assets.Assets.AssetLoadedCallback;
 
-/**
- * Created by angel on 18/11/14.
- */
 public abstract class ThumbnailsGallery extends AbstractWidget implements
-		AssetLoadedCallback<Texture> {
+		Assets.AssetLoadedCallback<Texture> {
 
 	protected Assets assets;
 
@@ -67,11 +62,11 @@ public abstract class ThumbnailsGallery extends AbstractWidget implements
 
 	protected I18N i18N;
 
-	protected ObjectMap<String, TextureDrawable> pendingTextures = new ObjectMap<String, TextureDrawable>();
+	private Button actionButton;
 
 	protected Gallery gallery;
 
-	private Button actionButton;
+	protected ObjectMap<String, TextureDrawable> pendingTextures = new ObjectMap<String, TextureDrawable>();
 
 	public ThumbnailsGallery(float rows, int columns, Assets assets, Skin skin,
 			I18N i18N) {
@@ -86,18 +81,26 @@ public abstract class ThumbnailsGallery extends AbstractWidget implements
 
 	public ThumbnailsGallery(float rows, int columns, Assets assets, Skin skin,
 			I18N i18N, GalleryStyle galleryStyle) {
-		this(rows, columns, assets, skin, i18N, galleryStyle,
-				SkinConstants.IC_ADD);
+		this(rows, columns, assets, skin, i18N, galleryStyle, "");
 	}
 
 	public ThumbnailsGallery(float rows, int columns, Assets assets, Skin skin,
 			I18N i18N, GalleryStyle galleryStyle, String actionIcon) {
 		addActor(gallery = new Gallery(rows, columns, galleryStyle));
-		addActor(actionButton = WidgetBuilder.circleButton(actionIcon));
-		prepareAddButton(actionButton);
+		if (!actionIcon.equals("")) {
+			addActor(actionButton = WidgetBuilder.circleButton(actionIcon));
+			prepareActionButton(actionButton);
+		}
 		this.assets = assets;
 		this.skin = skin;
 		this.i18N = i18N;
+	}
+
+	public abstract void loadContents(String search);
+
+	@Override
+	public void clear() {
+		gallery.clearChildren();
 	}
 
 	public Gallery getGallery() {
@@ -105,40 +108,43 @@ public abstract class ThumbnailsGallery extends AbstractWidget implements
 	}
 
 	@Override
-	public void clear() {
-		gallery.clearChildren();
-		pendingTextures.clear();
-	}
-
-	@Override
 	public void layout() {
+		super.layout();
 		setBounds(gallery, 0, 0, getWidth(), getHeight());
-		float width = getPrefWidth(actionButton);
-		setBounds(actionButton,
-				getWidth() - width - WidgetBuilder.dpToPixels(32),
-				WidgetBuilder.dpToPixels(32), width,
-				getPrefHeight(actionButton));
+		if (actionButton != null && actionButton.getParent() == this) {
+			float width = getPrefWidth(actionButton);
+			setBounds(actionButton,
+					getWidth() - width - WidgetBuilder.dpToPixels(32),
+					WidgetBuilder.dpToPixels(32), width,
+					getPrefHeight(actionButton));
+		}
 	}
 
 	public Cell addTile(Object id, String title, String thumbnailPath) {
 		TextureDrawable thumbnail = new TextureDrawable();
-		Image image = new Image(thumbnail);
 		pendingTextures.put(thumbnailPath, thumbnail);
-		loadThumbnail(thumbnailPath);
-		image.setName(thumbnailPath);
-		Tile tile = WidgetBuilder.tile(image, title);
+		loadThumbnail(id, thumbnailPath);
+		Tile tile = createTile(id, title, thumbnail);
 		tile.setName(id.toString());
 		prepareGalleryItem(tile, id);
 		return gallery.add(tile);
 	}
 
-	protected void loadThumbnail(String path) {
-		assets.get(path, Texture.class, this);
+	protected Tile createTile(Object id, String title, TextureDrawable thumbnail) {
+		return WidgetBuilder.tile(title, thumbnail);
 	}
 
-	protected abstract void prepareAddButton(Actor actor);
+	protected abstract void prepareActionButton(Actor actor);
+
+	public Button getActionButton() {
+		return actionButton;
+	}
 
 	protected abstract void prepareGalleryItem(Actor actor, Object id);
+
+	protected void loadThumbnail(Object id, String path) {
+		assets.get(path, Texture.class, this);
+	}
 
 	@Override
 	public void loaded(String fileName, Texture asset) {
@@ -151,4 +157,5 @@ public abstract class ThumbnailsGallery extends AbstractWidget implements
 		Gdx.app.error("ThumbnailGallery", "Impossible to read thumbnail: "
 				+ fileName, exception);
 	}
+
 }
