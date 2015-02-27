@@ -211,14 +211,16 @@ public class ProjectsGallery extends ContextMenuGallery implements
 		if (!id.endsWith("/")) {
 			id += "/";
 		}
-		controller.getEditorGameAssets().get(id + ModelStructure.GAME_FILE,
-				Object.class, new AssetLoadedCallback<Object>() {
+		final String projectPath = id;
+		controller.getEditorGameAssets().get(
+				projectPath + ModelStructure.GAME_FILE, Object.class,
+				new AssetLoadedCallback<Object>() {
 					@Override
 					public void loaded(String fileName, Object asset) {
 						ModelEntity game = (ModelEntity) asset;
 						addTile(fileName,
 								Q.getTitle(game),
-								fileName
+								projectPath
 										+ Q.getThumbnailPath(Q.getComponent(
 												game, GameData.class)
 												.getInitialScene()));
