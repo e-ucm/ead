@@ -55,14 +55,16 @@ import es.eucm.ead.schemax.FieldName;
  * {@link SceneEditState} component position will be changed.</dd>
  * <dd><strong>args[1] </strong> <em>{@link Float}</em> The new X position.</dd>
  * <dd><strong>args[2] </strong> <em>{@link Float}</em> The new Y position.</dd>
+ * <dd><strong>args[3] </strong> <em>{@link Float}</em> The zoom level.</dd>
  * </dl>
  * </p>
  * 
  */
-public class SetScenePosition extends ModelAction {
+public class SetSceneEditState extends ModelAction {
 
-	public SetScenePosition() {
-		super(true, false, ModelEntity.class, Float.class, Float.class);
+	public SetSceneEditState() {
+		super(true, false, ModelEntity.class, Float.class, Float.class,
+				Float.class);
 	}
 
 	@Override
@@ -72,16 +74,13 @@ public class SetScenePosition extends ModelAction {
 
 		CompositeCommand compositeCommand = new CompositeCommand();
 
-		compositeCommand.addCommand(getTransparentFieldCommand(state,
-				FieldName.X, (Float) args[1]));
-		compositeCommand.addCommand(getTransparentFieldCommand(state,
-				FieldName.Y, (Float) args[2]));
+		compositeCommand.addCommand(new FieldCommand(state, FieldName.X,
+				args[1], false, true));
+		compositeCommand.addCommand(new FieldCommand(state, FieldName.Y,
+				args[2], false, true));
+		compositeCommand.addCommand(new FieldCommand(state, FieldName.ZOOM,
+				args[3], false, true));
 
 		return compositeCommand;
-	}
-
-	private FieldCommand getTransparentFieldCommand(Object object,
-			String fieldName, Object newValue) {
-		return new FieldCommand(object, fieldName, newValue, false, true);
 	}
 }

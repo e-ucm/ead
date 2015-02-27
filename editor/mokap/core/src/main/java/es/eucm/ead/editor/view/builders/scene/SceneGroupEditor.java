@@ -168,7 +168,7 @@ public class SceneGroupEditor extends GroupEditor implements ModelView,
 
 			@Override
 			public void clicked(InputEvent event, float x, float y) {
-				fit();
+				fit(true);
 				fitButton.setVisible(false);
 			}
 		});
@@ -196,8 +196,8 @@ public class SceneGroupEditor extends GroupEditor implements ModelView,
 	}
 
 	@Override
-	public void pan(float deltaX, float deltaY) {
-		super.pan(deltaX, deltaY);
+	public void pan(float deltaX, float deltaY, boolean animated) {
+		super.pan(deltaX, deltaY, animated);
 		fitButton.setVisible(true);
 	}
 
@@ -264,6 +264,7 @@ public class SceneGroupEditor extends GroupEditor implements ModelView,
 
 			panToX(state.getX(), false);
 			panToY(state.getY(), false);
+			setZoom(state.getZoom(), false);
 			fitButton.setVisible(!MathUtils.isZero(state.getX())
 					|| !MathUtils.isZero(state.getY()));
 
@@ -455,12 +456,16 @@ public class SceneGroupEditor extends GroupEditor implements ModelView,
 		@Override
 		public void modelChanged(FieldEvent event) {
 			float value = (Float) event.getValue();
-			if (FieldName.X.equals(event.getField()))
+			if (FieldName.X.equals(event.getField())) {
 				panToX(value, true);
-			else if (FieldName.Y.equals(event.getField()))
+				fitButton.setVisible(!MathUtils.isZero(value));
+			} else if (FieldName.Y.equals(event.getField())) {
 				panToY(value, true);
-
-			fitButton.setVisible(!MathUtils.isZero(value));
+				fitButton.setVisible(!MathUtils.isZero(value));
+			} else if (FieldName.ZOOM.equals(event.getField())) {
+				setZoom(value, true);
+				fitButton.setVisible(MathUtils.isEqual(value, fitZoom, 0.001f));
+			}
 		}
 	}
 
@@ -593,12 +598,9 @@ public class SceneGroupEditor extends GroupEditor implements ModelView,
 
 		@Override
 		public boolean evaluate(Actor actor) {
-			if (Q.getModelEntity(actor) != null) {
-				return Q.getModelEntity(actor).getComponents()
-						.contains(component, true);
-			} else {
-				return false;
-			}
+			return Q.getModelEntity(actor) != null
+					&& Q.getModelEntity(actor).getComponents()
+							.contains(component, true);
 		}
 	}
 }
