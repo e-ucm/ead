@@ -49,6 +49,7 @@ import es.eucm.ead.editor.control.Selection;
 import es.eucm.ead.editor.control.actions.editor.ChangeView;
 import es.eucm.ead.editor.control.actions.editor.CloseProject;
 import es.eucm.ead.editor.control.actions.editor.Rename;
+import es.eucm.ead.editor.control.actions.editor.ShareProject;
 import es.eucm.ead.editor.model.Model.FieldListener;
 import es.eucm.ead.editor.model.Q;
 import es.eucm.ead.editor.model.events.FieldEvent;
@@ -122,6 +123,8 @@ public class ProjectView implements ViewBuilder, BackListener, FieldListener {
 		title.padLeft(WidgetBuilder.dpToPixels(8));
 		WidgetBuilder.actionOnClick(title, Rename.class, Selection.MOKAP);
 
+		project.add(WidgetBuilder.toolbarIcon(SkinConstants.IC_SHARE, null,
+				ShareProject.class));
 		project.add(WidgetBuilder.toolbarIcon(SkinConstants.IC_PLAY, null,
 				ChangeView.class, PlayView.class));
 
