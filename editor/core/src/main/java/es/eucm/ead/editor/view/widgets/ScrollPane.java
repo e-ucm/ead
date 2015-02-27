@@ -141,6 +141,8 @@ public class ScrollPane extends WidgetGroup {
 	private boolean hitBottom = false;
 	boolean hitFlingX, hitFlingY;
 
+	private InputListener scrollDraggingListener;
+
 	/**
 	 * @param widget
 	 *            May be null.
@@ -176,7 +178,7 @@ public class ScrollPane extends WidgetGroup {
 		setWidget(widget);
 		setSize(150, 150);
 
-		addCaptureListener(new InputListener() {
+		addCaptureListener(scrollDraggingListener = new InputListener() {
 			private float handlePosition;
 
 			public boolean touchDown(InputEvent event, float x, float y,
@@ -375,6 +377,10 @@ public class ScrollPane extends WidgetGroup {
 				return true;
 			}
 		});
+	}
+
+	public InputListener getScrollDraggingListener() {
+		return scrollDraggingListener;
 	}
 
 	/** Test if we're currently hitting any horizontal side */
