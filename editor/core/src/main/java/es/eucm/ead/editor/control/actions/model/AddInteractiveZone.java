@@ -53,6 +53,10 @@ import es.eucm.ead.schema.renderers.EmptyRenderer;
  */
 public class AddInteractiveZone extends ModelAction {
 
+	public AddInteractiveZone() {
+		setTrackable(true);
+	}
+
 	@Override
 	public Command perform(Object... args) {
 		GameData gameData = Q.getComponent(controller.getModel().getGame(),

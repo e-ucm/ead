@@ -45,6 +45,10 @@ import es.eucm.ead.editor.control.workers.Worker.WorkerListener;
  */
 public class AddProject extends EditorAction implements WorkerListener {
 
+	public AddProject() {
+		setTrackable(true);
+	}
+
 	@Override
 	public void perform(Object... args) {
 		controller.action(ExecuteWorker.class, CreateProject.class, this);

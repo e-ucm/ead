@@ -70,6 +70,7 @@ public class AddLabel extends EditorAction implements Input.TextInputListener {
 	public AddLabel() {
 		super(true, false, new Class[] {}, new Class[] { Label.class },
 				new Class[] { Label.class, Boolean.class });
+		setTrackable(true);
 	}
 
 	@Override

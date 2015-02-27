@@ -56,6 +56,7 @@ public class Undo extends EditorAction implements CommandListener {
 
 	public Undo() {
 		super(false, false);
+		setTrackable(true);
 	}
 
 	@Override

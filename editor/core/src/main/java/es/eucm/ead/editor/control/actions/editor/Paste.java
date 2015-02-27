@@ -54,6 +54,7 @@ public class Paste extends EnabledOnLoadAction implements ClipboardListener {
 
 	public Paste() {
 		super(false, false);
+		setTrackable(true);
 	}
 
 	@Override

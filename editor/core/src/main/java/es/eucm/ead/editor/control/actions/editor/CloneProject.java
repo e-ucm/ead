@@ -64,6 +64,7 @@ public class CloneProject extends EditorAction {
 		super(true, false, new Class[] { BackgroundTaskListener.class,
 				Array.class }, new Class[] { BackgroundTaskListener.class,
 				Array.class, String.class });
+		setTrackable(true);
 	}
 
 	@Override

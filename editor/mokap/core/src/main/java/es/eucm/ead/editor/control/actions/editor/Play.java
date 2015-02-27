@@ -48,6 +48,7 @@ public class Play extends EditorAction implements AssetLoadedCallback<Object> {
 
 	public Play() {
 		super(true, false, new Class[] {}, new Class[] { String.class });
+		setTrackable(true);
 	}
 
 	@Override
