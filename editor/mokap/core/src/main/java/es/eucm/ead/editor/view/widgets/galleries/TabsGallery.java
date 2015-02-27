@@ -221,19 +221,21 @@ public class TabsGallery extends LinearLayout {
 		loadContents();
 	}
 
-    private float lastScrollY = 0;
+	private float lastScrollY = 0;
 
-    @Override
-    public void act(float delta) {
-        super.act(delta);
-        toolbar.setY(Math.max(Math.min(
-                toolbar.getY() + Math.round(currentGallery.getGallery().getScrollY() - lastScrollY), getHeight()
-                        - toolbar.getHeight() * 0.5f), getHeight()
-                - toolbar.getHeight()));
-        positionGallery();
+	@Override
+	public void act(float delta) {
+		super.act(delta);
+		toolbar.setY(Math.max(Math.min(
+				toolbar.getY()
+						+ Math.round(currentGallery.getGallery().getScrollY()
+								- lastScrollY),
+				getHeight() - toolbar.getHeight() * 0.5f), getHeight()
+				- toolbar.getHeight()));
+		positionGallery();
 
-        lastScrollY = currentGallery.getGallery().getScrollY();
-    }
+		lastScrollY = currentGallery.getGallery().getScrollY();
+	}
 
 	private void positionGallery() {
 		currentGallery.setPosition(0,

@@ -81,7 +81,7 @@ public class Gallery extends ScrollPane {
 		setWidget(grid = new Grid(rows, columns));
 		getStyle().background = style.background;
 		setScrollingDisabled(true, false);
-        setOverscroll(false, false);
+		setOverscroll(false, false);
 	}
 
 	public Grid getGrid() {
