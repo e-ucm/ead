@@ -67,8 +67,6 @@ public class ScaleState extends InputState {
 
 	private boolean rotationCancelled;
 
-	private int pointers = 0;
-
 	private float distance1;
 
 	private float initialPointerRotation;
@@ -81,11 +79,10 @@ public class ScaleState extends InputState {
 
 	@Override
 	public void enter() {
-		pointers = 2;
 		rotationCancelled = false;
 		if (stateMachine.getSelection().size == 0
 				|| stateMachine.isOnlySelection()) {
-			stateMachine.setState(NoPointersState.class);
+			stateMachine.setState(CameraState.class);
 		} else {
 			initialPointerRotation = temp.set(stateMachine.initialPointer1)
 					.sub(stateMachine.initialPointer2).angle();
@@ -118,43 +115,19 @@ public class ScaleState extends InputState {
 	}
 
 	@Override
-	public void drag1(InputEvent event, float x, float y) {
-		updateTransformation();
-	}
-
-	@Override
-	public void drag2(InputEvent event, float x, float y) {
-		updateTransformation();
-	}
-
-	@Override
-	public void touchUp1(InputEvent event, float x, float y) {
-		touchUp();
-	}
-
-	@Override
-	public void touchUp2(InputEvent event, float x, float y) {
-		touchUp();
-	}
-
-	@Override
-	public void touchDown1(InputEvent event, float x, float y) {
+	public void touchDown(InputEvent event, float x, float y, int pointer) {
 		enter();
 	}
 
 	@Override
-	public void touchDown2(InputEvent event, float x, float y) {
-		enter();
-	}
-
-	private void touchUp() {
-		pointers--;
-		if (pointers <= 0) {
+	public void touchUp(InputEvent event, float x, float y, int pointer) {
+		if (stateMachine.pointers <= 0) {
 			stateMachine.setState(NoPointersState.class);
 		}
 	}
 
-	private void updateTransformation() {
+	@Override
+	public void drag(InputEvent event, float x, float y, int pointer) {
 		Vector2 pointer1 = stateMachine.pointer1;
 		Vector2 pointer2 = stateMachine.pointer2;
 		if (Math.abs(distance1 - temp.set(pointer1).sub(pointer2).len()) > DISTANCE_CANCEL) {

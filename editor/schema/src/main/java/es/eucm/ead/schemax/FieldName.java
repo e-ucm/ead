@@ -193,7 +193,15 @@ public class FieldName {
 
 	YOYO = "yoyo",
 
-	SPEED = "speed", AMPLITUDE = "amplitude", DIRECTION = "direction",
+	SPEED = "speed",
 
-	MAX_ALPHA = "maxAlpha", MIN_ALPHA = "minAlpha";
+	AMPLITUDE = "amplitude",
+
+	DIRECTION = "direction",
+
+	MAX_ALPHA = "maxAlpha",
+
+	MIN_ALPHA = "minAlpha",
+
+	ZOOM = "zoom";
 }

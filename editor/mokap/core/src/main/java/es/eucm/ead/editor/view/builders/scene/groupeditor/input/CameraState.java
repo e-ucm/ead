@@ -36,34 +36,74 @@
  */
 package es.eucm.ead.editor.view.builders.scene.groupeditor.input;
 
+import com.badlogic.gdx.math.Interpolation;
+import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import es.eucm.ead.editor.view.builders.scene.groupeditor.inputstatemachine.InputState;
 
-public class CameraPanState extends InputState {
+public class CameraState extends InputState {
+
+	public static final Vector2 tmp1 = new Vector2(), tmp2 = new Vector2();
 
 	private EditStateMachine stateMachine;
 
-	public CameraPanState(EditStateMachine stateMachine) {
+	private float initialDistance;
+
+	private float initialZoom;
+
+	public CameraState(EditStateMachine stateMachine) {
 		this.stateMachine = stateMachine;
 	}
 
 	@Override
 	public void enter() {
 		stateMachine.enterFullScreen();
+		touchDown(null, 0, 0, 0);
 	}
 
 	@Override
-	public void drag1(InputEvent event, float x, float y) {
-		stateMachine.pan();
+	public void touchDown(InputEvent event, float x, float y, int pointer) {
+		if (stateMachine.pointers == 2) {
+			reset();
+		}
 	}
 
 	@Override
-	public void touchUp1(InputEvent event, float x, float y) {
-		stateMachine.setState(NoPointersState.class);
+	public void touchUp(InputEvent event, float x, float y, int pointer) {
+		if (stateMachine.pointers == 0) {
+			stateMachine.setState(NoPointersState.class);
+		}
 	}
 
 	@Override
 	public void exit() {
 		stateMachine.exitPan();
+	}
+
+	@Override
+	public void drag1(InputEvent event, float x, float y) {
+		stateMachine.pan1();
+	}
+
+	@Override
+	public void drag2(InputEvent event, float x, float y) {
+		stateMachine.pan2();
+	}
+
+	@Override
+	public void drag(InputEvent event, float x, float y, int pointer) {
+		if (stateMachine.pointers == 2) {
+			tmp1.set(stateMachine.pointer1);
+			tmp2.set(stateMachine.pointer2);
+			Vector2 center = tmp1.interpolate(tmp2, 0.5f, Interpolation.linear);
+			stateMachine.zoom(center.x, center.y,
+					stateMachine.pointer1.dst(stateMachine.pointer2)
+							* initialZoom / initialDistance);
+		}
+	}
+
+	private void reset() {
+		initialDistance = stateMachine.pointer1.dst(stateMachine.pointer2);
+		initialZoom = stateMachine.getZoom();
 	}
 }
