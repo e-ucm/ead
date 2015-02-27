@@ -71,7 +71,12 @@ public class JsonLoader<T> extends
 	public void loadAsync(AssetManager manager, String fileName,
 			FileHandle file, AssetLoaderParameters<T> parameter) {
 		// FIXME temporary fix. Some of the files has erroneous '
-		String contents = file.readString().replace("'", "\"");
+		String contents = file
+				.readString()
+				.replaceAll(
+						"'(https?:\\/\\/)([\\da-z\\.-]+)\\.([a-z\\.]{2,6})([\\/\\w \\.-]*)*\\/?(\\?.*)?'",
+						"\"http\"");
+
 		object = gameAssets.fromJson(clazz == Object.class ? null : clazz,
 				contents);
 		if (object == null) {
