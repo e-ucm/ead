@@ -41,39 +41,39 @@ import es.eucm.ead.editor.view.builders.scene.groupeditor.inputstatemachine.Inpu
 
 public class ActorPressedState extends InputState {
 
-	private EditStateMachine editStateMachine;
+	private EditStateMachine stateMachine;
 
-	public ActorPressedState(EditStateMachine editStateMachine) {
-		this.editStateMachine = editStateMachine;
+	public ActorPressedState(EditStateMachine stateMachine) {
+		this.stateMachine = stateMachine;
 	}
 
 	@Override
 	public void enter() {
-		editStateMachine.pressActor();
+		stateMachine.pressActor();
 	}
 
 	@Override
 	public void dragStart1(InputEvent event, float x, float y) {
-		editStateMachine.unpressActor();
-		editStateMachine.setState(CameraPanState.class);
+		stateMachine.unpressActor();
+		stateMachine.setState(CameraState.class);
 	}
 
 	@Override
 	public void touchUp1(InputEvent event, float x, float y) {
-		editStateMachine.selectActor();
-		editStateMachine.fireSelection();
-		editStateMachine.setState(NoPointersState.class);
+		stateMachine.selectActor();
+		stateMachine.fireSelection();
+		stateMachine.setState(NoPointersState.class);
 	}
 
 	@Override
 	public void touchDown2(InputEvent event, float x, float y) {
-		editStateMachine.unpressActor();
-		editStateMachine.setState(ScaleState.class);
+		stateMachine.unpressActor();
+		stateMachine.setState(ScaleState.class);
 	}
 
 	@Override
 	public void longPress(float x, float y) {
-		editStateMachine.unpressActor();
-		editStateMachine.showLayerSelector(x, y);
+		stateMachine.unpressActor();
+		stateMachine.showLayerSelector(x, y);
 	}
 }

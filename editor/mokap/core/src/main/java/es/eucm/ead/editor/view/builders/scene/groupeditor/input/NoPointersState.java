@@ -67,7 +67,7 @@ public class NoPointersState extends InputState {
 
 	@Override
 	public void dragStart1(InputEvent event, float x, float y) {
-		stateMachine.setState(CameraPanState.class);
+		stateMachine.setState(CameraState.class);
 	}
 
 	@Override

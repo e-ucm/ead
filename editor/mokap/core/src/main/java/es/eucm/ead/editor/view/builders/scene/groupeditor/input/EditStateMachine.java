@@ -70,7 +70,7 @@ public class EditStateMachine extends InputStateMachine {
 		addState(new ActorPressedState(this));
 		addState(new ScaleState(this));
 		addState(new RotateState(this));
-		addState(new CameraPanState(this));
+		addState(new CameraState(this));
 		setState(NoPointersState.class);
 	}
 
@@ -155,11 +155,16 @@ public class EditStateMachine extends InputStateMachine {
 	}
 
 	void move() {
-		selectionGroup.move(-getDeltaX1(), -getDeltaY1());
+		selectionGroup.move(-getDeltaX1() / groupEditor.getZoom(),
+				-getDeltaY1() / groupEditor.getZoom());
 	}
 
-	public void pan() {
-		groupEditor.pan(-getDeltaX1(), -getDeltaY1());
+	public void pan1() {
+		groupEditor.pan(-getDeltaX1(), -getDeltaY1(), false);
+	}
+
+	public void pan2() {
+		groupEditor.pan(-getDeltaX2(), -getDeltaY2(), false);
 	}
 
 	void showLayerSelector(float x, float y) {
@@ -185,5 +190,13 @@ public class EditStateMachine extends InputStateMachine {
 
 	public void cancelTouchFocus() {
 		groupEditor.getStage().cancelTouchFocus(groupEditor);
+	}
+
+	public float getZoom() {
+		return groupEditor.getZoom();
+	}
+
+	public void zoom(float centerX, float centerY, float zoom) {
+		groupEditor.zoom(centerX, centerY, zoom, false);
 	}
 }

@@ -57,11 +57,19 @@ public abstract class InputState {
 
 	}
 
+	public void touchDown(InputEvent event, float x, float y, int pointer) {
+
+	}
+
 	public void touchUp1(InputEvent event, float x, float y) {
 
 	}
 
 	public void touchUp2(InputEvent event, float x, float y) {
+
+	}
+
+	public void touchUp(InputEvent event, float x, float y, int pointer) {
 
 	}
 
@@ -73,11 +81,19 @@ public abstract class InputState {
 
 	}
 
+	public void dragStart(InputEvent event, float x, float y, int pointer) {
+
+	}
+
 	public void drag1(InputEvent event, float x, float y) {
 
 	}
 
 	public void drag2(InputEvent event, float x, float y) {
+
+	}
+
+	public void drag(InputEvent event, float x, float y, int pointer) {
 
 	}
 

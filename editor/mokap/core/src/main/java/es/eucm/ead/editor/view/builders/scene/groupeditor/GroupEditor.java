@@ -39,6 +39,7 @@ package es.eucm.ead.editor.view.builders.scene.groupeditor;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.math.Interpolation;
+import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Polygon;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.scenes.scene2d.Actor;
@@ -52,6 +53,8 @@ import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.utils.Drawable;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.Pools;
+import com.badlogic.gdx.utils.Scaling;
+
 import es.eucm.ead.editor.utils.Actions2;
 import es.eucm.ead.editor.view.builders.scene.groupeditor.GroupEditor.GroupEvent.Type;
 import es.eucm.ead.editor.view.widgets.AbstractWidget;
@@ -60,6 +63,8 @@ import es.eucm.ead.engine.utils.EngineUtils;
 public class GroupEditor extends AbstractWidget {
 
 	public static final float TIME = 0.25f;
+
+	public static final Vector2 tmp = new Vector2();
 
 	public static final float NEAR_CM = 1.0f;
 
@@ -84,6 +89,8 @@ public class GroupEditor extends AbstractWidget {
 	private AbstractWidget sceneContainer;
 
 	private Container sceneBackground;
+
+	protected float zoom = 1.0f, fitZoom, maxZoom, minZoom;
 
 	private Runnable containerUpdated = new Runnable() {
 
@@ -120,6 +127,29 @@ public class GroupEditor extends AbstractWidget {
 		addListener(touchRepresentation);
 	}
 
+	/**
+	 * Sets the group being edited
+	 */
+	public void setRootGroup(Group rootGroup) {
+		if (this.rootGroup != null) {
+			this.rootGroup.remove();
+		}
+		this.rootGroup = rootGroup;
+		if (rootGroup != null) {
+			sceneBackground.setBounds(
+					-style.groupBackground.getLeftWidth(),
+					-style.groupBackground.getBottomHeight(),
+					rootGroup.getWidth() + style.groupBackground.getLeftWidth()
+							+ style.groupBackground.getRightWidth(),
+					rootGroup.getHeight()
+							+ style.groupBackground.getTopHeight()
+							+ style.groupBackground.getBottomHeight());
+			sceneContainer.addActorAfter(sceneBackground, rootGroup);
+			editedGroup = rootGroup;
+			invalidate();
+		}
+	}
+
 	public void setMultipleSelection(boolean multipleSelection) {
 		this.multipleSelection = multipleSelection;
 	}
@@ -136,27 +166,22 @@ public class GroupEditor extends AbstractWidget {
 		this.onlySelection = onlySelection;
 	}
 
+	// Invoke by UI (Requires fireContainerUpdated)
+
 	/**
 	 * Sets the root group in its initial position, fitting the view
 	 */
-	public void fit() {
-		fit(true);
-	}
-
 	public void fit(boolean animated) {
-		if (animated) {
-			sceneContainer.clearActions();
-			sceneContainer.addAction(Actions.sequence(
-					Actions.moveTo(0, 0, 0.22f, Interpolation.exp5Out),
-					Actions.run(containerUpdated)));
-		} else {
-			sceneContainer.setPosition(0, 0);
-			fireContainerUpdated();
-		}
+		setZoom(fitZoom, animated);
+		panToX(0, animated);
+		panToY(0, animated);
 	}
 
-	public void pan(float deltaX, float deltaY) {
-		sceneContainer.moveBy(deltaX, deltaY);
+	// Invoked programmatically
+
+	public void pan(float deltaX, float deltaY, boolean animated) {
+		panToX(sceneContainer.getX() + deltaX, animated);
+		panToY(sceneContainer.getY() + deltaY, animated);
 	}
 
 	public void panToX(float x, boolean animated) {
@@ -177,26 +202,71 @@ public class GroupEditor extends AbstractWidget {
 		}
 	}
 
+	public float getZoom() {
+		return zoom;
+	}
+
+	public void zoomIn() {
+		zoom(getWidth() / 2.0f, getHeight() / 2.0f, zoom + 0.25f, true);
+	}
+
+	public void zoomOut() {
+		zoom(getWidth() / 2.0f, getHeight() / 2.0f, zoom - 0.25f, true);
+	}
+
 	/**
-	 * Sets the group being edited
+	 * Changes the zoom level
 	 */
-	public void setRootGroup(Group rootGroup) {
-		if (this.rootGroup != null) {
-			this.rootGroup.remove();
+	public void zoom(float centerX, float centerY, float newZoom,
+			boolean animate) {
+
+		if (MathUtils.isEqual(zoom, newZoom, 0.001f)) {
+			return;
 		}
-		this.rootGroup = rootGroup;
-		if (rootGroup != null) {
-			sceneBackground.setBounds(
-					-style.groupBackground.getLeftWidth(),
-					-style.groupBackground.getBottomHeight(),
-					rootGroup.getWidth() + style.groupBackground.getLeftWidth()
-							+ style.groupBackground.getRightWidth(),
-					rootGroup.getHeight()
-							+ style.groupBackground.getTopHeight()
-							+ style.groupBackground.getBottomHeight());
-			sceneContainer.addActorAfter(sceneBackground, rootGroup);
-			editedGroup = rootGroup;
+
+		this.zoom = Math.min(maxZoom, Math.max(minZoom, newZoom));
+
+		Vector2 center = tmp.set(centerX, centerY);
+		localToDescendantCoordinates(sceneContainer, center);
+
+		float oldScale = sceneContainer.getScaleX();
+		sceneContainer.setScale(zoom, zoom);
+
+		sceneContainer.localToAscendantCoordinates(this, center);
+
+		float newX = sceneContainer.getX() + (centerX - center.x);
+		float newY = sceneContainer.getY() + (centerY - center.y);
+
+		if (animate) {
+			sceneContainer.setScale(oldScale, oldScale);
+			sceneContainer.getActions().clear();
+			sceneContainer.addAction(Actions.sequence(Actions.parallel(
+					Actions.scaleTo(zoom, zoom, 0.21f, Interpolation.exp5Out),
+					Actions.moveTo(newX, newY, 0.21f, Interpolation.exp5Out)),
+					Actions.run(containerUpdated)));
+		} else {
+			sceneContainer.setPosition(newX, newY);
+			fireContainerUpdated();
 		}
+	}
+
+	public void setZoom(float zoom, boolean animate) {
+		this.zoom = zoom;
+		if (animate) {
+			sceneContainer.addAction(Actions.scaleTo(zoom, zoom, 0.21f,
+					Interpolation.exp5Out));
+		} else {
+			sceneContainer.setScale(zoom, zoom);
+		}
+	}
+
+	@Override
+	public void layout() {
+		Vector2 fitSize = Scaling.fit.apply(rootGroup.getWidth(),
+				rootGroup.getHeight(), getWidth(), getHeight());
+		this.fitZoom = fitSize.x / rootGroup.getWidth();
+		this.maxZoom = fitZoom * 4;
+		this.minZoom = fitZoom * 0.25f;
 	}
 
 	@Override

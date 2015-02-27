@@ -61,6 +61,8 @@ public class InputStateMachine extends InputListener {
 
 	public Vector2 pointer2 = new Vector2();
 
+	public int pointers;
+
 	private boolean dragging1;
 
 	private boolean dragging2;
@@ -95,6 +97,7 @@ public class InputStateMachine extends InputListener {
 	@Override
 	public boolean touchDown(InputEvent event, float x, float y, int pointer,
 			int button) {
+		pointers++;
 		if (pointer == 0) {
 			initialPointer1.set(x, y);
 			pointer1.set(x, y);
@@ -102,12 +105,13 @@ public class InputStateMachine extends InputListener {
 			currentState.touchDown1(event, x, y);
 		} else {
 			longPressTask.cancel();
-			initialPointer2.set(x, y);
-			pointer2.set(x, y);
-			currentState.touchDown2(event, x, y);
+			if (pointer == 1) {
+				initialPointer2.set(x, y);
+				pointer2.set(x, y);
+				currentState.touchDown2(event, x, y);
+			}
 		}
-		dragging1 = false;
-		dragging2 = false;
+		currentState.touchDown(event, x, y, pointer);
 		return pointer < 2;
 	}
 
@@ -115,7 +119,7 @@ public class InputStateMachine extends InputListener {
 	public void touchDragged(InputEvent event, float x, float y, int pointer) {
 		if (pointer == 0) {
 			pointer1.set(x, y);
-		} else {
+		} else if (pointer == 1) {
 			pointer2.set(x, y);
 		}
 
@@ -136,7 +140,7 @@ public class InputStateMachine extends InputListener {
 				deltaX1 = x;
 				deltaY1 = y;
 			}
-		} else {
+		} else if (pointer == 1) {
 			if (!dragging2
 					&& (Math.abs(initialPointer2.x - x) > tapSquareSize || Math
 							.abs(initialPointer2.y - y) > tapSquareSize)) {
@@ -173,18 +177,20 @@ public class InputStateMachine extends InputListener {
 	}
 
 	public void drag(InputEvent event, float x, float y, int pointer) {
+		currentState.drag(event, x, y, pointer);
 		if (pointer == 0) {
 			currentState.drag1(event, x, y);
-		} else {
+		} else if (pointer == 1) {
 			currentState.drag2(event, x, y);
 		}
 	}
 
 	public void dragStart(InputEvent event, float x, float y, int pointer) {
 		longPressTask.cancel();
+		currentState.dragStart(event, x, y, pointer);
 		if (pointer == 0) {
 			currentState.dragStart1(event, x, y);
-		} else {
+		} else if (pointer == 1) {
 			currentState.dragStart2(event, x, y);
 		}
 	}
@@ -192,10 +198,14 @@ public class InputStateMachine extends InputListener {
 	@Override
 	public void touchUp(InputEvent event, float x, float y, int pointer,
 			int button) {
+		pointers--;
 		longPressTask.cancel();
+		currentState.touchUp(event, x, y, pointer);
 		if (pointer == 0) {
+			dragging1 = false;
 			currentState.touchUp1(event, x, y);
-		} else {
+		} else if (pointer == 1) {
+			dragging2 = false;
 			currentState.touchUp2(event, x, y);
 		}
 		super.touchUp(event, x, y, pointer, button);

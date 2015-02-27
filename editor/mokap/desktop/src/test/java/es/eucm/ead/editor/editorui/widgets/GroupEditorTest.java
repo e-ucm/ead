@@ -70,6 +70,7 @@ public class GroupEditorTest extends UITest {
 		final GroupEditor container = new GroupEditor(skin);
 
 		final Group root = new Group();
+		root.setSize(1000, 600);
 		container.setRootGroup(root);
 
 		container.addListener(new InputListener() {
@@ -82,6 +83,10 @@ public class GroupEditorTest extends UITest {
 					container.setMultipleSelection(true);
 				} else if (keycode == Keys.N) {
 					container.setMultipleSelection(false);
+				} else if (keycode == Keys.PLUS) {
+					container.zoomIn();
+				} else if (keycode == Keys.MINUS) {
+					container.zoomOut();
 				}
 				return true;
 			}
