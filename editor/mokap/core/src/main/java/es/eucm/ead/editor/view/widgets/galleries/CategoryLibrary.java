@@ -38,60 +38,51 @@ package es.eucm.ead.editor.view.widgets.galleries;
 
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import es.eucm.ead.editor.control.Controller;
-import es.eucm.ead.editor.control.actions.editor.ChangeView;
 import es.eucm.ead.editor.control.actions.editor.ExecuteWorker;
-import es.eucm.ead.editor.control.actions.model.AddLibraryReference;
+import es.eucm.ead.editor.control.actions.editor.Play;
 import es.eucm.ead.editor.control.workers.LoadLibraryEntities;
-import es.eucm.ead.editor.control.workers.Worker.WorkerListener;
-import es.eucm.ead.editor.view.ModelView;
-import es.eucm.ead.editor.view.SkinConstants;
-import es.eucm.ead.editor.view.builders.SearchView;
-import es.eucm.ead.editor.view.builders.scene.SceneView;
+import es.eucm.ead.editor.control.workers.Worker;
 import es.eucm.ead.editor.view.widgets.WidgetBuilder;
+import es.eucm.ead.editor.view.widgets.galleries.basegalleries.ThumbnailsGallery;
 import es.eucm.ead.editor.view.widgets.layouts.Gallery.GalleryStyle;
+import es.eucm.ead.schema.editor.components.repo.RepoCategories;
+import es.eucm.ead.schema.editor.components.repo.RepoElement;
+import es.eucm.ead.schemax.ModelStructure;
 
-/**
- * A gallery showing the library elements
- */
-public class LibraryGallery extends ThumbnailsGallery implements
-		WorkerListener, ModelView {
+public class CategoryLibrary extends ThumbnailsGallery implements
+		Worker.WorkerListener {
 
-	private Controller controller;
+	protected Controller controller;
 
-	public LibraryGallery(float rows, int columns, Controller controller) {
+	protected String category;
+
+	public CategoryLibrary(float rows, int columns, Controller controller) {
+		this(rows, columns, "all", controller);
+	}
+
+	public CategoryLibrary(float rows, int columns, String category,
+			Controller controller) {
 		super(rows, columns, controller.getApplicationAssets(), controller
 				.getApplicationAssets().getSkin(), controller
 				.getApplicationAssets().getI18N(), controller
-				.getApplicationAssets().getSkin().get(GalleryStyle.class),
-				SkinConstants.IC_SEARCH);
+				.getApplicationAssets().getSkin().get(GalleryStyle.class));
 		this.controller = controller;
+		this.category = category;
+	}
+
+	public void changeCategory(String newCategory) {
+		this.category = newCategory;
 	}
 
 	@Override
-	public void prepare() {
-		controller.action(ExecuteWorker.class, LoadLibraryEntities.class, this);
-	}
-
-	@Override
-	public void release() {
-		controller.getWorkerExecutor().cancel(LoadLibraryEntities.class, this);
-	}
-
-	@Override
-	protected void prepareAddButton(Actor actor) {
-		WidgetBuilder.actionOnClick(actor, ChangeView.class, SearchView.class);
-	}
-
-	@Override
-	protected void prepareGalleryItem(Actor actor, Object id) {
-		WidgetBuilder.actionsOnClick(actor, new Class[] {
-				AddLibraryReference.class, ChangeView.class }, new Object[][] {
-				new Object[] { id }, new Object[] { SceneView.class } });
+	public void loadContents(String string) {
+		clear();
+		controller.action(ExecuteWorker.class, LoadLibraryEntities.class, this,
+				category);
 	}
 
 	@Override
 	public void start() {
-		clear();
 	}
 
 	@Override
@@ -112,6 +103,34 @@ public class LibraryGallery extends ThumbnailsGallery implements
 	@Override
 	public void cancelled() {
 
+	}
+
+	@Override
+	protected void prepareActionButton(Actor actor) {
+
+	}
+
+	@Override
+	protected void prepareGalleryItem(Actor actor, Object id) {
+		if (id instanceof RepoElement) {
+			RepoElement selected = (RepoElement) id;
+			if (selected.getCategoryList()
+					.contains(RepoCategories.MOKAPS, true)) {
+				WidgetBuilder
+						.actionsOnClick(
+								actor,
+								new Class[] { Play.class },
+								new Object[][] {
+										new Object[] { controller
+												.getLibraryManager()
+												.getRepoElementLibraryFolder(
+														(RepoElement) id)
+												.file().getAbsolutePath()
+												+ "/"
+												+ ModelStructure.CONTENTS_FOLDER },
+										new Object[] {} });
+			}
+		}
 	}
 
 }
