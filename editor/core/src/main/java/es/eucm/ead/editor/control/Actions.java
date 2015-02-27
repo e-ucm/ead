@@ -117,8 +117,14 @@ public class Actions {
 				} else if (action instanceof EditorAction) {
 					editorActions.perform((EditorAction) action, args);
 				}
+				if (action.isTrackable()) {
+					controller.getTracker().actionPerformed(actionClass, true);
+				}
 				return true;
 			} else {
+				if (action.isTrackable()) {
+					controller.getTracker().actionPerformed(actionClass, false);
+				}
 				throw new ArgumentsValidationException(actionClass, args);
 			}
 		} else {

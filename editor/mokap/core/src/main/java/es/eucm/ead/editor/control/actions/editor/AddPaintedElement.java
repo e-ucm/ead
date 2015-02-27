@@ -61,6 +61,7 @@ public class AddPaintedElement extends EditorAction {
 
 	public AddPaintedElement() {
 		super(true, false, BrushStrokes.class);
+		setTrackable(true);
 	}
 
 	@Override

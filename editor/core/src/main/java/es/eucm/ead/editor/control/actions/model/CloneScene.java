@@ -54,6 +54,10 @@ import es.eucm.ead.schemax.entities.ResourceCategory;
  */
 public class CloneScene extends ModelAction {
 
+	public CloneScene() {
+		setTrackable(true);
+	}
+
 	@Override
 	public Command perform(Object... args) {
 		ModelEntity scene = (ModelEntity) controller.getModel().getSelection()

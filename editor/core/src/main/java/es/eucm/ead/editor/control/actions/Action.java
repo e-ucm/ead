@@ -67,6 +67,8 @@ public abstract class Action {
 
 	private boolean allowNullArguments;
 
+	private boolean trackable = false;
+
 	/**
 	 * Creates the action with only one valid arguments possibilities
 	 * 
@@ -141,8 +143,16 @@ public abstract class Action {
 	}
 
 	/**
+	 * Sets if this action must be tracked by the editor analytics
+	 */
+	public void setTrackable(boolean trackable) {
+		this.trackable = trackable;
+	}
+
+	/**
 	 * 
-	 * @return if this action is enabled and can be invoked by from the editor
+	 * @return if this action is enabled and can be invoked by from the editor.
+	 *         {@code false} by default
 	 */
 	public boolean isEnabled() {
 		return enabled;
@@ -186,6 +196,13 @@ public abstract class Action {
 			}
 		}
 		return false;
+	}
+
+	/**
+	 * @return whether this action should by tracked by the editor analytics
+	 */
+	public boolean isTrackable() {
+		return trackable;
 	}
 
 }

@@ -59,6 +59,7 @@ public class AddScene extends ModelAction {
 		super.initialize(controller);
 		setEditedScene = controller.getActions()
 				.getAction(SetEditedScene.class);
+		setTrackable(true);
 	}
 
 	@Override

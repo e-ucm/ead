@@ -63,6 +63,7 @@ public class TakePicture extends EditorAction {
 
 	public TakePicture() {
 		super(true, false);
+		setTrackable(true);
 	}
 
 	@Override

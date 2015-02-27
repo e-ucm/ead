@@ -56,6 +56,7 @@ public class Redo extends EditorAction implements CommandListener {
 
 	public Redo() {
 		super(false, false);
+		setTrackable(true);
 	}
 
 	@Override
