@@ -40,7 +40,6 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.SnapshotArray;
 import es.eucm.ead.editor.control.commands.Command;
-import es.eucm.ead.editor.control.commands.EmptyCommand;
 import es.eucm.ead.editor.model.Model;
 import es.eucm.ead.editor.model.events.ModelEvent;
 
@@ -235,9 +234,6 @@ public class Commands {
 		Object[] listeners = commandListeners.begin();
 		for (int i = 0; i < commandListeners.size; i++) {
 			CommandListener listener = (CommandListener) listeners[i];
-			if (command instanceof EmptyCommand) {
-				Gdx.app.debug("FUck", listener + "");
-			}
 			switch (type) {
 			case COMMAND:
 				listener.doCommand(this, command);
