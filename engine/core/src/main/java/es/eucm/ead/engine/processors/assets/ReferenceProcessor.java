@@ -39,7 +39,6 @@ package es.eucm.ead.engine.processors.assets;
 import com.badlogic.ashley.core.Component;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.scenes.scene2d.Group;
-import com.badlogic.gdx.utils.ObjectMap;
 import es.eucm.ead.engine.EntitiesLoader;
 import es.eucm.ead.engine.GameLoop;
 import es.eucm.ead.engine.assets.Assets.AssetLoadedCallback;
@@ -55,9 +54,6 @@ public class ReferenceProcessor extends ComponentProcessor<Reference> {
 	private EntitiesLoader loader;
 	private GameAssets assets;
 
-	private ObjectMap<String, Reference> pendingReferences = new ObjectMap<String, Reference>();
-	private ObjectMap<String, ReferenceComponent> pendingComponents = new ObjectMap<String, ReferenceComponent>();
-
 	public ReferenceProcessor(GameLoop engine, GameAssets assets,
 			EntitiesLoader loader) {
 		super(engine);
@@ -72,30 +68,14 @@ public class ReferenceProcessor extends ComponentProcessor<Reference> {
 				+ reference.getEntity();
 		ReferenceComponent referenceComponent = gameLoop
 				.createComponent(ReferenceComponent.class);
-		pendingReferences.put(id, reference);
-		pendingComponents.put(id, referenceComponent);
 
-		assets.get(id, Object.class, new AssetLoadedCallback<Object>() {
-			@Override
-			public void loaded(String fileName, Object asset) {
-				setGroup(fileName, (ModelEntity) asset);
-			}
-
-			@Override
-			public void error(String fileName, Class type, Throwable exception) {
-				pendingReferences.remove(fileName);
-				pendingComponents.remove(fileName);
-				Gdx.app.error("ReferenceProcessor", "Error loading reference "
-						+ exception);
-			}
-		});
-
+		assets.get(id, Object.class, new ReferenceLoadedCallback(reference,
+				referenceComponent));
 		return referenceComponent;
 	}
 
-	private void setGroup(String id, ModelEntity entity) {
-		Reference reference = pendingReferences.remove(id);
-		ReferenceComponent component = pendingComponents.remove(id);
+	private void setGroup(Reference reference, ReferenceComponent component,
+			ModelEntity entity) {
 		String referenceLoadingPath = reference.getFolder()
 				+ ModelStructure.CONTENTS_FOLDER;
 		assets.setReferencePath(getLibraryPath() + referenceLoadingPath);
@@ -106,5 +86,30 @@ public class ReferenceProcessor extends ComponentProcessor<Reference> {
 
 	protected String getLibraryPath() {
 		return ModelStructure.LIBRARY_FOLDER;
+	}
+
+	private class ReferenceLoadedCallback implements
+			AssetLoadedCallback<Object> {
+
+		private Reference reference;
+
+		private ReferenceComponent component;
+
+		public ReferenceLoadedCallback(Reference reference,
+				ReferenceComponent component) {
+			this.reference = reference;
+			this.component = component;
+		}
+
+		@Override
+		public void loaded(String fileName, Object asset) {
+			setGroup(reference, component, (ModelEntity) asset);
+		}
+
+		@Override
+		public void error(String fileName, Class type, Throwable exception) {
+			Gdx.app.error("ReferenceProcessor", "Error loading reference "
+					+ exception);
+		}
 	}
 }
