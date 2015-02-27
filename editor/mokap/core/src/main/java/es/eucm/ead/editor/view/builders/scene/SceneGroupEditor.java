@@ -265,14 +265,19 @@ public class SceneGroupEditor extends GroupEditor implements ModelView,
 			panToX(state.getX(), false);
 			panToY(state.getY(), false);
 			setZoom(state.getZoom(), false);
-			fitButton.setVisible(!MathUtils.isZero(state.getX())
-					|| !MathUtils.isZero(state.getY()));
 
 			scene.getGroup().setSize(gameData.getWidth(), gameData.getHeight());
 			setRootGroup(scene.getGroup());
+			updateFitVisibility(state);
 		} else {
 			setRootGroup(null);
 		}
+	}
+
+	private void updateFitVisibility(SceneEditState state) {
+		fitButton.setVisible(!MathUtils.isZero(state.getX())
+				|| !MathUtils.isZero(state.getY())
+				|| !MathUtils.isEqual(fitZoom, state.getZoom(), 0.001f));
 	}
 
 	private void readEditedGroup() {
@@ -458,14 +463,12 @@ public class SceneGroupEditor extends GroupEditor implements ModelView,
 			float value = (Float) event.getValue();
 			if (FieldName.X.equals(event.getField())) {
 				panToX(value, true);
-				fitButton.setVisible(!MathUtils.isZero(value));
 			} else if (FieldName.Y.equals(event.getField())) {
 				panToY(value, true);
-				fitButton.setVisible(!MathUtils.isZero(value));
 			} else if (FieldName.ZOOM.equals(event.getField())) {
 				setZoom(value, true);
-				fitButton.setVisible(MathUtils.isEqual(value, fitZoom, 0.001f));
 			}
+			updateFitVisibility((SceneEditState) event.getTarget());
 		}
 	}
 
