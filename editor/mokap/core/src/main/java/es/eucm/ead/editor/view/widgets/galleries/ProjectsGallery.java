@@ -231,14 +231,21 @@ public class ProjectsGallery extends ContextMenuGallery implements
 				});
 	}
 
-	private void removeProject(String id) {
-		controller.getEditorGameAssets().get(id, Object.class,
+	private void removeProject(final String id) {
+		String gameJson = id;
+		if (!gameJson.endsWith(ModelStructure.GAME_FILE)) {
+			if (!gameJson.endsWith("/")) {
+				gameJson += "/";
+			}
+			gameJson += ModelStructure.GAME_FILE;
+		}
+		controller.getEditorGameAssets().get(gameJson, Object.class,
 				new AssetLoadedCallback<Object>() {
 					@Override
 					public void loaded(String fileName, Object asset) {
 						ModelEntity game = (ModelEntity) asset;
 						projectNames.removeValue(Q.getTitle(game), false);
-						Actor actor = findActor(fileName);
+						Actor actor = findActor(id);
 						if (actor != null) {
 							actor.getParent().remove();
 						}
