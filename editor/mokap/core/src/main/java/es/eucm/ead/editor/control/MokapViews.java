@@ -65,7 +65,7 @@ public class MokapViews extends Views implements BackListener {
 
 	@Override
 	public boolean onBackPressed() {
-		if (!hideModalIfNeeded() && !hideChildIfNeeded(modalsContainer)
+		if (!hideChildIfNeeded(modalsContainer) && !hideModalIfNeeded()
 				&& !hideChildIfNeeded(viewsContainer)) {
 			if (currentView instanceof BackListener) {
 				((BackListener) currentView).onBackPressed();

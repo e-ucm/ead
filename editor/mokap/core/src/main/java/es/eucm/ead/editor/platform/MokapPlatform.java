@@ -79,8 +79,7 @@ public abstract class MokapPlatform extends AbstractPlatform {
 		return null;
 	}
 
-	public void sendProject(FileHandle projectHandle, I18N i18n,
-			ProjectSentListener listener) {
+	public void sendProject(FileHandle projectHandle, I18N i18n) {
 
 	}
 
@@ -122,11 +121,6 @@ public abstract class MokapPlatform extends AbstractPlatform {
 		}
 
 		void imageCaptured(Result result);
-	}
-
-	public interface ProjectSentListener {
-
-		void projectSent(boolean success);
 	}
 
 	@Override

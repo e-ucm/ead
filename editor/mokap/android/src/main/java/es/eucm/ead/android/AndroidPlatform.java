@@ -61,6 +61,7 @@ import android.net.NetworkInfo;
 import android.net.Uri;
 import android.provider.MediaStore;
 import android.text.InputType;
+import android.webkit.MimeTypeMap;
 import android.widget.EditText;
 import android.widget.Toast;
 
@@ -427,36 +428,29 @@ public class AndroidPlatform extends MokapPlatform {
 		sendMail(null, controller);
 	}
 
-	public void sendProject(FileHandle projectHandle, I18N i18n,
-			final ProjectSentListener listener) {
+	public void sendProject(FileHandle projectHandle, I18N i18n) {
+
+		EditorActivity activity = (EditorActivity) Gdx.app;
 		Intent shareIntent = new Intent(Intent.ACTION_SEND);
-		shareIntent.setType("*/*");
-		shareIntent.putExtra(android.content.Intent.EXTRA_SUBJECT,
-				i18n.m("send.subject"));
+		MimeTypeMap mime = MimeTypeMap.getSingleton();
+		String type = mime.getMimeTypeFromExtension(projectHandle.extension());
+		shareIntent.setType(type);
+		shareIntent.putExtra(
+				android.content.Intent.EXTRA_SUBJECT,
+				i18n.m("send.subject") + ": "
+						+ projectHandle.nameWithoutExtension());
 		shareIntent.putExtra(android.content.Intent.EXTRA_TEXT,
 				i18n.m("send.message"));
 		shareIntent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
 		shareIntent.putExtra(Intent.EXTRA_STREAM,
 				Uri.fromFile(projectHandle.file()));
 
-		final EditorActivity activity = (EditorActivity) Gdx.app;
 		if (shareIntent.resolveActivity(activity.getPackageManager()) != null) {
 			activity.startActivityForResult(
 					Intent.createChooser(shareIntent, i18n.m("send.share")),
-					SEND_PROJECT, new ActivityResultListener() {
-
-						@Override
-						public void result(int resultCode, final Intent data) {
-							if (resultCode != EditorActivity.RESULT_OK) {
-								listener.projectSent(false);
-							} else {
-								listener.projectSent(true);
-							}
-						}
-					});
-		} else {
-			listener.projectSent(false);
+					SEND_PROJECT);
 		}
+
 	}
 
 	@Override

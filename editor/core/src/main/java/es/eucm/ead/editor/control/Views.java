@@ -101,9 +101,11 @@ public class Views implements ModelListener<LoadEvent> {
 					&& lastEvent.getTarget() != currentModal
 					&& !lastEvent.getTarget().isDescendantOf(currentModal);
 
-			currentModal.remove();
-			currentModal.setTouchable(Touchable.enabled);
-			currentModal = null;
+			if (currentModal != null) {
+				currentModal.remove();
+				currentModal.setTouchable(Touchable.enabled);
+				currentModal = null;
+			}
 
 			if (resendTouch) {
 				auxVector.set(lastEvent.getStageX(), lastEvent.getStageY());

@@ -141,6 +141,7 @@ public interface SkinConstants {
 
 	public static final String IC_COMPOSE = "ic_compose";
 	public static final String IC_FX = "ic_fx";
+	public static final String IC_SHARE = "ic_share";
 	public static final String IC_PLAY = "ic_play";
 
 	public static final String IC_HOME = "ic_home";

@@ -43,6 +43,7 @@ import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
 
+import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.backends.android.AndroidApplication;
 import com.badlogic.gdx.backends.android.AndroidApplicationConfiguration;
 import com.google.android.gms.analytics.GoogleAnalytics;
@@ -111,5 +112,14 @@ public class EditorActivity extends AndroidApplication {
 
 	public interface ActivityResultListener {
 		void result(int resultCode, Intent data);
+	}
+
+	@Override
+	protected void onResume() {
+		super.onResume();
+		// This is necessary because we are using non-continuous rendering and
+		// sometimes the screen stops rendering after onResume(). Probably a
+		// libGDX bug.
+		Gdx.graphics.requestRendering();
 	}
 }

@@ -126,10 +126,16 @@ public abstract class Assets extends Json implements FileHandleResolver,
 		assetManager.setErrorListener(new AssetErrorListener() {
 			@Override
 			public void error(AssetDescriptor asset, Throwable throwable) {
-				LoadedCallback loadedCallback = asset.params.loadedCallback;
-				if (loadedCallback instanceof ErrorCallback) {
-					((ErrorCallback) loadedCallback).errored(asset.fileName,
-							asset.type, throwable);
+				AssetLoaderParameters params = asset.params;
+				if (params != null) {
+					LoadedCallback loadedCallback = params.loadedCallback;
+					if (loadedCallback instanceof ErrorCallback) {
+						((ErrorCallback) loadedCallback).errored(
+								asset.fileName, asset.type, throwable);
+					}
+				} else {
+					Gdx.app.error("Assets", "Exception loading asset",
+							throwable);
 				}
 			}
 		});

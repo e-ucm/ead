@@ -70,7 +70,8 @@ public class OpenApplication extends EditorAction {
 		Class elseView = HomeView.class;
 		if (importProjectPath != null && !importProjectPath.isEmpty()
 				&& importProjectPath.endsWith(ProjectUtils.ZIP_EXTENSION)) {
-			controller.action(ImportProject.class, elseView);
+			controller.action(ImportProject.class, elseView,
+					new ShowErrorToastCallback());
 		} else {
 			controller.action(OpenLastProject.class, elseView,
 					new ShowErrorToastCallback());
