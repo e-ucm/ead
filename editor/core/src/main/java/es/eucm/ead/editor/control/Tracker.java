@@ -88,10 +88,10 @@ public class Tracker implements PreferenceListener {
 	protected void loadClientId() {
 		String clientId = controller.getPreferences().getString(
 				Preferences.CLIENT_ID);
-		HttpRequest request = new HttpRequest("POST");
-		request.setUrl(bugrURL + ACTIVATE_PATH);
-		// Obtain an unique id
 		if ("".equals(clientId) || clientId == null) {
+			HttpRequest request = new HttpRequest("POST");
+			request.setUrl(bugrURL + ACTIVATE_PATH);
+			// Obtain an unique id
 			Gdx.net.sendHttpRequest(request, new HttpResponseListener() {
 				@Override
 				public void handleHttpResponse(HttpResponse httpResponse) {
@@ -168,9 +168,9 @@ public class Tracker implements PreferenceListener {
 	 * @param action
 	 *            the action performed (represented by a serialized string)
 	 */
-	public void actionPerformed(String action) {
+	public void actionPerformed(Class clazz, boolean performed) {
 		if (enabled) {
-			actionPerformedImpl(action);
+			actionPerformedImpl(clazz, performed);
 		}
 	}
 
@@ -193,11 +193,8 @@ public class Tracker implements PreferenceListener {
 	/**
 	 * Actual implementation of action performed. To be implement by inheriting
 	 * classes
-	 * 
-	 * @param action
-	 *            the action performed (represented by a serialized string)
 	 */
-	protected void actionPerformedImpl(String action) {
+	protected void actionPerformedImpl(Class clazz, boolean performed) {
 	}
 
 	@Override
@@ -247,6 +244,5 @@ public class Tracker implements PreferenceListener {
 	 *            label of the button
 	 */
 	public void buttonPressed(String label) {
-
 	}
 }

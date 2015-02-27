@@ -37,6 +37,7 @@
 package es.eucm.ead.android;
 
 import android.content.Context;
+import com.badlogic.gdx.utils.reflect.ClassReflection;
 import com.google.android.gms.analytics.HitBuilders;
 import es.eucm.ead.editor.control.Controller;
 import es.eucm.ead.editor.control.Tracker;
@@ -53,6 +54,8 @@ public class GATracker extends Tracker {
 	public static final String ACTION_NEW_SCENE = "new_scene";
 
 	public static final String CATEGORY_UI = "UI";
+
+	public static final String CATEGORY_EDIT = "edit";
 
 	public static final String ACTION_PRESS = "press";
 
@@ -87,4 +90,11 @@ public class GATracker extends Tracker {
 		tracker.send(new HitBuilders.EventBuilder().setCategory(CATEGORY_UI)
 				.setAction(ACTION_PRESS).setLabel(label).build());
 	}
+
+	public void actionPerformedImpl(Class clazz, boolean performed) {
+		String action = ClassReflection.getSimpleName(clazz).toLowerCase();
+		tracker.send(new HitBuilders.EventBuilder().setCategory(CATEGORY_EDIT)
+				.setAction(action).setValue(performed ? 1 : 0).build());
+	}
+
 }

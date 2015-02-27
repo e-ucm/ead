@@ -310,9 +310,7 @@ public class Controller {
 	 */
 	public boolean action(Class actionClass, Object... args) {
 		try {
-			boolean performed = actions.perform(actionClass, args);
-			tracker.actionPerformed(actionClass.toString());
-			return performed;
+			return actions.perform(actionClass, args);
 		} catch (ClassCastException e) {
 			throw new EditorActionException(getErrorMessage(actionClass, args),
 					e);
