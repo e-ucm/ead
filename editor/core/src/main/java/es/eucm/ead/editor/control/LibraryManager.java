@@ -70,7 +70,13 @@ public class LibraryManager {
 		if (categoryList.size == 0) {
 			return element.getEntityRef();
 		}
-		return categoryList.first() + "/" + element.getEntityRef();
+		return getSuperCategory(categoryList.first()) + "/"
+				+ element.getEntityRef();
+	}
+
+	private String getSuperCategory(RepoCategories category) {
+		String[] aux = category.toString().split("-");
+		return aux[0];
 	}
 
 	/**
