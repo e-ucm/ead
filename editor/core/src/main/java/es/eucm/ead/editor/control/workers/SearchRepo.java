@@ -142,39 +142,8 @@ public class SearchRepo extends RepoWorker {
 
 		String thumbnailURL = Q.getRepoElementThumbnailUrl(elem);
 
-		if (!thumbnailURL.isEmpty()) {
+		result(elem, thumbnailURL);
 
-			byte[] httpResponse = null;
-			try {
-				httpResponse = controller.getPlatform().sendHttpGetRequest(
-						thumbnailURL, byte[].class);
-
-				Pixmap pixmap = new Pixmap(httpResponse, 0, httpResponse.length);
-				if (pixmap != null) {
-					/*
-					 * Check height/width ratio to see if the thumbnail is
-					 * considerably taller than wide. If so, it is likely to be
-					 * a character, so better clip the pixmap square using the
-					 * upper part to ensure face is displayed
-					 */
-					int width = pixmap.getWidth();
-					int height = pixmap.getHeight();
-					float ratio = (height + 0.0F) / (width + 0.0F);
-					if (ratio >= 1.5F) {
-						Pixmap trimmedPixmap = new Pixmap(width, width,
-								pixmap.getFormat());
-						trimmedPixmap.drawPixmap(pixmap, 0, 0);
-						pixmap.dispose();
-						pixmap = trimmedPixmap;
-					}
-					result(elem, pixmap);
-				}
-			} catch (Exception e) {
-				Gdx.app.error(SEARCH_REPO_TAG,
-						"Failed to perform the HTTP request. ", e);
-
-			}
-		}
 		return repoElems.size == 0;
 	}
 
@@ -185,6 +154,9 @@ public class SearchRepo extends RepoWorker {
 		setPreferredThumbnailWidthAndHeight(args, searchRequest);
 		if (args.length > 3) {
 			searchRequest.setC(args[3]);
+		}
+		if (args.length > 4) {
+			searchRequest.setCat(args[4]);
 		}
 		return requestFactory.buildRequestURL(searchRequest);
 	}

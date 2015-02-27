@@ -75,8 +75,6 @@ public class CopyToLibraryWorker extends Worker {
 
 	private RepoElement element;
 
-	private FileHandle thumbnail;
-
 	public CopyToLibraryWorker() {
 		super(true);
 	}
@@ -85,8 +83,6 @@ public class CopyToLibraryWorker extends Worker {
 	protected void prepare() {
 		contentsFolder = (FileHandle) args[0];
 		element = (RepoElement) args[1];
-		thumbnail = (FileHandle) args[2];
-
 		gameAssets = controller.getEditorGameAssets();
 		entityFolder = controller.getLibraryManager()
 				.getRepoElementLibraryFolder(element);
@@ -94,11 +90,6 @@ public class CopyToLibraryWorker extends Worker {
 
 	@Override
 	protected boolean step() {
-		if (!thumbnail.exists()) {
-			error(new FileNotFoundException("No thumbnail file found at: "
-					+ thumbnail.path()));
-			return true;
-		}
 		entityFolder.mkdirs();
 		FileHandle entityContents = entityFolder
 				.child(ModelStructure.CONTENTS_FOLDER);
@@ -127,16 +118,6 @@ public class CopyToLibraryWorker extends Worker {
 			}
 		}
 
-		if (!thumbnail.exists()) {
-			error(new FileNotFoundException("Thumbnail image not found at "
-					+ thumbnail.path()));
-			return true;
-		}
-
-		FileHandle thumbnailFile = entityFolder
-				.child(ModelStructure.THUMBNAIL_FILE);
-
-		thumbnail.copyTo(thumbnailFile);
 		String json = null;
 		try {
 			json = gameAssets.toJson(element, RepoElement.class);
