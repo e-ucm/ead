@@ -38,6 +38,7 @@ package es.eucm.ead.editor.control;
 
 import com.badlogic.gdx.Files;
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.scenes.scene2d.Group;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
@@ -172,6 +173,41 @@ public class Controller {
 		loadPreferences();
 		indexes = new HashMap<Class, ControllerIndex>();
 		Q.setController(this);
+
+		boolean firstRun = preferences.getBoolean(Preferences.FIRST_TIME_RUN,
+				true);
+		if (firstRun) {
+			preferences.putBoolean(Preferences.FIRST_TIME_RUN, false);
+			initFirstRun();
+		}
+	}
+
+	private void initFirstRun() {
+		String defaultProjectsFolder = platform.getDefaultProjectsFolder();
+		if (defaultProjectsFolder != null) {
+			FileHandle projects = editorGameAssets
+					.absolute(defaultProjectsFolder);
+			if (!projects.exists()) {
+				projects.mkdirs();
+			}
+
+			String noMedia = ".nomedia";
+			FileHandle noMediaFile = projects.child(noMedia);
+			if (!noMediaFile.exists()) {
+				noMediaFile.writeString("", false);
+			}
+
+			FileHandle library = editorGameAssets.absolute(platform
+					.getLibraryFolder());
+			if (!library.exists()) {
+				library.mkdirs();
+			}
+
+			noMediaFile = library.child(noMedia);
+			if (!noMediaFile.exists()) {
+				noMediaFile.writeString("", false);
+			}
+		}
 	}
 
 	protected EngineInitializer buildEngineInitializer() {

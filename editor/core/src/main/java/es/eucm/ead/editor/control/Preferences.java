@@ -94,6 +94,8 @@ public class Preferences {
 	public static final String HELP_MULTIPLE_SELECTION = "helpMultipleSelect";
 	public static final String HELP_ACCURATE_SELECTION = "helpAccurateSelect";
 
+	public static final String FIRST_TIME_RUN = "firstTimeRun";
+
 	private com.badlogic.gdx.Preferences innerPreferences;
 
 	private Map<String, Array<PreferenceListener>> preferenceListeners;
