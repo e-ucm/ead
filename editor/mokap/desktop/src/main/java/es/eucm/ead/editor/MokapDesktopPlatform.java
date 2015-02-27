@@ -68,6 +68,11 @@ public class MokapDesktopPlatform extends MokapPlatform {
 
 	}
 
+	@Override
+	public boolean isConnected() {
+		return true;
+	}
+
 	public LwjglFrame getFrame() {
 		return null;
 	}

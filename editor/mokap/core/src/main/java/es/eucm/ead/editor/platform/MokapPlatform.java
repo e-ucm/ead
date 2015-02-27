@@ -91,6 +91,8 @@ public abstract class MokapPlatform extends AbstractPlatform {
 
 	}
 
+	public abstract boolean isConnected();
+
 	@Override
 	public Tracker createTracker(Controller controller) {
 		return new Tracker(controller);
