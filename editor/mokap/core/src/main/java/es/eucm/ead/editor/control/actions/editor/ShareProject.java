@@ -109,7 +109,7 @@ public class ShareProject extends EditorAction implements Worker.WorkerListener 
 			ApplicationAssets applicationAssets = controller
 					.getApplicationAssets();
 			((MokapPlatform) controller.getPlatform()).sendProject(
-					compressedProject, applicationAssets.getI18N(), null);
+					compressedProject, applicationAssets.getI18N());
 
 		}
 	}
