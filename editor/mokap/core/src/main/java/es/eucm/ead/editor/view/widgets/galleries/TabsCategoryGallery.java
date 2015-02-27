@@ -64,13 +64,11 @@ public class TabsCategoryGallery extends TabsGallery {
 
 			@Override
 			public void changed(Tabs.TabEvent event) {
-				addHideToolbarFunctionallity();
 				loadContents();
 			}
 		});
 
 		addActor(currentGallery);
-		addHideToolbarFunctionallity();
 		loadContents();
 	}
 }

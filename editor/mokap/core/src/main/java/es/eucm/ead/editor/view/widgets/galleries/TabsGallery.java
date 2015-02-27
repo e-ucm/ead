@@ -194,7 +194,6 @@ public class TabsGallery extends LinearLayout {
 		}
 		galleries = tabWidget;
 		currentGallery = tabWidget[0];
-		addHideToolbarFunctionallity();
 		tabs.setItems(tabName);
 		tabs.addListener(new Tabs.TabListener() {
 
@@ -204,7 +203,6 @@ public class TabsGallery extends LinearLayout {
 					currentGallery.remove();
 				}
 				currentGallery = galleries[tabs.getSelectedTabIndex()];
-				addHideToolbarFunctionallity();
 				addActor(currentGallery);
 				if (actionButton != null) {
 					actionButton.remove();
@@ -223,46 +221,19 @@ public class TabsGallery extends LinearLayout {
 		loadContents();
 	}
 
-	protected void addHideToolbarFunctionallity() {
-		final InputListener oldListener = currentGallery.getGallery()
-				.getScrollDraggingListener();
-		currentGallery.getGallery().getListeners()
-				.removeValue(oldListener, true);
+    private float lastScrollY = 0;
 
-		currentGallery.getGallery().addListener(new InputListener() {
+    @Override
+    public void act(float delta) {
+        super.act(delta);
+        toolbar.setY(Math.max(Math.min(
+                toolbar.getY() + Math.round(currentGallery.getGallery().getScrollY() - lastScrollY), getHeight()
+                        - toolbar.getHeight() * 0.5f), getHeight()
+                - toolbar.getHeight()));
+        positionGallery();
 
-			private float lastY;
-
-			@Override
-			public boolean touchDown(InputEvent event, float x, float y,
-					int pointer, int button) {
-				lastY = y;
-				oldListener.touchDown(event, x, y, pointer, button);
-				return true;
-			}
-
-			@Override
-			public void touchDragged(InputEvent event, float x, float y,
-					int pointer) {
-				if (pointer == 0 && Math.round(Math.abs(y - lastY)) > MIN_DIFF) {
-					toolbar.setY(Math.max(Math.min(
-							toolbar.getY() + Math.round(y - lastY), getHeight()
-									- toolbar.getHeight() * 0.5f), getHeight()
-							- toolbar.getHeight()));
-					positionGallery();
-				}
-				lastY = y;
-				oldListener.touchDragged(event, x, y, pointer);
-
-			}
-
-			@Override
-			public void touchUp(InputEvent event, float x, float y,
-					int pointer, int button) {
-				oldListener.touchUp(event, x, y, pointer, button);
-			}
-		});
-	}
+        lastScrollY = currentGallery.getGallery().getScrollY();
+    }
 
 	private void positionGallery() {
 		currentGallery.setPosition(0,

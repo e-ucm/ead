@@ -141,8 +141,6 @@ public class ScrollPane extends WidgetGroup {
 	private boolean hitBottom = false;
 	boolean hitFlingX, hitFlingY;
 
-	private InputListener scrollDraggingListener;
-
 	/**
 	 * @param widget
 	 *            May be null.
@@ -178,7 +176,7 @@ public class ScrollPane extends WidgetGroup {
 		setWidget(widget);
 		setSize(150, 150);
 
-		addCaptureListener(scrollDraggingListener = new InputListener() {
+		addCaptureListener(new InputListener() {
 			private float handlePosition;
 
 			public boolean touchDown(InputEvent event, float x, float y,
@@ -280,7 +278,7 @@ public class ScrollPane extends WidgetGroup {
 					if (deltaAmount != 0) {
 						if (amountY == 0) {
 							sendHitEdgeEvent(Edge.TOP);
-						} else if (amountY == maxY) {
+						} else if (amountY >= maxY) {
 							sendHitEdgeEvent(Edge.BOTTOM);
 						}
 					}
@@ -379,10 +377,6 @@ public class ScrollPane extends WidgetGroup {
 		});
 	}
 
-	public InputListener getScrollDraggingListener() {
-		return scrollDraggingListener;
-	}
-
 	/** Test if we're currently hitting any horizontal side */
 	void testHitXEdge() {
 		// Left
@@ -435,7 +429,7 @@ public class ScrollPane extends WidgetGroup {
 					hitBottom = false;
 				}
 			} else {
-				if (getScrollY() > maxY) {
+				if (getScrollY() >= maxY) {
 					hitBottom = true;
 					sendHitEdgeEvent(Edge.BOTTOM);
 				}
