@@ -38,7 +38,6 @@ package es.eucm.ead.editor.control.actions.editor;
 
 import es.eucm.ead.editor.control.Commands;
 import es.eucm.ead.editor.control.Commands.CommandListener;
-import es.eucm.ead.editor.control.Commands.CommandsStack;
 import es.eucm.ead.editor.control.Controller;
 import es.eucm.ead.editor.control.actions.EditorAction;
 import es.eucm.ead.editor.control.commands.Command;
@@ -101,8 +100,7 @@ public class Undo extends EditorAction implements CommandListener {
 	}
 
 	@Override
-	public void contextPopped(Commands commands, CommandsStack poppedContext,
-			boolean merge) {
+	public void contextPopped(Commands commands) {
 		updateEnable();
 	}
 

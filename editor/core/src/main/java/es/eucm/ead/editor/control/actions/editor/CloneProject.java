@@ -39,9 +39,11 @@ package es.eucm.ead.editor.control.actions.editor;
 import com.badlogic.gdx.utils.Array;
 
 import es.eucm.ead.editor.control.Selection;
-import es.eucm.ead.editor.control.actions.EditorAction;
+import es.eucm.ead.editor.control.actions.ModelAction;
 import es.eucm.ead.editor.control.background.BackgroundExecutor.BackgroundTaskListener;
 import es.eucm.ead.editor.control.background.CloneProjectTask;
+import es.eucm.ead.editor.control.commands.Command;
+import es.eucm.ead.editor.control.commands.EmptyCommand;
 
 /**
  * <p>
@@ -58,7 +60,7 @@ import es.eucm.ead.editor.control.background.CloneProjectTask;
  * to clone. If it is not set, it uses the path in {@link Selection#RESOURCE}</dd>
  * </dl>
  */
-public class CloneProject extends EditorAction {
+public class CloneProject extends ModelAction {
 
 	public CloneProject() {
 		super(true, false, new Class[] { BackgroundTaskListener.class,
@@ -68,12 +70,15 @@ public class CloneProject extends EditorAction {
 	}
 
 	@Override
-	public void perform(Object... args) {
+	public Command perform(Object... args) {
 		BackgroundTaskListener<Object[]> listener = (BackgroundTaskListener<Object[]>) args[0];
 		String path = (String) (args.length == 3 ? args[2] : controller
 				.getModel().getSelection().getSingle(Selection.RESOURCE));
 		controller.getBackgroundExecutor().submit(
 				new CloneProjectTask(controller, path, (Array) args[1]),
 				listener);
+		// An empty command with resources modified to true forces pending
+		// actions tha currently can be undone, like DeleteProject
+		return new EmptyCommand(true);
 	}
 }
