@@ -39,20 +39,29 @@ package es.eucm.ead.editor.control.actions.editor;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.files.FileHandle;
 
+import com.badlogic.gdx.utils.SerializationException;
 import es.eucm.ead.editor.assets.EditorGameAssets;
 import es.eucm.ead.editor.control.Controller;
+import es.eucm.ead.editor.control.LibraryManager;
 import es.eucm.ead.editor.control.actions.EditorAction;
 import es.eucm.ead.editor.control.workers.UnzipFile;
 import es.eucm.ead.editor.utils.ProjectUtils;
 import es.eucm.ead.editor.view.listeners.workers.UnzipFileListener;
+import es.eucm.ead.schema.components.Reference;
+import es.eucm.ead.schema.editor.components.repo.RepoElement;
 import es.eucm.ead.schemax.ModelStructure;
 
+import java.io.File;
+import java.io.FileFilter;
+
 /**
- * Import a project from a given xip file and open it.
+ * Import a project from a given zip file and open it.
  * <dl>
  * <dt><strong>Arguments</strong></dt>
  * <dd><strong>args[0]</strong> <em>Class</em> Class of the view to show if the
  * project couldn't be imported.</dd>
+ * <dd><strong>args[1]</strong> <em>ErrorCallback</em> invoked if the import
+ * went wrong.</dd>
  * </dl>
  */
 public class ImportProject extends EditorAction {
@@ -60,14 +69,15 @@ public class ImportProject extends EditorAction {
 	private static final String IMPORT_TAG = "ImportProject";
 
 	public ImportProject() {
-		super(true, false, Class.class);
+		super(true, false, Class.class, OpenLastProject.ErrorCallback.class);
 	}
 
 	@Override
 	public void perform(Object... args) {
 
 		Class elseView = (Class) args[0];
-
+		OpenLastProject.ErrorCallback callback = args.length == 2 ? (OpenLastProject.ErrorCallback) args[1]
+				: null;
 		String importProjectPath = (String) controller.getPlatform()
 				.getApplicationArguments()[0];
 		EditorGameAssets assets = controller.getEditorGameAssets();
@@ -75,28 +85,32 @@ public class ImportProject extends EditorAction {
 		if (!inputProjectZip.exists()) {
 			Gdx.app.error(IMPORT_TAG, "The imported project zip : "
 					+ importProjectPath + ", does NOT exist!");
-			controller.action(ChangeView.class, elseView);
+			handleError(callback,
+					OpenLastProject.ErrorCallback.Result.PROJECT_NOT_FOUND,
+					elseView, inputProjectZip.path());
 			return;
 		}
 
 		FileHandle tempDirectory = FileHandle
 				.tempDirectory("mokapProjectUnzip");
 
+		controller.action(ShowToast.class, controller.getApplicationAssets()
+				.getI18N().m("importing"));
 		controller.action(ExecuteWorker.class, UnzipFile.class,
-				new UnzipProjectListener(tempDirectory, elseView, controller),
+				new UnzipProjectListener(tempDirectory, elseView, callback),
 				inputProjectZip, tempDirectory);
 	}
 
-	private static class UnzipProjectListener extends UnzipFileListener {
+	private class UnzipProjectListener extends UnzipFileListener {
 
+		private OpenLastProject.ErrorCallback callback;
 		private Class elseView;
-		private Controller controller;
 
 		public UnzipProjectListener(FileHandle outputFolder, Class elseView,
-				Controller controller) {
+				OpenLastProject.ErrorCallback callback) {
 			super(outputFolder);
 			this.elseView = elseView;
-			this.controller = controller;
+			this.callback = callback;
 		}
 
 		@Override
@@ -120,13 +134,54 @@ public class ImportProject extends EditorAction {
 				return;
 			}
 
-			FileHandle loadingDir = controller.getEditorGameAssets().absolute(
-					controller.getPlatform().getDefaultProjectsFolder());
+			EditorGameAssets gameAssets = controller.getEditorGameAssets();
+			FileHandle loadingDir = gameAssets.absolute(controller
+					.getPlatform().getDefaultProjectsFolder());
 			final FileHandle projectFolder = ProjectUtils.getNonExistentFile(
 					loadingDir, ProjectUtils.createProjectName(), "");
 
 			rootProject.copyTo(projectFolder);
 			outputFolder.deleteDirectory();
+
+			FileHandle library = projectFolder
+					.child(ModelStructure.LIBRARY_FOLDER);
+			FileHandle[] references = library.list(new FileFilter() {
+				@Override
+				public boolean accept(File pathname) {
+					return pathname.isDirectory();
+				}
+			});
+
+			LibraryManager libraryManager = controller.getLibraryManager();
+			for (FileHandle reference : references) {
+				FileHandle descriptor = reference
+						.child(ModelStructure.DESCRIPTOR_FILE);
+				RepoElement elem;
+				try {
+					elem = gameAssets.fromJson(RepoElement.class, descriptor);
+				} catch (SerializationException se) {
+					projectFolder.deleteDirectory();
+
+					Gdx.app.error(IMPORT_TAG, "A reference is corrupt: "
+							+ reference);
+					Gdx.app.postRunnable(new Runnable() {
+						@Override
+						public void run() {
+							handleError(
+									callback,
+									OpenLastProject.ErrorCallback.Result.PROJECT_CORRUPTED,
+									elseView, projectFolder.path());
+						}
+					});
+					return;
+				}
+				FileHandle elemFolder = libraryManager
+						.getRepoElementLibraryFolder(elem);
+				if (!elemFolder.exists()) {
+					reference.copyTo(elemFolder);
+				}
+			}
+			library.deleteDirectory();
 
 			Gdx.app.postRunnable(new Runnable() {
 				@Override
@@ -143,5 +198,14 @@ public class ImportProject extends EditorAction {
 			controller.action(ChangeView.class, elseView);
 		}
 
+	}
+
+	private void handleError(OpenLastProject.ErrorCallback callback,
+			OpenLastProject.ErrorCallback.Result result, Class elseView,
+			String projectPath) {
+		controller.action(ChangeView.class, elseView);
+		if (callback != null) {
+			callback.error(result, projectPath);
+		}
 	}
 }
