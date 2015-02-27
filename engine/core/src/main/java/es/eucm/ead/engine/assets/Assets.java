@@ -50,7 +50,6 @@ import com.badlogic.gdx.assets.loaders.PixmapLoader.PixmapParameter;
 import com.badlogic.gdx.assets.loaders.SkinLoader.SkinParameter;
 import com.badlogic.gdx.assets.loaders.SoundLoader.SoundParameter;
 import com.badlogic.gdx.assets.loaders.TextureAtlasLoader.TextureAtlasParameter;
-import com.badlogic.gdx.assets.loaders.TextureLoader.TextureParameter;
 import com.badlogic.gdx.audio.Music;
 import com.badlogic.gdx.audio.Sound;
 import com.badlogic.gdx.files.FileHandle;
@@ -69,6 +68,8 @@ import com.badlogic.gdx.utils.SerializationException;
 import es.eucm.ead.engine.I18N;
 import es.eucm.ead.engine.assets.loaders.ExtendedSkinLoader;
 import es.eucm.ead.engine.gdx.URLFileHandle;
+import es.eucm.ead.engine.gdx.URLTextureLoader;
+import es.eucm.ead.engine.gdx.URLTextureLoader.URLTextureParameter;
 
 /**
  * Abstract class for managing assets. In this context, any file required for
@@ -121,6 +122,7 @@ public abstract class Assets extends Json implements FileHandleResolver,
 		assetManager.setErrorListener(this);
 		i18n = new I18N(this);
 		setLoader(Skin.class, new ExtendedSkinLoader(this));
+		setLoader(Texture.class, new URLTextureLoader(this));
 		assetManager.setErrorListener(new AssetErrorListener() {
 			@Override
 			public void error(AssetDescriptor asset, Throwable throwable) {
@@ -489,7 +491,7 @@ public abstract class Assets extends Json implements FileHandleResolver,
 		} else if (clazz == TextureAtlas.class) {
 			parameters = new TextureAtlasParameter();
 		} else if (clazz == Texture.class) {
-			parameters = new TextureParameter();
+			parameters = new URLTextureParameter();
 		} else {
 			parameters = loadedCallback;
 		}
