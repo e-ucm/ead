@@ -446,7 +446,7 @@ public class SceneGroupEditor extends GroupEditor implements ModelView,
 	public class SceneEditListener implements FieldListener {
 
 		private final Array<String> TRANSFORMATION_FIELDS = new Array<String>(
-				new String[] { FieldName.X, FieldName.Y });
+				new String[] { FieldName.X, FieldName.Y, FieldName.ZOOM });
 
 		@Override
 		public boolean listenToField(String fieldName) {

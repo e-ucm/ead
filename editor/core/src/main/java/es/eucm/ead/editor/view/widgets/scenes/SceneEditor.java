@@ -374,10 +374,6 @@ public abstract class SceneEditor extends AbstractWidget {
 				actor.setScaleX(value);
 			else if (FieldName.SCALE_Y.equals(event.getField()))
 				actor.setScaleY(value);
-			else if (FieldName.SCALE_Y.equals(event.getField()))
-				actor.setScaleY(value);
-			else if (FieldName.SCALE_Y.equals(event.getField()))
-				actor.setScaleY(value);
 			groupEditor.refresh();
 		}
 	}

@@ -96,10 +96,6 @@ public class CameraState extends InputState {
 			tmp1.set(stateMachine.pointer1);
 			tmp2.set(stateMachine.pointer2);
 			Vector2 center = tmp1.interpolate(tmp2, 0.5f, Interpolation.linear);
-			System.out.println(stateMachine.pointer1 + ";"
-					+ stateMachine.pointer2);
-			System.out.println("Distance "
-					+ stateMachine.pointer1.dst(stateMachine.pointer2));
 			stateMachine.zoom(center.x, center.y,
 					stateMachine.pointer1.dst(stateMachine.pointer2)
 							* initialZoom / initialDistance);
@@ -108,9 +104,6 @@ public class CameraState extends InputState {
 
 	private void reset() {
 		initialDistance = stateMachine.pointer1.dst(stateMachine.pointer2);
-		System.out.println(stateMachine.pointer1 + ";" + stateMachine.pointer2);
-		System.out.println("Initial distance "
-				+ stateMachine.pointer1.dst(stateMachine.pointer2));
 		initialZoom = stateMachine.getZoom();
 	}
 }
