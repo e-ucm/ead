@@ -132,7 +132,8 @@ public abstract class Assets extends Json implements FileHandleResolver,
 								asset.fileName, asset.type, throwable);
 					}
 				} else {
-					Gdx.app.error("Error", "Exception loading asset", throwable);
+					Gdx.app.error("Assets", "Exception loading asset",
+							throwable);
 				}
 			}
 		});
