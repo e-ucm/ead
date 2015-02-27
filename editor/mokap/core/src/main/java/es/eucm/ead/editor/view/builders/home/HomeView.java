@@ -36,88 +36,138 @@
  */
 package es.eucm.ead.editor.view.builders.home;
 
-import com.badlogic.gdx.graphics.Pixmap;
-import com.badlogic.gdx.graphics.Texture;
+import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.scenes.scene2d.Actor;
-import com.badlogic.gdx.scenes.scene2d.ui.Container;
-import com.badlogic.gdx.scenes.scene2d.ui.Skin;
-
+import com.badlogic.gdx.scenes.scene2d.InputEvent;
+import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import es.eucm.ead.editor.control.Controller;
 import es.eucm.ead.editor.control.MokapController.BackListener;
 import es.eucm.ead.editor.control.Preferences;
-import es.eucm.ead.editor.control.actions.editor.ExecuteWorker;
 import es.eucm.ead.editor.control.actions.editor.Exit;
-import es.eucm.ead.editor.control.actions.editor.Play;
 import es.eucm.ead.editor.control.actions.editor.ShowInfoPanel;
 import es.eucm.ead.editor.control.actions.editor.ShowInfoPanel.TypePanel;
-import es.eucm.ead.editor.control.workers.FeaturedElements;
-import es.eucm.ead.editor.control.workers.Worker.WorkerListener;
+import es.eucm.ead.editor.control.workers.SearchRepo;
 import es.eucm.ead.editor.view.SkinConstants;
 import es.eucm.ead.editor.view.builders.ViewBuilder;
-import es.eucm.ead.editor.view.widgets.RepoTile.RepoTileListener;
-import es.eucm.ead.editor.view.widgets.Tabs;
-import es.eucm.ead.editor.view.widgets.Tabs.TabEvent;
-import es.eucm.ead.editor.view.widgets.Tabs.TabListener;
-import es.eucm.ead.editor.view.widgets.WidgetBuilder;
-import es.eucm.ead.editor.view.widgets.galleries.ProjectsGallery;
-import es.eucm.ead.editor.view.widgets.galleries.RepoGallery;
-import es.eucm.ead.editor.view.widgets.layouts.LinearLayout;
+import es.eucm.ead.editor.view.widgets.AbstractWidget;
+import es.eucm.ead.editor.view.widgets.galleries.*;
+import es.eucm.ead.editor.view.widgets.galleries.gallerieswithcategories.MyLibraryGallery;
+import es.eucm.ead.editor.view.widgets.galleries.basegalleries.ThumbnailsGallery;
+import es.eucm.ead.editor.view.widgets.galleries.gallerieswithcategories.CommunityGallery;
 import es.eucm.ead.engine.I18N;
-import es.eucm.ead.schema.editor.components.repo.RepoElement;
-import es.eucm.ead.schema.editor.components.repo.response.SearchResponse;
-import es.eucm.ead.schemax.ModelStructure;
+import es.eucm.ead.schema.editor.components.repo.RepoCategories;
 
-public class HomeView implements ViewBuilder, BackListener, WorkerListener {
+public class HomeView implements ViewBuilder, BackListener {
 
 	private Controller controller;
 
-	private LinearLayout view;
-
-	private Container<Actor> content;
+	// Main galleries
+	private TabsGallery tabsGallery;
 
 	private ProjectsGallery projectsGallery;
 
-	private RepoGallery repoGallery;
+	private MyLibraryGallery myLibraryGallery;
 
-	private Tabs tabs;
+	private CommunityGallery communityGallery;
+
+	// Galleries of specific category
+	private TabsCategoryGallery tabsCategory;
+
+	private CategoryRepository categoryRepository;
+
+	private CategoryLibrary categoryLibrary;
+
+	private AbstractWidget view = new AbstractWidget();
+
+	private I18N i18N;
 
 	@Override
 	public void initialize(Controller control) {
 		this.controller = control;
-		view = new LinearLayout(false);
-		view.add(buildToolbar()).expandX();
-		view.background(controller.getApplicationAssets().getSkin()
-				.getDrawable(SkinConstants.DRAWABLE_GRAY_100));
-		view.add(content = new Container<Actor>().fill()).expand(true, true);
+		i18N = controller.getApplicationAssets().getI18N();
 
-		projectsGallery = new ProjectsGallery(1.65f, 3, control);
+		categoryRepository = new CategoryRepository(2.25f, 3, control);
 
-		repoGallery = new RepoGallery(1.65f, 3, control);
-		repoGallery.addListener(new RepoTileListener() {
+		categoryLibrary = new CategoryLibrary(2.25f, 3, control);
 
+		tabsGallery = new TabsGallery(controller.getApplicationAssets()
+				.getI18N().m("application.title"), control
+				.getApplicationAssets().getSkin(), i18N);
+		tabsCategory = new TabsCategoryGallery(controller
+				.getApplicationAssets().getI18N().m("application.title"),
+				control.getApplicationAssets().getSkin(), i18N);
+		tabsCategory.getToolbarIcon().addListener(new ClickListener() {
 			@Override
-			public void clickedInLibrary(RepoTileEvent event) {
-				controller.action(Play.class, controller.getLibraryManager()
-						.getRepoElementLibraryFolder(event.getRepoElement())
-						.file().getAbsolutePath()
-						+ "/" + ModelStructure.CONTENTS_FOLDER);
+			public void clicked(InputEvent event, float x, float y) {
+				super.clicked(event, x, y);
+				beforeGallery();
 			}
-
 		});
+
+		communityGallery = new CommunityGallery(2.25f, 3, control);
+		createCategoryInGallery(communityGallery, categoryRepository,
+				SkinConstants.IC_WHITE_MOKAP, "mokaps",
+				RepoCategories.MOKAPS.toString(), SkinConstants.COLOR_MOKAPS);
+		createCategoryInGallery(communityGallery, categoryRepository,
+				SkinConstants.IC_IMAGE, "images",
+				RepoCategories.ELEMENTS.toString(), SkinConstants.COLOR_IMAGES);
+
+		projectsGallery = new ProjectsGallery(2.25f, 3, control);
+
+		myLibraryGallery = new MyLibraryGallery(2.25f, 3, control);
+		createCategoryInGallery(myLibraryGallery, categoryLibrary,
+				SkinConstants.IC_WHITE_MOKAP, "mokaps",
+				RepoCategories.MOKAPS.toString(), SkinConstants.COLOR_MOKAPS);
+		createCategoryInGallery(myLibraryGallery, categoryLibrary,
+				SkinConstants.IC_IMAGE, "images",
+				RepoCategories.ELEMENTS.toString(), SkinConstants.COLOR_IMAGES);
+
+		tabsGallery.setTabs(new String[] { i18N.m("community").toUpperCase(),
+				i18N.m("my.mokaps").toUpperCase(),
+				i18N.m("my.library").toUpperCase() }, communityGallery,
+				projectsGallery, myLibraryGallery);
 	}
 
-	private void search() {
-		controller.action(ExecuteWorker.class, FeaturedElements.class, this,
-				"all");
+	private void clickOnCategory(String title, String category, Color color,
+			ThumbnailsGallery gallery) {
+		tabsCategory.setTabs(new String[] { i18N.m("new").toUpperCase() },
+				gallery);
+		tabsCategory.setSearchText(tabsGallery.getSearchText());
+
+		controller.getWorkerExecutor().cancel(SearchRepo.class,
+				communityGallery);
+		tabsGallery.remove();
+		tabsCategory.changeTitle(title);
+		tabsCategory.changeColor(color);
+		categoryLibrary.changeCategory(category);
+		categoryRepository.changeCategory(category);
+		view.addActor(tabsCategory);
+		tabsCategory.loadContents();
+	}
+
+	private void createCategoryInGallery(MyLibraryGallery gallery,
+			final ThumbnailsGallery goalGallery, String icon,
+			final String textKey, final String category, final Color color) {
+		Actor images = gallery.addCategory(i18N.m(textKey), icon, category,
+				color);
+		images.addListener(new ClickListener() {
+			@Override
+			public void clicked(InputEvent event, float x, float y) {
+				clickOnCategory(i18N.m(textKey), category, color, goalGallery);
+			}
+		});
 	}
 
 	@Override
 	public Actor getView(Object... args) {
 		controller.getWorkerExecutor().cancelAll();
-		updateContent(tabs.getSelectedTabIndex());
 		controller.getPreferences().putString(Preferences.LAST_OPENED_GAME, "");
 		controller.action(ShowInfoPanel.class, TypePanel.INTRODUCTION,
 				Preferences.HELP_INTRODUCTION);
+
+		view.addActor(tabsGallery);
+		tabsGallery.loadContents();
+
 		return view;
 	}
 
@@ -128,88 +178,19 @@ public class HomeView implements ViewBuilder, BackListener, WorkerListener {
 
 	@Override
 	public boolean onBackPressed() {
-		controller.action(Exit.class, false);
+		if (tabsCategory.getParent() == view) {
+			beforeGallery();
+		} else {
+			controller.action(Exit.class, false);
+		}
 		return true;
 	}
 
-	private void updateContent(int index) {
-		switch (index) {
-		case 0:
-			content.setActor(projectsGallery);
-			projectsGallery.load();
-			break;
-		case 1:
-			content.setActor(repoGallery);
-			repoGallery.clear();
-			search();
-			break;
-		}
-	}
-
-	private Actor buildToolbar() {
-		Skin skin = controller.getApplicationAssets().getSkin();
-		LinearLayout topRow = new LinearLayout(true);
-		topRow.add(WidgetBuilder.toolbarIcon(SkinConstants.IC_MOKAP, null));
-		topRow.add(
-				WidgetBuilder.label(controller.getApplicationAssets().getI18N()
-						.m("application.title"), SkinConstants.STYLE_TOOLBAR))
-				.marginLeft(WidgetBuilder.dpToPixels(8));
-
-		LinearLayout toolbar = new LinearLayout(false);
-		toolbar.add(topRow).expandX();
-		toolbar.add(buildTabs()).left();
-		toolbar.background(skin.getDrawable(SkinConstants.DRAWABLE_TOOLBAR));
-		toolbar.backgroundColor(skin.getColor(SkinConstants.COLOR_BROWN_MOKA));
-		return toolbar;
-	}
-
-	private Actor buildTabs() {
-		Skin skin = controller.getApplicationAssets().getSkin();
-		I18N i18N = controller.getApplicationAssets().getI18N();
-		tabs = new Tabs(skin);
-		tabs.setItems(i18N.m("my.mokaps").toUpperCase(), i18N.m("community")
-				.toUpperCase());
-		tabs.addListener(new TabListener() {
-
-			@Override
-			public void changed(TabEvent event) {
-				updateContent(event.getTabIndex());
-			}
-		});
-		return tabs;
-	}
-
-	@Override
-	public void start() {
-
-	}
-
-	@Override
-	public void result(Object... results) {
-		Object firstResult = results[0];
-		if (!(firstResult instanceof SearchResponse)) {
-			RepoElement elem = (RepoElement) firstResult;
-			if (controller.getLibraryManager().isMokap(elem)) {
-				Pixmap repoThumbnail = (Pixmap) results[1];
-				Texture thumbnailTex = new Texture(repoThumbnail);
-				repoGallery.add(elem, repoThumbnail, thumbnailTex);
-			}
-		}
-	}
-
-	@Override
-	public void done() {
-
-	}
-
-	@Override
-	public void error(Throwable ex) {
-
-	}
-
-	@Override
-	public void cancelled() {
-
+	private void beforeGallery() {
+		tabsCategory.remove();
+		view.addActor(tabsGallery);
+		tabsGallery.setSearchText("");
+		tabsGallery.loadContents();
 	}
 
 }

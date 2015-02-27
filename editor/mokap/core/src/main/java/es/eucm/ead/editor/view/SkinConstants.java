@@ -36,6 +36,8 @@
  */
 package es.eucm.ead.editor.view;
 
+import com.badlogic.gdx.graphics.Color;
+
 /**
  * Class with constant for icons
  */
@@ -48,6 +50,7 @@ public interface SkinConstants {
 
 	public static final String DRAWABLE_LOGO = "logo";
 	public static final String DRAWABLE_BLANK = "blank";
+	public static final String DRAWABLE_BUTTON = "button";
 	public static final String DRAWABLE_GRAY_100 = "gray_100_bg";
 	public static final String DRAWABLE_SEMI_BLANK = "blank75";
 	public static final String DRAWABLE_PAGE = "page";
@@ -86,6 +89,8 @@ public interface SkinConstants {
 	public static final String STYLE_DIALOG = "dialog";
 	public static final String STYLE_ORANGE = "orange";
 	public static final String STYLE_TEMPLATE = "template";
+	public static final String STYLE_CATEGORY = "category";
+	public static final String STYLE_BIG = "big";
 
 	public static final String TABLET_GAME = "tablet_game";
 	public static final String TABLET_CARD = "tablet_card";
@@ -189,5 +194,12 @@ public interface SkinConstants {
 	public static final String IC_ADD_SCENE = "ic_add_scene";
 
 	public static final String IC_RANDOM = "ic_random";
+
+	public static final String IC_WHITE_MOKAP = "ic_white_mokap";
+	public static final String IC_IMAGE = "ic_image";
+
+	// Categories color
+	public static final Color COLOR_MOKAPS = Color.DARK_GRAY;
+	public static final Color COLOR_IMAGES = Color.MAROON;
 
 }

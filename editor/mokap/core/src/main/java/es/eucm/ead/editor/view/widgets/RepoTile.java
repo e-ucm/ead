@@ -90,8 +90,7 @@ public class RepoTile extends Tile implements DownloadListener {
 
 	private Controller controller;
 
-	public RepoTile(Controller control, RepoElement elem,
-			final Pixmap thumbPixmap) {
+	public RepoTile(Controller control, RepoElement elem) {
 		super(control.getApplicationAssets().getSkin());
 
 		this.element = elem;
@@ -113,7 +112,6 @@ public class RepoTile extends Tile implements DownloadListener {
 				case CANCELLED:
 				case DOWNLOADABLE:
 					tempDownloadFolder.mkdirs();
-					PixmapIO.writePNG(thumbnailFile, thumbPixmap);
 					controller.getDownloadManager().download(work);
 					break;
 				case DOWNLOADED:
@@ -209,7 +207,6 @@ public class RepoTile extends Tile implements DownloadListener {
 		if (state == State.IN_QUEUE || state == State.DOWNLOADING
 				|| state == State.DOWNLOADED) {
 			state = State.DOWNLOADABLE;
-			deleteTempDownloadFolder();
 			setBottom(null);
 			setMarker(getMarker(SkinConstants.IC_ERROR));
 		} else {

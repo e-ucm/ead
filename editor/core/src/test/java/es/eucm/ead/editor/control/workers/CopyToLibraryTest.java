@@ -39,7 +39,11 @@ package es.eucm.ead.editor.control.workers;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 
+import com.badlogic.gdx.graphics.Texture;
+import es.eucm.ead.engine.assets.Assets;
+import es.eucm.ead.engine.gdx.URLTextureLoader;
 import es.eucm.ead.schema.editor.components.repo.RepoCategories;
+import es.eucm.ead.schemax.ModelStructure;
 import org.junit.Before;
 
 import com.badlogic.gdx.Application;
@@ -106,7 +110,28 @@ public class CopyToLibraryTest extends WorkerTest implements WorkerListener {
 			FileHandle mockLibsFolder = gameAssets.absolute(controller
 					.getPlatform().getLibraryFolder());
 			assertTrue(mockLibsFolder.isDirectory());
-			assertTrue(controller.getLibraryManager().isDownloaded(element));
+
+			controller.getApplicationAssets().get(
+					thumbnailFile.path(),
+					Texture.class,
+					new URLTextureLoader.URLTextureParameter(controller
+							.getLibraryManager()
+							.getRepoElementLibraryFolder(element)
+							.child(ModelStructure.THUMBNAIL_FILE)),
+					new Assets.AssetLoadedCallback<Texture>() {
+						@Override
+						public void loaded(String fileName, Texture asset) {
+							assertTrue(controller.getLibraryManager()
+									.isDownloaded(element));
+						}
+
+						@Override
+						public void error(String fileName, Class type,
+								Throwable exception) {
+							assertTrue(controller.getLibraryManager()
+									.isDownloaded(element));
+						}
+					});
 
 			mockLibsFolder.deleteDirectory();
 		}

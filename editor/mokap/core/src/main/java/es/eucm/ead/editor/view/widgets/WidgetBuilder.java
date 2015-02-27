@@ -303,17 +303,16 @@ public class WidgetBuilder {
 		return new AsyncImage(imagePath, controller.getEditorGameAssets());
 	}
 
-	public static Tile tile(Actor background, String text) {
+	public static Tile tile(String text, TextureDrawable background) {
 		Tile tile = new Tile(skin);
-		tile.setBackground(background);
+		tile.setBackground(new Image(background));
 		tile.setText(text);
 		return tile;
 	}
 
-	public static RepoTile repoTile(RepoElement elem, Texture background,
-			Pixmap thumbnailPixmap) {
-		Image image = new Image(new TextureDrawable(background));
-		RepoTile tile = new RepoTile(controller, elem, thumbnailPixmap);
+	public static RepoTile repoTile(RepoElement elem, TextureDrawable background) {
+		Image image = new Image(background);
+		RepoTile tile = new RepoTile(controller, elem);
 		tile.setBackground(image);
 		tile.setText(Q.getRepoElementName(elem));
 		return tile;

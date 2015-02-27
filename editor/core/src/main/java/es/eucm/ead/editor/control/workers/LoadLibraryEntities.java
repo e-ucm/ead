@@ -39,6 +39,7 @@ package es.eucm.ead.editor.control.workers;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.utils.Array;
+import es.eucm.ead.editor.control.LibraryManager;
 import es.eucm.ead.editor.model.Q;
 import es.eucm.ead.schema.editor.components.repo.RepoElement;
 import es.eucm.ead.schemax.ModelStructure;
@@ -69,8 +70,11 @@ public class LoadLibraryEntities extends Worker {
 
 	@Override
 	protected void prepare() {
-		libraryEntities = controller.getLibraryManager()
-				.listDownloadedElements();
+		LibraryManager library = controller.getLibraryManager();
+		libraryEntities = new Array<FileHandle>();
+		library.listDownloadedElements(
+				library.getLibraryFolder().child(args[0].toString()),
+				libraryEntities);
 	}
 
 	@Override
@@ -84,11 +88,9 @@ public class LoadLibraryEntities extends Worker {
 					.getEditorGameAssets()
 					.fromJson(RepoElement.class,
 							libraryEntity.child(ModelStructure.DESCRIPTOR_FILE));
-			if (!controller.getLibraryManager().isMokap(repoElement)) {
-				result(repoElement, Q.getRepoElementName(repoElement),
-						libraryEntity.child(ModelStructure.THUMBNAIL_FILE)
-								.path());
-			}
+
+			result(repoElement, Q.getRepoElementName(repoElement),
+					libraryEntity.child(ModelStructure.THUMBNAIL_FILE).path());
 
 		} catch (Exception e) {
 			Gdx.app.error("LoadLibraryEntities",
@@ -97,4 +99,5 @@ public class LoadLibraryEntities extends Worker {
 
 		return false;
 	}
+
 }

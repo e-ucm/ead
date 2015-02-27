@@ -48,10 +48,8 @@ import es.eucm.ead.editor.control.actions.model.AddSceneElement;
 import es.eucm.ead.editor.control.workers.LoadFiles;
 import es.eucm.ead.editor.control.workers.Worker.WorkerListener;
 import es.eucm.ead.editor.view.ModelView;
-import es.eucm.ead.editor.view.SkinConstants;
-import es.eucm.ead.editor.view.builders.SearchView;
 import es.eucm.ead.editor.view.builders.scene.SceneView;
-import es.eucm.ead.editor.view.widgets.WidgetBuilder;
+import es.eucm.ead.editor.view.widgets.galleries.basegalleries.ThumbnailsGallery;
 import es.eucm.ead.editor.view.widgets.layouts.Gallery.GalleryStyle;
 import es.eucm.ead.schemax.ModelStructure;
 
@@ -66,15 +64,21 @@ public class ProjectResourcesGallery extends ThumbnailsGallery implements
 		super(rows, columns, controller.getApplicationAssets(), controller
 				.getApplicationAssets().getSkin(), controller
 				.getApplicationAssets().getI18N(), controller
-				.getApplicationAssets().getSkin().get(GalleryStyle.class),
-				SkinConstants.IC_SEARCH);
+				.getApplicationAssets().getSkin().get(GalleryStyle.class));
 		this.controller = controller;
 	}
 
+	@Override
 	public void prepare() {
+		clear();
 		controller.action(ExecuteWorker.class, LoadFiles.class, this,
 				controller.getEditorGameAssets().getLoadingPath()
 						+ ModelStructure.IMAGES_FOLDER);
+	}
+
+	@Override
+	public void loadContents(String search) {
+		prepare();
 	}
 
 	@Override
@@ -87,8 +91,7 @@ public class ProjectResourcesGallery extends ThumbnailsGallery implements
 	}
 
 	@Override
-	protected void prepareAddButton(Actor actor) {
-		WidgetBuilder.actionOnClick(actor, ChangeView.class, SearchView.class);
+	protected void prepareActionButton(Actor actor) {
 	}
 
 	@Override

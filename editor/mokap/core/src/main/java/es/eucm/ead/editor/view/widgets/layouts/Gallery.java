@@ -39,11 +39,11 @@ package es.eucm.ead.editor.view.widgets.layouts;
 import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.math.Interpolation;
 import com.badlogic.gdx.scenes.scene2d.Actor;
+import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.actions.Actions;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.scenes.scene2d.utils.Drawable;
-
 import es.eucm.ead.editor.view.widgets.AbstractWidget;
 import es.eucm.ead.editor.view.widgets.ScrollPane;
 import es.eucm.ead.editor.view.widgets.WidgetBuilder;
@@ -81,15 +81,15 @@ public class Gallery extends ScrollPane {
 		setWidget(grid = new Grid(rows, columns));
 		getStyle().background = style.background;
 		setScrollingDisabled(true, false);
+        setOverscroll(false, false);
 	}
 
 	public Grid getGrid() {
 		return grid;
 	}
 
-	/**
-	 * @param pad
-	 *            pad between items
+	/*
+	 * @param pad pad between items
 	 */
 	public void pad(float pad) {
 		grid.pad(pad);
@@ -97,6 +97,20 @@ public class Gallery extends ScrollPane {
 
 	public Cell add(Actor actor) {
 		Cell cell = new Cell(actor, style);
+		grid.addActor(cell);
+		return cell;
+	}
+
+	public Cell addSpace() {
+		Cell cell = new Cell(new Actor());
+		cell.usePrefHeight();
+		grid.addActor(cell);
+		return cell;
+	}
+
+	public Cell addOriginal(Actor actor) {
+		Cell cell = new Cell(actor);
+		cell.usePrefHeight();
 		grid.addActor(cell);
 		return cell;
 	}
@@ -155,11 +169,14 @@ public class Gallery extends ScrollPane {
 
 		private float rows;
 
+		private float rowHeight;
+
 		private float pad = WidgetBuilder.dpToPixels(8);
 
 		Grid(float rows, int columns) {
 			this.columns = columns;
 			this.rows = rows;
+			this.rowHeight = -1;
 		}
 
 		public float getColumnWidth() {
@@ -185,6 +202,14 @@ public class Gallery extends ScrollPane {
 			}
 		}
 
+		public void setRowHeight(float height) {
+			this.rowHeight = height;
+		}
+
+		public float getRows() {
+			return rows;
+		}
+
 		public float rowHeight(int fromIndex, float prefRowHeight) {
 			float currentRowHeight = 0;
 			for (int i = fromIndex; i < fromIndex + columns
@@ -202,7 +227,8 @@ public class Gallery extends ScrollPane {
 		}
 
 		public float getPrefRowHeight() {
-			return (getParent().getHeight() - pad) / rows;
+			return rowHeight == -1 ? (getParent().getHeight() - pad) / rows
+					: rowHeight;
 		}
 
 		@Override
@@ -263,6 +289,11 @@ public class Gallery extends ScrollPane {
 			addListener(clickListener);
 		}
 
+		Cell(Actor actor) {
+			this.actor = actor;
+			addActor(actor);
+		}
+
 		public boolean isChecked() {
 			return checked;
 		}
@@ -295,10 +326,12 @@ public class Gallery extends ScrollPane {
 		public void layout() {
 			setBounds(actor, 0, -DELTA_Y, getWidth(), getHeight());
 			actor.getColor().a = 0.0f;
+			actor.clearActions();
 			actor.addAction(Actions.parallel(
 					Actions.moveTo(0, 0, 0.2f, Interpolation.exp5Out),
 					Actions.alpha(1.0f, 0.5f, Interpolation.exp10Out)));
 		}
+
 	}
 
 	public static class GalleryStyle {

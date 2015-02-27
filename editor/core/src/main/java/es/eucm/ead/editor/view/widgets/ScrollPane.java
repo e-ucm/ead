@@ -278,7 +278,7 @@ public class ScrollPane extends WidgetGroup {
 					if (deltaAmount != 0) {
 						if (amountY == 0) {
 							sendHitEdgeEvent(Edge.TOP);
-						} else if (amountY == maxY) {
+						} else if (amountY >= maxY) {
 							sendHitEdgeEvent(Edge.BOTTOM);
 						}
 					}
@@ -429,7 +429,7 @@ public class ScrollPane extends WidgetGroup {
 					hitBottom = false;
 				}
 			} else {
-				if (getScrollY() > maxY) {
+				if (getScrollY() >= maxY) {
 					hitBottom = true;
 					sendHitEdgeEvent(Edge.BOTTOM);
 				}

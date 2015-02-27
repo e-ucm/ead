@@ -297,7 +297,7 @@
         },
         "toast": {
             "font": "default_font",
-            "fontColor": "white",
+            "fontColor": "white"
         },
         "toolbar": {
             "font": "default_font",
@@ -315,7 +315,7 @@
         "dialog": {
             "font": "big_font",
             "fontColor": "gray"
-        }        
+        }
     },
     "com.badlogic.gdx.scenes.scene2d.ui.Button$ButtonStyle": {
         "default": {
@@ -366,6 +366,14 @@
             "down": "pressed_48_bg",
             "font": "default_font",
             "fontColor": "light_gray"
+        },
+        "category": {
+          "up": "button",
+          "down": "button",
+          "font": "small_bold",
+          "fontColor": "white",
+          "downFontColor": "white",
+          "disabledFontColor": "gray"
         }
     },
     "com.badlogic.gdx.scenes.scene2d.ui.ImageButton$ImageButtonStyle": {
@@ -534,20 +542,20 @@
     "es.eucm.ead.editor.view.widgets.IconButton$IconButtonStyle": {
         "default": {
             "disabledColor": "gray",
-            "color": "black",
+            "color": "black"
         },
         "gray": {
             "color": "gray",
-            "up": "transparent_48_bg",
+            "up": "transparent_48_bg"
         },
         "switch": {
             "disabledColor": "white",
-            "color": "brown_moka",
+            "color": "brown_moka"
         },
         "pages": {
             "disabledColor": "black",
             "color": "brown_moka",
-            "up": "transparent_48_bg",
+            "up": "transparent_48_bg"
         },
         "toolbar": {
             "disabledColor": "gray",
@@ -605,7 +613,7 @@
             "rows": 4,
             "sliderSpace": 12,
             "pad": 12
-        },
+        }
     },
     "es.eucm.ead.editor.view.widgets.draw.BrushStrokesPicker$BrushStrokesPickerStyle": {
         "default": {
