@@ -37,23 +37,21 @@
 package es.eucm.ead.editor.view.builders;
 
 import com.badlogic.gdx.scenes.scene2d.Actor;
-import com.badlogic.gdx.scenes.scene2d.ui.Container;
+import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 
+import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import es.eucm.ead.editor.assets.ApplicationAssets;
 import es.eucm.ead.editor.control.Controller;
 import es.eucm.ead.editor.control.MokapController.BackListener;
 import es.eucm.ead.editor.control.actions.editor.ChangeView;
+import es.eucm.ead.editor.control.actions.model.AddLibraryReference;
 import es.eucm.ead.editor.view.SkinConstants;
 import es.eucm.ead.editor.view.builders.scene.SceneView;
-import es.eucm.ead.editor.view.widgets.Tabs;
-import es.eucm.ead.editor.view.widgets.Tabs.TabEvent;
-import es.eucm.ead.editor.view.widgets.Tabs.TabListener;
-import es.eucm.ead.editor.view.widgets.WidgetBuilder;
-import es.eucm.ead.editor.view.widgets.galleries.LibraryGallery;
-import es.eucm.ead.editor.view.widgets.galleries.ProjectResourcesGallery;
-import es.eucm.ead.editor.view.widgets.layouts.LinearLayout;
+import es.eucm.ead.editor.view.widgets.RepoTile;
+import es.eucm.ead.editor.view.widgets.galleries.*;
 import es.eucm.ead.engine.I18N;
+import es.eucm.ead.schema.editor.components.repo.RepoCategories;
 
 /**
  * File view. A list with the children of a given file.
@@ -62,78 +60,80 @@ public class ResourcesView implements ViewBuilder, BackListener {
 
 	private Controller controller;
 
-	private LinearLayout view;
-
-	private Container<Actor> container;
-
 	private ProjectResourcesGallery projectResources;
 
-	private LibraryGallery libraryGallery;
+	private CategoryLibrary libraryGallery;
 
-	private Tabs tabs;
+	private CategoryRepository repoGallery;
+
+	private TabsGallery tabsGallery;
 
 	@Override
-	public void initialize(Controller controller) {
-		this.controller = controller;
+	public void initialize(Controller control) {
+		this.controller = control;
 		ApplicationAssets applicationAssets = controller.getApplicationAssets();
 		Skin skin = applicationAssets.getSkin();
 		I18N i18N = applicationAssets.getI18N();
-		view = new LinearLayout(false);
-		view.background(controller.getApplicationAssets().getSkin()
-				.getDrawable(SkinConstants.DRAWABLE_GRAY_100));
-		view.add(buildToolbar(skin, i18N)).expandX();
-		view.add(container = new Container<Actor>().fill()).expand(true, true);
+
+		tabsGallery = new TabsGallery(controller.getApplicationAssets()
+				.getI18N().m("images"), SkinConstants.IC_GO, skin, i18N);
+		tabsGallery.changeColor(SkinConstants.COLOR_IMAGES);
+		tabsGallery.getToolbarIcon().addListener(new ClickListener() {
+			@Override
+			public void clicked(InputEvent event, float x, float y) {
+				super.clicked(event, x, y);
+				onBackPressed();
+			}
+		});
+
+		libraryGallery = new CategoryLibrary(2.25f, 3, controller) {
+			@Override
+			protected void prepareGalleryItem(Actor actor, final Object elem) {
+				actor.addListener(new ClickListener() {
+					@Override
+					public void clicked(InputEvent event, float x, float y) {
+						controller.action(AddLibraryReference.class, elem);
+						controller.action(ChangeView.class, SceneView.class);
+					}
+				});
+			}
+		};
+		libraryGallery.changeCategory(RepoCategories.ELEMENTS.toString());
+
+		repoGallery = new CategoryRepository(2.25f, 3, controller) {
+			@Override
+			protected void prepareGalleryItem(Actor actor, final Object elem) {
+				actor.addListener(new RepoTile.RepoTileListener() {
+					@Override
+					public void clickedInLibrary(RepoTileEvent event) {
+						controller.action(AddLibraryReference.class,
+								event.getRepoElement());
+						controller.action(ChangeView.class, SceneView.class);
+					}
+				});
+			}
+
+		};
+		repoGallery.changeCategory(RepoCategories.ELEMENTS.toString());
+
 		projectResources = new ProjectResourcesGallery(3.15f, 4, controller);
-		libraryGallery = new LibraryGallery(3.15f, 4, controller);
+
+		tabsGallery.setTabs(new String[] { i18N.m("community").toUpperCase(),
+				i18N.m("my.library").toUpperCase(),
+				i18N.m("project").toUpperCase() }, repoGallery, libraryGallery,
+				projectResources);
+
 	}
 
 	@Override
 	public Actor getView(Object... args) {
-		updateContent(tabs.getSelectedTabIndex());
-		return view;
+		tabsGallery.loadContents();
+
+		return tabsGallery;
 	}
 
 	@Override
 	public void release(Controller controller) {
-	}
-
-	private Actor buildTabs(Skin skin, I18N i18N) {
-		tabs = new Tabs(skin);
-		tabs.setItems(i18N.m("project").toUpperCase(), i18N.m("library")
-				.toUpperCase());
-		tabs.addListener(new TabListener() {
-
-			@Override
-			public void changed(TabEvent event) {
-				updateContent(event.getTabIndex());
-			}
-		});
-		return tabs;
-	}
-
-	private void updateContent(int index) {
-		container.setActor(null);
-		switch (index) {
-		case 0:
-			container.setActor(projectResources);
-			libraryGallery.release();
-			projectResources.prepare();
-			break;
-		case 1:
-			container.setActor(libraryGallery);
-			projectResources.release();
-			libraryGallery.prepare();
-			break;
-		}
-	}
-
-	private Actor buildToolbar(Skin skin, I18N i18N) {
-		LinearLayout toolbar = new LinearLayout(true).background(skin
-				.getDrawable(SkinConstants.DRAWABLE_BROWN_TOOLBAR));
-		toolbar.add(WidgetBuilder.toolbarIcon(SkinConstants.IC_GO, null,
-				ChangeView.class, SceneView.class));
-		toolbar.add(buildTabs(skin, i18N)).expandX();
-		return toolbar;
 	}
 
 	@Override
