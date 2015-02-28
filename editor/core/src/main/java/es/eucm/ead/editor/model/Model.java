@@ -384,7 +384,9 @@ public class Model {
 	 * a resource is added/removed from the model
 	 */
 	public void addResourceListener(ModelListener<ResourceEvent> listener) {
-		resourcesListeners.add(listener);
+		if (!resourcesListeners.contains(listener, true)) {
+			resourcesListeners.add(listener);
+		}
 	}
 
 	/**

@@ -167,6 +167,7 @@ public class HomeView implements ViewBuilder, BackListener {
 
 		view.addActor(tabsGallery);
 		tabsGallery.loadContents();
+		projectsGallery.prepare();
 
 		return view;
 	}
@@ -174,6 +175,7 @@ public class HomeView implements ViewBuilder, BackListener {
 	@Override
 	public void release(Controller controller) {
 		controller.getApplicationAssets().clear();
+		projectsGallery.release();
 	}
 
 	@Override
