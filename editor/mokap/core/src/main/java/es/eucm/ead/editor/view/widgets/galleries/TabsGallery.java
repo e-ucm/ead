@@ -38,6 +38,7 @@ package es.eucm.ead.editor.view.widgets.galleries;
 
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.graphics.Color;
+import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.InputListener;
@@ -45,7 +46,9 @@ import com.badlogic.gdx.scenes.scene2d.ui.Button;
 import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.ui.TextField;
+import com.badlogic.gdx.scenes.scene2d.utils.Drawable;
 import es.eucm.ead.editor.view.SkinConstants;
+import es.eucm.ead.editor.view.widgets.AbstractWidget;
 import es.eucm.ead.editor.view.widgets.IconButton;
 import es.eucm.ead.editor.view.widgets.Tabs;
 import es.eucm.ead.editor.view.widgets.WidgetBuilder;
@@ -53,9 +56,7 @@ import es.eucm.ead.editor.view.widgets.galleries.basegalleries.ThumbnailsGallery
 import es.eucm.ead.editor.view.widgets.layouts.LinearLayout;
 import es.eucm.ead.engine.I18N;
 
-public class TabsGallery extends LinearLayout {
-
-	private static final float MIN_DIFF = 4;
+public class TabsGallery extends AbstractWidget {
 
 	protected final I18N i18N;
 	protected Skin skin;
@@ -80,14 +81,13 @@ public class TabsGallery extends LinearLayout {
 
 	private Button actionButton;
 
+	private Drawable background;
+
 	public TabsGallery(String title, Skin skin, I18N i18N) {
 		this(title, SkinConstants.IC_MOKAP, skin, i18N);
 	}
 
 	public TabsGallery(String title, String icon, Skin skin, I18N i18N) {
-		super(false);
-
-		background(skin.getDrawable(SkinConstants.DRAWABLE_GRAY_100));
 
 		setFillParent(true);
 
@@ -100,14 +100,17 @@ public class TabsGallery extends LinearLayout {
 		toolbar.background(skin.getDrawable(SkinConstants.DRAWABLE_TOOLBAR));
 		toolbar.backgroundColor(skin.getColor(SkinConstants.COLOR_BROWN_MOKA));
 
-		add(toolbar).expandX().top();
-		addSpace();
+		addActor(toolbar);
+
+		background = skin.getDrawable(SkinConstants.DRAWABLE_GRAY_100);
 
 	}
 
 	@Override
 	public void layout() {
 		super.layout();
+		toolbar.pack();
+		toolbar.setSize(getWidth(), toolbar.getHeight());
 		toolbar.toFront();
 		currentGallery.setSize(getWidth(), getHeight() - toolbar.getHeight()
 				* 0.5f);
@@ -119,6 +122,14 @@ public class TabsGallery extends LinearLayout {
 		}
 		positionGallery();
 		searchWidget.setWidth(getWidth() * 0.4f);
+	}
+
+	@Override
+	protected void drawChildren(Batch batch, float parentAlpha) {
+		if (background != null) {
+			background.draw(batch, 0, 0, getWidth(), getHeight());
+		}
+		super.drawChildren(batch, parentAlpha);
 	}
 
 	protected LinearLayout buildTopRow(String text, String icon) {
@@ -189,35 +200,31 @@ public class TabsGallery extends LinearLayout {
 	}
 
 	public void setTabs(String[] tabName, ThumbnailsGallery... tabWidget) {
-		if (currentGallery != null) {
-			currentGallery.remove();
-		}
 		galleries = tabWidget;
-		currentGallery = tabWidget[0];
 		tabs.setItems(tabName);
 		tabs.addListener(new Tabs.TabListener() {
 
 			@Override
 			public void changed(Tabs.TabEvent event) {
-				if (currentGallery != null) {
-					currentGallery.remove();
-				}
-				currentGallery = galleries[tabs.getSelectedTabIndex()];
-				addActor(currentGallery);
-				if (actionButton != null) {
-					actionButton.remove();
-				}
-				if (currentGallery.getActionButton() != null) {
-					addActor(actionButton = currentGallery.getActionButton());
-				}
-				loadContents();
+				changeTab();
 			}
 		});
+		changeTab();
+	}
 
+	private void changeTab() {
+		if (currentGallery != null) {
+			currentGallery.remove();
+		}
+		currentGallery = galleries[tabs.getSelectedTabIndex()];
 		addActor(currentGallery);
+		if (actionButton != null) {
+			actionButton.remove();
+		}
 		if (currentGallery.getActionButton() != null) {
 			addActor(actionButton = currentGallery.getActionButton());
 		}
+		searchWidget.setVisible(currentGallery.isSearchEnabled());
 		loadContents();
 	}
 

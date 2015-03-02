@@ -68,6 +68,8 @@ public class CategoryLibrary extends ThumbnailsGallery implements
 				.getApplicationAssets().getSkin().get(GalleryStyle.class));
 		this.controller = controller;
 		this.category = category;
+
+		searchEnabled = false;
 	}
 
 	public void changeCategory(String newCategory) {

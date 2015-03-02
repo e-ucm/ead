@@ -75,6 +75,7 @@ public class CategoryRepository extends CategoryLibrary implements
 		super(rows, columns, category, controller);
 		search = "";
 		canSearch = false;
+		searchEnabled = true;
 
 		addListener(new ScrollPane.ScrollPaneListener() {
 			@Override

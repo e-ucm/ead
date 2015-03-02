@@ -78,6 +78,8 @@ public class MyLibraryGallery extends ThumbnailsGallery implements
 		this.columns = columns;
 
 		this.count = 0;
+
+		searchEnabled = false;
 	}
 
 	public Actor addCategory(String name, String icon, String categoryName,
