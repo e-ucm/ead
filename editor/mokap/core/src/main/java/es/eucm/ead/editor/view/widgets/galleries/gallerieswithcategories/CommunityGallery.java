@@ -59,6 +59,7 @@ public class CommunityGallery extends MyLibraryGallery {
 
 	public CommunityGallery(float rows, int columns, Controller controller) {
 		super(rows, columns, controller);
+		searchEnabled = true;
 	}
 
 	@Override

@@ -66,6 +66,10 @@ public abstract class ThumbnailsGallery extends AbstractWidget implements
 
 	protected Gallery gallery;
 
+	protected String search;
+
+	protected boolean searchEnabled;
+
 	protected ObjectMap<String, TextureDrawable> pendingTextures = new ObjectMap<String, TextureDrawable>();
 
 	public ThumbnailsGallery(float rows, int columns, Assets assets, Skin skin,
@@ -97,6 +101,10 @@ public abstract class ThumbnailsGallery extends AbstractWidget implements
 	}
 
 	public abstract void loadContents(String search);
+
+	public boolean isSearchEnabled() {
+		return searchEnabled;
+	}
 
 	@Override
 	public void clear() {
