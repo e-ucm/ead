@@ -34,39 +34,31 @@
  *      You should have received a copy of the GNU Lesser General Public License
  *      along with eAdventure.  If not, see <http://www.gnu.org/licenses/>.
  */
-package es.eucm.ead.editor;
+package es.eucm.ead.editor.debugconfig.devices;
 
-import com.badlogic.gdx.Application;
-import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.backends.lwjgl.LwjglApplication;
+/**
+ * Specs from: <a href="https://support.google.com/nexus/answer/6102529?hl=en">
+ * https://support.google.com/nexus/answer/6102529?hl=en </a> Created by
+ * jtorrente on 1/03/15.
+ */
+public class Nexus9 implements DeviceSpecs {
+	@Override
+	public int pixelDensity() {
+		return 281;
+	}
 
-import es.eucm.ead.editor.control.Controller;
-import es.eucm.ead.editor.control.Preferences;
-import es.eucm.ead.editor.debugconfig.DesktopDebugConfiguration;
-import es.eucm.ead.editor.platform.AbstractPlatform;
+	@Override
+	public int screenWidth() {
+		return 2048;
+	}
 
-public class MokapDesktop {
+	@Override
+	public int screenHeight() {
+		return 1536;
+	}
 
-	public static void main(String[] args) {
-
-		final DesktopDebugConfiguration config = DesktopDebugConfiguration
-				.build();
-		AbstractPlatform mokapDesktopPlatform = new MokapDesktopPlatform();
-		mokapDesktopPlatform.setApplicationArguments(args);
-		MokapApplicationListener mokapApplicationListener = new MokapApplicationListener(
-				mokapDesktopPlatform) {
-			@Override
-			protected Controller buildController() {
-				Controller controller = super.buildController();
-				if (config.editorLanguage != null) {
-					controller.getPreferences().putString(
-							Preferences.EDITOR_LANGUAGE, config.editorLanguage);
-					controller.setLanguage(config.editorLanguage);
-				}
-				return controller;
-			}
-		};
-		new LwjglApplication(mokapApplicationListener, config);
-		Gdx.app.setLogLevel(Application.LOG_DEBUG);
+	@Override
+	public String name() {
+		return "Nexus 9, 8.9\" tablet, 4:3 screen";
 	}
 }

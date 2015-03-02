@@ -34,39 +34,32 @@
  *      You should have received a copy of the GNU Lesser General Public License
  *      along with eAdventure.  If not, see <http://www.gnu.org/licenses/>.
  */
-package es.eucm.ead.editor;
+package es.eucm.ead.editor.debugconfig.devices;
 
-import com.badlogic.gdx.Application;
-import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.backends.lwjgl.LwjglApplication;
+/**
+ * Specs from: <a href=
+ * "https://support.google.com/nexus/answer/3247662?hl=en&ref_topic=2841129">
+ * https://support.google.com/nexus/answer/3247662?hl=en&ref_topic=2841129 </a>
+ * Created by jtorrente on 1/03/15.
+ */
+public class Nexus7 implements DeviceSpecs {
+	@Override
+	public int pixelDensity() {
+		return 323;
+	}
 
-import es.eucm.ead.editor.control.Controller;
-import es.eucm.ead.editor.control.Preferences;
-import es.eucm.ead.editor.debugconfig.DesktopDebugConfiguration;
-import es.eucm.ead.editor.platform.AbstractPlatform;
+	@Override
+	public int screenWidth() {
+		return 1920;
+	}
 
-public class MokapDesktop {
+	@Override
+	public int screenHeight() {
+		return 1200;
+	}
 
-	public static void main(String[] args) {
-
-		final DesktopDebugConfiguration config = DesktopDebugConfiguration
-				.build();
-		AbstractPlatform mokapDesktopPlatform = new MokapDesktopPlatform();
-		mokapDesktopPlatform.setApplicationArguments(args);
-		MokapApplicationListener mokapApplicationListener = new MokapApplicationListener(
-				mokapDesktopPlatform) {
-			@Override
-			protected Controller buildController() {
-				Controller controller = super.buildController();
-				if (config.editorLanguage != null) {
-					controller.getPreferences().putString(
-							Preferences.EDITOR_LANGUAGE, config.editorLanguage);
-					controller.setLanguage(config.editorLanguage);
-				}
-				return controller;
-			}
-		};
-		new LwjglApplication(mokapApplicationListener, config);
-		Gdx.app.setLogLevel(Application.LOG_DEBUG);
+	@Override
+	public String name() {
+		return "Nexus 7 (2013), 7.02\" tablet, 16:10 screen";
 	}
 }

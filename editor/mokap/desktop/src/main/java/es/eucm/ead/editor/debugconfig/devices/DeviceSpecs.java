@@ -34,39 +34,33 @@
  *      You should have received a copy of the GNU Lesser General Public License
  *      along with eAdventure.  If not, see <http://www.gnu.org/licenses/>.
  */
-package es.eucm.ead.editor;
+package es.eucm.ead.editor.debugconfig.devices;
 
-import com.badlogic.gdx.Application;
-import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.backends.lwjgl.LwjglApplication;
+/**
+ * This class encapsulates several properties of a specific device so it can be
+ * emulated on desktop
+ * 
+ * Created by jtorrente on 1/03/15.
+ */
+public interface DeviceSpecs {
 
-import es.eucm.ead.editor.control.Controller;
-import es.eucm.ead.editor.control.Preferences;
-import es.eucm.ead.editor.debugconfig.DesktopDebugConfiguration;
-import es.eucm.ead.editor.platform.AbstractPlatform;
+	/**
+	 * @return Screen's DPI on the device (number of pixels per inch)
+	 */
+	public int pixelDensity();
 
-public class MokapDesktop {
+	/**
+	 * @return Screen's width, in pixels
+	 */
+	public int screenWidth();
 
-	public static void main(String[] args) {
+	/**
+	 * @return Screen's height, in pixels
+	 */
+	public int screenHeight();
 
-		final DesktopDebugConfiguration config = DesktopDebugConfiguration
-				.build();
-		AbstractPlatform mokapDesktopPlatform = new MokapDesktopPlatform();
-		mokapDesktopPlatform.setApplicationArguments(args);
-		MokapApplicationListener mokapApplicationListener = new MokapApplicationListener(
-				mokapDesktopPlatform) {
-			@Override
-			protected Controller buildController() {
-				Controller controller = super.buildController();
-				if (config.editorLanguage != null) {
-					controller.getPreferences().putString(
-							Preferences.EDITOR_LANGUAGE, config.editorLanguage);
-					controller.setLanguage(config.editorLanguage);
-				}
-				return controller;
-			}
-		};
-		new LwjglApplication(mokapApplicationListener, config);
-		Gdx.app.setLogLevel(Application.LOG_DEBUG);
-	}
+	/**
+	 * @return User-friendly name of the device (e.g. "Nexus 10").
+	 */
+	public String name();
 }
