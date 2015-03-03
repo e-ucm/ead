@@ -116,6 +116,12 @@
             "b": 0.2392,
             "a": 0.5
         },
+        "semi_dark_brown_moka": {
+          "r": 0.2431,
+          "g": 0.1529,
+          "b": 0.1372,
+          "a": 0.5
+        },
         "light_blue": {
             "r": 0.011764706,
             "g": 0.6627451,
@@ -178,11 +184,11 @@
         },
         "progress_bar_bg": {
             "name": "selected_tab",
-            "color": "semi_light_brown_moka"
+            "color": "semi_dark_brown_moka"
         },
         "progress_bar_knob_before": {
             "name": "selected_tab",
-            "color": "brown_moka"
+            "color": "light_brown_moka"
         },
         "transparent_bg": {
             "name": "blank",
