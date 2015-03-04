@@ -41,6 +41,7 @@ import com.badlogic.gdx.math.Polygon;
 import com.badlogic.gdx.scenes.scene2d.Group;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.Pool.Poolable;
+import es.eucm.ead.engine.GameLoop;
 import es.eucm.ead.engine.components.renderers.RendererComponent;
 
 /**
@@ -49,9 +50,11 @@ import es.eucm.ead.engine.components.renderers.RendererComponent;
 public class ReferenceComponent extends RendererComponent implements Poolable {
 
 	private Group group;
+	private GameLoop gameLoop;
 
-	public void setGroup(Group group) {
+	public void set(Group group, GameLoop gameLoop) {
 		this.group = group;
+		this.gameLoop = gameLoop;
 		group.setTransform(false);
 	}
 
@@ -80,5 +83,12 @@ public class ReferenceComponent extends RendererComponent implements Poolable {
 	@Override
 	public void reset() {
 		group = null;
+	}
+
+	@Override
+	public void act(float delta) {
+		if (group != null && gameLoop.isPlaying()) {
+			group.act(delta);
+		}
 	}
 }
