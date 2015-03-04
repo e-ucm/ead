@@ -74,14 +74,14 @@ public class ReferenceProcessor extends ComponentProcessor<Reference> {
 		return referenceComponent;
 	}
 
-	private void setGroup(Reference reference, ReferenceComponent component,
+	private void set(Reference reference, ReferenceComponent component,
 			ModelEntity entity) {
 		String referenceLoadingPath = reference.getFolder()
 				+ ModelStructure.CONTENTS_FOLDER;
 		assets.setReferencePath(getLibraryPath() + referenceLoadingPath);
 		Group group = loader.toEngineEntity(entity).getGroup();
 		assets.setReferencePath(null);
-		component.setGroup(group);
+		component.set(group, gameLoop);
 	}
 
 	protected String getLibraryPath() {
@@ -103,7 +103,7 @@ public class ReferenceProcessor extends ComponentProcessor<Reference> {
 
 		@Override
 		public void loaded(String fileName, Object asset) {
-			setGroup(reference, component, (ModelEntity) asset);
+			set(reference, component, (ModelEntity) asset);
 		}
 
 		@Override
