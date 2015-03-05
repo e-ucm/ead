@@ -43,6 +43,7 @@ import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
 
+import android.util.Log;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.backends.android.AndroidApplication;
 import com.badlogic.gdx.backends.android.AndroidApplicationConfiguration;
@@ -55,11 +56,26 @@ import es.eucm.mokap.R;
 
 public class EditorActivity extends AndroidApplication {
 
+	private final String SAVED_INSTANCE_STATE_CONSUMED_INTENT = "SAVED_INSTANCE_STATE_CONSUMED_INTENT";
 	private Map<Integer, ActivityResultListener> listeners;
+	private boolean consumedIntent = false;
+	private AndroidPlatform platform;
+
+	@Override
+	protected void onSaveInstanceState(Bundle outState) {
+		super.onSaveInstanceState(outState);
+		outState.putBoolean(SAVED_INSTANCE_STATE_CONSUMED_INTENT,
+				consumedIntent);
+	}
 
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
+
+		if (savedInstanceState != null) {
+			consumedIntent = savedInstanceState
+					.getBoolean(SAVED_INSTANCE_STATE_CONSUMED_INTENT);
+		}
 
 		AndroidApplicationConfiguration config = new AndroidApplicationConfiguration();
 		config.useAccelerometer = false;
@@ -72,24 +88,39 @@ public class EditorActivity extends AndroidApplication {
 		GoogleAnalytics analytics = GoogleAnalytics.getInstance(this);
 		Tracker tracker = analytics.newTracker(R.xml.tracker);
 		analytics.reportActivityStart(this);
-		initialize(
-				new MokapApplicationListener(handleIntent(getIntent(),
-						new AndroidPlatform(getContext(), tracker))), config);
+		platform = new AndroidPlatform(getContext(), tracker);
+		handleIntent();
+		initialize(new MokapApplicationListener(platform), config);
 	}
 
-	private MokapPlatform handleIntent(Intent intent, MokapPlatform platform) {
-
+	private void handleIntent() {
+		if (consumedIntent) {
+			return;
+		}
+		Intent intent = getIntent();
 		if (intent != null) {
-			String action = intent.getAction();
-			if (Intent.ACTION_VIEW.equals(action)) {
-				Uri data = intent.getData();
-				if (data != null) {
-					String path = data.getPath();
-					platform.setApplicationArguments(path);
+			boolean launchedFromHistory = (intent.getFlags() & Intent.FLAG_ACTIVITY_LAUNCHED_FROM_HISTORY) != 0;
+			if (!launchedFromHistory) {
+				String action = intent.getAction();
+				if (Intent.ACTION_VIEW.equals(action)) {
+					Uri data = intent.getData();
+					if (data != null) {
+						String path = data.getPath();
+						platform.setApplicationArguments(path);
+						consumedIntent = true;
+					}
+				} else if (Intent.ACTION_MAIN.equals(action)) {
+					consumedIntent = true;
 				}
 			}
 		}
-		return platform;
+	}
+
+	@Override
+	protected void onNewIntent(Intent intent) {
+		super.onNewIntent(intent);
+		setIntent(intent);
+		consumedIntent = false;
 	}
 
 	public void startActivityForResult(Intent intent, int requestCode,
@@ -116,6 +147,7 @@ public class EditorActivity extends AndroidApplication {
 
 	@Override
 	protected void onResume() {
+		handleIntent();
 		super.onResume();
 		// This is necessary because we are using non-continuous rendering and
 		// sometimes the screen stops rendering after onResume(). Probably a

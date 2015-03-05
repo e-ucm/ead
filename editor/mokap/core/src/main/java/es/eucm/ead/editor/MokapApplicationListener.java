@@ -46,12 +46,18 @@ import com.badlogic.gdx.utils.Timer;
 import com.badlogic.gdx.utils.Timer.Task;
 import es.eucm.ead.editor.control.Controller;
 import es.eucm.ead.editor.control.MokapController;
+import es.eucm.ead.editor.control.actions.editor.ImportProject;
 import es.eucm.ead.editor.control.actions.editor.OpenApplication;
+import es.eucm.ead.editor.control.actions.editor.OpenLastProject;
 import es.eucm.ead.editor.control.actions.editor.Save;
 import es.eucm.ead.editor.model.Model;
 import es.eucm.ead.editor.model.events.LoadEvent;
+import es.eucm.ead.editor.platform.MokapPlatform;
 import es.eucm.ead.editor.platform.Platform;
+import es.eucm.ead.editor.utils.ProjectUtils;
 import es.eucm.ead.editor.view.SkinConstants;
+import es.eucm.ead.editor.view.builders.ViewBuilder;
+import es.eucm.ead.editor.view.builders.home.HomeView;
 
 public class MokapApplicationListener extends EditorApplicationListener {
 
@@ -139,6 +145,22 @@ public class MokapApplicationListener extends EditorApplicationListener {
 			Timer.schedule(saveTask, 20, 20);
 		}
 		super.resume();
+		handleImport();
+	}
+
+	private void handleImport() {
+		MokapPlatform platform = (MokapPlatform) controller.getPlatform();
+		Object[] appArgs = platform.getApplicationArguments();
+		String importProjectPath = (appArgs == null || appArgs.length != 1) ? null
+				: (String) appArgs[0];
+		ViewBuilder currentView = controller.getViews().getCurrentView();
+		Class elseView = currentView == null ? HomeView.class : currentView
+				.getClass();
+		if (importProjectPath != null && !importProjectPath.isEmpty()
+				&& importProjectPath.endsWith(ProjectUtils.ZIP_EXTENSION)) {
+			controller.action(ImportProject.class, elseView,
+					new OpenApplication.ShowErrorToastCallback(controller));
+		}
 	}
 
 	@Override
