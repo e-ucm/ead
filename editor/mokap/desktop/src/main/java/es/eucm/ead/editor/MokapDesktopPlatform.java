@@ -200,7 +200,7 @@ public class MokapDesktopPlatform extends MokapPlatform {
 
 	public void setApplicationArguments(Object... applicationArguments) {
 		super.setApplicationArguments(applicationArguments);
-		if (applicationArguments.length > 0
+		if (applicationArguments != null && applicationArguments.length > 0
 				&& "debug".equals(applicationArguments[0])) {
 			setDebug(true);
 		}

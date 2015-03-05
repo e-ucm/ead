@@ -48,6 +48,7 @@ import es.eucm.ead.editor.model.Model.SelectionListener;
 import es.eucm.ead.editor.model.events.LoadEvent;
 import es.eucm.ead.editor.model.events.SelectionEvent;
 import es.eucm.ead.editor.model.events.SelectionEvent.Type;
+import es.eucm.ead.editor.view.builders.ImportView;
 import es.eucm.ead.editor.view.builders.ViewBuilder;
 import es.eucm.ead.editor.view.builders.home.HomeView;
 import es.eucm.ead.editor.view.builders.project.ProjectView;
@@ -122,7 +123,8 @@ public class MokapViews extends Views implements BackListener {
 						.equals(event.getContextId())) {
 					if (getCurrentView() == null
 							|| getCurrentView().getClass() == HomeView.class
-							|| getCurrentView().getClass() == SceneView.class) {
+							|| getCurrentView().getClass() == SceneView.class
+							|| getCurrentView().getClass() == ImportView.class) {
 						controller.action(ChangeView.class, ProjectView.class);
 					}
 				}

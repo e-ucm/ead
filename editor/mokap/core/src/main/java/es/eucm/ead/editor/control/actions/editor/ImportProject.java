@@ -38,16 +38,15 @@ package es.eucm.ead.editor.control.actions.editor;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.files.FileHandle;
-
 import com.badlogic.gdx.utils.SerializationException;
 import es.eucm.ead.editor.assets.EditorGameAssets;
-import es.eucm.ead.editor.control.Controller;
 import es.eucm.ead.editor.control.LibraryManager;
 import es.eucm.ead.editor.control.actions.EditorAction;
 import es.eucm.ead.editor.control.workers.UnzipFile;
+import es.eucm.ead.editor.platform.MokapPlatform;
 import es.eucm.ead.editor.utils.ProjectUtils;
+import es.eucm.ead.editor.view.builders.ImportView;
 import es.eucm.ead.editor.view.listeners.workers.UnzipFileListener;
-import es.eucm.ead.schema.components.Reference;
 import es.eucm.ead.schema.editor.components.repo.RepoElement;
 import es.eucm.ead.schemax.ModelStructure;
 
@@ -78,8 +77,8 @@ public class ImportProject extends EditorAction {
 		Class elseView = (Class) args[0];
 		OpenLastProject.ErrorCallback callback = args.length == 2 ? (OpenLastProject.ErrorCallback) args[1]
 				: null;
-		String importProjectPath = (String) controller.getPlatform()
-				.getApplicationArguments()[0];
+		MokapPlatform platform = (MokapPlatform) controller.getPlatform();
+		String importProjectPath = (String) platform.getApplicationArguments()[0];
 		EditorGameAssets assets = controller.getEditorGameAssets();
 		FileHandle inputProjectZip = assets.absolute(importProjectPath);
 		if (!inputProjectZip.exists()) {
@@ -91,11 +90,11 @@ public class ImportProject extends EditorAction {
 			return;
 		}
 
+		controller.action(ChangeView.class, ImportView.class);
+
 		FileHandle tempDirectory = FileHandle
 				.tempDirectory("mokapProjectUnzip");
 
-		controller.action(ShowToast.class, controller.getApplicationAssets()
-				.getI18N().m("importing"));
 		controller.action(ExecuteWorker.class, UnzipFile.class,
 				new UnzipProjectListener(tempDirectory, elseView, callback),
 				inputProjectZip, tempDirectory);
@@ -105,6 +104,7 @@ public class ImportProject extends EditorAction {
 
 		private OpenLastProject.ErrorCallback callback;
 		private Class elseView;
+		private FileHandle projectFolder;
 
 		public UnzipProjectListener(FileHandle outputFolder, Class elseView,
 				OpenLastProject.ErrorCallback callback) {
@@ -137,8 +137,8 @@ public class ImportProject extends EditorAction {
 			EditorGameAssets gameAssets = controller.getEditorGameAssets();
 			FileHandle loadingDir = gameAssets.absolute(controller
 					.getPlatform().getDefaultProjectsFolder());
-			final FileHandle projectFolder = ProjectUtils.getNonExistentFile(
-					loadingDir, ProjectUtils.createProjectName(), "");
+			projectFolder = ProjectUtils.getNonExistentFile(loadingDir,
+					ProjectUtils.createProjectName(), "");
 
 			rootProject.copyTo(projectFolder);
 			outputFolder.deleteDirectory();
@@ -190,12 +190,16 @@ public class ImportProject extends EditorAction {
 							.getAbsolutePath());
 				}
 			});
+			MokapPlatform platform = (MokapPlatform) controller.getPlatform();
+			clearApplicationArguments(platform);
 		}
 
 		@Override
 		public void error(Throwable ex) {
 			super.error(ex);
-			controller.action(ChangeView.class, elseView);
+			handleError(callback,
+					OpenLastProject.ErrorCallback.Result.PROJECT_CORRUPTED,
+					elseView, projectFolder.path());
 		}
 
 	}
@@ -203,9 +207,15 @@ public class ImportProject extends EditorAction {
 	private void handleError(OpenLastProject.ErrorCallback callback,
 			OpenLastProject.ErrorCallback.Result result, Class elseView,
 			String projectPath) {
+		MokapPlatform platform = (MokapPlatform) controller.getPlatform();
+		clearApplicationArguments(platform);
 		controller.action(ChangeView.class, elseView);
 		if (callback != null) {
 			callback.error(result, projectPath);
 		}
+	}
+
+	private void clearApplicationArguments(MokapPlatform platform) {
+		platform.setApplicationArguments((Object[]) null);
 	}
 }
