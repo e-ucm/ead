@@ -43,11 +43,13 @@ import com.badlogic.gdx.scenes.scene2d.Group;
 import com.badlogic.gdx.utils.Pool.Poolable;
 import com.badlogic.gdx.utils.Pools;
 import com.badlogic.gdx.utils.reflect.ClassReflection;
+
 import es.eucm.ead.engine.GameLoop;
 import es.eucm.ead.engine.components.ShaderComponent;
 import es.eucm.ead.engine.components.physics.BoundingAreaComponent;
 import es.eucm.ead.engine.components.renderers.RendererComponent;
 import es.eucm.ead.engine.entities.actors.EntityGroup;
+import es.eucm.ead.schema.data.Color;
 import es.eucm.ead.schema.entities.ModelEntity;
 
 /**
@@ -104,10 +106,16 @@ public class EngineEntity extends Entity implements Poolable {
 
 	private void readModelEntity() {
 		if (group != null && modelEntity != null) {
+			group.setName(modelEntity.getName());
 			group.setPosition(modelEntity.getX(), modelEntity.getY());
 			group.setOrigin(modelEntity.getOriginX(), modelEntity.getOriginY());
 			group.setRotation(modelEntity.getRotation());
 			group.setScale(modelEntity.getScaleX(), modelEntity.getScaleY());
+			Color color = modelEntity.getColor();
+			if (color != null) {
+				group.setColor(color.getR(), color.getG(), color.getB(),
+						color.getA());
+			}
 		}
 	}
 

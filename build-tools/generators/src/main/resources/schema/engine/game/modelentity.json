@@ -4,6 +4,10 @@
     "type": "object",
     "description": "Basic unit for interactive elements in eAdventure. An entity contain a set of components defining its behavior and appearance.",
     "properties": {
+        "name": {
+            "type": "string",
+            "description": "A name for the entity. Mainly, for debug purposes."
+        },
         "x": {
             "type": "number",
             "default": 0
@@ -31,6 +35,9 @@
         "scaleY": {
             "type": "number",
             "default": 1
+        },
+        "color": {
+            "$ref": "../data/color.json"
         },
         "components": {
             "type": "array",
