@@ -70,6 +70,8 @@ public class EngineTest {
 
 	protected EntitiesLoader entitiesLoader;
 
+	protected Stage stage;
+
 	@BeforeClass
 	public static void initStatics() {
 		MockApplication.initStatics();
@@ -78,9 +80,15 @@ public class EngineTest {
 	@Before
 	public void setUp() {
 		gameAssets = new GameAssets(new MockFiles(), new MockImageUtils());
-		gameLoop = new GameLoop();
+		gameLoop = new GameLoop() {
+			@Override
+			public void update(float deltaTime) {
+				super.update(deltaTime);
+				stage.draw();
+			}
+		};
 		gameView = new DefaultGameView(gameLoop);
-		Stage stage = new Stage();
+		stage = new Stage();
 		stage.addActor(gameView);
 		accessor = new Accessor();
 		operationsFactory = new OperationsFactory(gameLoop, accessor, gameView);
