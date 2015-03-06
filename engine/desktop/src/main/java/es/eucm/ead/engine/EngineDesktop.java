@@ -79,6 +79,8 @@ public class EngineDesktop {
 	 */
 	private int height;
 
+	private EngineApplicationListener applicationListener;
+
 	/**
 	 * Builds a desktop application using the default size.
 	 * 
@@ -108,6 +110,10 @@ public class EngineDesktop {
 		}
 		this.width = width;
 		this.height = height;
+	}
+
+	public EngineApplicationListener getApplicationListener() {
+		return applicationListener;
 	}
 
 	/**
@@ -143,6 +149,7 @@ public class EngineDesktop {
 			final String gameUri, final boolean internal,
 			final boolean forceExit) {
 		LwjglApplicationConfiguration config = new LwjglApplicationConfiguration();
+		this.applicationListener = engineApplicationListener;
 		config.width = width;
 		config.height = height;
 		config.forceExit = forceExit;
