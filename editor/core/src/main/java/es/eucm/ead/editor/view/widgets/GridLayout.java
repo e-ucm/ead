@@ -37,6 +37,7 @@
 package es.eucm.ead.editor.view.widgets;
 
 import com.badlogic.gdx.scenes.scene2d.Actor;
+import es.eucm.ead.engine.gdx.AbstractWidget;
 
 public class GridLayout extends AbstractWidget {
 

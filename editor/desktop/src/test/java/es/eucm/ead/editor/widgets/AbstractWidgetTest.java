@@ -49,7 +49,7 @@ import com.badlogic.gdx.utils.viewport.ScreenViewport;
 import es.eucm.ead.editor.EditorTest;
 import es.eucm.ead.editor.control.Controller;
 import es.eucm.ead.editor.platform.MockPlatform;
-import es.eucm.ead.editor.view.widgets.AbstractWidget;
+import es.eucm.ead.engine.gdx.AbstractWidget;
 import es.eucm.ead.engine.mock.MockFiles;
 
 public abstract class AbstractWidgetTest extends EditorTest implements

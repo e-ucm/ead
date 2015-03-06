@@ -41,6 +41,7 @@ import com.badlogic.gdx.scenes.scene2d.ui.ImageButton;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.ui.TextField;
 import com.badlogic.gdx.scenes.scene2d.utils.Drawable;
+import es.eucm.ead.engine.gdx.AbstractWidget;
 
 public class FileWidget extends AbstractWidget {
 

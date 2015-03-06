@@ -39,7 +39,7 @@ package es.eucm.ead.editor.widgets;
 import com.badlogic.gdx.backends.lwjgl.LwjglApplication;
 import com.badlogic.gdx.files.FileHandle;
 import es.eucm.ead.editor.control.Controller;
-import es.eucm.ead.editor.view.widgets.AbstractWidget;
+import es.eucm.ead.engine.gdx.AbstractWidget;
 import es.eucm.ead.editor.view.widgets.files.FilesListWidget;
 
 public class FileListTest extends AbstractWidgetTest {

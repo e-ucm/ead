@@ -40,10 +40,10 @@ import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.Group;
 import com.badlogic.gdx.scenes.scene2d.Touchable;
-import com.badlogic.gdx.scenes.scene2d.ui.WidgetGroup;
 import com.badlogic.gdx.scenes.scene2d.utils.Layout;
 import es.eucm.ead.engine.components.ShaderComponent;
 import es.eucm.ead.engine.entities.EngineEntity;
+import es.eucm.ead.engine.gdx.AbstractWidget;
 
 /**
  * Convenient extension of {@link Group} that regenerates the holding entity's
@@ -52,7 +52,7 @@ import es.eucm.ead.engine.entities.EngineEntity;
  * 
  * Created by Javier Torrente on 4/07/14.
  */
-public class EntityGroup extends WidgetGroup {
+public class EntityGroup extends AbstractWidget {
 
 	private ShaderComponent shader;
 

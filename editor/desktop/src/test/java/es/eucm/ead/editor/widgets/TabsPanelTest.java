@@ -41,7 +41,7 @@ import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import es.eucm.ead.editor.control.Controller;
 import es.eucm.ead.editor.view.tabs.TabsPanel;
-import es.eucm.ead.editor.view.widgets.AbstractWidget;
+import es.eucm.ead.engine.gdx.AbstractWidget;
 import es.eucm.ead.editor.view.widgets.layouts.LinearLayout;
 
 /**

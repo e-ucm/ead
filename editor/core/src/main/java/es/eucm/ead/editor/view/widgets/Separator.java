@@ -39,6 +39,7 @@ package es.eucm.ead.editor.view.widgets;
 import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.utils.Drawable;
+import es.eucm.ead.engine.gdx.AbstractWidget;
 
 /**
  * A separator with a background

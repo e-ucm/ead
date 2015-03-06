@@ -55,7 +55,7 @@ import es.eucm.ead.editor.model.Q;
 import es.eucm.ead.editor.model.events.FieldEvent;
 import es.eucm.ead.editor.model.events.ListEvent;
 import es.eucm.ead.editor.model.events.SelectionEvent;
-import es.eucm.ead.editor.view.widgets.AbstractWidget;
+import es.eucm.ead.engine.gdx.AbstractWidget;
 import es.eucm.ead.editor.view.widgets.groupeditor.GroupEditor;
 import es.eucm.ead.editor.view.widgets.groupeditor.GroupEditor.GroupEvent;
 import es.eucm.ead.editor.view.widgets.groupeditor.GroupEditor.GroupListener;

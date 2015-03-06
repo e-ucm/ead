@@ -57,7 +57,7 @@ import es.eucm.ead.editor.view.ModelView;
 import es.eucm.ead.editor.view.builders.Builder;
 import es.eucm.ead.editor.view.builders.DialogBuilder;
 import es.eucm.ead.editor.view.builders.ViewBuilder;
-import es.eucm.ead.editor.view.widgets.AbstractWidget;
+import es.eucm.ead.engine.gdx.AbstractWidget;
 import es.eucm.ead.editor.view.widgets.Dialog;
 
 import java.util.HashMap;

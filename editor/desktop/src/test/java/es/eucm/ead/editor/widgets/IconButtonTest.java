@@ -40,7 +40,7 @@ import com.badlogic.gdx.backends.lwjgl.LwjglApplication;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 
 import es.eucm.ead.editor.control.Controller;
-import es.eucm.ead.editor.view.widgets.AbstractWidget;
+import es.eucm.ead.engine.gdx.AbstractWidget;
 import es.eucm.ead.editor.view.widgets.IconButton;
 import es.eucm.ead.editor.view.widgets.Separator;
 import es.eucm.ead.editor.view.widgets.layouts.LinearLayout;
