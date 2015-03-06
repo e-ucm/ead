@@ -395,7 +395,7 @@ public class AddEntityTest extends EngineTest implements EntityListener {
 		assertEquals("There should be 2 entities yet", 2, count);
 		assertEquals("The entity should not be moving!", 50, entityAdded
 				.getGroup().getX(), 0.001F);
-		assertEquals("The entity should almost be there", 49.5F, entityAdded
+		assertEquals("The entity should almost be there", 50, entityAdded
 				.getGroup().getY(), 0.001F);
 		gameLoop.update(0.01F);
 		gameLoop.update(0.01F);
