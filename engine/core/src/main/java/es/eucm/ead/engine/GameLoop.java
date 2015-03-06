@@ -118,6 +118,13 @@ public class GameLoop extends Engine {
 	}
 
 	/**
+	 * Returns component to pool
+	 */
+	public void freeComponent(Component component) {
+		Pools.free(component);
+	}
+
+	/**
 	 * Gets the component of the given type ({@code componentType}) from the
 	 * given {@code entity}. If the component does not exist in the entity, it
 	 * is created and added to the entity first, so this method never returns
