@@ -36,9 +36,6 @@
  */
 package es.eucm.ead.editor.model;
 
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
-
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.Texture;
@@ -46,7 +43,6 @@ import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.reflect.ClassReflection;
 import com.badlogic.gdx.utils.reflect.ReflectionException;
-
 import es.eucm.ead.editor.control.Controller;
 import es.eucm.ead.engine.I18N;
 import es.eucm.ead.engine.assets.Assets.AssetLoadedCallback;
@@ -71,6 +67,9 @@ import es.eucm.ead.schema.editor.data.Cell;
 import es.eucm.ead.schema.entities.ModelEntity;
 import es.eucm.ead.schema.renderers.Image;
 import es.eucm.ead.schemax.ModelStructure;
+
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 /**
  * A class with statics methods to query parts of the model
@@ -188,18 +187,6 @@ public class Q {
 	 */
 	public static boolean hasImage(ModelEntity element) {
 		return hasComponent(element, Image.class);
-	}
-
-	/**
-	 * @return the entity associated to the given actor. Returns {@code null} if
-	 *         no entity associated is to the actor
-	 */
-	public static EngineEntity getActorEntity(Actor actor) {
-		Object o = actor.getUserObject();
-		if (o instanceof EngineEntity) {
-			return ((EngineEntity) o);
-		}
-		return null;
 	}
 
 	/**

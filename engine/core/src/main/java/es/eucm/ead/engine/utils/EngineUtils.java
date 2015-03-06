@@ -43,7 +43,9 @@ import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.Group;
 import com.badlogic.gdx.scenes.scene2d.utils.Layout;
 import com.badlogic.gdx.utils.Array;
+
 import es.eucm.ead.engine.assets.Assets;
+import es.eucm.ead.engine.entities.EngineEntity;
 import es.eucm.ead.engine.variables.VariablesManager;
 import es.eucm.ead.schema.data.Parameter;
 import es.eucm.ead.schema.data.Parameters;
@@ -363,5 +365,17 @@ public class EngineUtils {
 		actor.localToAscendantCoordinates(newGroup, n);
 		actor.setRotation(actor.getRotation() + actor.getParent().getRotation());
 		applyTransformation(actor, o, t, n);
+	}
+
+	/**
+	 * @return the nearest entity associated to the given actor
+	 */
+	public static EngineEntity getActorEntity(Actor actor) {
+		if (actor == null) {
+			return null;
+		}
+		Object o = actor.getUserObject();
+		return o instanceof EngineEntity ? (EngineEntity) o
+				: getActorEntity(actor.getParent());
 	}
 }

@@ -53,6 +53,7 @@ import es.eucm.ead.editor.control.actions.model.scene.UngroupHierarchyToEntities
 import es.eucm.ead.editor.model.Q;
 import es.eucm.ead.editor.view.builders.scene.groupeditor.GroupEditor.GroupEvent;
 import es.eucm.ead.editor.view.builders.scene.groupeditor.GroupEditor.GroupListener;
+import es.eucm.ead.engine.utils.EngineUtils;
 import es.eucm.ead.schema.entities.ModelEntity;
 
 /**
@@ -97,7 +98,7 @@ public class SceneListener extends GroupListener {
 		for (Actor actor : deleted) {
 			tmpModelEntities.add(Q.getModelEntity(actor));
 			controller.getEngine().getGameLoop()
-					.removeEntity(Q.getActorEntity(actor));
+					.removeEntity(EngineUtils.getActorEntity(actor));
 		}
 		controller.action(RemoveChildrenFromEntity.class,
 				Q.getModelEntity(parent), tmpModelEntities);
