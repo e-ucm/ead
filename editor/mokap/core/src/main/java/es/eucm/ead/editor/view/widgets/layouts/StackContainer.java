@@ -37,7 +37,7 @@
 package es.eucm.ead.editor.view.widgets.layouts;
 
 import com.badlogic.gdx.scenes.scene2d.Actor;
-import es.eucm.ead.editor.view.widgets.AbstractWidget;
+import es.eucm.ead.engine.gdx.AbstractWidget;
 
 /**
  * A widget that stack things one above the others

@@ -36,7 +36,7 @@
  */
 package es.eucm.ead.editor.view.widgets.layouts;
 
-import es.eucm.ead.editor.view.widgets.AbstractWidget;
+import es.eucm.ead.engine.gdx.AbstractWidget;
 
 public class ResizableWidget extends AbstractWidget {
 

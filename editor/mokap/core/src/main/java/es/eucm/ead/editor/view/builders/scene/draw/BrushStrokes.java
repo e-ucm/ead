@@ -55,7 +55,7 @@ import com.badlogic.gdx.utils.Pools;
 import es.eucm.ead.editor.assets.EditorGameAssets;
 import es.eucm.ead.editor.control.Controller;
 import es.eucm.ead.editor.view.builders.scene.SceneEditor;
-import es.eucm.ead.editor.view.widgets.AbstractWidget;
+import es.eucm.ead.engine.gdx.AbstractWidget;
 import es.eucm.ead.engine.I18N;
 import es.eucm.ead.engine.entities.EngineEntity;
 import es.eucm.ead.engine.systems.effects.transitions.Region;

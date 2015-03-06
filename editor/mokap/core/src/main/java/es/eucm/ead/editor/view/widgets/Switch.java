@@ -48,6 +48,7 @@ import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener.ChangeEvent;
 import com.badlogic.gdx.scenes.scene2d.utils.Drawable;
 import com.badlogic.gdx.utils.Pools;
 import es.eucm.ead.editor.utils.Actions2;
+import es.eucm.ead.engine.gdx.AbstractWidget;
 
 /**
  * This widget imitates a switch with check and unchecked states. Each state can

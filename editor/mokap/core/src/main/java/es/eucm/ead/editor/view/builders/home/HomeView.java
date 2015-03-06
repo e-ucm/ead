@@ -49,7 +49,7 @@ import es.eucm.ead.editor.control.actions.editor.ShowInfoPanel.TypePanel;
 import es.eucm.ead.editor.control.workers.SearchRepo;
 import es.eucm.ead.editor.view.SkinConstants;
 import es.eucm.ead.editor.view.builders.ViewBuilder;
-import es.eucm.ead.editor.view.widgets.AbstractWidget;
+import es.eucm.ead.engine.gdx.AbstractWidget;
 import es.eucm.ead.editor.view.widgets.galleries.*;
 import es.eucm.ead.editor.view.widgets.galleries.gallerieswithcategories.MyLibraryGallery;
 import es.eucm.ead.editor.view.widgets.galleries.basegalleries.ThumbnailsGallery;

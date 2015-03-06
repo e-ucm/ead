@@ -44,7 +44,7 @@ import com.badlogic.gdx.utils.Pools;
 import com.badlogic.gdx.utils.Predicate;
 
 import es.eucm.ead.editor.view.builders.scene.groupeditor.GroupEditor.GroupEditorStyle;
-import es.eucm.ead.editor.view.widgets.AbstractWidget;
+import es.eucm.ead.engine.gdx.AbstractWidget;
 
 public class SelectionGroup extends AbstractWidget {
 

@@ -43,7 +43,7 @@ import com.badlogic.gdx.scenes.scene2d.ui.*;
 import com.badlogic.gdx.utils.Array;
 import es.eucm.ead.editor.editorui.UITest;
 import es.eucm.ead.editor.view.builders.scene.templates.TemplateEditor;
-import es.eucm.ead.editor.view.widgets.AbstractWidget;
+import es.eucm.ead.engine.gdx.AbstractWidget;
 import es.eucm.ead.engine.I18N;
 import es.eucm.ead.schema.editor.components.templates.Attribute;
 import es.eucm.ead.schema.editor.components.templates.TemplateAttributes;

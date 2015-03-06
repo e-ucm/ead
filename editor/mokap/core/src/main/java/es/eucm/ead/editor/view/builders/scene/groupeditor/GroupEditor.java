@@ -57,7 +57,7 @@ import com.badlogic.gdx.utils.Scaling;
 
 import es.eucm.ead.editor.utils.Actions2;
 import es.eucm.ead.editor.view.builders.scene.groupeditor.GroupEditor.GroupEvent.Type;
-import es.eucm.ead.editor.view.widgets.AbstractWidget;
+import es.eucm.ead.engine.gdx.AbstractWidget;
 import es.eucm.ead.engine.utils.EngineUtils;
 
 public class GroupEditor extends AbstractWidget {
