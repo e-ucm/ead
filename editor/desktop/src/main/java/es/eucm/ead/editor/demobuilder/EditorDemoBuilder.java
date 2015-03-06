@@ -41,6 +41,7 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.graphics.Pixmap;
 import com.badlogic.gdx.math.Vector2;
+import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.GdxRuntimeException;
 import com.vividsolutions.jts.geom.Geometry;
@@ -239,7 +240,7 @@ public abstract class EditorDemoBuilder extends DemoBuilder {
 			build();
 		}
 		save();
-		EngineDesktop engine = new EngineDesktop((int) gameWidth,
+		final EngineDesktop engine = new EngineDesktop((int) gameWidth,
 				(int) gameHeight) {
 			@Override
 			protected void dispose() {
@@ -248,6 +249,15 @@ public abstract class EditorDemoBuilder extends DemoBuilder {
 			}
 		};
 		engine.run(rootFolder.file().getAbsolutePath(), false, false);
+		if (debug()) {
+			Gdx.app.postRunnable(new Runnable() {
+				@Override
+				public void run() {
+					Stage stage = engine.getApplicationListener().getStage();
+					stage.setDebugAll(true);
+				}
+			});
+		}
 		Gdx.app.setLogLevel(Application.LOG_DEBUG);
 	}
 
@@ -381,6 +391,10 @@ public abstract class EditorDemoBuilder extends DemoBuilder {
 	 */
 	public String getName() {
 		return root;
+	}
+
+	public boolean debug() {
+		return false;
 	}
 
 	// //////////////////////////////////////////////////////////
