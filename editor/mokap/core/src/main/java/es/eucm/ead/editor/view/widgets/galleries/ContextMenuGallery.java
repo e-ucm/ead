@@ -36,6 +36,7 @@
  */
 package es.eucm.ead.editor.view.widgets.galleries;
 
+import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.ui.Button;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
@@ -57,6 +58,8 @@ import es.eucm.ead.engine.utils.EngineUtils;
  * thumbnails
  */
 public abstract class ContextMenuGallery extends ThumbnailsGallery {
+
+	private static final Vector2 VECTOR = new Vector2();
 
 	protected Controller controller;
 
@@ -98,6 +101,7 @@ public abstract class ContextMenuGallery extends ThumbnailsGallery {
 	public void setContextMenu(Button... buttons) {
 		this.contextMenu = WidgetBuilder.iconLabelContextPanel(buttons);
 		addListener(new LongPressListener() {
+
 			@Override
 			public void longPress(float x, float y) {
 				// If the view is still visible
@@ -108,7 +112,10 @@ public abstract class ContextMenuGallery extends ThumbnailsGallery {
 					if (actor instanceof Cell) {
 						Tile tile = (Tile) ((Cell) actor).getActor();
 						tileLongPressed(tile.getName());
-						controller.action(ShowModal.class, contextMenu, x, y);
+						VECTOR.set(x, y);
+						localToStageCoordinates(VECTOR);
+						controller.action(ShowModal.class, contextMenu,
+								VECTOR.x, VECTOR.y);
 					}
 				}
 			}
