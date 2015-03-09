@@ -39,7 +39,6 @@ package es.eucm.ead.editor.view.builders;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
-
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import es.eucm.ead.editor.assets.ApplicationAssets;
 import es.eucm.ead.editor.control.Controller;
@@ -49,7 +48,10 @@ import es.eucm.ead.editor.control.actions.model.AddLibraryReference;
 import es.eucm.ead.editor.view.SkinConstants;
 import es.eucm.ead.editor.view.builders.scene.SceneView;
 import es.eucm.ead.editor.view.widgets.RepoTile;
-import es.eucm.ead.editor.view.widgets.galleries.*;
+import es.eucm.ead.editor.view.widgets.galleries.CategoryLibrary;
+import es.eucm.ead.editor.view.widgets.galleries.CategoryRepository;
+import es.eucm.ead.editor.view.widgets.galleries.ProjectResourcesGallery;
+import es.eucm.ead.editor.view.widgets.galleries.TabsGallery;
 import es.eucm.ead.engine.I18N;
 import es.eucm.ead.schema.editor.components.repo.RepoCategories;
 
@@ -116,7 +118,7 @@ public class ResourcesView implements ViewBuilder, BackListener {
 		};
 		repoGallery.changeCategory(RepoCategories.ELEMENTS.toString());
 
-		projectResources = new ProjectResourcesGallery(3.15f, 4, controller);
+		projectResources = new ProjectResourcesGallery(2.25f, 3, controller);
 
 		tabsGallery.setTabs(new String[] { i18N.m("community").toUpperCase(),
 				i18N.m("my.library").toUpperCase(),
