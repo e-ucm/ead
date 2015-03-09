@@ -110,6 +110,7 @@ public class TabsGallery extends AbstractWidget {
 	public void layout() {
 		super.layout();
 		toolbar.pack();
+		toolbar.setY(Math.max(toolbar.getY(), getHeight() - toolbar.getHeight()));
 		toolbar.setSize(getWidth(), toolbar.getHeight());
 		toolbar.toFront();
 		currentGallery.setSize(getWidth(), getHeight() - toolbar.getHeight()
