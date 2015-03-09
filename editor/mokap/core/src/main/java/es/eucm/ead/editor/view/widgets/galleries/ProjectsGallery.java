@@ -38,7 +38,9 @@ package es.eucm.ead.editor.view.widgets.galleries;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.scenes.scene2d.Actor;
+import com.badlogic.gdx.scenes.scene2d.actions.Actions;
 import com.badlogic.gdx.scenes.scene2d.ui.Button;
+import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.utils.Array;
 import es.eucm.ead.editor.control.Controller;
 import es.eucm.ead.editor.control.Selection;
@@ -77,6 +79,8 @@ public class ProjectsGallery extends ContextMenuGallery implements
 
 	private final Array<String> projectNames = new Array<String>();
 
+	private Label noProjects;
+
 	public ProjectsGallery(float rows, int columns, Controller control) {
 		super(rows, columns, control.getApplicationAssets(), control,
 				SkinConstants.IC_ADD_MOKAP);
@@ -104,7 +108,13 @@ public class ProjectsGallery extends ContextMenuGallery implements
 										.m("project.deleted"), time },
 						new Object[] { time } });
 
+		Button action = getActionButton();
+		action.setTransform(true);
+		action.setOrigin(action.getWidth() * 0.5f, action.getHeight() * 0.5f);
+
 		setContextMenu(edit, clone, delete);
+
+		noProjects = new Label(i18N.m("no.mokaps"), skin);
 	}
 
 	@Override
@@ -169,10 +179,12 @@ public class ProjectsGallery extends ContextMenuGallery implements
 	@Override
 	public void result(Object... results) {
 		addTile((String) results[0], (String) results[1], (String) results[2]);
+		animateActionButton(false);
 	}
 
 	@Override
 	public void done() {
+		animateActionButton(true);
 	}
 
 	@Override
@@ -188,6 +200,7 @@ public class ProjectsGallery extends ContextMenuGallery implements
 	@Override
 	public void done(BackgroundExecutor backgroundExecutor, Object[] result) {
 		result(result);
+
 	}
 
 	private void readResource() {
@@ -268,9 +281,11 @@ public class ProjectsGallery extends ContextMenuGallery implements
 				switch (event.getType()) {
 				case ADDED:
 					addProject(event.getId());
+					animateActionButton(false);
 					break;
 				case REMOVED:
 					removeProject(event.getId());
+					animateActionButton(true);
 					break;
 				}
 			}
@@ -289,6 +304,27 @@ public class ProjectsGallery extends ContextMenuGallery implements
 			if (event.getType() == Type.FOCUSED) {
 				readResource();
 			}
+		}
+	}
+
+	private void animateActionButton(boolean animate) {
+		getActionButton().clearActions();
+		getActionButton().setScale(1f);
+		getActionButton().setRotation(0);
+		if (animate && gallery.getGrid().getChildren().size == 0) {
+			getActionButton().addAction(
+					Actions.forever(Actions.parallel(Actions.sequence(
+							Actions.scaleTo(1.5f, 1.5f, 0.6f),
+							Actions.scaleTo(1f, 1f, 0.6f)), Actions.sequence(
+							Actions.rotateBy(45f, 0.3f),
+							Actions.rotateBy(-90f, 0.6f),
+							Actions.rotateBy(45f, 0.3f)), Actions.delay(3f))));
+			noProjects.setPosition(Math.round(getWidth() * 0.5f
+					- noProjects.getWidth() * 0.5f), getHeight()
+					- WidgetBuilder.dpToPixels(48));
+			addActor(noProjects);
+		} else {
+			noProjects.remove();
 		}
 	}
 }

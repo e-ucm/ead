@@ -37,11 +37,7 @@
 package es.eucm.ead.editor.view.builders.project;
 
 import com.badlogic.gdx.scenes.scene2d.Actor;
-import com.badlogic.gdx.scenes.scene2d.ui.Cell;
-import com.badlogic.gdx.scenes.scene2d.ui.Container;
-import com.badlogic.gdx.scenes.scene2d.ui.Image;
-import com.badlogic.gdx.scenes.scene2d.ui.Skin;
-import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
+import com.badlogic.gdx.scenes.scene2d.ui.*;
 import com.badlogic.gdx.scenes.scene2d.utils.Align;
 import es.eucm.ead.editor.control.Controller;
 import es.eucm.ead.editor.control.MokapController.BackListener;
@@ -80,7 +76,7 @@ public class ProjectView implements ViewBuilder, BackListener, FieldListener {
 		view = new LinearLayout(false);
 		view.background(skin.getDrawable(SkinConstants.DRAWABLE_GRAY_100));
 		view.add(buildToolbar(skin)).expandX();
-		view.add(new ProjectScenesGallery(1.75f, 3, controller))
+		view.add(new ProjectScenesGallery(2.25f, 3, controller))
 				.expand(true, true).top();
 	}
 

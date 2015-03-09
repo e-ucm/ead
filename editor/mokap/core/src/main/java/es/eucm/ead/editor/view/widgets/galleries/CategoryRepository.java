@@ -39,18 +39,27 @@ package es.eucm.ead.editor.view.widgets.galleries;
 import com.badlogic.gdx.graphics.Pixmap;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.scenes.scene2d.Actor;
+import com.badlogic.gdx.scenes.scene2d.InputEvent;
+import com.badlogic.gdx.scenes.scene2d.Touchable;
+import com.badlogic.gdx.scenes.scene2d.actions.Actions;
+import com.badlogic.gdx.scenes.scene2d.ui.Button;
 import com.badlogic.gdx.scenes.scene2d.ui.Image;
+import com.badlogic.gdx.scenes.scene2d.ui.Label;
+import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import es.eucm.ead.editor.control.Controller;
 import es.eucm.ead.editor.control.actions.editor.ExecuteWorker;
 import es.eucm.ead.editor.control.actions.editor.Play;
 import es.eucm.ead.editor.control.workers.SearchRepo;
 import es.eucm.ead.editor.control.workers.Worker;
+import es.eucm.ead.editor.platform.MokapPlatform;
+import es.eucm.ead.editor.view.SkinConstants;
 import es.eucm.ead.editor.view.drawables.TextureDrawable;
 import es.eucm.ead.editor.view.widgets.RepoTile;
 import es.eucm.ead.editor.view.widgets.ScrollPane;
 import es.eucm.ead.editor.view.widgets.Tile;
 import es.eucm.ead.editor.view.widgets.WidgetBuilder;
 import es.eucm.ead.editor.view.widgets.layouts.Gallery.Cell;
+import es.eucm.ead.editor.view.widgets.layouts.LinearLayout;
 import es.eucm.ead.engine.gdx.URLTextureLoader;
 import es.eucm.ead.schema.editor.components.repo.RepoCategories;
 import es.eucm.ead.schema.editor.components.repo.RepoElement;
@@ -60,11 +69,15 @@ import es.eucm.ead.schemax.ModelStructure;
 public class CategoryRepository extends CategoryLibrary implements
 		Worker.WorkerListener {
 
+	private static final float TOP_PAD = WidgetBuilder.dpToPixels(32);
+
 	private String search;
 
 	protected SearchResponse currentResponse;
 
 	private boolean canSearch;
+
+	private LinearLayout tryReconnect;
 
 	public CategoryRepository(float rows, int columns, Controller controller) {
 		this(rows, columns, "all", controller);
@@ -85,16 +98,53 @@ public class CategoryRepository extends CategoryLibrary implements
 				}
 			}
 		});
+
+		tryReconnect = new LinearLayout(false);
+		tryReconnect.clear();
+		tryReconnect.add(new Label(i18N.m("no.connection"), skin)).centerX()
+				.marginTop(TOP_PAD);
+
+		Button reconnect = new WidgetBuilder()
+				.circleButton(SkinConstants.IC_REFRESH);
+		reconnect.setTransform(true);
+		reconnect.setOrigin(reconnect.getWidth() * 0.5f,
+				reconnect.getHeight() * 0.5f);
+		reconnect.addListener(new ClickListener() {
+			@Override
+			public void clicked(InputEvent event, float x, float y) {
+				super.clicked(event, x, y);
+				Object search = tryReconnect.getUserObject();
+				loadContents(search == null ? "" : search.toString());
+				event.getListenerActor().addAction(
+						Actions.sequence(Actions.touchable(Touchable.disabled),
+								Actions.rotateBy(-360, 2f),
+								Actions.touchable(Touchable.enabled)));
+			}
+		});
+		tryReconnect.add(reconnect).centerX().marginTop(TOP_PAD);
+		tryReconnect.addSpace();
+	}
+
+	@Override
+	public void layout() {
+		super.layout();
+		tryReconnect.setBounds(0, 0, getWidth(), getHeight());
 	}
 
 	@Override
 	public void loadContents(String search) {
 		clear();
 		this.search = search;
-		this.canSearch = false;
-		controller.action(ExecuteWorker.class, SearchRepo.class, this, search,
-				gallery.getPreferredCellWidth(),
-				gallery.getPreferredCellHeight(), null, category);
+		if (((MokapPlatform) controller.getPlatform()).isConnected()) {
+			tryReconnect.remove();
+			this.canSearch = false;
+			controller.action(ExecuteWorker.class, SearchRepo.class, this,
+					search, gallery.getPreferredCellWidth(),
+					gallery.getPreferredCellHeight(), null, category);
+		} else {
+			tryReconnect.setUserObject(search);
+			addActor(tryReconnect);
+		}
 	}
 
 	public void nextPage() {
