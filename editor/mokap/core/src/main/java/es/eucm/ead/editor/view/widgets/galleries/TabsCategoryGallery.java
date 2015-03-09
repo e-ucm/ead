@@ -68,6 +68,7 @@ public class TabsCategoryGallery extends TabsGallery {
 			}
 		});
 
+		searchWidget.setVisible(currentGallery.isSearchEnabled());
 		addActor(currentGallery);
 		loadContents();
 	}
