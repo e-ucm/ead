@@ -72,6 +72,7 @@ my.library = My library
 my.mokaps = My mokaps
 new = New
 no.connection = No connection
+no.mokaps = You don't have any mokap
 none = None
 normal = Normal
 not.found = Not found

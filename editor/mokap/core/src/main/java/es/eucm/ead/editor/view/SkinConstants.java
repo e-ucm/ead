@@ -198,6 +198,8 @@ public interface SkinConstants {
 	public static final String IC_WHITE_MOKAP = "ic_white_mokap";
 	public static final String IC_IMAGE = "ic_image";
 
+	public static final String IC_REFRESH = "ic_refresh";
+
 	// Categories color
 	public static final Color COLOR_MOKAPS = Color.DARK_GRAY;
 	public static final Color COLOR_IMAGES = Color.MAROON;
