@@ -36,6 +36,7 @@
  */
 package es.eucm.ead.editor.view.builders.scene;
 
+import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.math.Interpolation;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
@@ -59,6 +60,7 @@ import es.eucm.ead.editor.model.Model.SelectionListener;
 import es.eucm.ead.editor.model.Q;
 import es.eucm.ead.editor.model.events.SelectionEvent;
 import es.eucm.ead.editor.platform.Platform.FileChooserListener;
+import es.eucm.ead.editor.utils.ProjectUtils;
 import es.eucm.ead.editor.view.ModelView;
 import es.eucm.ead.editor.view.SkinConstants;
 import es.eucm.ead.editor.view.builders.ResourcesView;
@@ -66,13 +68,14 @@ import es.eucm.ead.editor.view.builders.scene.components.InteractionContext;
 import es.eucm.ead.editor.view.builders.scene.context.SceneElementContext;
 import es.eucm.ead.editor.view.builders.scene.draw.BrushStrokes;
 import es.eucm.ead.editor.view.builders.scene.play.TestGameView;
-import es.eucm.ead.engine.gdx.AbstractWidget;
 import es.eucm.ead.editor.view.widgets.CirclesMenu;
 import es.eucm.ead.editor.view.widgets.MultiWidget;
 import es.eucm.ead.editor.view.widgets.WidgetBuilder;
 import es.eucm.ead.editor.view.widgets.baseview.BaseView;
 import es.eucm.ead.editor.view.widgets.baseview.Navigation;
 import es.eucm.ead.engine.EntitiesLoader;
+import es.eucm.ead.engine.I18N;
+import es.eucm.ead.engine.gdx.AbstractWidget;
 import es.eucm.ead.schema.editor.components.GameData;
 import es.eucm.ead.schema.entities.ModelEntity;
 import es.eucm.ead.schemax.Layer;
@@ -112,9 +115,12 @@ public class SceneEditor extends BaseView implements ModelView,
 
 	private Button interactiveButton;
 
+	private I18N i18N;
+
 	public SceneEditor(Controller controller) {
 		super(controller.getApplicationAssets().getSkin());
 		this.controller = controller;
+		this.i18N = controller.getApplicationAssets().getI18N();
 		this.selection = controller.getModel().getSelection();
 		this.entitiesLoader = controller.getEngine().getEntitiesLoader();
 
@@ -384,8 +390,14 @@ public class SceneEditor extends BaseView implements ModelView,
 
 	@Override
 	public void fileChosen(String path, Result result) {
-		if (path != null && !path.trim().isEmpty()) {
+		if (path == null || path.trim().isEmpty()) {
+			return;
+		}
+		if (ProjectUtils.isSupportedImage(controller.getEditorGameAssets()
+				.absolute(path))) {
 			addElement(path);
+		} else {
+			controller.action(ShowToast.class, i18N.m("file.not.image"));
 		}
 	}
 
