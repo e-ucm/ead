@@ -79,7 +79,7 @@ public class LabelTextEditor extends TextEditor implements
 		top.addListener(new ClickListener() {
 			@Override
 			public void clicked(InputEvent event, float x, float y) {
-				((Platform) controller.getPlatform()).getMultilineTextInput(
+				controller.getPlatform().getMultilineTextInput(
 						LabelTextEditor.this, i18n.m("toolbar.text.input"),
 						labelActor.getText().toString(), i18n);
 			}

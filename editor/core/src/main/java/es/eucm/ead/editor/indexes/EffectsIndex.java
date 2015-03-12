@@ -68,8 +68,8 @@ public class EffectsIndex extends ModelIndex {
 		for (Term t : terms) {
 			if (!ClassReflection.isAssignableFrom(ControlStructure.class,
 					(Class) t.getData())
-					&& !(((Class) t.getData()) == TrackEffect.class)
-					&& !(((Class) t.getData()) == AnimationEffect.class)) {
+					&& !(t.getData() == TrackEffect.class)
+					&& !(t.getData() == AnimationEffect.class)) {
 				if (ClassReflection.isAssignableFrom(AnimationEffect.class,
 						(Class) t.getData())) {
 					animationEffects.add(t);

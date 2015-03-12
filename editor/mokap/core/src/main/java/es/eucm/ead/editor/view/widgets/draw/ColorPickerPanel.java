@@ -80,7 +80,7 @@ public class ColorPickerPanel extends Table {
 			colorClicked.color = color;
 			colorPicker.fire(colorClicked);
 			Pools.free(colorClicked);
-		};
+		}
 	};
 
 	private Skin skin;
@@ -142,7 +142,7 @@ public class ColorPickerPanel extends Table {
 				public void setColor(Color color) {
 					super.setColor(color);
 					getIcon().setColor(color);
-				};
+				}
 			};
 			image.setUserObject(this);
 

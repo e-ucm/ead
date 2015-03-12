@@ -104,7 +104,7 @@ public class SceneList extends Table {
 			@Override
 			public void nameChanged(String name) {
 				((CheckBox) buttonGroup.getChecked()).setText(name);
-			};
+			}
 		};
 
 		controller.getModel().addSelectionListener(new SelectionListener() {

@@ -77,7 +77,7 @@ public class ShowInfoPanel extends EditorAction {
 	ClickListener skipListener;
 
 	public static enum TypePanel {
-		ACCURATE_SELECTION, COMPOSE, ZONES, INTRODUCTION, MULTIPLE_SELECTION, PLAY;
+		ACCURATE_SELECTION, COMPOSE, ZONES, INTRODUCTION, MULTIPLE_SELECTION, PLAY
 	}
 
 	public ShowInfoPanel() {

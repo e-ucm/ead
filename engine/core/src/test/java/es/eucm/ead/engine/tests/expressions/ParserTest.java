@@ -149,7 +149,7 @@ public class ParserTest extends EngineTest {
 	public void testTypes() {
 
 		// basic types, good
-		evalOk((Integer) 1, "i1");
+		evalOk(1, "i1");
 		evalOk(-1.24f, "f-1.24");
 		evalOk(false, "bfalse");
 		evalOk("hi", "s\"hi\"");
@@ -216,9 +216,9 @@ public class ParserTest extends EngineTest {
 
 		// divide-by-zero, square-root-of-negative
 		evalErr("(/ i1 i0)");
-		evalOk((Integer) 0, "(/ i0 i1)");
+		evalOk(0, "(/ i0 i1)");
 		evalErr("(sqrt i-1)");
-		evalOk((Integer) 2, "(sqrt i4)");
+		evalOk(2, "(sqrt i4)");
 		evalOk((float) Math.sqrt(10f), "(sqrt f10)");
 
 		// semi-random tests for dyadic operators

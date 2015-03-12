@@ -80,7 +80,7 @@ public class SlideColorPicker extends AbstractWidget {
 		public boolean touchDown(InputEvent event, float x, float y,
 				int pointer, int button) {
 			return true;
-		};
+		}
 
 		public void touchDragged(InputEvent event, float x, float y, int pointer) {
 			if (pointer == 0) {
@@ -100,7 +100,7 @@ public class SlideColorPicker extends AbstractWidget {
 			picker.updateColor();
 			picker.updateAllTexturesExcept(slider);
 			picker.fireColorChanged(false);
-		};
+		}
 	};
 
 	private final float[] tempValues = new float[3];

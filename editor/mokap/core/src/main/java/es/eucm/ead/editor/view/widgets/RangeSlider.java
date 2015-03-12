@@ -349,7 +349,7 @@ public class RangeSlider extends AbstractWidget {
 
 		return false;
 
-	};
+	}
 
 	/**
 	 * Return the value of the first knob

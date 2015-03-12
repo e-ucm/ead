@@ -178,7 +178,7 @@ public class ProjectsGallery extends ContextMenuGallery implements
 
 	@Override
 	public void result(Object... results) {
-		addTile((String) results[0], (String) results[1], (String) results[2]);
+		addTile(results[0], (String) results[1], (String) results[2]);
 		animateActionButton(false);
 	}
 

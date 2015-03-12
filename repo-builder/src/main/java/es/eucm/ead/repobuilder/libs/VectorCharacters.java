@@ -339,7 +339,6 @@ public class VectorCharacters extends RepoLibraryBuilder {
 				thumbnail, null).tagAnimatedCharacter()
 				.category(RepoCategories.ELEMENTS)
 				.category(RepoCategories.ELEMENTS_CHARACTERS);
-		;
 		authorName(authorName);
 		authorUrl(authorUrl);
 		license(DefaultLicenses.License.LINK_AUTHOR.toString());
