@@ -130,8 +130,8 @@ public class AndroidPlatform extends MokapPlatform {
 	@Override
 	public void askForFile(Controller controller, FileChooserListener listener) {
 		String pathColumn = MediaStore.Images.Media.DATA;
-		Intent intent = new Intent(Intent.ACTION_PICK,
-				android.provider.MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
+		Intent intent = new Intent(android.content.Intent.ACTION_GET_CONTENT);
+		intent.setType("image/*");
 		selectFile(controller, listener, pathColumn, intent);
 	}
 
