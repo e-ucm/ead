@@ -59,7 +59,7 @@ public class URLTextureLoaderTest {
 
 		assertEquals(temp.length(), 0);
 		assets.get("https://www.google.es/images/srpr/logo11w.png",
-				Texture.class, new URLTextureParameter(temp),
+				Texture.class, new URLTextureParameter(temp, true),
 				new AssetLoadedCallback<Texture>() {
 
 					@Override
