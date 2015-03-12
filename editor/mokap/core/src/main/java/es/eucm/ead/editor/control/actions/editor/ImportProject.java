@@ -175,9 +175,9 @@ public class ImportProject extends EditorAction {
 					});
 					return;
 				}
-				FileHandle elemFolder = libraryManager
-						.getRepoElementLibraryFolder(elem);
-				if (!elemFolder.exists()) {
+				if (!controller.getLibraryManager().isDownloaded(elem)) {
+					FileHandle elemFolder = libraryManager
+							.getRepoElementLibraryFolder(elem);
 					reference.copyTo(elemFolder);
 				}
 			}
