@@ -967,7 +967,7 @@ public class MeshHelper {
 		public boolean combine(Command other) {
 			return false;
 		}
-	};
+	}
 
 	/**
 	 * Keeps a reference to a {@link Pixmap} and the screen position that should

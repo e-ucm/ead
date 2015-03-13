@@ -162,13 +162,13 @@ public class AddRemoveComponentTest extends EffectTest {
 	}
 
 	public static class MockComponent1 extends MockComponent {
-	};
+	}
 
 	public static class MockComponent2 extends MockComponent {
-	};
+	}
 
 	public static class MockComponent3 extends MockComponent {
-	};
+	}
 
 	public static class MockProcessor<S extends BasisModelComponent> extends
 			ComponentProcessor<S> {

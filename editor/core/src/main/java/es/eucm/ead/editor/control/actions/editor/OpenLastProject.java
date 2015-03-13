@@ -99,7 +99,7 @@ public class OpenLastProject extends EditorAction {
 	public interface ErrorCallback {
 
 		public static enum Result {
-			PROJECT_NOT_FOUND, PROJECT_CORRUPTED;
+			PROJECT_NOT_FOUND, PROJECT_CORRUPTED
 		}
 
 		void error(Result result, String projectPath);

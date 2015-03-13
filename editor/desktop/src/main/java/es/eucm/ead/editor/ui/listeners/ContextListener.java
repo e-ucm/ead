@@ -84,7 +84,7 @@ public class ContextListener extends ClickListener {
 					event.getStageY()));
 			menu.displayContext(target, TEMP.x, TEMP.y);
 		}
-	};
+	}
 
 	/**
 	 * Add a {@link DisplayableContextMenu} that will be displayed when this

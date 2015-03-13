@@ -122,7 +122,7 @@ public class Slice implements Transition {
 
 		if (horizontal) {
 
-			int sliceTexelHeight = (int) (nextTex.getHeight() / numSlices);
+			int sliceTexelHeight = nextTex.getHeight() / numSlices;
 			float sliceHeight = h
 					* ((float) sliceTexelHeight / nextTex.getHeight());
 			float yOverflow = h - numSlices * sliceHeight;
@@ -165,7 +165,7 @@ public class Slice implements Transition {
 			}
 		} else {
 
-			int sliceTexelWidth = (int) (nextTex.getWidth() / numSlices);
+			int sliceTexelWidth = nextTex.getWidth() / numSlices;
 			float sliceWidth = w
 					* ((float) sliceTexelWidth / nextTex.getWidth());
 			for (int i = 0; i < numSlices; ++i) {

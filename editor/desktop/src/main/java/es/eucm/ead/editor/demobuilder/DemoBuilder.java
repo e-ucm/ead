@@ -1274,11 +1274,11 @@ public abstract class DemoBuilder {
 	}
 
 	public enum HorizontalAlign {
-		LEFT, CENTER, RIGHT;
+		LEFT, CENTER, RIGHT
 	}
 
 	public enum VerticalAlign {
-		UP, CENTER, DOWN;
+		UP, CENTER, DOWN
 	}
 
 }

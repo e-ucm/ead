@@ -172,7 +172,7 @@ public class FrameWidget extends FocusButton {
 
 					@Override
 					public void loaded(String fileName, Texture asset) {
-						((Image) widget).setDrawable(new TextureRegionDrawable(
+						widget.setDrawable(new TextureRegionDrawable(
 								new TextureRegion(asset)));
 					}
 
@@ -191,7 +191,7 @@ public class FrameWidget extends FocusButton {
 	}
 
 	public Image getImage() {
-		return (Image) widget;
+		return widget;
 	}
 
 	@Override

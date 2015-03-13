@@ -581,9 +581,9 @@ public class LinearLayout extends AbstractWidget {
 	protected void setBoundsForActor(Actor actor, float x, float y,
 			float width, float height) {
 		if (horizontal) {
-			super.setBounds(actor, x, y, width, height);
+			setBounds(actor, x, y, width, height);
 		} else {
-			super.setBounds(actor, y, x, height, width);
+			setBounds(actor, y, x, height, width);
 		}
 	}
 

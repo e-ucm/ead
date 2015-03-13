@@ -111,8 +111,8 @@ public class InsertTab extends LinearLayout {
 
 		@Override
 		public void clicked(InputEvent event, float x, float y) {
-			SceneEditor sceneEditor = (SceneEditor) controller.getViews()
-					.getViewsContainer().findActor(SceneEditor.NAME);
+			SceneEditor sceneEditor = controller.getViews().getViewsContainer()
+					.findActor(SceneEditor.NAME);
 			sceneEditor.getViewPortCenter(center);
 			controller.action(AddSceneElementFromResource.class, center.x,
 					center.y);
