@@ -66,9 +66,15 @@ public class URLTextureLoader extends
 		if (file instanceof URLFileHandle
 				&& parameter instanceof URLTextureParameter
 				&& ((URLTextureParameter) parameter).writePixmapTo != null) {
-			pixmap = new Pixmap(file);
-			PixmapIO.writePNG(((URLTextureParameter) parameter).writePixmapTo,
-					pixmap);
+			URLTextureParameter param = (URLTextureParameter) parameter;
+			FileHandle writePixmapTo = param.writePixmapTo;
+			if (param.override || !writePixmapTo.exists()) {
+				pixmap = new Pixmap(file);
+				PixmapIO.writePNG(writePixmapTo, pixmap);
+			} else {
+				textureLoader.loadAsync(manager, fileName, writePixmapTo,
+						parameter);
+			}
 		} else {
 			textureLoader.loadAsync(manager, fileName, file, parameter);
 		}
@@ -80,9 +86,16 @@ public class URLTextureLoader extends
 		if (file instanceof URLFileHandle
 				&& parameter instanceof URLTextureParameter
 				&& ((URLTextureParameter) parameter).writePixmapTo != null) {
-			Texture texture = new Texture(pixmap);
-			pixmap.dispose();
-			return texture;
+			if (pixmap != null) {
+				Texture texture = new Texture(pixmap);
+				pixmap.dispose();
+				pixmap = null;
+				return texture;
+			} else {
+				return textureLoader.loadSync(manager, fileName,
+						((URLTextureParameter) parameter).writePixmapTo,
+						parameter);
+			}
 		} else {
 			return textureLoader.loadSync(manager, fileName, file, parameter);
 		}
@@ -103,10 +116,23 @@ public class URLTextureLoader extends
 			this.writePixmapTo = writePixmapTo;
 		}
 
+		public URLTextureParameter(FileHandle writePixmapTo, boolean override) {
+			this.writePixmapTo = writePixmapTo;
+			this.override = override;
+		}
+
 		/**
 		 * If the texture is from an URL, the loaded pixmap is written to this
-		 * path. It is always saved in PNG format.
+		 * path if the file doesn't exist or if
+		 * {@link URLTextureParameter#override} is true. It is always saved in
+		 * PNG format.
 		 */
 		public FileHandle writePixmapTo;
+
+		/**
+		 * If true then the {@link URLTextureParameter#writePixmapTo} file will
+		 * be overridden even if it already exists.
+		 */
+		private boolean override = false;
 	}
 }
