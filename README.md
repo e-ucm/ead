@@ -33,7 +33,7 @@ Import the project to [IntelliJ 14](https://www.jetbrains.com/idea/) as a maven 
 To run on desktop launch [MokapDesktop.java]() from the `mokap-desktop` module as a Java Application. 
 On Android you need to launch the `mokap-android` module as an Android Application.
 
-To have access to the assets of our repository you will need a key that you can obtain by cantacting us at `contact@mokap.es`. Send us an e-mail asking for the key.
+To have access to the assets of our repository you will need a key that you can obtain by contacting us at `contact@mokap.es`. Send us an e-mail asking for the key.
 
 ## Acknowledgements
 
