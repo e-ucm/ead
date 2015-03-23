@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
           package="es.eucm.mokap" android:screenOrientation="landscape"
-	android:versionCode="10" android:versionName="1.0.0">
+	android:versionCode="11" android:versionName="1.0.1">
 
     <uses-sdk android:minSdkVersion="10" android:targetSdkVersion="21"/>
 
