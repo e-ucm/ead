@@ -36,11 +36,11 @@
  */
 package es.eucm.ead.engine.demos;
 
-import es.eucm.ead.editor.demobuilder.EditorDemoBuilder;
+import es.eucm.ead.engine.demobuilder.ExecutableDemoBuilder;
 import es.eucm.ead.schema.components.Shader;
 import es.eucm.ead.schema.entities.ModelEntity;
 
-public class ShadersDemo extends EditorDemoBuilder {
+public class ShadersDemo extends ExecutableDemoBuilder {
 
 	public ShadersDemo() {
 		super("shaders");

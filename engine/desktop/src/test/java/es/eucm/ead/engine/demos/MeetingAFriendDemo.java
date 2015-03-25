@@ -36,39 +36,50 @@
  */
 package es.eucm.ead.engine.demos;
 
-import es.eucm.ead.editor.demobuilder.EditorDemoBuilder;
-import es.eucm.ead.schema.effects.GoScene.Transition;
-import es.eucm.ead.schema.entities.ModelEntity;
+import es.eucm.ead.engine.demobuilder.ExecutableDemoBuilder;
+import es.eucm.ead.builder.converters.ConversationBuilder;
+import es.eucm.ead.builder.converters.ConversationBuilder.ForkBuilder;
 
 /**
- * Created by angel on 29/11/14.
+ * Created by angel on 24/07/14.
  */
-public class CoolDemo extends EditorDemoBuilder {
+public class MeetingAFriendDemo extends ExecutableDemoBuilder {
 
-	public CoolDemo() {
-		super("cooldemo");
+	public MeetingAFriendDemo() {
+		super("planes-demo");
 	}
 
 	@Override
-	public String getDescription() {
-		return "Demo with some things";
+	public String[] assetPaths() {
+		return new String[] { "images/background.png", "images/rocks_down.png",
+				"images/rocks_up.png", "images/starGold.png", "plane/red.json" };
+	}
+
+	@Override
+	public String getName() {
+		return "Meeting a friend";
 	}
 
 	@Override
 	protected void doBuild() {
-		ModelEntity bee = game(800, 600).scene("map.png")
-				.entity("bee.png", 200, 200).getLastEntity();
+		String conversationId = "c";
+		singleSceneGame(assets[0]);
 
-		String initialScene = getLastSceneId();
-		scene("map.png")
-				.entity("p1_stand.png", 200, 200)
-				.touchBehavior(
-						makeGoScene(initialScene, Transition.SLIDE_DOWN, 1.0f,
-								true)).playSound("sound.wav");
-		String sceneId = getLastSceneId();
-		touchBehavior(bee,
-				makeGoScene(sceneId, Transition.SLICE_VERTICAL, 2.0f));
-		moveTween(bee, 600, 0);
-		infiniteTimer(bee, 2, makePlaySound("sound.wav"));
+		ConversationBuilder conversation = initBehavior(getLastScene(),
+				makeTriggerConversation(conversationId, 0)).conversation(
+				getLastEntity(), conversationId);
+
+		ForkBuilder option = conversation
+				.speakers("Angus", "Friederick", "green").start()
+				.line(0, "Hello!").line(1, "Hi there! How are you?").options();
+		option.start("Fine, thanks").line(1, "I'm glad you are fine")
+				.nextNode(0);
+		option.start("Really bad, actually").line(1, "I'm glad you are bad")
+				.nextNode(0);
+	}
+
+	public static void main(String[] args) {
+		MeetingAFriendDemo demo = new MeetingAFriendDemo();
+		demo.run();
 	}
 }

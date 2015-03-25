@@ -36,50 +36,29 @@
  */
 package es.eucm.ead.engine.demos;
 
-import es.eucm.ead.editor.demobuilder.EditorDemoBuilder;
-import es.eucm.ead.editor.demobuilder.ConversationBuilder;
-import es.eucm.ead.editor.demobuilder.ConversationBuilder.ForkBuilder;
+import es.eucm.ead.engine.demobuilder.ExecutableDemoBuilder;
+import es.eucm.ead.schema.entities.ModelEntity;
+import es.eucm.ead.schema.renderers.Image;
 
 /**
- * Created by angel on 24/07/14.
+ * Created by angel on 29/11/14.
  */
-public class MeetingAFriendDemo extends EditorDemoBuilder {
+public class URLImageDemo extends ExecutableDemoBuilder {
 
-	public MeetingAFriendDemo() {
-		super("planes-demo");
+	public URLImageDemo() {
+		super("URL Image Demo");
 	}
 
 	@Override
-	public String[] assetPaths() {
-		return new String[] { "images/background.png", "images/rocks_down.png",
-				"images/rocks_up.png", "images/starGold.png", "plane/red.json" };
-	}
-
-	@Override
-	public String getName() {
-		return "Meeting a friend";
+	public String getDescription() {
+		return "Demonstrates how to use images from the web as resources for the game.";
 	}
 
 	@Override
 	protected void doBuild() {
-		String conversationId = "c";
-		singleSceneGame(assets[0]);
-
-		ConversationBuilder conversation = initBehavior(getLastScene(),
-				makeTriggerConversation(conversationId, 0)).conversation(
-				getLastEntity(), conversationId);
-
-		ForkBuilder option = conversation
-				.speakers("Angus", "Friederick", "green").start()
-				.line(0, "Hello!").line(1, "Hi there! How are you?").options();
-		option.start("Fine, thanks").line(1, "I'm glad you are fine")
-				.nextNode(0);
-		option.start("Really bad, actually").line(1, "I'm glad you are bad")
-				.nextNode(0);
-	}
-
-	public static void main(String[] args) {
-		MeetingAFriendDemo demo = new MeetingAFriendDemo();
-		demo.run();
+		ModelEntity scene = singleSceneGame(null, 800, 600).getLastScene();
+		Image image = new Image();
+		image.setUri("https://www.google.es/images/srpr/logo11w.png");
+		scene.getComponents().add(image);
 	}
 }
