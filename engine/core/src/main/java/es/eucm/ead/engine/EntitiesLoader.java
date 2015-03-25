@@ -90,12 +90,8 @@ public class EntitiesLoader implements AssetLoadedCallback<Object> {
 	 *            The callback that is notified when the process is complete
 	 */
 	public void loadEntity(String path, EntityLoadedCallback callback) {
-		if (gameAssets.resolve(path).exists()) {
-			loading.put(path, callback);
-			gameAssets.get(path, Object.class, this);
-		} else {
-			callback.pathNotFound(path);
-		}
+		loading.put(path, callback);
+		gameAssets.get(path, Object.class, this);
 	}
 
 	@Override
