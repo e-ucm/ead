@@ -36,7 +36,7 @@
  */
 package es.eucm.ead.editor.importer;
 
-import es.eucm.ead.editor.demobuilder.EditorDemoBuilder;
+import es.eucm.ead.builder.converters.DemoBuilder;
 import es.eucm.eadventure.common.data.chapter.Chapter;
 import es.eucm.eadventure.common.data.chapter.elements.NPC;
 import es.eucm.eadventure.common.data.chapter.resources.Resources;
@@ -46,7 +46,7 @@ import es.eucm.eadventure.common.data.chapter.resources.Resources;
  */
 public class StructureImporter implements Importer {
 	@Override
-	public void process(EAdventure1XGame oldGame, EditorDemoBuilder builder) {
+	public void process(EAdventure1XGame oldGame, DemoBuilder builder) {
 		for (Chapter chapter : oldGame.getAdventureData().getChapters()) {
 			for (NPC npc : chapter.getCharacters()) {
 				// Whole NPC
