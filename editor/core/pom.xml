@@ -28,23 +28,6 @@
             <artifactId>editor-exporter</artifactId>
             <version>${project.version}</version>
         </dependency>
-        <!-- 2d geometry -->
-        <dependency>
-            <groupId>com.vividsolutions</groupId>
-            <artifactId>jts</artifactId>
-            <version>1.12</version>
-            <exclusions>
-                <exclusion>
-                    <!--
-                      unless excluded, xercesImpl2.4 (and 2.6) break Android
-                      compilation due to incompatible, old-style byte-code
-                      The only use (as of 1.12) is in jts.io.gml2.* - AVOID IT
-                     -->
-                    <groupId>xerces</groupId>
-                    <artifactId>xercesImpl</artifactId>
-                </exclusion>
-            </exclusions>
-        </dependency>
         <!-- TEST -->
         <dependency>
             <groupId>junit</groupId>
