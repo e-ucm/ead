@@ -40,8 +40,8 @@ package es.eucm.ead.repobuilder;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.utils.Array;
-import es.eucm.ead.editor.demobuilder.EditorDemoBuilder;
-import es.eucm.ead.editor.demobuilder.ImgUtils;
+import es.eucm.ead.engine.demobuilder.ExecutableDemoBuilder;
+import es.eucm.ead.engine.demobuilder.ImgUtils;
 import es.eucm.ead.editor.exporter.ExportCallback;
 import es.eucm.ead.editor.exporter.Exporter;
 import es.eucm.ead.editor.utils.ProjectUtils;
@@ -76,7 +76,7 @@ import java.util.Random;
  * 
  * Created by Javier Torrente on 23/09/14.
  */
-public abstract class RepoLibraryBuilder extends EditorDemoBuilder {
+public abstract class RepoLibraryBuilder extends ExecutableDemoBuilder {
 
 	/*
 	 * Properties that can be set

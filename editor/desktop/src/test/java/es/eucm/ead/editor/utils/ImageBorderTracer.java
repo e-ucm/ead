@@ -47,6 +47,7 @@ import com.badlogic.gdx.math.Polygon;
 import com.badlogic.gdx.utils.Array;
 import com.vividsolutions.jts.geom.Coordinate;
 import com.vividsolutions.jts.geom.Geometry;
+import es.eucm.ead.engine.utils.GeometryUtils;
 
 /**
  * Traces the borders of an image, creating a polygon that can be used for quick

@@ -42,7 +42,7 @@ import com.badlogic.gdx.utils.Array;
 import com.vividsolutions.jts.geom.Geometry;
 
 import es.eucm.ead.editor.components.EditorImageComponent;
-import es.eucm.ead.editor.utils.GeometryUtils;
+import es.eucm.ead.engine.utils.GeometryUtils;
 import es.eucm.ead.engine.GameLoop;
 import es.eucm.ead.engine.assets.GameAssets;
 import es.eucm.ead.engine.components.renderers.ImageComponent;

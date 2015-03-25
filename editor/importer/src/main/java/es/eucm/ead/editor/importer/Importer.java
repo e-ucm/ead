@@ -36,11 +36,11 @@
  */
 package es.eucm.ead.editor.importer;
 
-import es.eucm.ead.editor.demobuilder.EditorDemoBuilder;
+import es.eucm.ead.builder.converters.DemoBuilder;
 
 /**
  * Created by Javier Torrente on 29/09/14.
  */
 public interface Importer {
-	public void process(EAdventure1XGame oldGame, EditorDemoBuilder builder);
+	public void process(EAdventure1XGame oldGame, DemoBuilder builder);
 }
