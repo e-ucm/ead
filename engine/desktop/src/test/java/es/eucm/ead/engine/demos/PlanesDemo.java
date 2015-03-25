@@ -36,7 +36,7 @@
  */
 package es.eucm.ead.engine.demos;
 
-import es.eucm.ead.editor.demobuilder.EditorDemoBuilder;
+import es.eucm.ead.engine.demobuilder.ExecutableDemoBuilder;
 import es.eucm.ead.engine.variables.VarsContext;
 import es.eucm.ead.schema.components.positiontracking.ChaseEntity;
 import es.eucm.ead.schema.components.positiontracking.MoveByEntity;
@@ -53,7 +53,7 @@ import es.eucm.ead.schema.entities.ModelEntity;
 /**
  * Created by Javier Torrente on 2/07/14.
  */
-public class PlanesDemo extends EditorDemoBuilder {
+public class PlanesDemo extends ExecutableDemoBuilder {
 
 	private static final String chasedPlaneVar = "chasedEntity";
 	private static final String chasedPlaneVarRef = "$" + chasedPlaneVar;

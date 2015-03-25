@@ -36,29 +36,42 @@
  */
 package es.eucm.ead.engine.demos;
 
-import es.eucm.ead.editor.demobuilder.EditorDemoBuilder;
+import es.eucm.ead.engine.demobuilder.ExecutableDemoBuilder;
+import es.eucm.ead.schema.effects.GoScene.Transition;
 import es.eucm.ead.schema.entities.ModelEntity;
-import es.eucm.ead.schema.renderers.Image;
 
 /**
  * Created by angel on 29/11/14.
  */
-public class URLImageDemo extends EditorDemoBuilder {
+public class CoolDemo extends ExecutableDemoBuilder {
 
-	public URLImageDemo() {
-		super("URL Image Demo");
+	public CoolDemo() {
+		super("cooldemo");
 	}
 
 	@Override
 	public String getDescription() {
-		return "Demonstrates how to use images from the web as resources for the game.";
+		return "Demo with some things";
 	}
 
 	@Override
 	protected void doBuild() {
-		ModelEntity scene = singleSceneGame(null, 800, 600).getLastScene();
-		Image image = new Image();
-		image.setUri("https://www.google.es/images/srpr/logo11w.png");
-		scene.getComponents().add(image);
+		ModelEntity bee = game(800, 600).scene("map.png").name("map")
+				.entity(getLastScene(), "bee.png", 200, 200).name("bee")
+				.getLastEntity();
+
+		String initialScene = getLastSceneId();
+		scene("map.png")
+				.name("map")
+				.entity(getLastScene(), "p1_stand.png", 200, 200)
+				.name("alien_stand")
+				.touchBehavior(
+						makeGoScene(initialScene, Transition.SLIDE_DOWN, 1.0f,
+								true)).playSound("sound.wav");
+		String sceneId = getLastSceneId();
+		touchBehavior(bee,
+				makeGoScene(sceneId, Transition.SLICE_VERTICAL, 2.0f));
+		moveTween(bee, 600, 0);
+		infiniteTimer(bee, 2, makePlaySound("sound.wav"));
 	}
 }
