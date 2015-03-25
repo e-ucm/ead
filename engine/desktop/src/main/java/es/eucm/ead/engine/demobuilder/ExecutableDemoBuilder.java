@@ -34,7 +34,7 @@
  *      You should have received a copy of the GNU Lesser General Public License
  *      along with eAdventure.  If not, see <http://www.gnu.org/licenses/>.
  */
-package es.eucm.ead.editor.demobuilder;
+package es.eucm.ead.engine.demobuilder;
 
 import com.badlogic.gdx.Application;
 import com.badlogic.gdx.Gdx;
@@ -45,11 +45,11 @@ import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.GdxRuntimeException;
 import com.vividsolutions.jts.geom.Geometry;
-import es.eucm.ead.editor.DesktopPlatform;
-import es.eucm.ead.editor.utils.GeometryUtils;
+import es.eucm.ead.builder.converters.DemoBuilder;
 import es.eucm.ead.engine.EngineDesktop;
 import es.eucm.ead.engine.assets.GameAssets;
 import es.eucm.ead.engine.utils.DesktopImageUtils;
+import es.eucm.ead.engine.utils.GeometryUtils;
 import es.eucm.ead.schema.components.ModelComponent;
 import es.eucm.ead.schema.data.Dimension;
 import es.eucm.ead.schema.data.Parameter;
@@ -75,8 +75,8 @@ import java.util.Map;
  * and run by the engine. Use {@link #build()}, {@link #save()}, {@link #run()}
  * and {@link #clean()} for more info.
  * 
- * Usage: To create a new demo with the tool, create a class that extends
- * DemoBuilder. Then implement {@link #doBuild()} and, perhaps,
+ * Usage: To create a new demo es.eucm.ead.enginewith the tool, create a class
+ * that extends DemoBuilder. Then implement {@link #doBuild()} and, perhaps,
  * {@link #assetPaths()}, just in case you want to have all your asset paths
  * defined in one place. You may also consider overriding
  * {@link #getDescription()} and {@link #getSnapshotUri()} if you plan to add
@@ -86,9 +86,9 @@ import java.util.Map;
  * file that should be available to DemoBuilder at runtime. DemoBuilder will
  * unzip these files to the temp location of the game. The information required
  * for resolving the location of the zipFile is placed at construction time (see
- * {@link #EditorDemoBuilder(String)}).
+ * {@link #ExecutableDemoBuilder(String)}).
  */
-public abstract class EditorDemoBuilder extends DemoBuilder {
+public abstract class ExecutableDemoBuilder extends DemoBuilder {
 
 	protected GameAssets gameAssets;
 
@@ -107,7 +107,7 @@ public abstract class EditorDemoBuilder extends DemoBuilder {
 	protected String root;
 
 	// To determine image dimensions
-	protected DesktopPlatform platform;
+	protected DesktopImageUtils imageUtils;
 
 	/*
 	 * Parameter that indicates whether image magick (www.imagemagick.org)
@@ -130,10 +130,13 @@ public abstract class EditorDemoBuilder extends DemoBuilder {
 	 * 
 	 * @param root
 	 */
-	public EditorDemoBuilder(String root) {
-		this.gameAssets = new GameAssets(Gdx.files, new DesktopImageUtils());
+	public ExecutableDemoBuilder(String root) {
 		this.root = root;
-		platform = new DesktopPlatform();
+	}
+
+	public void prepare() {
+		this.gameAssets = new GameAssets(Gdx.files, new DesktopImageUtils());
+		imageUtils = new DesktopImageUtils();
 	}
 
 	// ///////////////////////////////////////////////////
@@ -196,7 +199,7 @@ public abstract class EditorDemoBuilder extends DemoBuilder {
 	protected Dimension getImageDimension(String imageUri) {
 		Dimension dimension = new Dimension();
 		Vector2 size = new Vector2();
-		platform.getImageUtils().imageSize(gameAssets.resolve(imageUri), size);
+		imageUtils.imageSize(gameAssets.resolve(imageUri), size);
 		dimension.setWidth((int) size.x);
 		dimension.setHeight((int) size.y);
 		return dimension;
@@ -236,19 +239,22 @@ public abstract class EditorDemoBuilder extends DemoBuilder {
 	 * Builds the game, saves it to disk, and runs it.
 	 */
 	public void run() {
-		if (!built) {
-			build();
-		}
-		save();
 		final EngineDesktop engine = new EngineDesktop((int) gameWidth,
 				(int) gameHeight) {
 			@Override
 			protected void dispose() {
-				EditorDemoBuilder.this.clean();
+				ExecutableDemoBuilder.this.clean();
 				super.dispose();
 			}
 		};
-		engine.run(rootFolder.file().getAbsolutePath(), false, false);
+
+		prepare();
+		if (!built) {
+			build();
+		}
+		save();
+		engine.setSize((int) gameWidth, (int) gameHeight);
+		engine.run(rootFolder.file().getAbsolutePath(), false);
 		if (debug()) {
 			Gdx.app.postRunnable(new Runnable() {
 				@Override
@@ -325,11 +331,7 @@ public abstract class EditorDemoBuilder extends DemoBuilder {
 	 *         {@link #getSnapshotUri()}.
 	 */
 	public InputStream getSnapshotInputStream() {
-		FileHandle imageFileHandle = gameAssets.resolve(getSnapshotUri());
-		if (imageFileHandle.exists() && imageFileHandle != null) {
-			return imageFileHandle.read();
-		}
-		return null;
+		return ClassLoader.getSystemResourceAsStream(getSnapshotUri());
 	}
 
 	/**
@@ -409,7 +411,7 @@ public abstract class EditorDemoBuilder extends DemoBuilder {
 	 * @param backgroundUri
 	 *            Relative uri of the background image of the scene
 	 */
-	public EditorDemoBuilder singleSceneGame(String backgroundUri) {
+	public ExecutableDemoBuilder singleSceneGame(String backgroundUri) {
 		Dimension backgroundDim = getImageDimension(backgroundUri);
 		super.singleSceneGame(backgroundUri, backgroundDim.getWidth(),
 				backgroundDim.getHeight());
@@ -433,7 +435,7 @@ public abstract class EditorDemoBuilder extends DemoBuilder {
 	 *            RIGHT (sticks the entity to the right of the screen) or CENTER
 	 *            (places the entity horizontally on the screen).
 	 */
-	public EditorDemoBuilder entity(ModelEntity parent, String imageUri,
+	public ExecutableDemoBuilder entity(ModelEntity parent, String imageUri,
 			VerticalAlign verticalAlign, HorizontalAlign horizontalAlign) {
 		Dimension imageDim = getImageDimension(imageUri);
 		super.entity(parent, imageUri, verticalAlign, horizontalAlign,
@@ -449,7 +451,7 @@ public abstract class EditorDemoBuilder extends DemoBuilder {
 	 *            The entity whose origin is to be centered
 	 * @return This object, for chaining calls
 	 */
-	public EditorDemoBuilder centerOrigin(ModelEntity entity) {
+	public ExecutableDemoBuilder centerOrigin(ModelEntity entity) {
 		adjustOrigin(entity);
 		return this;
 	}
@@ -461,7 +463,7 @@ public abstract class EditorDemoBuilder extends DemoBuilder {
 	 * 
 	 * @return This object, for chaining calls
 	 */
-	public EditorDemoBuilder centerOrigin() {
+	public ExecutableDemoBuilder centerOrigin() {
 		return centerOrigin(getLastEntity());
 	}
 
