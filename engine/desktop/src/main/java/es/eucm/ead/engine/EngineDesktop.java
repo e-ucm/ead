@@ -41,10 +41,9 @@ import com.badlogic.gdx.backends.lwjgl.LwjglApplicationConfiguration;
 import com.badlogic.gdx.backends.lwjgl.LwjglFrame;
 import es.eucm.ead.engine.effects.VideoEngineObject;
 import es.eucm.ead.engine.utils.DesktopImageUtils;
-import es.eucm.ead.engine.utils.SwingEDTUtils;
 
-import javax.swing.*;
-import java.awt.*;
+import javax.swing.JFrame;
+import java.awt.Image;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.util.List;
@@ -110,6 +109,29 @@ public class EngineDesktop {
 		}
 		this.width = width;
 		this.height = height;
+
+		LwjglApplicationConfiguration config = new LwjglApplicationConfiguration();
+		this.applicationListener = new EngineApplicationListener(
+				new DesktopImageUtils());
+		config.width = width;
+		config.height = height;
+		config.forceExit = false;
+		frame = new LwjglFrame(this.applicationListener, config);
+		frame.setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE);
+		frame.addWindowListener(new WindowAdapter() {
+			@Override
+			public void windowClosing(WindowEvent e) {
+				dispose();
+			}
+		});
+		setSize(width, height);
+		frame.setVisible(true);
+
+	}
+
+	public void setSize(int width, int height) {
+		frame.setSize(width, height);
+		frame.setLocationRelativeTo(null);
 	}
 
 	public EngineApplicationListener getApplicationListener() {
@@ -128,15 +150,8 @@ public class EngineDesktop {
 		frame.setIconImages(icons);
 	}
 
-	public void run(final String gameUri, final boolean internal) {
-		run(new EngineApplicationListener(new DesktopImageUtils()), gameUri,
-				internal, true);
-	}
-
-	public void run(final String gameUri, final boolean internal,
-			final boolean forceExit) {
-		run(new EngineApplicationListener(new DesktopImageUtils()), gameUri,
-				internal, forceExit);
+	public void run(final String gameUri) {
+		run(gameUri, true);
 	}
 
 	/**
@@ -145,35 +160,11 @@ public class EngineDesktop {
 	 * @param gameUri
 	 * @param internal
 	 */
-	public void run(final EngineApplicationListener engineApplicationListener,
-			final String gameUri, final boolean internal,
-			final boolean forceExit) {
-		LwjglApplicationConfiguration config = new LwjglApplicationConfiguration();
-		this.applicationListener = engineApplicationListener;
-		config.width = width;
-		config.height = height;
-		config.forceExit = forceExit;
-		frame = new LwjglFrame(engineApplicationListener, config);
+	public void run(final String gameUri, final boolean internal) {
 		Gdx.app.postRunnable(new Runnable() {
 			@Override
 			public void run() {
-				engineApplicationListener.getGameLoader().loadGame(gameUri,
-						internal);
-			}
-		});
-		frame.setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE);
-		frame.addWindowListener(new WindowAdapter() {
-			@Override
-			public void windowClosing(WindowEvent e) {
-				dispose();
-			}
-		});
-		frame.setLocationRelativeTo(null);
-		SwingEDTUtils.invokeLater(new Runnable() {
-
-			@Override
-			public void run() {
-				frame.setVisible(true);
+				applicationListener.getGameLoader().loadGame(gameUri, internal);
 			}
 		});
 	}
