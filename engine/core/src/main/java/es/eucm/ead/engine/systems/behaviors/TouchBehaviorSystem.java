@@ -52,9 +52,9 @@ import es.eucm.ead.schema.components.behaviors.events.Touch.Type;
  */
 public class TouchBehaviorSystem extends BehaviorSystem {
 
-	public TouchBehaviorSystem(GameLoop engine,
+	public TouchBehaviorSystem(GameLoop gameLoop,
 			VariablesManager variablesManager) {
-		super(engine, variablesManager, Family.all(TouchedComponent.class,
+		super(gameLoop, variablesManager, Family.all(TouchedComponent.class,
 				TouchesComponent.class).get());
 	}
 

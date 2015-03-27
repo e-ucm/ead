@@ -36,14 +36,14 @@
  */
 package es.eucm.ead.engine.demos;
 
-import es.eucm.ead.editor.demobuilder.EditorDemoBuilder;
-import es.eucm.ead.editor.demobuilder.ConversationBuilder;
-import es.eucm.ead.editor.demobuilder.ConversationBuilder.ForkBuilder;
+import es.eucm.ead.engine.demobuilder.ExecutableDemoBuilder;
+import es.eucm.ead.builder.converters.ConversationBuilder;
+import es.eucm.ead.builder.converters.ConversationBuilder.ForkBuilder;
 
 /**
  * Created by angel on 24/07/14.
  */
-public class MeetingAFriendDemo extends EditorDemoBuilder {
+public class MeetingAFriendDemo extends ExecutableDemoBuilder {
 
 	public MeetingAFriendDemo() {
 		super("planes-demo");
