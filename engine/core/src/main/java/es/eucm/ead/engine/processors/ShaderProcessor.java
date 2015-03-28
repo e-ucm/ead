@@ -37,11 +37,13 @@
 package es.eucm.ead.engine.processors;
 
 import com.badlogic.ashley.core.Component;
+import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.glutils.ShaderProgram;
 import com.badlogic.gdx.utils.ObjectMap;
 import es.eucm.ead.engine.GameLoop;
 import es.eucm.ead.engine.assets.GameAssets;
 import es.eucm.ead.engine.components.ShaderComponent;
+import es.eucm.ead.engine.variables.VariablesManager;
 import es.eucm.ead.schema.components.Shader;
 import es.eucm.ead.schema.data.Parameter;
 
@@ -71,32 +73,37 @@ public class ShaderProcessor extends ComponentProcessor<Shader> {
 
 	private GameAssets gameAssets;
 
+	private VariablesManager variablesManager;
+
 	private ObjectMap<String, ShaderProgram> shaders = new ObjectMap<String, ShaderProgram>();
 
-	public ShaderProcessor(GameLoop gameLoop, GameAssets gameAssets) {
+	public ShaderProcessor(GameLoop gameLoop, GameAssets gameAssets,
+			VariablesManager variablesManager) {
 		super(gameLoop);
 		this.gameAssets = gameAssets;
+		this.variablesManager = variablesManager;
 	}
 
 	@Override
 	public Component getComponent(Shader shader) {
 		ShaderComponent shaderComponent = gameLoop
 				.createComponent(ShaderComponent.class);
+		shaderComponent.setVariablesManager(variablesManager);
 
 		ShaderProgram shaderProgram = shaders.get(shader.getUri());
 		if (shaderProgram == null) {
 			shaderProgram = new ShaderProgram(VERTEX_SHADER, gameAssets
 					.resolve(shader.getUri()).readString());
+			if (!shaderProgram.isCompiled()) {
+				Gdx.app.error("ShaderProcessor", "Error parsing shader: "
+						+ shaderProgram.getLog());
+			}
 			shaders.put(shader.getUri(), shaderProgram);
 		}
 		shaderComponent.setShaderProgram(shaderProgram);
 
 		for (Parameter parameter : shader.getUniforms()) {
-			String[] parts = ((String) parameter.getValue()).split(",");
-			float[] values = new float[parts.length];
-			for (int i = 0; i < parts.length; i++) {
-				values[i] = Float.parseFloat(parts[i]);
-			}
+			String[] values = ((String) parameter.getValue()).split(",");
 			shaderComponent.setUniform(parameter.getName(), values);
 		}
 
