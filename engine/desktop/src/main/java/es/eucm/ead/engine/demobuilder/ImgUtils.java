@@ -34,7 +34,7 @@
  *      You should have received a copy of the GNU Lesser General Public License
  *      along with eAdventure.  If not, see <http://www.gnu.org/licenses/>.
  */
-package es.eucm.ead.editor.demobuilder;
+package es.eucm.ead.engine.demobuilder;
 
 import com.badlogic.gdx.files.FileHandle;
 import org.im4java.core.ConvertCmd;
@@ -89,7 +89,7 @@ public class ImgUtils {
 
 	/**
 	 * This method should be invoked first of all before using
-	 * {@link es.eucm.ead.editor.demobuilder.ImgUtils}.
+	 * {@link es.eucm.ead.engine.demobuilder.ImgUtils}.
 	 * 
 	 * It just tells the Im4Java wrapper where ImageMagick is installed on disk.
 	 * 

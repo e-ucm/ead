@@ -34,41 +34,36 @@
  *      You should have received a copy of the GNU Lesser General Public License
  *      along with eAdventure.  If not, see <http://www.gnu.org/licenses/>.
  */
-package es.eucm.ead.engine.demos;
+package es.eucm.ead.engine.renderers;
 
-import es.eucm.ead.editor.demobuilder.EditorDemoBuilder;
-import es.eucm.ead.schema.effects.GoScene.Transition;
-import es.eucm.ead.schema.entities.ModelEntity;
+import com.badlogic.gdx.scenes.scene2d.Actor;
+import es.eucm.ead.engine.DefaultEngineInitializer;
+import es.eucm.ead.engine.EngineTest;
+import org.junit.Test;
 
-/**
- * Created by angel on 29/11/14.
- */
-public class CoolDemo extends EditorDemoBuilder {
+import static org.junit.Assert.assertEquals;
 
-	public CoolDemo() {
-		super("cooldemo");
-	}
+public class EmptyTest extends EngineTest {
 
 	@Override
-	public String getDescription() {
-		return "Demo with some things";
+	public void prepareEngine() {
+		new DefaultEngineInitializer().init(gameAssets, gameLoop,
+				entitiesLoader, gameView, variablesManager);
 	}
 
 	@Override
 	protected void doBuild() {
-		ModelEntity bee = game(800, 600).scene("map.png")
-				.entity("bee.png", 200, 200).getLastEntity();
+		game(200, 200).scene().entity(0, 0).emptyRectangle(1, 1, true)
+				.name("all").entity(0, 0).emptyRectangle(10, 10)
+				.name("rectangle");
+	}
 
-		String initialScene = getLastSceneId();
-		scene("map.png")
-				.entity("p1_stand.png", 200, 200)
-				.touchBehavior(
-						makeGoScene(initialScene, Transition.SLIDE_DOWN, 1.0f,
-								true)).playSound("sound.wav");
-		String sceneId = getLastSceneId();
-		touchBehavior(bee,
-				makeGoScene(sceneId, Transition.SLICE_VERTICAL, 2.0f));
-		moveTween(bee, 600, 0);
-		infiniteTimer(bee, 2, makePlaySound("sound.wav"));
+	@Test
+	public void testHit() {
+		Actor actor = hit(5, 5);
+		assertEquals(actor.getName(), "rectangle");
+		actor = hit(-200, -300);
+		assertEquals(actor.getName(), "all");
+
 	}
 }

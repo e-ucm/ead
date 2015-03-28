@@ -28,6 +28,11 @@
         </dependency>
         <dependency>
             <groupId>es.e-ucm.ead</groupId>
+            <artifactId>builder</artifactId>
+            <version>${project.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>es.e-ucm.ead</groupId>
             <artifactId>editor-core</artifactId>
             <version>${project.version}</version>
             <type>test-jar</type>
@@ -55,11 +60,6 @@
         <dependency>
             <groupId>junit</groupId>
             <artifactId>junit</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>org.im4java</groupId>
-            <artifactId>im4java</artifactId>
-            <version>1.4.0</version>
         </dependency>
     </dependencies>
     <build>

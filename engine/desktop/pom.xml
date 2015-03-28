@@ -38,6 +38,21 @@
             <version>${gdx.version}</version>
             <classifier>natives-desktop</classifier>
         </dependency>
+        <dependency>
+            <groupId>es.e-ucm.utils</groupId>
+            <artifactId>gdx-java</artifactId>
+            <version>${project.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>es.e-ucm.ead</groupId>
+            <artifactId>builder</artifactId>
+            <version>${project.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.im4java</groupId>
+            <artifactId>im4java</artifactId>
+            <version>1.4.0</version>
+        </dependency>
         <!-- VLC wrapper -->
         <dependency>
             <groupId>uk.co.caprica</groupId>
