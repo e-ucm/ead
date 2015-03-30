@@ -100,16 +100,14 @@ public class ShaderComponent extends Component implements Poolable {
 	}
 
 	private float[] values(String[] expressions) {
-		int i = 0;
-		for (String expression : expressions) {
-			Object o = variablesManager.evaluateExpression(expression);
+		for (int i = 0; i < expressions.length; i++) {
+			Object o = variablesManager.evaluateExpression(expressions[i]);
 			if (o instanceof Number) {
 				values[i] = ((Number) o).floatValue();
 			} else {
 				Gdx.app.error("ShaderComponent",
 						"Invalid expression for shader uniform.");
 			}
-			i++;
 		}
 		return values;
 	}
