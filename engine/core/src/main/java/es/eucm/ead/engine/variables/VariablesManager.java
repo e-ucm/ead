@@ -73,9 +73,9 @@ import es.eucm.ead.engine.expressions.operators.OperationsFactory;
  * which may be the global context if no other local context has been pushed or
  * if those were already popped out. Then
  * {@link #registerVar(String, Object, boolean)} or simply
- * {@link #localOwnerVar(ashley.core.Entity)} can be called to setup the entity
- * variable in the recently created context. Since these methods return the same
- * {@code VariablesManager}, calls can be chained.
+ * {@link #localOwnerVar(com.badlogic.ashley.core.Entity)} can be called to
+ * setup the entity variable in the recently created context. Since these
+ * methods return the same {@code VariablesManager}, calls can be chained.
  * <p/>
  * Then, {@code evaluateCondition("(hastag $_this sTag1)")} can be called and
  * the system will be able to resolve $_this, since it has been registered as a

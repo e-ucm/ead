@@ -67,10 +67,10 @@ public class ShadersDemo extends EditorDemoBuilder {
 		Shader shader = new Shader();
 		shader.setUri("gradient.fragment");
 
-		shader.getUniforms().add(param("point1", "0,0"));
-		shader.getUniforms().add(param("point2", "1,1"));
-		shader.getUniforms().add(param("color1", "1,1,1,1"));
-		shader.getUniforms().add(param("color2", "0,0,0,1"));
+		shader.getUniforms().add(param("point1", "f0,f0"));
+		shader.getUniforms().add(param("point2", "f1,f1"));
+		shader.getUniforms().add(param("color1", "f1,f1,f1,f1"));
+		shader.getUniforms().add(param("color2", "f0,f0,f0,f1"));
 
 		rectangle.getComponents().add(shader);
 
@@ -81,10 +81,10 @@ public class ShadersDemo extends EditorDemoBuilder {
 		shader = new Shader();
 		shader.setUri("gradient.fragment");
 
-		shader.getUniforms().add(param("point1", "0,0"));
-		shader.getUniforms().add(param("point2", "1,1"));
-		shader.getUniforms().add(param("color1", "1,1,1,1"));
-		shader.getUniforms().add(param("color2", "0,0,0,1"));
+		shader.getUniforms().add(param("point1", "f0,f0"));
+		shader.getUniforms().add(param("point2", "f1,f1"));
+		shader.getUniforms().add(param("color1", "f1,f1,f1,f1"));
+		shader.getUniforms().add(param("color2", "f0,f0,f0,f1"));
 
 		rectangle.getComponents().add(shader);
 
@@ -97,10 +97,10 @@ public class ShadersDemo extends EditorDemoBuilder {
 		shader = new Shader();
 		shader.setUri("gradient.fragment");
 
-		shader.getUniforms().add(param("point1", "0.25,0.25"));
-		shader.getUniforms().add(param("point2", "0.75,0.75"));
-		shader.getUniforms().add(param("color1", "1,0,0,1"));
-		shader.getUniforms().add(param("color2", "0,1,0,1"));
+		shader.getUniforms().add(param("point1", "f0.25,f0.25"));
+		shader.getUniforms().add(param("point2", "f0.75,f0.75"));
+		shader.getUniforms().add(param("color1", "f1,f0,f0,f1"));
+		shader.getUniforms().add(param("color2", "f0,f1,f0,f1"));
 
 		rectangle.getComponents().add(shader);
 
@@ -114,10 +114,10 @@ public class ShadersDemo extends EditorDemoBuilder {
 		shader = new Shader();
 		shader.setUri("gradient.fragment");
 
-		shader.getUniforms().add(param("point1", "0,0"));
-		shader.getUniforms().add(param("point2", "0,1"));
-		shader.getUniforms().add(param("color1", "0,1,1,1"));
-		shader.getUniforms().add(param("color2", "1,0,1,1"));
+		shader.getUniforms().add(param("point1", "f0,f0"));
+		shader.getUniforms().add(param("point2", "f0,f1"));
+		shader.getUniforms().add(param("color1", "f0,f1,f1,f1"));
+		shader.getUniforms().add(param("color2", "f1,f0,f1,f1"));
 
 		rectangle.getComponents().add(shader);
 

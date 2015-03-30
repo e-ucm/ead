@@ -408,7 +408,7 @@ public class DefaultEngineInitializer implements EngineInitializer {
 		componentLoader.registerComponentProcessor(Reference.class,
 				new ReferenceProcessor(gameLoop, gameAssets, entitiesLoader));
 		componentLoader.registerComponentProcessor(Shader.class,
-				new ShaderProcessor(gameLoop, gameAssets));
+				new ShaderProcessor(gameLoop, gameAssets, variablesManager));
 	}
 
 	private static class LanguageVariableListener implements
