@@ -40,14 +40,7 @@ import com.badlogic.ashley.core.Entity;
 import com.badlogic.ashley.core.Family;
 import es.eucm.ead.engine.assets.GameAssets;
 import es.eucm.ead.engine.components.I18nTextComponent;
-import es.eucm.ead.engine.processors.AnimationProcessor;
-import es.eucm.ead.engine.processors.CamerasProcessor;
-import es.eucm.ead.engine.processors.ConversationProcessor;
-import es.eucm.ead.engine.processors.PathProcessor;
-import es.eucm.ead.engine.processors.ShaderProcessor;
-import es.eucm.ead.engine.processors.TagsProcessor;
-import es.eucm.ead.engine.processors.TouchabilityProcessor;
-import es.eucm.ead.engine.processors.VisibilityProcessor;
+import es.eucm.ead.engine.processors.*;
 import es.eucm.ead.engine.processors.assets.ReferenceProcessor;
 import es.eucm.ead.engine.processors.assets.SoundProcessor;
 import es.eucm.ead.engine.processors.behaviors.BehaviorsProcessor;
@@ -126,13 +119,7 @@ import es.eucm.ead.engine.systems.tweens.tweencreators.TimelineCreator;
 import es.eucm.ead.engine.variables.VariablesManager;
 import es.eucm.ead.engine.variables.VarsContext;
 import es.eucm.ead.schema.assets.Sound;
-import es.eucm.ead.schema.components.Animation;
-import es.eucm.ead.schema.components.PathBoundary;
-import es.eucm.ead.schema.components.Reference;
-import es.eucm.ead.schema.components.Shader;
-import es.eucm.ead.schema.components.Tags;
-import es.eucm.ead.schema.components.Touchability;
-import es.eucm.ead.schema.components.Visibility;
+import es.eucm.ead.schema.components.*;
 import es.eucm.ead.schema.components.behaviors.Behavior;
 import es.eucm.ead.schema.components.cameras.Cameras;
 import es.eucm.ead.schema.components.controls.Button;
@@ -407,8 +394,12 @@ public class DefaultEngineInitializer implements EngineInitializer {
 				new SpineAnimationProcessor(gameLoop, gameAssets));
 		componentLoader.registerComponentProcessor(Reference.class,
 				new ReferenceProcessor(gameLoop, gameAssets, entitiesLoader));
+		ShaderProcessor shaderProcessor;
 		componentLoader.registerComponentProcessor(Shader.class,
-				new ShaderProcessor(gameLoop, gameAssets, variablesManager));
+				shaderProcessor = new ShaderProcessor(gameLoop, gameAssets,
+						variablesManager));
+		componentLoader.registerComponentProcessor(BackgroundShader.class,
+				new BackgroundShaderProcessor(shaderProcessor));
 	}
 
 	private static class LanguageVariableListener implements
