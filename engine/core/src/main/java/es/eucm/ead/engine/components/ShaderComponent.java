@@ -51,6 +51,10 @@ public class ShaderComponent extends Component implements Poolable {
 
 	private ShaderProgram shaderProgram;
 
+	private boolean needsTime, needsResolution;
+
+	private float time;
+
 	private float[] values = new float[4];
 
 	private ObjectMap<String, String[]> uniforms = new ObjectMap<String, String[]>();
@@ -73,6 +77,7 @@ public class ShaderComponent extends Component implements Poolable {
 
 	@Override
 	public void reset() {
+		time = 0;
 		shaderProgram = null;
 		uniforms.clear();
 	}
@@ -97,6 +102,18 @@ public class ShaderComponent extends Component implements Poolable {
 				break;
 			}
 		}
+
+		if (shaderProgram != null) {
+			if (needsResolution) {
+				shaderProgram.setUniformf("resolution",
+						Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
+			}
+
+			if (needsTime) {
+				time += Gdx.graphics.getDeltaTime();
+				shaderProgram.setUniformf("time", time);
+			}
+		}
 	}
 
 	private float[] values(String[] expressions) {
@@ -110,5 +127,13 @@ public class ShaderComponent extends Component implements Poolable {
 			}
 		}
 		return values;
+	}
+
+	public void setNeedsResolution(boolean needsResolution) {
+		this.needsResolution = needsResolution;
+	}
+
+	public void setNeedsTime(boolean needsTime) {
+		this.needsTime = needsTime;
 	}
 }
