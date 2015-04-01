@@ -89,6 +89,8 @@ public class ShaderProcessor extends ComponentProcessor<Shader> {
 		ShaderComponent shaderComponent = gameLoop
 				.createComponent(ShaderComponent.class);
 		shaderComponent.setVariablesManager(variablesManager);
+		shaderComponent.setNeedsResolution(shader.isNeedsResolution());
+		shaderComponent.setNeedsTime(shader.isNeedsTime());
 
 		ShaderProgram shaderProgram = shaders.get(shader.getUri());
 		if (shaderProgram == null) {

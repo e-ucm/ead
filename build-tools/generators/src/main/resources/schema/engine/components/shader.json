@@ -15,6 +15,14 @@
             "items": {
                 "$ref": "../data/parameter.json"
             }
+        },
+        "needsTime": {
+          "type": "boolean",
+          "description": "If true, this shader will pass a 'time' uniform in seconds"
+        },
+        "needsResolution": {
+          "type": "boolean",
+          "description": "If true, this shader will pass a 'resolution' uniform"
         }
     },
     "description": "Shader for the entity"
