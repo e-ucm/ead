@@ -34,7 +34,7 @@
  *      You should have received a copy of the GNU Lesser General Public License
  *      along with eAdventure.  If not, see <http://www.gnu.org/licenses/>.
  */
-package es.eucm.ead.builder.converters;
+package es.eucm.ead.builder;
 
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.reflect.ClassReflection;
@@ -324,9 +324,7 @@ public abstract class DemoBuilder {
 	public DemoBuilder entity(ModelEntity parent, String imageUri, float x,
 			float y) {
 		ModelEntity modelEntity = entity().getLastEntity();
-		if (imageUri != null) {
-			addImage(modelEntity, imageUri);
-		}
+		image(modelEntity, imageUri);
 		modelEntity.setX(x);
 		modelEntity.setY(y);
 		if (parent != null) {
@@ -343,7 +341,7 @@ public abstract class DemoBuilder {
 		return this;
 	}
 
-	public DemoBuilder addImage(ModelEntity entity, String uri) {
+	public DemoBuilder image(ModelEntity entity, String uri) {
 		if (uri != null) {
 			entity.getComponents().add(createImage(uri));
 		}
@@ -358,7 +356,7 @@ public abstract class DemoBuilder {
 	}
 
 	public DemoBuilder image(String uri) {
-		addImage(getLastEntity(), uri);
+		image(getLastEntity(), uri);
 		return this;
 	}
 
@@ -1433,7 +1431,7 @@ public abstract class DemoBuilder {
 
 	public DemoBuilder circle(int radius) {
 		getLastEntity().getComponents().add(
-				buildShapeRenderer(buildCircle(radius)));
+				buildShapeRenderer(makeCircle(radius)));
 		return this;
 	}
 
@@ -1443,31 +1441,31 @@ public abstract class DemoBuilder {
 		return shapeRenderer;
 	}
 
-	public Circle buildCircle(int radius) {
+	public Circle makeCircle(int radius) {
 		Circle circle = new Circle();
 		circle.setRadius(radius);
 		return circle;
 	}
 
-	public ChangeState changeState(String target, String state) {
+	public ChangeState makeChangeState(String target, String state) {
 		ChangeState changeState = new ChangeState();
 		changeState.setStateTag(state);
 		changeState.setTarget(target);
 		return changeState;
 	}
 
-	public IfThenElseIf ifElse(String condition, Effect ifEffect,
-			Effect elseEffect) {
+	public IfThenElseIf makeIfElse(String condition, Effect ifEffect,
+                                   Effect elseEffect) {
 		Array<Effect> ifEffects = new Array<Effect>();
 		ifEffects.add(ifEffect);
 
 		Array<Effect> elseEffects = new Array<Effect>();
 		elseEffects.add(elseEffect);
-		return ifElse(condition, ifEffects, elseEffects);
+		return makeIfElse(condition, ifEffects, elseEffects);
 	}
 
-	public IfThenElseIf ifElse(String condition, Array<Effect> ifEffects,
-			Array<Effect> elseEffects) {
+	public IfThenElseIf makeIfElse(String condition, Array<Effect> ifEffects,
+                                   Array<Effect> elseEffects) {
 		IfThenElseIf ifThen = new IfThenElseIf();
 		ifThen.setCondition(condition);
 		ifThen.setEffects(ifEffects);
