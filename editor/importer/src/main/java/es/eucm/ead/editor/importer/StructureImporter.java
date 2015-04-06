@@ -36,7 +36,7 @@
  */
 package es.eucm.ead.editor.importer;
 
-import es.eucm.ead.builder.converters.DemoBuilder;
+import es.eucm.ead.builder.DemoBuilder;
 import es.eucm.eadventure.common.data.chapter.Chapter;
 import es.eucm.eadventure.common.data.chapter.elements.NPC;
 import es.eucm.eadventure.common.data.chapter.resources.Resources;

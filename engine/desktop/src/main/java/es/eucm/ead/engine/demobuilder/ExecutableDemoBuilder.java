@@ -45,7 +45,7 @@ import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.GdxRuntimeException;
 import com.vividsolutions.jts.geom.Geometry;
-import es.eucm.ead.builder.converters.DemoBuilder;
+import es.eucm.ead.builder.DemoBuilder;
 import es.eucm.ead.engine.EngineDesktop;
 import es.eucm.ead.engine.assets.GameAssets;
 import es.eucm.ead.engine.utils.DesktopImageUtils;
@@ -75,8 +75,8 @@ import java.util.Map;
  * and run by the engine. Use {@link #build()}, {@link #save()}, {@link #run()}
  * and {@link #clean()} for more info.
  * 
- * Usage: To create a new demo es.eucm.ead.enginewith the tool, create a class
- * that extends DemoBuilder. Then implement {@link #doBuild()} and, perhaps,
+ * Usage: To create a new demo with the tool, create a class that extends
+ * DemoBuilder. Then implement {@link #doBuild()} and, perhaps,
  * {@link #assetPaths()}, just in case you want to have all your asset paths
  * defined in one place. You may also consider overriding
  * {@link #getDescription()} and {@link #getSnapshotUri()} if you plan to add
@@ -135,8 +135,8 @@ public abstract class ExecutableDemoBuilder extends DemoBuilder {
 	}
 
 	public void prepare() {
-		this.gameAssets = new GameAssets(Gdx.files, new DesktopImageUtils());
 		imageUtils = new DesktopImageUtils();
+		this.gameAssets = new GameAssets(Gdx.files, imageUtils);
 	}
 
 	// ///////////////////////////////////////////////////

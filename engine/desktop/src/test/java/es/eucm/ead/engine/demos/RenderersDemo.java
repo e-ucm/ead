@@ -104,9 +104,9 @@ public class RenderersDemo extends ExecutableDemoBuilder {
 				makeAddComponent(makeEntitiesWithTagExp("rotate"),
 						makeRotateTween(360.0f, 1.0f)));
 		touchBehavior(makeChangeVar("state", "(not $state)"));
-		touchBehavior(ifElse("$state",
-				changeState(makeEntitiesWithTagExp("states"), "stand"),
-				changeState(makeEntitiesWithTagExp("states"), "walk")));
+		touchBehavior(makeIfElse("$state",
+				makeChangeState(makeEntitiesWithTagExp("states"), "stand"),
+				makeChangeState(makeEntitiesWithTagExp("states"), "walk")));
 	}
 
 }

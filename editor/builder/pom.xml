@@ -11,7 +11,7 @@
     <name>Schema Builder</name>
     <artifactId>builder</artifactId>
     <packaging>jar</packaging>
-    <description>Utilities to create pieces of model.</description>
+    <description>A framework for creating games using the Mokap engine.</description>
     <dependencies>
         <dependency>
             <groupId>es.e-ucm.ead</groupId>

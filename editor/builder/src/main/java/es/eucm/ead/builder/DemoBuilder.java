@@ -1455,7 +1455,7 @@ public abstract class DemoBuilder {
 	}
 
 	public IfThenElseIf makeIfElse(String condition, Effect ifEffect,
-                                   Effect elseEffect) {
+			Effect elseEffect) {
 		Array<Effect> ifEffects = new Array<Effect>();
 		ifEffects.add(ifEffect);
 
@@ -1465,7 +1465,7 @@ public abstract class DemoBuilder {
 	}
 
 	public IfThenElseIf makeIfElse(String condition, Array<Effect> ifEffects,
-                                   Array<Effect> elseEffects) {
+			Array<Effect> elseEffects) {
 		IfThenElseIf ifThen = new IfThenElseIf();
 		ifThen.setCondition(condition);
 		ifThen.setEffects(ifEffects);

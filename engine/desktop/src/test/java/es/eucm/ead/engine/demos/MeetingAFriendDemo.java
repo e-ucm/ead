@@ -37,8 +37,8 @@
 package es.eucm.ead.engine.demos;
 
 import es.eucm.ead.engine.demobuilder.ExecutableDemoBuilder;
-import es.eucm.ead.builder.converters.ConversationBuilder;
-import es.eucm.ead.builder.converters.ConversationBuilder.ForkBuilder;
+import es.eucm.ead.builder.ConversationBuilder;
+import es.eucm.ead.builder.ConversationBuilder.ForkBuilder;
 
 /**
  * Created by angel on 24/07/14.

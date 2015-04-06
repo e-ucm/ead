@@ -39,7 +39,7 @@ package es.eucm.ead.engine;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.Stage;
-import es.eucm.ead.builder.converters.DemoBuilder;
+import es.eucm.ead.builder.DemoBuilder;
 import es.eucm.ead.engine.assets.GameAssets;
 import es.eucm.ead.engine.expressions.operators.OperationsFactory;
 import es.eucm.ead.engine.mock.MockApplication;

@@ -36,7 +36,7 @@
  */
 package es.eucm.ead.editor.importer;
 
-import es.eucm.ead.builder.converters.DemoBuilder;
+import es.eucm.ead.builder.DemoBuilder;
 
 /**
  * Created by Javier Torrente on 29/09/14.
