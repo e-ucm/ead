@@ -1,0 +1,15 @@
+{
+    "additionalProperties": false,
+    "javaType": "es.eucm.ead.schema.components.BackgroundShader",
+    "type": "object",
+    "extends": {
+        "$ref": "component.json"
+    },
+    "properties": {
+        "uri": {
+            "type": "string",
+            "description": "Uri of the file with the fragment shader"
+        }
+    },
+    "description": "Shader that fills the whole entity"
+}
