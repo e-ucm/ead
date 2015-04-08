@@ -34,52 +34,36 @@
  *      You should have received a copy of the GNU Lesser General Public License
  *      along with eAdventure.  If not, see <http://www.gnu.org/licenses/>.
  */
-package es.eucm.ead.engine.demos;
+package es.eucm.ead.engine.renderers;
 
-import es.eucm.ead.editor.demobuilder.EditorDemoBuilder;
-import es.eucm.ead.editor.demobuilder.ConversationBuilder;
-import es.eucm.ead.editor.demobuilder.ConversationBuilder.ForkBuilder;
+import com.badlogic.gdx.scenes.scene2d.Actor;
+import es.eucm.ead.engine.DefaultEngineInitializer;
+import es.eucm.ead.engine.EngineTest;
+import org.junit.Test;
 
-/**
- * Created by angel on 24/07/14.
- */
-public class MeetingAFriendDemo extends EditorDemoBuilder {
+import static org.junit.Assert.assertEquals;
 
-	public MeetingAFriendDemo() {
-		super("planes-demo");
-	}
+public class EmptyTest extends EngineTest {
 
 	@Override
-	public String[] assetPaths() {
-		return new String[] { "images/background.png", "images/rocks_down.png",
-				"images/rocks_up.png", "images/starGold.png", "plane/red.json" };
-	}
-
-	@Override
-	public String getName() {
-		return "Meeting a friend";
+	public void prepareEngine() {
+		new DefaultEngineInitializer().init(gameAssets, gameLoop,
+				entitiesLoader, gameView, variablesManager);
 	}
 
 	@Override
 	protected void doBuild() {
-		String conversationId = "c";
-		singleSceneGame(assets[0]);
-
-		ConversationBuilder conversation = initBehavior(getLastScene(),
-				makeTriggerConversation(conversationId, 0)).conversation(
-				getLastEntity(), conversationId);
-
-		ForkBuilder option = conversation
-				.speakers("Angus", "Friederick", "green").start()
-				.line(0, "Hello!").line(1, "Hi there! How are you?").options();
-		option.start("Fine, thanks").line(1, "I'm glad you are fine")
-				.nextNode(0);
-		option.start("Really bad, actually").line(1, "I'm glad you are bad")
-				.nextNode(0);
+		game(200, 200).scene().entity(0, 0).emptyRectangle(1, 1, true)
+				.name("all").entity(0, 0).emptyRectangle(10, 10)
+				.name("rectangle");
 	}
 
-	public static void main(String[] args) {
-		MeetingAFriendDemo demo = new MeetingAFriendDemo();
-		demo.run();
+	@Test
+	public void testHit() {
+		Actor actor = hit(5, 5);
+		assertEquals(actor.getName(), "rectangle");
+		actor = hit(-200, -300);
+		assertEquals(actor.getName(), "all");
+
 	}
 }

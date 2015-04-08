@@ -36,9 +36,7 @@
  */
 package es.eucm.ead.engine.demos;
 
-import com.badlogic.gdx.backends.lwjgl.LwjglNativesLoader;
-import es.eucm.ead.editor.demobuilder.EditorDemoBuilder;
-import es.eucm.ead.engine.mock.MockApplication;
+import es.eucm.ead.engine.demobuilder.ExecutableDemoBuilder;
 import es.eucm.ead.engine.utils.SwingEDTUtils;
 
 import javax.imageio.ImageIO;
@@ -73,7 +71,7 @@ public class DemoLauncher extends JFrame {
 	public static final int WIDTH = 500;
 	public static final int HEIGHT = 800;
 
-	private HashMap<String, EditorDemoBuilder> availableDemos;
+	private HashMap<String, ExecutableDemoBuilder> availableDemos;
 
 	private JLabel snapshotImage;
 
@@ -86,7 +84,7 @@ public class DemoLauncher extends JFrame {
 	public DemoLauncher() {
 		super("Demo launcher");
 		this.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
-		availableDemos = new HashMap<String, EditorDemoBuilder>();
+		availableDemos = new HashMap<String, ExecutableDemoBuilder>();
 		registerDemos();
 		demoSelector = new JComboBox();
 		demoSelector.setModel(new DefaultComboBoxModel(getDemoNames()));
@@ -107,8 +105,8 @@ public class DemoLauncher extends JFrame {
 		run.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				EditorDemoBuilder demoBuilder = availableDemos.get(demoSelector
-						.getSelectedItem());
+				ExecutableDemoBuilder demoBuilder = availableDemos
+						.get(demoSelector.getSelectedItem());
 				if (demoBuilder != null) {
 					demoBuilder.run();
 					SwingEDTUtils.invokeLater(new Runnable() {
@@ -166,9 +164,10 @@ public class DemoLauncher extends JFrame {
 		registerDemo(new SpineDemo());
 		registerDemo(new ShadersDemo());
 		registerDemo(new URLImageDemo());
+		registerDemo(new RenderersDemo());
 	}
 
-	private void registerDemo(EditorDemoBuilder demoBuilder) {
+	private void registerDemo(ExecutableDemoBuilder demoBuilder) {
 		availableDemos.put(demoBuilder.getName(), demoBuilder);
 	}
 
@@ -182,7 +181,7 @@ public class DemoLauncher extends JFrame {
 		return names;
 	}
 
-	private Image loadSnapshot(EditorDemoBuilder demoBuilder) {
+	private Image loadSnapshot(ExecutableDemoBuilder demoBuilder) {
 		try {
 			InputStream inputStream = demoBuilder.getSnapshotInputStream();
 			if (inputStream != null) {
@@ -197,7 +196,7 @@ public class DemoLauncher extends JFrame {
 	}
 
 	private void updateDemoSelected() {
-		EditorDemoBuilder demoBuilder = availableDemos.get(demoSelector
+		ExecutableDemoBuilder demoBuilder = availableDemos.get(demoSelector
 				.getSelectedItem());
 		if (demoBuilder == null) {
 			snapshotImage.setIcon(null);
@@ -217,9 +216,6 @@ public class DemoLauncher extends JFrame {
 	}
 
 	public static void main(String[] args) {
-		LwjglNativesLoader.load();
-		MockApplication.initStatics();
-		DemoLauncher launcher = new DemoLauncher();
-
+		new DemoLauncher();
 	}
 }

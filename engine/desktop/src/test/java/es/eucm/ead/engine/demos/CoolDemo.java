@@ -34,13 +34,44 @@
  *      You should have received a copy of the GNU Lesser General Public License
  *      along with eAdventure.  If not, see <http://www.gnu.org/licenses/>.
  */
-package es.eucm.ead.editor.importer;
+package es.eucm.ead.engine.demos;
 
-import es.eucm.ead.builder.DemoBuilder;
+import es.eucm.ead.engine.demobuilder.ExecutableDemoBuilder;
+import es.eucm.ead.schema.effects.GoScene.Transition;
+import es.eucm.ead.schema.entities.ModelEntity;
 
 /**
- * Created by Javier Torrente on 29/09/14.
+ * Created by angel on 29/11/14.
  */
-public interface Importer {
-	public void process(EAdventure1XGame oldGame, DemoBuilder builder);
+public class CoolDemo extends ExecutableDemoBuilder {
+
+	public CoolDemo() {
+		super("cooldemo");
+	}
+
+	@Override
+	public String getDescription() {
+		return "Demo with some things";
+	}
+
+	@Override
+	protected void doBuild() {
+		ModelEntity bee = game(800, 600).scene("map.png").name("map")
+				.entity(getLastScene(), "bee.png", 200, 200).name("bee")
+				.getLastEntity();
+
+		String initialScene = getLastSceneId();
+		scene("map.png")
+				.name("map")
+				.entity(getLastScene(), "p1_stand.png", 200, 200)
+				.name("alien_stand")
+				.touchBehavior(
+						makeGoScene(initialScene, Transition.SLIDE_DOWN, 1.0f,
+								true)).playSound("sound.wav");
+		String sceneId = getLastSceneId();
+		touchBehavior(bee,
+				makeGoScene(sceneId, Transition.SLICE_VERTICAL, 2.0f));
+		moveTween(bee, 600, 0);
+		infiniteTimer(bee, 2, makePlaySound("sound.wav"));
+	}
 }

@@ -253,6 +253,7 @@ public class DefaultGameView extends WidgetGroup implements GameView {
 			super(gameLoop);
 			this.layer = layer;
 			Group group = new EntityGroup();
+			group.setName(layer.name());
 			group.setTouchable(Touchable.childrenOnly);
 			this.setGroup(group);
 		}

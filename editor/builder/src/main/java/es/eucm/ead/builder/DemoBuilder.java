@@ -34,12 +34,14 @@
  *      You should have received a copy of the GNU Lesser General Public License
  *      along with eAdventure.  If not, see <http://www.gnu.org/licenses/>.
  */
-package es.eucm.ead.editor.demobuilder;
+package es.eucm.ead.builder;
 
+import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.reflect.ClassReflection;
 import com.badlogic.gdx.utils.reflect.Field;
 import com.badlogic.gdx.utils.reflect.ReflectionException;
 import es.eucm.ead.schema.components.ModelComponent;
+import es.eucm.ead.schema.components.Reference;
 import es.eucm.ead.schema.components.Tags;
 import es.eucm.ead.schema.components.behaviors.Behavior;
 import es.eucm.ead.schema.components.behaviors.Event;
@@ -55,11 +57,19 @@ import es.eucm.ead.schema.components.tweens.MoveTween;
 import es.eucm.ead.schema.components.tweens.RotateTween;
 import es.eucm.ead.schema.components.tweens.ScaleTween;
 import es.eucm.ead.schema.components.tweens.Tween;
+import es.eucm.ead.schema.components.tweens.Tween.EaseEquation;
+import es.eucm.ead.schema.components.tweens.Tween.EaseType;
+import es.eucm.ead.schema.data.Color;
 import es.eucm.ead.schema.data.Parameter;
 import es.eucm.ead.schema.data.Script;
+import es.eucm.ead.schema.data.shape.Circle;
+import es.eucm.ead.schema.data.shape.Rectangle;
+import es.eucm.ead.schema.data.shape.Shape;
 import es.eucm.ead.schema.effects.AddComponent;
 import es.eucm.ead.schema.effects.AddEntity;
+import es.eucm.ead.schema.effects.ChangeState;
 import es.eucm.ead.schema.effects.ChangeVar;
+import es.eucm.ead.schema.effects.ChangeVar.Context;
 import es.eucm.ead.schema.effects.Effect;
 import es.eucm.ead.schema.effects.GoScene;
 import es.eucm.ead.schema.effects.GoScene.Transition;
@@ -67,11 +77,14 @@ import es.eucm.ead.schema.effects.PlaySound;
 import es.eucm.ead.schema.effects.SetViewport;
 import es.eucm.ead.schema.effects.TriggerConversation;
 import es.eucm.ead.schema.effects.controlstructures.ControlStructure;
+import es.eucm.ead.schema.effects.controlstructures.IfThenElseIf;
 import es.eucm.ead.schema.entities.ModelEntity;
+import es.eucm.ead.schema.renderers.EmptyRenderer;
 import es.eucm.ead.schema.renderers.Frame;
 import es.eucm.ead.schema.renderers.Frames;
 import es.eucm.ead.schema.renderers.Image;
 import es.eucm.ead.schema.renderers.Renderer;
+import es.eucm.ead.schema.renderers.ShapeRenderer;
 import es.eucm.ead.schema.renderers.State;
 import es.eucm.ead.schema.renderers.States;
 import es.eucm.ead.schemax.ModelStructure;
@@ -118,6 +131,8 @@ public abstract class DemoBuilder {
 
 	protected static final String LOG_TAG = "DemoBuilder";
 
+	public static final String LIBRARY_PATH = "library/";
+
 	public static final String WALK = "walk";
 	public static final String TALK = "talk";
 	public static final String GRAB = "grab";
@@ -150,6 +165,8 @@ public abstract class DemoBuilder {
 	protected float gameWidth;
 	protected float gameHeight;
 	private String lastSceneId;
+	private ModelEntity game;
+	private Behavior initGame;
 
 	public DemoBuilder() {
 		entities = new HashMap<String, ModelEntity>();
@@ -231,18 +248,18 @@ public abstract class DemoBuilder {
 		gameWidth = width;
 		gameHeight = height;
 
-		ModelEntity game = entity().getLastEntity();
-		Behavior init = new Behavior();
-		init.setEvent(new Init());
+		game = entity().getLastEntity();
+		initGame = new Behavior();
+		initGame.setEvent(new Init());
 		AddEntity loadScene = new AddEntity();
 		loadScene.setEntityUri(DEFAULT_SCENE_PREF + sceneCount + JSON);
 		loadScene.setTarget("(layer sscene_content)");
-		init.getEffects().add(loadScene);
+		initGame.getEffects().add(loadScene);
 		SetViewport viewport = new SetViewport();
 		viewport.setWidth(width);
 		viewport.setHeight(height);
-		init.getEffects().add(viewport);
-		game.getComponents().add(init);
+		initGame.getEffects().add(viewport);
+		game.getComponents().add(initGame);
 		entities.put(ModelStructure.GAME_FILE, game);
 		return this;
 	}
@@ -264,6 +281,20 @@ public abstract class DemoBuilder {
 	private DemoBuilder entity() {
 		lastEntity = new ModelEntity();
 		return this;
+	}
+
+	/**
+	 * Creates an empty with no renderer in x,y
+	 */
+	public DemoBuilder entity(float x, float y) {
+		return entity(getLastEntity(), null, x, y);
+	}
+
+	/**
+	 * Creates an empty with no renderer in x,y
+	 */
+	public DemoBuilder entity(ModelEntity parent, float x, float y) {
+		return entity(parent, null, x, y);
 	}
 
 	/**
@@ -293,7 +324,7 @@ public abstract class DemoBuilder {
 	public DemoBuilder entity(ModelEntity parent, String imageUri, float x,
 			float y) {
 		ModelEntity modelEntity = entity().getLastEntity();
-		addImage(modelEntity, imageUri);
+		image(modelEntity, imageUri);
 		modelEntity.setX(x);
 		modelEntity.setY(y);
 		if (parent != null) {
@@ -302,7 +333,15 @@ public abstract class DemoBuilder {
 		return this;
 	}
 
-	public DemoBuilder addImage(ModelEntity entity, String uri) {
+	public DemoBuilder libraryEntity(String entityId) {
+		lastEntity = new ModelEntity();
+		entities.put(LIBRARY_PATH + entityId + "/"
+				+ ModelStructure.CONTENTS_FOLDER + ModelStructure.ENTITY_FILE,
+				lastEntity);
+		return this;
+	}
+
+	public DemoBuilder image(ModelEntity entity, String uri) {
 		if (uri != null) {
 			entity.getComponents().add(createImage(uri));
 		}
@@ -314,6 +353,11 @@ public abstract class DemoBuilder {
 		entity.getComponents().add(conversation);
 		conversation.setConversationId(id);
 		return new ConversationBuilder(conversation);
+	}
+
+	public DemoBuilder image(String uri) {
+		image(getLastEntity(), uri);
+		return this;
 	}
 
 	protected Image createImage(String uri) {
@@ -351,6 +395,13 @@ public abstract class DemoBuilder {
 		return entity(parent, imageUri, x, y);
 	}
 
+	public DemoBuilder scene() {
+		lastScene = entity().getLastEntity();
+		lastSceneId = DEFAULT_SCENE_PREF + (sceneCount++) + JSON;
+		entities.put(lastSceneId, lastScene);
+		return this;
+	}
+
 	/**
 	 * Creates a scene with the given image as background
 	 * 
@@ -359,12 +410,10 @@ public abstract class DemoBuilder {
 	 *            background
 	 */
 	public DemoBuilder scene(String imageUri) {
-		lastScene = entity().getLastEntity();
+		scene();
 		if (imageUri != null) {
-			lastScene.getChildren().add(entity(imageUri, 0, 0).getLastEntity());
+			entity(lastScene, imageUri, 0, 0);
 		}
-		lastSceneId = DEFAULT_SCENE_PREF + (sceneCount++) + JSON;
-		entities.put(lastSceneId, lastScene);
 		return this;
 	}
 
@@ -443,6 +492,15 @@ public abstract class DemoBuilder {
 		return this;
 	}
 
+	public DemoBuilder state(Renderer renderer, String... tags) {
+		States states = (States) lastComponent;
+		State state = new State();
+		state.setRenderer(renderer);
+		state.setStates(new Array<String>(tags));
+		states.getStates().add(state);
+		return this;
+	}
+
 	/**
 	 * Adds a blink animation to the last added entity. Equivalent to:
 	 * blinkFrameAnimation(getLastEntity(), 4F, 0.1F, frames);
@@ -467,6 +525,17 @@ public abstract class DemoBuilder {
 	 */
 	public DemoBuilder blinkFrameAnimation(ModelEntity parent, String... frames) {
 		return blinkFrameAnimation(parent, 4F, 0.1F, frames);
+	}
+
+	public DemoBuilder scale(float scale) {
+		getLastEntity().setScaleX(scale);
+		getLastEntity().setScaleY(scale);
+		return this;
+	}
+
+	public DemoBuilder rotation(float rotation) {
+		getLastEntity().setRotation(rotation);
+		return this;
 	}
 
 	/**
@@ -606,10 +675,6 @@ public abstract class DemoBuilder {
 	 * frame renderer, a new frame renderer is created and added. Any previous
 	 * renderers available are converted to frames.
 	 * 
-	 * @param modelEntity
-	 *            The entity to add a frame to
-	 * @param frameUri
-	 *            The relative uri for the image of the frame
 	 * @param duration
 	 *            The frame duration
 	 */
@@ -1142,6 +1207,12 @@ public abstract class DemoBuilder {
 				null, null, -2 * currentScale, null, null, null);
 	}
 
+	public RotateTween makeRotateTween(float rotation, float duration) {
+		return makeTween(RotateTween.class, null, null, null, null, duration,
+				true, EaseEquation.QUINT, EaseType.INOUT, rotation, null, null,
+				null);
+	}
+
 	/**
 	 * Makes an empty tween of the given type.
 	 * 
@@ -1271,6 +1342,140 @@ public abstract class DemoBuilder {
 		goScene.setDuration(duration);
 		goScene.setUpdateGameLoop(updateGameLoop);
 		return goScene;
+	}
+
+	public DemoBuilder color(float r, float g, float b, float a) {
+		Color color = new Color();
+		color.setR(r);
+		color.setG(g);
+		color.setB(b);
+		color.setA(a);
+		getLastEntity().setColor(color);
+		return this;
+	}
+
+	public DemoBuilder emptyRectangle(int width, int height) {
+		emptyRectangle(width, height, false);
+		return this;
+	}
+
+	public DemoBuilder emptyRectangle(int width, int height, boolean hitAll) {
+		EmptyRenderer emptyRenderer = new EmptyRenderer();
+		Rectangle rectangle = new Rectangle();
+		emptyRenderer.setShape(rectangle);
+		emptyRenderer.setHitAll(hitAll);
+		rectangle.setWidth(width);
+		rectangle.setHeight(height);
+		getLastEntity().getComponents().add(emptyRenderer);
+		return this;
+	}
+
+	public DemoBuilder origin(float originX, float originY) {
+		getLastEntity().setOriginX(originX);
+		getLastEntity().setOriginY(originY);
+		return this;
+	}
+
+	public DemoBuilder frames(float frameTime, String... frameUris) {
+		getLastEntity().getComponents().add(makeFrames(frameTime, frameUris));
+		return this;
+	}
+
+	public DemoBuilder frames(float frameTime, String prefix, String suffix,
+			int init, int end, int numberCharacters) {
+		getLastEntity().getComponents().add(
+				makeFrames(frameTime, prefix, suffix, init, end,
+						numberCharacters));
+		return this;
+	}
+
+	public DemoBuilder name(String name) {
+		getLastEntity().setName(name);
+		return this;
+	}
+
+	public DemoBuilder reference(String referenceUri) {
+		Reference reference = new Reference();
+		reference.setFolder(referenceUri + "/");
+		reference.setEntity(ModelStructure.CONTENTS_FOLDER
+				+ ModelStructure.ENTITY_FILE);
+		getLastEntity().getComponents().add(reference);
+		return this;
+	}
+
+	public Frames makeFrames(float frameTime, String prefix, String suffix,
+			int init, int end, int numberCharacters) {
+		String[] uris = new String[end - init + 1];
+		for (int i = init; i <= end; i++) {
+			String number = i + "";
+			while (number.length() < numberCharacters) {
+				number = "0" + number;
+			}
+			uris[i - init] = prefix + number + suffix;
+		}
+		return makeFrames(frameTime, uris);
+	}
+
+	public Frames makeFrames(float frameTime, String... frameUris) {
+		Frames frames = new Frames();
+		for (String uri : frameUris) {
+			Frame frame = new Frame();
+			Image image = new Image();
+			image.setUri(uri);
+			frame.setRenderer(image);
+			frame.setTime(frameTime);
+			frames.getFrames().add(frame);
+		}
+		return frames;
+	}
+
+	public DemoBuilder circle(int radius) {
+		getLastEntity().getComponents().add(
+				buildShapeRenderer(makeCircle(radius)));
+		return this;
+	}
+
+	public ShapeRenderer buildShapeRenderer(Shape shape) {
+		ShapeRenderer shapeRenderer = new ShapeRenderer();
+		shapeRenderer.setShape(shape);
+		return shapeRenderer;
+	}
+
+	public Circle makeCircle(int radius) {
+		Circle circle = new Circle();
+		circle.setRadius(radius);
+		return circle;
+	}
+
+	public ChangeState makeChangeState(String target, String state) {
+		ChangeState changeState = new ChangeState();
+		changeState.setStateTag(state);
+		changeState.setTarget(target);
+		return changeState;
+	}
+
+	public IfThenElseIf makeIfElse(String condition, Effect ifEffect,
+			Effect elseEffect) {
+		Array<Effect> ifEffects = new Array<Effect>();
+		ifEffects.add(ifEffect);
+
+		Array<Effect> elseEffects = new Array<Effect>();
+		elseEffects.add(elseEffect);
+		return makeIfElse(condition, ifEffects, elseEffects);
+	}
+
+	public IfThenElseIf makeIfElse(String condition, Array<Effect> ifEffects,
+			Array<Effect> elseEffects) {
+		IfThenElseIf ifThen = new IfThenElseIf();
+		ifThen.setCondition(condition);
+		ifThen.setEffects(ifEffects);
+		ifThen.setElse(elseEffects);
+		return ifThen;
+	}
+
+	public void initVar(String var, String expression) {
+		initGame.getEffects().add(
+				makeChangeVar(var, expression, Context.GLOBAL));
 	}
 
 	public enum HorizontalAlign {

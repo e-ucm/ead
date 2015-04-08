@@ -305,6 +305,7 @@
                 <module>engine/desktop</module>
                 <module>engine/android</module>
                 <module>editor/schema</module>
+                <module>editor/builder</module>
                 <module>editor/core</module>
                 <module>editor/desktop</module>
                 <module>editor/importer</module>

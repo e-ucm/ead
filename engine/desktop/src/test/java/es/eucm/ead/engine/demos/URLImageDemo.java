@@ -36,14 +36,14 @@
  */
 package es.eucm.ead.engine.demos;
 
-import es.eucm.ead.editor.demobuilder.EditorDemoBuilder;
+import es.eucm.ead.engine.demobuilder.ExecutableDemoBuilder;
 import es.eucm.ead.schema.entities.ModelEntity;
 import es.eucm.ead.schema.renderers.Image;
 
 /**
  * Created by angel on 29/11/14.
  */
-public class URLImageDemo extends EditorDemoBuilder {
+public class URLImageDemo extends ExecutableDemoBuilder {
 
 	public URLImageDemo() {
 		super("URL Image Demo");

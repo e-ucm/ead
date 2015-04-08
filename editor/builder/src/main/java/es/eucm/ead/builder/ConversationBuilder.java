@@ -34,7 +34,7 @@
  *      You should have received a copy of the GNU Lesser General Public License
  *      along with eAdventure.  If not, see <http://www.gnu.org/licenses/>.
  */
-package es.eucm.ead.editor.demobuilder;
+package es.eucm.ead.builder;
 
 import es.eucm.ead.schema.components.conversation.ConditionedNode;
 import es.eucm.ead.schema.components.conversation.Conversation;

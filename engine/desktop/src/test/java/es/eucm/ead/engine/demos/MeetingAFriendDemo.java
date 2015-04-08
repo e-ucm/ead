@@ -36,37 +36,50 @@
  */
 package es.eucm.ead.engine.demos;
 
-import es.eucm.ead.editor.demobuilder.EditorDemoBuilder;
-import es.eucm.ead.schema.entities.ModelEntity;
-import es.eucm.ead.schema.renderers.SpineAnimation;
+import es.eucm.ead.engine.demobuilder.ExecutableDemoBuilder;
+import es.eucm.ead.builder.ConversationBuilder;
+import es.eucm.ead.builder.ConversationBuilder.ForkBuilder;
 
 /**
- * Created by angel on 29/11/14.
+ * Created by angel on 24/07/14.
  */
-public class SpineDemo extends EditorDemoBuilder {
+public class MeetingAFriendDemo extends ExecutableDemoBuilder {
 
-	public SpineDemo() {
-		super("spine");
+	public MeetingAFriendDemo() {
+		super("planes-demo");
 	}
 
 	@Override
-	public String getDescription() {
-		return "Simple demo that demonstrates how spine animations work.\nMore details can be found at:\nhttp://es.esotericsoftware.com/spine-using-runtimes";
+	public String[] assetPaths() {
+		return new String[] { "images/background.png", "images/rocks_down.png",
+				"images/rocks_up.png", "images/starGold.png", "plane/red.json" };
+	}
+
+	@Override
+	public String getName() {
+		return "Meeting a friend";
 	}
 
 	@Override
 	protected void doBuild() {
-		ModelEntity scene = singleSceneGame(null, 800, 600).getLastScene();
+		String conversationId = "c";
+		singleSceneGame(assets[0]);
 
-		ModelEntity animation = new ModelEntity();
-		SpineAnimation spineAnimation = new SpineAnimation();
-		spineAnimation.setUri("spineboy");
-		spineAnimation.setInitialState("idle");
+		ConversationBuilder conversation = initBehavior(getLastScene(),
+				makeTriggerConversation(conversationId, 0)).conversation(
+				getLastEntity(), conversationId);
 
-		animation.setX(300);
+		ForkBuilder option = conversation
+				.speakers("Angus", "Friederick", "green").start()
+				.line(0, "Hello!").line(1, "Hi there! How are you?").options();
+		option.start("Fine, thanks").line(1, "I'm glad you are fine")
+				.nextNode(0);
+		option.start("Really bad, actually").line(1, "I'm glad you are bad")
+				.nextNode(0);
+	}
 
-		animation.getComponents().add(spineAnimation);
-
-		scene.getChildren().add(animation);
+	public static void main(String[] args) {
+		MeetingAFriendDemo demo = new MeetingAFriendDemo();
+		demo.run();
 	}
 }

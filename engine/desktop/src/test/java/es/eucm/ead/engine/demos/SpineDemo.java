@@ -36,39 +36,37 @@
  */
 package es.eucm.ead.engine.demos;
 
-import es.eucm.ead.editor.demobuilder.EditorDemoBuilder;
-import es.eucm.ead.schema.effects.GoScene.Transition;
+import es.eucm.ead.engine.demobuilder.ExecutableDemoBuilder;
 import es.eucm.ead.schema.entities.ModelEntity;
+import es.eucm.ead.schema.renderers.SpineAnimation;
 
 /**
  * Created by angel on 29/11/14.
  */
-public class CoolDemo extends EditorDemoBuilder {
+public class SpineDemo extends ExecutableDemoBuilder {
 
-	public CoolDemo() {
-		super("cooldemo");
+	public SpineDemo() {
+		super("spine");
 	}
 
 	@Override
 	public String getDescription() {
-		return "Demo with some things";
+		return "Simple demo that demonstrates how spine animations work.\nMore details can be found at:\nhttp://es.esotericsoftware.com/spine-using-runtimes";
 	}
 
 	@Override
 	protected void doBuild() {
-		ModelEntity bee = game(800, 600).scene("map.png")
-				.entity("bee.png", 200, 200).getLastEntity();
+		ModelEntity scene = singleSceneGame(null, 800, 600).getLastScene();
 
-		String initialScene = getLastSceneId();
-		scene("map.png")
-				.entity("p1_stand.png", 200, 200)
-				.touchBehavior(
-						makeGoScene(initialScene, Transition.SLIDE_DOWN, 1.0f,
-								true)).playSound("sound.wav");
-		String sceneId = getLastSceneId();
-		touchBehavior(bee,
-				makeGoScene(sceneId, Transition.SLICE_VERTICAL, 2.0f));
-		moveTween(bee, 600, 0);
-		infiniteTimer(bee, 2, makePlaySound("sound.wav"));
+		ModelEntity animation = new ModelEntity();
+		SpineAnimation spineAnimation = new SpineAnimation();
+		spineAnimation.setUri("spineboy");
+		spineAnimation.setInitialState("idle");
+
+		animation.setX(300);
+
+		animation.getComponents().add(spineAnimation);
+
+		scene.getChildren().add(animation);
 	}
 }

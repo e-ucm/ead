@@ -36,7 +36,10 @@
  */
 package es.eucm.ead.engine;
 
+import com.badlogic.gdx.math.Vector2;
+import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.Stage;
+import es.eucm.ead.builder.DemoBuilder;
 import es.eucm.ead.engine.assets.GameAssets;
 import es.eucm.ead.engine.expressions.operators.OperationsFactory;
 import es.eucm.ead.engine.mock.MockApplication;
@@ -46,13 +49,19 @@ import es.eucm.ead.engine.mock.MockImageUtils;
 import es.eucm.ead.engine.mock.schema.MockEffect;
 import es.eucm.ead.engine.mock.schema.MockModelComponent;
 import es.eucm.ead.engine.variables.VariablesManager;
+import es.eucm.ead.schema.entities.ModelEntity;
+import es.eucm.ead.schemax.ModelStructure;
 import org.junit.Before;
 import org.junit.BeforeClass;
+
+import java.util.Map.Entry;
 
 /**
  * Created by angel on 24/06/14.
  */
-public class EngineTest {
+public class EngineTest extends DemoBuilder {
+
+	private static Vector2 tmp = new Vector2();
 
 	protected Accessor accessor;
 
@@ -103,5 +112,47 @@ public class EngineTest {
 				new MockComponentProcessor(gameLoop));
 		gameAssets.addClassTag("mockeffect", MockEffect.class);
 		gameAssets.addClassTag("mockcomponent", MockModelComponent.class);
+		doBuild();
+		prepareEngine();
+		for (Entry<String, ModelEntity> entry : entities.entrySet()) {
+			gameAssets.addAsset(entry.getKey(), Object.class, entry.getValue());
+		}
+
+		if (gameAssets.isLoaded(ModelStructure.GAME_FILE, Object.class)) {
+			ModelEntity game = (ModelEntity) gameAssets.get(
+					ModelStructure.GAME_FILE, Object.class);
+
+			if (game != null) {
+				GameLoader gameLoader = new GameLoader(gameAssets,
+						entitiesLoader);
+				gameLoader.loaded(ModelStructure.GAME_FILE, game);
+				// Load first scene
+				update(0);
+				loadAssets();
+				update(0);
+				loadAssets();
+			}
+		}
+	}
+
+	public void prepareEngine() {
+	}
+
+	public void update(float delta) {
+		gameLoop.update(delta);
+	}
+
+	public void loadAssets() {
+		while (!gameAssets.update())
+			;
+	}
+
+	public Actor hit(float stageX, float stageY) {
+		return stage.hit(stageX, stageY, true);
+	}
+
+	@Override
+	protected void doBuild() {
+
 	}
 }
