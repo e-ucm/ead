@@ -307,7 +307,6 @@
                 <module>editor/schema</module>
                 <module>editor/builder</module>
                 <module>editor/core</module>
-                <module>editor/desktop</module>
                 <module>editor/importer</module>
                 <module>editor/exporter</module>
                 <module>editor/mokap/core</module>
