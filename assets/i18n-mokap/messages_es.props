@@ -34,6 +34,7 @@ drawing = Dibujo
 drawing.save = Guardar dibujo
 drawing.discard = Descartar dibujo
 edit = Editar
+edit.Pixlr = Editar con Pixlr
 element = Elemento
 erase = Borrar
 fadeIn = Aparecer
