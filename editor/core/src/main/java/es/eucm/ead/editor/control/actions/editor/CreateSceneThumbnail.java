@@ -38,6 +38,7 @@ package es.eucm.ead.editor.control.actions.editor;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.files.FileHandle;
+import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.Pixmap;
 import com.badlogic.gdx.graphics.Pixmap.Format;
@@ -159,10 +160,12 @@ public class CreateSceneThumbnail extends EditorAction {
 
 		Gdx.gl.glClearColor(1f, 1f, 1f, 1f);
 		Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
+		Color color = batch.getColor();
 		batch.begin();
 		root.draw(batch, 1.0f);
 		batch.end();
 		frameBuffer.end();
+		batch.setColor(color);
 		return frameBuffer;
 	}
 
