@@ -74,12 +74,7 @@ import es.eucm.ead.editor.view.builders.scene.draw.BrushStrokes;
 import es.eucm.ead.editor.view.builders.scene.draw.BrushStrokes.ModeEvent;
 import es.eucm.ead.editor.view.builders.scene.draw.BrushStrokes.ModeListener;
 import es.eucm.ead.editor.view.listeners.VisibleListener;
-import es.eucm.ead.editor.view.widgets.ContextMenu;
-import es.eucm.ead.editor.view.widgets.IconButton;
-import es.eucm.ead.editor.view.widgets.LabelTextEditor;
-import es.eucm.ead.editor.view.widgets.MultiWidget;
-import es.eucm.ead.editor.view.widgets.Switch;
-import es.eucm.ead.editor.view.widgets.WidgetBuilder;
+import es.eucm.ead.editor.view.widgets.*;
 import es.eucm.ead.editor.view.widgets.draw.BrushStrokesPicker;
 import es.eucm.ead.editor.view.widgets.draw.BrushStrokesPicker.SizeEvent;
 import es.eucm.ead.editor.view.widgets.draw.BrushStrokesPicker.SizeListener;
@@ -91,6 +86,8 @@ import es.eucm.ead.editor.view.widgets.layouts.LinearLayout;
 import es.eucm.ead.engine.I18N;
 import es.eucm.ead.schema.components.controls.Label;
 import es.eucm.ead.schema.entities.ModelEntity;
+
+import javax.swing.*;
 
 public class GroupEditorToolbar extends MultiWidget implements ModelView {
 
@@ -232,6 +229,7 @@ public class GroupEditorToolbar extends MultiWidget implements ModelView {
 
 		final LabelTextEditor textFontPane = new LabelTextEditor(skin,
 				controller);
+		final ImageEditor imageEditor = new ImageEditor(controller);
 		final IconButton edit = WidgetBuilder.toolbarIcon(
 				SkinConstants.IC_EDIT, i18N.m("edit"));
 
@@ -245,7 +243,8 @@ public class GroupEditorToolbar extends MultiWidget implements ModelView {
 							.action(ShowContextMenu.class, edit, textFontPane);
 					textFontPane.prepare(sceneEditor);
 				} else if (Q.hasImage(sceneElement)) {
-					controller.action(LaunchImageEditor.class);
+					controller.action(ShowContextMenu.class, edit, imageEditor);
+					imageEditor.prepare(sceneEditor);
 				} else if (Q.isGroup(sceneElement)) {
 					event.stop();
 					Actor actor = sceneEditor.getGroupEditor().findActor(
@@ -285,6 +284,8 @@ public class GroupEditorToolbar extends MultiWidget implements ModelView {
 				buildTransformContextMenu(i18N)));
 
 		transform.pack();
+		imageEditor.pack();
+		imageEditor.setOrigin(Align.topLeft);
 		textFontPane.setOrigin(textFontPane.getWidth()
 				- (transform.getWidth() - editButton.getX()),
 				textFontPane.getHeight());
