@@ -48,6 +48,7 @@ import es.eucm.ead.engine.GameLoader;
 import es.eucm.ead.engine.GameLoop;
 import es.eucm.ead.engine.GameView;
 import es.eucm.ead.engine.expressions.operators.OperationsFactory;
+import es.eucm.ead.engine.systems.MainSystem;
 import es.eucm.ead.engine.variables.VariablesManager;
 
 /**
@@ -129,6 +130,7 @@ public class Engine {
 		gameView.clearAllLayers();
 		gameLoop.setPlaying(true);
 		Gdx.graphics.setContinuousRendering(true);
+		variablesManager.setValue(MainSystem.TIME, 0f, true);
 	}
 
 	/**
