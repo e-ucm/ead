@@ -42,6 +42,7 @@ import com.badlogic.gdx.scenes.scene2d.Group;
 import com.badlogic.gdx.scenes.scene2d.actions.Actions;
 import com.badlogic.gdx.scenes.scene2d.actions.SequenceAction;
 import com.badlogic.gdx.scenes.scene2d.ui.*;
+import com.badlogic.gdx.scenes.scene2d.utils.Align;
 import com.badlogic.gdx.scenes.scene2d.utils.Drawable;
 import es.eucm.ead.editor.control.Controller;
 import es.eucm.ead.editor.control.Preferences;
@@ -58,10 +59,12 @@ import es.eucm.ead.editor.view.widgets.draw.ColorPickerPanel;
 import es.eucm.ead.editor.view.widgets.draw.ColorPickerPanel.ColorPickerPanelStyle;
 import es.eucm.ead.editor.view.widgets.draw.SlideColorPicker;
 import es.eucm.ead.engine.I18N;
+import es.eucm.ead.schema.components.Reference;
 import es.eucm.ead.schema.entities.ModelEntity;
 
 public class ImageEditor extends ContextMenu {
 
+	private Button pixlr;
 	private Controller controller;
 
 	private ColorPickerPanel colorPicker;
@@ -99,7 +102,7 @@ public class ImageEditor extends ContextMenu {
 			}
 		});
 
-		Button pixlr = WidgetBuilder.button(SkinConstants.IC_EDIT, controller
+		pixlr = WidgetBuilder.button(SkinConstants.IC_EDIT, controller
 				.getApplicationAssets().getI18N().m("edit.Pixlr"),
 				SkinConstants.STYLE_CONTEXT, LaunchImageEditor.class);
 		add(pixlr).expandX().fill();
@@ -111,6 +114,7 @@ public class ImageEditor extends ContextMenu {
 	public void prepare(SceneEditor sceneEditor) {
 		modelEntity = (ModelEntity) controller.getModel().getSelection()
 				.getSingle(Selection.SCENE_ELEMENT);
+		pixlr.setVisible(!Q.hasComponent(modelEntity, Reference.class));
 		image = sceneEditor.getGroupEditor().findActor(modelEntity);
 		Color color = Q.toLibgdxColor(modelEntity.getColor());
 		colorPicker.setPickedColor(color);

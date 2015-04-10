@@ -84,6 +84,7 @@ import es.eucm.ead.editor.view.widgets.draw.SlideColorPicker.ColorEvent;
 import es.eucm.ead.editor.view.widgets.draw.SlideColorPicker.ColorListener;
 import es.eucm.ead.editor.view.widgets.layouts.LinearLayout;
 import es.eucm.ead.engine.I18N;
+import es.eucm.ead.schema.components.Reference;
 import es.eucm.ead.schema.components.controls.Label;
 import es.eucm.ead.schema.entities.ModelEntity;
 
@@ -242,7 +243,8 @@ public class GroupEditorToolbar extends MultiWidget implements ModelView {
 					controller
 							.action(ShowContextMenu.class, edit, textFontPane);
 					textFontPane.prepare(sceneEditor);
-				} else if (Q.hasImage(sceneElement)) {
+				} else if (Q.hasImage(sceneElement)
+						|| Q.hasComponent(sceneElement, Reference.class)) {
 					controller.action(ShowContextMenu.class, edit, imageEditor);
 					imageEditor.prepare(sceneEditor);
 				} else if (Q.isGroup(sceneElement)) {
@@ -463,6 +465,7 @@ public class GroupEditorToolbar extends MultiWidget implements ModelView {
 			editButton.setSelectedWidget(0);
 			editVisible.setVisible(entity != null
 					&& (Q.hasImage(entity)
+							|| Q.hasComponent(entity, Reference.class)
 							|| Q.hasComponent(entity, Label.class) || entity
 							.getChildren().size > 1));
 		}
