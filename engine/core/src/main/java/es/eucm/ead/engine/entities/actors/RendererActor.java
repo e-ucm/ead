@@ -36,6 +36,7 @@
  */
 package es.eucm.ead.engine.entities.actors;
 
+import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.utils.Pool.Poolable;
@@ -62,15 +63,17 @@ public class RendererActor extends EntityGroup implements Poolable {
 	public void drawChildren(Batch batch, float parentAlpha) {
 		if (renderer != null) {
 			// Set alpha and color
-			float alpha = this.getColor().a;
-			this.getColor().a *= parentAlpha;
-			batch.setColor(this.getColor());
+			Color color = getColor();
+
+			Color batchColor = batch.getColor();
+			float packedColor = batch.getPackedColor();
+			batchColor.mul(color.r, color.g, color.b, color.a * parentAlpha);
+			batch.setColor(batchColor);
 
 			renderer.draw(batch);
 
-			// Restore alpha
-			this.getColor().a = alpha;
-
+			// Restore the color
+			batch.setColor(packedColor);
 		}
 		super.drawChildren(batch, parentAlpha);
 	}

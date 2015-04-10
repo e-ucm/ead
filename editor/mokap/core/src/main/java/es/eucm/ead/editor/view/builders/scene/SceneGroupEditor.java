@@ -480,7 +480,7 @@ public class SceneGroupEditor extends GroupEditor implements ModelView,
 		private final Array<String> TRANSFORMATION_FIELDS = new Array<String>(
 				new String[] { FieldName.X, FieldName.Y, FieldName.ORIGIN_X,
 						FieldName.ORIGIN_Y, FieldName.ROTATION,
-						FieldName.SCALE_X, FieldName.SCALE_Y });
+						FieldName.SCALE_X, FieldName.SCALE_Y, FieldName.COLOR });
 
 		@Override
 		public boolean listenToField(String fieldName) {
@@ -492,27 +492,38 @@ public class SceneGroupEditor extends GroupEditor implements ModelView,
 			entityPredicate.setEntity((ModelEntity) event.getTarget());
 			Actor actor = findActor(scene.getGroup(), entityPredicate);
 			if (actor != null) {
-				float value = (Float) event.getValue();
-				if (FieldName.X.equals(event.getField()))
-					actor.addAction(Actions2.moveToX(value, TIME,
-							Interpolation.exp5Out));
-				else if (FieldName.Y.equals(event.getField()))
-					actor.addAction(Actions2.moveToY(value, TIME,
-							Interpolation.exp5Out));
-				else if (FieldName.ROTATION.equals(event.getField()))
-					actor.addAction(Actions.rotateTo(value, TIME,
-							Interpolation.exp5Out));
-				else if (FieldName.ORIGIN_Y.equals(event.getField()))
-					actor.setOriginY(value);
-				else if (FieldName.ORIGIN_X.equals(event.getField()))
-					actor.setOriginX(value);
-				else if (FieldName.SCALE_X.equals(event.getField()))
-					actor.addAction(Actions2.scaleToX(value, TIME,
-							Interpolation.exp5Out));
-				else if (FieldName.SCALE_Y.equals(event.getField()))
-					actor.addAction(Actions2.scaleToY(value, TIME,
-							Interpolation.exp5Out));
-				refreshSelectionBox();
+				if (FieldName.COLOR.equals(event.getField())) {
+					Object value = event.getValue();
+					if (value != null) {
+						es.eucm.ead.schema.data.Color modelColor = (es.eucm.ead.schema.data.Color) value;
+						actor.setColor(modelColor.getR(), modelColor.getG(),
+								modelColor.getB(), modelColor.getA());
+					} else {
+						actor.setColor(1f, 1f, 1f, 1f);
+					}
+				} else {
+					float value = (Float) event.getValue();
+					if (FieldName.X.equals(event.getField()))
+						actor.addAction(Actions2.moveToX(value, TIME,
+								Interpolation.exp5Out));
+					else if (FieldName.Y.equals(event.getField()))
+						actor.addAction(Actions2.moveToY(value, TIME,
+								Interpolation.exp5Out));
+					else if (FieldName.ROTATION.equals(event.getField()))
+						actor.addAction(Actions.rotateTo(value, TIME,
+								Interpolation.exp5Out));
+					else if (FieldName.ORIGIN_Y.equals(event.getField()))
+						actor.setOriginY(value);
+					else if (FieldName.ORIGIN_X.equals(event.getField()))
+						actor.setOriginX(value);
+					else if (FieldName.SCALE_X.equals(event.getField()))
+						actor.addAction(Actions2.scaleToX(value, TIME,
+								Interpolation.exp5Out));
+					else if (FieldName.SCALE_Y.equals(event.getField()))
+						actor.addAction(Actions2.scaleToY(value, TIME,
+								Interpolation.exp5Out));
+					refreshSelectionBox();
+				}
 			}
 		}
 	}
@@ -538,12 +549,8 @@ public class SceneGroupEditor extends GroupEditor implements ModelView,
 				label.setText((String) value);
 			} else if (FieldName.COLOR.equals(event.getField())) {
 				es.eucm.ead.schema.data.Color modelColor = (es.eucm.ead.schema.data.Color) value;
-				Color color = new Color();
-				color.a = modelColor.getA();
-				color.r = modelColor.getR();
-				color.g = modelColor.getG();
-				color.b = modelColor.getB();
-				label.setColor(color);
+				label.setColor(modelColor.getR(), modelColor.getG(),
+						modelColor.getB(), modelColor.getA());
 			} else if (FieldName.STYLE.equals(event.getField())) {
 				label.setStyle(controller.getEditorGameAssets().getSkin()
 						.get((String) value, LabelStyle.class));

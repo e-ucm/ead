@@ -364,11 +364,14 @@ public class Q {
 	}
 
 	public static Color toLibgdxColor(es.eucm.ead.schema.data.Color modelColor) {
-		color.a = modelColor.getA();
-		color.r = modelColor.getR();
-		color.g = modelColor.getG();
-		color.b = modelColor.getB();
-
+		if (modelColor == null) {
+			color.set(1f, 1f, 1f, 1f);
+		} else {
+			color.a = modelColor.getA();
+			color.r = modelColor.getR();
+			color.g = modelColor.getG();
+			color.b = modelColor.getB();
+		}
 		return color;
 	}
 
