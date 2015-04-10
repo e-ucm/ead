@@ -45,6 +45,11 @@ import es.eucm.ead.engine.mock.MockApplication;
 import es.eucm.ead.engine.mock.MockFiles;
 import org.junit.Test;
 
+import java.io.IOException;
+import java.net.MalformedURLException;
+import java.net.URL;
+import java.net.URLConnection;
+
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
@@ -53,6 +58,9 @@ public class URLTextureLoaderTest {
 
 	@Test
 	public void testURL() {
+		if (!netIsAvailable()) {
+			return;
+		}
 		MockApplication.initStatics();
 		final FileHandle temp = FileHandle.tempFile("googlelogo");
 		GameAssets assets = new GameAssets(new MockFiles(), null);
@@ -77,5 +85,18 @@ public class URLTextureLoaderTest {
 
 		while (!assets.update())
 			;
+	}
+
+	private static boolean netIsAvailable() {
+		try {
+			final URL url = new URL("http://www.google.com");
+			final URLConnection conn = url.openConnection();
+			conn.connect();
+			return true;
+		} catch (MalformedURLException e) {
+			throw new RuntimeException(e);
+		} catch (IOException e) {
+			return false;
+		}
 	}
 }
