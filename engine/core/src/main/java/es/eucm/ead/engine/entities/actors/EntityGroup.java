@@ -65,10 +65,10 @@ public class EntityGroup extends AbstractWidget {
 		if (shader != null) {
 			batch.setShader(shader.getShaderProgram());
 			shader.prepare();
-		}
-		super.draw(batch, parentAlpha);
-		if (shader != null) {
+			super.draw(batch, parentAlpha);
 			batch.setShader(null);
+		} else {
+			super.draw(batch, parentAlpha);
 		}
 	}
 

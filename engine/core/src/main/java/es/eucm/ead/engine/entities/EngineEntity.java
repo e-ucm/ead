@@ -136,6 +136,7 @@ public class EngineEntity extends Entity implements Poolable {
 			group = null;
 		}
 		modelEntity = null;
+		shader = null;
 	}
 
 	@Override
