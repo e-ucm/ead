@@ -80,7 +80,7 @@ public class LoadShaders extends Worker {
 		if (shadersFolder.exists()) {
 			int i = 1;
 			FileHandle child = shadersFolder.child(i++ + "");
-			while (child.exists()) {
+			while (assets.checkFileExistence(child.child("thumbnail.jpg"))) {
 				projectPaths.add(child);
 				child = shadersFolder.child(i++ + "");
 			}
