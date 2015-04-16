@@ -71,7 +71,6 @@ public class EngineApplicationListener implements ApplicationListener {
 	@Override
 	public void create() {
 		// OpenGL settings
-		ShaderProgram.pedantic = false;
 		Gdx.gl.glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
 
 		gameLoop = new GameLoop();

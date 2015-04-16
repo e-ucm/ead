@@ -46,6 +46,7 @@ import com.badlogic.gdx.utils.SerializationException;
 import com.badlogic.gdx.utils.reflect.ClassReflection;
 import com.badlogic.gdx.utils.reflect.ReflectionException;
 import es.eucm.ead.engine.assets.GameAssets;
+import es.eucm.ead.engine.components.BackgroundComponent;
 import es.eucm.ead.engine.components.MultiComponent;
 import es.eucm.ead.engine.components.ShaderComponent;
 import es.eucm.ead.engine.components.controls.ControlComponent;
@@ -228,7 +229,6 @@ public class ComponentLoader {
 					RendererActor renderer = Pools.obtain(RendererActor.class);
 					renderer.setRenderer(rendererComponent);
 					entity.setGroup(renderer);
-					entity.add(rendererComponent);
 				} else if (c instanceof ControlComponent) {
 					Actor control = ((ControlComponent) c).getControl();
 					if (control instanceof Group) {

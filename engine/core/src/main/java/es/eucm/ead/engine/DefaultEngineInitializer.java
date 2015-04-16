@@ -38,6 +38,7 @@ package es.eucm.ead.engine;
 
 import com.badlogic.ashley.core.Entity;
 import com.badlogic.ashley.core.Family;
+import com.badlogic.gdx.graphics.glutils.ShaderProgram;
 import es.eucm.ead.engine.assets.GameAssets;
 import es.eucm.ead.engine.components.I18nTextComponent;
 import es.eucm.ead.engine.processors.*;
@@ -180,6 +181,8 @@ public class DefaultEngineInitializer implements EngineInitializer {
 	public void init(GameAssets assets, GameLoop gameLoop,
 			EntitiesLoader entitiesLoader, GameView gameView,
 			VariablesManager variablesManager) {
+
+		ShaderProgram.pedantic = false;
 		registerComponents(entitiesLoader.getComponentLoader(), assets,
 				gameLoop, variablesManager, entitiesLoader);
 		registerSystems(assets, gameLoop, entitiesLoader, gameView,
@@ -389,6 +392,8 @@ public class DefaultEngineInitializer implements EngineInitializer {
 				new ReferenceProcessor(gameLoop, gameAssets, entitiesLoader));
 		componentLoader.registerComponentProcessor(Shader.class,
 				new ShaderProcessor(gameLoop, gameAssets, variablesManager));
+		componentLoader.registerComponentProcessor(Background.class,
+				new BackgroundProcessor(gameLoop, entitiesLoader));
 	}
 
 	private static class LanguageVariableListener implements
