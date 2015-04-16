@@ -37,8 +37,10 @@
 package es.eucm.ead.engine.systems.effects.transitions;
 
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.Pixmap;
 import com.badlogic.gdx.graphics.Texture;
+import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.scenes.scene2d.Group;
 import com.badlogic.gdx.scenes.scene2d.actions.Actions;
@@ -101,5 +103,11 @@ public class LoadingIndicator extends Group {
 							Actions.parallel(Actions.alpha(0.0F, duration),
 									Actions.scaleTo(0.0F, 0.0F, duration))))));
 		}
+	}
+
+	@Override
+	public void draw(Batch batch, float parentAlpha) {
+		super.draw(batch, parentAlpha);
+		batch.setColor(Color.WHITE);
 	}
 }
