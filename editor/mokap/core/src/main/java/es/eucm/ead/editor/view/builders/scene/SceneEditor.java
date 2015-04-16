@@ -63,6 +63,7 @@ import es.eucm.ead.editor.platform.Platform.FileChooserListener;
 import es.eucm.ead.editor.utils.ProjectUtils;
 import es.eucm.ead.editor.view.ModelView;
 import es.eucm.ead.editor.view.SkinConstants;
+import es.eucm.ead.editor.view.builders.BackgroundShadersView;
 import es.eucm.ead.editor.view.builders.ResourcesView;
 import es.eucm.ead.editor.view.builders.scene.components.InteractionContext;
 import es.eucm.ead.editor.view.builders.scene.context.SceneElementContext;
@@ -363,14 +364,15 @@ public class SceneEditor extends BaseView implements ModelView,
 
 	private CirclesMenu buildAddButtons() {
 		CirclesMenu circlesMenu = WidgetBuilder.circlesMenu(Align.right,
-				new String[] { SkinConstants.IC_ZONE, SkinConstants.IC_BRUSH,
-						SkinConstants.IC_TEXT, SkinConstants.IC_CAMERA,
-						SkinConstants.IC_PHOTO, SkinConstants.IC_CLOUD,
-						SkinConstants.IC_CLOSE }, new Class[] {
-						AddInteractiveZone.class, null, AddLabel.class,
-						TakePicture.class, ChooseFile.class, ChangeView.class,
-						null }, new Object[][] { null, null, null, null,
-						new Object[] { false, this },
+				new String[] { SkinConstants.IC_BLUR, SkinConstants.IC_ZONE,
+						SkinConstants.IC_BRUSH, SkinConstants.IC_TEXT,
+						SkinConstants.IC_CAMERA, SkinConstants.IC_PHOTO,
+						SkinConstants.IC_CLOUD, SkinConstants.IC_CLOSE },
+				new Class[] { ChangeView.class, AddInteractiveZone.class, null,
+						AddLabel.class, TakePicture.class, ChooseFile.class,
+						ChangeView.class, null }, new Object[][] {
+						new Object[] { BackgroundShadersView.class }, null,
+						null, null, null, new Object[] { false, this },
 						new Object[] { ResourcesView.class }, null });
 
 		Actor zone = circlesMenu.findActor(SkinConstants.IC_ZONE);
