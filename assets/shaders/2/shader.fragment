@@ -1,0 +1,56 @@
+#ifdef GL_ES
+precision mediump float;
+#endif
+
+uniform float time;
+uniform vec2 resolution;
+
+void main( void ) {
+	float mx = max( resolution.x, resolution.y );
+	vec2 uv = (gl_FragCoord.xy-resolution.xy*.5)/mx;
+	vec2 altuv = (gl_FragCoord.xy-resolution.xy*.5)/mx;
+	
+	//float angle = 3.1415/2.0;
+	float angle = .78539816339745;
+	uv *= mat2(
+		cos( angle ), -sin( angle ),
+		sin( angle ), cos( angle ) );
+	
+	float fineness = mx*.104;
+	float sy = uv.y*fineness;
+	float c = fract( sin( floor( sy )/fineness*12.9898 )*437.5854 );
+   
+	// streak anti-aliasing
+	float f = fract( sy );
+	c *= min( f, 0.95-f )*3.5;
+	//c = min( f, 0.9-f )*3.;
+	
+	// highlights
+	c += sin( uv.y*20.415+time )*.5;
+	
+	
+	//vignette
+	c += -5.0*abs(0.5*altuv.x);
+	c += -5.0*abs(0.25*altuv.y);
+	
+	// background
+	float batt = .1;
+	float red;
+	float green;
+	
+	if (batt < 0.5) {
+		red = 1.0;
+		green = 2.0*batt;
+	} else {
+		green = 1.0;
+		red = (1.0 - batt)*2.0;
+	}
+	
+	vec3 batterMix = mix(vec3(0.0), vec3(red, green, 0.0), 0.5);
+	vec3 finalMix = mix(batterMix, vec3(c), .3);
+	
+	//float r = -uv.y+.5;
+	//float b = uv.y+.5;
+	//gl_FragColor = vec4( mix(vec3( r, b*.3, b ), vec3( c ), .3 ), 1.0 );
+	gl_FragColor = vec4(finalMix, 1.0 );
+}
