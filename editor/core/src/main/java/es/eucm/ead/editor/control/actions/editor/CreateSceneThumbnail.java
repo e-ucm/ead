@@ -160,12 +160,11 @@ public class CreateSceneThumbnail extends EditorAction {
 
 		Gdx.gl.glClearColor(1f, 1f, 1f, 1f);
 		Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
-		Color color = batch.getColor();
 		batch.begin();
 		root.draw(batch, 1.0f);
 		batch.end();
 		frameBuffer.end();
-		batch.setColor(color);
+		batch.setColor(Color.WHITE);
 		return frameBuffer;
 	}
 
