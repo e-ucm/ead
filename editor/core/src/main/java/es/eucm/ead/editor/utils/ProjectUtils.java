@@ -36,9 +36,6 @@
  */
 package es.eucm.ead.editor.utils;
 
-import java.util.List;
-import java.util.Map;
-
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.math.MathUtils;
@@ -46,11 +43,11 @@ import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.reflect.ClassReflection;
 import com.badlogic.gdx.utils.reflect.Field;
 import com.badlogic.gdx.utils.reflect.ReflectionException;
-
-import es.eucm.ead.editor.control.Controller;
 import es.eucm.ead.editor.model.Model;
-import es.eucm.ead.schema.editor.components.repo.RepoElement;
 import es.eucm.ead.schemax.ModelStructure;
+
+import java.util.List;
+import java.util.Map;
 
 /**
  * Some useful methods to deal with file system and projects
@@ -59,11 +56,11 @@ public class ProjectUtils {
 
 	public static final String ZIP_EXTENSION = "zip";
 
-	private static final Array<String> IMAGE_EXTENSIONS = new Array<String>(
+	private static final Array<String> imageExtensions = new Array<String>(
 			new String[] { "jpg", "jpeg", "png", "gif", "bmp" });
 
 	// To detect sound and video extensions
-	private static final Array<String> BINARY_EXTENSIONS = new Array<String>(
+	private static final Array<String> binaryExtensions = new Array<String>(
 			new String[] { "midi", "mp3", "wav", "ogg", "mpg", "mpeg", "avi" });
 
 	/**
@@ -108,7 +105,7 @@ public class ProjectUtils {
 	 *            in any superclasses of the object are searched. It is
 	 *            considered a reference to a binary file any String field which
 	 *            value ends with any of the supported binary formats (see
-	 *            {@link #IMAGE_EXTENSIONS} and {@link #BINARY_EXTENSIONS}),
+	 *            {@link #imageExtensions} and {@link #binaryExtensions}),
 	 *            either lowercase or uppercase.
 	 * 
 	 * @param object
@@ -148,14 +145,14 @@ public class ProjectUtils {
 		if (ClassReflection.isAssignableFrom(String.class, clazz)) {
 			String strValue = ((String) object).toLowerCase();
 			boolean hasBinaryExtension = false;
-			for (String imageExtension : IMAGE_EXTENSIONS) {
+			for (String imageExtension : imageExtensions) {
 				if (strValue.endsWith("." + imageExtension.toLowerCase())) {
 					hasBinaryExtension = true;
 					break;
 				}
 			}
 			if (!hasBinaryExtension) {
-				for (String binaryExtension : BINARY_EXTENSIONS) {
+				for (String binaryExtension : binaryExtensions) {
 					if (strValue.endsWith("." + binaryExtension.toLowerCase())) {
 						hasBinaryExtension = true;
 						break;
@@ -376,15 +373,8 @@ public class ProjectUtils {
 	 * @return true if the file is a supported image that can be loaded.
 	 */
 	public static boolean isSupportedImage(FileHandle file) {
-		if (file.isDirectory()) {
-			return false;
-		}
-		String fileName = file.name();
-		for (String imageExtension : IMAGE_EXTENSIONS) {
-			if (fileName.endsWith(imageExtension)) {
-				return true;
-			}
-		}
-		return false;
+		return !file.isDirectory()
+				&& imageExtensions.contains(file.extension().toLowerCase(),
+						false);
 	}
 }
