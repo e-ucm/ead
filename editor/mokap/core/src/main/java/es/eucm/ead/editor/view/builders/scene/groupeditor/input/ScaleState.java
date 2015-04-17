@@ -217,20 +217,22 @@ public class ScaleState extends InputState {
 		public void updateTransformation() {
 			Vector2 pointer1 = stateMachine.pointer1;
 			Vector2 pointer2 = stateMachine.pointer2;
+			float zoom = stateMachine.getZoom();
 			switch (scale) {
 			case HORIZONTAL:
 				actor.setScaleX(signumX
-						* (Math.abs(pointer2.x - pointer1.x) - distance1 + size
-								* scale1X) / size);
+						* ((Math.abs(pointer2.x - pointer1.x) - distance1)
+								/ zoom + size * scale1X) / size);
 				break;
 			case VERTICAL:
 				actor.setScaleY(signumY
-						* (Math.abs(pointer2.y - pointer1.y) - distance1 + size
-								* scale1Y) / size);
+						* ((Math.abs(pointer2.y - pointer1.y) - distance1)
+								/ zoom + size * scale1Y) / size);
 				break;
 			case DIAGONAL:
-				float scaleY = Math.abs((size
-						+ temp.set(pointer1).sub(pointer2).len() - distance1)
+				float scaleY = Math.abs((size + (temp.set(pointer1)
+						.sub(pointer2).len() - distance1)
+						/ zoom)
 						/ denominator);
 				float scaleX = aspectRatio * scaleY;
 				actor.setScale(scaleX * signumX, scaleY * signumY);
