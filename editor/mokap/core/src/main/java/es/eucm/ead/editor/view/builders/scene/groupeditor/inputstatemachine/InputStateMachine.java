@@ -37,6 +37,7 @@
 package es.eucm.ead.editor.view.builders.scene.groupeditor.inputstatemachine;
 
 import com.badlogic.gdx.math.Vector2;
+import com.badlogic.gdx.scenes.scene2d.Event;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.InputListener;
 import com.badlogic.gdx.utils.ObjectMap;
@@ -75,6 +76,8 @@ public class InputStateMachine extends InputListener {
 
 	private float deltaY2;
 
+	private InputState nextState;
+
 	private final Task longPressTask = new Task() {
 		@Override
 		public void run() {
@@ -86,12 +89,26 @@ public class InputStateMachine extends InputListener {
 		states.put(state.getClass(), state);
 	}
 
-	public void setState(Class stateClass) {
-		if (currentState != null) {
-			currentState.exit();
+	public void setState(Class nextStateClass) {
+		nextState = states.get(nextStateClass);
+	}
+
+	private void updateState() {
+		InputState previousState = currentState;
+		currentState = nextState;
+		nextState = null;
+		if (previousState != null) {
+			previousState.exit();
 		}
-		currentState = states.get(stateClass);
 		currentState.enter();
+	}
+
+	@Override
+	public boolean handle(Event e) {
+		if (nextState != null) {
+			updateState();
+		}
+		return super.handle(e);
 	}
 
 	@Override
