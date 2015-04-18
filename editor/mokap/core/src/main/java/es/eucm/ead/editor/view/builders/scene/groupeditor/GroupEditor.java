@@ -47,6 +47,8 @@ import com.badlogic.gdx.scenes.scene2d.Event;
 import com.badlogic.gdx.scenes.scene2d.EventListener;
 import com.badlogic.gdx.scenes.scene2d.Group;
 import com.badlogic.gdx.scenes.scene2d.actions.Actions;
+import com.badlogic.gdx.scenes.scene2d.actions.ParallelAction;
+import com.badlogic.gdx.scenes.scene2d.actions.SequenceAction;
 import com.badlogic.gdx.scenes.scene2d.ui.Button.ButtonStyle;
 import com.badlogic.gdx.scenes.scene2d.ui.Container;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
@@ -172,9 +174,17 @@ public class GroupEditor extends AbstractWidget {
 	 * Sets the root group in its initial position, fitting the view
 	 */
 	public void fit(boolean animated) {
-		setZoom(fitZoom, animated);
-		panToX(0, animated);
-		panToY(0, animated);
+		if (animated) {
+			sceneContainer.addAction(new SequenceAction(new ParallelAction(
+					Actions.moveTo(0, 0, TIME, Interpolation.exp5Out), Actions
+							.scaleTo(fitZoom, fitZoom, TIME,
+									Interpolation.exp5Out)), Actions
+					.run(containerUpdated)));
+		} else {
+			sceneContainer.setPosition(0.0f, 0.0f);
+			sceneContainer.setScale(fitZoom, fitZoom);
+			fireContainerUpdated();
+		}
 	}
 
 	// Invoked programmatically
