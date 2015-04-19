@@ -41,6 +41,7 @@ import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.utils.Array;
 import es.eucm.ead.editor.control.Controller;
 import es.eucm.ead.engine.assets.Assets;
+import es.eucm.ead.schemax.ModelStructure;
 
 import java.io.File;
 
@@ -76,11 +77,13 @@ public class LoadShaders extends Worker {
 		} else {
 			projectPaths.clear();
 		}
-		FileHandle shadersFolder = assets.resolve("shaders");
+		FileHandle shadersFolder = assets
+				.resolve(ModelStructure.SHADERS_FOLDER);
 		if (shadersFolder.exists()) {
 			int i = 1;
 			FileHandle child = shadersFolder.child(i++ + "");
-			while (assets.checkFileExistence(child.child("thumbnail.jpg"))) {
+			while (assets.checkFileExistence(child
+					.child(ModelStructure.SHADER_THUMBNAIL_FILE))) {
 				projectPaths.add(child);
 				child = shadersFolder.child(i++ + "");
 			}
@@ -93,9 +96,10 @@ public class LoadShaders extends Worker {
 			return true;
 		}
 		FileHandle shader = projectPaths.removeIndex(0);
-		FileHandle thumbnail = shader.child("thumbnail.jpg");
+		FileHandle thumbnail = shader
+				.child(ModelStructure.SHADER_THUMBNAIL_FILE);
 		String thumbnailPath = thumbnail.path();
-		result(shader.child("shader.fragment").path(), thumbnailPath);
+		result(shader.child(ModelStructure.SHADER_FILE).path(), thumbnailPath);
 		return projectPaths.size == 0;
 	}
 }

@@ -40,6 +40,7 @@ import com.badlogic.gdx.ApplicationListener;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL20;
+import com.badlogic.gdx.graphics.glutils.ShaderProgram;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.utils.viewport.ScreenViewport;
 import es.eucm.ead.editor.control.Controller;
@@ -74,6 +75,7 @@ public class EditorApplicationListener implements ApplicationListener {
 
 	@Override
 	public void create() {
+		ShaderProgram.pedantic = false;
 		Gdx.gl.glClearColor(DEFAULT_BACKGROUND_COLOR.r,
 				DEFAULT_BACKGROUND_COLOR.g, DEFAULT_BACKGROUND_COLOR.b,
 				DEFAULT_BACKGROUND_COLOR.a);

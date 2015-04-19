@@ -54,13 +54,12 @@ import es.eucm.ead.editor.view.widgets.WidgetBuilder;
 import es.eucm.ead.editor.view.widgets.galleries.basegalleries.ThumbnailsGallery;
 import es.eucm.ead.editor.view.widgets.layouts.Gallery.GalleryStyle;
 
-public class BackgroundShadersGallery extends ThumbnailsGallery implements
+public class ShadersGallery extends ThumbnailsGallery implements
 		WorkerListener, ModelView {
 
 	private Controller controller;
 
-	public BackgroundShadersGallery(float rows, int columns,
-			Controller controller) {
+	public ShadersGallery(float rows, int columns, Controller controller) {
 		super(rows, columns, controller.getApplicationAssets(), controller
 				.getApplicationAssets().getSkin(), controller
 				.getApplicationAssets().getI18N(), controller

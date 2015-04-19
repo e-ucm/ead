@@ -6,7 +6,7 @@
         "$ref": "component.json"
     },
     "properties": {
-        "entityBackground": {
+        "entity": {
           "$ref": "../game/modelentity.json",
           "description": "The background that will be processed and added to the entity."
         }

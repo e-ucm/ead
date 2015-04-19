@@ -37,39 +37,28 @@
 package es.eucm.ead.editor.view.builders;
 
 import com.badlogic.gdx.scenes.scene2d.Actor;
-import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.ui.*;
-import com.badlogic.gdx.scenes.scene2d.utils.Align;
-import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import es.eucm.ead.editor.assets.ApplicationAssets;
 import es.eucm.ead.editor.control.Controller;
 import es.eucm.ead.editor.control.MokapController.BackListener;
-import es.eucm.ead.editor.control.Selection;
 import es.eucm.ead.editor.control.actions.editor.ChangeView;
-import es.eucm.ead.editor.control.actions.editor.CloseProject;
-import es.eucm.ead.editor.control.actions.editor.Rename;
-import es.eucm.ead.editor.control.actions.editor.ShareProject;
-import es.eucm.ead.editor.control.actions.model.AddLibraryReference;
 import es.eucm.ead.editor.view.SkinConstants;
-import es.eucm.ead.editor.view.builders.project.ProjectScenesGallery;
 import es.eucm.ead.editor.view.builders.scene.SceneView;
 import es.eucm.ead.editor.view.widgets.MultiWidget;
-import es.eucm.ead.editor.view.widgets.RepoTile;
 import es.eucm.ead.editor.view.widgets.WidgetBuilder;
 import es.eucm.ead.editor.view.widgets.galleries.*;
 import es.eucm.ead.editor.view.widgets.layouts.LinearLayout;
 import es.eucm.ead.engine.I18N;
-import es.eucm.ead.schema.editor.components.repo.RepoCategories;
 
 /**
  * Shaders view, a gallery with the shaders that can be added as background to
  * the scene.
  */
-public class BackgroundShadersView implements ViewBuilder, BackListener {
+public class ShadersView implements ViewBuilder, BackListener {
 
 	private Controller controller;
 
-	private BackgroundShadersGallery shadersGallery;
+	private ShadersGallery shadersGallery;
 	private LinearLayout view;
 
 	@Override
@@ -83,7 +72,7 @@ public class BackgroundShadersView implements ViewBuilder, BackListener {
 		view.background(skin.getDrawable(SkinConstants.DRAWABLE_GRAY_100));
 		view.add(buildToolbar(skin)).expandX();
 
-		shadersGallery = new BackgroundShadersGallery(2.25f, 3, controller);
+		shadersGallery = new ShadersGallery(2.25f, 3, controller);
 		view.add(shadersGallery).expand(true, true).top();
 	}
 

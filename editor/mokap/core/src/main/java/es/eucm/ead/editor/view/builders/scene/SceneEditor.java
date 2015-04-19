@@ -36,7 +36,6 @@
  */
 package es.eucm.ead.editor.view.builders.scene;
 
-import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.math.Interpolation;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
@@ -63,7 +62,7 @@ import es.eucm.ead.editor.platform.Platform.FileChooserListener;
 import es.eucm.ead.editor.utils.ProjectUtils;
 import es.eucm.ead.editor.view.ModelView;
 import es.eucm.ead.editor.view.SkinConstants;
-import es.eucm.ead.editor.view.builders.BackgroundShadersView;
+import es.eucm.ead.editor.view.builders.ShadersView;
 import es.eucm.ead.editor.view.builders.ResourcesView;
 import es.eucm.ead.editor.view.builders.scene.components.InteractionContext;
 import es.eucm.ead.editor.view.builders.scene.context.SceneElementContext;
@@ -371,8 +370,8 @@ public class SceneEditor extends BaseView implements ModelView,
 				new Class[] { ChangeView.class, AddInteractiveZone.class, null,
 						AddLabel.class, TakePicture.class, ChooseFile.class,
 						ChangeView.class, null }, new Object[][] {
-						new Object[] { BackgroundShadersView.class }, null,
-						null, null, null, new Object[] { false, this },
+						new Object[] { ShadersView.class }, null, null, null,
+						null, new Object[] { false, this },
 						new Object[] { ResourcesView.class }, null });
 
 		Actor zone = circlesMenu.findActor(SkinConstants.IC_ZONE);

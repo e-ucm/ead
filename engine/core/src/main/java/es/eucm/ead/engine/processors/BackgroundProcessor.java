@@ -66,7 +66,7 @@ public class BackgroundProcessor extends ComponentProcessor<Background> {
 				.createComponent(BackgroundComponent.class);
 
 		EngineEntity engineEntity = entitiesLoader.toEngineEntity(background
-				.getEntityBackground());
+				.getEntity());
 		engineEntity.getGroup().setTransform(false);
 		backgroundComponent.setEngineEntity(engineEntity);
 		backgroundComponent.setGameLoop(gameLoop);

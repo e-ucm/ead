@@ -108,7 +108,7 @@ public class ChangeSceneBackgroundShader extends ModelAction {
 			entityBackground.getComponents().add(shader);
 
 			Background backgroundComponent = new Background();
-			backgroundComponent.setEntityBackground(entityBackground);
+			backgroundComponent.setEntity(entityBackground);
 			compositeCommand.addCommand(new AddToListCommand(scene,
 					sceneComponents, backgroundComponent, 0));
 		}
