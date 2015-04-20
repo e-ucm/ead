@@ -100,7 +100,7 @@ public class AddLabel extends EditorAction implements Input.TextInputListener {
 
 		Skin skin = controller.getEditorGameAssets().getSkin();
 		if (!keepStyle) {
-			setDefultFont(label);
+			setDefaultFont(label);
 		}
 
 		LabelStyle labelStyle = skin.get(label.getStyle(), LabelStyle.class);
@@ -126,7 +126,7 @@ public class AddLabel extends EditorAction implements Input.TextInputListener {
 
 	}
 
-	private void setDefultFont(Label label) {
+	private void setDefaultFont(Label label) {
 		label.setColor(color);
 		label.setStyle("roboto-small"); // default style
 	}
