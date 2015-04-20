@@ -53,7 +53,7 @@ import es.eucm.ead.editor.control.commands.FieldCommand;
 public class SetField extends ModelAction {
 
 	public SetField() {
-		super(true, false, Object.class, String.class, Object.class);
+		super(true, true, Object.class, String.class, Object.class);
 	}
 
 	@Override
