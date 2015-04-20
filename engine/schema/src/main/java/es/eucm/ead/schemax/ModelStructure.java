@@ -98,4 +98,14 @@ public interface ModelStructure {
 
 	public static final String ENTITY_FILE = "entity.json";
 
+	/**
+	 * Internal assets stricture
+	 */
+
+	public static final String SHADERS_FOLDER = "shaders/";
+
+	public static final String SHADER_THUMBNAIL_FILE = "thumbnail.jpg";
+
+	public static final String SHADER_FILE = "shader.fragment";
+
 }

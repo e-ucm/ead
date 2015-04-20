@@ -1,0 +1,25 @@
+// http://glslsandbox.com/e#18787.0
+
+#ifdef GL_ES
+precision mediump float;
+#endif
+
+uniform float time;
+uniform vec2 resolution;
+
+#define balls 10
+#define pi 3.1415
+
+void main( void ) {
+	vec2 p = (gl_FragCoord.xy * 2.0 - resolution) / min(resolution.x, resolution.y);
+	vec3 c = vec3(0);
+	float tm = time + .23;
+	for(int i = 0; i < balls; i++){
+		float a = pi / float(balls) * float(i) * 2.0 * tm / 20.0;
+		vec2 b = vec2(cos(a), sin(a));
+		b *= sin(tm + a * 2.0);
+		float d = pow(max(0.0, 1.0 - length(b - p) * float(balls) / 50.0), 20.0);
+		c += vec3(d * fract(a + tm) , d * cos(a), d * sin(a));
+	}
+	gl_FragColor = vec4(vec3(c), 1.0);
+}

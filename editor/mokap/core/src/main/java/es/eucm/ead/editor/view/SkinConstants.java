@@ -161,6 +161,7 @@ public interface SkinConstants {
 	public static final String IC_LINK = "ic_link";
 	public static final String IC_SEARCH = "ic_search";
 	public static final String IC_BLUR_LINEAR = "ic_blur_linear";
+	public static final String IC_BLUR = "ic_blur";
 
 	public static final String IC_ONE = "ic_one";
 	public static final String IC_FIT = "ic_fit";

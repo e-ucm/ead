@@ -1,0 +1,15 @@
+{
+    "additionalProperties": false,
+    "javaType": "es.eucm.ead.schema.components.Background",
+    "type": "object",
+    "extends": {
+        "$ref": "component.json"
+    },
+    "properties": {
+        "entity": {
+          "$ref": "../game/modelentity.json",
+          "description": "The background that will be processed and added to the entity."
+        }
+    },
+    "description": "Background for the entity"
+}

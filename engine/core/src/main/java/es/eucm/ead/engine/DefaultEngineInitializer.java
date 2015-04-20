@@ -54,46 +54,15 @@ import es.eucm.ead.engine.processors.physics.VelocityProcessor;
 import es.eucm.ead.engine.processors.positiontracking.ChaseEntityProcessor;
 import es.eucm.ead.engine.processors.positiontracking.MoveByEntityProcessor;
 import es.eucm.ead.engine.processors.positiontracking.ParallaxProcessor;
-import es.eucm.ead.engine.processors.renderers.EmptyRendererProcessor;
-import es.eucm.ead.engine.processors.renderers.FramesProcessor;
-import es.eucm.ead.engine.processors.renderers.ImageProcessor;
-import es.eucm.ead.engine.processors.renderers.ShapeRendererProcessor;
-import es.eucm.ead.engine.processors.renderers.SpineAnimationProcessor;
-import es.eucm.ead.engine.processors.renderers.StatesProcessor;
+import es.eucm.ead.engine.processors.renderers.*;
 import es.eucm.ead.engine.processors.tweens.TweensProcessor;
 import es.eucm.ead.engine.systems.*;
 import es.eucm.ead.engine.systems.behaviors.KeyBehaviorSystem;
 import es.eucm.ead.engine.systems.behaviors.TimersSystem;
 import es.eucm.ead.engine.systems.behaviors.TouchBehaviorSystem;
-import es.eucm.ead.engine.systems.conversations.ConditionedRuntimeNode;
-import es.eucm.ead.engine.systems.conversations.EffectsRuntimeNode;
-import es.eucm.ead.engine.systems.conversations.LineRuntimeNode;
-import es.eucm.ead.engine.systems.conversations.LineSystem;
-import es.eucm.ead.engine.systems.conversations.NodeSystem;
-import es.eucm.ead.engine.systems.conversations.OptionRuntimeNode;
-import es.eucm.ead.engine.systems.conversations.OptionsSystem;
-import es.eucm.ead.engine.systems.conversations.WaitRuntimeNode;
-import es.eucm.ead.engine.systems.effects.AddComponentExecutor;
-import es.eucm.ead.engine.systems.effects.AddEntityExecutor;
-import es.eucm.ead.engine.systems.effects.ChangeEntityPropertyExecutor;
-import es.eucm.ead.engine.systems.effects.ChangeStateExecutor;
-import es.eucm.ead.engine.systems.effects.ChangeVarExecutor;
-import es.eucm.ead.engine.systems.effects.EndGameExecutor;
-import es.eucm.ead.engine.systems.effects.GoSceneExecutor;
-import es.eucm.ead.engine.systems.effects.GoToExecutor;
-import es.eucm.ead.engine.systems.effects.PlaySoundExecutor;
-import es.eucm.ead.engine.systems.effects.RemoveComponentExecutor;
-import es.eucm.ead.engine.systems.effects.RemoveEntityExecutor;
-import es.eucm.ead.engine.systems.effects.SetCameraExecutor;
-import es.eucm.ead.engine.systems.effects.SetViewportExecutor;
-import es.eucm.ead.engine.systems.effects.TrackEffectExecutor;
-import es.eucm.ead.engine.systems.effects.TriggerConversationExecutor;
-import es.eucm.ead.engine.systems.effects.controlstructures.ForEachExecutor;
-import es.eucm.ead.engine.systems.effects.controlstructures.IfExecutor;
-import es.eucm.ead.engine.systems.effects.controlstructures.IfThenElseIfExecutor;
-import es.eucm.ead.engine.systems.effects.controlstructures.RepeatExecutor;
-import es.eucm.ead.engine.systems.effects.controlstructures.ScriptCallExecutor;
-import es.eucm.ead.engine.systems.effects.controlstructures.WhileExecutor;
+import es.eucm.ead.engine.systems.conversations.*;
+import es.eucm.ead.engine.systems.effects.*;
+import es.eucm.ead.engine.systems.effects.controlstructures.*;
 import es.eucm.ead.engine.systems.effects.effecttotween.AlphaEffectToTween;
 import es.eucm.ead.engine.systems.effects.effecttotween.MoveEffectToTween;
 import es.eucm.ead.engine.systems.effects.effecttotween.RotateEffectToTween;
@@ -101,13 +70,7 @@ import es.eucm.ead.engine.systems.effects.effecttotween.ScaleEffectToTween;
 import es.eucm.ead.engine.systems.positiontracking.ChaseEntitySystem;
 import es.eucm.ead.engine.systems.positiontracking.MoveByEntitySystem;
 import es.eucm.ead.engine.systems.tweens.TweenSystem;
-import es.eucm.ead.engine.systems.tweens.tweencreators.AlphaTweenCreator;
-import es.eucm.ead.engine.systems.tweens.tweencreators.EffectTweenCreator;
-import es.eucm.ead.engine.systems.tweens.tweencreators.FieldTweenCreator;
-import es.eucm.ead.engine.systems.tweens.tweencreators.MoveTweenCreator;
-import es.eucm.ead.engine.systems.tweens.tweencreators.RotateTweenCreator;
-import es.eucm.ead.engine.systems.tweens.tweencreators.ScaleTweenCreator;
-import es.eucm.ead.engine.systems.tweens.tweencreators.TimelineCreator;
+import es.eucm.ead.engine.systems.tweens.tweencreators.*;
 import es.eucm.ead.engine.variables.VariablesManager;
 import es.eucm.ead.engine.variables.VarsContext;
 import es.eucm.ead.schema.assets.Sound;
@@ -119,55 +82,16 @@ import es.eucm.ead.schema.components.controls.ImageButton;
 import es.eucm.ead.schema.components.controls.Label;
 import es.eucm.ead.schema.components.controls.TextButton;
 import es.eucm.ead.schema.components.controls.layouts.VerticalLayout;
-import es.eucm.ead.schema.components.conversation.ConditionedNode;
-import es.eucm.ead.schema.components.conversation.Conversation;
-import es.eucm.ead.schema.components.conversation.EffectsNode;
-import es.eucm.ead.schema.components.conversation.LineNode;
-import es.eucm.ead.schema.components.conversation.OptionNode;
-import es.eucm.ead.schema.components.conversation.WaitNode;
+import es.eucm.ead.schema.components.conversation.*;
 import es.eucm.ead.schema.components.physics.BoundingArea;
 import es.eucm.ead.schema.components.physics.Velocity;
 import es.eucm.ead.schema.components.positiontracking.ChaseEntity;
 import es.eucm.ead.schema.components.positiontracking.MoveByEntity;
 import es.eucm.ead.schema.components.positiontracking.Parallax;
-import es.eucm.ead.schema.components.tweens.AlphaTween;
-import es.eucm.ead.schema.components.tweens.EffectTween;
-import es.eucm.ead.schema.components.tweens.FieldTween;
-import es.eucm.ead.schema.components.tweens.MoveTween;
-import es.eucm.ead.schema.components.tweens.RotateTween;
-import es.eucm.ead.schema.components.tweens.ScaleTween;
-import es.eucm.ead.schema.components.tweens.Timeline;
-import es.eucm.ead.schema.effects.AddComponent;
-import es.eucm.ead.schema.effects.AddEntity;
-import es.eucm.ead.schema.effects.AlphaEffect;
-import es.eucm.ead.schema.effects.ChangeEntityProperty;
-import es.eucm.ead.schema.effects.ChangeState;
-import es.eucm.ead.schema.effects.ChangeVar;
-import es.eucm.ead.schema.effects.EndGame;
-import es.eucm.ead.schema.effects.GoScene;
-import es.eucm.ead.schema.effects.GoTo;
-import es.eucm.ead.schema.effects.MoveEffect;
-import es.eucm.ead.schema.effects.PlaySound;
-import es.eucm.ead.schema.effects.RemoveComponent;
-import es.eucm.ead.schema.effects.RemoveEntity;
-import es.eucm.ead.schema.effects.RotateEffect;
-import es.eucm.ead.schema.effects.ScaleEffect;
-import es.eucm.ead.schema.effects.SetCamera;
-import es.eucm.ead.schema.effects.SetViewport;
-import es.eucm.ead.schema.effects.TrackEffect;
-import es.eucm.ead.schema.effects.TriggerConversation;
-import es.eucm.ead.schema.effects.controlstructures.ForEach;
-import es.eucm.ead.schema.effects.controlstructures.If;
-import es.eucm.ead.schema.effects.controlstructures.IfThenElseIf;
-import es.eucm.ead.schema.effects.controlstructures.Repeat;
-import es.eucm.ead.schema.effects.controlstructures.ScriptCall;
-import es.eucm.ead.schema.effects.controlstructures.While;
-import es.eucm.ead.schema.renderers.EmptyRenderer;
-import es.eucm.ead.schema.renderers.Frames;
-import es.eucm.ead.schema.renderers.Image;
-import es.eucm.ead.schema.renderers.ShapeRenderer;
-import es.eucm.ead.schema.renderers.SpineAnimation;
-import es.eucm.ead.schema.renderers.States;
+import es.eucm.ead.schema.components.tweens.*;
+import es.eucm.ead.schema.effects.*;
+import es.eucm.ead.schema.effects.controlstructures.*;
+import es.eucm.ead.schema.renderers.*;
 
 /**
  * Default initializer. Used by default engine and editor.
@@ -180,6 +104,7 @@ public class DefaultEngineInitializer implements EngineInitializer {
 	public void init(GameAssets assets, GameLoop gameLoop,
 			EntitiesLoader entitiesLoader, GameView gameView,
 			VariablesManager variablesManager) {
+
 		registerComponents(entitiesLoader.getComponentLoader(), assets,
 				gameLoop, variablesManager, entitiesLoader);
 		registerSystems(assets, gameLoop, entitiesLoader, gameView,
@@ -389,6 +314,8 @@ public class DefaultEngineInitializer implements EngineInitializer {
 				new ReferenceProcessor(gameLoop, gameAssets, entitiesLoader));
 		componentLoader.registerComponentProcessor(Shader.class,
 				new ShaderProcessor(gameLoop, gameAssets, variablesManager));
+		componentLoader.registerComponentProcessor(Background.class,
+				new BackgroundProcessor(gameLoop, entitiesLoader));
 	}
 
 	private static class LanguageVariableListener implements

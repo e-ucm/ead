@@ -52,6 +52,7 @@ import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
 import com.badlogic.gdx.scenes.scene2d.ui.TextButton.TextButtonStyle;
 import com.badlogic.gdx.scenes.scene2d.utils.ActorGestureListener;
 import com.badlogic.gdx.scenes.scene2d.utils.Align;
+import com.badlogic.gdx.scenes.scene2d.utils.Drawable;
 import es.eucm.ead.editor.control.Controller;
 import es.eucm.ead.editor.control.actions.editor.ShowContextMenu;
 import es.eucm.ead.editor.control.actions.editor.ShowTooltip;
@@ -303,7 +304,7 @@ public class WidgetBuilder {
 		return new AsyncImage(imagePath, controller.getEditorGameAssets());
 	}
 
-	public static Tile tile(String text, TextureDrawable background) {
+	public static Tile tile(String text, Drawable background) {
 		Tile tile = new Tile(skin);
 		tile.setBackground(new Image(background));
 		tile.setText(text);

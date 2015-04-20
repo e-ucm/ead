@@ -1,0 +1,67 @@
+// By Michal Cwiek
+// cwiek.michal at g mail dot com
+
+#ifdef GL_ES
+precision mediump float;
+#endif
+
+uniform float time;
+uniform vec2 resolution;
+
+const float AMPLITUDE_1 = 0.3;
+const float AMPLITUDE_2 = 0.5;
+const float AMPLITUDE_3 = 0.6;
+
+const float STAR_VISIBILITY_FACTOR = 0.001;
+
+const vec3 wave1_1 = vec3(0.02, 0.03, 0.13);
+
+	
+const float WAVE_OFFSET_SMALL  = 5.0;
+const float WAVE_OFFSET_MEDIUM = 15.0;
+
+// Default noise
+float rand(vec2 co) {
+    return fract(sin(dot(co.xy ,vec2(12.9898,78.233))) * 43758.5453);
+}
+
+
+
+void main( void ) 
+{
+	vec2 p = ( gl_FragCoord.yx / resolution.yx ) * 2.0 - 0.6;
+	
+	vec3 c = vec3( 0.0 );
+	
+	float waveShineFactor = mix( 0.10, 0.4, 0.3 * sin(time) + 0.5);
+	float starShineFactor = mix( 0.10, 0.4, 1.5 * sin(atan(time * 0.2)) + 0.9);
+	
+	c += wave1_1 * (  waveShineFactor *        abs( 1.0 / sin( p.x         + sin( p.y + time )  * AMPLITUDE_1 ) ));
+	
+	c += vec3(0.05, 0.05, 0.15) * (  waveShineFactor        * abs( 1.0 / sin( p.x + 0.04  + sin( p.y + time + WAVE_OFFSET_SMALL )    * AMPLITUDE_2 ) ));
+	c += vec3(0.05, 0.05, 0.15) * (  waveShineFactor * 0.4  * abs( 1.0 / sin( p.x + 0.07  + sin( p.y + time + WAVE_OFFSET_SMALL )    * AMPLITUDE_2 - 0.01 ) ));
+	c += vec3(0.05, 0.05, 0.15) * (  waveShineFactor * 0.3  * abs( 1.0 / sin( p.x + 0.11  + sin( p.y + time + WAVE_OFFSET_SMALL )    * AMPLITUDE_2 - 0.02 ) ));
+	c += vec3(0.05, 0.05, 0.15) * (  waveShineFactor * 0.2  * abs( 1.0 / sin( p.x + 0.14  + sin( p.y + time + WAVE_OFFSET_SMALL )    * AMPLITUDE_2 - 0.03 ) ));
+	c += vec3(0.05, 0.05, 0.15) * (  waveShineFactor * 0.1  * abs( 1.0 / sin( p.x + 0.15  + sin( p.y + time + WAVE_OFFSET_SMALL )    * AMPLITUDE_2 - 0.04 ) ));
+	
+	
+
+	
+	// Blinking shiet
+	float star = 0.0;
+	if (rand(gl_FragCoord.xy / resolution.xy) > 0.99 && ( (gl_FragCoord.y + sin(p.y + time) * 50.) < 300.  && (gl_FragCoord.y + cos(p.y + time) * 20.) > 50.)) {
+		float r = rand(gl_FragCoord.xy);
+		star = r * (1.625 * sin(time * (r * 5.0) + 2.0 * r) + 0.95);
+	} 
+	
+	vec4 color = vec4(c,1.0);
+	
+	// Do not apply "black stars"
+	star = star * starShineFactor * (abs( .5 / sin(p.x + sin( p.y + time* 1.5 ))));
+	if (star >= STAR_VISIBILITY_FACTOR) 
+		color += pow(star,8.);
+
+	
+	gl_FragColor = color;
+
+}

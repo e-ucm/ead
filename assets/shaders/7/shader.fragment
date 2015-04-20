@@ -1,0 +1,27 @@
+// http://glslsandbox.com/e#20779.5
+
+#ifdef GL_ES
+precision mediump float;
+#endif
+
+uniform float time;
+uniform vec2 resolution;
+
+void main( void ) {
+
+	vec2 position = gl_FragCoord.xy;
+
+	float color = 0.0;
+	float y = position.y/resolution.y;
+	float k = 2.0;
+	if (fract((position.x+position.y)/k) < 0.5)
+	{
+		color = smoothstep(y, y+0.3, 0.65+0.4*sin(time+floor(position.x/k)/10.0));
+	} else
+	{
+		color = 1.0-smoothstep(y, y+0.3, 0.65+0.4*sin(time+3.14+floor(position.x/k)/(10.0+5.0*sin(time*0.02))+sin(time*0.03)*10.0));
+	}
+
+	gl_FragColor = vec4( vec3(color * 0.9 + 0.1, color * 0.3 + 0.6, -color * 0.4 + 0.9), 1.0 );
+
+}

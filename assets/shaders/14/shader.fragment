@@ -1,0 +1,43 @@
+// http://glslsandbox.com/e#20735.0
+
+#ifdef GL_ES
+precision mediump float;
+#endif
+
+uniform float time;
+uniform vec2 resolution;
+
+void main( void ) {
+
+	vec2 position = (gl_FragCoord.xy / resolution.xy) - 5.0;
+
+	vec3 color = vec3(0.0, 0.0, 0.0);
+	
+	float px = 1.0 * (position.x+0.3*sin(1.0*pow(time, 1.0)*2.0));
+	
+	float py = 4.0/(500.0*abs(position.y - px));
+	float py2 = 4.0/(200.0*abs(position.y - px));
+	
+	float px1 = 1.0 * (position.x+0.3*sin(1.0*pow(time, 1.0)*3.0));
+	
+	float py3 = 5.0/(500.0*abs(position.y+0.2 - px1));
+	float py4 = 5.0/(200.0*abs(position.y+0.2 - px1));
+
+	
+	color.x = (position.x-py)*0.4;
+	color.y = py*0.3;
+	color.z = py;
+	
+	color.x += (position.x-py2)*0.4;
+	color.z += py2;
+	
+	color.x += (position.x-py3)*0.4;
+	color.y += py3*10.0;
+	color.z += py3;
+	
+	color.x += (position.x-py4)*0.4;
+	color.z += py4;
+		
+	gl_FragColor = vec4(color, 1.0);
+
+}
