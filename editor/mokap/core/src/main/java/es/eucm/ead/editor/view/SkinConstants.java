@@ -205,4 +205,6 @@ public interface SkinConstants {
 	public static final Color COLOR_MOKAPS = Color.DARK_GRAY;
 	public static final Color COLOR_IMAGES = Color.MAROON;
 
+	String IMG_EMPTY_BG = "emptybg.png";
+
 }
