@@ -65,11 +65,12 @@ public class PlayView implements ViewBuilder {
 
 	@Override
 	public Actor getView(Object... args) {
+		String currentSceneId = args.length == 0 ? Q.getComponent(
+				controller.getModel().getGame(), GameData.class)
+				.getInitialScene() : (String) args[0];
 		controller.action(ShowToast.class, controller.getApplicationAssets()
 				.getI18N().m("play.back"));
 
-		String currentSceneId = Q.getComponent(controller.getModel().getGame(),
-				GameData.class).getInitialScene();
 		ModelEntity game = controller.getModel().getGame();
 		Exporter.createInitComponent(game, currentSceneId);
 		controller.getEditorGameAssets()
