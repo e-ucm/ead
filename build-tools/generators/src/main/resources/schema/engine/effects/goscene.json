@@ -6,11 +6,7 @@
     "javaType": "es.eucm.ead.schema.effects.GoScene",
     "properties": {
         "sceneId": {
-            "javaAnnotation": {
-                "class": "es.eucm.ead.schemax.Search",
-                "index": "es.eucm.ead.editor.indexes.SceneNamesIndex"
-            },
-            "description": "Id of the scene",
+            "description": "Id of the scene. If the scene is null, it returns to the previous scene",
             "type": "string"
         },
         "duration": {

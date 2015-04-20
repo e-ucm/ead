@@ -61,6 +61,8 @@ import es.eucm.ead.schemax.Layer;
 public class GoSceneExecutor extends EffectExecutor<GoScene> implements
 		EntityLoadedCallback {
 
+	private String previousScene, nextScene;
+
 	private TransitionManager transitionManager;
 
 	private EntitiesLoader entitiesLoader;
@@ -81,12 +83,17 @@ public class GoSceneExecutor extends EffectExecutor<GoScene> implements
 	}
 
 	@Override
-	public void execute(Entity target, final GoScene effect) {
-		if (effect.getSceneId() == null) {
+	public void execute(Entity target, GoScene effect) {
+		String previousScene = this.previousScene;
+		this.previousScene = nextScene;
+		if (effect.getSceneId() == null && previousScene == null) {
 			Gdx.app.error("GoSceneExecutor",
-					"Scene id set to null. Effect was skipped");
+					"Previous scene id set to null. Effect was skipped");
 			return;
 		}
+		nextScene = effect.getSceneId() == null ? previousScene : effect
+				.getSceneId();
+		transitionManager.setVisible(previousScene != null);
 
 		Group sceneLayer = gameView.getLayer(Layer.SCENE_CONTENT).getGroup();
 		transitionManager.setViewport(gameView.getScreenX(),
@@ -113,8 +120,7 @@ public class GoSceneExecutor extends EffectExecutor<GoScene> implements
 		Gdx.app.postRunnable(new Runnable() {
 			@Override
 			public void run() {
-				entitiesLoader.loadEntity(effect.getSceneId(),
-						GoSceneExecutor.this);
+				entitiesLoader.loadEntity(nextScene, GoSceneExecutor.this);
 			}
 		});
 	}
