@@ -53,6 +53,7 @@ import es.eucm.ead.schema.editor.components.Variables;
 import es.eucm.ead.schema.effects.AddEntity;
 import es.eucm.ead.schema.effects.ChangeVar;
 import es.eucm.ead.schema.effects.Effect;
+import es.eucm.ead.schema.effects.GoScene;
 import es.eucm.ead.schema.effects.SetViewport;
 import es.eucm.ead.schema.entities.ModelEntity;
 import es.eucm.ead.schemax.FieldName;
@@ -178,14 +179,13 @@ public class Exporter {
 
 		if (gameData != null) {
 			// Load initial scene
-			AddEntity loadSceneContent = new AddEntity();
+
+			GoScene goInitialScene = new GoScene();
 			if (initialScene == null) {
 				initialScene = gameData.getInitialScene();
 			}
-			loadSceneContent.setEntityUri(initialScene);
-			loadSceneContent.setTarget("(layer s"
-					+ Layer.SCENE_CONTENT.toString() + ")");
-			initBehavior.getEffects().add(loadSceneContent);
+			goInitialScene.setSceneId(initialScene);
+			initBehavior.getEffects().add(goInitialScene);
 
 			// Load HUD
 			AddEntity loadHud = new AddEntity();
