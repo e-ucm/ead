@@ -36,6 +36,7 @@
  */
 package es.eucm.ead.editor.view.builders.scene;
 
+import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.math.Interpolation;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
@@ -83,6 +84,7 @@ import es.eucm.ead.editor.view.widgets.baseview.Navigation;
 import es.eucm.ead.engine.EntitiesLoader;
 import es.eucm.ead.engine.I18N;
 import es.eucm.ead.engine.gdx.AbstractWidget;
+import es.eucm.ead.schema.components.controls.Label;
 import es.eucm.ead.schema.editor.components.GameData;
 import es.eucm.ead.schema.entities.ModelEntity;
 import es.eucm.ead.schemax.Layer;
@@ -401,11 +403,16 @@ public class SceneEditor extends BaseView implements ModelView,
 		if (path == null || path.trim().isEmpty()) {
 			return;
 		}
-		if (ProjectUtils.isSupportedImage(controller.getEditorGameAssets()
-				.absolute(path))) {
+
+		FileHandle fh = controller.getEditorGameAssets().absolute(path);
+		if (ProjectUtils.isSupportedImage(fh)) {
 			addElement(path);
+		} else if (ProjectUtils.isSupportedText(fh)) {
+			Label label = new Label();
+			label.setText(fh.readString());
+			controller.action(AddLabel.class, label);
 		} else {
-			controller.action(ShowToast.class, i18N.m("file.not.image"));
+			controller.action(ShowToast.class, i18N.m("invalid.resource"));
 		}
 	}
 

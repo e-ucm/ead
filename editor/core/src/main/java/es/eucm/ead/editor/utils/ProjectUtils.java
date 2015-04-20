@@ -377,4 +377,9 @@ public class ProjectUtils {
 				&& imageExtensions.contains(file.extension().toLowerCase(),
 						false);
 	}
+
+	public static boolean isSupportedText(FileHandle file) {
+		return !file.isDirectory()
+				&& "txt".equals(file.extension().toLowerCase());
+	}
 }
