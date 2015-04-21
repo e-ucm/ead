@@ -160,7 +160,7 @@ public class Clipboard {
 	}
 
 	private void paste(String content) {
-		Array contents = new Array();
+		Array contents;
 		try {
 			contents = assets.fromJson(Array.class, content);
 		} catch (SerializationException se) {
