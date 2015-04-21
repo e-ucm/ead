@@ -38,7 +38,7 @@ package es.eucm.ead.engine.components.controls;
 
 import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.scenes.scene2d.ui.Label.LabelStyle;
-import com.badlogic.gdx.scenes.scene2d.utils.Align;
+import com.badlogic.gdx.utils.Align;
 
 public class LabelComponent extends TextComponent<Label> {
 

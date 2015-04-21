@@ -38,19 +38,16 @@ package es.eucm.ead.editor.view.widgets;
 
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.scenes.scene2d.Actor;
-import com.badlogic.gdx.scenes.scene2d.Group;
 import com.badlogic.gdx.scenes.scene2d.actions.Actions;
 import com.badlogic.gdx.scenes.scene2d.actions.SequenceAction;
-import com.badlogic.gdx.scenes.scene2d.ui.*;
-import com.badlogic.gdx.scenes.scene2d.utils.Align;
+import com.badlogic.gdx.scenes.scene2d.ui.Button;
+import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.utils.Drawable;
 import es.eucm.ead.editor.control.Controller;
-import es.eucm.ead.editor.control.Preferences;
 import es.eucm.ead.editor.control.Selection;
 import es.eucm.ead.editor.control.Views;
 import es.eucm.ead.editor.control.actions.editor.LaunchImageEditor;
 import es.eucm.ead.editor.control.actions.model.ChangeSelectionColor;
-import es.eucm.ead.editor.control.actions.model.ChangeSelectionText;
 import es.eucm.ead.editor.model.Q;
 import es.eucm.ead.editor.view.SkinConstants;
 import es.eucm.ead.editor.view.builders.scene.SceneEditor;
@@ -58,7 +55,6 @@ import es.eucm.ead.editor.view.widgets.draw.BrushStrokesPicker.BrushStrokesPicke
 import es.eucm.ead.editor.view.widgets.draw.ColorPickerPanel;
 import es.eucm.ead.editor.view.widgets.draw.ColorPickerPanel.ColorPickerPanelStyle;
 import es.eucm.ead.editor.view.widgets.draw.SlideColorPicker;
-import es.eucm.ead.engine.I18N;
 import es.eucm.ead.schema.components.Reference;
 import es.eucm.ead.schema.entities.ModelEntity;
 

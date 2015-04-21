@@ -37,7 +37,7 @@
 package es.eucm.ead.editor.control.actions.editor;
 
 import com.badlogic.gdx.Input;
-import com.badlogic.gdx.graphics.g2d.BitmapFont.TextBounds;
+import com.badlogic.gdx.graphics.g2d.GlyphLayout;
 import com.badlogic.gdx.scenes.scene2d.ui.Label.LabelStyle;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import es.eucm.ead.editor.control.Controller;
@@ -64,6 +64,8 @@ import es.eucm.ead.schema.entities.ModelEntity;
  * 
  */
 public class AddLabel extends EditorAction implements Input.TextInputListener {
+
+	private GlyphLayout glyphLayout = new GlyphLayout();
 
 	private Color color;
 
@@ -102,11 +104,10 @@ public class AddLabel extends EditorAction implements Input.TextInputListener {
 		}
 
 		LabelStyle labelStyle = skin.get(label.getStyle(), LabelStyle.class);
+		glyphLayout.setText(labelStyle.font, label.getText());
 
-		TextBounds bounds = labelStyle.font.getMultiLineBounds(label.getText());
-
-		ModelEntity textLabel = Q.createCenteredEntity(bounds.width * .5f,
-				bounds.height * .5f, label);
+		ModelEntity textLabel = Q.createCenteredEntity(glyphLayout.width * .5f,
+				glyphLayout.height * .5f, label);
 
 		controller.action(AddSceneElement.class, textLabel);
 	}

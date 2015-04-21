@@ -37,10 +37,9 @@
 package es.eucm.ead.editor.control.actions.model;
 
 import com.badlogic.gdx.graphics.Color;
-import com.badlogic.gdx.graphics.g2d.BitmapFont.TextBounds;
+import com.badlogic.gdx.graphics.g2d.GlyphLayout;
 import com.badlogic.gdx.scenes.scene2d.ui.Label.LabelStyle;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
-
 import es.eucm.ead.editor.control.Selection;
 import es.eucm.ead.editor.control.actions.ModelAction;
 import es.eucm.ead.editor.control.commands.Command;
@@ -66,6 +65,8 @@ import es.eucm.ead.schemax.FieldName;
  * </dl>
  */
 public class ChangeSelectionText extends ModelAction {
+
+	private GlyphLayout glyphLayout = new GlyphLayout();
 
 	public ChangeSelectionText() {
 		super(true, false, new Class[] { String.class }, new Class[] {
@@ -113,12 +114,12 @@ public class ChangeSelectionText extends ModelAction {
 		}
 
 		// Actualize origin
-		TextBounds bounds = newLabelStyle.font.getMultiLineBounds(newText);
+		glyphLayout.setText(newLabelStyle.font, newText);
 
 		command.addCommand(new FieldCommand(element, FieldName.ORIGIN_X,
-				bounds.width * 0.5f));
+				glyphLayout.width * 0.5f));
 		command.addCommand(new FieldCommand(element, FieldName.ORIGIN_Y,
-				bounds.height * 0.5f));
+				glyphLayout.height * 0.5f));
 
 		return command;
 	}

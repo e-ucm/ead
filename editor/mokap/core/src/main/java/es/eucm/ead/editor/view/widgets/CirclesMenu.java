@@ -38,9 +38,9 @@ package es.eucm.ead.editor.view.widgets;
 
 import com.badlogic.gdx.math.Interpolation;
 import com.badlogic.gdx.scenes.scene2d.Actor;
-
 import com.badlogic.gdx.scenes.scene2d.actions.Actions;
-import com.badlogic.gdx.scenes.scene2d.utils.Align;
+import com.badlogic.gdx.utils.Align;
+
 import es.eucm.ead.editor.control.Views;
 import es.eucm.ead.editor.view.Modal;
 import es.eucm.ead.editor.view.widgets.layouts.LinearLayout;

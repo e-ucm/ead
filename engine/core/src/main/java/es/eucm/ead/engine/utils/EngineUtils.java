@@ -37,6 +37,7 @@
 package es.eucm.ead.engine.utils;
 
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
+import com.badlogic.gdx.graphics.g2d.GlyphLayout;
 import com.badlogic.gdx.math.Matrix3;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.scenes.scene2d.Actor;
@@ -56,6 +57,8 @@ public class EngineUtils {
 			tmp3 = new Vector2(), tmp4 = new Vector2(), tmp5 = new Vector2();
 
 	private static final Matrix3 tmpMatrix = new Matrix3();
+
+	private static GlyphLayout glyphLayout = new GlyphLayout();
 
 	public static <T extends Parameters> T buildWithParameters(Assets assets,
 			VariablesManager variablesManager, T parameters) {
@@ -87,7 +90,7 @@ public class EngineUtils {
 		int contWord = 0;
 		float currentLineWidth = 0;
 		while (contWord < words.length) {
-			float nextWordWidth = font.getBounds(words[contWord] + " ").width;
+			float nextWordWidth = getWidth(font, words[contWord] + " ");
 			if (currentLineWidth + nextWordWidth <= preferredWidth) {
 				currentLineWidth += nextWordWidth;
 				line += words[contWord++] + " ";
@@ -98,7 +101,7 @@ public class EngineUtils {
 			} else {
 				line = splitLongWord(font, lines, words[contWord++],
 						preferredWidth);
-				currentLineWidth = font.getBounds(line).width;
+				currentLineWidth = getWidth(font, line);
 			}
 		}
 		if (!"".equals(line)) {
@@ -115,7 +118,7 @@ public class EngineUtils {
 		while (!finished) {
 			currentLine = "";
 			while (i < word.length()
-					&& f.getBounds(currentLine + word.charAt(i)).width < lineWidth) {
+					&& getWidth(f, currentLine + word.charAt(i)) < lineWidth) {
 				currentLine += word.charAt(i++);
 			}
 			if (i == word.length()) {
@@ -125,6 +128,11 @@ public class EngineUtils {
 			}
 		}
 		return currentLine;
+	}
+
+	private static float getWidth(BitmapFont font, String chr) {
+		glyphLayout.setText(font, chr);
+		return glyphLayout.width;
 	}
 
 	/**

@@ -153,12 +153,13 @@ public class ExtendedSkin extends Skin {
 								false, jsonValue);
 
 						BitmapFont font = new BitmapFont(new BitmapFontData(
-								fontFile, flip), regionsWithIndex.items, true);
+								fontFile, flip), regionsWithIndex, true);
 						// Scaled size is the desired cap height to scale the
 						// font
 						// to.
 						if (scaledSize != -1)
-							font.setScale(scaledSize / font.getCapHeight());
+							font.getData().setScale(
+									scaledSize / font.getCapHeight());
 
 						return font;
 					}
