@@ -36,10 +36,7 @@
  */
 package es.eucm.ead.editor.control.actions.editor;
 
-import es.eucm.ead.editor.control.Clipboard.ClipboardListener;
-import es.eucm.ead.editor.control.Controller;
 import es.eucm.ead.editor.control.actions.EnabledOnLoadAction;
-import es.eucm.ead.editor.model.events.LoadEvent;
 
 /**
  * <p>
@@ -50,38 +47,16 @@ import es.eucm.ead.editor.model.events.LoadEvent;
  * <dd>None</dd>
  * </dl>
  */
-public class Paste extends EnabledOnLoadAction implements ClipboardListener {
+public class Paste extends EnabledOnLoadAction {
 
 	public Paste() {
-		super(false, false);
+		super(true, false);
 		setTrackable(true);
-	}
-
-	@Override
-	public void initialize(Controller controller) {
-		super.initialize(controller);
-		controller.getClipboard().addClipboardListener(this);
-		// The paste action will be enable once a game is loaded
-		// (checked at super.initialize)and if the clipboard is not empty
-		setEnabled(checkAdditionalPreconditions() && isEnabled());
 	}
 
 	@Override
 	public void perform(Object... args) {
 		controller.getClipboard().paste();
-	}
-
-	@Override
-	public void clipboardChanged(String clipboardContent) {
-		setEnabled(true);
-	}
-
-	/**
-	 * Override to check if the clipboard is empty when {@link LoadEvent}
-	 */
-	@Override
-	public boolean checkAdditionalPreconditions() {
-		return controller.getClipboard().getContents() != null;
 	}
 
 }
