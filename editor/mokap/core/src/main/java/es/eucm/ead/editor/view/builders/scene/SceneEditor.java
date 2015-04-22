@@ -81,13 +81,11 @@ import es.eucm.ead.editor.view.widgets.MultiWidget;
 import es.eucm.ead.editor.view.widgets.WidgetBuilder;
 import es.eucm.ead.editor.view.widgets.baseview.BaseView;
 import es.eucm.ead.editor.view.widgets.baseview.Navigation;
-import es.eucm.ead.engine.EntitiesLoader;
 import es.eucm.ead.engine.I18N;
 import es.eucm.ead.engine.gdx.AbstractWidget;
 import es.eucm.ead.schema.components.controls.Label;
 import es.eucm.ead.schema.editor.components.GameData;
 import es.eucm.ead.schema.entities.ModelEntity;
-import es.eucm.ead.schemax.Layer;
 
 public class SceneEditor extends BaseView implements ModelView,
 		SelectionListener, BackListener, FileChooserListener {
@@ -97,14 +95,12 @@ public class SceneEditor extends BaseView implements ModelView,
 	public static final int INSERT = 0, PAINT = 2;
 
 	public enum Mode {
-		COMPOSE, FX, INTERACTION, PLAY, DRAW,
+		COMPOSE, FX, INTERACTION, DRAW,
 	}
 
 	private Controller controller;
 
 	private Selection selection;
-
-	private EntitiesLoader entitiesLoader;
 
 	private Mode mode;
 
@@ -131,7 +127,6 @@ public class SceneEditor extends BaseView implements ModelView,
 		this.controller = controller;
 		this.i18N = controller.getApplicationAssets().getI18N();
 		this.selection = controller.getModel().getSelection();
-		this.entitiesLoader = controller.getEngine().getEntitiesLoader();
 
 		mode = Mode.COMPOSE;
 
@@ -268,9 +263,6 @@ public class SceneEditor extends BaseView implements ModelView,
 		if (isNavigationVisible()) {
 			toggleNavigation();
 			return true;
-		} else if (mode == Mode.PLAY) {
-			setMode(oldMode);
-			return true;
 		} else if (mode == Mode.DRAW) {
 			setMode(Mode.COMPOSE);
 			brushStrokes.hide(true);
@@ -308,27 +300,6 @@ public class SceneEditor extends BaseView implements ModelView,
 			brushStrokes.show();
 			sceneGroupEditor.getEditionButtons().setVisible(false);
 			break;
-		case PLAY:
-			addButton.setVisible(false);
-			lockPanels(true);
-			enterFullScreen();
-			gameView.setVisible(true);
-			sceneGroupEditor.setVisible(false);
-			controller.getEngine().play();
-			sceneGroupEditor.release();
-
-			ModelEntity scene = (ModelEntity) selection
-					.getSingle(Selection.SCENE);
-			gameView.clearLayer(Layer.SCENE_CONTENT, true);
-			gameView.addEntityToLayer(Layer.SCENE_CONTENT,
-					entitiesLoader.toEngineEntity(scene));
-
-			controller.action(ShowToast.class, controller
-					.getApplicationAssets().getI18N().m("play.back"));
-
-			controller.action(ShowInfoPanel.class, TypePanel.PLAY,
-					Preferences.HELP_MODE_PLAY);
-			break;
 		}
 	}
 
@@ -337,14 +308,6 @@ public class SceneEditor extends BaseView implements ModelView,
 		case COMPOSE:
 			setSelectionContext(null);
 			interactionContext.release();
-			break;
-		case PLAY:
-			addButton.setVisible(true);
-			controller.getEngine().stop();
-			exitFullScreen();
-			gameView.setVisible(false);
-			sceneGroupEditor.setVisible(true);
-			sceneGroupEditor.prepare();
 			break;
 		case DRAW:
 			addButton.setVisible(true);

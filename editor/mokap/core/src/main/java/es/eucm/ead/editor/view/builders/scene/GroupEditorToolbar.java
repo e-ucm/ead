@@ -46,11 +46,11 @@ import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.utils.Align;
-
 import es.eucm.ead.editor.control.Controller;
 import es.eucm.ead.editor.control.Preferences;
 import es.eucm.ead.editor.control.Selection;
 import es.eucm.ead.editor.control.actions.editor.AddPaintedElement;
+import es.eucm.ead.editor.control.actions.editor.ChangeView;
 import es.eucm.ead.editor.control.actions.editor.Copy;
 import es.eucm.ead.editor.control.actions.editor.Paste;
 import es.eucm.ead.editor.control.actions.editor.Redo;
@@ -68,6 +68,7 @@ import es.eucm.ead.editor.model.Q;
 import es.eucm.ead.editor.model.events.SelectionEvent;
 import es.eucm.ead.editor.view.ModelView;
 import es.eucm.ead.editor.view.SkinConstants;
+import es.eucm.ead.editor.view.builders.PlayView;
 import es.eucm.ead.editor.view.builders.scene.SceneEditor.Mode;
 import es.eucm.ead.editor.view.builders.scene.draw.BrushStrokes;
 import es.eucm.ead.editor.view.builders.scene.draw.BrushStrokes.ModeEvent;
@@ -175,8 +176,11 @@ public class GroupEditorToolbar extends MultiWidget implements ModelView {
 		play.addListener(new ClickListener() {
 			@Override
 			public void clicked(InputEvent event, float x, float y) {
-				sceneEditor.setMode(Mode.PLAY);
-				super.clicked(event, x, y);
+				controller.action(
+						ChangeView.class,
+						PlayView.class,
+						controller.getModel().getSelection()
+								.getSingle(Selection.MOKAP_RESOURCE));
 			}
 		});
 		compose.add(play);

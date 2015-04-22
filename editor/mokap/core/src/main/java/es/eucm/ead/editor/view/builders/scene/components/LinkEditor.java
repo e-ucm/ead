@@ -45,12 +45,12 @@ import com.badlogic.gdx.scenes.scene2d.actions.Actions;
 import com.badlogic.gdx.scenes.scene2d.ui.Image;
 import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.scenes.scene2d.ui.SelectBox;
+import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
 import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.utils.Array;
-
 import es.eucm.ead.editor.control.Controller;
 import es.eucm.ead.editor.control.Selection;
 import es.eucm.ead.editor.control.actions.editor.CreateSceneThumbnail;
@@ -58,12 +58,14 @@ import es.eucm.ead.editor.control.actions.model.generic.SetField;
 import es.eucm.ead.editor.model.Q;
 import es.eucm.ead.editor.view.SkinConstants;
 import es.eucm.ead.editor.view.drawables.TextureDrawable;
+import es.eucm.ead.editor.view.widgets.Switch;
 import es.eucm.ead.editor.view.widgets.Tile;
 import es.eucm.ead.editor.view.widgets.WidgetBuilder;
 import es.eucm.ead.editor.view.widgets.layouts.LinearLayout;
 import es.eucm.ead.editor.view.widgets.selectors.SceneSelector;
 import es.eucm.ead.editor.view.widgets.selectors.Selector.SelectorListener;
 import es.eucm.ead.editor.view.widgets.selectors.TransitionSelector;
+import es.eucm.ead.engine.I18N;
 import es.eucm.ead.engine.assets.Assets;
 import es.eucm.ead.engine.assets.Assets.AssetLoadedCallback;
 import es.eucm.ead.engine.assets.Assets.AssetLoadingListener;
@@ -81,6 +83,10 @@ public class LinkEditor extends ComponentEditor<Behavior> implements
 		AssetLoadingListener<Texture> {
 
 	private SceneSelector sceneSelector;
+
+	private Switch previousScene;
+
+	private Label nextSceneLabel;
 
 	private Tile tile;
 
@@ -114,15 +120,19 @@ public class LinkEditor extends ComponentEditor<Behavior> implements
 
 	@Override
 	protected void buildContent() {
+		I18N i18N = controller.getApplicationAssets().getI18N();
+		Skin skin = controller.getApplicationAssets().getSkin();
 
-		tile = new Tile(controller.getApplicationAssets().getSkin()) {
+		tile = new Tile(skin) {
 			@Override
 			public float getPrefHeight() {
 				return LinkEditor.this.getHeight() / 2.38f;
 			}
 		};
 		tile.setBackground(new Image(thumbnail = new TextureDrawable()));
+
 		list.add(tile).expandX();
+
 		tile.addListener(new ClickListener() {
 			@Override
 			public void clicked(InputEvent event, float x, float y) {
@@ -131,7 +141,34 @@ public class LinkEditor extends ComponentEditor<Behavior> implements
 						Interpolation.exp5Out));
 				controller.getViews().addToModalsContainer(sceneSelector);
 			}
+
 		});
+
+		previousScene = new Switch(skin);
+		previousScene.addListener(new ChangeListener() {
+			@Override
+			public void changed(ChangeEvent event, Actor actor) {
+				String sceneId;
+				if (previousScene.isChecked()) {
+					sceneId = null;
+				} else {
+					sceneId = pickNextScene();
+				}
+				updateScenePreview(sceneId);
+				controller.action(SetField.class, goScene, FieldName.SCENE_ID,
+						sceneId);
+			}
+		});
+
+		nextSceneLabel = new Label(i18N.m("go.previous.scene"), skin,
+				SkinConstants.STYLE_CONTEXT);
+
+		LinearLayout previousSceneRow = new LinearLayout(true);
+		previousSceneRow.add(nextSceneLabel);
+		previousSceneRow.addSpace();
+		previousSceneRow.add(previousScene);
+		list.add(previousSceneRow).expandX()
+				.margin(WidgetBuilder.dpToPixels(8));
 
 		Table transitionHeader = new Table();
 		transitionHeader.pad(WidgetBuilder.dpToPixels(8), 0,
@@ -200,12 +237,8 @@ public class LinkEditor extends ComponentEditor<Behavior> implements
 			transitionName.setText(i18N.m(transition.toString()));
 		}
 		updateDurationSlider(goScene.getDuration());
-		if (sceneId == null) {
-			tile.setText(i18N.m("scene.none_selected"));
-			thumbnail.setTexture(null);
-		} else {
-			setSceneId(sceneId);
-		}
+		updateScenePreview(sceneId);
+		updateTransitionName();
 	}
 
 	private void updateDurationSlider(float time) {
@@ -228,20 +261,26 @@ public class LinkEditor extends ComponentEditor<Behavior> implements
 		}
 	}
 
-	private void setSceneId(String sceneId) {
+	private void updateScenePreview(String sceneId) {
 		this.sceneId = sceneId;
+		if (sceneId == null) {
+			tile.setVisible(false);
+			thumbnail.setTexture(null);
+			previousScene.setChecked(true);
+		} else {
+			previousScene.setChecked(false);
+			tile.setVisible(true);
 
-		ModelEntity scene = (ModelEntity) controller.getModel()
-				.getResource(sceneId, ResourceCategory.SCENE).getObject();
+			ModelEntity scene = (ModelEntity) controller.getModel()
+					.getResource(sceneId, ResourceCategory.SCENE).getObject();
 
-		updateTransitionName();
-		tile.setText(Q.getTitle(scene));
-		this.thumbnailPath = Q.getThumbnailPath(scene);
+			tile.setText(i18N.m("go.to", Q.getTitle(scene, i18N.m("untitled"))));
+			this.thumbnailPath = Q.getThumbnailPath(scene);
 
-		Q.getThumbnailTexture(scene, this);
-
-		controller.action(SetField.class, goScene, FieldName.SCENE_ID, sceneId);
-
+			Q.getThumbnailTexture(scene, this);
+		}
+		invalidateHierarchy();
+		Gdx.graphics.requestRendering();
 	}
 
 	private void updateTransitionName() {
@@ -254,15 +293,29 @@ public class LinkEditor extends ComponentEditor<Behavior> implements
 		behavior.setEvent(new Touch());
 		GoScene goScene = new GoScene();
 		goScene.setTransition(transition);
-		System.out.println("duration: " + getDuration());
+		goScene.setSceneId(pickNextScene());
 		goScene.setDuration(getDuration());
 		behavior.getEffects().add(goScene);
 		return behavior;
 	}
 
+	private String pickNextScene() {
+		String currentSceneId = (String) controller.getModel().getSelection()
+				.getSingle(Selection.MOKAP_RESOURCE);
+		for (String key : controller.getModel()
+				.getResources(ResourceCategory.SCENE).keySet()) {
+			if (!currentSceneId.equals(key)) {
+				return key;
+			}
+		}
+		return null;
+	}
+
 	@Override
 	public void selected(String selected) {
-		setSceneId(selected);
+		controller
+				.action(SetField.class, goScene, FieldName.SCENE_ID, selected);
+		updateScenePreview(selected);
 		hideSelector(sceneSelector);
 	}
 

@@ -339,11 +339,8 @@ public class ExporterTest {
 											.getEvent().getClass());
 									Array<Effect> effects = behavior
 											.getEffects();
-									AddEntity addScene = (AddEntity) effects
-											.get(0);
-									assertEquals(addScene.getTarget(),
-											"(layer sscene_content)");
-									assertEquals(addScene.getEntityUri(),
+									GoScene addScene = (GoScene) effects.get(0);
+									assertEquals(addScene.getSceneId(),
 											"scene2");
 									AddEntity addHud = (AddEntity) effects
 											.get(1);

@@ -53,6 +53,9 @@ public class TestGameView extends DefaultGameView {
 	public TestGameView(GameLoop gameLoop) {
 		super(gameLoop);
 		setFillParent(true);
+		// Avoid creation of FrameBuffer of 0, 0 width and height
+		gameViewport.set(0, 0, 1, 1);
+		stageViewport.set(0, 0, 1, 1);
 	}
 
 	@Override

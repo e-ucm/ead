@@ -238,8 +238,13 @@ public class TransitionSelector extends LinearLayout implements
 
 			Q.getThumbnailTexture(selectedScene, currentTexturesCallback);
 
-			Q.getThumbnailTexture(nextScene, nextTexturesCallback);
-
+			if (nextScene == null) {
+				controller.getApplicationAssets().get(
+						SkinConstants.IMG_EMPTY_BG, Texture.class,
+						nextTexturesCallback);
+			} else {
+				Q.getThumbnailTexture(nextScene, nextTexturesCallback);
+			}
 		}
 
 		@Override
