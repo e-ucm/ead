@@ -36,23 +36,19 @@
  */
 package es.eucm.ead.android;
 
-import java.util.HashMap;
-import java.util.Map;
-
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
-
-import android.util.Log;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.backends.android.AndroidApplication;
 import com.badlogic.gdx.backends.android.AndroidApplicationConfiguration;
 import com.google.android.gms.analytics.GoogleAnalytics;
 import com.google.android.gms.analytics.Tracker;
-
 import es.eucm.ead.editor.MokapApplicationListener;
-import es.eucm.ead.editor.platform.MokapPlatform;
 import es.eucm.mokap.R;
+
+import java.util.HashMap;
+import java.util.Map;
 
 public class EditorActivity extends AndroidApplication {
 
@@ -91,6 +87,9 @@ public class EditorActivity extends AndroidApplication {
 		platform = new AndroidPlatform(getContext(), tracker);
 		handleIntent();
 		initialize(new MokapApplicationListener(platform), config);
+		// Force initialization of the clipboard. This needs to be done in the
+		// activity thread to avoid exceptions in future accesses
+		Gdx.app.getClipboard().getContents();
 	}
 
 	private void handleIntent() {

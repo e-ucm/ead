@@ -36,16 +36,21 @@
  */
 package es.eucm.ead.editor.control.pastelisteners;
 
+import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.utils.Array;
-
 import es.eucm.ead.editor.control.Clipboard.CopyListener;
-import es.eucm.ead.editor.control.actions.editor.AddLabel;
 import es.eucm.ead.editor.control.Controller;
+import es.eucm.ead.editor.control.actions.editor.AddLabel;
+import es.eucm.ead.editor.control.actions.editor.ExecuteWorker;
+import es.eucm.ead.editor.control.actions.model.AddSceneElement;
+import es.eucm.ead.editor.control.workers.DownloadFile;
+import es.eucm.ead.editor.control.workers.Worker.WorkerListener;
+import es.eucm.ead.editor.utils.ProjectUtils;
+import es.eucm.ead.engine.assets.Assets;
 import es.eucm.ead.schema.components.controls.Label;
+import es.eucm.ead.schemax.ModelStructure;
 
 public class TextCopyListener implements CopyListener<String> {
-
-	private static final int MAX_CHARACTERS = 750;
 
 	private Controller controller;
 
@@ -59,16 +64,61 @@ public class TextCopyListener implements CopyListener<String> {
 
 	@Override
 	public void paste(String object) {
-		Label label = new Label();
-		if (object.length() > MAX_CHARACTERS) {
-			object = object.substring(0, MAX_CHARACTERS);
+		if (object.matches(Assets.URL_PATTERN)
+				&& ProjectUtils.isSupportedImage(object)) {
+			String extension = object.substring(object.lastIndexOf('.') + 1);
+			String fileName = object.substring(object.lastIndexOf('/') + 1,
+					object.lastIndexOf('.'));
+
+			FileHandle dstImage = ProjectUtils
+					.getNonExistentFile(controller.getEditorGameAssets()
+							.resolve(ModelStructure.IMAGES_FOLDER), fileName,
+							extension);
+			controller.action(ExecuteWorker.class, DownloadFile.class,
+					new URLImage(dstImage.path()), object, dstImage);
+		} else {
+			Label label = new Label();
+			label.setText(object);
+			controller.action(AddLabel.class, label);
 		}
-		label.setText(object);
-		controller.action(AddLabel.class, label);
 	}
 
 	@Override
 	public void paste(Array<String> object) {
 	}
 
+	public class URLImage implements WorkerListener {
+
+		private String dstImage;
+
+		public URLImage(String dstImage) {
+			this.dstImage = dstImage;
+		}
+
+		@Override
+		public void start() {
+
+		}
+
+		@Override
+		public void result(Object... results) {
+
+		}
+
+		@Override
+		public void done() {
+			controller.action(AddSceneElement.class, controller.getTemplates()
+					.createSceneElement(dstImage, false));
+		}
+
+		@Override
+		public void error(Throwable ex) {
+
+		}
+
+		@Override
+		public void cancelled() {
+
+		}
+	}
 }

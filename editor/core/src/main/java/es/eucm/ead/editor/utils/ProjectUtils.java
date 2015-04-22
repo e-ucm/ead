@@ -351,6 +351,7 @@ public class ProjectUtils {
 	 */
 	public static FileHandle getNonExistentFile(FileHandle directory,
 			String name, String extension) {
+		name = name.replaceAll("[^a-zA-Z0-9.-]", "_");
 
 		if (!extension.isEmpty() && !extension.startsWith(".")) {
 			extension = "." + extension;
@@ -373,8 +374,16 @@ public class ProjectUtils {
 	 * @return true if the file is a supported image that can be loaded.
 	 */
 	public static boolean isSupportedImage(FileHandle file) {
-		return !file.isDirectory()
-				&& imageExtensions.contains(file.extension().toLowerCase(),
-						false);
+		return !file.isDirectory() && isSupportedImage(file.path());
+	}
+
+	public static boolean isSupportedImage(String path) {
+		path = path.toLowerCase();
+		for (String extension : imageExtensions) {
+			if (path.endsWith("." + extension)) {
+				return true;
+			}
+		}
+		return false;
 	}
 }
