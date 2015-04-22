@@ -386,4 +386,9 @@ public class ProjectUtils {
 		}
 		return false;
 	}
+
+	public static boolean isSupportedText(FileHandle file) {
+		return !file.isDirectory()
+				&& "txt".equals(file.extension().toLowerCase());
+	}
 }
