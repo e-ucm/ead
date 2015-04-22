@@ -301,7 +301,7 @@ public class LinkEditor extends ComponentEditor<Behavior> implements
 
 	private String pickNextScene() {
 		String currentSceneId = (String) controller.getModel().getSelection()
-				.getSingle(Selection.RESOURCE);
+				.getSingle(Selection.MOKAP_RESOURCE);
 		for (String key : controller.getModel()
 				.getResources(ResourceCategory.SCENE).keySet()) {
 			if (!currentSceneId.equals(key)) {
