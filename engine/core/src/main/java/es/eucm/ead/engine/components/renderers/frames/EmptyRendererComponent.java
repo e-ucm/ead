@@ -77,6 +77,10 @@ public class EmptyRendererComponent extends CollidableRendererComponent {
 		this.hitAll = hitAll;
 	}
 
+	public boolean isHitAll() {
+		return hitAll;
+	}
+
 	private void updateWidthAndHeight() {
 		if (collider != null) {
 			float minX = Float.MAX_VALUE, maxX = Float.MIN_VALUE, minY = Float.MAX_VALUE, maxY = Float.MIN_VALUE;

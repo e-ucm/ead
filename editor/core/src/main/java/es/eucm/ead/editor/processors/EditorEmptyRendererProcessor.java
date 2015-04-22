@@ -53,9 +53,11 @@ import es.eucm.ead.schema.renderers.EmptyRenderer;
 public class EditorEmptyRendererProcessor extends EmptyRendererProcessor {
 
 	public static final Color INTERACTIVE_ZONE_COLOR = new Color(0.0f, 1.0f,
-			0.0f, 0.25f);
+			0.0f, 0.35f);
 
 	private SpriteDrawable drawable;
+
+	private SpriteDrawable extendedDrawable;
 
 	private Engine engine;
 
@@ -68,13 +70,18 @@ public class EditorEmptyRendererProcessor extends EmptyRendererProcessor {
 		Sprite sprite = new Sprite(blank.getRegion());
 		sprite.setColor(INTERACTIVE_ZONE_COLOR);
 		drawable = new SpriteDrawable(sprite);
+
+		sprite = new Sprite(blank.getRegion());
+		sprite.setColor(INTERACTIVE_ZONE_COLOR);
+		sprite.setAlpha(0.25f);
+		extendedDrawable = new SpriteDrawable(sprite);
 	}
 
 	@Override
 	public Component getComponent(EmptyRenderer component) {
 		EditorEmptyRendererComponent emptyRendererComponent = gameLoop
 				.createComponent(EditorEmptyRendererComponent.class);
-		emptyRendererComponent.setDrawable(drawable);
+		emptyRendererComponent.setDrawables(drawable, extendedDrawable);
 		emptyRendererComponent.setEngine(engine);
 		read(emptyRendererComponent, component);
 		return emptyRendererComponent;
