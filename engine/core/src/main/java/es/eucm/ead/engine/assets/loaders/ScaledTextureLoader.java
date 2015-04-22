@@ -40,18 +40,27 @@ import com.badlogic.gdx.assets.AssetDescriptor;
 import com.badlogic.gdx.assets.AssetLoaderParameters;
 import com.badlogic.gdx.assets.AssetManager;
 import com.badlogic.gdx.assets.loaders.AsynchronousAssetLoader;
+import com.badlogic.gdx.assets.loaders.TextureLoader.TextureParameter;
 import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.graphics.Texture;
+import com.badlogic.gdx.graphics.Texture.TextureFilter;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.utils.Array;
-import es.eucm.ead.engine.assets.GameAssets.ImageUtils;
+
 import es.eucm.ead.engine.assets.GameAssets;
+import es.eucm.ead.engine.assets.GameAssets.ImageUtils;
 import es.eucm.ead.engine.assets.ScaledTexture;
 import es.eucm.ead.schemax.ModelStructure;
 
 public class ScaledTextureLoader
 		extends
 		AsynchronousAssetLoader<ScaledTexture, AssetLoaderParameters<ScaledTexture>> {
+
+	public static final TextureParameter textureParameter = new TextureParameter();
+	static {
+		textureParameter.magFilter = TextureFilter.Linear;
+		textureParameter.minFilter = TextureFilter.Linear;
+	}
 
 	private GameAssets gameAssets;
 
@@ -93,7 +102,7 @@ public class ScaledTextureLoader
 		if (imageUtils.validSize(size)) {
 			scale = 1.0f;
 			return Array.with(assetDescriptor = new AssetDescriptor(imageFile,
-					Texture.class));
+					Texture.class, textureParameter));
 		} else {
 			FileHandle scaleProperty = gameAssets
 					.resolveProject(ModelStructure.METADATA_PATH
@@ -108,7 +117,7 @@ public class ScaledTextureLoader
 				scale = Float.parseFloat(scaleProperty.readString());
 			}
 			return Array.with(assetDescriptor = new AssetDescriptor(scaled,
-					Texture.class));
+					Texture.class, textureParameter));
 		}
 	}
 
