@@ -6,7 +6,7 @@
 
 [Official web page](http://mokap.es/)
 
-Please see the [issues](https://github.com/e-ucm/ead/isses) section to
+Please see the [issues](https://github.com/e-ucm/ead/issues) section to
 report any bugs or feature requests and to see the list of known issues.
 
 ## License
