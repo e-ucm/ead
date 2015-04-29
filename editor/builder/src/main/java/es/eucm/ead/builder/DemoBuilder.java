@@ -251,10 +251,9 @@ public abstract class DemoBuilder {
 		game = entity().getLastEntity();
 		initGame = new Behavior();
 		initGame.setEvent(new Init());
-		AddEntity loadScene = new AddEntity();
-		loadScene.setEntityUri(DEFAULT_SCENE_PREF + sceneCount + JSON);
-		loadScene.setTarget("(layer sscene_content)");
-		initGame.getEffects().add(loadScene);
+		GoScene loadInitialScene = new GoScene();
+		loadInitialScene.setSceneId(DEFAULT_SCENE_PREF + sceneCount + JSON);
+		initGame.getEffects().add(loadInitialScene);
 		SetViewport viewport = new SetViewport();
 		viewport.setWidth(width);
 		viewport.setHeight(height);
