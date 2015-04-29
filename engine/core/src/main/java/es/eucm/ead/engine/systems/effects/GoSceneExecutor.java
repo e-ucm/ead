@@ -93,7 +93,7 @@ public class GoSceneExecutor extends EffectExecutor<GoScene> implements
 		}
 		nextScene = effect.getSceneId() == null ? previousScene : effect
 				.getSceneId();
-		transitionManager.setVisible(previousScene != null);
+		transitionManager.setVisible(this.previousScene != null);
 
 		Group sceneLayer = gameView.getLayer(Layer.SCENE_CONTENT).getGroup();
 		transitionManager.setViewport(gameView.getScreenX(),
