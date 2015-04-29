@@ -189,13 +189,20 @@ public class TransitionManager extends Actor implements Disposable {
 			this.scene = scene;
 			region.w = worldWidth;
 			region.h = worldHeight;
-			if (frameBuffer == null || frameBuffer.getHeight() != screenHeight
-					|| frameBuffer.getWidth() != screenWidth) {
-				dispose();
-				frameBuffer = new FrameBuffer(Format.RGB888, pixelsWidth,
-						pixelsHeight, false);
-				textureRegion.setRegion(frameBuffer.getColorBufferTexture());
-				textureRegion.flip(false, true);
+			try {
+				if (frameBuffer == null
+						|| frameBuffer.getHeight() != screenHeight
+						|| frameBuffer.getWidth() != screenWidth) {
+					dispose();
+					frameBuffer = new FrameBuffer(Format.RGB888, pixelsWidth,
+							pixelsHeight, false);
+					textureRegion
+							.setRegion(frameBuffer.getColorBufferTexture());
+					textureRegion.flip(false, true);
+				}
+			} catch (Exception e) {
+				Gdx.app.error("TransitionManager",
+						"Error creating frame buffer", e);
 			}
 		}
 
