@@ -36,6 +36,7 @@
  */
 package es.eucm.ead.engine;
 
+import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.Stage;
@@ -139,6 +140,8 @@ public class EngineTest extends DemoBuilder {
 	}
 
 	public void update(float delta) {
+		((MockApplication) Gdx.app).act();
+		stage.act(delta);
 		gameLoop.update(delta);
 	}
 
