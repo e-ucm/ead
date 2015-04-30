@@ -231,7 +231,7 @@ public class ShowInfoPanel extends EditorAction {
 			} else if (type.equals(TypePanel.PLAY)) {
 				actor = createInfo(SkinConstants.MOKAP_CUP,
 						i18n.m("info.panel.mode.play"),
-						SkinConstants.TABLET_PRAY);
+						SkinConstants.TABLET_PLAY);
 			}
 
 			actor.clearActions();
