@@ -203,5 +203,7 @@ public class FieldName {
 
 	MIN_ALPHA = "minAlpha",
 
-	ZOOM = "zoom";
+	ZOOM = "zoom",
+
+	URI = "uri";
 }
