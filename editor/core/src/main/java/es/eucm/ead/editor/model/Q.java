@@ -322,6 +322,9 @@ public class Q {
 
 	public static ModelComponent getComponentById(ModelEntity sceneElement,
 			String componentId) {
+		if (sceneElement == null) {
+			return null;
+		}
 		for (ModelComponent component : sceneElement.getComponents()) {
 			if (componentId.equals(component.getId())) {
 				return component;

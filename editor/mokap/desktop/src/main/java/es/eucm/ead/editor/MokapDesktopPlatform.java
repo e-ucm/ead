@@ -107,8 +107,15 @@ public class MokapDesktopPlatform extends MokapPlatform {
 		Gdx.input.getTextInput(new TextInputListener() {
 
 			@Override
-			public void input(String text) {
-				listener.fileChosen(text, FileChooserListener.Result.SUCCESS);
+			public void input(final String text) {
+				Gdx.app.postRunnable(new Runnable() {
+
+					@Override
+					public void run() {
+						listener.fileChosen(text,
+								FileChooserListener.Result.SUCCESS);
+					}
+				});
 			}
 
 			@Override
