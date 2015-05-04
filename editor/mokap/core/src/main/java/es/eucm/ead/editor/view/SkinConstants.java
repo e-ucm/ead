@@ -190,6 +190,7 @@ public interface SkinConstants {
 	String IC_SPEED_POINTER = "ic_speed_pointer";
 
 	String IC_ALPHA = "ic_alpha";
+	String IC_VOLUME = "ic_volume";
 
 	String IC_SEGMENT_END = "ic_segment_end";
 	String IC_SEGMENT_MIDDLE = "ic_segment_middle";

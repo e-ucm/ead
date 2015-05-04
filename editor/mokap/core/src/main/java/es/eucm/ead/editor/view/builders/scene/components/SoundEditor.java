@@ -37,13 +37,13 @@
 package es.eucm.ead.editor.view.builders.scene.components;
 
 import com.badlogic.gdx.audio.Music;
+import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
-import com.badlogic.gdx.scenes.scene2d.ui.Value;
+import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import es.eucm.ead.editor.control.Controller;
 import es.eucm.ead.editor.control.Selection;
-import es.eucm.ead.editor.control.actions.editor.CreateSceneThumbnail;
 import es.eucm.ead.editor.control.actions.editor.ShowToast;
 import es.eucm.ead.editor.control.actions.model.generic.RemoveFromArray;
 import es.eucm.ead.editor.control.actions.model.generic.SetField;
@@ -52,25 +52,25 @@ import es.eucm.ead.editor.platform.MokapPlatform;
 import es.eucm.ead.editor.platform.Platform;
 import es.eucm.ead.editor.utils.ProjectUtils;
 import es.eucm.ead.editor.view.SkinConstants;
+import es.eucm.ead.editor.view.widgets.Slider;
+import es.eucm.ead.editor.view.widgets.WidgetBuilder;
+import es.eucm.ead.editor.view.widgets.layouts.LinearLayout;
 import es.eucm.ead.schema.components.ModelComponent;
 import es.eucm.ead.schema.components.behaviors.Behavior;
 import es.eucm.ead.schema.components.behaviors.events.Touch;
-import es.eucm.ead.schema.effects.Effect;
 import es.eucm.ead.schema.effects.PlaySound;
 import es.eucm.ead.schema.entities.ModelEntity;
 import es.eucm.ead.schemax.ComponentIds;
 import es.eucm.ead.schemax.FieldName;
-
-import java.io.File;
 
 public class SoundEditor extends ComponentEditor<Behavior> implements
 		Platform.FileChooserListener {
 
 	private TextButton soundName;
 	private boolean loop = false;
-	private float volume = 1f;
 	private PlaySound playSound;
 	private ModelEntity sceneElement;
+	private Slider slider;
 
 	public SoundEditor(Controller controller) {
 		super(SkinConstants.IC_SOUND, controller.getApplicationAssets()
@@ -90,17 +90,32 @@ public class SoundEditor extends ComponentEditor<Behavior> implements
 				platform.askForAudio(controller, SoundEditor.this);
 			}
 		});
+		slider = new Slider(0, 1, .05f, false, skin);
 		list.add(soundName).expandX();
+		float pad = WidgetBuilder.dpToPixels(16);
+		LinearLayout volumeLayout = new LinearLayout(true);
+		volumeLayout.add(WidgetBuilder.image(SkinConstants.IC_VOLUME,
+				SkinConstants.COLOR_GRAY));
+		volumeLayout.add(slider).expandX().marginLeft(pad);
+		list.add(volumeLayout).expandX().margin(pad, pad, pad, pad);
+		slider.addListener(new ChangeListener() {
+			@Override
+			public void changed(ChangeEvent event, Actor actor) {
+				controller.action(SetField.class, playSound, FieldName.VOLUME,
+						slider.getValue());
+			}
+		});
 	}
 
 	@Override
 	protected void read(ModelEntity entity, Behavior component) {
-		PlaySound playSound = (PlaySound) component.getEffects().get(0);
+		playSound = (PlaySound) component.getEffects().get(0);
 		String uri = playSound.getUri();
 		if (uri == null || uri.isEmpty()) {
 			uri = i18N.m("sound");
 		}
 		setSoundName(uri);
+		slider.setValue(playSound.getVolume());
 	}
 
 	@Override
@@ -111,7 +126,7 @@ public class SoundEditor extends ComponentEditor<Behavior> implements
 		behavior.getEffects().add(playSound);
 		playSound.setUri("");
 		playSound.setLoop(loop);
-		playSound.setVolume(volume);
+		playSound.setVolume(1f);
 		return behavior;
 	}
 
@@ -177,9 +192,7 @@ public class SoundEditor extends ComponentEditor<Behavior> implements
 	}
 
 	private void setSoundName(String uri) {
-		int separatorIndex = uri.lastIndexOf(File.separator);
-		String name = (separatorIndex < 0) ? uri : uri.substring(
-				separatorIndex + 1, uri.length());
+		String name = ProjectUtils.getFileName(uri);
 		soundName.setText(name);
 		soundName.setUserObject(uri);
 	}
