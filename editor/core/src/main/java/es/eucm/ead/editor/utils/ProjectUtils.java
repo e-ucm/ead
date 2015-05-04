@@ -46,6 +46,7 @@ import com.badlogic.gdx.utils.reflect.ReflectionException;
 import es.eucm.ead.editor.model.Model;
 import es.eucm.ead.schemax.ModelStructure;
 
+import java.io.File;
 import java.util.List;
 import java.util.Map;
 
@@ -409,5 +410,17 @@ public class ProjectUtils {
 		return !file.isDirectory()
 				&& audioExtensions.contains(file.extension().toLowerCase(),
 						false);
+	}
+
+	/**
+	 * 
+	 * @param path
+	 *            used to extract the file's name
+	 * @return the file name or the path itself
+	 */
+	public static String getFileName(String path) {
+		int separatorIndex = path.lastIndexOf(File.separator);
+		return (separatorIndex < 0) ? path : path.substring(separatorIndex + 1,
+				path.length());
 	}
 }
