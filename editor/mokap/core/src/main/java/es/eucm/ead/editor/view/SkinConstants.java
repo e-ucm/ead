@@ -99,7 +99,7 @@ public interface SkinConstants {
 	String TABLET_INSERT = "tablet_insert";
 	String TABLET_ZONE = "tablet_zone";
 	String TABLET_MULTIPLE_SELECT = "tablet_multiple_selection";
-	String TABLET_PRAY = "tablet_play";
+	String TABLET_PLAY = "tablet_play";
 
 	String MOKAP_LOGO = "mokap_logo";
 	String MOKAP_ACCURATE_SELECT = "mokap_accurate_selection";
@@ -126,6 +126,8 @@ public interface SkinConstants {
 	String IC_CLOUD_DONE = "ic_cloud_done";
 	String IC_ERROR = "ic_error";
 	String IC_PHOTO = "ic_photo";
+	String IC_SOUND = "ic_sound";
+	String IC_MUSIC = "ic_music";
 
 	String IC_SINGLE_SELECTION = "ic_single_selection";
 	String IC_MULTIPLE_SELECTION = "ic_multiple_selection";
@@ -188,6 +190,7 @@ public interface SkinConstants {
 	String IC_SPEED_POINTER = "ic_speed_pointer";
 
 	String IC_ALPHA = "ic_alpha";
+	String IC_VOLUME = "ic_volume";
 
 	String IC_SEGMENT_END = "ic_segment_end";
 	String IC_SEGMENT_MIDDLE = "ic_segment_middle";

@@ -203,5 +203,15 @@ public class FieldName {
 
 	MIN_ALPHA = "minAlpha",
 
-	ZOOM = "zoom";
+	ZOOM = "zoom",
+
+	/**
+	 * Refers to {@link es.eucm.ead.schema.effects.PlaySound#volume}
+	 */
+	VOLUME = "volume",
+
+	/**
+	 * Refers to {@link es.eucm.ead.schema.effects.PlaySound#uri}
+	 */
+	URI = "uri";
 }

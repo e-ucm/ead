@@ -46,6 +46,7 @@ import com.badlogic.gdx.utils.reflect.ReflectionException;
 import es.eucm.ead.editor.model.Model;
 import es.eucm.ead.schemax.ModelStructure;
 
+import java.io.File;
 import java.util.List;
 import java.util.Map;
 
@@ -59,9 +60,12 @@ public class ProjectUtils {
 	private static final Array<String> imageExtensions = new Array<String>(
 			new String[] { "jpg", "jpeg", "png", "gif", "bmp" });
 
+	private static final Array<String> audioExtensions = new Array<String>(
+			new String[] { "mp3", "ogg", "wav" });
+
 	// To detect sound and video extensions
-	private static final Array<String> binaryExtensions = new Array<String>(
-			new String[] { "midi", "mp3", "wav", "ogg", "mpg", "mpeg", "avi" });
+	private static final Array<String> videoExtensions = new Array<String>(
+			new String[] { "mpg", "mpeg", "avi" });
 
 	/**
 	 * @return an array with paths of all the projects inside the given folder
@@ -105,8 +109,8 @@ public class ProjectUtils {
 	 *            in any superclasses of the object are searched. It is
 	 *            considered a reference to a binary file any String field which
 	 *            value ends with any of the supported binary formats (see
-	 *            {@link #imageExtensions} and {@link #binaryExtensions}),
-	 *            either lowercase or uppercase.
+	 *            {@link #imageExtensions}, {@link #audioExtensions}) and
+	 *            {@link #videoExtensions}), either lowercase or uppercase.
 	 * 
 	 * @param object
 	 *            The object to search binary references in.
@@ -152,7 +156,13 @@ public class ProjectUtils {
 				}
 			}
 			if (!hasBinaryExtension) {
-				for (String binaryExtension : binaryExtensions) {
+				for (String binaryExtension : videoExtensions) {
+					if (strValue.endsWith("." + binaryExtension.toLowerCase())) {
+						hasBinaryExtension = true;
+						break;
+					}
+				}
+				for (String binaryExtension : audioExtensions) {
 					if (strValue.endsWith("." + binaryExtension.toLowerCase())) {
 						hasBinaryExtension = true;
 						break;
@@ -390,5 +400,27 @@ public class ProjectUtils {
 	public static boolean isSupportedText(FileHandle file) {
 		return !file.isDirectory()
 				&& "txt".equals(file.extension().toLowerCase());
+	}
+
+	/**
+	 * 
+	 * @return true if the file is a supported audio that can be loaded.
+	 */
+	public static boolean isSupportedAudio(FileHandle file) {
+		return !file.isDirectory()
+				&& audioExtensions.contains(file.extension().toLowerCase(),
+						false);
+	}
+
+	/**
+	 * 
+	 * @param path
+	 *            used to extract the file's name
+	 * @return the file name or the path itself
+	 */
+	public static String getFileName(String path) {
+		int separatorIndex = path.lastIndexOf(File.separator);
+		return (separatorIndex < 0) ? path : path.substring(separatorIndex + 1,
+				path.length());
 	}
 }

@@ -49,4 +49,5 @@ public interface ComponentIds {
 	public static final String ROTATE = "_rotate";
 
 	public static final String LINK = "_link";
+	public static final String SOUND = "_sound";
 }

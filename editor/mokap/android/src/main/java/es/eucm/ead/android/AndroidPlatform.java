@@ -56,6 +56,7 @@ import android.content.pm.PackageManager;
 import android.content.pm.PackageManager.NameNotFoundException;
 import android.content.pm.ResolveInfo;
 import android.database.Cursor;
+import android.database.DatabaseUtils;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.net.Uri;
@@ -142,7 +143,7 @@ public class AndroidPlatform extends MokapPlatform {
 		Intent intent = new Intent();
 		intent.setAction(Intent.ACTION_GET_CONTENT);
 		intent.setType("audio/*");
-		intent = Intent.createChooser(intent, i18n.m("edition.selectionAudio"));
+		intent = Intent.createChooser(intent, i18n.m("sound"));
 		selectFile(controller, listener, pathColumn, intent);
 	}
 
@@ -256,27 +257,69 @@ public class AndroidPlatform extends MokapPlatform {
 		alertDialogBuilder.create().show();
 	}
 
-	private String getStringFromIntent(Context context, Intent data,
+	private String getPathFromIntent(Context context, Intent data,
 			String pathColumn) {
-		try {
-			Uri selectedImage = data.getData();
-			String[] filePathColumn = { pathColumn };
-			Cursor cursor = context.getContentResolver().query(selectedImage,
-					filePathColumn, null, null, null);
-			cursor.moveToFirst();
-			int columnIndex = cursor.getColumnIndex(filePathColumn[0]);
-			if (columnIndex == -1) {
-				cursor.close();
+
+		Uri uri = data.getData();
+		if ("content".equalsIgnoreCase(uri.getScheme())) {
+
+			// Return the remote address
+			if (isGooglePhotosUri(uri))
 				return null;
-			}
-			String picturePath = cursor.getString(columnIndex);
-			cursor.close();
-			return picturePath;
-		} catch (Exception e) {
-			Gdx.app.error(PLATFORM_TAG, "Path could not be resolved", e);
-			return null;
+
+			return getDataColumn(context, uri, null, null);
+		} else if ("file".equalsIgnoreCase(uri.getScheme())) {
+			return uri.getPath();
 		}
 
+		return null;
+	}
+
+	/**
+	 * @param uri
+	 *            The Uri to check.
+	 * @return Whether the Uri authority is Google Photos.
+	 */
+	private boolean isGooglePhotosUri(Uri uri) {
+		return "com.google.android.apps.photos.content".equals(uri
+				.getAuthority());
+	}
+
+	/**
+	 * Get the value of the data column for this Uri. This is useful for
+	 * MediaStore Uris, and other file-based ContentProviders.
+	 * 
+	 * @param context
+	 *            The context.
+	 * @param uri
+	 *            The Uri to query.
+	 * @param selection
+	 *            (Optional) Filter used in the query.
+	 * @param selectionArgs
+	 *            (Optional) Selection arguments used in the query.
+	 * @return The value of the _data column, which is typically a file path.
+	 */
+	private String getDataColumn(Context context, Uri uri, String selection,
+			String[] selectionArgs) {
+
+		Cursor cursor = null;
+		String column = "_data";
+		String[] projection = { column };
+
+		try {
+			cursor = context.getContentResolver().query(uri, projection,
+					selection, selectionArgs, null);
+			if (cursor != null && cursor.moveToFirst()) {
+
+				int column_index = cursor.getColumnIndexOrThrow(column);
+				return cursor.getString(column_index);
+			}
+		} finally {
+			if (cursor != null) {
+				cursor.close();
+			}
+		}
+		return null;
 	}
 
 	@Override
@@ -497,16 +540,16 @@ public class AndroidPlatform extends MokapPlatform {
 		}
 
 		@Override
-		public void result(int resultCode, final Intent data) {
+		public void result(int resultCode, final Intent intent) {
 			if (resultCode == EditorActivity.RESULT_OK) {
-				if (data != null) {
+				if (intent != null) {
 					Gdx.app.postRunnable(new Runnable() {
 
 						@Override
 						public void run() {
 							EditorActivity activity = (EditorActivity) Gdx.app;
-							String path = androidPlatform.getStringFromIntent(
-									activity, data, pathColumn);
+							String path = androidPlatform.getPathFromIntent(
+									activity, intent, pathColumn);
 							if (path == null) {
 
 								if (!((MokapPlatform) controller.getPlatform())
@@ -514,7 +557,7 @@ public class AndroidPlatform extends MokapPlatform {
 									showToast(FileChooserListener.Result.NO_CONNECTION
 											.getI18nKey());
 								} else {
-									String url = data.getDataString();
+									String url = intent.getDataString();
 									try {
 										Context context = ((EditorActivity) Gdx.app)
 												.getContext();

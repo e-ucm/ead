@@ -86,11 +86,11 @@ public abstract class GroupContext extends AbstractWidget {
 
 	protected void addIcon(String id, Drawable drawable) {
 		Image image = new Image();
-		image.setName(id);
 		image.setDrawable(drawable);
 		Container<Image> imageContainer = new Container<Image>()
 				.size(WidgetBuilder.dpToPixels(12));
 		imageContainer.setActor(image);
+		imageContainer.setName(id);
 		iconsList.add(imageContainer).centerX();
 	}
 
