@@ -53,11 +53,15 @@ public class SpineAnimationProcessor extends RendererProcessor<SpineAnimation> {
 
 	@Override
 	public Component getComponent(SpineAnimation spineAnimation) {
-		TextureAtlas atlas = new TextureAtlas(gameAssets.resolve(spineAnimation
-				.getUri() + ".atlas"));
+		String baseUri = spineAnimation.getUri();
+		if (baseUri != null && baseUri.toLowerCase().endsWith(".json")) {
+			baseUri = baseUri.substring(0, baseUri.length() - 5);
+		}
+		TextureAtlas atlas = new TextureAtlas(gameAssets.resolve(baseUri
+				+ ".atlas"));
 		SkeletonJson json = new SkeletonJson(atlas);
 		SkeletonData skeletonData = json.readSkeletonData(gameAssets
-				.resolve(spineAnimation.getUri() + ".json"));
+				.resolve(baseUri + ".json"));
 		SpineAnimationComponent component = gameLoop
 				.createComponent(SpineAnimationComponent.class);
 		component.setSkeleton(skeletonData);
