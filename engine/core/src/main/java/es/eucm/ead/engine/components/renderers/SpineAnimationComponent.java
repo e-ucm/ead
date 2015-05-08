@@ -37,6 +37,7 @@
 package es.eucm.ead.engine.components.renderers;
 
 import com.badlogic.gdx.graphics.g2d.Batch;
+import com.badlogic.gdx.graphics.g2d.PolygonSpriteBatch;
 import com.esotericsoftware.spine.AnimationState;
 import com.esotericsoftware.spine.AnimationStateData;
 import com.esotericsoftware.spine.Skeleton;
@@ -72,7 +73,12 @@ public class SpineAnimationComponent extends CollidableRendererComponent {
 	public void draw(Batch batch) {
 		state.apply(skeleton);
 		skeleton.updateWorldTransform();
-		skeletonRenderer.draw(batch, skeleton);
+		/*
+		 * batch has to be casted to PolygonSpriteBatch as SkeletonRenderer has
+		 * two different draw methods: draw(Batch, Skeleton) and
+		 * draw(PolygonSpriteBatch, Skeleton).
+		 */
+		skeletonRenderer.draw((PolygonSpriteBatch) batch, skeleton);
 	}
 
 	@Override
