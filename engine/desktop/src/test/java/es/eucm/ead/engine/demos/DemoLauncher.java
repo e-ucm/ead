@@ -170,6 +170,7 @@ public class DemoLauncher extends JFrame {
 		registerDemo(new LandscapeDemo2());
 		registerDemo(new LandscapeDemo3());
 		registerDemo(new LandscapeDemo4());
+		registerDemo(new LandscapeDemo5());
 	}
 
 	private void registerDemo(ExecutableDemoBuilder demoBuilder) {
