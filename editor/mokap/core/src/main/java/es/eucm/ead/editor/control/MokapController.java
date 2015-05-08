@@ -56,53 +56,6 @@ public class MokapController extends Controller {
 
 	private Group loadingImage;
 
-	public static enum Dpi {
-		LDPI(150), MDPI(190), HDPI(270), XHDPI(Float.MAX_VALUE), XXHDPI(0), XXXHDPI(
-				0), XXXXHDPI(0), XXXXXHDPI(0);
-
-		private String dpi;
-		/**
-		 * The max dpi supported by this skin quality.
-		 */
-		private float maxDpi;
-
-		private Dpi(float maxDpi) {
-			this.dpi = name().toLowerCase();
-			this.maxDpi = maxDpi;
-		}
-
-		public float getMaxDpi() {
-			return maxDpi;
-		}
-
-		public static Dpi getDpi() {
-			float ppcX = Gdx.graphics.getPpcX();
-			Gdx.app.error("PX", ppcX + "ppc");
-
-			Dpi dpi = XXXXXHDPI;
-			if (ppcX <= 36.0f) {
-				dpi = LDPI;
-			} else if (ppcX <= 48.0f) {
-				dpi = MDPI;
-			} else if (ppcX <= 60.0f) {
-				dpi = HDPI;
-			} else if (ppcX <= 72.0f) {
-				dpi = XHDPI;
-			} else if (ppcX <= 84.0f) {
-				dpi = XXHDPI;
-			} else if (ppcX <= 120.0f) {
-				dpi = XXXHDPI;
-			} else if (ppcX <= 156.0f) {
-				dpi = XXXXHDPI;
-			}
-			return dpi;
-		}
-
-		public static String getDpiString() {
-			return getDpi().dpi;
-		}
-	}
-
 	public MokapController(Platform platform, Files files,
 			final Group rootComponent, final Group modalContainer) {
 		super(platform, files, rootComponent, modalContainer);
@@ -159,9 +112,19 @@ public class MokapController extends Controller {
 
 	@Override
 	protected ApplicationAssets createApplicationAssets(Files files) {
-		String dpi = Dpi.getDpiString();
-		String skinPath = "skins/mokap-" + dpi + "/";
-		return new ApplicationAssets(files, skinPath + "skin");
+		// 48px are 1cm in scale 1.0
+		float scale = Math.round(Gdx.graphics.getPpcX() / 48.0f);
+		String scaleString;
+		if (scale > 2.5f) {
+			scaleString = "3.0";
+		} else if (scale > 1.5f) {
+			scaleString = "2.0";
+		} else {
+			scaleString = "1.0";
+		}
+
+		return new ApplicationAssets(files, "skins/mokap/skin.json",
+				scaleString);
 	}
 
 	@Override

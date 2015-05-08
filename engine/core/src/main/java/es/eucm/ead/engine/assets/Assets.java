@@ -167,7 +167,7 @@ public abstract class Assets extends Json implements FileHandleResolver,
 		String skinJson = pathWithoutExtension + ".json";
 		if (!isLoaded(skinJson, Skin.class)) {
 			SkinParameter skinParameter = new SkinParameter(
-					pathWithoutExtension + ".atlas");
+					"skins/engine/scale1.0/skin.atlas");
 			get(skinJson, Skin.class, skinParameter,
 					new AssetLoadedCallback<Skin>() {
 						@Override
