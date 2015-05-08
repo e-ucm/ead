@@ -9,11 +9,11 @@
    xmlns="http://www.w3.org/2000/svg"
    xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
    xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
-   width="7"
-   height="7"
+   width="9"
+   height="9"
    id="svg2"
    version="1.1"
-   inkscape:version="0.48.5 r10040"
+   inkscape:version="0.48.4 r9939"
    sodipodi:docname="blank_grey_border.svg">
   <defs
      id="defs4" />
@@ -24,17 +24,17 @@
      borderopacity="1.0"
      inkscape:pageopacity="0.0"
      inkscape:pageshadow="2"
-     inkscape:zoom="74.3346"
-     inkscape:cx="0.79331364"
-     inkscape:cy="2.5521434"
+     inkscape:zoom="37.1673"
+     inkscape:cx="0.31283554"
+     inkscape:cy="1.9383108"
      inkscape:document-units="px"
      inkscape:current-layer="layer1"
      showgrid="true"
      inkscape:snap-grids="true"
-     inkscape:window-width="1680"
-     inkscape:window-height="1028"
-     inkscape:window-x="-8"
-     inkscape:window-y="-8"
+     inkscape:window-width="1867"
+     inkscape:window-height="1056"
+     inkscape:window-x="53"
+     inkscape:window-y="24"
      inkscape:window-maximized="1">
     <inkscape:grid
        type="xygrid"
@@ -60,48 +60,48 @@
      inkscape:label="Capa 1"
      inkscape:groupmode="layer"
      id="layer1"
-     transform="translate(0,-1045.3622)">
+     transform="translate(0,-1043.3622)">
     <rect
        style="fill:#7a7a7a;fill-opacity:1"
        id="rect2997"
        width="7"
        height="7"
-       x="0"
-       y="1045.3622" />
+       x="1"
+       y="1044.3622" />
     <rect
        style="fill:#ffffff"
        id="rect2999"
        width="5"
        height="4.9999652"
-       x="1"
-       y="1046.3622" />
+       x="2"
+       y="1045.3622" />
     <rect
        style="fill:#000000;fill-opacity:1"
        id="rect3769"
        width="3"
        height="1.0000174"
-       x="2"
-       y="1044.3622" />
+       x="3"
+       y="1043.3622" />
     <rect
        style="fill:#000000;fill-opacity:1"
        id="rect3771"
        width="1"
        height="3.0000174"
-       x="7"
-       y="1047.3622" />
+       x="8"
+       y="1046.3622" />
     <rect
        style="fill:#000000;fill-opacity:1"
        id="rect3773"
        width="3"
        height="1.0000174"
-       x="2"
-       y="1052.3622" />
+       x="3"
+       y="1051.3622" />
     <rect
        style="fill:#000000;fill-opacity:1"
        id="rect3775"
        width="1"
        height="3.0000174"
-       x="-1"
-       y="1047.3622" />
+       x="0"
+       y="1046.3622" />
   </g>
 </svg>

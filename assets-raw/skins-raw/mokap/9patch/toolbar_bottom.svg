@@ -10,15 +10,15 @@
    xmlns:xlink="http://www.w3.org/1999/xlink"
    xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
    xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
-   width="36"
-   height="36"
+   width="38"
+   height="38"
    id="svg2"
    version="1.1"
-   inkscape:version="0.48.5 r10040"
+   inkscape:version="0.48.4 r9939"
    inkscape:export-filename="C:\Users\Antonio\Desktop\bitmap.png"
    inkscape:export-xdpi="90"
    inkscape:export-ydpi="90"
-   sodipodi:docname="toolbar.svg">
+   sodipodi:docname="toolbar_bottom.svg">
   <defs
      id="defs4">
     <linearGradient
@@ -125,7 +125,7 @@
        x2="6"
        y1="3"
        x1="0"
-       gradientTransform="matrix(1.8333331,0,0,6,-1027.3621,1.25e-4)"
+       gradientTransform="matrix(1.8333331,0,0,6,-1025.3621,1.25e-4)"
        gradientUnits="userSpaceOnUse"
        id="linearGradient3073"
        xlink:href="#linearGradient3767-7-2"
@@ -138,16 +138,16 @@
      borderopacity="1.0"
      inkscape:pageopacity="0.0"
      inkscape:pageshadow="2"
-     inkscape:zoom="10.47236"
-     inkscape:cx="25.344572"
-     inkscape:cy="20.036263"
+     inkscape:zoom="7.4050768"
+     inkscape:cx="35.328448"
+     inkscape:cy="16.311434"
      inkscape:document-units="px"
      inkscape:current-layer="layer1"
      showgrid="true"
-     inkscape:window-width="1366"
-     inkscape:window-height="706"
-     inkscape:window-x="-8"
-     inkscape:window-y="-8"
+     inkscape:window-width="1867"
+     inkscape:window-height="1056"
+     inkscape:window-x="53"
+     inkscape:window-y="24"
      inkscape:window-maximized="1">
     <inkscape:grid
        type="xygrid"
@@ -165,7 +165,7 @@
         <dc:format>image/svg+xml</dc:format>
         <dc:type
            rdf:resource="http://purl.org/dc/dcmitype/StillImage" />
-        <dc:title></dc:title>
+        <dc:title />
       </cc:Work>
     </rdf:RDF>
   </metadata>
@@ -173,51 +173,49 @@
      inkscape:label="Capa 1"
      inkscape:groupmode="layer"
      id="layer1"
-     transform="translate(0,-1016.3622)">
+     transform="translate(0,-1014.3622)">
     <rect
        style="fill:url(#linearGradient3073);fill-opacity:1;fill-rule:nonzero"
        id="rect3757"
        width="11"
        height="36"
-       x="-1027.3622"
-       y="0"
+       x="-1026.3622"
+       y="1"
        transform="matrix(0,-1,1,0,0,0)" />
     <rect
        style="fill:#ffffff;fill-opacity:1;fill-rule:nonzero;stroke:none"
        id="rect3053"
        width="36"
        height="30"
-       x="0"
-       y="1022.3622" />
+       x="1"
+       y="1021.3622" />
     <rect
        style="fill:#000000;fill-opacity:1;fill-rule:nonzero;stroke:none"
        id="rect3116"
        width="36"
        height="1"
-       x="0"
-       y="36"
-       transform="translate(0,1016.3622)" />
+       x="1"
+       y="1051.3622" />
     <rect
        style="fill:#000000;fill-opacity:1;fill-rule:nonzero;stroke:none"
        id="rect3118"
        width="1"
        height="30"
-       x="36"
-       y="1022.3622" />
+       x="37"
+       y="1021.3622" />
     <rect
        style="fill:#000000;fill-opacity:1;fill-rule:nonzero;stroke:none"
        id="rect3120"
        width="1"
        height="10.000017"
-       x="-1"
-       y="1038.3622" />
+       x="0"
+       y="1037.3622" />
     <rect
        style="fill:#000000;fill-opacity:1;fill-rule:nonzero;stroke:none"
        id="rect3122"
        width="5.9999986"
        height="1"
-       x="15"
-       y="-1"
-       transform="translate(0,1016.3622)" />
+       x="16"
+       y="1014.3622" />
   </g>
 </svg>

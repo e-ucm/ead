@@ -9,17 +9,18 @@
    xmlns="http://www.w3.org/2000/svg"
    xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
    xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
-   width="54"
-   height="42"
+   width="56"
+   height="44"
    id="svg2995"
    version="1.1"
-   inkscape:version="0.48.5 r10040"
+   inkscape:version="0.48.4 r9939"
    sodipodi:docname="button_up.svg">
   <defs
      id="defs2997">
     <filter
        inkscape:collect="always"
-       id="filter4474">
+       id="filter4474"
+       color-interpolation-filters="sRGB">
       <feGaussianBlur
          inkscape:collect="always"
          stdDeviation="0.63"
@@ -33,16 +34,16 @@
      borderopacity="1.0"
      inkscape:pageopacity="0.0"
      inkscape:pageshadow="2"
-     inkscape:zoom="17.975068"
-     inkscape:cx="27.239566"
-     inkscape:cy="21.490313"
+     inkscape:zoom="8.987534"
+     inkscape:cx="55.554563"
+     inkscape:cy="5.3079384"
      inkscape:document-units="px"
      inkscape:current-layer="layer2"
      showgrid="true"
-     inkscape:window-width="1680"
-     inkscape:window-height="1028"
-     inkscape:window-x="-8"
-     inkscape:window-y="-8"
+     inkscape:window-width="1867"
+     inkscape:window-height="1056"
+     inkscape:window-x="53"
+     inkscape:window-y="24"
      inkscape:window-maximized="1">
     <inkscape:grid
        type="xygrid"
@@ -69,14 +70,14 @@
      id="layer2"
      inkscape:label="shadow"
      style="display:inline"
-     transform="translate(0,-1010.3622)">
+     transform="translate(0,-1008.3622)">
     <rect
-       style="opacity:0.80000000000000004;fill:#000000;fill-opacity:1;filter:url(#filter4474)"
+       style="opacity:0.8;fill:#000000;fill-opacity:1;filter:url(#filter4474)"
        id="rect3007-1"
        width="48"
        height="36"
-       x="3.0239999"
-       y="1013.3382"
+       x="4.0240002"
+       y="1012.3382"
        rx="3"
        ry="3" />
     <rect
@@ -84,46 +85,43 @@
        id="rect2990"
        width="1"
        height="30"
-       x="54"
-       y="5"
-       transform="translate(0,1010.3622)" />
+       x="55"
+       y="1014.3622" />
     <rect
        style="fill:#000000;fill-opacity:1"
        id="rect2992"
        width="42"
        height="1"
-       x="6"
-       y="42"
-       transform="translate(0,1010.3622)" />
+       x="7"
+       y="1051.3622" />
     <rect
        style="fill:#000000;fill-opacity:1"
        id="rect2994"
        width="1"
        height="4"
-       x="-1"
-       y="17"
-       transform="translate(0,1010.3622)" />
+       x="0"
+       y="1026.3622" />
     <rect
        style="fill:#000000;fill-opacity:1"
        id="rect2996"
        width="4"
        height="1"
-       x="25"
-       y="1009.3622" />
+       x="26"
+       y="1008.3622" />
   </g>
   <g
      inkscape:label="Capa 1"
      inkscape:groupmode="layer"
      id="layer1"
      style="display:inline"
-     transform="translate(0,-1010.3622)">
+     transform="translate(0,-1008.3622)">
     <rect
        style="fill:#795548;fill-opacity:1"
        id="rect3007"
        width="48"
        height="36"
-       x="3"
-       y="1012.3622"
+       x="4"
+       y="1011.3622"
        rx="3"
        ry="3" />
   </g>
