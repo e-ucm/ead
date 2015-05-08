@@ -37,7 +37,9 @@ MANIFEST.MF
 *.sh
 
 # Generated on each build
-assets/skins
+assets/skins/**/scale**
+assets-raw/**/png/
+.lastmodified
 assets/*bindings.json
 engine/schema/src/main/java/es/eucm/ead/schema/*
 editor/schema/src/main/java/es/eucm/ead/schema/*
