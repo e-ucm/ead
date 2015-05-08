@@ -151,7 +151,7 @@ public class LandscapeDemo3 extends ExecutableDemoBuilder {
 	}
 
 	public static void main(String[] args) {
-		LandscapeDemo2 landscapeDemo = new LandscapeDemo2();
+		LandscapeDemo3 landscapeDemo = new LandscapeDemo3();
 		landscapeDemo.run();
 	}
 
