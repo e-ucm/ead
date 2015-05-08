@@ -39,8 +39,14 @@ package es.eucm.ead.engine;
 import com.badlogic.gdx.ApplicationListener;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.GL20;
+import com.badlogic.gdx.graphics.OrthographicCamera;
+import com.badlogic.gdx.graphics.g2d.PolygonSpriteBatch;
+import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.glutils.ShaderProgram;
 import com.badlogic.gdx.scenes.scene2d.Stage;
+import com.badlogic.gdx.utils.Scaling;
+import com.badlogic.gdx.utils.viewport.ScalingViewport;
+import com.badlogic.gdx.utils.viewport.Viewport;
 import es.eucm.ead.engine.assets.GameAssets.ImageUtils;
 import es.eucm.ead.engine.assets.GameAssets;
 import es.eucm.ead.engine.expressions.operators.OperationsFactory;
@@ -98,10 +104,27 @@ public class EngineApplicationListener implements ApplicationListener {
 		initializer.init(gameAssets, gameLoop, entitiesLoader, gameView,
 				variablesManager);
 
-		stage = new Stage();
+		stage = createStage();
 		Gdx.input.setInputProcessor(stage);
 		stage.getRoot().addActor(gameView);
 		stage.setKeyboardFocus(gameView);
+	}
+
+	/**
+	 * Creates a Stage as in {@link Stage#Stage()}, but using
+	 * {@link PolygonSpriteBatch} instead of {@link SpriteBatch}
+	 * 
+	 * PolygonSpriteBatch must be used for
+	 * {@link es.eucm.ead.engine.components.renderers.SpineAnimationComponent}
+	 * to work properly.
+	 */
+	protected Stage createStage() {
+		Viewport viewport = new ScalingViewport(Scaling.stretch,
+				Gdx.graphics.getWidth(), Gdx.graphics.getHeight(),
+				new OrthographicCamera());
+		PolygonSpriteBatch batch = new PolygonSpriteBatch();
+		Stage newStage = new Stage(viewport, batch);
+		return newStage;
 	}
 
 	public GameLoop getGameLoop() {
