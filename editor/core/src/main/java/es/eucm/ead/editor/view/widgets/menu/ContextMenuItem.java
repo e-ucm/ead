@@ -159,6 +159,11 @@ public class ContextMenuItem extends AbstractWidget implements Disableable {
 		updateStyles();
 	}
 
+	@Override
+	public boolean isDisabled() {
+		return disabled;
+	}
+
 	public ContextMenuItem icon(Drawable drawable) {
 		if (icon == null) {
 			icon = new Image();

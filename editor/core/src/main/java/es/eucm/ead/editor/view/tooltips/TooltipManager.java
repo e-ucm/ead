@@ -128,9 +128,10 @@ public class TooltipManager extends InputListener {
 
 		tooltipLabel.setText(tooltip.getTooltip());
 
-		Vector2 textBounds = tooltipLabel.getTextBounds();
-		tooltipLabel.setSize(Math.round(textBounds.x + TOOLTIP_OFFSET),
-				Math.round(textBounds.y + TOOLTIP_OFFSET));
+		tooltipLabel.setSize(Math.round(tooltipLabel.getGlyphLayout().width
+				+ TOOLTIP_OFFSET),
+				Math.round(tooltipLabel.getGlyphLayout().height
+						+ TOOLTIP_OFFSET));
 
 		tooltipPosition.x = Math.max(
 				0,

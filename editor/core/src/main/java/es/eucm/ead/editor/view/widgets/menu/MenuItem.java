@@ -106,6 +106,11 @@ public class MenuItem extends AbstractWidget implements Disableable {
 	}
 
 	@Override
+	public boolean isDisabled() {
+		return disabled;
+	}
+
+	@Override
 	public Actor hit(float x, float y, boolean touchable) {
 		return disabled ? null : super.hit(x, y, touchable);
 	}
