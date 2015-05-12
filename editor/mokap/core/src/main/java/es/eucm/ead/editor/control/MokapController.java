@@ -56,6 +56,9 @@ public class MokapController extends Controller {
 
 	private Group loadingImage;
 
+	public static final String[] SCALES = new String[] { "0.8", "1.0", "1.5",
+			"2.0", "2.5", "3.0", "4.0" };
+
 	public MokapController(Platform platform, Files files,
 			final Group rootComponent, final Group modalContainer) {
 		super(platform, files, rootComponent, modalContainer);
@@ -112,17 +115,23 @@ public class MokapController extends Controller {
 
 	@Override
 	protected ApplicationAssets createApplicationAssets(Files files) {
-		// 48px are 1cm in scale 1.0
-		float scale = Math.round(Gdx.graphics.getPpcX() / 48.0f);
+		// 48px are 0.8cm in scale 1.0
+		float scale = (Gdx.graphics.getPpcX() * 0.8f) / 48.0f;
 		String scaleString;
-		if (scale > 2.5f) {
-			scaleString = "3.0";
-		} else if (scale > 1.5f) {
-			scaleString = "2.0";
+		if (scale < Float.parseFloat(SCALES[0])) {
+			scaleString = SCALES[0];
 		} else {
-			scaleString = "1.0";
+			scaleString = SCALES[SCALES.length - 1];
+			for (int i = 0; i < SCALES.length - 1; i++) {
+				float lowerScale = Float.parseFloat(SCALES[i]);
+				float greaterScale = Float.parseFloat(SCALES[i + 1]);
+				if (scale >= lowerScale && scale <= greaterScale) {
+					scaleString = scale - lowerScale < greaterScale - scale ? SCALES[i]
+							: SCALES[i + 1];
+					break;
+				}
+			}
 		}
-
 		return new ApplicationAssets(files, "skins/mokap/skin.json",
 				scaleString);
 	}
