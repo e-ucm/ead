@@ -277,9 +277,13 @@
                                 <ninePatchDir>${basedir}/assets-raw/skins-raw/mokap/9patch</ninePatchDir>
                                 <outputPngDir>${basedir}/assets-raw/skins-raw/mokap/png</outputPngDir>
                                 <scales>
+                                    <param>0.8</param>
                                     <param>1</param>
+                                    <param>1.5</param>
                                     <param>2</param>
+                                    <param>2.5</param>
                                     <param>3</param>
+                                    <param>4</param>
                                 </scales>
                                 <outputDir>${basedir}/assets/skins/mokap</outputDir>
                                 <size>1024</size>
