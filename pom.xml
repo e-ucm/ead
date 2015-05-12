@@ -263,7 +263,7 @@
                 <plugin>
                     <groupId>es.e-ucm.maven.plugins</groupId>
                     <artifactId>piel</artifactId>
-                    <version>1.0</version>
+                    <version>1.0-SNAPSHOT</version>
                     <inherited>false</inherited>
                     <executions>
                         <execution>
