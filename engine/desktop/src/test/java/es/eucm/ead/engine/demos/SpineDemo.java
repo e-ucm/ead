@@ -56,17 +56,28 @@ public class SpineDemo extends ExecutableDemoBuilder {
 
 	@Override
 	protected void doBuild() {
-		ModelEntity scene = singleSceneGame(null, 800, 600).getLastScene();
+		ModelEntity scene = singleSceneGame(null, 1200, 800).getLastScene();
+		scene.getChildren().add(spineEntity("spineboy", "idle", 1.0F, 150, 0));
+		scene.getChildren().add(
+				spineEntity("r5p2/skeleton", "stand", 0.3F, 300, 200));
+		scene.getChildren().add(
+				spineEntity("r1v1/skeleton", "default", 0.35F, 530, 0));
+		scene.getChildren().add(
+				spineEntity("whiterobot/skeleton", "default", 0.5F, 770, 0));
+		scene.getChildren().add(
+				spineEntity("c6b4/skeleton", "default", 0.5F, 1000, 200));
+	}
 
+	protected ModelEntity spineEntity(String uri, String initialState,
+			float scale, float x, float y) {
 		ModelEntity animation = new ModelEntity();
 		SpineAnimation spineAnimation = new SpineAnimation();
-		spineAnimation.setUri("spineboy");
-		spineAnimation.setInitialState("idle");
-
-		animation.setX(300);
-
+		spineAnimation.setUri(uri);
+		spineAnimation.setInitialState(initialState);
+		animation.setX(x);
+		animation.setScaleX(scale);
+		animation.setScaleY(scale);
 		animation.getComponents().add(spineAnimation);
-
-		scene.getChildren().add(animation);
+		return animation;
 	}
 }
