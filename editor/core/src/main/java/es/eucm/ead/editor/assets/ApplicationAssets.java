@@ -262,6 +262,10 @@ public class ApplicationAssets extends Assets {
 		}
 	}
 
+	public String getScale() {
+		return scale;
+	}
+
 	@Override
 	public synchronized void dispose() {
 		super.dispose();
