@@ -261,17 +261,54 @@
                     </dependencies>
                 </plugin>
                 <plugin>
-                    <groupId>es.e-ucm.ead</groupId>
-                    <artifactId>ead-maven-plugin</artifactId>
+                    <groupId>es.e-ucm.maven.plugins</groupId>
+                    <artifactId>piel</artifactId>
                     <version>1.0-SNAPSHOT</version>
                     <inherited>false</inherited>
                     <executions>
                         <execution>
-                            <id>generate-skins</id>
-                            <phase>prepare-package</phase>
+                            <id>mokap</id>
+                            <phase>clean</phase>
                             <goals>
-                                <goal>generate-skins</goal>
+                                <goal>skins</goal>
                             </goals>
+                            <configuration>
+                                <svgDir>${basedir}/assets-raw/skins-raw/mokap/svg</svgDir>
+                                <ninePatchDir>${basedir}/assets-raw/skins-raw/mokap/9patch</ninePatchDir>
+                                <outputPngDir>${basedir}/assets-raw/skins-raw/mokap/png</outputPngDir>
+                                <scales>
+                                    <param>0.8</param>
+                                    <param>1</param>
+                                    <param>1.5</param>
+                                    <param>2</param>
+                                    <param>2.5</param>
+                                    <param>3</param>
+                                    <param>4</param>
+                                </scales>
+                                <outputDir>${basedir}/assets/skins/mokap</outputDir>
+                                <size>1024</size>
+                                <filter>Nearest</filter>
+                                <atlasName>skin</atlasName>
+                            </configuration>
+                        </execution>
+                        <execution>
+                            <id>engine</id>
+                            <phase>clean</phase>
+                            <goals>
+                                <goal>skins</goal>
+                            </goals>
+                            <configuration>
+                                <svgDir>${basedir}/assets-raw/skins-raw/engine/svg</svgDir>
+                                <ninePatchDir>${basedir}/assets-raw/skins-raw/engine/9patch</ninePatchDir>
+                                <outputPngDir>${basedir}/assets-raw/skins-raw/engine/png</outputPngDir>
+                                <scales>
+                                    <param>1</param>
+                                </scales>
+                                <outputDir>${basedir}/assets/skins/engine</outputDir>
+                                <size>1024</size>
+                                <filter>Nearest</filter>
+                                <atlasName>skin</atlasName>
+                            </configuration>
                         </execution>
                     </executions>
                 </plugin>
@@ -287,9 +324,24 @@
                     <target>${java.version}</target>
                 </configuration>
             </plugin>
+            <plugin>
+                <groupId>es.e-ucm.maven.plugins</groupId>
+                <artifactId>piel</artifactId>
+            </plugin>
         </plugins>
     </build>
     <profiles>
+        <profile>
+            <id>skin</id>
+            <build>
+                <plugins>
+                    <plugin>
+                        <groupId>es.e-ucm.maven.plugins</groupId>
+                        <artifactId>piel</artifactId>
+                    </plugin>
+                </plugins>
+            </build>
+        </profile>
         <profile>
             <!-- Default profile.Contains all project modules -->
             <id>default</id>

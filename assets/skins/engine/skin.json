@@ -1,0 +1,112 @@
+{
+  "com.badlogic.gdx.graphics.g2d.BitmapFont": {
+    "roboto-regular-big": {
+      "file": "Roboto-Regular.ttf",
+      "size": 110
+    },
+    "roboto-regular-small": {
+      "file": "Roboto-Regular.ttf",
+      "size": 40
+    },
+    "comfortaa-regular-big": {
+      "file": "Comfortaa-Regular.ttf",
+      "size": 95
+    },
+    "comfortaa-regular-small": {
+      "file": "Comfortaa-Regular.ttf",
+      "size": 40
+    },
+    "rabanera-big": {
+      "file": "Rabanera-outline-shadow.ttf",
+      "size": 95
+    },
+    "rabanera-small": {
+      "file": "Rabanera-outline-shadow.ttf",
+      "size": 60
+    }
+  },
+  "com.badlogic.gdx.graphics.Color": {
+    "white": {
+      "a": 1,
+      "r": 1,
+      "g": 1,
+      "b": 1
+    },
+    "black": {
+      "a": 1,
+      "b": 0,
+      "g": 0,
+      "r": 0
+    },
+    "red": {
+      "a": 1,
+      "r": 1,
+      "g": 0,
+      "b": 0
+    },
+    "green": {
+      "a": 1,
+      "r": 0,
+      "g": 1,
+      "b": 0
+    },
+    "blue": {
+      "a": 1,
+      "r": 0,
+      "g": 0,
+      "b": 1
+    },
+    "gray": {
+      "a": 1,
+      "r": 0.5,
+      "g": 0.5,
+      "b": 0.5
+    },
+    "light-gray": {
+      "a": 1,
+      "r": 0.8,
+      "g": 0.8,
+      "b": 0.8
+    },
+    "rose": {
+      "a": 1,
+      "r": 0.98,
+      "g": 0.75,
+      "b": 0.75
+    }
+  },
+  "com.badlogic.gdx.scenes.scene2d.ui.Label$LabelStyle": {
+    "welcome": {
+      "font": "roboto-regular-big",
+      "fontColor": "blue"
+    },
+    "default": {
+      "font": "roboto-regular-big",
+      "fontColor": "white"
+    },
+    "roboto-big": {
+      "font": "roboto-regular-big",
+      "fontColor": "white"
+    },
+    "roboto-small": {
+      "font": "roboto-regular-small",
+      "fontColor": "white"
+    },
+    "comfortaa-big": {
+      "font": "comfortaa-regular-big",
+      "fontColor": "white"
+    },
+    "comfortaa-small": {
+      "font": "comfortaa-regular-small",
+      "fontColor": "white"
+    },
+    "rabanera-big": {
+      "font": "rabanera-big",
+      "fontColor": "white"
+    },
+    "rabanera-small": {
+      "font": "rabanera-small",
+      "fontColor": "white"
+    }
+  }
+}

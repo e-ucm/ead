@@ -9,11 +9,11 @@
    xmlns="http://www.w3.org/2000/svg"
    xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
    xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
-   width="14"
-   height="14"
+   width="16"
+   height="16"
    id="svg3767"
    version="1.1"
-   inkscape:version="0.48.5 r10040"
+   inkscape:version="0.48.4 r9939"
    sodipodi:docname="page.svg"
    inkscape:export-filename="C:\Users\Antonio\Desktop\9patchSources\page.png"
    inkscape:export-xdpi="90"
@@ -23,10 +23,11 @@
     <filter
        inkscape:collect="always"
        id="filter3760"
-       x="-0.78000046"
+       x="-0.78000045"
        width="2.5600009"
-       y="-0.77999954"
-       height="2.5599991">
+       y="-0.77999955"
+       height="2.559999"
+       color-interpolation-filters="sRGB">
       <feGaussianBlur
          inkscape:collect="always"
          stdDeviation="0.97500058"
@@ -40,16 +41,16 @@
      borderopacity="1.0"
      inkscape:pageopacity="0.0"
      inkscape:pageshadow="2"
-     inkscape:zoom="47.436687"
-     inkscape:cx="5.5503782"
-     inkscape:cy="5.756613"
+     inkscape:zoom="23.718344"
+     inkscape:cx="9.9893639"
+     inkscape:cy="6.5737037"
      inkscape:document-units="px"
      inkscape:current-layer="layer1"
      showgrid="true"
-     inkscape:window-width="1680"
-     inkscape:window-height="1028"
-     inkscape:window-x="-8"
-     inkscape:window-y="-8"
+     inkscape:window-width="1867"
+     inkscape:window-height="1056"
+     inkscape:window-x="53"
+     inkscape:window-y="24"
      inkscape:window-maximized="1">
     <inkscape:grid
        type="xygrid"
@@ -75,7 +76,7 @@
      inkscape:label="Shadow"
      inkscape:groupmode="layer"
      id="layer1"
-     transform="translate(0,-1038.3622)">
+     transform="translate(0,-1036.3622)">
     <rect
        style="opacity:0.6;fill:#000000;fill-opacity:1;filter:url(#filter3760)"
        id="rect3777"
@@ -85,47 +86,47 @@
        y="1046.3622"
        inkscape:export-xdpi="90"
        inkscape:export-ydpi="90"
-       transform="matrix(2,0,0,1.9999964,-2.0000002,-1050.3584)" />
+       transform="matrix(2,0,0,1.9999964,-1.0000002,-1051.3584)" />
     <rect
        style="fill:#000000;fill-opacity:1"
        id="rect4346"
        width="6"
        height="1"
-       x="4"
-       y="1052.3622" />
+       x="5"
+       y="1051.3622" />
     <rect
        style="fill:#000000;fill-opacity:1"
        id="rect4348"
        width="1"
        height="5.9999828"
-       x="14"
-       y="1042.3622" />
+       x="15"
+       y="1041.3622" />
     <rect
        style="fill:#000000;fill-opacity:1"
        id="rect4350"
        width="2"
        height="1"
-       x="6"
-       y="1037.3622" />
+       x="7"
+       y="1036.3622" />
     <rect
        style="fill:#000000;fill-opacity:1"
        id="rect4352"
        width="1"
        height="1.9999826"
-       x="-1"
-       y="1044.3622" />
+       x="0"
+       y="1043.3622" />
   </g>
   <g
      inkscape:groupmode="layer"
      id="layer2"
      inkscape:label="Capa 1"
-     transform="translate(0,5)">
+     transform="translate(0,7)">
     <rect
        style="fill:#ffffff;fill-opacity:1"
        id="rect3777-1"
        width="6"
        height="5.9999332"
-       x="4"
-       y="-1" />
+       x="5"
+       y="-1.9999826" />
   </g>
 </svg>

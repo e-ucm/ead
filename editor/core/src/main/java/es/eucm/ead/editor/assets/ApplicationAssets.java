@@ -78,7 +78,7 @@ public class ApplicationAssets extends Assets {
 	 */
 	public static final String RELEASE_FILE = "appdata/release.json";
 
-	public static final String DEFAULT_SKIN = "skins/light/skin";
+	public static final String DEFAULT_SKIN = "skins/engine/skin.json";
 
 	/**
 	 * This field serves a similar purpose to static field {@link #RELEASE_FILE}
@@ -91,6 +91,8 @@ public class ApplicationAssets extends Assets {
 	 */
 	private String releaseFile;
 
+	private String scale;
+
 	/**
 	 * Creates an assets handler
 	 * 
@@ -98,7 +100,7 @@ public class ApplicationAssets extends Assets {
 	 *            object granting access to files
 	 */
 	public ApplicationAssets(Files files) {
-		this(files, DEFAULT_SKIN);
+		this(files, DEFAULT_SKIN, "1.0");
 	}
 
 	/**
@@ -109,9 +111,10 @@ public class ApplicationAssets extends Assets {
 	 * @param skin
 	 *            the Skin name you want to be loaded initially
 	 */
-	public ApplicationAssets(Files files, String skin) {
+	public ApplicationAssets(Files files, String skin, String scale) {
 		super(files);
 		releaseFile = RELEASE_FILE;
+		this.scale = scale;
 		loadSkin(skin);
 	}
 
@@ -121,14 +124,14 @@ public class ApplicationAssets extends Assets {
 	 * thumbnail textures).
 	 */
 	@Override
-	public void loadSkin(String pathWithoutExtension) {
+	public void loadSkin(String skinJson) {
 		if (skin == null) {
-			String skinJson = pathWithoutExtension + ".json";
 			FileHandle skinFile = files.internal(skinJson);
-			FileHandle atlasFile = skinFile.sibling(skinFile
-					.nameWithoutExtension() + ".atlas");
+			FileHandle atlasFile = skinFile.parent().child("scale" + scale)
+					.child("skin.atlas");
 			TextureAtlas atlas = new TextureAtlas(atlasFile);
 			skin = new ExtendedSkin(this, atlas);
+
 			skin.load(skinFile);
 		}
 	}
@@ -257,6 +260,10 @@ public class ApplicationAssets extends Assets {
 			setReleaseType(ReleaseType.NIGHTLY);
 			setDev(false);
 		}
+	}
+
+	public String getScale() {
+		return scale;
 	}
 
 	@Override

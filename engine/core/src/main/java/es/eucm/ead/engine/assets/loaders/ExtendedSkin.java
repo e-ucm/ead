@@ -38,19 +38,23 @@ package es.eucm.ead.engine.assets.loaders;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.files.FileHandle;
+import com.badlogic.gdx.graphics.Pixmap;
+import com.badlogic.gdx.graphics.Pixmap.Format;
+import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.BitmapFont.BitmapFontData;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.graphics.g2d.freetype.FreeTypeFontGenerator;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
+import com.badlogic.gdx.scenes.scene2d.utils.Drawable;
+import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.Json;
 import com.badlogic.gdx.utils.Json.ReadOnlySerializer;
 import com.badlogic.gdx.utils.Json.Serializer;
 import com.badlogic.gdx.utils.JsonValue;
 import com.badlogic.gdx.utils.SerializationException;
-
 import es.eucm.ead.engine.assets.Assets;
 
 /**
@@ -63,6 +67,14 @@ public class ExtendedSkin extends Skin {
 	public ExtendedSkin(Assets assets, TextureAtlas atlas) {
 		super(atlas);
 		this.assets = assets;
+		Pixmap pixmap = new Pixmap(1, 1, Format.RGBA8888);
+		pixmap.setColor(1.0f, 1.0f, 1.0f, 1.0f);
+		pixmap.fill();
+
+		Texture blank = new Texture(pixmap);
+		pixmap.dispose();
+		add("blank", new TextureRegionDrawable(new TextureRegion(blank)),
+				Drawable.class);
 	}
 
 	@Override

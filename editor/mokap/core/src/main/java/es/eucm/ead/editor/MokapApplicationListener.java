@@ -105,6 +105,8 @@ public class MokapApplicationListener extends EditorApplicationListener {
 			perf += "Rnderng: "
 					+ (div == 0 ? "|" : div == 1 ? "/" : div == 2 ? "-" : "\\")
 					+ "\n";
+			perf += "Scale: " + controller.getApplicationAssets().getScale()
+					+ "\n";
 			perf += "MokAsst: " + controller.getEditorGameAssets().count()
 					+ "\n";
 			perf += "AppAsst: " + controller.getApplicationAssets().count()

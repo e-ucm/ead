@@ -56,52 +56,8 @@ public class MokapController extends Controller {
 
 	private Group loadingImage;
 
-	public static enum Dpi {
-		LDPI(150), MDPI(190), HDPI(270), XHDPI(Float.MAX_VALUE), XXHDPI(0), XXXHDPI(
-				0), XXXXHDPI(0), XXXXXHDPI(0);
-
-		private String dpi;
-		/**
-		 * The max dpi supported by this skin quality.
-		 */
-		private float maxDpi;
-
-		private Dpi(float maxDpi) {
-			this.dpi = name().toLowerCase();
-			this.maxDpi = maxDpi;
-		}
-
-		public float getMaxDpi() {
-			return maxDpi;
-		}
-
-		public static Dpi getDpi() {
-			float ppcX = Gdx.graphics.getPpcX();
-			Gdx.app.error("PX", ppcX + "ppc");
-
-			Dpi dpi = XXXXXHDPI;
-			if (ppcX <= 36.0f) {
-				dpi = LDPI;
-			} else if (ppcX <= 48.0f) {
-				dpi = MDPI;
-			} else if (ppcX <= 60.0f) {
-				dpi = HDPI;
-			} else if (ppcX <= 72.0f) {
-				dpi = XHDPI;
-			} else if (ppcX <= 84.0f) {
-				dpi = XXHDPI;
-			} else if (ppcX <= 120.0f) {
-				dpi = XXXHDPI;
-			} else if (ppcX <= 156.0f) {
-				dpi = XXXXHDPI;
-			}
-			return dpi;
-		}
-
-		public static String getDpiString() {
-			return getDpi().dpi;
-		}
-	}
+	public static final String[] SCALES = new String[] { "0.8", "1.0", "1.5",
+			"2.0", "2.5", "3.0", "4.0" };
 
 	public MokapController(Platform platform, Files files,
 			final Group rootComponent, final Group modalContainer) {
@@ -159,9 +115,25 @@ public class MokapController extends Controller {
 
 	@Override
 	protected ApplicationAssets createApplicationAssets(Files files) {
-		String dpi = Dpi.getDpiString();
-		String skinPath = "skins/mokap-" + dpi + "/";
-		return new ApplicationAssets(files, skinPath + "skin");
+		// 48px are 0.8cm in scale 1.0
+		float scale = (Gdx.graphics.getPpcX() * 0.8f) / 48.0f;
+		String scaleString;
+		if (scale < Float.parseFloat(SCALES[0])) {
+			scaleString = SCALES[0];
+		} else {
+			scaleString = SCALES[SCALES.length - 1];
+			for (int i = 0; i < SCALES.length - 1; i++) {
+				float lowerScale = Float.parseFloat(SCALES[i]);
+				float greaterScale = Float.parseFloat(SCALES[i + 1]);
+				if (scale >= lowerScale && scale <= greaterScale) {
+					scaleString = scale - lowerScale < greaterScale - scale ? SCALES[i]
+							: SCALES[i + 1];
+					break;
+				}
+			}
+		}
+		return new ApplicationAssets(files, "skins/mokap/skin.json",
+				scaleString);
 	}
 
 	@Override

@@ -9,12 +9,12 @@
    xmlns="http://www.w3.org/2000/svg"
    xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
    xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
-   width="2"
-   height="2"
+   width="4"
+   height="4"
    id="svg2"
    version="1.1"
-   inkscape:version="0.48.5 r10040"
-   sodipodi:docname="Documento nuevo 1">
+   inkscape:version="0.48.4 r9939"
+   sodipodi:docname="text_field_cursor.svg">
   <defs
      id="defs4" />
   <sodipodi:namedview
@@ -24,16 +24,16 @@
      borderopacity="1.0"
      inkscape:pageopacity="0.0"
      inkscape:pageshadow="2"
-     inkscape:zoom="256"
-     inkscape:cx="1.0017227"
-     inkscape:cy="0.68705443"
+     inkscape:zoom="45.254834"
+     inkscape:cx="7.4921861"
+     inkscape:cy="-0.6287561"
      inkscape:document-units="px"
      inkscape:current-layer="layer1"
      showgrid="true"
-     inkscape:window-width="1680"
-     inkscape:window-height="1028"
-     inkscape:window-x="-8"
-     inkscape:window-y="-8"
+     inkscape:window-width="1867"
+     inkscape:window-height="1056"
+     inkscape:window-x="53"
+     inkscape:window-y="24"
      inkscape:window-maximized="1">
     <inkscape:grid
        type="xygrid"
@@ -51,7 +51,7 @@
         <dc:format>image/svg+xml</dc:format>
         <dc:type
            rdf:resource="http://purl.org/dc/dcmitype/StillImage" />
-        <dc:title></dc:title>
+        <dc:title />
       </cc:Work>
     </rdf:RDF>
   </metadata>
@@ -59,46 +59,41 @@
      inkscape:label="Capa 1"
      inkscape:groupmode="layer"
      id="layer1"
-     transform="translate(0,-1050.3622)">
+     transform="translate(0,-1048.3622)">
     <rect
        style="fill:#ffffff;fill-opacity:1;fill-rule:nonzero;stroke:none"
        id="rect2987"
        width="2"
        height="2"
-       x="0"
-       y="0"
-       transform="translate(0,1050.3622)" />
+       x="1"
+       y="1049.3934" />
     <rect
        style="fill:#000000;fill-opacity:1;fill-rule:nonzero;stroke:none"
        id="rect2989"
        width="2"
        height="1"
-       x="0"
-       y="-1"
-       transform="translate(0,1050.3622)" />
+       x="1"
+       y="1048.3934" />
     <rect
        style="fill:#000000;fill-opacity:1;fill-rule:nonzero;stroke:none"
        id="rect2991"
        width="1"
        height="2"
-       x="2"
-       y="0"
-       transform="translate(0,1050.3622)" />
+       x="3"
+       y="1049.3934" />
     <rect
        style="fill:#000000;fill-opacity:1;fill-rule:nonzero;stroke:none"
        id="rect2993"
        width="1.9570312"
        height="0.96875"
-       x="0"
-       y="2"
-       transform="translate(0,1050.3622)" />
+       x="1"
+       y="1051.3934" />
     <rect
        style="fill:#000000;fill-opacity:1;fill-rule:nonzero;stroke:none"
        id="rect2995"
        width="1"
        height="2"
-       x="-1"
-       y="0"
-       transform="translate(0,1050.3622)" />
+       x="0"
+       y="1049.3934" />
   </g>
 </svg>

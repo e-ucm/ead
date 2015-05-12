@@ -1,0 +1,1042 @@
+
+skin.png
+size: 1024,1024
+format: RGBA8888
+filter: Nearest,Nearest
+repeat: none
+bg48
+  rotate: false
+  xy: 2, 2
+  size: 48, 48
+  orig: 48, 48
+  offset: 0, 0
+  index: -1
+blank75
+  rotate: false
+  xy: 390, 198
+  size: 2, 2
+  split: 0, 0, 0, 0
+  orig: 2, 2
+  offset: 0, 0
+  index: -1
+blank_grey_border
+  rotate: false
+  xy: 342, 783
+  size: 7, 7
+  split: 2, 2, 2, 2
+  orig: 7, 7
+  offset: 0, 0
+  index: -1
+button
+  rotate: false
+  xy: 453, 610
+  size: 48, 30
+  split: 21, 23, 13, 13
+  pad: 3, 3, 3, 3
+  orig: 48, 30
+  offset: 0, 0
+  index: -1
+button_add
+  rotate: false
+  xy: 453, 742
+  size: 48, 48
+  orig: 48, 48
+  offset: 0, 0
+  index: -1
+button_add_pressed
+  rotate: false
+  xy: 351, 558
+  size: 48, 48
+  orig: 48, 48
+  offset: 0, 0
+  index: -1
+button_check_off
+  rotate: false
+  xy: 52, 2
+  size: 48, 48
+  orig: 48, 48
+  offset: 0, 0
+  index: -1
+button_check_off_focused
+  rotate: false
+  xy: 453, 692
+  size: 48, 48
+  orig: 48, 48
+  offset: 0, 0
+  index: -1
+button_check_on
+  rotate: false
+  xy: 503, 742
+  size: 48, 48
+  orig: 48, 48
+  offset: 0, 0
+  index: -1
+button_check_on_focused
+  rotate: false
+  xy: 351, 508
+  size: 48, 48
+  orig: 48, 48
+  offset: 0, 0
+  index: -1
+button_down
+  rotate: false
+  xy: 553, 748
+  size: 54, 42
+  split: 25, 25, 18, 20
+  pad: 6, 6, 5, 7
+  orig: 54, 42
+  offset: 0, 0
+  index: -1
+button_radio_off
+  rotate: false
+  xy: 401, 558
+  size: 48, 48
+  orig: 48, 48
+  offset: 0, 0
+  index: -1
+button_radio_off_focused
+  rotate: false
+  xy: 453, 642
+  size: 48, 48
+  orig: 48, 48
+  offset: 0, 0
+  index: -1
+button_radio_on
+  rotate: false
+  xy: 503, 692
+  size: 48, 48
+  orig: 48, 48
+  offset: 0, 0
+  index: -1
+button_up
+  rotate: false
+  xy: 553, 704
+  size: 54, 42
+  split: 25, 25, 17, 21
+  pad: 6, 6, 5, 7
+  orig: 54, 42
+  offset: 0, 0
+  index: -1
+circle
+  rotate: false
+  xy: 609, 742
+  size: 48, 48
+  orig: 48, 48
+  offset: 0, 0
+  index: -1
+color_picker_knob
+  rotate: false
+  xy: 809, 766
+  size: 24, 24
+  orig: 24, 24
+  offset: 0, 0
+  index: -1
+color_picker_recent_color
+  rotate: false
+  xy: 835, 766
+  size: 24, 24
+  orig: 24, 24
+  offset: 0, 0
+  index: -1
+cup
+  rotate: false
+  xy: 401, 508
+  size: 48, 48
+  orig: 48, 48
+  offset: 0, 0
+  index: -1
+drop_down_bg
+  rotate: false
+  xy: 503, 642
+  size: 48, 48
+  orig: 48, 48
+  offset: 0, 0
+  index: -1
+ic_add
+  rotate: false
+  xy: 861, 766
+  size: 24, 24
+  orig: 24, 24
+  offset: 0, 0
+  index: -1
+ic_add_mokap
+  rotate: false
+  xy: 887, 766
+  size: 24, 24
+  orig: 24, 24
+  offset: 0, 0
+  index: -1
+ic_add_scene
+  rotate: false
+  xy: 913, 766
+  size: 24, 24
+  orig: 24, 24
+  offset: 0, 0
+  index: -1
+ic_alpha
+  rotate: false
+  xy: 939, 766
+  size: 24, 24
+  orig: 24, 24
+  offset: 0, 0
+  index: -1
+ic_arrow
+  rotate: false
+  xy: 965, 766
+  size: 24, 24
+  orig: 24, 24
+  offset: 0, 0
+  index: -1
+ic_arrow_down
+  rotate: false
+  xy: 553, 654
+  size: 48, 48
+  orig: 48, 48
+  offset: 0, 0
+  index: -1
+ic_arrow_up
+  rotate: false
+  xy: 659, 742
+  size: 48, 48
+  orig: 48, 48
+  offset: 0, 0
+  index: -1
+ic_blur
+  rotate: false
+  xy: 759, 740
+  size: 24, 24
+  orig: 24, 24
+  offset: 0, 0
+  index: -1
+ic_blur_linear
+  rotate: false
+  xy: 785, 740
+  size: 24, 24
+  orig: 24, 24
+  offset: 0, 0
+  index: -1
+ic_bring_to_front
+  rotate: false
+  xy: 811, 740
+  size: 24, 24
+  orig: 24, 24
+  offset: 0, 0
+  index: -1
+ic_brush
+  rotate: false
+  xy: 837, 740
+  size: 24, 24
+  orig: 24, 24
+  offset: 0, 0
+  index: -1
+ic_camera
+  rotate: false
+  xy: 863, 740
+  size: 24, 24
+  orig: 24, 24
+  offset: 0, 0
+  index: -1
+ic_check
+  rotate: false
+  xy: 889, 740
+  size: 24, 24
+  orig: 24, 24
+  offset: 0, 0
+  index: -1
+ic_circle
+  rotate: false
+  xy: 915, 740
+  size: 24, 24
+  orig: 24, 24
+  offset: 0, 0
+  index: -1
+ic_clone
+  rotate: false
+  xy: 941, 740
+  size: 24, 24
+  orig: 24, 24
+  offset: 0, 0
+  index: -1
+ic_close
+  rotate: false
+  xy: 757, 714
+  size: 24, 24
+  orig: 24, 24
+  offset: 0, 0
+  index: -1
+ic_cloud
+  rotate: false
+  xy: 783, 714
+  size: 24, 24
+  orig: 24, 24
+  offset: 0, 0
+  index: -1
+ic_cloud_done
+  rotate: false
+  xy: 809, 714
+  size: 24, 24
+  orig: 24, 24
+  offset: 0, 0
+  index: -1
+ic_compose
+  rotate: false
+  xy: 835, 714
+  size: 24, 24
+  orig: 24, 24
+  offset: 0, 0
+  index: -1
+ic_conversation
+  rotate: false
+  xy: 861, 714
+  size: 24, 24
+  orig: 24, 24
+  offset: 0, 0
+  index: -1
+ic_copy
+  rotate: false
+  xy: 887, 714
+  size: 24, 24
+  orig: 24, 24
+  offset: 0, 0
+  index: -1
+ic_copy_fx
+  rotate: false
+  xy: 913, 714
+  size: 24, 24
+  orig: 24, 24
+  offset: 0, 0
+  index: -1
+ic_delete
+  rotate: false
+  xy: 939, 714
+  size: 24, 24
+  orig: 24, 24
+  offset: 0, 0
+  index: -1
+ic_delete_fx
+  rotate: false
+  xy: 967, 740
+  size: 24, 24
+  orig: 24, 24
+  offset: 0, 0
+  index: -1
+ic_ease_in_bounce
+  rotate: false
+  xy: 965, 714
+  size: 24, 24
+  orig: 24, 24
+  offset: 0, 0
+  index: -1
+ic_ease_in_cubic
+  rotate: false
+  xy: 390, 332
+  size: 24, 24
+  orig: 24, 24
+  offset: 0, 0
+  index: -1
+ic_ease_in_out_cubic
+  rotate: false
+  xy: 390, 306
+  size: 24, 24
+  orig: 24, 24
+  offset: 0, 0
+  index: -1
+ic_ease_linear
+  rotate: false
+  xy: 390, 280
+  size: 24, 24
+  orig: 24, 24
+  offset: 0, 0
+  index: -1
+ic_ease_out_bounce
+  rotate: false
+  xy: 390, 254
+  size: 24, 24
+  orig: 24, 24
+  offset: 0, 0
+  index: -1
+ic_ease_out_cubic
+  rotate: false
+  xy: 390, 228
+  size: 24, 24
+  orig: 24, 24
+  offset: 0, 0
+  index: -1
+ic_edit
+  rotate: false
+  xy: 390, 202
+  size: 24, 24
+  orig: 24, 24
+  offset: 0, 0
+  index: -1
+ic_error
+  rotate: false
+  xy: 991, 766
+  size: 24, 24
+  orig: 24, 24
+  offset: 0, 0
+  index: -1
+ic_exit
+  rotate: false
+  xy: 993, 740
+  size: 24, 24
+  orig: 24, 24
+  offset: 0, 0
+  index: -1
+ic_fill
+  rotate: false
+  xy: 991, 714
+  size: 24, 24
+  orig: 24, 24
+  offset: 0, 0
+  index: -1
+ic_fit
+  rotate: false
+  xy: 553, 628
+  size: 24, 24
+  orig: 24, 24
+  offset: 0, 0
+  index: -1
+ic_fx
+  rotate: false
+  xy: 579, 628
+  size: 24, 24
+  orig: 24, 24
+  offset: 0, 0
+  index: -1
+ic_go
+  rotate: false
+  xy: 609, 690
+  size: 24, 24
+  orig: 24, 24
+  offset: 0, 0
+  index: -1
+ic_group
+  rotate: false
+  xy: 603, 664
+  size: 24, 24
+  orig: 24, 24
+  offset: 0, 0
+  index: -1
+ic_home
+  rotate: false
+  xy: 605, 638
+  size: 24, 24
+  orig: 24, 24
+  offset: 0, 0
+  index: -1
+ic_image
+  rotate: false
+  xy: 541, 602
+  size: 24, 24
+  orig: 24, 24
+  offset: 0, 0
+  index: -1
+ic_photo
+  rotate: false
+  xy: 541, 602
+  size: 24, 24
+  orig: 24, 24
+  offset: 0, 0
+  index: -1
+ic_interaction
+  rotate: false
+  xy: 567, 602
+  size: 24, 24
+  orig: 24, 24
+  offset: 0, 0
+  index: -1
+ic_link
+  rotate: false
+  xy: 593, 602
+  size: 24, 24
+  orig: 24, 24
+  offset: 0, 0
+  index: -1
+ic_menu
+  rotate: false
+  xy: 238, 158
+  size: 24, 24
+  orig: 24, 24
+  offset: 0, 0
+  index: -1
+ic_mirror_horizontal
+  rotate: false
+  xy: 238, 132
+  size: 24, 24
+  orig: 24, 24
+  offset: 0, 0
+  index: -1
+ic_mirror_vertical
+  rotate: false
+  xy: 238, 106
+  size: 24, 24
+  orig: 24, 24
+  offset: 0, 0
+  index: -1
+ic_mokap
+  rotate: false
+  xy: 264, 168
+  size: 24, 24
+  orig: 24, 24
+  offset: 0, 0
+  index: -1
+ic_more
+  rotate: false
+  xy: 264, 142
+  size: 24, 24
+  orig: 24, 24
+  offset: 0, 0
+  index: -1
+ic_multiple_selection
+  rotate: false
+  xy: 290, 168
+  size: 24, 24
+  orig: 24, 24
+  offset: 0, 0
+  index: -1
+ic_music
+  rotate: false
+  xy: 264, 116
+  size: 24, 24
+  orig: 24, 24
+  offset: 0, 0
+  index: -1
+ic_volume
+  rotate: false
+  xy: 264, 116
+  size: 24, 24
+  orig: 24, 24
+  offset: 0, 0
+  index: -1
+ic_no_yoyo
+  rotate: false
+  xy: 290, 142
+  size: 24, 24
+  orig: 24, 24
+  offset: 0, 0
+  index: -1
+ic_one
+  rotate: false
+  xy: 316, 168
+  size: 24, 24
+  orig: 24, 24
+  offset: 0, 0
+  index: -1
+ic_paste
+  rotate: false
+  xy: 290, 116
+  size: 24, 24
+  orig: 24, 24
+  offset: 0, 0
+  index: -1
+ic_paste_fx
+  rotate: false
+  xy: 316, 142
+  size: 24, 24
+  orig: 24, 24
+  offset: 0, 0
+  index: -1
+ic_play
+  rotate: false
+  xy: 342, 168
+  size: 24, 24
+  orig: 24, 24
+  offset: 0, 0
+  index: -1
+ic_random
+  rotate: false
+  xy: 316, 116
+  size: 24, 24
+  orig: 24, 24
+  offset: 0, 0
+  index: -1
+ic_rectangle
+  rotate: false
+  xy: 342, 142
+  size: 24, 24
+  orig: 24, 24
+  offset: 0, 0
+  index: -1
+ic_redo
+  rotate: false
+  xy: 342, 116
+  size: 24, 24
+  orig: 24, 24
+  offset: 0, 0
+  index: -1
+ic_refresh
+  rotate: false
+  xy: 368, 168
+  size: 24, 24
+  orig: 24, 24
+  offset: 0, 0
+  index: -1
+ic_repeat
+  rotate: false
+  xy: 368, 142
+  size: 24, 24
+  orig: 24, 24
+  offset: 0, 0
+  index: -1
+ic_replay
+  rotate: false
+  xy: 368, 116
+  size: 24, 24
+  orig: 24, 24
+  offset: 0, 0
+  index: -1
+ic_rubber
+  rotate: false
+  xy: 394, 176
+  size: 24, 24
+  orig: 24, 24
+  offset: 0, 0
+  index: -1
+ic_search
+  rotate: false
+  xy: 394, 150
+  size: 24, 24
+  orig: 24, 24
+  offset: 0, 0
+  index: -1
+ic_segment_end
+  rotate: false
+  xy: 629, 664
+  size: 3, 24
+  orig: 3, 24
+  offset: 0, 0
+  index: -1
+ic_segment_middle
+  rotate: false
+  xy: 1002, 995
+  size: 18, 24
+  orig: 18, 24
+  offset: 0, 0
+  index: -1
+ic_send_to_back
+  rotate: false
+  xy: 394, 124
+  size: 24, 24
+  orig: 24, 24
+  offset: 0, 0
+  index: -1
+ic_sequencing
+  rotate: false
+  xy: 228, 76
+  size: 24, 24
+  orig: 24, 24
+  offset: 0, 0
+  index: -1
+ic_settings
+  rotate: false
+  xy: 228, 50
+  size: 24, 24
+  orig: 24, 24
+  offset: 0, 0
+  index: -1
+ic_share
+  rotate: false
+  xy: 228, 24
+  size: 24, 24
+  orig: 24, 24
+  offset: 0, 0
+  index: -1
+ic_single_selection
+  rotate: false
+  xy: 264, 90
+  size: 24, 24
+  orig: 24, 24
+  offset: 0, 0
+  index: -1
+ic_sound
+  rotate: false
+  xy: 290, 90
+  size: 24, 24
+  orig: 24, 24
+  offset: 0, 0
+  index: -1
+ic_speed
+  rotate: false
+  xy: 316, 90
+  size: 24, 24
+  orig: 24, 24
+  offset: 0, 0
+  index: -1
+ic_speed_pointer
+  rotate: false
+  xy: 342, 90
+  size: 24, 24
+  orig: 24, 24
+  offset: 0, 0
+  index: -1
+ic_text
+  rotate: false
+  xy: 368, 90
+  size: 24, 24
+  orig: 24, 24
+  offset: 0, 0
+  index: -1
+ic_timeline
+  rotate: false
+  xy: 394, 98
+  size: 24, 24
+  orig: 24, 24
+  offset: 0, 0
+  index: -1
+ic_to_back
+  rotate: false
+  xy: 254, 64
+  size: 24, 24
+  orig: 24, 24
+  offset: 0, 0
+  index: -1
+ic_to_front
+  rotate: false
+  xy: 254, 38
+  size: 24, 24
+  orig: 24, 24
+  offset: 0, 0
+  index: -1
+ic_touch
+  rotate: false
+  xy: 280, 64
+  size: 24, 24
+  orig: 24, 24
+  offset: 0, 0
+  index: -1
+ic_undo
+  rotate: false
+  xy: 280, 38
+  size: 24, 24
+  orig: 24, 24
+  offset: 0, 0
+  index: -1
+ic_ungroup
+  rotate: false
+  xy: 306, 64
+  size: 24, 24
+  orig: 24, 24
+  offset: 0, 0
+  index: -1
+ic_white_mokap
+  rotate: false
+  xy: 306, 38
+  size: 24, 24
+  orig: 24, 24
+  offset: 0, 0
+  index: -1
+ic_yoyo
+  rotate: false
+  xy: 332, 64
+  size: 24, 24
+  orig: 24, 24
+  offset: 0, 0
+  index: -1
+ic_zone
+  rotate: false
+  xy: 332, 38
+  size: 24, 24
+  orig: 24, 24
+  offset: 0, 0
+  index: -1
+knob
+  rotate: false
+  xy: 358, 64
+  size: 24, 24
+  orig: 24, 24
+  offset: 0, 0
+  index: -1
+knob_after
+  rotate: false
+  xy: 1017, 729
+  size: 5, 9
+  split: 0, 0, 0, 6
+  pad: 0, 0, 0, 0
+  orig: 5, 9
+  offset: 0, 0
+  index: -1
+knob_background
+  rotate: false
+  xy: 405, 497
+  size: 9, 9
+  split: 3, 3, 3, 3
+  pad: 3, 3, 0, 0
+  orig: 9, 9
+  offset: 0, 0
+  index: -1
+knob_before
+  rotate: false
+  xy: 1017, 718
+  size: 5, 9
+  split: 0, 0, 0, 6
+  pad: 0, 0, 0, 0
+  orig: 5, 9
+  offset: 0, 0
+  index: -1
+knob_before_mokap
+  rotate: false
+  xy: 1017, 707
+  size: 5, 9
+  split: 1, 1, 0, 6
+  pad: 1, 1, 0, 0
+  orig: 5, 9
+  offset: 0, 0
+  index: -1
+list_selection
+  rotate: false
+  xy: 304, 722
+  size: 30, 30
+  split: 12, 12, 12, 15
+  orig: 30, 30
+  offset: 0, 0
+  index: -1
+logo
+  rotate: false
+  xy: 2, 719
+  size: 300, 300
+  orig: 300, 300
+  offset: 0, 0
+  index: -1
+mokap_accurate_selection
+  rotate: false
+  xy: 2, 144
+  size: 110, 90
+  orig: 110, 90
+  offset: 0, 0
+  index: -1
+mokap_compose
+  rotate: false
+  xy: 124, 266
+  size: 140, 90
+  orig: 140, 90
+  offset: 0, 0
+  index: -1
+mokap_cup
+  rotate: false
+  xy: 2, 52
+  size: 100, 90
+  orig: 100, 90
+  offset: 0, 0
+  index: -1
+mokap_logo
+  rotate: false
+  xy: 2, 358
+  size: 401, 130
+  orig: 401, 130
+  offset: 0, 0
+  index: -1
+mokap_multiple
+  rotate: false
+  xy: 351, 700
+  size: 100, 90
+  orig: 100, 90
+  offset: 0, 0
+  index: -1
+mokap_zone
+  rotate: false
+  xy: 351, 608
+  size: 100, 90
+  orig: 100, 90
+  offset: 0, 0
+  index: -1
+page
+  rotate: false
+  xy: 389, 492
+  size: 14, 14
+  split: 6, 6, 6, 6
+  pad: 4, 4, 4, 4
+  orig: 14, 14
+  offset: 0, 0
+  index: -1
+page_left
+  rotate: false
+  xy: 104, 137
+  size: 6, 5
+  split: 1, 4, 2, 2
+  pad: 1, 4, 1, 1
+  orig: 6, 5
+  offset: 0, 0
+  index: -1
+page_right
+  rotate: false
+  xy: 1002, 988
+  size: 6, 5
+  split: 4, 1, 1, 1
+  pad: 4, 1, 2, 2
+  orig: 6, 5
+  offset: 0, 0
+  index: -1
+page_up
+  rotate: false
+  xy: 248, 248
+  size: 16, 16
+  split: 7, 7, 7, 7
+  pad: 5, 5, 5, 5
+  orig: 16, 16
+  offset: 0, 0
+  index: -1
+pencil
+  rotate: false
+  xy: 709, 742
+  size: 48, 48
+  orig: 48, 48
+  offset: 0, 0
+  index: -1
+selected_tab
+  rotate: false
+  xy: 390, 194
+  size: 2, 2
+  split: 0, 0, 0, 0
+  orig: 2, 2
+  offset: 0, 0
+  index: -1
+spinner_default
+  rotate: false
+  xy: 304, 754
+  size: 36, 36
+  split: 3, 24, 3, 27
+  pad: 3, 24, 3, 6
+  orig: 36, 36
+  offset: 0, 0
+  index: -1
+switch_bar
+  rotate: false
+  xy: 351, 490
+  size: 36, 16
+  orig: 36, 16
+  offset: 0, 0
+  index: -1
+switch_bar_off
+  rotate: false
+  xy: 609, 716
+  size: 48, 24
+  orig: 48, 24
+  offset: 0, 0
+  index: -1
+switch_bar_on
+  rotate: false
+  xy: 759, 766
+  size: 48, 24
+  orig: 48, 24
+  offset: 0, 0
+  index: -1
+switch_circle
+  rotate: false
+  xy: 358, 38
+  size: 24, 24
+  orig: 24, 24
+  offset: 0, 0
+  index: -1
+switch_off
+  rotate: false
+  xy: 697, 712
+  size: 28, 28
+  orig: 28, 28
+  offset: 0, 0
+  index: -1
+switch_on
+  rotate: false
+  xy: 727, 712
+  size: 28, 28
+  orig: 28, 28
+  offset: 0, 0
+  index: -1
+tablet_accurate_selection
+  rotate: false
+  xy: 266, 276
+  size: 122, 80
+  orig: 122, 80
+  offset: 0, 0
+  index: -1
+tablet_card
+  rotate: false
+  xy: 304, 792
+  size: 347, 227
+  orig: 347, 227
+  offset: 0, 0
+  index: -1
+tablet_game
+  rotate: false
+  xy: 653, 792
+  size: 347, 227
+  orig: 347, 227
+  offset: 0, 0
+  index: -1
+tablet_insert
+  rotate: false
+  xy: 124, 184
+  size: 122, 80
+  orig: 122, 80
+  offset: 0, 0
+  index: -1
+tablet_multiple_selection
+  rotate: false
+  xy: 114, 102
+  size: 122, 80
+  orig: 122, 80
+  offset: 0, 0
+  index: -1
+tablet_play
+  rotate: false
+  xy: 104, 20
+  size: 122, 80
+  orig: 122, 80
+  offset: 0, 0
+  index: -1
+tablet_presentation
+  rotate: false
+  xy: 2, 490
+  size: 347, 227
+  orig: 347, 227
+  offset: 0, 0
+  index: -1
+tablet_zone
+  rotate: false
+  xy: 266, 194
+  size: 122, 80
+  orig: 122, 80
+  offset: 0, 0
+  index: -1
+text_field
+  rotate: false
+  xy: 114, 216
+  size: 6, 18
+  split: 0, 0, 0, 6
+  orig: 6, 18
+  offset: 0, 0
+  index: -1
+text_field_cursor
+  rotate: false
+  xy: 238, 102
+  size: 2, 2
+  split: 0, 2, 1, 0
+  pad: -1, -1, 1, 0
+  orig: 2, 2
+  offset: 0, 0
+  index: -1
+toolbar
+  rotate: false
+  xy: 503, 604
+  size: 36, 36
+  split: 15, 15, 10, 16
+  pad: 0, 0, 0, 6
+  orig: 36, 36
+  offset: 0, 0
+  index: -1
+toolbar_bottom
+  rotate: false
+  xy: 659, 704
+  size: 36, 36
+  split: 15, 15, 22, 4
+  pad: 0, 0, 6, 0
+  orig: 36, 36
+  offset: 0, 0
+  index: -1
+touch
+  rotate: false
+  xy: 2, 236
+  size: 120, 120
+  orig: 120, 120
+  offset: 0, 0
+  index: -1

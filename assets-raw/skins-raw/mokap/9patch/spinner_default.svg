@@ -9,11 +9,11 @@
    xmlns="http://www.w3.org/2000/svg"
    xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
    xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
-   width="36"
-   height="36"
+   width="38"
+   height="38"
    id="svg2997"
    version="1.1"
-   inkscape:version="0.48.5 r10040"
+   inkscape:version="0.48.4 r9939"
    sodipodi:docname="spinner_default.svg">
   <defs
      id="defs2999" />
@@ -24,16 +24,16 @@
      borderopacity="1.0"
      inkscape:pageopacity="0.0"
      inkscape:pageshadow="2"
-     inkscape:zoom="26.994081"
-     inkscape:cx="15.810888"
-     inkscape:cy="9.4728177"
+     inkscape:zoom="9.5438489"
+     inkscape:cx="51.93191"
+     inkscape:cy="16.05195"
      inkscape:document-units="px"
      inkscape:current-layer="a3001"
      showgrid="true"
-     inkscape:window-width="1680"
-     inkscape:window-height="1028"
-     inkscape:window-x="-8"
-     inkscape:window-y="-8"
+     inkscape:window-width="1867"
+     inkscape:window-height="1056"
+     inkscape:window-x="53"
+     inkscape:window-y="24"
      inkscape:window-maximized="1">
     <inkscape:grid
        type="xygrid"
@@ -59,20 +59,20 @@
      inkscape:label="Capa 1"
      inkscape:groupmode="layer"
      id="layer1"
-     transform="translate(0,-1016.3622)">
+     transform="translate(0,-1014.3622)">
     <rect
        style="fill:#ffffff;fill-opacity:1;fill-rule:nonzero"
        id="rect3007"
        width="30"
        height="2"
-       x="3"
-       y="1047.3622" />
+       x="4"
+       y="1046.3622" />
     <a
        id="a3001">
       <path
          inkscape:connector-curvature="0"
          id="path3017"
-         d="m 33,1031.3622 0,18 -18,0 z"
+         d="m 34,1030.3622 0,18 -18,0 z"
          style="fill:#ffffff;fill-opacity:1;stroke:none" />
     </a>
     <rect
@@ -80,28 +80,28 @@
        id="rect3795"
        width="9"
        height="1"
-       x="3"
-       y="1052.3622" />
+       x="4"
+       y="1051.3622" />
     <rect
        style="fill:#000000;fill-opacity:1;fill-rule:nonzero;stroke:none"
        id="rect3797"
        width="9"
        height="1"
-       x="3"
-       y="1015.3622" />
+       x="4"
+       y="1014.3622" />
     <rect
        style="fill:#000000;fill-opacity:1;fill-rule:nonzero;stroke:none"
        id="rect3799"
        width="1.0000184"
        height="26.999983"
-       x="36"
-       y="1019.3622" />
+       x="37"
+       y="1018.3622" />
     <rect
        style="fill:#000000;fill-opacity:1;fill-rule:nonzero;stroke:none"
        id="rect3801"
        width="1"
        height="6.0000172"
-       x="-1"
-       y="1019.3622" />
+       x="0"
+       y="1018.3622" />
   </g>
 </svg>
