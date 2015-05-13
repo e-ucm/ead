@@ -37,7 +37,7 @@ MANIFEST.MF
 *.sh
 
 # Generated on each build
-assets/skins/**/scale**
+scale**
 assets-raw/**/png/
 .lastmodified
 assets/*bindings.json
