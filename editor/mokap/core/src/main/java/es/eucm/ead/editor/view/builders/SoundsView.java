@@ -36,6 +36,9 @@
  */
 package es.eucm.ead.editor.view.builders;
 
+import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.audio.Music;
+import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
@@ -44,25 +47,36 @@ import es.eucm.ead.editor.assets.ApplicationAssets;
 import es.eucm.ead.editor.control.Controller;
 import es.eucm.ead.editor.control.MokapController.BackListener;
 import es.eucm.ead.editor.control.actions.editor.ChangeView;
+import es.eucm.ead.editor.control.actions.editor.ShowToast;
 import es.eucm.ead.editor.control.actions.model.AddLibraryReference;
+import es.eucm.ead.editor.model.Model;
+import es.eucm.ead.editor.model.Q;
 import es.eucm.ead.editor.view.SkinConstants;
 import es.eucm.ead.editor.view.builders.scene.SceneView;
 import es.eucm.ead.editor.view.widgets.RepoTile;
-import es.eucm.ead.editor.view.widgets.galleries.CategoryLibrary;
-import es.eucm.ead.editor.view.widgets.galleries.CategoryRepository;
-import es.eucm.ead.editor.view.widgets.galleries.ProjectResourcesGallery;
-import es.eucm.ead.editor.view.widgets.galleries.TabsGallery;
+import es.eucm.ead.editor.view.widgets.galleries.*;
+import es.eucm.ead.editor.view.widgets.selectors.Selector;
 import es.eucm.ead.engine.I18N;
+import es.eucm.ead.schema.components.ModelComponent;
+import es.eucm.ead.schema.components.behaviors.Behavior;
 import es.eucm.ead.schema.editor.components.repo.RepoCategories;
+import es.eucm.ead.schema.editor.components.repo.RepoElement;
+import es.eucm.ead.schema.effects.Effect;
+import es.eucm.ead.schema.effects.PlaySound;
+import es.eucm.ead.schema.entities.ModelEntity;
+import es.eucm.ead.schemax.ModelStructure;
 
 /**
- * File view. A list with the children of a given file.
+ * Audio view. A list with the audio files from the project, library and
+ * repository.
  */
-public class ResourcesView implements ViewBuilder, BackListener {
+public class SoundsView implements ViewBuilder, BackListener {
 
 	private Controller controller;
 
-	private ProjectResourcesGallery projectResources;
+	private Selector.SelectorListener<String> selector;
+
+	private ProjectSoundsGallery projectResources;
 
 	private CategoryLibrary libraryGallery;
 
@@ -78,8 +92,8 @@ public class ResourcesView implements ViewBuilder, BackListener {
 		I18N i18N = applicationAssets.getI18N();
 
 		tabsGallery = new TabsGallery(controller.getApplicationAssets()
-				.getI18N().m("images"), SkinConstants.IC_GO, skin, i18N);
-		tabsGallery.changeColor(SkinConstants.COLOR_IMAGES);
+				.getI18N().m("sounds"), SkinConstants.IC_GO, skin, i18N);
+		tabsGallery.changeColor(SkinConstants.COLOR_SOUNDS);
 		tabsGallery.getToolbarIcon().addListener(new ClickListener() {
 			@Override
 			public void clicked(InputEvent event, float x, float y) {
@@ -89,35 +103,39 @@ public class ResourcesView implements ViewBuilder, BackListener {
 
 		libraryGallery = new CategoryLibrary(2.25f, 3, controller) {
 			@Override
-			protected void prepareGalleryItem(Actor actor, final Object elem) {
+			protected void prepareGalleryItem(final Actor actor,
+					final Object elem) {
 				actor.addListener(new ClickListener() {
 					@Override
 					public void clicked(InputEvent event, float x, float y) {
-						controller.action(AddLibraryReference.class, elem);
-						controller.action(ChangeView.class, SceneView.class);
+						processSoundRepoElement((RepoElement) elem);
 					}
 				});
 			}
 		};
-		libraryGallery.changeCategory(RepoCategories.ELEMENTS.toString());
+		libraryGallery.changeCategory(RepoCategories.SOUNDS.toString());
 
 		repoGallery = new CategoryRepository(2.25f, 3, controller) {
 			@Override
 			protected void prepareGalleryItem(Actor actor, final Object elem) {
+
 				actor.addListener(new RepoTile.RepoTileListener() {
 					@Override
 					public void clickedInLibrary(RepoTileEvent event) {
-						controller.action(AddLibraryReference.class,
-								event.getRepoElement());
-						controller.action(ChangeView.class, SceneView.class);
+						processSoundRepoElement((RepoElement) elem);
 					}
 				});
 			}
 
 		};
-		repoGallery.changeCategory(RepoCategories.ELEMENTS.toString());
+		repoGallery.changeCategory(RepoCategories.SOUNDS.toString());
 
-		projectResources = new ProjectResourcesGallery(2.25f, 3, controller);
+		projectResources = new ProjectSoundsGallery(2.25f, 3, controller) {
+			@Override
+			protected void selected(String path) {
+				selector.selected(path);
+			}
+		};
 
 		tabsGallery.setTabs(new String[] { i18N.m("community").toUpperCase(),
 				i18N.m("my.library").toUpperCase(),
@@ -126,8 +144,42 @@ public class ResourcesView implements ViewBuilder, BackListener {
 
 	}
 
+	private void processSoundRepoElement(RepoElement element) {
+		try {
+			FileHandle repoElementContentsFolder = controller
+					.getLibraryManager().getRepoElementContentsFolder(element);
+			FileHandle entityFile = repoElementContentsFolder
+					.child(ModelStructure.ENTITY_FILE);
+			ModelEntity modelEntity = controller.getEditorGameAssets()
+					.fromJson(ModelEntity.class, entityFile);
+
+			Behavior soundBehavior = Q
+					.getComponent(modelEntity, Behavior.class);
+			PlaySound playSound = (PlaySound) soundBehavior.getEffects()
+					.first();
+			String uri = playSound.getUri();
+			FileHandle soundUri = repoElementContentsFolder.child(uri);
+			String soundPath = controller.getEditorGameAssets()
+					.copyToProjectIfNeeded(soundUri.path(), Music.class);
+			if (soundPath != null) {
+				selector.selected(soundPath);
+			} else {
+				controller
+						.action(ShowToast.class,
+								controller.getApplicationAssets().getI18N()
+										.m("invalid.resource"));
+			}
+		} catch (Exception ex) {
+			Gdx.app.error("SoundView",
+					"Couldn't process a sound from a RepoElement", ex);
+			controller.action(ShowToast.class, controller
+					.getApplicationAssets().getI18N().m("invalid.resource"));
+		}
+	}
+
 	@Override
 	public Actor getView(Object... args) {
+		selector = (Selector.SelectorListener<String>) args[0];
 		tabsGallery.loadContents();
 
 		return tabsGallery;
@@ -139,7 +191,7 @@ public class ResourcesView implements ViewBuilder, BackListener {
 
 	@Override
 	public boolean onBackPressed() {
-		controller.action(ChangeView.class, SceneView.class);
+		selector.cancelled();
 		return true;
 	}
 }
