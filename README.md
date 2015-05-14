@@ -30,7 +30,7 @@ After satisfying those requirements, the build is pretty simple:
 
 Import the project to [IntelliJ 14](https://www.jetbrains.com/idea/) as a maven project.
 
-To run on desktop launch [MokapDesktop.java]() from the `mokap-desktop` module as a Java Application. 
+To run on desktop launch [MokapDesktop.java](https://github.com/e-ucm/ead/blob/3d79a4677c15ccd3896f7bc6624f6cc70e41f7fa/editor/mokap/desktop/src/main/java/es/eucm/ead/editor/MokapDesktop.java) from the `mokap-desktop` module as a Java Application. 
 On Android you need to launch the `mokap-android` module as an Android Application.
 
 To have access to the assets of our repository you will need a key that you can obtain by contacting us at `contact@mokap.es`. Send us an e-mail asking for the key.
