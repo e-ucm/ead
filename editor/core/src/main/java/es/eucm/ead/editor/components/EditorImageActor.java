@@ -43,29 +43,22 @@ import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer.ShapeType;
 import com.badlogic.gdx.math.Polygon;
-import es.eucm.ead.editor.control.Preferences;
-import es.eucm.ead.engine.components.renderers.ImageComponent;
+import es.eucm.ead.engine.components.renderers.ImageActor;
 
 /**
  * Created by angel on 12/05/14.
  */
-public class EditorImageComponent extends ImageComponent {
+public class EditorImageActor extends ImageActor {
 
 	private ShapeRenderer shapeRenderer;
-
-	private Preferences preferences;
 
 	public void setShapeRenderer(ShapeRenderer shapeRenderer) {
 		this.shapeRenderer = shapeRenderer;
 	}
 
-	public void setPreferences(Preferences preferences) {
-		this.preferences = preferences;
-	}
-
 	@Override
-	public void draw(Batch batch) {
-		super.draw(batch);
+	public void drawChildren(Batch batch, float parentAlpha) {
+		super.drawChildren(batch, parentAlpha);
 		drawCollider(batch);
 	}
 

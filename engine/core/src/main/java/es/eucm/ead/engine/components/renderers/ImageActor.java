@@ -38,34 +38,33 @@ package es.eucm.ead.engine.components.renderers;
 
 import com.badlogic.gdx.graphics.g2d.Batch;
 import es.eucm.ead.engine.assets.ScaledTexture;
+import es.eucm.ead.engine.entities.actors.EntityGroup;
 
-public class ImageComponent extends CollidableRendererComponent {
+public class ImageActor extends EntityGroup {
 
 	private ScaledTexture texture;
 
+	public ImageActor() {
+		setVisible(false);
+	}
+
 	public void setTexture(ScaledTexture texture) {
 		this.texture = texture;
+		setSize(texture.getWidth(), texture.getHeight());
+		setVisible(true);
 	}
 
 	@Override
-	public void draw(Batch batch) {
-		if (texture != null) {
-			texture.draw(batch, 0, 0, getWidth(), getHeight());
-		}
+	public void drawChildren(Batch batch, float parentAlpha) {
+		texture.draw(batch, 0, 0, getWidth(), getHeight());
+	}
+
+	public void setSize(float width, float height) {
+		super.setSize(width, height);
 	}
 
 	@Override
-	public float getWidth() {
-		return texture == null ? 0 : texture.getWidth();
-	}
-
-	@Override
-	public float getHeight() {
-		return texture == null ? 0 : texture.getHeight();
-	}
-
-	@Override
-	public boolean hit(float x, float y) {
-		return texture != null && super.hit(x, y);
+	public void setWidth(float width) {
+		super.setWidth(width);
 	}
 }
