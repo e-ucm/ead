@@ -65,8 +65,11 @@ import com.badlogic.gdx.utils.Json;
 import com.badlogic.gdx.utils.JsonValue;
 import com.badlogic.gdx.utils.SerializationException;
 
+import com.esotericsoftware.spine.SkeletonData;
 import es.eucm.ead.engine.I18N;
 import es.eucm.ead.engine.assets.loaders.ExtendedSkinLoader;
+import es.eucm.ead.engine.assets.loaders.SkeletonLoader;
+import es.eucm.ead.engine.assets.loaders.SkeletonLoader.SkeletonAssetParameter;
 import es.eucm.ead.engine.gdx.URLFileHandle;
 import es.eucm.ead.engine.gdx.URLTextureLoader;
 import es.eucm.ead.engine.gdx.URLTextureLoader.URLTextureParameter;
@@ -123,6 +126,7 @@ public abstract class Assets extends Json implements FileHandleResolver,
 		i18n = new I18N(this);
 		setLoader(Skin.class, new ExtendedSkinLoader(this));
 		setLoader(Texture.class, new URLTextureLoader(this));
+		setLoader(SkeletonData.class, new SkeletonLoader(this));
 		assetManager.setErrorListener(new AssetErrorListener() {
 			@Override
 			public void error(AssetDescriptor asset, Throwable throwable) {
@@ -498,6 +502,8 @@ public abstract class Assets extends Json implements FileHandleResolver,
 			parameters = new TextureAtlasParameter();
 		} else if (clazz == Texture.class) {
 			parameters = new URLTextureParameter();
+		} else if (clazz == SkeletonData.class) {
+			parameters = new SkeletonAssetParameter();
 		} else {
 			parameters = loadedCallback;
 		}

@@ -34,60 +34,50 @@
  *      You should have received a copy of the GNU Lesser General Public License
  *      along with eAdventure.  If not, see <http://www.gnu.org/licenses/>.
  */
-package es.eucm.ead.engine.components.renderers;
+package es.eucm.ead.engine.processors.renderers;
 
-import com.badlogic.gdx.graphics.g2d.Batch;
-import com.badlogic.gdx.graphics.g2d.PolygonSpriteBatch;
-import com.esotericsoftware.spine.AnimationState;
-import com.esotericsoftware.spine.AnimationStateData;
-import com.esotericsoftware.spine.Skeleton;
+import com.badlogic.ashley.core.Component;
+import com.badlogic.gdx.Gdx;
 import com.esotericsoftware.spine.SkeletonData;
-import com.esotericsoftware.spine.SkeletonRenderer;
+import es.eucm.ead.engine.GameLoop;
+import es.eucm.ead.engine.assets.Assets.AssetLoadedCallback;
+import es.eucm.ead.engine.assets.GameAssets;
+import es.eucm.ead.engine.components.renderers.RendererComponent;
+import es.eucm.ead.engine.components.renderers.SpineActor;
+import es.eucm.ead.schema.renderers.SpineAnimation;
 
-public class SpineAnimationComponent extends CollidableRendererComponent {
+public class SpineProcessor extends RendererProcessor<SpineAnimation> {
 
-	private SkeletonRenderer skeletonRenderer = new SkeletonRenderer();
-
-	private AnimationState state;
-
-	private Skeleton skeleton;
-
-	public void setSkeleton(SkeletonData skeletonData) {
-		this.skeleton = new Skeleton(skeletonData);
-		AnimationStateData stateData = new AnimationStateData(skeletonData);
-		state = new AnimationState(stateData);
-	}
-
-	public void setState(String stateName) {
-		if (stateName != null) {
-			state.setAnimation(0, stateName, true);
-		}
+	public SpineProcessor(GameLoop gameLoop, GameAssets gameAssets) {
+		super(gameLoop, gameAssets);
 	}
 
 	@Override
-	public void act(float delta) {
-		state.update(delta);
+	public Component getComponent(final SpineAnimation spineAnimation) {
+		String baseUri = spineAnimation.getUri();
+		final SpineActor actor = createActor();
+		gameAssets.get(baseUri, SkeletonData.class,
+				new AssetLoadedCallback<SkeletonData>() {
+					@Override
+					public void loaded(String fileName, SkeletonData asset) {
+						actor.setSkeleton(asset);
+						actor.setState(spineAnimation.getInitialState());
+					}
+
+					@Override
+					public void error(String fileName, Class type,
+							Throwable exception) {
+						Gdx.app.error("SpineAnimationProcessor",
+								"Impossible to load animation", exception);
+					}
+				});
+		RendererComponent rendererComponent = gameLoop
+				.createComponent(RendererComponent.class);
+		rendererComponent.setRenderer(actor);
+		return rendererComponent;
 	}
 
-	@Override
-	public void draw(Batch batch) {
-		state.apply(skeleton);
-		skeleton.updateWorldTransform();
-		/*
-		 * batch has to be casted to PolygonSpriteBatch as SkeletonRenderer has
-		 * two different draw methods: draw(Batch, Skeleton) and
-		 * draw(PolygonSpriteBatch, Skeleton).
-		 */
-		skeletonRenderer.draw((PolygonSpriteBatch) batch, skeleton);
-	}
-
-	@Override
-	public float getWidth() {
-		return 0;
-	}
-
-	@Override
-	public float getHeight() {
-		return 0;
+	protected SpineActor createActor() {
+		return new SpineActor();
 	}
 }
