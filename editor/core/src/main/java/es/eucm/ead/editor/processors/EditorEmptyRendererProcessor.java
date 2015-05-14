@@ -36,19 +36,16 @@
  */
 package es.eucm.ead.editor.processors;
 
-import com.badlogic.ashley.core.Component;
-
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.scenes.scene2d.utils.SpriteDrawable;
 import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable;
 
-import es.eucm.ead.editor.assets.ApplicationAssets;
-import es.eucm.ead.editor.components.EditorEmptyRendererComponent;
+import es.eucm.ead.editor.components.EditorEmptyActor;
+import es.eucm.ead.editor.control.Controller;
 import es.eucm.ead.editor.control.engine.Engine;
-import es.eucm.ead.engine.GameLoop;
+import es.eucm.ead.engine.components.renderers.EmptyActor;
 import es.eucm.ead.engine.processors.renderers.EmptyRendererProcessor;
-import es.eucm.ead.schema.renderers.EmptyRenderer;
 
 public class EditorEmptyRendererProcessor extends EmptyRendererProcessor {
 
@@ -61,12 +58,12 @@ public class EditorEmptyRendererProcessor extends EmptyRendererProcessor {
 
 	private Engine engine;
 
-	public EditorEmptyRendererProcessor(Engine engine, GameLoop gameLoop,
-			ApplicationAssets applicationAssets) {
-		super(gameLoop);
-		this.engine = engine;
-		TextureRegionDrawable blank = (TextureRegionDrawable) applicationAssets
-				.getSkin().getDrawable("blank");
+	public EditorEmptyRendererProcessor(Controller controller) {
+		super(controller.getEngine().getGameLoop(), controller
+				.getEditorGameAssets());
+		this.engine = controller.getEngine();
+		TextureRegionDrawable blank = (TextureRegionDrawable) controller
+				.getApplicationAssets().getSkin().getDrawable("blank");
 		Sprite sprite = new Sprite(blank.getRegion());
 		sprite.setColor(INTERACTIVE_ZONE_COLOR);
 		drawable = new SpriteDrawable(sprite);
@@ -78,12 +75,10 @@ public class EditorEmptyRendererProcessor extends EmptyRendererProcessor {
 	}
 
 	@Override
-	public Component getComponent(EmptyRenderer component) {
-		EditorEmptyRendererComponent emptyRendererComponent = gameLoop
-				.createComponent(EditorEmptyRendererComponent.class);
-		emptyRendererComponent.setDrawables(drawable, extendedDrawable);
-		emptyRendererComponent.setEngine(engine);
-		read(emptyRendererComponent, component);
-		return emptyRendererComponent;
+	protected EmptyActor createActor() {
+		EditorEmptyActor emptyRenderer = new EditorEmptyActor();
+		emptyRenderer.setDrawables(drawable, extendedDrawable);
+		emptyRenderer.setEngine(engine);
+		return emptyRenderer;
 	}
 }

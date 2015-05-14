@@ -34,37 +34,19 @@
  *      You should have received a copy of the GNU Lesser General Public License
  *      along with eAdventure.  If not, see <http://www.gnu.org/licenses/>.
  */
-package es.eucm.ead.engine.components.renderers.frames;
+package es.eucm.ead.engine.components.renderers;
 
-import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.math.Polygon;
+import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.utils.Array;
-import es.eucm.ead.engine.components.renderers.CollidableRendererComponent;
+import es.eucm.ead.engine.entities.actors.EntityGroup;
 
-/**
- * Created by Javier Torrente on 4/06/14.
- */
-public class EmptyRendererComponent extends CollidableRendererComponent {
-
-	protected float width;
-
-	protected float height;
+public class EmptyActor extends EntityGroup {
 
 	private boolean hitAll;
 
-	@Override
-	public void draw(Batch batch) {
-		// Do nothing
-	}
-
-	@Override
-	public float getWidth() {
-		return width;
-	}
-
-	@Override
-	public float getHeight() {
-		return height;
+	public void setHitAll(boolean hitAll) {
+		this.hitAll = hitAll;
 	}
 
 	@Override
@@ -73,18 +55,10 @@ public class EmptyRendererComponent extends CollidableRendererComponent {
 		updateWidthAndHeight();
 	}
 
-	public void setHitAll(boolean hitAll) {
-		this.hitAll = hitAll;
-	}
-
-	public boolean isHitAll() {
-		return hitAll;
-	}
-
 	private void updateWidthAndHeight() {
-		if (collider != null) {
+		if (getCollider() != null) {
 			float minX = Float.MAX_VALUE, maxX = Float.MIN_VALUE, minY = Float.MAX_VALUE, maxY = Float.MIN_VALUE;
-			for (Polygon polygon : collider) {
+			for (Polygon polygon : getCollider()) {
 				for (int i = 0; i < polygon.getVertices().length; i++) {
 					if (i % 2 == 0) {
 						minX = Math.min(minX, polygon.getVertices()[i]);
@@ -95,13 +69,17 @@ public class EmptyRendererComponent extends CollidableRendererComponent {
 					}
 				}
 			}
-			width = maxX - minX;
-			height = maxY - minY;
+			setWidth(maxX - minX);
+			setHeight(maxY - minY);
 		}
 	}
 
 	@Override
-	public boolean hit(float x, float y) {
-		return hitAll || super.hit(x, y);
+	public Actor hit(float x, float y, boolean touchable) {
+		return hitAll ? this : super.hit(x, y, touchable);
+	}
+
+	public boolean isHitAll() {
+		return hitAll;
 	}
 }
