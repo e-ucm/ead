@@ -40,8 +40,11 @@ import com.badlogic.gdx.ApplicationListener;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL20;
+import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.PolygonSpriteBatch;
+import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.graphics.glutils.ShaderProgram;
+import com.badlogic.gdx.math.Affine2;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.utils.viewport.ScreenViewport;
 import es.eucm.ead.editor.control.Controller;
@@ -70,6 +73,8 @@ public class EditorApplicationListener implements ApplicationListener {
 	 */
 	protected Controller controller;
 
+	private PolygonSpriteBatch batch;
+
 	public EditorApplicationListener(Platform platform) {
 		this.platform = platform;
 	}
@@ -88,7 +93,21 @@ public class EditorApplicationListener implements ApplicationListener {
 	}
 
 	protected Stage createStage() {
-		return new Stage(new ScreenViewport(), new PolygonSpriteBatch());
+		batch = new PolygonSpriteBatch(2500) {
+			final int MAX = 2500 * 5;
+
+			@Override
+			public void draw(Texture texture, float[] spriteVertices,
+					int offset, int count) {
+				while (count > MAX) {
+					super.draw(texture, spriteVertices, offset, MAX);
+					offset += MAX;
+					count -= MAX;
+				}
+				super.draw(texture, spriteVertices, offset, count);
+			}
+		};
+		return new Stage(new ScreenViewport(), batch);
 	}
 
 	protected Controller buildController() {
@@ -126,6 +145,8 @@ public class EditorApplicationListener implements ApplicationListener {
 	@Override
 	public void dispose() {
 		stage.dispose();
+		batch.dispose();
 		controller.exit();
 	}
+
 }

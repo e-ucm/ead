@@ -36,32 +36,25 @@
  */
 package es.eucm.ead.editor.view.widgets.galleries;
 
-import com.badlogic.gdx.graphics.Pixmap;
 import com.badlogic.gdx.graphics.Texture;
-import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.Touchable;
 import com.badlogic.gdx.scenes.scene2d.actions.Actions;
 import com.badlogic.gdx.scenes.scene2d.ui.Button;
-import com.badlogic.gdx.scenes.scene2d.ui.Image;
 import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import es.eucm.ead.editor.control.Controller;
 import es.eucm.ead.editor.control.actions.editor.ExecuteWorker;
-import es.eucm.ead.editor.control.actions.editor.Play;
 import es.eucm.ead.editor.control.workers.SearchRepo;
 import es.eucm.ead.editor.control.workers.Worker;
 import es.eucm.ead.editor.platform.MokapPlatform;
 import es.eucm.ead.editor.view.SkinConstants;
 import es.eucm.ead.editor.view.drawables.TextureDrawable;
-import es.eucm.ead.editor.view.widgets.RepoTile;
 import es.eucm.ead.editor.view.widgets.ScrollPane;
 import es.eucm.ead.editor.view.widgets.Tile;
 import es.eucm.ead.editor.view.widgets.WidgetBuilder;
-import es.eucm.ead.editor.view.widgets.layouts.Gallery.Cell;
 import es.eucm.ead.editor.view.widgets.layouts.LinearLayout;
 import es.eucm.ead.engine.gdx.URLTextureLoader;
-import es.eucm.ead.schema.editor.components.repo.RepoCategories;
 import es.eucm.ead.schema.editor.components.repo.RepoElement;
 import es.eucm.ead.schema.editor.components.repo.response.SearchResponse;
 import es.eucm.ead.schemax.ModelStructure;
@@ -184,22 +177,5 @@ public class CategoryRepository extends CategoryLibrary implements
 						.getLibraryManager()
 						.getRepoElementLibraryFolder((RepoElement) id)
 						.child(ModelStructure.THUMBNAIL_FILE)), this);
-	}
-
-	@Override
-	protected void prepareGalleryItem(Actor actor, Object id) {
-		final RepoElement elem = (RepoElement) id;
-		if (elem.getCategoryList().contains(RepoCategories.MOKAPS, true)) {
-			actor.addListener(new RepoTile.RepoTileListener() {
-				@Override
-				public void clickedInLibrary(RepoTileEvent event) {
-					controller.action(Play.class,
-							controller.getLibraryManager()
-									.getRepoElementLibraryFolder(elem).file()
-									.getAbsolutePath()
-									+ "/" + ModelStructure.CONTENTS_FOLDER);
-				}
-			});
-		}
 	}
 }

@@ -39,27 +39,36 @@ package es.eucm.ead.editor.view.widgets.galleries.gallerieswithcategories;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.EventListener;
+import com.badlogic.gdx.scenes.scene2d.InputEvent;
+import com.badlogic.gdx.scenes.scene2d.ui.Button;
 import com.badlogic.gdx.scenes.scene2d.ui.Container;
 import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
+import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.utils.Array;
 import es.eucm.ead.editor.control.Controller;
+import es.eucm.ead.editor.control.actions.editor.CopyProjectToWorkspace;
 import es.eucm.ead.editor.control.actions.editor.ExecuteWorker;
+import es.eucm.ead.editor.control.actions.editor.OpenProject;
 import es.eucm.ead.editor.control.actions.editor.Play;
+import es.eucm.ead.editor.control.background.BackgroundExecutor;
 import es.eucm.ead.editor.control.workers.LoadLibraryEntities;
 import es.eucm.ead.editor.control.workers.Worker;
 import es.eucm.ead.editor.view.SkinConstants;
+import es.eucm.ead.editor.view.widgets.Tile;
 import es.eucm.ead.editor.view.widgets.WidgetBuilder;
-import es.eucm.ead.editor.view.widgets.galleries.basegalleries.ThumbnailsGallery;
+import es.eucm.ead.editor.view.widgets.galleries.ContextMenuGallery;
 import es.eucm.ead.schema.editor.components.repo.RepoCategories;
 import es.eucm.ead.schema.editor.components.repo.RepoElement;
 import es.eucm.ead.schema.editor.components.repo.response.SearchResponse;
-import es.eucm.ead.schemax.ModelStructure;
 
-public class MyLibraryGallery extends ThumbnailsGallery implements
-		Worker.WorkerListener {
+public class MyLibraryGallery extends ContextMenuGallery implements
+		Worker.WorkerListener,
+		BackgroundExecutor.BackgroundTaskListener<String> {
 
 	protected Array<CategoryButton> categories;
+
+	private RepoElement longPressedMokap;
 
 	protected Controller controller;
 
@@ -67,10 +76,8 @@ public class MyLibraryGallery extends ThumbnailsGallery implements
 
 	protected int count;
 
-	public MyLibraryGallery(float rows, int columns, Controller controller) {
-		super(rows, columns, controller.getApplicationAssets(), controller
-				.getApplicationAssets().getSkin(), controller
-				.getApplicationAssets().getI18N());
+	public MyLibraryGallery(float rows, int columns, final Controller controller) {
+		super(rows, columns, controller.getApplicationAssets(), controller, "");
 
 		this.controller = controller;
 		this.categories = new Array<CategoryButton>();
@@ -80,6 +87,54 @@ public class MyLibraryGallery extends ThumbnailsGallery implements
 		this.count = 0;
 
 		searchEnabled = false;
+		Button edit = WidgetBuilder.button(SkinConstants.IC_EDIT,
+				i18N.m("edit"), SkinConstants.STYLE_CONTEXT);
+		edit.addListener(new ClickListener() {
+			@Override
+			public void clicked(InputEvent event, float x, float y) {
+				if (longPressedMokap != null) {
+					controller.action(
+							CopyProjectToWorkspace.class,
+							MyLibraryGallery.this,
+							controller
+									.getLibraryManager()
+									.getRepoElementContentsFolder(
+											longPressedMokap).path());
+				}
+			}
+		});
+
+		Button play = WidgetBuilder.button(SkinConstants.IC_PLAY,
+				i18N.m("play"), SkinConstants.STYLE_CONTEXT);
+		play.addListener(new ClickListener() {
+			@Override
+			public void clicked(InputEvent event, float x, float y) {
+				if (longPressedMokap != null) {
+					controller.action(
+							Play.class,
+							controller
+									.getLibraryManager()
+									.getRepoElementContentsFolder(
+											longPressedMokap).path());
+				}
+			}
+		});
+
+		setContextMenu(edit, play);
+	}
+
+	@Override
+	protected boolean tileHasContext(Tile tile) {
+		longPressedMokap = null;
+		Object repoElem = tile.getUserObject();
+		if (repoElem instanceof RepoElement) {
+			RepoElement repoElement = (RepoElement) repoElem;
+			if (controller.getLibraryManager().isDownloaded(repoElement)) {
+				longPressedMokap = repoElement;
+				return true;
+			}
+		}
+		return false;
 	}
 
 	public Actor addCategory(String name, String icon, String categoryName,
@@ -197,21 +252,16 @@ public class MyLibraryGallery extends ThumbnailsGallery implements
 			RepoElement selected = (RepoElement) id;
 			if (selected.getCategoryList()
 					.contains(RepoCategories.MOKAPS, true)) {
-				WidgetBuilder
-						.actionsOnClick(
-								actor,
-								new Class[] { Play.class },
-								new Object[][] {
-										new Object[] { controller
-												.getLibraryManager()
-												.getRepoElementLibraryFolder(
-														(RepoElement) id)
-												.file().getAbsolutePath()
-												+ "/"
-												+ ModelStructure.CONTENTS_FOLDER },
-										new Object[] {} });
+				WidgetBuilder.actionOnClick(actor, Play.class,
+						controller.getLibraryManager()
+								.getRepoElementContentsFolder(selected).path());
+				actor.setUserObject(selected);
 			}
 		}
 	}
 
+	@Override
+	public void done(BackgroundExecutor backgroundExecutor, String result) {
+		controller.action(OpenProject.class, result);
+	}
 }
