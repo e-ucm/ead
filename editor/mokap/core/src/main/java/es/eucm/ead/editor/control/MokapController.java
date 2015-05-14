@@ -56,8 +56,8 @@ public class MokapController extends Controller {
 
 	private Group loadingImage;
 
-	public static final String[] SCALES = new String[] { "1.0", "1.5",
-			"2.0", "2.5", "3.0", "4.0" };
+	public static final String[] SCALES = new String[] { "1.0", "1.5", "2.0",
+			"2.5", "3.0", "4.0" };
 
 	public MokapController(Platform platform, Files files,
 			final Group rootComponent, final Group modalContainer) {
