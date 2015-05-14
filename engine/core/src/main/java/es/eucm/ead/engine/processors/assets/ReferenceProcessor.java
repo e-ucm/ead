@@ -36,14 +36,14 @@
  */
 package es.eucm.ead.engine.processors.assets;
 
-import com.badlogic.ashley.core.Component;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.scenes.scene2d.Group;
 import es.eucm.ead.engine.EntitiesLoader;
 import es.eucm.ead.engine.GameLoop;
 import es.eucm.ead.engine.assets.Assets.AssetLoadedCallback;
 import es.eucm.ead.engine.assets.GameAssets;
-import es.eucm.ead.engine.components.assets.ReferenceComponent;
+import es.eucm.ead.engine.components.renderers.RendererComponent;
+import es.eucm.ead.engine.entities.actors.EntityGroup;
 import es.eucm.ead.engine.processors.ComponentProcessor;
 import es.eucm.ead.schema.components.Reference;
 import es.eucm.ead.schema.entities.ModelEntity;
@@ -62,26 +62,30 @@ public class ReferenceProcessor extends ComponentProcessor<Reference> {
 	}
 
 	@Override
-	public Component getComponent(Reference reference) {
+	public RendererComponent getComponent(Reference reference) {
 
-		String id = getLibraryPath() + reference.getFolder()
+		String id = getLibraryPath()
+				+ (reference.getFolder() == null ? "" : reference.getFolder())
 				+ reference.getEntity();
-		ReferenceComponent referenceComponent = gameLoop
-				.createComponent(ReferenceComponent.class);
-
+		RendererComponent rendererComponent = gameLoop
+				.createComponent(RendererComponent.class);
+		EntityGroup refRoot = new EntityGroup();
+		refRoot.setName(reference.getFolder());
+		rendererComponent.setRenderer(refRoot);
 		assets.get(id, Object.class, new ReferenceLoadedCallback(reference,
-				referenceComponent));
-		return referenceComponent;
+				rendererComponent));
+
+		return rendererComponent;
 	}
 
-	private void set(Reference reference, ReferenceComponent component,
+	private void set(Reference reference, RendererComponent renderer,
 			ModelEntity entity) {
-		String referenceLoadingPath = reference.getFolder()
-				+ ModelStructure.CONTENTS_FOLDER;
+		String referenceLoadingPath = (reference.getFolder() == null ? ""
+				: reference.getFolder()) + ModelStructure.CONTENTS_FOLDER;
 		assets.setReferencePath(getLibraryPath() + referenceLoadingPath);
 		Group group = loader.toEngineEntity(entity).getGroup();
 		assets.setReferencePath(null);
-		component.set(group, gameLoop);
+		renderer.getEntityGroup().addActor(group);
 	}
 
 	protected String getLibraryPath() {
@@ -93,17 +97,17 @@ public class ReferenceProcessor extends ComponentProcessor<Reference> {
 
 		private Reference reference;
 
-		private ReferenceComponent component;
+		private RendererComponent renderer;
 
 		public ReferenceLoadedCallback(Reference reference,
-				ReferenceComponent component) {
+				RendererComponent renderer) {
 			this.reference = reference;
-			this.component = component;
+			this.renderer = renderer;
 		}
 
 		@Override
 		public void loaded(String fileName, Object asset) {
-			set(reference, component, (ModelEntity) asset);
+			set(reference, renderer, (ModelEntity) asset);
 		}
 
 		@Override
