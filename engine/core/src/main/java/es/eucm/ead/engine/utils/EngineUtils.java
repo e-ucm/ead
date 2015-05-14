@@ -42,9 +42,8 @@ import com.badlogic.gdx.math.Matrix3;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.Group;
-import com.badlogic.gdx.scenes.scene2d.utils.Layout;
 import com.badlogic.gdx.utils.Array;
-
+import com.badlogic.gdx.utils.Pools;
 import es.eucm.ead.engine.assets.Assets;
 import es.eucm.ead.engine.entities.EngineEntity;
 import es.eucm.ead.engine.variables.VariablesManager;
@@ -52,9 +51,6 @@ import es.eucm.ead.schema.data.Parameter;
 import es.eucm.ead.schema.data.Parameters;
 
 public class EngineUtils {
-
-	private static final Vector2 tmp1 = new Vector2(), tmp2 = new Vector2(),
-			tmp3 = new Vector2(), tmp4 = new Vector2(), tmp5 = new Vector2();
 
 	private static final Matrix3 tmpMatrix = new Matrix3();
 
@@ -152,6 +148,21 @@ public class EngineUtils {
 	}
 
 	/**
+	 * Calculate the bounds of the possible children of the given actor. If
+	 * actor has no children, then resultOrigin and resultSize are set to
+	 * actor's bounds.
+	 */
+	public static void calculateBounds(Actor actor, Vector2 resultOrigin,
+			Vector2 resultSize) {
+		resultOrigin.set(0, 0);
+		resultSize.set(actor.getWidth(), actor.getHeight());
+		if (actor instanceof Group && ((Group) actor).getChildren().size > 0) {
+			calculateBounds(((Group) actor).getChildren(), resultOrigin,
+					resultSize);
+		}
+	}
+
+	/**
 	 * Calculate the bounds of the given actors as a group
 	 * 
 	 * @param actors
@@ -169,29 +180,45 @@ public class EngineUtils {
 			return;
 		}
 
+		Vector2 origin = Pools.obtain(Vector2.class);
+		Vector2 size = Pools.obtain(Vector2.class);
+		Vector2 leftTop = Pools.obtain(Vector2.class);
+		Vector2 rightBottom = Pools.obtain(Vector2.class);
 		float minX = Float.POSITIVE_INFINITY;
 		float minY = Float.POSITIVE_INFINITY;
 		float maxX = Float.NEGATIVE_INFINITY;
 		float maxY = Float.NEGATIVE_INFINITY;
 		for (Actor actor : actors) {
-			tmp1.set(0, 0);
-			tmp2.set(actor.getWidth(), 0);
-			tmp3.set(0, actor.getHeight());
-			tmp4.set(actor.getWidth(), actor.getHeight());
-			actor.localToParentCoordinates(tmp1);
-			actor.localToParentCoordinates(tmp2);
-			actor.localToParentCoordinates(tmp3);
-			actor.localToParentCoordinates(tmp4);
+			calculateBounds(actor, origin, size);
+			size.add(origin);
+			leftTop.set(origin.x, size.y);
+			rightBottom.set(size.x, origin.y);
+			actor.localToParentCoordinates(origin);
+			actor.localToParentCoordinates(size);
+			actor.localToParentCoordinates(leftTop);
+			actor.localToParentCoordinates(rightBottom);
 
-			minX = Math.min(minX, Math.min(tmp1.x,
-					Math.min(tmp2.x, Math.min(tmp3.x, tmp4.x))));
-			minY = Math.min(minY, Math.min(tmp1.y,
-					Math.min(tmp2.y, Math.min(tmp3.y, tmp4.y))));
-			maxX = Math.max(maxX, Math.max(tmp1.x,
-					Math.max(tmp2.x, Math.max(tmp3.x, tmp4.x))));
-			maxY = Math.max(maxY, Math.max(tmp1.y,
-					Math.max(tmp2.y, Math.max(tmp3.y, tmp4.y))));
+			minX = Math.min(
+					minX,
+					Math.min(origin.x, Math.min(size.x,
+							Math.min(leftTop.x, rightBottom.x))));
+			minY = Math.min(
+					minY,
+					Math.min(origin.y, Math.min(size.y,
+							Math.min(leftTop.y, rightBottom.y))));
+			maxX = Math.max(
+					maxX,
+					Math.max(origin.x, Math.max(size.x,
+							Math.max(leftTop.x, rightBottom.x))));
+			maxY = Math.max(
+					maxY,
+					Math.max(origin.y, Math.max(size.y,
+							Math.max(leftTop.y, rightBottom.y))));
 		}
+		Pools.free(origin);
+		Pools.free(size);
+		Pools.free(leftTop);
+		Pools.free(rightBottom);
 		resultOrigin.set(minX, minY);
 		resultSize.set(maxX - minX, maxY - minY);
 	}
@@ -209,37 +236,36 @@ public class EngineUtils {
 			return;
 		}
 
+		Vector2 origin = Pools.obtain(Vector2.class);
+		Vector2 size = Pools.obtain(Vector2.class);
+		Vector2 tmp3 = Pools.obtain(Vector2.class);
+		Vector2 tmp4 = Pools.obtain(Vector2.class);
+
+		calculateBounds(group.getChildren(), origin, size);
+
+		/*
+		 * minX and minY are the new origin (new 0, 0), so everything inside the
+		 * group must be translated that much.
+		 */
 		for (Actor actor : group.getChildren()) {
-			if (actor instanceof Group) {
-				adjustGroup(actor);
-			} else if (actor instanceof Layout) {
-				((Layout) actor).pack();
-			}
+			actor.setPosition(actor.getX() - origin.x, actor.getY() - origin.y);
 		}
 
-		calculateBounds(group.getChildren(), tmp1, tmp2);
+		/*
+		 * Now, we calculate the current origin (0, 0) and the new origin (minX,
+		 * minY), and group is translated by that difference.
+		 */
+		group.localToParentCoordinates(tmp3.set(0, 0));
+		group.localToParentCoordinates(tmp4.set(origin.x, origin.y));
+		tmp4.sub(tmp3);
+		group.setBounds(group.getX() + tmp4.x, group.getY() + tmp4.y, size.x,
+				size.y);
+		group.setOrigin(size.x / 2.0f, size.y / 2.0f);
 
-		if (tmp1.x != 0 || tmp1.y != 0 || tmp2.x != group.getWidth()
-				|| tmp2.y != group.getHeight()) {
-			/*
-			 * minX and minY are the new origin (new 0, 0), so everything inside
-			 * the group must be translated that much.
-			 */
-			for (Actor actor : group.getChildren()) {
-				actor.setPosition(actor.getX() - tmp1.x, actor.getY() - tmp1.y);
-			}
-
-			/*
-			 * Now, we calculate the current origin (0, 0) and the new origin
-			 * (minX, minY), and group is translated by that difference.
-			 */
-			group.localToParentCoordinates(tmp3.set(0, 0));
-			group.localToParentCoordinates(tmp4.set(tmp1.x, tmp1.y));
-			tmp4.sub(tmp3);
-			group.setBounds(group.getX() + tmp4.x, group.getY() + tmp4.y,
-					tmp2.x, tmp2.y);
-			group.setOrigin(group.getWidth() / 2.0f, group.getHeight() / 2.0f);
-		}
+		Pools.free(origin);
+		Pools.free(size);
+		Pools.free(tmp3);
+		Pools.free(tmp4);
 	}
 
 	/**
@@ -307,6 +333,12 @@ public class EngineUtils {
 		 * that, we ignore the rotation to obtain the final values.
 		 */
 
+		Vector2 tmp1 = Pools.obtain(Vector2.class);
+		Vector2 tmp2 = Pools.obtain(Vector2.class);
+		Vector2 tmp3 = Pools.obtain(Vector2.class);
+		Vector2 tmp4 = Pools.obtain(Vector2.class);
+		Vector2 tmp5 = Pools.obtain(Vector2.class);
+
 		Vector2 o = tmp1.set(origin.x, origin.y);
 		Vector2 t = tmp2.set(tangent.x, tangent.y);
 		Vector2 n = tmp3.set(normal.x, normal.y);
@@ -322,10 +354,23 @@ public class EngineUtils {
 		t.set(vt).add(o);
 		n.set(vn).add(o);
 
-		float a = (t.x - o.x) / actor.getWidth();
-		float c = (t.y - o.y) / actor.getWidth();
-		float b = (n.x - o.x) / actor.getHeight();
-		float d = (n.y - o.y) / actor.getHeight();
+		Vector2 bottomLeft = Pools.obtain(Vector2.class);
+		Vector2 size = Pools.obtain(Vector2.class);
+
+		calculateBounds(actor, bottomLeft, size);
+
+		float a = (t.x - o.x) / size.x;
+		float c = (t.y - o.y) / size.x;
+		float b = (n.x - o.x) / size.y;
+		float d = (n.y - o.y) / size.y;
+
+		Pools.free(tmp1);
+		Pools.free(tmp2);
+		Pools.free(tmp3);
+		Pools.free(tmp4);
+		Pools.free(tmp5);
+		Pools.free(bottomLeft);
+		Pools.free(size);
 
 		// Math.sqrt gives a positive value, but it also have a negatives.
 		// The
@@ -362,17 +407,30 @@ public class EngineUtils {
 	 * same screen transformation in a new group
 	 * 
 	 * @param actor
-	 * @param newGroup
+	 * @param parent
 	 */
-	public static void computeTransformFor(Actor actor, Group newGroup) {
-		Vector2 o = tmp1.set(0, 0);
-		Vector2 t = tmp2.set(actor.getWidth(), 0);
-		Vector2 n = tmp3.set(0, actor.getHeight());
-		actor.localToAscendantCoordinates(newGroup, o);
-		actor.localToAscendantCoordinates(newGroup, t);
-		actor.localToAscendantCoordinates(newGroup, n);
+	public static void computeTransformFor(Actor actor, Group parent) {
+		Vector2 tmp1 = Pools.obtain(Vector2.class);
+		Vector2 tmp2 = Pools.obtain(Vector2.class);
+		Vector2 tmp3 = Pools.obtain(Vector2.class);
+		Vector2 tmp4 = Pools.obtain(Vector2.class);
+		Vector2 tmp5 = Pools.obtain(Vector2.class);
+
+		calculateBounds(actor, tmp4, tmp5);
+		Vector2 o = tmp1.set(tmp4.x, tmp4.y);
+		Vector2 t = tmp2.set(tmp4.x + tmp5.x, tmp4.y);
+		Vector2 n = tmp3.set(tmp4.x, tmp4.y + tmp5.y);
+		actor.localToAscendantCoordinates(parent, o);
+		actor.localToAscendantCoordinates(parent, t);
+		actor.localToAscendantCoordinates(parent, n);
 		actor.setRotation(actor.getRotation() + actor.getParent().getRotation());
 		applyTransformation(actor, o, t, n);
+
+		Pools.free(tmp1);
+		Pools.free(tmp2);
+		Pools.free(tmp3);
+		Pools.free(tmp4);
+		Pools.free(tmp5);
 	}
 
 	/**
