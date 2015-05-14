@@ -75,6 +75,8 @@ public class SpineActor extends EntityGroup {
 	public void setState(String stateName) {
 		if (stateName != null) {
 			state.setAnimation(0, stateName, true);
+			state.apply(skeleton);
+			updateBounds();
 		}
 	}
 
@@ -82,15 +84,20 @@ public class SpineActor extends EntityGroup {
 	public void act(float delta) {
 		if (state != null) {
 			state.update(delta);
-			bounds.update(skeleton, true);
-			boundsActor.setBounds(bounds.getMinX(), bounds.getMinY(),
-					bounds.getWidth(), bounds.getHeight());
+			state.apply(skeleton);
+			updateBounds();
 		}
+	}
+
+	private void updateBounds() {
+		skeleton.updateWorldTransform();
+		bounds.update(skeleton, true);
+		boundsActor.setBounds(bounds.getMinX(), bounds.getMinY(),
+				bounds.getWidth(), bounds.getHeight());
 	}
 
 	@Override
 	public void draw(Batch batch, float parentAlpha) {
-		state.apply(skeleton);
 		skeleton.updateWorldTransform();
 		/*
 		 * batch has to be casted to PolygonSpriteBatch as SkeletonRenderer has
@@ -99,5 +106,10 @@ public class SpineActor extends EntityGroup {
 		 */
 		skeletonRenderer.draw((PolygonSpriteBatch) batch, skeleton);
 		bounds.update(skeleton, true);
+	}
+
+	@Override
+	public Actor hit(float x, float y, boolean touchable) {
+		return bounds.aabbContainsPoint(x, y) ? this : null;
 	}
 }
