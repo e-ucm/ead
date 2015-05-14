@@ -499,15 +499,17 @@ public class GroupEditor extends AbstractWidget {
 	 */
 	public boolean selectLayer(float x, float y) {
 		layersTouched.clear();
+		Vector2 origin = Pools.obtain(Vector2.class);
+		Vector2 size = Pools.obtain(Vector2.class);
 		Vector2 tmp = Pools.obtain(Vector2.class);
 		Polygon polygon = Pools.obtain(Polygon.class);
 
 		for (Actor actor : editedGroup.getChildren()) {
-
+			EngineUtils.calculateBounds(actor, origin, size);
 			int j = 0;
 			for (int i = 0; i < 4; i++) {
-				tmp.set(i == 0 || i == 3 ? 0 : actor.getWidth(), i > 1 ? 0
-						: actor.getHeight());
+				tmp.set(i == 0 || i == 3 ? origin.x : origin.x + size.x,
+						i > 1 ? origin.y : origin.y + size.y);
 				actor.localToAscendantCoordinates(this, tmp);
 				points[j++] = tmp.x;
 				points[j++] = tmp.y;
@@ -526,6 +528,8 @@ public class GroupEditor extends AbstractWidget {
 		}
 		Pools.free(polygon);
 		Pools.free(tmp);
+		Pools.free(origin);
+		Pools.free(size);
 		if (layersTouched.size > 0) {
 			showLayerSelector(x, y);
 			return true;

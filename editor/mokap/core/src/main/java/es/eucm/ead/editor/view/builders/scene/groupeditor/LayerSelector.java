@@ -37,6 +37,7 @@
 package es.eucm.ead.editor.view.builders.scene.groupeditor;
 
 import com.badlogic.gdx.graphics.g2d.Batch;
+import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.Group;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
@@ -49,8 +50,11 @@ import es.eucm.ead.editor.view.builders.scene.groupeditor.GroupEditor.GroupEdito
 import es.eucm.ead.engine.gdx.AbstractWidget;
 import es.eucm.ead.editor.view.widgets.ContextMenu;
 import es.eucm.ead.editor.view.widgets.layouts.LinearLayout;
+import es.eucm.ead.engine.utils.EngineUtils;
 
 public class LayerSelector extends ContextMenu {
+
+	private static Vector2 origin = new Vector2(), size = new Vector2();
 
 	private GroupEditor groupEditor;
 
@@ -144,15 +148,15 @@ public class LayerSelector extends ContextMenu {
 			Group parent = actor.getParent();
 			int zIndex = actor.getZIndex();
 
+			EngineUtils.calculateBounds(actor, origin, size);
+
 			float scaleX = (getWidth() - AbstractWidget.cmToXPixels(PADDING) * 2)
-					/ actor.getWidth();
+					/ size.x;
 			float scaleY = (getHeight() - AbstractWidget.cmToYPixels(PADDING) * 2)
-					/ actor.getHeight();
+					/ size.y;
 			float scale = Math.min(scaleX, scaleY);
-			float deltaX = (actor.getWidth() * scaleX - actor.getWidth()
-					* scale) / 2.0f;
-			float deltaY = (actor.getHeight() * scaleY - actor.getHeight()
-					* scale) / 2.0f;
+			float deltaX = (size.x * scaleX - size.x * scale) / 2.0f;
+			float deltaY = (size.y * scaleY - size.y * scale) / 2.0f;
 
 			actor.setOrigin(0, 0);
 			actor.setPosition(getX() + AbstractWidget.cmToXPixels(PADDING)
@@ -162,8 +166,8 @@ public class LayerSelector extends ContextMenu {
 			actor.setScale(scale, scale);
 
 			container.setActor(actor);
-
 			actor.draw(batch, parentAlpha);
+			container.setActor(null);
 			parent.addActorAt(zIndex, actor);
 
 			actor.setPosition(x, y);
