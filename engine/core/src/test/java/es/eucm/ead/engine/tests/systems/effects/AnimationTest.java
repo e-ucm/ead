@@ -36,18 +36,7 @@
  */
 package es.eucm.ead.engine.tests.systems.effects;
 
-import static org.junit.Assert.assertTrue;
-
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Map.Entry;
-
-import org.junit.Before;
-import org.junit.Test;
-
-import com.badlogic.gdx.scenes.scene2d.Group;
 import com.badlogic.gdx.utils.Array;
-
 import es.eucm.ead.engine.EngineTest;
 import es.eucm.ead.engine.GameLoop;
 import es.eucm.ead.engine.entities.EngineEntity;
@@ -91,6 +80,14 @@ import es.eucm.ead.schema.effects.RotateEffect;
 import es.eucm.ead.schema.effects.ScaleEffect;
 import es.eucm.ead.schema.effects.TimedEffect;
 import es.eucm.ead.schema.effects.TrackEffect;
+import org.junit.Before;
+import org.junit.Test;
+
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Map.Entry;
+
+import static org.junit.Assert.assertTrue;
 
 public class AnimationTest extends EngineTest implements MockEffectListener {
 
@@ -191,7 +188,6 @@ public class AnimationTest extends EngineTest implements MockEffectListener {
 
 	protected EngineEntity addEntityWithTweens(BaseTween... tweens) {
 		EngineEntity entity = gameLoop.createEntity();
-		entity.setGroup(new Group());
 		for (BaseTween tween : tweens) {
 			entity.add(tweensProcessor.getComponent(tween));
 		}
@@ -312,7 +308,6 @@ public class AnimationTest extends EngineTest implements MockEffectListener {
 
 	public EngineEntity createEntityWithAnimation(Animation animation) {
 		EngineEntity owner = gameLoop.createEntity();
-		owner.setGroup(new Group());
 		owner.add(animationProcessor.getComponent(animation));
 		gameLoop.addEntity(owner);
 		variablesManager.localOwnerVar(owner);
