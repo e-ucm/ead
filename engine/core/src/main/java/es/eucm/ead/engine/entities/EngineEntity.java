@@ -60,38 +60,28 @@ public class EngineEntity extends Entity implements Poolable {
 
 	private ModelEntity modelEntity;
 
-	private Group group;
+	private EntityGroup group;
 
 	private GameLoop gameLoop;
-
-	private ShaderComponent shader;
 
 	public EngineEntity(GameLoop gameLoop) {
 		this.gameLoop = gameLoop;
 	}
 
 	public void setShader(ShaderComponent shader) {
-		this.shader = shader;
-		if (this.group instanceof EntityGroup) {
-			((EntityGroup) this.group).setShader(shader);
-		}
+		this.group.setShader(shader);
 	}
 
-	public void setGroup(Group group) {
-		if (this.group != null) {
-			this.group.setUserObject(null);
-			this.group.clearListeners();
-		}
-		group.setUserObject(this);
-		this.group = group;
-		if (this.group instanceof EntityGroup) {
-			((EntityGroup) this.group).setShader(shader);
-		}
-		readModelEntity();
+	public void addRenderer(Actor renderer) {
+		getGroup().addActor(renderer);
 		updateBoundingArea();
 	}
 
 	public Group getGroup() {
+		if (group == null) {
+			group = new EntityGroup();
+			group.setUserObject(this);
+		}
 		return group;
 	}
 
@@ -105,6 +95,7 @@ public class EngineEntity extends Entity implements Poolable {
 	}
 
 	private void readModelEntity() {
+		Group group = getGroup();
 		if (group != null && modelEntity != null) {
 			group.setName(modelEntity.getName());
 			group.setPosition(modelEntity.getX(), modelEntity.getY());
@@ -136,7 +127,6 @@ public class EngineEntity extends Entity implements Poolable {
 			group = null;
 		}
 		modelEntity = null;
-		shader = null;
 	}
 
 	@Override

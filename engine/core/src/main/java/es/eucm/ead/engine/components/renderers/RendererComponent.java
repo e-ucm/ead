@@ -37,78 +37,33 @@
 package es.eucm.ead.engine.components.renderers;
 
 import com.badlogic.ashley.core.Component;
-import com.badlogic.gdx.graphics.g2d.Batch;
-import com.badlogic.gdx.math.Polygon;
-import com.badlogic.gdx.utils.Array;
-import com.badlogic.gdx.utils.Pool;
+import com.badlogic.gdx.utils.Pool.Poolable;
+import es.eucm.ead.engine.entities.actors.EntityGroup;
 
 /**
  * Base class for renderer components
  */
-public abstract class RendererComponent extends Component implements
-		Pool.Poolable {
+public class RendererComponent extends Component implements Poolable {
 
-	/**
-	 * Updates the renderer
-	 * 
-	 * @param delta
-	 *            time since last update
-	 */
-	public void act(float delta) {
+	private EntityGroup renderer;
 
+	public void setRenderer(EntityGroup renderer) {
+		this.renderer = renderer;
 	}
 
-	/**
-	 * If the renderer component keeps some sort of state (e.g. current frame),
-	 * this makes it go back to the original state as when it was created.
-	 */
+	public EntityGroup getEntityGroup() {
+		return renderer;
+	}
+
 	public void restart() {
-
-	}
-
-	/**
-	 * Draws the renderer
-	 */
-	public abstract void draw(Batch batch);
-
-	/**
-	 * @return current width of the renderer
-	 */
-	public abstract float getWidth();
-
-	/**
-	 * @return current height of the renderer
-	 */
-	public abstract float getHeight();
-
-	/**
-	 * @return the polygons representing this renderer contour, used for hits
-	 *         checking
-	 */
-	public abstract Array<Polygon> getCollider();
-
-	/**
-	 * @param x
-	 *            coordinate in the renderer system
-	 * @param y
-	 *            coordinate in the renderer system
-	 * @return if the given point hits the renderer
-	 */
-	public boolean hit(float x, float y) {
-		if (x >= 0 && x < getWidth() && y >= 0 && y < getHeight()) {
-			Array<Polygon> collider = getCollider();
-			if (collider != null && collider.size > 0) {
-				int polygonsHit = 0;
-				for (Polygon p : collider) {
-					if (p.contains(x, y)) {
-						polygonsHit++;
-					}
-				}
-				return polygonsHit % 2 == 1;
-			} else {
-				return true;
-			}
+		if (getEntityGroup() != null) {
+			getEntityGroup().restart();
 		}
-		return false;
 	}
+
+	@Override
+	public void reset() {
+		renderer = null;
+	}
+
 }

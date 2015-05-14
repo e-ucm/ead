@@ -38,13 +38,10 @@ package es.eucm.ead.engine;
 
 import com.badlogic.ashley.core.Component;
 import com.badlogic.ashley.core.Entity;
-import com.badlogic.gdx.scenes.scene2d.Group;
-import com.badlogic.gdx.scenes.scene2d.Touchable;
 import com.badlogic.gdx.utils.ObjectMap;
 import es.eucm.ead.engine.assets.Assets.AssetLoadedCallback;
 import es.eucm.ead.engine.assets.GameAssets;
 import es.eucm.ead.engine.entities.EngineEntity;
-import es.eucm.ead.engine.entities.actors.EntityGroup;
 import es.eucm.ead.schema.components.ModelComponent;
 import es.eucm.ead.schema.entities.ModelEntity;
 
@@ -134,11 +131,6 @@ public class EntitiesLoader implements AssetLoadedCallback<Object> {
 		}
 		gameLoop.addEntity(entity);
 
-		if (entity.getGroup() == null) {
-			Group container = new EntityGroup();
-			container.setTouchable(Touchable.enabled);
-			entity.setGroup(container);
-		}
 		for (ModelEntity child : modelEntity.getChildren()) {
 			entity.getGroup().addActor(toEngineEntity(child).getGroup());
 		}

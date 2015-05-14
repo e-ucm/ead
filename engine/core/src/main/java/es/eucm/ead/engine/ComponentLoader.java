@@ -38,21 +38,15 @@ package es.eucm.ead.engine;
 
 import com.badlogic.ashley.core.Component;
 import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.scenes.scene2d.Actor;
-import com.badlogic.gdx.scenes.scene2d.Group;
-import com.badlogic.gdx.scenes.scene2d.ui.Container;
 import com.badlogic.gdx.utils.Pools;
 import com.badlogic.gdx.utils.SerializationException;
 import com.badlogic.gdx.utils.reflect.ClassReflection;
 import com.badlogic.gdx.utils.reflect.ReflectionException;
 import es.eucm.ead.engine.assets.GameAssets;
-import es.eucm.ead.engine.components.BackgroundComponent;
 import es.eucm.ead.engine.components.MultiComponent;
 import es.eucm.ead.engine.components.ShaderComponent;
-import es.eucm.ead.engine.components.controls.ControlComponent;
 import es.eucm.ead.engine.components.renderers.RendererComponent;
 import es.eucm.ead.engine.entities.EngineEntity;
-import es.eucm.ead.engine.entities.actors.RendererActor;
 import es.eucm.ead.engine.processors.ComponentProcessor;
 import es.eucm.ead.engine.utils.EngineUtils;
 import es.eucm.ead.engine.variables.VariablesManager;
@@ -205,15 +199,7 @@ public class ComponentLoader {
 	}
 
 	/**
-	 * Adds the given engine component to the entity. It does also some
-	 * additional processing for special components:
-	 * <ul>
-	 * <li><strong>{@link RendererComponent}</strong>: Creates a special actor (
-	 * {@link RendererActor}) to the entity's group which actually stores the
-	 * renderer.</li>
-	 * <li><strong>{@link ControlComponent} Adds the control actor to the entity
-	 * group</li>
-	 * </ul>
+	 * Adds the given engine component to the entity.
 	 */
 	public void addComponent(EngineEntity entity, Component c) {
 		if (c != null) {
@@ -225,20 +211,7 @@ public class ComponentLoader {
 				entity.add(c);
 				// Special cases
 				if (c instanceof RendererComponent) {
-					RendererComponent rendererComponent = (RendererComponent) c;
-					RendererActor renderer = Pools.obtain(RendererActor.class);
-					renderer.setRenderer(rendererComponent);
-					entity.setGroup(renderer);
-				} else if (c instanceof ControlComponent) {
-					Actor control = ((ControlComponent) c).getControl();
-					if (control instanceof Group) {
-						entity.setGroup((Group) control);
-					} else {
-						Container<Actor> container = new Container<Actor>(
-								control).fill();
-						container.setTransform(true);
-						entity.setGroup(container);
-					}
+					entity.addRenderer(((RendererComponent) c).getEntityGroup());
 				} else if (c instanceof ShaderComponent) {
 					entity.setShader((ShaderComponent) c);
 				}
