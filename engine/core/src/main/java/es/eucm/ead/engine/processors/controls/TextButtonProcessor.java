@@ -67,8 +67,9 @@ public class TextButtonProcessor extends ComponentProcessor<TextButton> {
 		TextButtonComponent button = gameLoop
 				.createComponent(TextButtonComponent.class);
 		button.setVariablesManager(variablesManager);
-		button.setStyle(new TextButtonStyle(skin.get(component.getStyle(),
-				TextButtonStyle.class)));
+		button.setControl(new com.badlogic.gdx.scenes.scene2d.ui.TextButton("",
+				new TextButtonStyle(skin.get(component.getStyle(),
+						TextButtonStyle.class))));
 		button.setText(gameAssets.getI18N().m(component.getText()));
 
 		I18nTextComponent textComponent = gameLoop

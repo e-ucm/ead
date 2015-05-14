@@ -58,14 +58,9 @@ public class LabelComponent extends TextComponent<Label> {
 
 	@Override
 	protected void updateText(String newText) {
-		label.setText(newText);
-		label.setSize(label.getPrefWidth(), label.getPrefHeight());
-		label.setOrigin(label.getWidth() / 2.0f, label.getHeight() / 2.0f);
-	}
-
-	@Override
-	public Label getControl() {
-		return label;
+		control.setText(newText);
+		control.setSize(control.getPrefWidth(), control.getPrefHeight());
+		control.setOrigin(control.getWidth() / 2.0f, control.getHeight() / 2.0f);
 	}
 
 }

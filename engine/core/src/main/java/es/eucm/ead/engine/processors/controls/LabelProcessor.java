@@ -37,9 +37,9 @@
 package es.eucm.ead.engine.processors.controls;
 
 import com.badlogic.ashley.core.Component;
-
 import com.badlogic.gdx.scenes.scene2d.ui.Label.LabelStyle;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
+import com.badlogic.gdx.utils.Align;
 
 import es.eucm.ead.engine.GameLoop;
 import es.eucm.ead.engine.assets.GameAssets;
@@ -77,7 +77,9 @@ public class LabelProcessor extends ComponentProcessor<Label> {
 			styleCopy.fontColor.set(color.getR(), color.getG(), color.getB(),
 					color.getA());
 		}
-		label.setStyle(styleCopy);
+		label.setControl(new com.badlogic.gdx.scenes.scene2d.ui.Label("",
+				styleCopy));
+		label.getControl().setAlignment(Align.center);
 		label.setText(gameAssets.getI18N().m(component.getText()));
 
 		I18nTextComponent textComponent = gameLoop

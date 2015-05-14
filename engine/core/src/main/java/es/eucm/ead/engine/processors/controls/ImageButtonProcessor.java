@@ -37,18 +37,16 @@
 package es.eucm.ead.engine.processors.controls;
 
 import com.badlogic.ashley.core.Component;
-
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
-import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.ui.ImageButton.ImageButtonStyle;
-
+import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable;
 import es.eucm.ead.engine.GameLoop;
 import es.eucm.ead.engine.assets.Assets;
 import es.eucm.ead.engine.assets.GameAssets;
-import es.eucm.ead.engine.components.controls.ImageButtonComponent;
+import es.eucm.ead.engine.components.controls.ControlComponent;
 import es.eucm.ead.engine.processors.ComponentProcessor;
 import es.eucm.ead.schema.components.controls.ImageButton;
 
@@ -64,13 +62,16 @@ public class ImageButtonProcessor extends ComponentProcessor<ImageButton> {
 	@Override
 	public Component getComponent(ImageButton component) {
 		// Create the component
-		final ImageButtonComponent button = gameLoop
-				.createComponent(ImageButtonComponent.class);
+		ControlComponent controlComponent = gameLoop
+				.createComponent(ControlComponent.class);
 
 		// Load basic skin for the image component
 		Skin skin = gameAssets.getSkin();
 		final ImageButtonStyle imageButtonStyle = new ImageButtonStyle(
 				skin.get(component.getStyle(), ImageButtonStyle.class));
+		com.badlogic.gdx.scenes.scene2d.ui.ImageButton button = new com.badlogic.gdx.scenes.scene2d.ui.ImageButton(
+				imageButtonStyle);
+		controlComponent.setControl(button);
 
 		// If the imageUp is defined, load it and add it to style
 		if (component.getImageUp() != null) {
@@ -80,7 +81,6 @@ public class ImageButtonProcessor extends ComponentProcessor<ImageButton> {
 						public void loaded(String fileName, Texture asset) {
 							imageButtonStyle.imageUp = new TextureRegionDrawable(
 									new TextureRegion(asset));
-							button.set(imageButtonStyle);
 						}
 
 						@Override
@@ -100,7 +100,6 @@ public class ImageButtonProcessor extends ComponentProcessor<ImageButton> {
 						public void loaded(String fileName, Texture asset) {
 							imageButtonStyle.imageDown = new TextureRegionDrawable(
 									new TextureRegion(asset));
-							button.set(imageButtonStyle);
 						}
 
 						@Override
@@ -111,9 +110,6 @@ public class ImageButtonProcessor extends ComponentProcessor<ImageButton> {
 						}
 					});
 		}
-
-		// Set component and return it
-		button.set(imageButtonStyle);
-		return button;
+		return controlComponent;
 	}
 }

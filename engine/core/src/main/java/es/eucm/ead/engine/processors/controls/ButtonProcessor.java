@@ -41,7 +41,7 @@ import com.badlogic.gdx.scenes.scene2d.ui.Button.ButtonStyle;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import es.eucm.ead.engine.GameLoop;
 import es.eucm.ead.engine.assets.GameAssets;
-import es.eucm.ead.engine.components.controls.ButtonComponent;
+import es.eucm.ead.engine.components.controls.ControlComponent;
 import es.eucm.ead.engine.processors.ComponentProcessor;
 import es.eucm.ead.schema.components.controls.Button;
 
@@ -60,10 +60,11 @@ public class ButtonProcessor extends ComponentProcessor<Button> {
 	@Override
 	public Component getComponent(Button component) {
 		Skin skin = gameAssets.getSkin();
-		ButtonComponent button = gameLoop
-				.createComponent(ButtonComponent.class);
-		button.setStyle(new ButtonStyle(skin.get(component.getStyle(),
-				ButtonStyle.class)));
+		ControlComponent button = gameLoop
+				.createComponent(ControlComponent.class);
+		button.setControl(new com.badlogic.gdx.scenes.scene2d.ui.Button(
+				new ButtonStyle(skin.get(component.getStyle(),
+						ButtonStyle.class))));
 		return button;
 	}
 }
