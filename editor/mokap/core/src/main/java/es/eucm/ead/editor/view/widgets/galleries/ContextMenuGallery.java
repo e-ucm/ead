@@ -111,11 +111,13 @@ public abstract class ContextMenuGallery extends ThumbnailsGallery {
 							hit(x, y, true));
 					if (actor instanceof Cell) {
 						Tile tile = (Tile) ((Cell) actor).getActor();
-						tileLongPressed(tile.getName());
-						VECTOR.set(x, y);
-						localToStageCoordinates(VECTOR);
-						controller.action(ShowModal.class, contextMenu,
-								VECTOR.x, VECTOR.y);
+						if (tileHasContext(tile)) {
+							tileLongPressed(tile.getName());
+							VECTOR.set(x, y);
+							localToStageCoordinates(VECTOR);
+							controller.action(ShowModal.class, contextMenu,
+									VECTOR.x, VECTOR.y);
+						}
 					}
 				}
 			}
@@ -127,6 +129,15 @@ public abstract class ContextMenuGallery extends ThumbnailsGallery {
 			}
 		});
 
+	}
+
+	/**
+	 * 
+	 * @param tile
+	 * @return true if the ContextMenu should be displayed on the tile.
+	 */
+	protected boolean tileHasContext(Tile tile) {
+		return true;
 	}
 
 	/**

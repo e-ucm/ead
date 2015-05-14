@@ -45,8 +45,7 @@ import com.badlogic.gdx.scenes.scene2d.ui.Button;
 import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import es.eucm.ead.editor.control.Controller;
-import es.eucm.ead.editor.control.actions.editor.ExecuteWorker;
-import es.eucm.ead.editor.control.actions.editor.Play;
+import es.eucm.ead.editor.control.actions.editor.*;
 import es.eucm.ead.editor.control.workers.SearchRepo;
 import es.eucm.ead.editor.platform.MokapPlatform;
 import es.eucm.ead.editor.view.SkinConstants;
@@ -161,11 +160,10 @@ public class CommunityGallery extends MyLibraryGallery {
 				public void clickedInLibrary(RepoTileEvent event) {
 					controller.action(Play.class,
 							controller.getLibraryManager()
-									.getRepoElementLibraryFolder(elem).file()
-									.getAbsolutePath()
-									+ "/" + ModelStructure.CONTENTS_FOLDER);
+									.getRepoElementContentsFolder(elem).path());
 				}
 			});
+			actor.setUserObject(elem);
 		}
 	}
 }

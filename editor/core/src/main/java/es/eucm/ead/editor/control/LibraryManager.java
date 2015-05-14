@@ -191,4 +191,15 @@ public class LibraryManager {
 		}
 		return false;
 	}
+
+	/**
+	 * 
+	 * @param element
+	 * @return the {@link FileHandle} where a the contents of a given
+	 *         {@link RepoElement} should be stored.
+	 */
+	public FileHandle getRepoElementContentsFolder(RepoElement element) {
+		return getRepoElementLibraryFolder(element).child(
+				ModelStructure.CONTENTS_FOLDER);
+	}
 }
