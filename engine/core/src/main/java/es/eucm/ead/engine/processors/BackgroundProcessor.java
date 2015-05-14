@@ -37,19 +37,13 @@
 package es.eucm.ead.engine.processors;
 
 import com.badlogic.ashley.core.Component;
-import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.graphics.glutils.ShaderProgram;
-import com.badlogic.gdx.utils.ObjectMap;
+import com.badlogic.gdx.scenes.scene2d.Touchable;
 import es.eucm.ead.engine.EntitiesLoader;
 import es.eucm.ead.engine.GameLoop;
-import es.eucm.ead.engine.assets.GameAssets;
-import es.eucm.ead.engine.components.BackgroundComponent;
-import es.eucm.ead.engine.components.ShaderComponent;
+import es.eucm.ead.engine.components.renderers.RendererComponent;
 import es.eucm.ead.engine.entities.EngineEntity;
-import es.eucm.ead.engine.variables.VariablesManager;
+import es.eucm.ead.engine.entities.actors.EntityGroup;
 import es.eucm.ead.schema.components.Background;
-import es.eucm.ead.schema.components.Shader;
-import es.eucm.ead.schema.data.Parameter;
 
 public class BackgroundProcessor extends ComponentProcessor<Background> {
 
@@ -62,15 +56,14 @@ public class BackgroundProcessor extends ComponentProcessor<Background> {
 
 	@Override
 	public Component getComponent(Background background) {
-		BackgroundComponent backgroundComponent = gameLoop
-				.createComponent(BackgroundComponent.class);
+		RendererComponent backgroundComponent = gameLoop
+				.createComponent(RendererComponent.class);
 
 		EngineEntity engineEntity = entitiesLoader.toEngineEntity(background
 				.getEntity());
 		engineEntity.getGroup().setTransform(false);
-		backgroundComponent.setEngineEntity(engineEntity);
-		backgroundComponent.setGameLoop(gameLoop);
-
+		engineEntity.getGroup().setTouchable(Touchable.disabled);
+		backgroundComponent.setRenderer((EntityGroup) engineEntity.getGroup());
 		return backgroundComponent;
 	}
 }
