@@ -36,25 +36,28 @@
  */
 package es.eucm.ead.editor.view.builders.scene.components;
 
-import com.badlogic.gdx.audio.Music;
+import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.math.Interpolation;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
+import com.badlogic.gdx.scenes.scene2d.actions.Actions;
 import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
+import com.badlogic.gdx.scenes.scene2d.ui.Value;
 import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import es.eucm.ead.editor.control.Controller;
 import es.eucm.ead.editor.control.Selection;
-import es.eucm.ead.editor.control.actions.editor.ShowToast;
+import es.eucm.ead.editor.control.Views;
 import es.eucm.ead.editor.control.actions.model.generic.RemoveFromArray;
 import es.eucm.ead.editor.control.actions.model.generic.SetField;
 import es.eucm.ead.editor.model.Q;
-import es.eucm.ead.editor.platform.MokapPlatform;
-import es.eucm.ead.editor.platform.Platform;
 import es.eucm.ead.editor.utils.ProjectUtils;
 import es.eucm.ead.editor.view.SkinConstants;
+import es.eucm.ead.editor.view.builders.SoundsView;
 import es.eucm.ead.editor.view.widgets.Slider;
 import es.eucm.ead.editor.view.widgets.WidgetBuilder;
 import es.eucm.ead.editor.view.widgets.layouts.LinearLayout;
+import es.eucm.ead.editor.view.widgets.selectors.Selector;
 import es.eucm.ead.schema.components.ModelComponent;
 import es.eucm.ead.schema.components.behaviors.Behavior;
 import es.eucm.ead.schema.components.behaviors.events.Touch;
@@ -64,8 +67,9 @@ import es.eucm.ead.schemax.ComponentIds;
 import es.eucm.ead.schemax.FieldName;
 
 public class SoundEditor extends ComponentEditor<Behavior> implements
-		Platform.FileChooserListener {
+		Selector.SelectorListener<String> {
 
+	private Actor soundSelector;
 	private TextButton soundName;
 	private boolean loop = false;
 	private PlaySound playSound;
@@ -82,12 +86,21 @@ public class SoundEditor extends ComponentEditor<Behavior> implements
 
 		soundName = new TextButton(i18N.m("sound"), controller
 				.getApplicationAssets().getSkin());
+		soundName.getLabel().setEllipsis(true);
+		soundName.getLabelCell().width(Value.percentWidth(0.9f, list));
 		soundName.addListener(new ClickListener() {
 			@Override
 			public void clicked(InputEvent event, float x, float y) {
-				MokapPlatform platform = (MokapPlatform) controller
-						.getPlatform();
-				platform.askForAudio(controller, SoundEditor.this);
+				Views views = controller.getViews();
+				float duration = 0.57f;
+				SoundsView builder = views.getBuilder(SoundsView.class);
+				soundSelector = builder.getView(SoundEditor.this);
+				soundSelector.setX(Gdx.graphics.getWidth());
+				soundSelector.addAction(Actions.moveTo(0, 0, duration,
+						Interpolation.exp5Out));
+				views.addToModalsContainer(soundSelector);
+				views.getViewsContainer().addAction(
+						Actions.delay(duration, Actions.visible(false)));
 			}
 		});
 		slider = new Slider(0, 1, .05f, false, skin);
@@ -166,34 +179,28 @@ public class SoundEditor extends ComponentEditor<Behavior> implements
 		}
 	}
 
-	@Override
-	public void fileChosen(String path, Result result) {
-		if (result == Result.SUCCESS || path == null) {
-			String projectPath = controller.getEditorGameAssets()
-					.copyToProjectIfNeeded(path, Music.class);
-			if (projectPath != null) {
-				if (ProjectUtils.isSupportedAudio(controller
-						.getEditorGameAssets().resolve(projectPath))) {
-					setSoundName(projectPath);
-
-					controller.action(SetField.class, playSound, FieldName.URI,
-							projectPath);
-				} else {
-					controller.action(ShowToast.class,
-							i18N.m("invalid.resource"));
-				}
-			} else {
-				controller.action(ShowToast.class,
-						i18N.m(Result.NOT_FOUND.getI18nKey()));
-			}
-		} else if (result == Result.NOT_FOUND) {
-			controller.action(ShowToast.class, i18N.m(result.getI18nKey()));
-		}
-	}
-
 	private void setSoundName(String uri) {
 		String name = ProjectUtils.getFileName(uri);
 		soundName.setText(name);
 		soundName.setUserObject(uri);
+	}
+
+	@Override
+	public void selected(String selected) {
+		controller.action(SetField.class, playSound, FieldName.URI, selected);
+		setSoundName(selected);
+		hideSelector(soundSelector);
+	}
+
+	@Override
+	public void cancelled() {
+		hideSelector(soundSelector);
+	}
+
+	private void hideSelector(Actor actor) {
+		controller.getViews().getViewsContainer().setVisible(true);
+		actor.addAction(Actions.sequence(Actions.moveTo(
+				Gdx.graphics.getWidth(), 0, 0.57f, Interpolation.exp5Out),
+				Actions.removeActor()));
 	}
 }

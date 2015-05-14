@@ -64,10 +64,12 @@ import es.eucm.ead.editor.utils.Actions2;
 import es.eucm.ead.editor.utils.ProjectUtils;
 import es.eucm.ead.editor.view.Modal;
 import es.eucm.ead.editor.view.SkinConstants;
+import es.eucm.ead.editor.view.builders.SoundsView;
 import es.eucm.ead.editor.view.widgets.Slider;
 import es.eucm.ead.editor.view.widgets.WidgetBuilder;
 import es.eucm.ead.editor.view.widgets.layouts.LinearLayout;
 import es.eucm.ead.editor.view.widgets.modals.ModalContainer;
+import es.eucm.ead.editor.view.widgets.selectors.Selector;
 import es.eucm.ead.engine.I18N;
 import es.eucm.ead.schema.components.ModelComponent;
 import es.eucm.ead.schema.components.behaviors.Behavior;
@@ -78,8 +80,9 @@ import es.eucm.ead.schemax.ComponentIds;
 import es.eucm.ead.schemax.FieldName;
 
 public class ShowMusic extends EditorAction implements
-		Platform.FileChooserListener {
+		Selector.SelectorListener<String> {
 
+	private Actor soundSelector;
 	private Controller controller;
 	private I18N i18N;
 	private PlaySound playSound;
@@ -131,9 +134,17 @@ public class ShowMusic extends EditorAction implements
 		soundName.addListener(new ClickListener() {
 			@Override
 			public void clicked(InputEvent event, float x, float y) {
-				MokapPlatform platform = (MokapPlatform) controller
-						.getPlatform();
-				platform.askForAudio(controller, ShowMusic.this);
+				Views views = controller.getViews();
+				float duration = 0.57f;
+				SoundsView builder = views.getBuilder(SoundsView.class);
+				soundSelector = builder.getView(ShowMusic.this);
+				soundSelector.setX(Gdx.graphics.getWidth());
+				soundSelector.addAction(Actions.moveTo(0, 0, duration,
+						Interpolation.exp5Out));
+				views.addToModalsContainer(soundSelector);
+				views.getViewsContainer().addAction(
+						Actions.delay(duration, Actions.visible(false)));
+
 			}
 		});
 		slider = new Slider(0, 1, .05f, false, skin);
@@ -240,31 +251,6 @@ public class ShowMusic extends EditorAction implements
 		slider.setValue(playSound.getVolume());
 	}
 
-	@Override
-	public void fileChosen(String path, Result result) {
-		if (result == Result.SUCCESS || path == null) {
-			String projectPath = controller.getEditorGameAssets()
-					.copyToProjectIfNeeded(path, Music.class);
-			if (projectPath != null) {
-				if (ProjectUtils.isSupportedAudio(controller
-						.getEditorGameAssets().resolve(projectPath))) {
-
-					controller.action(SetField.class, playSound, FieldName.URI,
-							projectPath);
-					read();
-				} else {
-					controller.action(ShowToast.class,
-							i18N.m("invalid.resource"));
-				}
-			} else {
-				controller.action(ShowToast.class,
-						i18N.m(Result.NOT_FOUND.getI18nKey()));
-			}
-		} else if (result == Result.NOT_FOUND) {
-			controller.action(ShowToast.class, i18N.m(result.getI18nKey()));
-		}
-	}
-
 	private void setSoundName(String uri) {
 		String name = ProjectUtils.getFileName(uri);
 		soundName.setText(name);
@@ -297,5 +283,30 @@ public class ShowMusic extends EditorAction implements
 		public boolean hideAlways() {
 			return false;
 		}
+
+		@Override
+		public boolean hideOnExternalTouch() {
+			return false;
+		}
+	}
+
+	@Override
+	public void selected(String selected) {
+		controller.action(SetField.class, playSound, FieldName.URI, selected);
+		read();
+		hideSelector(soundSelector);
+	}
+
+	@Override
+	public void cancelled() {
+		hideSelector(soundSelector);
+	}
+
+	private void hideSelector(Actor actor) {
+
+		controller.getViews().getViewsContainer().setVisible(true);
+		actor.addAction(Actions.sequence(Actions.moveTo(
+				Gdx.graphics.getWidth(), 0, 0.57f, Interpolation.exp5Out),
+				Actions.removeActor()));
 	}
 }
