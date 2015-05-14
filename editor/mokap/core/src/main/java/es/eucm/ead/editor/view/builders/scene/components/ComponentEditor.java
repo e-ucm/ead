@@ -44,6 +44,7 @@ import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 
+import es.eucm.ead.editor.assets.ApplicationAssets;
 import es.eucm.ead.editor.control.Controller;
 import es.eucm.ead.editor.control.Selection;
 import es.eucm.ead.editor.control.actions.model.generic.RemoveFromArray;
@@ -84,11 +85,12 @@ public abstract class ComponentEditor<T extends ModelComponent> extends
 		list = (LinearLayout) getWidget();
 		this.icon = icon;
 		this.controller = cont;
-		this.i18N = controller.getApplicationAssets().getI18N();
-		this.skin = controller.getApplicationAssets().getSkin();
+		ApplicationAssets applicationAssets = controller.getApplicationAssets();
+		this.i18N = applicationAssets.getI18N();
+		this.skin = applicationAssets.getSkin();
 		this.componentId = componentId;
-		list.background(controller.getApplicationAssets().getSkin()
-				.getDrawable(SkinConstants.DRAWABLE_PAGE_RIGHT));
+		list.background(applicationAssets.getSkin().getDrawable(
+				SkinConstants.DRAWABLE_PAGE_RIGHT));
 
 		Table header = new Table();
 		header.pad(WidgetBuilder.dpToPixels(8), WidgetBuilder.dpToPixels(8), 0,

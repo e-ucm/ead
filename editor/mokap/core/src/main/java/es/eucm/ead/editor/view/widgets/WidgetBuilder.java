@@ -267,7 +267,6 @@ public class WidgetBuilder {
 			throw new IllegalArgumentException(
 					"Icons array needs to have the same length as actions array.");
 		}
-		Skin skin = controller.getApplicationAssets().getSkin();
 
 		CirclesMenu menu = new CirclesMenu(align);
 
