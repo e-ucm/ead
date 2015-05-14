@@ -36,27 +36,10 @@
  */
 package es.eucm.ead.engine.components.renderers.shape;
 
-public class RectangleRendererComponent extends ShapeRendererComponent {
+import es.eucm.ead.engine.components.renderers.ImageActor;
 
-	private float width;
-
-	private float height;
-
-	public void setWidth(float width) {
-		this.width = width;
-	}
-
-	public void setHeight(float height) {
-		this.height = height;
-	}
-
-	@Override
-	public float getWidth() {
-		return width;
-	}
-
-	@Override
-	public float getHeight() {
-		return height;
-	}
+/**
+ * Created by Javier Torrente on 8/06/14.
+ */
+public class ShapeActor extends ImageActor {
 }
