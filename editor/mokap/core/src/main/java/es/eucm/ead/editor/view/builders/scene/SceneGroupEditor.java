@@ -37,7 +37,6 @@
 package es.eucm.ead.editor.view.builders.scene;
 
 import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.math.Interpolation;
 import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Rectangle;
@@ -46,7 +45,6 @@ import com.badlogic.gdx.scenes.scene2d.Group;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.Touchable;
 import com.badlogic.gdx.scenes.scene2d.actions.Actions;
-import com.badlogic.gdx.scenes.scene2d.ui.Container;
 import com.badlogic.gdx.scenes.scene2d.ui.ImageButton;
 import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.scenes.scene2d.ui.Label.LabelStyle;
@@ -55,7 +53,6 @@ import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.Pools;
 import com.badlogic.gdx.utils.Predicate;
-
 import es.eucm.ead.editor.control.Controller;
 import es.eucm.ead.editor.control.MokapController.BackListener;
 import es.eucm.ead.editor.control.Preferences;
@@ -79,11 +76,12 @@ import es.eucm.ead.editor.view.ModelView;
 import es.eucm.ead.editor.view.SkinConstants;
 import es.eucm.ead.editor.view.builders.scene.groupeditor.GroupEditor;
 import es.eucm.ead.editor.view.builders.scene.groupeditor.input.EditStateMachine;
-import es.eucm.ead.engine.gdx.AbstractWidget;
 import es.eucm.ead.editor.view.widgets.WidgetBuilder;
 import es.eucm.ead.engine.EntitiesLoader;
+import es.eucm.ead.engine.components.renderers.ControlActor;
 import es.eucm.ead.engine.entities.EngineEntity;
 import es.eucm.ead.engine.entities.actors.EntityGroup;
+import es.eucm.ead.engine.gdx.AbstractWidget;
 import es.eucm.ead.schema.components.ModelComponent;
 import es.eucm.ead.schema.editor.components.GameData;
 import es.eucm.ead.schema.editor.components.SceneEditState;
@@ -542,7 +540,8 @@ public class SceneGroupEditor extends GroupEditor implements ModelView,
 		public void modelChanged(FieldEvent event) {
 			componentPredicate.setComponent((ModelComponent) event.getTarget());
 			Actor actor = findActor(scene.getGroup(), componentPredicate);
-			Label label = (Label) ((Container) actor).getActor();
+			Label label = (Label) ((ControlActor) ((EntityGroup) actor)
+					.getChildren().get(0)).getControl();
 			Object value = event.getValue();
 
 			if (FieldName.TEXT.equals(event.getField())) {
@@ -555,6 +554,7 @@ public class SceneGroupEditor extends GroupEditor implements ModelView,
 				label.setStyle(controller.getEditorGameAssets().getSkin()
 						.get((String) value, LabelStyle.class));
 			}
+			label.pack();
 			refreshSelectionBox();
 		}
 	}
