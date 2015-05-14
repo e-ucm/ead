@@ -36,24 +36,28 @@
  */
 package es.eucm.ead.editor.components;
 
-import es.eucm.ead.engine.GameLoop;
-import es.eucm.ead.engine.components.renderers.frames.FramesComponent;
+import es.eucm.ead.editor.control.engine.Engine;
+import es.eucm.ead.engine.components.renderers.frames.FramesActor;
 
-public class EditorFramesComponent extends FramesComponent {
+public class EditorFramesActor extends FramesActor {
 
-	private GameLoop gameLoop;
+	private Engine engine;
 
-	public void setGameLoop(GameLoop gameLoop) {
-		this.gameLoop = gameLoop;
+	private boolean running = false;
+
+	public void setEngine(Engine engine) {
+		this.engine = engine;
 	}
 
 	@Override
-	protected Frame getCurrentFrame() {
-		if (!gameLoop.isPlaying()) {
-			if (frames.size > 0) {
-				return frames.get(0);
-			}
+	public void act(float delta) {
+		boolean newRunning = engine.isRunning();
+		if (newRunning != running) {
+			running = newRunning;
+			setCurrentFrame(0);
 		}
-		return super.getCurrentFrame();
+		if (running) {
+			super.act(delta);
+		}
 	}
 }

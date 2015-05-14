@@ -40,7 +40,7 @@ import es.eucm.ead.engine.ComponentLoader;
 import es.eucm.ead.engine.GameLoop;
 import es.eucm.ead.engine.assets.GameAssets;
 import es.eucm.ead.engine.components.renderers.RendererComponent;
-import es.eucm.ead.engine.components.renderers.frames.FramesComponent;
+import es.eucm.ead.engine.components.renderers.frames.FramesActor;
 import es.eucm.ead.engine.components.renderers.frames.sequences.LastFrameSequence;
 import es.eucm.ead.engine.components.renderers.frames.sequences.LinearSequence;
 import es.eucm.ead.engine.components.renderers.frames.sequences.RandomSequence;
@@ -66,7 +66,9 @@ public class FramesProcessor extends RendererProcessor<Frames> {
 
 	@Override
 	public RendererComponent getComponent(Frames component) {
-		FramesComponent frames = createComponent();
+		RendererComponent rendererComponent = gameLoop
+				.createComponent(RendererComponent.class);
+		FramesActor frames = createActor();
 		for (Frame f : component.getFrames()) {
 			RendererComponent renderer = (RendererComponent) componentLoader
 					.toEngineComponent(f.getRenderer());
@@ -87,12 +89,11 @@ public class FramesProcessor extends RendererProcessor<Frames> {
 			frames.setSequence(lastFrameSequence);
 			break;
 		}
-		// Call restart() so the initial frame is set
-		frames.restart();
-		return frames;
+		rendererComponent.setRenderer(frames);
+		return rendererComponent;
 	}
 
-	protected FramesComponent createComponent() {
-		return gameLoop.createComponent(FramesComponent.class);
+	protected FramesActor createActor() {
+		return new FramesActor();
 	}
 }
