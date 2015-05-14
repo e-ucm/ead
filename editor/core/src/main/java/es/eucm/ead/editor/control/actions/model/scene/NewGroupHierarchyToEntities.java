@@ -121,7 +121,7 @@ public class NewGroupHierarchyToEntities extends ModelAction {
 		Q.getComponent(newGroupEntity, Parent.class).setParent(parentEntity);
 
 		EngineEntity engineEntity = gameLoop.createEntity();
-		engineEntity.setGroup(newGroup);
+		engineEntity.addRenderer(newGroup);
 		engineEntity.setModelEntity(newGroupEntity);
 
 		for (Actor actor : grouped) {

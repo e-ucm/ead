@@ -10,7 +10,6 @@ import com.badlogic.gdx.scenes.scene2d.ui.Value;
 import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.utils.Pools;
-
 import es.eucm.ead.editor.assets.ApplicationAssets;
 import es.eucm.ead.editor.control.Controller;
 import es.eucm.ead.editor.control.Selection;
@@ -28,7 +27,7 @@ import es.eucm.ead.editor.view.widgets.IconButton;
 import es.eucm.ead.editor.view.widgets.ToggleIconButton;
 import es.eucm.ead.engine.ComponentLoader;
 import es.eucm.ead.engine.I18N;
-import es.eucm.ead.engine.components.renderers.frames.FramesComponent;
+import es.eucm.ead.engine.components.renderers.frames.FramesActor;
 import es.eucm.ead.schema.renderers.Frame;
 import es.eucm.ead.schema.renderers.Frames;
 import es.eucm.ead.schema.renderers.Frames.Sequence;
@@ -148,7 +147,7 @@ public class AnimationEditor extends Table {
 	}
 
 	private void refreshPreview() {
-		FramesComponent previousComponent = previewView.getPreviewFrames();
+		FramesActor previousComponent = previewView.getPreviewFrames();
 		if (previousComponent != null) {
 			Pools.free(previousComponent);
 		}
@@ -156,10 +155,11 @@ public class AnimationEditor extends Table {
 		previewView.invalidateHierarchy();
 	}
 
-	private FramesComponent createFramesComponent() {
+	private FramesActor createFramesComponent() {
 		ComponentLoader compLoader = controller.getEngine().getEntitiesLoader()
 				.getComponentLoader();
-		return (FramesComponent) compLoader.toEngineComponent(frames);
+		// return (FramesActor) compLoader.toEngineComponent(frames);
+		return null;
 	}
 
 	/**

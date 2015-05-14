@@ -38,7 +38,7 @@ package es.eucm.ead.repobuilder.libs;
 
 import es.eucm.ead.editor.importer.EAdventure1XGame;
 import es.eucm.ead.editor.importer.EAdventure1XLoader;
-import es.eucm.ead.engine.components.renderers.StatesComponent;
+import es.eucm.ead.engine.components.renderers.StatesActor;
 import es.eucm.ead.repobuilder.RepoLibraryBuilder;
 import es.eucm.ead.schema.editor.components.repo.RepoCategories;
 import es.eucm.ead.schema.editor.components.repo.licenses.DefaultLicenses;
@@ -315,8 +315,8 @@ public abstract class EAd1XLibBuilder extends RepoLibraryBuilder {
 						states.getStates().add(state);
 						stateTag(parsedTags, state, assetType);
 						if (!defaultSelected) {
-							state.getStates().add(
-									StatesComponent.DEFAULT_STATE_TAG);
+							state.getStates()
+									.add(StatesActor.DEFAULT_STATE_TAG);
 							defaultSelected = true;
 							if (assetValue.toLowerCase().endsWith("png")
 									|| assetValue.toLowerCase().endsWith("jpg")

@@ -124,10 +124,5 @@ public class GroupEditorTest extends UITest {
 			drawable.draw(batch, 0, 0, getWidth(), getHeight());
 			batch.setColor(Color.WHITE);
 		}
-
-		@Override
-		public void setPosition(float x, float y) {
-			super.setPosition(x, y);
-		}
 	}
 }
