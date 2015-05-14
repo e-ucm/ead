@@ -476,7 +476,8 @@ public class Q {
 			String copyName;
 			do {
 				copyName = prefix + count++ + ")";
-			} while (existingNames.contains(copyName, false));
+			} while (existingNames != null
+					&& existingNames.contains(copyName, false));
 			return copyName;
 		}
 		return null;
