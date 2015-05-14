@@ -161,4 +161,9 @@ public class ContextMenu extends ScrollPane implements Modal {
 		return true;
 	}
 
+	@Override
+	public boolean hideOnExternalTouch() {
+		return true;
+	}
+
 }

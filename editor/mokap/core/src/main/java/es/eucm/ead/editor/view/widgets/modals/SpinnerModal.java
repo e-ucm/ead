@@ -193,6 +193,11 @@ public class SpinnerModal extends LinearLayout implements Modal {
 		return false;
 	}
 
+	@Override
+	public boolean hideOnExternalTouch() {
+		return true;
+	}
+
 	class ClickRepeatTask extends Task {
 		int inc;
 

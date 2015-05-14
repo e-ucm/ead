@@ -54,4 +54,11 @@ public interface Modal {
 	 *         input is detected outside its bounds.
 	 */
 	boolean hideAlways();
+
+	/**
+	 * 
+	 * @return whether this modal should be hidden when an input is detected
+	 *         outside its bounds.
+	 */
+	boolean hideOnExternalTouch();
 }

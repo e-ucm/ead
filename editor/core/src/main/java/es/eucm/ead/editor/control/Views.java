@@ -141,7 +141,8 @@ public class Views implements ModelListener<LoadEvent> {
 			if (modal.hideAlways() || lastEvent == null) {
 				modal.hide(hideModalsContainer);
 				currentModal.setTouchable(Touchable.disabled);
-			} else if (!lastEvent.getTarget().isDescendantOf(currentModal)) {
+			} else if (modal.hideOnExternalTouch()
+					&& !lastEvent.getTarget().isDescendantOf(currentModal)) {
 				modal.hide(hideModalsContainer);
 				currentModal.setTouchable(Touchable.disabled);
 			}
@@ -238,6 +239,10 @@ public class Views implements ModelListener<LoadEvent> {
 			}
 		}
 		return (T) builder;
+	}
+
+	public <T extends Builder> T getBuilder(Class<T> viewClass) {
+		return getBuilder(viewClass, viewsBuilders);
 	}
 
 	/**

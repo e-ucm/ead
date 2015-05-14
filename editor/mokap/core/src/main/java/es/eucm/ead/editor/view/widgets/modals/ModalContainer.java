@@ -93,7 +93,18 @@ public class ModalContainer extends Container<Actor> implements Modal {
 
 	@Override
 	public boolean hideAlways() {
+		if (getActor() instanceof Modal) {
+			return ((Modal) getActor()).hideAlways();
+		}
 		return false;
+	}
+
+	@Override
+	public boolean hideOnExternalTouch() {
+		if (getActor() instanceof Modal) {
+			return ((Modal) getActor()).hideOnExternalTouch();
+		}
+		return true;
 	}
 
 	public static class ModalContainerStyle {
