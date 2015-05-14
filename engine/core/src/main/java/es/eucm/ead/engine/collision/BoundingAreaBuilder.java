@@ -36,7 +36,6 @@
  */
 package es.eucm.ead.engine.collision;
 
-import com.badlogic.ashley.core.Component;
 import com.badlogic.gdx.math.Circle;
 import com.badlogic.gdx.math.ConvexHull;
 import com.badlogic.gdx.math.Polygon;
@@ -51,6 +50,7 @@ import com.badlogic.gdx.utils.SnapshotArray;
 import es.eucm.ead.engine.DefaultGameView;
 import es.eucm.ead.engine.components.renderers.RendererComponent;
 import es.eucm.ead.engine.entities.EngineEntity;
+import es.eucm.ead.engine.entities.actors.EntityGroup;
 import es.eucm.ead.schemax.Layer;
 
 /**
@@ -68,6 +68,29 @@ public class BoundingAreaBuilder {
 	// ////////////////////////////////////////
 	// Methods for building bounding areas
 	// ////////////////////////////////////////
+
+	public static Array<Polygon> getColliders(EngineEntity entity) {
+		Array<Polygon> colliders = new Array<Polygon>();
+		RendererComponent rendererComponent = entity
+				.getComponent(RendererComponent.class);
+		if (rendererComponent != null) {
+			collectColliders(rendererComponent.getEntityGroup(), colliders);
+		}
+		return colliders;
+	}
+
+	public static void collectColliders(EntityGroup rendererActor,
+			Array<Polygon> colliders) {
+		Array<Polygon> collider = rendererActor.getCollider();
+		if (collider != null) {
+			colliders.addAll(collider);
+		}
+		for (Actor actor : rendererActor.getChildren()) {
+			if (actor instanceof EntityGroup) {
+				collectColliders((EntityGroup) actor, colliders);
+			}
+		}
+	}
 
 	/**
 	 * Creates a minimum rectangle that contains the given entity. The algorithm
@@ -99,12 +122,7 @@ public class BoundingAreaBuilder {
 			return null;
 		}
 
-		for (Component component : entity.getComponents()) {
-			if (component instanceof RendererComponent) {
-				processRenderer((RendererComponent) component,
-						sceneContentGroup, entity.getGroup(), x, y);
-			}
-		}
+		processRenderer(entity, sceneContentGroup, entity.getGroup(), x, y);
 
 		for (Actor actor : entity.getGroup().getChildren()) {
 			if (actor.getUserObject() != null
@@ -168,20 +186,17 @@ public class BoundingAreaBuilder {
 	 * Updates x and y vectors (see getBoundingRectangle()) taking into account
 	 * the given renderer's dimensions.
 	 */
-	private static boolean processRenderer(RendererComponent rendererComponent,
+	private static boolean processRenderer(EngineEntity entity,
 			Group sceneContentGroup, Group group, Vector2 x, Vector2 y) {
 		boolean hasRenderer = false;
 		Vector2 tmp = Pools.obtain(Vector2.class);
-		if (rendererComponent.getCollider() != null) {
-			for (Polygon polygon : rendererComponent.getCollider()) {
-				for (int i = 0; i < polygon.getVertices().length; i += 2) {
-					tmp.set(polygon.getVertices()[i],
-							polygon.getVertices()[i + 1]);
-					group.localToAscendantCoordinates(sceneContentGroup, tmp);
-					x.set(Math.min(tmp.x, x.x), Math.max(tmp.x, x.y));
-					y.set(Math.min(tmp.y, y.x), Math.max(tmp.y, y.y));
-					hasRenderer = true;
-				}
+		for (Polygon polygon : getColliders(entity)) {
+			for (int i = 0; i < polygon.getVertices().length; i += 2) {
+				tmp.set(polygon.getVertices()[i], polygon.getVertices()[i + 1]);
+				group.localToAscendantCoordinates(sceneContentGroup, tmp);
+				x.set(Math.min(tmp.x, x.x), Math.max(tmp.x, x.y));
+				y.set(Math.min(tmp.y, y.x), Math.max(tmp.y, y.y));
+				hasRenderer = true;
 			}
 		}
 		Pools.free(tmp);
@@ -209,14 +224,11 @@ public class BoundingAreaBuilder {
 			return null;
 		}
 
-		for (Component component : entity.getComponents()) {
-			if (component instanceof RendererComponent) {
-				Polygon polygon = getBoundingPolygon(
-						(RendererComponent) component, sceneContentGroup,
-						entity.getGroup());
-				toVector2Array(polygon.getVertices(), points);
-				count++;
-			}
+		Polygon polygon = getBoundingPolygon(entity, sceneContentGroup,
+				entity.getGroup());
+		if (polygon != null) {
+			toVector2Array(polygon.getVertices(), points);
+			count++;
 		}
 
 		for (Actor actor : entity.getGroup().getChildren()) {
@@ -229,7 +241,7 @@ public class BoundingAreaBuilder {
 			}
 		}
 
-		Polygon polygon = new Polygon();
+		polygon = new Polygon();
 		if (count > 1) {
 			FloatArray polygonPoints = convexHull.computePolygon(
 					toSimpleArray(points), false);
@@ -246,24 +258,20 @@ public class BoundingAreaBuilder {
 		return polygon;
 	}
 
-	private static Polygon getBoundingPolygon(
-			RendererComponent rendererComponent, Group sceneContentGroup,
-			Group group) {
+	private static Polygon getBoundingPolygon(EngineEntity entity,
+			Group sceneContentGroup, Group group) {
 		SnapshotArray<Vector2> allPoints = new SnapshotArray<Vector2>();
 
-		if (rendererComponent.getCollider() != null) {
-			for (Polygon polygon : rendererComponent.getCollider()) {
-				for (int i = 0; i < polygon.getVertices().length; i += 2) {
-					Vector2 tmp = Pools.obtain(Vector2.class);
-					tmp.set(polygon.getVertices()[i],
-							polygon.getVertices()[i + 1]);
-					group.localToAscendantCoordinates(sceneContentGroup, tmp);
-					allPoints.add(tmp);
-				}
+		for (Polygon polygon : getColliders(entity)) {
+			for (int i = 0; i < polygon.getVertices().length; i += 2) {
+				Vector2 tmp = Pools.obtain(Vector2.class);
+				tmp.set(polygon.getVertices()[i], polygon.getVertices()[i + 1]);
+				group.localToAscendantCoordinates(sceneContentGroup, tmp);
+				allPoints.add(tmp);
 			}
 		}
 
-		if (rendererComponent.getCollider() == null || allPoints.size == 0) {
+		if (allPoints.size == 0) {
 			return null;
 		}
 
@@ -294,10 +302,9 @@ public class BoundingAreaBuilder {
 	/**
 	 * Creates a minimum circle that contains the given entity. The algorithm
 	 * takes into account renderers' colliders (if available) and children. The
-	 * algorithm uses
-	 * {@link #getBoundingPolygon(RendererComponent, Group, Group)} and then
-	 * calculates radius and center by finding the pair of vertex with longest
-	 * distance.
+	 * algorithm uses {@link #getBoundingPolygon(EngineEntity, Group, Group)}
+	 * and then calculates radius and center by finding the pair of vertex with
+	 * longest distance.
 	 * 
 	 * @param entity
 	 *            The entity to build a bounding circle for.
