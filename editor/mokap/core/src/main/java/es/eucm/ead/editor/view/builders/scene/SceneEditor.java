@@ -51,14 +51,8 @@ import es.eucm.ead.editor.control.MokapController.BackListener;
 import es.eucm.ead.editor.control.Preferences;
 import es.eucm.ead.editor.control.Selection;
 import es.eucm.ead.editor.control.Selection.Context;
-import es.eucm.ead.editor.control.actions.editor.AddLabel;
-import es.eucm.ead.editor.control.actions.editor.ChangeView;
-import es.eucm.ead.editor.control.actions.editor.ChooseFile;
-import es.eucm.ead.editor.control.actions.editor.CreateSceneThumbnail;
-import es.eucm.ead.editor.control.actions.editor.ShowContextMenu;
-import es.eucm.ead.editor.control.actions.editor.ShowInfoPanel;
+import es.eucm.ead.editor.control.actions.editor.*;
 import es.eucm.ead.editor.control.actions.editor.ShowInfoPanel.TypePanel;
-import es.eucm.ead.editor.control.actions.editor.ShowToast;
 import es.eucm.ead.editor.control.actions.model.AddInteractiveZone;
 import es.eucm.ead.editor.control.actions.model.AddSceneElement;
 import es.eucm.ead.editor.control.actions.model.SetSelection;
@@ -335,13 +329,15 @@ public class SceneEditor extends BaseView implements ModelView,
 
 	private CirclesMenu buildAddButtons() {
 		CirclesMenu circlesMenu = WidgetBuilder.circlesMenu(Align.right,
-				new String[] { SkinConstants.IC_BLUR, SkinConstants.IC_ZONE,
-						SkinConstants.IC_BRUSH, SkinConstants.IC_TEXT,
-						SkinConstants.IC_CAMERA, SkinConstants.IC_PHOTO,
-						SkinConstants.IC_CLOUD, SkinConstants.IC_CLOSE },
-				new Class[] { ChangeView.class, AddInteractiveZone.class, null,
-						AddLabel.class, TakePicture.class, ChooseFile.class,
-						ChangeView.class, null }, new Object[][] {
+				new String[] { SkinConstants.IC_MUSIC, SkinConstants.IC_BLUR,
+						SkinConstants.IC_ZONE, SkinConstants.IC_BRUSH,
+						SkinConstants.IC_TEXT, SkinConstants.IC_CAMERA,
+						SkinConstants.IC_PHOTO, SkinConstants.IC_CLOUD,
+						SkinConstants.IC_CLOSE }, new Class[] {
+						ShowMusic.class, ChangeView.class,
+						AddInteractiveZone.class, null, AddLabel.class,
+						TakePicture.class, ChooseFile.class, ChangeView.class,
+						null }, new Object[][] { null,
 						new Object[] { ShadersView.class }, null, null, null,
 						null, new Object[] { false, this },
 						new Object[] { ResourcesView.class }, null });

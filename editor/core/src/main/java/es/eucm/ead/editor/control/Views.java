@@ -306,7 +306,8 @@ public class Views implements ModelListener<LoadEvent> {
 	 */
 	public void showModal(Actor modal, float x, float y) {
 		if (currentModal != null) {
-			currentModal.remove();
+			currentModal.clearActions();
+			hideModalsContainer.run();
 		}
 
 		modalsContainer.addActor(modal);

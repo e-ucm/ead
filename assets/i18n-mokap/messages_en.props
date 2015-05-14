@@ -10,6 +10,7 @@ amount = Amount
 animations = Animations
 animation.in = Init animations
 application.title = Mokap
+background.music = Background music
 big = Big
 blink = Blink
 bring.to.front = Bring to front
