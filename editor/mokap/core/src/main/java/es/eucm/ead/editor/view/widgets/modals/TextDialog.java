@@ -110,11 +110,6 @@ public class TextDialog extends Table implements Modal {
 	}
 
 	@Override
-	public boolean hideOnExternalTouch() {
-		return true;
-	}
-
-	@Override
 	public float getPrefWidth() {
 		return Gdx.graphics.getWidth() * .7f;
 	}

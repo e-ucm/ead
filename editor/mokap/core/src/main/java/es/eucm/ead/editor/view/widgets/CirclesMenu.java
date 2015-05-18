@@ -123,8 +123,4 @@ public class CirclesMenu extends LinearLayout implements Modal {
 		return true;
 	}
 
-	@Override
-	public boolean hideOnExternalTouch() {
-		return true;
-	}
 }

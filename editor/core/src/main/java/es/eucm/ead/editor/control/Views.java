@@ -141,8 +141,7 @@ public class Views implements ModelListener<LoadEvent> {
 			if (modal.hideAlways() || lastEvent == null) {
 				modal.hide(hideModalsContainer);
 				currentModal.setTouchable(Touchable.disabled);
-			} else if (modal.hideOnExternalTouch()
-					&& !lastEvent.getTarget().isDescendantOf(currentModal)) {
+			} else if (!lastEvent.getTarget().isDescendantOf(currentModal)) {
 				modal.hide(hideModalsContainer);
 				currentModal.setTouchable(Touchable.disabled);
 			}

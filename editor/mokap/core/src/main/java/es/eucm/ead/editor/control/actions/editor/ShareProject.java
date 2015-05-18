@@ -212,11 +212,6 @@ public class ShareProject extends EditorAction implements Worker.WorkerListener 
 		}
 
 		@Override
-		public boolean hideOnExternalTouch() {
-			return true;
-		}
-
-		@Override
 		public float getPrefWidth() {
 			return Gdx.graphics.getWidth() * .7f;
 		}

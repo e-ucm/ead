@@ -99,14 +99,6 @@ public class ModalContainer extends Container<Actor> implements Modal {
 		return false;
 	}
 
-	@Override
-	public boolean hideOnExternalTouch() {
-		if (getActor() instanceof Modal) {
-			return ((Modal) getActor()).hideOnExternalTouch();
-		}
-		return true;
-	}
-
 	public static class ModalContainerStyle {
 
 		public Drawable background;
