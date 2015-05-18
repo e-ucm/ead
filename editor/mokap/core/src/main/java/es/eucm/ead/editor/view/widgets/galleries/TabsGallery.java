@@ -79,7 +79,7 @@ public class TabsGallery extends AbstractWidget {
 
 	private Label title;
 
-	private Button actionButton;
+	private Button actionButton, defaultActionButton;
 
 	private Drawable background;
 
@@ -104,6 +104,14 @@ public class TabsGallery extends AbstractWidget {
 
 		background = skin.getDrawable(SkinConstants.DRAWABLE_GRAY_100);
 
+	}
+
+	public void setDefaultActionButton(Button defaultActionButton) {
+		this.defaultActionButton = defaultActionButton;
+		if (defaultActionButton != null) {
+			actionButton = defaultActionButton;
+			addActor(actionButton);
+		}
 	}
 
 	@Override
@@ -219,11 +227,15 @@ public class TabsGallery extends AbstractWidget {
 		}
 		currentGallery = galleries[tabs.getSelectedTabIndex()];
 		addActor(currentGallery);
-		if (actionButton != null) {
-			actionButton.remove();
-		}
-		if (currentGallery.getActionButton() != null) {
-			addActor(actionButton = currentGallery.getActionButton());
+		if (defaultActionButton == null) {
+			if (actionButton != null) {
+				actionButton.remove();
+			}
+			if (currentGallery.getActionButton() != null) {
+				addActor(actionButton = currentGallery.getActionButton());
+			}
+		} else if (actionButton != null) {
+			actionButton.toFront();
 		}
 		searchWidget.setVisible(currentGallery.isSearchEnabled());
 		loadContents();

@@ -41,6 +41,7 @@ import com.badlogic.gdx.audio.Music;
 import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
+import com.badlogic.gdx.scenes.scene2d.ui.Button;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import es.eucm.ead.editor.assets.ApplicationAssets;
@@ -54,6 +55,7 @@ import es.eucm.ead.editor.model.Q;
 import es.eucm.ead.editor.view.SkinConstants;
 import es.eucm.ead.editor.view.builders.scene.SceneView;
 import es.eucm.ead.editor.view.widgets.RepoTile;
+import es.eucm.ead.editor.view.widgets.WidgetBuilder;
 import es.eucm.ead.editor.view.widgets.galleries.*;
 import es.eucm.ead.editor.view.widgets.selectors.Selector;
 import es.eucm.ead.engine.I18N;
@@ -70,7 +72,7 @@ import es.eucm.ead.schemax.ModelStructure;
  * Audio view. A list with the audio files from the project, library and
  * repository.
  */
-public class SoundsView implements ViewBuilder, BackListener {
+public class SoundsView implements ViewBuilder {
 
 	private Controller controller;
 
@@ -82,7 +84,7 @@ public class SoundsView implements ViewBuilder, BackListener {
 
 	private CategoryRepository repoGallery;
 
-	private TabsGallery tabsGallery;
+	private BackTabsGallery tabsGallery;
 
 	@Override
 	public void initialize(Controller control) {
@@ -91,13 +93,13 @@ public class SoundsView implements ViewBuilder, BackListener {
 		Skin skin = applicationAssets.getSkin();
 		I18N i18N = applicationAssets.getI18N();
 
-		tabsGallery = new TabsGallery(controller.getApplicationAssets()
+		tabsGallery = new BackTabsGallery(controller.getApplicationAssets()
 				.getI18N().m("sounds"), SkinConstants.IC_GO, skin, i18N);
 		tabsGallery.changeColor(SkinConstants.COLOR_SOUNDS);
 		tabsGallery.getToolbarIcon().addListener(new ClickListener() {
 			@Override
 			public void clicked(InputEvent event, float x, float y) {
-				onBackPressed();
+				tabsGallery.onBackPressed();
 			}
 		});
 
@@ -141,6 +143,16 @@ public class SoundsView implements ViewBuilder, BackListener {
 				i18N.m("my.library").toUpperCase(),
 				i18N.m("project").toUpperCase() }, repoGallery, libraryGallery,
 				projectResources);
+
+		Button defaultActionButton = WidgetBuilder
+				.circleButton(SkinConstants.IC_ADD_SOUND);
+		defaultActionButton.addListener(new ClickListener() {
+			@Override
+			public void clicked(InputEvent event, float x, float y) {
+				projectResources.askForAudio();
+			}
+		});
+		tabsGallery.setDefaultActionButton(defaultActionButton);
 
 	}
 
@@ -189,9 +201,16 @@ public class SoundsView implements ViewBuilder, BackListener {
 	public void release(Controller controller) {
 	}
 
-	@Override
-	public boolean onBackPressed() {
-		selector.cancelled();
-		return true;
+	private class BackTabsGallery extends TabsGallery implements BackListener {
+
+		public BackTabsGallery(String title, String icon, Skin skin, I18N i18N) {
+			super(title, icon, skin, i18N);
+		}
+
+		@Override
+		public boolean onBackPressed() {
+			selector.cancelled();
+			return true;
+		}
 	}
 }
