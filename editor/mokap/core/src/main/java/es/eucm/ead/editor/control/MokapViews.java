@@ -41,6 +41,7 @@ import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.Group;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 
+import com.badlogic.gdx.utils.SnapshotArray;
 import es.eucm.ead.editor.control.MokapController.BackListener;
 import es.eucm.ead.editor.control.actions.editor.ChangeView;
 import es.eucm.ead.editor.model.Model.ModelListener;
@@ -83,7 +84,9 @@ public class MokapViews extends Views implements BackListener {
 	}
 
 	protected boolean hideChildIfNeeded(Group parent) {
-		for (Actor child : parent.getChildren()) {
+		SnapshotArray<Actor> children = parent.getChildren();
+		for (int i = children.size - 1; i >= 0; --i) {
+			Actor child = children.get(i);
 			if (child instanceof Group) {
 				if (hideChildIfNeeded((Group) child)) {
 					return true;

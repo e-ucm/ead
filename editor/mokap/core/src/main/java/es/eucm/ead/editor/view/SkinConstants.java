@@ -64,6 +64,7 @@ public interface SkinConstants {
 	String DRAWABLE_BROWN_TOOLBAR = "brown_toolbar";
 	String DRAWABLE_CUP = "cup";
 	String DRAWABLE_PENCIL = "pencil";
+	String DRAWABLE_SEMI_TRANSPARENT = "semi_transparent_bg";
 
 	String STYLE_DEFAULT = "default";
 	String STYLE_CONTEXT = "context";
