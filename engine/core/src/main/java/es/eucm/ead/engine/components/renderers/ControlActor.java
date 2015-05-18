@@ -36,58 +36,19 @@
  */
 package es.eucm.ead.engine.components.renderers;
 
-import com.badlogic.gdx.graphics.g2d.Batch;
-import com.badlogic.gdx.graphics.g2d.PolygonSpriteBatch;
-import com.esotericsoftware.spine.AnimationState;
-import com.esotericsoftware.spine.AnimationStateData;
-import com.esotericsoftware.spine.Skeleton;
-import com.esotericsoftware.spine.SkeletonData;
-import com.esotericsoftware.spine.SkeletonRenderer;
+import com.badlogic.gdx.scenes.scene2d.Actor;
+import es.eucm.ead.engine.entities.actors.EntityGroup;
 
-public class SpineAnimationComponent extends CollidableRendererComponent {
+public class ControlActor extends EntityGroup {
 
-	private SkeletonRenderer skeletonRenderer = new SkeletonRenderer();
+	private Actor control;
 
-	private AnimationState state;
-
-	private Skeleton skeleton;
-
-	public void setSkeleton(SkeletonData skeletonData) {
-		this.skeleton = new Skeleton(skeletonData);
-		AnimationStateData stateData = new AnimationStateData(skeletonData);
-		state = new AnimationState(stateData);
+	public void setControl(Actor control) {
+		this.control = control;
+		addActor(control);
 	}
 
-	public void setState(String stateName) {
-		if (stateName != null) {
-			state.setAnimation(0, stateName, true);
-		}
-	}
-
-	@Override
-	public void act(float delta) {
-		state.update(delta);
-	}
-
-	@Override
-	public void draw(Batch batch) {
-		state.apply(skeleton);
-		skeleton.updateWorldTransform();
-		/*
-		 * batch has to be casted to PolygonSpriteBatch as SkeletonRenderer has
-		 * two different draw methods: draw(Batch, Skeleton) and
-		 * draw(PolygonSpriteBatch, Skeleton).
-		 */
-		skeletonRenderer.draw((PolygonSpriteBatch) batch, skeleton);
-	}
-
-	@Override
-	public float getWidth() {
-		return 0;
-	}
-
-	@Override
-	public float getHeight() {
-		return 0;
+	public Actor getControl() {
+		return control;
 	}
 }

@@ -34,27 +34,37 @@
  *      You should have received a copy of the GNU Lesser General Public License
  *      along with eAdventure.  If not, see <http://www.gnu.org/licenses/>.
  */
-package es.eucm.ead.engine.components.controls;
+package es.eucm.ead.engine.components.renderers;
 
-import com.badlogic.gdx.scenes.scene2d.ui.ImageButton;
-import com.badlogic.gdx.scenes.scene2d.ui.ImageButton.ImageButtonStyle;
+import com.badlogic.gdx.graphics.g2d.Batch;
+import es.eucm.ead.engine.assets.ScaledTexture;
+import es.eucm.ead.engine.entities.actors.EntityGroup;
 
-public class ImageButtonComponent extends ControlComponent<ImageButton> {
+public class ImageActor extends EntityGroup {
 
-	private ImageButton button;
+	private ScaledTexture texture;
 
-	public void set(ImageButtonStyle style) {
-		if (button == null) {
-			button = new ImageButton(style);
-		} else {
-			button.setStyle(style);
-			button.setSize(button.getPrefWidth(), button.getPrefHeight());
-		}
+	public ImageActor() {
+		setVisible(false);
+	}
+
+	public void setTexture(ScaledTexture texture) {
+		this.texture = texture;
+		setSize(texture.getWidth(), texture.getHeight());
+		setVisible(true);
 	}
 
 	@Override
-	public ImageButton getControl() {
-		return button;
+	public void drawChildren(Batch batch, float parentAlpha) {
+		texture.draw(batch, 0, 0, getWidth(), getHeight());
 	}
 
+	public void setSize(float width, float height) {
+		super.setSize(width, height);
+	}
+
+	@Override
+	public void setWidth(float width) {
+		super.setWidth(width);
+	}
 }

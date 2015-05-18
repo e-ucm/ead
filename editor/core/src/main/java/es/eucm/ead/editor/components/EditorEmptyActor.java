@@ -34,72 +34,60 @@
  *      You should have received a copy of the GNU Lesser General Public License
  *      along with eAdventure.  If not, see <http://www.gnu.org/licenses/>.
  */
-package es.eucm.ead.engine.entities.actors;
+package es.eucm.ead.editor.components;
 
-import com.badlogic.gdx.graphics.Color;
+import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.g2d.Batch;
+import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.scenes.scene2d.Actor;
-import com.badlogic.gdx.utils.Pool.Poolable;
+import com.badlogic.gdx.scenes.scene2d.utils.Drawable;
+import es.eucm.ead.editor.control.engine.Engine;
+import es.eucm.ead.engine.components.renderers.EmptyActor;
 
-import es.eucm.ead.engine.components.renderers.RendererComponent;
+public class EditorEmptyActor extends EmptyActor {
 
-public class RendererActor extends EntityGroup implements Poolable {
+	private static Vector2 leftBottom = new Vector2(),
+			topRight = new Vector2();
 
-	protected RendererComponent renderer;
+	private Engine engine;
 
-	public void setRenderer(RendererComponent renderer) {
-		this.renderer = renderer;
-		this.setWidth(renderer.getWidth());
-		this.setHeight(renderer.getHeight());
+	private Drawable areaDrawable;
+
+	private Drawable hitAllDrawable;
+
+	public void setEngine(Engine engine) {
+		this.engine = engine;
 	}
 
-	@Override
-	public void act(float delta) {
-		super.act(delta);
-		renderer.act(delta);
+	public void setDrawables(Drawable drawable, Drawable extendeDrawable) {
+		this.areaDrawable = drawable;
+		this.hitAllDrawable = extendeDrawable;
 	}
 
 	@Override
 	public void drawChildren(Batch batch, float parentAlpha) {
-		if (renderer != null) {
-			// Set alpha and color
-			Color color = getColor();
-
-			Color batchColor = batch.getColor();
-			float packedColor = batch.getPackedColor();
-			batchColor.mul(color.r, color.g, color.b, color.a * parentAlpha);
-			batch.setColor(batchColor);
-
-			renderer.draw(batch);
-
-			// Restore the color
-			batch.setColor(packedColor);
+		if (!engine.isRunning() && getCollider() != null) {
+			areaDrawable.draw(batch, 0, 0, getWidth(), getHeight());
+			if (isHitAll()) {
+				leftBottom.set(0, 0);
+				stageToLocalCoordinates(leftBottom);
+				topRight.set(Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
+				stageToLocalCoordinates(topRight);
+				hitAllDrawable.draw(batch, leftBottom.x, leftBottom.y,
+						topRight.x - leftBottom.x, topRight.y - leftBottom.y);
+			}
 		}
-		super.drawChildren(batch, parentAlpha);
-	}
-
-	@Override
-	public float getWidth() {
-		return renderer == null ? 0 : renderer.getWidth();
-	}
-
-	@Override
-	public float getHeight() {
-		return renderer == null ? 0 : renderer.getHeight();
-	}
-
-	@Override
-	public void reset() {
-		this.renderer = null;
 	}
 
 	@Override
 	public Actor hit(float x, float y, boolean touchable) {
-		Actor actor = super.hit(x, y, touchable);
-		if (actor == null && isTouchable()) {
-			return renderer != null && renderer.hit(x, y) ? this : null;
-		} else {
-			return actor;
+		if (engine.isRunning()) {
+			return super.hit(x, y, touchable);
 		}
+		boolean hitAll = isHitAll();
+		setHitAll(false);
+		Actor hit = super.hit(x, y, touchable);
+		setHitAll(hitAll);
+		return hit;
 	}
 }

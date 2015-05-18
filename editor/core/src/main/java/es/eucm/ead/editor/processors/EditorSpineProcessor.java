@@ -34,61 +34,26 @@
  *      You should have received a copy of the GNU Lesser General Public License
  *      along with eAdventure.  If not, see <http://www.gnu.org/licenses/>.
  */
-package es.eucm.ead.engine.components.assets;
+package es.eucm.ead.editor.processors;
 
-import com.badlogic.gdx.graphics.g2d.Batch;
-import com.badlogic.gdx.math.Polygon;
-import com.badlogic.gdx.scenes.scene2d.Group;
-import com.badlogic.gdx.utils.Array;
-import com.badlogic.gdx.utils.Pool.Poolable;
-import es.eucm.ead.engine.GameLoop;
-import es.eucm.ead.engine.components.renderers.RendererComponent;
+import es.eucm.ead.editor.components.EditorSpineActor;
+import es.eucm.ead.editor.control.Controller;
+import es.eucm.ead.editor.control.engine.Engine;
+import es.eucm.ead.engine.components.renderers.SpineActor;
+import es.eucm.ead.engine.processors.renderers.SpineProcessor;
 
-/**
- * References for entities
- */
-public class ReferenceComponent extends RendererComponent implements Poolable {
+public class EditorSpineProcessor extends SpineProcessor {
 
-	private Group group;
-	private GameLoop gameLoop;
+	private Engine engine;
 
-	public void set(Group group, GameLoop gameLoop) {
-		this.group = group;
-		this.gameLoop = gameLoop;
-		group.setTransform(false);
+	public EditorSpineProcessor(Controller controller) {
+		super(controller.getEngine().getGameLoop(), controller
+				.getEditorGameAssets());
+		this.engine = controller.getEngine();
 	}
 
 	@Override
-	public void draw(Batch batch) {
-		if (group != null) {
-			group.draw(batch, 1.0f);
-		}
-	}
-
-	@Override
-	public float getWidth() {
-		return group == null ? 0 : group.getWidth();
-	}
-
-	@Override
-	public float getHeight() {
-		return group == null ? 0 : group.getHeight();
-	}
-
-	@Override
-	public Array<Polygon> getCollider() {
-		return null;
-	}
-
-	@Override
-	public void reset() {
-		group = null;
-	}
-
-	@Override
-	public void act(float delta) {
-		if (group != null && gameLoop.isPlaying()) {
-			group.act(delta);
-		}
+	protected SpineActor createActor() {
+		return new EditorSpineActor(engine);
 	}
 }

@@ -34,26 +34,50 @@
  *      You should have received a copy of the GNU Lesser General Public License
  *      along with eAdventure.  If not, see <http://www.gnu.org/licenses/>.
  */
-package es.eucm.ead.editor.components;
+package es.eucm.ead.engine.processors.renderers;
 
+import com.badlogic.ashley.core.Component;
+import com.badlogic.gdx.Gdx;
+import com.esotericsoftware.spine.SkeletonData;
 import es.eucm.ead.engine.GameLoop;
-import es.eucm.ead.engine.components.renderers.frames.FramesComponent;
+import es.eucm.ead.engine.assets.Assets.AssetLoadedCallback;
+import es.eucm.ead.engine.assets.GameAssets;
+import es.eucm.ead.engine.components.renderers.RendererComponent;
+import es.eucm.ead.engine.components.renderers.SpineActor;
+import es.eucm.ead.schema.renderers.SpineAnimation;
 
-public class EditorFramesComponent extends FramesComponent {
+public class SpineProcessor extends RendererProcessor<SpineAnimation> {
 
-	private GameLoop gameLoop;
-
-	public void setGameLoop(GameLoop gameLoop) {
-		this.gameLoop = gameLoop;
+	public SpineProcessor(GameLoop gameLoop, GameAssets gameAssets) {
+		super(gameLoop, gameAssets);
 	}
 
 	@Override
-	protected Frame getCurrentFrame() {
-		if (!gameLoop.isPlaying()) {
-			if (frames.size > 0) {
-				return frames.get(0);
-			}
-		}
-		return super.getCurrentFrame();
+	public Component getComponent(final SpineAnimation spineAnimation) {
+		String baseUri = spineAnimation.getUri();
+		final SpineActor actor = createActor();
+		gameAssets.get(baseUri, SkeletonData.class,
+				new AssetLoadedCallback<SkeletonData>() {
+					@Override
+					public void loaded(String fileName, SkeletonData asset) {
+						actor.setSkeleton(asset);
+						actor.setState(spineAnimation.getInitialState());
+					}
+
+					@Override
+					public void error(String fileName, Class type,
+							Throwable exception) {
+						Gdx.app.error("SpineAnimationProcessor",
+								"Impossible to load animation", exception);
+					}
+				});
+		RendererComponent rendererComponent = gameLoop
+				.createComponent(RendererComponent.class);
+		rendererComponent.setRenderer(actor);
+		return rendererComponent;
+	}
+
+	protected SpineActor createActor() {
+		return new SpineActor();
 	}
 }

@@ -246,7 +246,7 @@ public class DefaultEngineInitializer implements EngineInitializer {
 		componentLoader.registerComponentProcessor(ShapeRenderer.class,
 				new ShapeRendererProcessor(gameLoop));
 		componentLoader.registerComponentProcessor(EmptyRenderer.class,
-				new EmptyRendererProcessor(gameLoop));
+				new EmptyRendererProcessor(gameLoop, gameAssets));
 		componentLoader.registerComponentProcessor(Velocity.class,
 				new VelocityProcessor(gameLoop));
 		componentLoader.registerComponentProcessor(Button.class,
@@ -309,7 +309,7 @@ public class DefaultEngineInitializer implements EngineInitializer {
 		componentLoader.registerComponentProcessor(Conversation.class,
 				new ConversationProcessor(gameLoop));
 		componentLoader.registerComponentProcessor(SpineAnimation.class,
-				new SpineAnimationProcessor(gameLoop, gameAssets));
+				new SpineProcessor(gameLoop, gameAssets));
 		componentLoader.registerComponentProcessor(Reference.class,
 				new ReferenceProcessor(gameLoop, gameAssets, entitiesLoader));
 		componentLoader.registerComponentProcessor(Shader.class,

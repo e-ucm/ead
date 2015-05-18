@@ -41,9 +41,10 @@ import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.utils.Array;
-
 import es.eucm.ead.editor.view.builders.scene.groupeditor.inputstatemachine.InputState;
 import es.eucm.ead.editor.view.widgets.WidgetBuilder;
+import es.eucm.ead.engine.entities.actors.EntityGroup;
+import es.eucm.ead.engine.utils.EngineUtils;
 
 public class ScaleState extends InputState {
 
@@ -63,7 +64,7 @@ public class ScaleState extends InputState {
 
 	private Scale scale;
 
-	private Vector2 temp = new Vector2();
+	private Vector2 tmp1 = new Vector2(), tmp2 = new Vector2();
 
 	private boolean rotationCancelled;
 
@@ -84,7 +85,7 @@ public class ScaleState extends InputState {
 				|| stateMachine.isOnlySelection()) {
 			stateMachine.setState(CameraState.class);
 		} else {
-			initialPointerRotation = temp.set(stateMachine.initialPointer1)
+			initialPointerRotation = tmp1.set(stateMachine.initialPointer1)
 					.sub(stateMachine.initialPointer2).angle();
 			scale = calculateState(stateMachine.initialPointer2,
 					stateMachine.initialPointer1);
@@ -98,7 +99,7 @@ public class ScaleState extends InputState {
 						- stateMachine.initialPointer1.y);
 				break;
 			case DIAGONAL:
-				this.distance1 = temp.set(stateMachine.initialPointer2)
+				this.distance1 = tmp1.set(stateMachine.initialPointer2)
 						.sub(stateMachine.initialPointer1).len();
 				break;
 			}
@@ -130,12 +131,12 @@ public class ScaleState extends InputState {
 	public void drag(InputEvent event, float x, float y, int pointer) {
 		Vector2 pointer1 = stateMachine.pointer1;
 		Vector2 pointer2 = stateMachine.pointer2;
-		if (Math.abs(distance1 - temp.set(pointer1).sub(pointer2).len()) > DISTANCE_CANCEL) {
+		if (Math.abs(distance1 - tmp1.set(pointer1).sub(pointer2).len()) > DISTANCE_CANCEL) {
 			rotationCancelled = true;
 		}
 
 		if (!rotationCancelled) {
-			float diffRotation = Math.abs(temp.set(pointer1).sub(pointer2)
+			float diffRotation = Math.abs(tmp1.set(pointer1).sub(pointer2)
 					.angle()
 					- initialPointerRotation);
 			if (diffRotation > INIT_ROTATE_ANGLE) {
@@ -154,7 +155,7 @@ public class ScaleState extends InputState {
 	}
 
 	private Scale calculateState(Vector2 initalPointer2, Vector2 initialPointer1) {
-		float angle = temp.set(initalPointer2).sub(initialPointer1).angle();
+		float angle = tmp1.set(initalPointer2).sub(initialPointer1).angle();
 
 		if (Math.abs(MathUtils.cosDeg(angle)) > TRIGONOMETRIC_TOLERANCE) {
 			return Scale.HORIZONTAL;
@@ -189,8 +190,17 @@ public class ScaleState extends InputState {
 			this.rotation = actor.getRotation();
 			float scaleX = actor.getScaleX();
 			float scaleY = actor.getScaleY();
-			float width = actor.getWidth();
-			float height = actor.getHeight();
+			float width;
+			float height;
+
+			if (actor instanceof EntityGroup) {
+				EngineUtils.calculateBounds(actor, tmp1, tmp2);
+				width = tmp2.x;
+				height = tmp2.y;
+			} else {
+				width = actor.getWidth();
+				height = actor.getHeight();
+			}
 
 			switch (scale) {
 			case HORIZONTAL:
@@ -206,7 +216,7 @@ public class ScaleState extends InputState {
 			case DIAGONAL:
 				this.signumX = Math.signum(scaleX);
 				this.signumY = Math.signum(scaleY);
-				size = temp.set(width * scaleX, height * scaleY).len();
+				size = tmp1.set(width * scaleX, height * scaleY).len();
 				aspectRatio = Math.abs(scaleX / scaleY);
 				denominator = (float) Math.sqrt(width * width * aspectRatio
 						* aspectRatio + height * height);
@@ -230,7 +240,7 @@ public class ScaleState extends InputState {
 								/ zoom + size * scale1Y) / size);
 				break;
 			case DIAGONAL:
-				float scaleY = Math.abs((size + (temp.set(pointer1)
+				float scaleY = Math.abs((size + (tmp1.set(pointer1)
 						.sub(pointer2).len() - distance1)
 						/ zoom)
 						/ denominator);

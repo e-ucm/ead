@@ -40,6 +40,7 @@ import es.eucm.ead.editor.control.Controller;
 import es.eucm.ead.editor.processors.EditorEmptyRendererProcessor;
 import es.eucm.ead.editor.processors.EditorFramesProcessor;
 import es.eucm.ead.editor.processors.EditorReferenceProcessor;
+import es.eucm.ead.editor.processors.EditorSpineProcessor;
 import es.eucm.ead.engine.ComponentLoader;
 import es.eucm.ead.engine.DefaultEngineInitializer;
 import es.eucm.ead.engine.EntitiesLoader;
@@ -49,6 +50,7 @@ import es.eucm.ead.engine.variables.VariablesManager;
 import es.eucm.ead.schema.components.Reference;
 import es.eucm.ead.schema.renderers.EmptyRenderer;
 import es.eucm.ead.schema.renderers.Frames;
+import es.eucm.ead.schema.renderers.SpineAnimation;
 
 public class MobileEngineInitializer extends DefaultEngineInitializer {
 
@@ -65,15 +67,14 @@ public class MobileEngineInitializer extends DefaultEngineInitializer {
 		super.registerComponents(componentLoader, gameAssets, gameLoop,
 				variablesManager, entitiesLoader);
 		componentLoader.registerComponentProcessor(EmptyRenderer.class,
-				new EditorEmptyRendererProcessor(controller.getEngine(),
-						gameLoop, controller.getApplicationAssets()));
-		componentLoader
-				.registerComponentProcessor(Frames.class,
-						new EditorFramesProcessor(gameLoop, gameAssets,
-								componentLoader));
+				new EditorEmptyRendererProcessor(controller));
+		componentLoader.registerComponentProcessor(Frames.class,
+				new EditorFramesProcessor(gameLoop, gameAssets,
+						componentLoader, controller.getEngine()));
 		componentLoader.registerComponentProcessor(Reference.class,
 				new EditorReferenceProcessor(gameLoop, gameAssets,
 						entitiesLoader, controller.getPlatform()));
+		componentLoader.registerComponentProcessor(SpineAnimation.class,
+				new EditorSpineProcessor(controller));
 	}
-
 }

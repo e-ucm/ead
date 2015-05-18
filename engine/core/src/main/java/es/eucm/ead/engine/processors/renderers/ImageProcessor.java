@@ -43,7 +43,7 @@ import es.eucm.ead.engine.GameLoop;
 import es.eucm.ead.engine.assets.Assets.AssetLoadedCallback;
 import es.eucm.ead.engine.assets.GameAssets;
 import es.eucm.ead.engine.assets.ScaledTexture;
-import es.eucm.ead.engine.components.renderers.ImageComponent;
+import es.eucm.ead.engine.components.renderers.ImageActor;
 import es.eucm.ead.engine.components.renderers.RendererComponent;
 import es.eucm.ead.schema.renderers.Image;
 
@@ -54,13 +54,19 @@ public class ImageProcessor extends RendererProcessor<Image> {
 	}
 
 	@Override
-	public RendererComponent getComponent(Image image) {
-		final ImageComponent imageComponent = createComponent();
+	public RendererComponent getComponent(final Image image) {
+		RendererComponent rendererComponent = gameLoop
+				.createComponent(RendererComponent.class);
+		final ImageActor imageActor = createActor();
+		imageActor.setName(image.getUri());
+		rendererComponent.setRenderer(imageActor);
+
 		gameAssets.get(image.getUri() + ".tex", ScaledTexture.class,
 				new AssetLoadedCallback<ScaledTexture>() {
 					@Override
 					public void loaded(String fileName, ScaledTexture asset) {
-						imageComponent.setTexture(asset);
+						imageActor.setTexture(asset);
+						createCollider(image, imageActor);
 					}
 
 					@Override
@@ -70,11 +76,10 @@ public class ImageProcessor extends RendererProcessor<Image> {
 								+ fileName, exception);
 					}
 				});
-		createCollider(image, imageComponent);
-		return imageComponent;
+		return rendererComponent;
 	}
 
-	protected void createCollider(Image image, ImageComponent component) {
+	protected void createCollider(Image image, ImageActor component) {
 		Array<es.eucm.ead.schema.data.shape.Polygon> schemaCollider = image
 				.getCollider();
 		if (schemaCollider != null && schemaCollider.size > 0) {
@@ -92,7 +97,7 @@ public class ImageProcessor extends RendererProcessor<Image> {
 		}
 	}
 
-	protected ImageComponent createComponent() {
-		return gameLoop.createComponent(ImageComponent.class);
+	protected ImageActor createActor() {
+		return new ImageActor();
 	}
 }

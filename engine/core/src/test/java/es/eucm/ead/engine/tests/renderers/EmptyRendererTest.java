@@ -43,6 +43,7 @@ import es.eucm.ead.engine.EngineTest;
 import es.eucm.ead.engine.entities.EngineEntity;
 import es.eucm.ead.engine.processors.renderers.EmptyRendererProcessor;
 import es.eucm.ead.engine.processors.renderers.ImageProcessor;
+import es.eucm.ead.engine.utils.EngineUtils;
 import es.eucm.ead.schema.data.shape.Rectangle;
 import es.eucm.ead.schema.entities.ModelEntity;
 import es.eucm.ead.schema.renderers.EmptyRenderer;
@@ -52,7 +53,8 @@ import org.junit.Before;
 import org.junit.Test;
 
 import javax.imageio.ImageIO;
-import java.awt.*;
+import java.awt.Color;
+import java.awt.Graphics2D;
 import java.awt.image.BufferedImage;
 import java.io.IOException;
 
@@ -64,13 +66,13 @@ import static org.junit.Assert.fail;
  * 
  * Created by Javier Torrente on 5/06/14.
  */
-public class EmptyRendererComponentTest extends EngineTest {
+public class EmptyRendererTest extends EngineTest {
 
 	@Before
 	public void setUp() {
 		super.setUp();
 		componentLoader.registerComponentProcessor(EmptyRenderer.class,
-				new EmptyRendererProcessor(gameLoop));
+				new EmptyRendererProcessor(gameLoop, gameAssets));
 		componentLoader.registerComponentProcessor(Image.class,
 				new ImageProcessor(gameLoop, gameAssets));
 	}
@@ -102,6 +104,7 @@ public class EmptyRendererComponentTest extends EngineTest {
 		EngineEntity engineEntity1 = entitiesLoader.toEngineEntity(entity1);
 		gameAssets.getAssetManager().finishLoading();
 		gameView.addEntityToLayer(Layer.SCENE_CONTENT, engineEntity1);
+		stage.draw();
 
 		// Now, add a simple entity with empty renderer that blocks out the
 		// other entity
@@ -117,10 +120,11 @@ public class EmptyRendererComponentTest extends EngineTest {
 				.toEngineEntity(modelEntity2);
 		Actor hit = gameView.getLayer(Layer.SCENE_CONTENT).getGroup()
 				.hit(5, 5, true);
-		assertSame(hit.getUserObject(), engineEntity1);
+		assertSame(EngineUtils.getActorEntity(hit), engineEntity1);
 		gameView.addEntityToLayer(Layer.SCENE_CONTENT, engineEntity2);
+		stage.draw();
 		Actor hit2 = gameView.getLayer(Layer.SCENE_CONTENT).getGroup()
 				.hit(5, 5, true);
-		assertSame(hit2.getUserObject(), engineEntity2);
+		assertSame(EngineUtils.getActorEntity(hit2), engineEntity2);
 	}
 }

@@ -34,38 +34,12 @@
  *      You should have received a copy of the GNU Lesser General Public License
  *      along with eAdventure.  If not, see <http://www.gnu.org/licenses/>.
  */
-package es.eucm.ead.engine.processors.renderers;
+package es.eucm.ead.engine.components.renderers.shape;
 
-import com.badlogic.ashley.core.Component;
-import com.badlogic.gdx.graphics.g2d.TextureAtlas;
-import com.esotericsoftware.spine.SkeletonData;
-import com.esotericsoftware.spine.SkeletonJson;
-import es.eucm.ead.engine.GameLoop;
-import es.eucm.ead.engine.assets.GameAssets;
-import es.eucm.ead.engine.components.renderers.SpineAnimationComponent;
-import es.eucm.ead.schema.renderers.SpineAnimation;
+import es.eucm.ead.engine.components.renderers.ImageActor;
 
-public class SpineAnimationProcessor extends RendererProcessor<SpineAnimation> {
-
-	public SpineAnimationProcessor(GameLoop gameLoop, GameAssets gameAssets) {
-		super(gameLoop, gameAssets);
-	}
-
-	@Override
-	public Component getComponent(SpineAnimation spineAnimation) {
-		String baseUri = spineAnimation.getUri();
-		if (baseUri != null && baseUri.toLowerCase().endsWith(".json")) {
-			baseUri = baseUri.substring(0, baseUri.length() - 5);
-		}
-		TextureAtlas atlas = new TextureAtlas(gameAssets.resolve(baseUri
-				+ ".atlas"));
-		SkeletonJson json = new SkeletonJson(atlas);
-		SkeletonData skeletonData = json.readSkeletonData(gameAssets
-				.resolve(baseUri + ".json"));
-		SpineAnimationComponent component = gameLoop
-				.createComponent(SpineAnimationComponent.class);
-		component.setSkeleton(skeletonData);
-		component.setState(spineAnimation.getInitialState());
-		return component;
-	}
+/**
+ * Created by Javier Torrente on 8/06/14.
+ */
+public class ShapeActor extends ImageActor {
 }

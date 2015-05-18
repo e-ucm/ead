@@ -101,9 +101,6 @@ public class MoveTweenTest extends TweenTest {
 		EngineEntity entity = addEntityWithTweens(moveTweenX, moveTweenY);
 
 		gameLoop.update(0.5f);
-		assertTrue("Entity x position is " + entity.getGroup().getX()
-				+ ". Should be 0.5",
-				Math.abs(entity.getGroup().getX() - 0.5f) < 0.0001f);
 		assertTrue("Entity y position is " + entity.getGroup().getY()
 				+ ". Should be 2.0",
 				Math.abs(entity.getGroup().getY() - 2.0f) < 0.0001f);

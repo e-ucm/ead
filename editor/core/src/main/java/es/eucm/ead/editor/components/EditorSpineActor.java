@@ -34,61 +34,26 @@
  *      You should have received a copy of the GNU Lesser General Public License
  *      along with eAdventure.  If not, see <http://www.gnu.org/licenses/>.
  */
-package es.eucm.ead.engine.components;
+package es.eucm.ead.editor.components;
 
-import com.badlogic.gdx.graphics.g2d.Batch;
-import com.badlogic.gdx.math.Polygon;
-import com.badlogic.gdx.scenes.scene2d.Group;
-import com.badlogic.gdx.utils.Array;
-import es.eucm.ead.engine.GameLoop;
-import es.eucm.ead.engine.components.renderers.RendererComponent;
-import es.eucm.ead.engine.entities.EngineEntity;
+import es.eucm.ead.editor.control.engine.Engine;
+import es.eucm.ead.engine.components.renderers.SpineActor;
 
-public class BackgroundComponent extends RendererComponent {
+/**
+ * Created by bender on 13/05/15.
+ */
+public class EditorSpineActor extends SpineActor {
 
-	private EngineEntity engineEntity;
+	private Engine engine;
 
-	private Group group;
-
-	private GameLoop gameLoop;
-
-	public void setEngineEntity(EngineEntity engineEntity) {
-		this.engineEntity = engineEntity;
-		group = engineEntity.getGroup();
-	}
-
-	public void setGameLoop(GameLoop gameLoop) {
-		this.gameLoop = gameLoop;
+	public EditorSpineActor(Engine engine) {
+		this.engine = engine;
 	}
 
 	@Override
 	public void act(float delta) {
-		group.act(delta);
-	}
-
-	@Override
-	public void draw(Batch batch) {
-		group.draw(batch, 1f);
-	}
-
-	@Override
-	public float getWidth() {
-		return group.getWidth();
-	}
-
-	@Override
-	public float getHeight() {
-		return group.getHeight();
-	}
-
-	@Override
-	public Array<Polygon> getCollider() {
-		return null;
-	}
-
-	@Override
-	public void reset() {
-		gameLoop.removeEntity(engineEntity);
-		engineEntity = null;
+		if (engine.isRunning()) {
+			super.act(delta);
+		}
 	}
 }

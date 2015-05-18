@@ -194,9 +194,12 @@ public class Q {
 	 *         {@code null} if no model entity is associated to the actor
 	 */
 	public static ModelEntity getModelEntity(Actor actor) {
-		Object o = actor.getUserObject();
-		if (o instanceof EngineEntity) {
-			return ((EngineEntity) o).getModelEntity();
+		while (actor != null) {
+			Object o = actor.getUserObject();
+			if (o instanceof EngineEntity) {
+				return ((EngineEntity) o).getModelEntity();
+			}
+			actor = actor.getParent();
 		}
 		return null;
 	}

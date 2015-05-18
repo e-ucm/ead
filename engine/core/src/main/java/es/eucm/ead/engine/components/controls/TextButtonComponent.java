@@ -37,28 +37,12 @@
 package es.eucm.ead.engine.components.controls;
 
 import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
-import com.badlogic.gdx.scenes.scene2d.ui.TextButton.TextButtonStyle;
 
 public class TextButtonComponent extends TextComponent<TextButton> {
 
-	private TextButton button;
-
-	public void setStyle(TextButtonStyle style) {
-		if (button == null) {
-			button = new TextButton("", style);
-		} else {
-			button.setStyle(style);
-		}
-	}
-
-	@Override
-	public TextButton getControl() {
-		return button;
-	}
-
 	@Override
 	public void updateText(String text) {
-		button.setText(text);
-		button.setSize(button.getPrefWidth(), button.getPrefHeight());
+		control.setText(text);
+		control.pack();
 	}
 }

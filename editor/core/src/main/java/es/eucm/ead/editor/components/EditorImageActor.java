@@ -34,12 +34,52 @@
  *      You should have received a copy of the GNU Lesser General Public License
  *      along with eAdventure.  If not, see <http://www.gnu.org/licenses/>.
  */
-package es.eucm.ead.engine.components.renderers.shape;
+package es.eucm.ead.editor.components;
 
-import es.eucm.ead.engine.components.renderers.ImageComponent;
+import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.graphics.Color;
+import com.badlogic.gdx.graphics.GL20;
+import com.badlogic.gdx.graphics.g2d.Batch;
+import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
+import com.badlogic.gdx.graphics.glutils.ShapeRenderer.ShapeType;
+import com.badlogic.gdx.math.Polygon;
+import es.eucm.ead.engine.components.renderers.ImageActor;
 
 /**
- * Created by Javier Torrente on 8/06/14.
+ * Created by angel on 12/05/14.
  */
-public class ShapeRendererComponent extends ImageComponent {
+public class EditorImageActor extends ImageActor {
+
+	private ShapeRenderer shapeRenderer;
+
+	public void setShapeRenderer(ShapeRenderer shapeRenderer) {
+		this.shapeRenderer = shapeRenderer;
+	}
+
+	@Override
+	public void drawChildren(Batch batch, float parentAlpha) {
+		super.drawChildren(batch, parentAlpha);
+		drawCollider(batch);
+	}
+
+	protected void drawCollider(Batch batch) {
+		if (getCollider() != null) {
+			batch.end();
+			Gdx.gl.glEnable(GL20.GL_BLEND);
+			Gdx.gl.glBlendFunc(GL20.GL_ONE, GL20.GL_DST_COLOR);
+			Gdx.gl.glBlendEquation(GL20.GL_FUNC_SUBTRACT);
+			shapeRenderer.setProjectionMatrix(batch.getProjectionMatrix());
+			shapeRenderer.setTransformMatrix(batch.getTransformMatrix());
+			shapeRenderer.begin(ShapeType.Line);
+			shapeRenderer.setColor(Color.WHITE);
+			for (Polygon polygon : getCollider()) {
+				float[] vertices = polygon.getVertices();
+				shapeRenderer.polygon(vertices);
+			}
+			shapeRenderer.end();
+			Gdx.gl.glBlendEquation(GL20.GL_FUNC_ADD);
+			Gdx.gl.glDisable(GL20.GL_BLEND);
+			batch.begin();
+		}
+	}
 }

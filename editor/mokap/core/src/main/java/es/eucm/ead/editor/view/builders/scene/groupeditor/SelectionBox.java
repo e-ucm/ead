@@ -44,8 +44,9 @@ import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.Group;
 import com.badlogic.gdx.scenes.scene2d.utils.Drawable;
-
+import com.badlogic.gdx.scenes.scene2d.utils.Layout;
 import es.eucm.ead.editor.view.builders.scene.groupeditor.GroupEditor.GroupEditorStyle;
+import es.eucm.ead.engine.entities.actors.EntityGroup;
 import es.eucm.ead.engine.utils.EngineUtils;
 
 /**
@@ -56,7 +57,7 @@ public class SelectionBox extends Group {
 	private static Vector2 origin = new Vector2(), normal = new Vector2(),
 			tangent = new Vector2();
 
-	public static enum State {
+	public enum State {
 		PRESSED, SELECTED, MOVING
 	}
 
@@ -69,6 +70,10 @@ public class SelectionBox extends Group {
 	private GroupEditor groupEditor;
 
 	private GroupEditorStyle style;
+
+	private Vector2 selectionOrigin = new Vector2();
+
+	private Vector2 selectionSize = new Vector2();
 
 	public Actor getTarget() {
 		return target;
@@ -86,11 +91,8 @@ public class SelectionBox extends Group {
 	}
 
 	public void readTargetBounds() {
-		EngineUtils.adjustGroup(target);
-		origin.set(0, 0);
-		tangent.set(target.getWidth(), 0);
-		normal.set(0, target.getHeight());
-
+		EngineUtils.calculateBounds(target, selectionOrigin, selectionSize);
+		setPoints();
 		target.localToAscendantCoordinates(groupEditor.getSceneContainer(),
 				origin);
 		target.localToAscendantCoordinates(groupEditor.getSceneContainer(),
@@ -98,17 +100,31 @@ public class SelectionBox extends Group {
 		target.localToAscendantCoordinates(groupEditor.getSceneContainer(),
 				normal);
 
-		setSize(target.getWidth(), target.getHeight());
 		setOrigin(target.getOriginX(), target.getOriginY());
 		setRotation(target.getRotation());
 		EngineUtils.applyTransformation(this, origin, tangent, normal);
 	}
 
+	private void setPoints() {
+		if (target instanceof EntityGroup) {
+			origin.set(0, 0);
+			tangent.set(selectionSize.x, 0);
+			normal.set(0, selectionSize.y);
+			setSize(selectionSize.x, selectionSize.y);
+		} else if (target instanceof Layout) {
+			((Layout) target).pack();
+			origin.set(0, 0);
+			tangent.set(target.getWidth(), 0);
+			normal.set(0, target.getHeight());
+			setSize(target.getWidth(), target.getHeight());
+		}
+	}
+
 	@Override
 	public void act(float delta) {
 		if (target.getActions().size > 0
-				|| !MathUtils.isEqual(target.getWidth(), getWidth(), 0.01f)
-				|| !MathUtils.isEqual(target.getHeight(), getHeight(), 0.01f)) {
+				|| !MathUtils.isEqual(selectionSize.x, getWidth(), 0.01f)
+				|| !MathUtils.isEqual(selectionSize.y, getHeight(), 0.01f)) {
 			readTargetBounds();
 		}
 		super.act(delta);
@@ -159,9 +175,22 @@ public class SelectionBox extends Group {
 			break;
 		}
 		batch.setColor(color.r, color.g, color.b, style.alpha);
-		selectedBackground.draw(batch, 0, 0, getWidth(), getHeight());
+		if (target instanceof EntityGroup) {
+			selectedBackground.draw(batch, selectionOrigin.x,
+					selectionOrigin.y, selectionSize.x, selectionSize.y);
+		} else {
+			selectedBackground.draw(batch, 0, 0, target.getWidth(),
+					target.getHeight());
+		}
 		batch.setColor(Color.WHITE);
 		super.drawChildren(batch, parentAlpha);
 	}
 
+	@Override
+	public Actor hit(float x, float y, boolean touchable) {
+		return x >= selectionOrigin.x
+				&& x < selectionOrigin.x + selectionSize.x
+				&& y >= selectionOrigin.y
+				&& y < selectionOrigin.y + selectionSize.y ? this : null;
+	}
 }

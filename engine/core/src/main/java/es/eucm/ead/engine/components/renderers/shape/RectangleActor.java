@@ -36,27 +36,27 @@
  */
 package es.eucm.ead.engine.components.renderers.shape;
 
-public class RectangleRendererComponent extends ShapeRendererComponent {
+public class RectangleActor extends ShapeActor {
 
 	private float width;
 
 	private float height;
 
-	public void setWidth(float width) {
+	public void setPrefWidth(float width) {
 		this.width = width;
 	}
 
-	public void setHeight(float height) {
+	public void setPrefHeight(float height) {
 		this.height = height;
 	}
 
 	@Override
-	public float getWidth() {
+	public float getPrefWidth() {
 		return width;
 	}
 
 	@Override
-	public float getHeight() {
+	public float getPrefHeight() {
 		return height;
 	}
 }

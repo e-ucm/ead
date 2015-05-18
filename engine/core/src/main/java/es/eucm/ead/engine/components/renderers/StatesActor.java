@@ -36,11 +36,10 @@
  */
 package es.eucm.ead.engine.components.renderers;
 
-import com.badlogic.gdx.graphics.g2d.Batch;
-import com.badlogic.gdx.math.Polygon;
 import com.badlogic.gdx.utils.Array;
+import es.eucm.ead.engine.entities.actors.EntityGroup;
 
-public class StatesComponent extends RendererComponent {
+public class StatesActor extends EntityGroup {
 
 	/**
 	 * If any state has this tag, it is set for preview. If several states have
@@ -48,59 +47,21 @@ public class StatesComponent extends RendererComponent {
 	 */
 	public static final String DEFAULT_STATE_TAG = "default";
 
-	private Array<State> states;
+	private Array<StateData> states;
 
-	protected State currentState;
+	protected StateData currentState;
 
-	public StatesComponent() {
-		states = new Array<State>();
+	public StatesActor() {
+		states = new Array<StateData>();
 	}
 
 	public void addRenderer(Array<String> stateTags, RendererComponent renderer) {
-		State newState = new State(stateTags, renderer);
+		StateData newState = new StateData(stateTags, renderer);
 		states.add(newState);
 		if (currentState == null
 				|| stateTags.contains(DEFAULT_STATE_TAG, false)) {
-			currentState = newState;
+			setState(newState);
 		}
-	}
-
-	@Override
-	public void draw(Batch batch) {
-		if (currentState != null && currentState.rendererComponent != null) {
-			currentState.rendererComponent.draw(batch);
-		}
-	}
-
-	@Override
-	public Array<Polygon> getCollider() {
-		return currentState == null || currentState.rendererComponent == null ? null
-				: currentState.rendererComponent.getCollider();
-	}
-
-	@Override
-	public void act(float delta) {
-		if (currentState != null && currentState.rendererComponent != null) {
-			currentState.rendererComponent.act(delta);
-		}
-	}
-
-	@Override
-	public float getWidth() {
-		return currentState == null || currentState.rendererComponent == null ? 0
-				: currentState.rendererComponent.getWidth();
-	}
-
-	@Override
-	public float getHeight() {
-		return currentState == null || currentState.rendererComponent == null ? 0
-				: currentState.rendererComponent.getHeight();
-	}
-
-	@Override
-	public boolean hit(float x, float y) {
-		return currentState != null && currentState.rendererComponent != null
-				&& currentState.rendererComponent.hit(x, y);
 	}
 
 	/**
@@ -110,41 +71,31 @@ public class StatesComponent extends RendererComponent {
 	 * 
 	 * @param stateTag
 	 *            The tag identifying the new state
-	 * @return True if state was updated, false otherwise
 	 */
-	public boolean changeState(String stateTag) {
-		for (State state : states) {
+	public void changeState(String stateTag) {
+		for (StateData state : states) {
 			if (state.states.contains(stateTag, false) && state != currentState) {
-				currentState = state;
-				currentState.restart();
-				return true;
+				setState(state);
 			}
 		}
-		return false;
 	}
 
-	@Override
-	public void reset() {
-		for (State state : states) {
-			state.rendererComponent.reset();
-		}
-		states.clear();
-		currentState = null;
+	private void setState(StateData state) {
+		currentState = state;
+		currentState.renderer.restart();
+		clearChildren();
+		addActor(currentState.renderer.getEntityGroup());
 	}
 
-	private static final class State {
+	private static final class StateData {
 
 		private Array<String> states;
 
-		private RendererComponent rendererComponent;
+		private RendererComponent renderer;
 
-		private State(Array<String> states, RendererComponent rendererComponent) {
+		private StateData(Array<String> states, RendererComponent renderer) {
 			this.states = states;
-			this.rendererComponent = rendererComponent;
-		}
-
-		private RendererComponent getRendererComponent() {
-			return rendererComponent;
+			this.renderer = renderer;
 		}
 
 		public int count(Array<String> states) {
@@ -155,10 +106,6 @@ public class StatesComponent extends RendererComponent {
 				}
 			}
 			return count;
-		}
-
-		public void restart() {
-			rendererComponent.restart();
 		}
 	}
 }

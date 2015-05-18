@@ -40,14 +40,11 @@ import com.badlogic.gdx.graphics.Pixmap;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.utils.Array;
 import com.vividsolutions.jts.geom.Geometry;
-
-import es.eucm.ead.editor.components.EditorImageComponent;
-import es.eucm.ead.engine.utils.GeometryUtils;
 import es.eucm.ead.engine.GameLoop;
 import es.eucm.ead.engine.assets.GameAssets;
-import es.eucm.ead.engine.components.renderers.ImageComponent;
-import es.eucm.ead.engine.components.renderers.RendererComponent;
+import es.eucm.ead.engine.components.renderers.ImageActor;
 import es.eucm.ead.engine.processors.renderers.ImageProcessor;
+import es.eucm.ead.engine.utils.GeometryUtils;
 import es.eucm.ead.schema.renderers.Image;
 
 public class EditorImageProcessor extends ImageProcessor {
@@ -79,29 +76,17 @@ public class EditorImageProcessor extends ImageProcessor {
 	}
 
 	@Override
-	public RendererComponent getComponent(Image image) {
-		if (image.getCollider().size == 0) {
-			try {
-				Pixmap pixmap = new Pixmap(gameAssets.resolve(image.getUri()));
-				Array<Geometry> geometryArray = GeometryUtils.findBorders(
-						pixmap, threshold, distanceTolerance);
-				for (Geometry geometry : geometryArray) {
-					image.getCollider().add(
-							GeometryUtils.jtsToSchemaPolygon(geometry));
-				}
-				pixmap.dispose();
-			} catch (Exception e) {
-
+	protected void createCollider(Image image, ImageActor component) {
+		if (image.getCollider() == null || image.getCollider().size == 0) {
+			Pixmap pixmap = new Pixmap(gameAssets.resolve(image.getUri()));
+			Array<Geometry> geometryArray = GeometryUtils.findBorders(pixmap,
+					threshold, distanceTolerance);
+			for (Geometry geometry : geometryArray) {
+				image.getCollider().add(
+						GeometryUtils.jtsToSchemaPolygon(geometry));
 			}
+			pixmap.dispose();
 		}
-		return super.getComponent(image);
-	}
-
-	@Override
-	protected ImageComponent createComponent() {
-		EditorImageComponent component = gameLoop
-				.createComponent(EditorImageComponent.class);
-		component.setShapeRenderer(shapeRenderer);
-		return component;
+		super.createCollider(image, component);
 	}
 }

@@ -36,7 +36,6 @@
  */
 package es.eucm.ead.engine.tests.systems.tweens;
 
-import com.badlogic.gdx.scenes.scene2d.Group;
 import com.badlogic.gdx.utils.Array;
 import es.eucm.ead.engine.GameLoop;
 import es.eucm.ead.engine.entities.EngineEntity;
@@ -128,7 +127,6 @@ public class EffectTweenTest extends TweenTest implements MockEffectListener {
 
 	protected EngineEntity addEntityWithTweens(BaseTween... tweens) {
 		EngineEntity entity = gameLoop.createEntity();
-		entity.setGroup(new Group());
 		for (BaseTween tween : tweens) {
 			entity.add(tweensProcessor.getComponent(tween));
 		}

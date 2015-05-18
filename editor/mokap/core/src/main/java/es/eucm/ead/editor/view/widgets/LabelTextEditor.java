@@ -47,16 +47,15 @@ import com.badlogic.gdx.scenes.scene2d.ui.SelectBox;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
-
 import es.eucm.ead.editor.assets.EditorGameAssets;
 import es.eucm.ead.editor.control.Controller;
 import es.eucm.ead.editor.control.Selection;
 import es.eucm.ead.editor.control.actions.model.ChangeSelectionText;
 import es.eucm.ead.editor.model.Q;
-import es.eucm.ead.editor.platform.Platform;
 import es.eucm.ead.editor.view.builders.scene.SceneEditor;
 import es.eucm.ead.editor.view.widgets.draw.SlideColorPicker.ColorEvent;
 import es.eucm.ead.editor.view.widgets.draw.SlideColorPicker.ColorListener;
+import es.eucm.ead.engine.components.renderers.ControlActor;
 import es.eucm.ead.schema.entities.ModelEntity;
 
 public class LabelTextEditor extends TextEditor implements
@@ -137,8 +136,8 @@ public class LabelTextEditor extends TextEditor implements
 					es.eucm.ead.schema.components.controls.Label.class);
 			for (Actor actor : ((Group) sceneEditor.getGroupEditor().findActor(
 					element)).getChildren()) {
-				if (actor instanceof Label) {
-					labelActor = (Label) actor;
+				if (actor instanceof ControlActor) {
+					labelActor = (Label) ((ControlActor) actor).getControl();
 					break;
 				}
 			}

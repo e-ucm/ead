@@ -36,11 +36,24 @@
  */
 package es.eucm.ead.engine.components.controls;
 
-import com.badlogic.ashley.core.Component;
-
 import com.badlogic.gdx.scenes.scene2d.Actor;
+import es.eucm.ead.engine.components.renderers.ControlActor;
+import es.eucm.ead.engine.components.renderers.RendererComponent;
 
-public abstract class ControlComponent<T extends Actor> extends Component {
+public abstract class ControlComponent<T extends Actor> extends
+		RendererComponent {
 
-	public abstract T getControl();
+	protected T control;
+
+	public T getControl() {
+		return control;
+	}
+
+	public void setControl(T control) {
+		this.control = control;
+		ControlActor controlActor = new ControlActor();
+		controlActor.setControl(control);
+		setRenderer(controlActor);
+	}
+
 }

@@ -39,6 +39,7 @@ package es.eucm.ead.engine.renderers;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import es.eucm.ead.engine.DefaultEngineInitializer;
 import es.eucm.ead.engine.EngineTest;
+import es.eucm.ead.engine.utils.EngineUtils;
 import org.junit.Test;
 
 import static org.junit.Assert.assertEquals;
@@ -61,9 +62,11 @@ public class EmptyTest extends EngineTest {
 	@Test
 	public void testHit() {
 		Actor actor = hit(5, 5);
-		assertEquals(actor.getName(), "rectangle");
+		assertEquals(EngineUtils.getActorEntity(actor).getModelEntity()
+				.getName(), "rectangle");
 		actor = hit(-200, -300);
-		assertEquals(actor.getName(), "all");
+		assertEquals(EngineUtils.getActorEntity(actor).getModelEntity()
+				.getName(), "all");
 
 	}
 }

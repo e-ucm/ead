@@ -36,25 +36,23 @@
  */
 package es.eucm.ead.engine.tests.renderers;
 
-import com.badlogic.gdx.graphics.g2d.Batch;
-import com.badlogic.gdx.math.Polygon;
-import com.badlogic.gdx.utils.Array;
 import es.eucm.ead.engine.components.renderers.RendererComponent;
-import es.eucm.ead.engine.components.renderers.frames.FramesComponent;
+import es.eucm.ead.engine.components.renderers.frames.FramesActor;
 import es.eucm.ead.engine.components.renderers.frames.sequences.LastFrameSequence;
 import es.eucm.ead.engine.components.renderers.frames.sequences.LinearSequence;
 import es.eucm.ead.engine.components.renderers.frames.sequences.YoyoSequence;
+import es.eucm.ead.engine.entities.actors.EntityGroup;
 import org.junit.Test;
 
 import static org.junit.Assert.assertEquals;
 
-public class FramesComponentTest {
+public class FramesTest {
 
 	@Test
 	public void testLastFrameSquence() {
-		FramesComponent frames = new FramesComponent();
+		FramesActor frames = new FramesActor();
 		for (int i = 0; i < 10; i++) {
-			frames.addFrame(new MockRendererComponent(), 1);
+			frames.addFrame(buildRenderer(), 1);
 		}
 		frames.setSequence(new LastFrameSequence());
 
@@ -73,9 +71,9 @@ public class FramesComponentTest {
 
 	@Test
 	public void testYoyoSquence() {
-		FramesComponent frames = new FramesComponent();
+		FramesActor frames = new FramesActor();
 		for (int i = 0; i < 10; i++) {
-			frames.addFrame(new MockRendererComponent(), 1);
+			frames.addFrame(buildRenderer(), 1);
 		}
 		frames.setSequence(new YoyoSequence());
 
@@ -96,9 +94,9 @@ public class FramesComponentTest {
 
 	@Test
 	public void testFrames() {
-		FramesComponent frames = new FramesComponent();
+		FramesActor frames = new FramesActor();
 		for (int i = 0; i < 10; i++) {
-			frames.addFrame(new MockRendererComponent(), 1);
+			frames.addFrame(buildRenderer(), 1);
 		}
 		frames.setSequence(new LinearSequence());
 
@@ -116,33 +114,33 @@ public class FramesComponentTest {
 
 	@Test
 	public void testNestedFrames() {
-		FramesComponent level2A = new FramesComponent();
+		FramesActor level2A = new FramesActor();
 		level2A.setSequence(new LinearSequence());
 		float leafDuration = 0.1F;
 		int level2AFrames = 3;
 		for (int i = 1; i <= level2AFrames; i++) {
-			level2A.addFrame(new MockRendererComponent(), leafDuration);
+			level2A.addFrame(buildRenderer(), leafDuration);
 		}
 
-		FramesComponent level2B = new FramesComponent();
+		FramesActor level2B = new FramesActor();
 		level2B.setSequence(new LinearSequence());
 		int level2BFrames = 7;
 		for (int i = 1; i <= level2BFrames; i++) {
-			level2B.addFrame(new MockRendererComponent(), leafDuration);
+			level2B.addFrame(buildRenderer(), leafDuration);
 		}
 
-		FramesComponent level2C = new FramesComponent();
+		FramesActor level2C = new FramesActor();
 		level2C.setSequence(new LinearSequence());
 		int level2CFrames = 7;
 		for (int i = 1; i <= level2CFrames; i++) {
-			level2C.addFrame(new MockRendererComponent(), leafDuration);
+			level2C.addFrame(buildRenderer(), leafDuration);
 		}
 
-		FramesComponent level1 = new FramesComponent();
+		FramesActor level1 = new FramesActor();
 		level1.setSequence(new LinearSequence());
-		level1.addFrame(level2A, leafDuration * level2AFrames);
-		level1.addFrame(level2B, leafDuration * level2BFrames);
-		level1.addFrame(level2C, leafDuration * level2CFrames);
+		level1.addFrame(buildRenderer(level2A), leafDuration * level2AFrames);
+		level1.addFrame(buildRenderer(level2B), leafDuration * level2BFrames);
+		level1.addFrame(buildRenderer(level2C), leafDuration * level2CFrames);
 
 		float actStep = leafDuration / 2.0F;
 
@@ -161,10 +159,10 @@ public class FramesComponentTest {
 		}
 	}
 
-	private void nestedFramesStep(float delta, FramesComponent level1,
-			int expectedLevel1Index, FramesComponent level2A,
-			int expectedLevel2AIndex, FramesComponent level2B,
-			int expectedLevel2BIndex, FramesComponent level2C,
+	private void nestedFramesStep(float delta, FramesActor level1,
+			int expectedLevel1Index, FramesActor level2A,
+			int expectedLevel2AIndex, FramesActor level2B,
+			int expectedLevel2BIndex, FramesActor level2C,
 			int expectedLevel2CIndex) {
 		level1.act(delta);
 		assertEquals("First level FramesComponent not updated correctly",
@@ -179,39 +177,20 @@ public class FramesComponentTest {
 
 	@Test
 	public void testZeroFramesDuration() {
-		FramesComponent frames = new FramesComponent();
+		FramesActor frames = new FramesActor();
 		for (int i = 0; i < 10; i++) {
-			frames.addFrame(new MockRendererComponent(), 0);
+			frames.addFrame(buildRenderer(), 0);
 		}
 		frames.act(10);
 	}
 
-	public class MockRendererComponent extends RendererComponent {
-
-		@Override
-		public void draw(Batch batch) {
-
-		}
-
-		@Override
-		public float getWidth() {
-			return 0;
-		}
-
-		@Override
-		public float getHeight() {
-			return 0;
-		}
-
-		@Override
-		public Array<Polygon> getCollider() {
-			return null;
-		}
-
-		@Override
-		public void reset() {
-
-		}
+	private RendererComponent buildRenderer() {
+		return buildRenderer(new EntityGroup());
 	}
 
+	private RendererComponent buildRenderer(EntityGroup entityGroup) {
+		RendererComponent rendererComponent = new RendererComponent();
+		rendererComponent.setRenderer(entityGroup);
+		return rendererComponent;
+	}
 }

@@ -36,77 +36,28 @@
  */
 package es.eucm.ead.editor.components;
 
-import com.badlogic.ashley.core.Entity;
-import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.graphics.g2d.Batch;
-import com.badlogic.gdx.math.Vector2;
-import com.badlogic.gdx.scenes.scene2d.Actor;
-import com.badlogic.gdx.scenes.scene2d.utils.Drawable;
-
 import es.eucm.ead.editor.control.engine.Engine;
-import es.eucm.ead.engine.components.renderers.frames.EmptyRendererComponent;
-import es.eucm.ead.engine.entities.EngineEntity;
+import es.eucm.ead.engine.components.renderers.frames.FramesActor;
 
-public class EditorEmptyRendererComponent extends EmptyRendererComponent {
-
-	private static Vector2 leftBottom = new Vector2(),
-			topRight = new Vector2();
-
-	private Actor actor;
+public class EditorFramesActor extends FramesActor {
 
 	private Engine engine;
 
-	private Drawable areaDrawable;
-
-	private Drawable hitAllDrawable;
-
-	@Override
-	public void setParent(Entity parent) {
-		super.setParent(parent);
-	}
+	private boolean running = false;
 
 	public void setEngine(Engine engine) {
 		this.engine = engine;
 	}
 
-	public void setDrawables(Drawable drawable, Drawable extendeDrawable) {
-		this.areaDrawable = drawable;
-		this.hitAllDrawable = extendeDrawable;
-	}
-
 	@Override
-	public void draw(Batch batch) {
-		if (actor == null) {
-			actor = ((EngineEntity) getParent()).getGroup();
+	public void act(float delta) {
+		boolean newRunning = engine.isRunning();
+		if (newRunning != running) {
+			running = newRunning;
+			setCurrentFrame(0);
 		}
-
-		if (!engine.isRunning() && getCollider() != null) {
-			areaDrawable.draw(batch, 0, 0, width, height);
-			if (isHitAll()) {
-				leftBottom.set(0, 0);
-				actor.stageToLocalCoordinates(leftBottom);
-				topRight.set(Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
-				actor.stageToLocalCoordinates(topRight);
-				hitAllDrawable.draw(batch, leftBottom.x, leftBottom.y,
-						topRight.x - leftBottom.x, topRight.y - leftBottom.y);
-			}
+		if (running) {
+			super.act(delta);
 		}
-	}
-
-	@Override
-	public boolean hit(float x, float y) {
-		if (engine.isRunning()) {
-			return super.hit(x, y);
-		}
-		boolean hitAll = isHitAll();
-		setHitAll(false);
-		boolean hit = super.hit(x, y);
-		setHitAll(hitAll);
-		return hit;
-	}
-
-	@Override
-	public void reset() {
-		actor = null;
 	}
 }

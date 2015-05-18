@@ -53,7 +53,6 @@ import es.eucm.ead.engine.components.KeyPressedComponent;
 import es.eucm.ead.engine.components.TouchedComponent;
 import es.eucm.ead.engine.components.behaviors.events.RuntimeKey;
 import es.eucm.ead.engine.entities.EngineEntity;
-import es.eucm.ead.engine.entities.actors.EntityGroup;
 import es.eucm.ead.schema.components.behaviors.events.Touch.Type;
 import es.eucm.ead.schemax.Layer;
 
@@ -252,10 +251,9 @@ public class DefaultGameView extends WidgetGroup implements GameView {
 		public EngineLayer(GameLoop gameLoop, Layer layer) {
 			super(gameLoop);
 			this.layer = layer;
-			Group group = new EntityGroup();
+			Group group = getGroup();
 			group.setName(layer.name());
 			group.setTouchable(Touchable.childrenOnly);
-			this.setGroup(group);
 		}
 
 		public void clear() {
@@ -284,30 +282,17 @@ public class DefaultGameView extends WidgetGroup implements GameView {
 
 		private void process(Actor actor, Type type) {
 			if (gameLoop.isPlaying()) {
-				EngineEntity entity = getActorEntity(actor);
-				if (entity != null) {
-					TouchedComponent component = gameLoop.addAndGetComponent(
-							entity, TouchedComponent.class);
-					component.event(type);
+				while (actor != null) {
+					Object o = actor.getUserObject();
+					if (o instanceof EngineEntity) {
+						TouchedComponent component = gameLoop
+								.addAndGetComponent(((EngineEntity) o),
+										TouchedComponent.class);
+						component.event(type);
+					}
+					actor = actor.getParent();
 				}
 			}
 		}
 	}
-
-	/**
-	 * @return the entity associated to the given actor. Returns {@code null} if
-	 *         no entity associated is to the actor
-	 */
-	public static EngineEntity getActorEntity(Actor actor) {
-		if (actor == null) {
-			return null;
-		}
-		Object o = actor.getUserObject();
-		if (o instanceof EngineEntity) {
-			return ((EngineEntity) o);
-		} else {
-			return getActorEntity(actor.getParent());
-		}
-	}
-
 }
