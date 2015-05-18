@@ -51,20 +51,14 @@ import java.io.File;
 import java.io.FileFilter;
 
 /**
- * Loads all its children that are sounds (ProjectUtils#isSupportedAudio) from
- * the ModelStructure#SOUNDS_FOLDER. args[0] - The drawable used as thumbnail
- * for the sounds.
+ * Loads all children files that are sounds (ProjectUtils#isSupportedAudio) from
+ * the ModelStructure#SOUNDS_FOLDER.
  * <dl>
  * <dt><strong>The result arguments are</strong></dt>
- * <dd><strong>args[1]</strong> <em>String</em> name of the sound (with
- * extension).</dd>
- * <dd><strong>args[2]</strong> <em>String</em> Drawable used to display the
- * sound in a gallery</dd>
+ * <dd><strong>None</strong>
  * </dl>
  */
 public class LoadSounds extends Worker {
-
-	private Drawable soundDrawable;
 
 	private Array<FileHandle> projectPaths;
 	private Skin skin;
@@ -82,10 +76,9 @@ public class LoadSounds extends Worker {
 
 	@Override
 	protected void prepare() {
-		soundDrawable = skin.getDrawable((String) args[0]);
 		projectPaths.clear();
-		FileHandle fileFolder = Gdx.files.absolute(controller.getLoadingPath()
-				+ ModelStructure.SOUNDS_FOLDER);
+		FileHandle fileFolder = controller.getApplicationAssets().absolute(
+				controller.getLoadingPath() + ModelStructure.SOUNDS_FOLDER);
 		if (fileFolder.exists()) {
 			projectPaths.addAll(fileFolder.list());
 		}
@@ -99,7 +92,7 @@ public class LoadSounds extends Worker {
 		FileHandle file = projectPaths.removeIndex(0);
 		if (ProjectUtils.isSupportedAudio(file)) {
 			String name = file.name();
-			result(ModelStructure.SOUNDS_FOLDER + name, name, soundDrawable);
+			result(ModelStructure.SOUNDS_FOLDER + name, name);
 		}
 		return projectPaths.size == 0;
 	}

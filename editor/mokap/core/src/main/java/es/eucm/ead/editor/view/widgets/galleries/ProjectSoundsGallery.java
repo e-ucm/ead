@@ -61,6 +61,7 @@ import es.eucm.ead.editor.view.widgets.layouts.Gallery;
 public class ProjectSoundsGallery extends ThumbnailsGallery implements
 		Worker.WorkerListener, Platform.FileChooserListener {
 
+	private Drawable drawable;
 	private ClickListener soundClicked = new ClickListener() {
 		@Override
 		public void clicked(InputEvent event, float x, float y) {
@@ -77,19 +78,18 @@ public class ProjectSoundsGallery extends ThumbnailsGallery implements
 		super(rows, columns, null, controller.getApplicationAssets().getSkin(),
 				controller.getApplicationAssets().getI18N(), controller
 						.getApplicationAssets().getSkin()
-						.get(Gallery.GalleryStyle.class),
-				SkinConstants.IC_ADD_SOUND);
+						.get(Gallery.GalleryStyle.class));
 		this.controller = controller;
+		drawable = skin.getDrawable(SkinConstants.IC_MUSIC);
 	}
 
 	@Override
 	public void loadContents(String checked) {
 		clear();
-		controller.action(ExecuteWorker.class, LoadSounds.class, this,
-				SkinConstants.IC_MUSIC);
+		controller.action(ExecuteWorker.class, LoadSounds.class, this);
 	}
 
-	public Gallery.Cell addTile(String path, String title, Drawable drawable) {
+	public Gallery.Cell addTile(String path, String title) {
 		Tile tile = WidgetBuilder.tile(title, drawable);
 		Actor background = tile.getBackground();
 		background.setColor(Color.TEAL);
@@ -110,7 +110,7 @@ public class ProjectSoundsGallery extends ThumbnailsGallery implements
 		});
 	}
 
-	private void askForAudio() {
+	public void askForAudio() {
 		MokapPlatform platform = (MokapPlatform) controller.getPlatform();
 		platform.askForAudio(controller, this);
 	}
@@ -127,7 +127,7 @@ public class ProjectSoundsGallery extends ThumbnailsGallery implements
 
 	@Override
 	public void result(Object... results) {
-		addTile((String) results[0], (String) results[1], (Drawable) results[2]);
+		addTile((String) results[0], (String) results[1]);
 	}
 
 	@Override
