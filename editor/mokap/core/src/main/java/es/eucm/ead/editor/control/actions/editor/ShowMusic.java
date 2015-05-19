@@ -41,11 +41,10 @@ import com.badlogic.gdx.audio.Music;
 import com.badlogic.gdx.math.Interpolation;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
+import com.badlogic.gdx.scenes.scene2d.InputListener;
+import com.badlogic.gdx.scenes.scene2d.Touchable;
 import com.badlogic.gdx.scenes.scene2d.actions.Actions;
-import com.badlogic.gdx.scenes.scene2d.ui.Button;
-import com.badlogic.gdx.scenes.scene2d.ui.Label;
-import com.badlogic.gdx.scenes.scene2d.ui.Skin;
-import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
+import com.badlogic.gdx.scenes.scene2d.ui.*;
 import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.scenes.scene2d.utils.Layout;
@@ -64,10 +63,12 @@ import es.eucm.ead.editor.utils.Actions2;
 import es.eucm.ead.editor.utils.ProjectUtils;
 import es.eucm.ead.editor.view.Modal;
 import es.eucm.ead.editor.view.SkinConstants;
+import es.eucm.ead.editor.view.builders.SoundsView;
 import es.eucm.ead.editor.view.widgets.Slider;
 import es.eucm.ead.editor.view.widgets.WidgetBuilder;
 import es.eucm.ead.editor.view.widgets.layouts.LinearLayout;
 import es.eucm.ead.editor.view.widgets.modals.ModalContainer;
+import es.eucm.ead.editor.view.widgets.selectors.Selector;
 import es.eucm.ead.engine.I18N;
 import es.eucm.ead.schema.components.ModelComponent;
 import es.eucm.ead.schema.components.behaviors.Behavior;
@@ -78,8 +79,9 @@ import es.eucm.ead.schemax.ComponentIds;
 import es.eucm.ead.schemax.FieldName;
 
 public class ShowMusic extends EditorAction implements
-		Platform.FileChooserListener {
+		Selector.SelectorListener<String> {
 
+	private Actor soundSelector;
 	private Controller controller;
 	private I18N i18N;
 	private PlaySound playSound;
@@ -88,9 +90,8 @@ public class ShowMusic extends EditorAction implements
 	private TextButton soundName;
 	private Slider slider;
 
-	private ModalContainer container;
-
 	private Button delete;
+	private MusicModal modal;
 
 	public ShowMusic() {
 		super(true, false);
@@ -104,7 +105,10 @@ public class ShowMusic extends EditorAction implements
 		i18N = applicationAssets.getI18N();
 		Skin skin = applicationAssets.getSkin();
 
-		MusicModal list = new MusicModal(skin);
+		modal = new MusicModal();
+		modal.background(skin
+				.getDrawable(SkinConstants.DRAWABLE_SEMI_TRANSPARENT));
+		final LinearLayout list = modal.list;
 		list.background(skin.getDrawable(SkinConstants.DRAWABLE_PAGE));
 		float pad = WidgetBuilder.dpToPixels(16);
 		list.pad(pad);
@@ -131,9 +135,17 @@ public class ShowMusic extends EditorAction implements
 		soundName.addListener(new ClickListener() {
 			@Override
 			public void clicked(InputEvent event, float x, float y) {
-				MokapPlatform platform = (MokapPlatform) controller
-						.getPlatform();
-				platform.askForAudio(controller, ShowMusic.this);
+				Views views = controller.getViews();
+				float duration = 0.57f;
+				SoundsView builder = views.getBuilder(SoundsView.class);
+				soundSelector = builder.getView(ShowMusic.this);
+				soundSelector.setX(Gdx.graphics.getWidth());
+				soundSelector.addAction(Actions.moveTo(0, 0, duration,
+						Interpolation.exp5Out));
+				modal.addActor(soundSelector);
+				views.getViewsContainer().addAction(
+						Actions.delay(duration, Actions.visible(false)));
+
 			}
 		});
 		slider = new Slider(0, 1, .05f, false, skin);
@@ -164,21 +176,6 @@ public class ShowMusic extends EditorAction implements
 				textButtonStyle);
 		ok.addListener(hideModalListener);
 		list.add(ok).right();
-
-		container = new ModalContainer(skin, list) {
-
-			@Override
-			public void hide(Runnable runnable) {
-				super.hide(runnable);
-				if (scene != null && playSound != null) {
-					String uri = playSound.getUri();
-					if (uri == null || uri.isEmpty()) {
-						removeComponent();
-					}
-				}
-				controller.getCommands().popStack(false);
-			}
-		};
 	}
 
 	private void removeComponent() {
@@ -193,6 +190,7 @@ public class ShowMusic extends EditorAction implements
 	@Override
 	public void perform(Object... args) {
 		controller.getCommands().pushStack();
+		System.err.println("PUSH STACK");
 		scene = (ModelEntity) controller.getModel().getSelection()
 				.getSingle(Selection.SCENE);
 		ModelComponent component = Q
@@ -210,7 +208,7 @@ public class ShowMusic extends EditorAction implements
 
 			@Override
 			public void run() {
-				controller.getViews().showModal(container, 0, 0);
+				controller.getViews().showModal(modal, 0, 0);
 			}
 		});
 
@@ -240,62 +238,75 @@ public class ShowMusic extends EditorAction implements
 		slider.setValue(playSound.getVolume());
 	}
 
-	@Override
-	public void fileChosen(String path, Result result) {
-		if (result == Result.SUCCESS || path == null) {
-			String projectPath = controller.getEditorGameAssets()
-					.copyToProjectIfNeeded(path, Music.class);
-			if (projectPath != null) {
-				if (ProjectUtils.isSupportedAudio(controller
-						.getEditorGameAssets().resolve(projectPath))) {
-
-					controller.action(SetField.class, playSound, FieldName.URI,
-							projectPath);
-					read();
-				} else {
-					controller.action(ShowToast.class,
-							i18N.m("invalid.resource"));
-				}
-			} else {
-				controller.action(ShowToast.class,
-						i18N.m(Result.NOT_FOUND.getI18nKey()));
-			}
-		} else if (result == Result.NOT_FOUND) {
-			controller.action(ShowToast.class, i18N.m(result.getI18nKey()));
-		}
-	}
-
 	private void setSoundName(String uri) {
 		String name = ProjectUtils.getFileName(uri);
 		soundName.setText(name);
 		soundName.setUserObject(uri);
 	}
 
-	private static final class MusicModal extends LinearLayout implements Modal {
+	private class MusicModal extends Table implements Modal {
 
-		public MusicModal(Skin skin) {
-			super(false, skin.getDrawable(SkinConstants.DRAWABLE_PAGE));
+		private LinearLayout list;
+
+		public MusicModal() {
+			setFillParent(true);
+			list = new LinearLayout(false);
+			add(list);
 		}
 
 		@Override
 		public void show(Views views) {
-			((Layout) getParent()).layout();
-			float y = getY();
-			setY(Gdx.graphics.getHeight());
+			validate();
 			clearActions();
-			addAction(Actions2.moveToY(y, 0.33f, Interpolation.exp5Out));
+			getColor().a = 0.0f;
+			addAction(Actions.alpha(1.0f, 0.25f));
+			float y = list.getY();
+			list.setY(Gdx.graphics.getHeight());
+			list.clearActions();
+			list.addAction(Actions2.moveToY(y, 0.33f, Interpolation.exp5Out));
 		}
 
 		@Override
 		public void hide(Runnable runnable) {
-			addAction(Actions.sequence(Actions2.moveToY(
+			clearActions();
+			addAction(Actions.alpha(0.0f, 0.25f));
+			list.addAction(Actions.sequence(Actions2.moveToY(
 					Gdx.graphics.getHeight(), 0.33f, Interpolation.exp5Out),
 					Actions.run(runnable)));
+
+			if (scene != null && playSound != null) {
+				String uri = playSound.getUri();
+				if (uri == null || uri.isEmpty()) {
+					removeComponent();
+				}
+			}
+			controller.getCommands().popStack(false);
+			System.err.println("POPPPPPPPPPPP STACK");
 		}
 
 		@Override
 		public boolean hideAlways() {
 			return false;
 		}
+
+	}
+
+	@Override
+	public void selected(String selected) {
+		controller.action(SetField.class, playSound, FieldName.URI, selected);
+		read();
+		hideSelector(soundSelector);
+	}
+
+	@Override
+	public void cancelled() {
+		hideSelector(soundSelector);
+	}
+
+	private void hideSelector(Actor actor) {
+		controller.getViews().getViewsContainer().setVisible(true);
+		actor.addAction(Actions.sequence(Actions.moveTo(
+				Gdx.graphics.getWidth(), 0, 0.57f, Interpolation.exp5Out),
+				Actions.removeActor()));
 	}
 }

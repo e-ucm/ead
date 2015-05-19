@@ -34,74 +34,66 @@
  *      You should have received a copy of the GNU Lesser General Public License
  *      along with eAdventure.  If not, see <http://www.gnu.org/licenses/>.
  */
-package es.eucm.ead.editor.view.widgets.modals;
+package es.eucm.ead.editor.control.workers;
 
 import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.scenes.scene2d.Actor;
-import com.badlogic.gdx.scenes.scene2d.Touchable;
-import com.badlogic.gdx.scenes.scene2d.actions.Actions;
-import com.badlogic.gdx.scenes.scene2d.ui.Container;
+import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.utils.Drawable;
+import com.badlogic.gdx.utils.Array;
+import es.eucm.ead.editor.assets.ApplicationAssets;
+import es.eucm.ead.editor.control.Controller;
+import es.eucm.ead.editor.utils.ProjectUtils;
+import es.eucm.ead.engine.assets.Assets;
+import es.eucm.ead.schemax.ModelStructure;
 
-import es.eucm.ead.editor.control.Views;
-import es.eucm.ead.editor.view.Modal;
+import java.io.File;
+import java.io.FileFilter;
 
-public class ModalContainer extends Container<Actor> implements Modal {
+/**
+ * Loads all children files that are sounds (ProjectUtils#isSupportedAudio) from
+ * the ModelStructure#SOUNDS_FOLDER.
+ * <dl>
+ * <dt><strong>The result arguments are</strong></dt>
+ * <dd><strong>None</strong>
+ * </dl>
+ */
+public class LoadSounds extends Worker {
 
-	public ModalContainer(Skin skin, Actor actor) {
-		this(skin.get(ModalContainerStyle.class), actor);
-	}
+	private Array<FileHandle> projectPaths;
+	private Skin skin;
 
-	public ModalContainer(ModalContainerStyle style, Actor actor) {
-		super(actor);
-		setBackground(style.background);
-		setTouchable(Touchable.enabled);
+	public LoadSounds() {
+		super(true);
 	}
 
 	@Override
-	public void show(Views views) {
-		clearActions();
-		getColor().a = 0.0f;
-		addAction(Actions.alpha(1.0f, 0.25f));
-		if (getActor() instanceof Modal) {
-			((Modal) getActor()).show(views);
+	public void setController(Controller controller) {
+		super.setController(controller);
+		projectPaths = new Array<FileHandle>();
+		skin = controller.getApplicationAssets().getSkin();
+	}
+
+	@Override
+	protected void prepare() {
+		projectPaths.clear();
+		FileHandle fileFolder = controller.getApplicationAssets().absolute(
+				controller.getLoadingPath() + ModelStructure.SOUNDS_FOLDER);
+		if (fileFolder.exists()) {
+			projectPaths.addAll(fileFolder.list());
 		}
 	}
 
 	@Override
-	public void hide(Runnable runnable) {
-		clearActions();
-		if (getActor() instanceof Modal) {
-			addAction(Actions.alpha(0.0f, 0.25f));
-			((Modal) getActor()).hide(runnable);
-		} else {
-			addAction(Actions.sequence(Actions.alpha(0.0f, 0.25f),
-					Actions.run(runnable)));
+	protected boolean step() {
+		if (projectPaths == null || projectPaths.size == 0) {
+			return true;
 		}
-	}
-
-	@Override
-	public float getPrefWidth() {
-		return Gdx.graphics.getWidth();
-	}
-
-	@Override
-	public float getPrefHeight() {
-		return Gdx.graphics.getHeight();
-	}
-
-	@Override
-	public boolean hideAlways() {
-		if (getActor() instanceof Modal) {
-			return ((Modal) getActor()).hideAlways();
+		FileHandle file = projectPaths.removeIndex(0);
+		if (ProjectUtils.isSupportedAudio(file)) {
+			String name = file.name();
+			result(ModelStructure.SOUNDS_FOLDER + name, name);
 		}
-		return false;
-	}
-
-	public static class ModalContainerStyle {
-
-		public Drawable background;
-
+		return projectPaths.size == 0;
 	}
 }

@@ -122,4 +122,5 @@ public class CirclesMenu extends LinearLayout implements Modal {
 	public boolean hideAlways() {
 		return true;
 	}
+
 }

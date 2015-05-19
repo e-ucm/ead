@@ -240,6 +240,10 @@ public class Views implements ModelListener<LoadEvent> {
 		return (T) builder;
 	}
 
+	public <T extends Builder> T getBuilder(Class<T> viewClass) {
+		return getBuilder(viewClass, viewsBuilders);
+	}
+
 	/**
 	 * Sets as root the view with the given class. Releases the current view
 	 * 

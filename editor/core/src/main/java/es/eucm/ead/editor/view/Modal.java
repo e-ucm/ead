@@ -54,4 +54,5 @@ public interface Modal {
 	 *         input is detected outside its bounds.
 	 */
 	boolean hideAlways();
+
 }

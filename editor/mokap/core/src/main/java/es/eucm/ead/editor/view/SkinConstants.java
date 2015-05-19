@@ -64,6 +64,7 @@ public interface SkinConstants {
 	String DRAWABLE_BROWN_TOOLBAR = "brown_toolbar";
 	String DRAWABLE_CUP = "cup";
 	String DRAWABLE_PENCIL = "pencil";
+	String DRAWABLE_SEMI_TRANSPARENT = "semi_transparent_bg";
 
 	String STYLE_DEFAULT = "default";
 	String STYLE_CONTEXT = "context";
@@ -196,6 +197,7 @@ public interface SkinConstants {
 	String IC_SEGMENT_MIDDLE = "ic_segment_middle";
 	String IC_ARROW = "ic_arrow";
 	String IC_ADD_SCENE = "ic_add_scene";
+	String IC_ADD_SOUND = "ic_add_sound";
 
 	String IC_RANDOM = "ic_random";
 
@@ -207,6 +209,7 @@ public interface SkinConstants {
 	// Categories color
 	Color COLOR_MOKAPS = Color.DARK_GRAY;
 	Color COLOR_IMAGES = Color.MAROON;
+	Color COLOR_SOUNDS = Color.TEAL;
 
 	String IMG_EMPTY_BG = "emptybg.png";
 

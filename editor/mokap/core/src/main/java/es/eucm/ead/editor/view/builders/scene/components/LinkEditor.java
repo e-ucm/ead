@@ -51,8 +51,10 @@ import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
 import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.utils.Array;
+import es.eucm.ead.editor.assets.ApplicationAssets;
 import es.eucm.ead.editor.control.Controller;
 import es.eucm.ead.editor.control.Selection;
+import es.eucm.ead.editor.control.Views;
 import es.eucm.ead.editor.control.actions.editor.CreateSceneThumbnail;
 import es.eucm.ead.editor.control.actions.model.generic.SetField;
 import es.eucm.ead.editor.model.Q;
@@ -120,8 +122,9 @@ public class LinkEditor extends ComponentEditor<Behavior> implements
 
 	@Override
 	protected void buildContent() {
-		I18N i18N = controller.getApplicationAssets().getI18N();
-		Skin skin = controller.getApplicationAssets().getSkin();
+		ApplicationAssets applicationAssets = controller.getApplicationAssets();
+		I18N i18N = applicationAssets.getI18N();
+		Skin skin = applicationAssets.getSkin();
 
 		tile = new Tile(skin) {
 			@Override
@@ -137,9 +140,13 @@ public class LinkEditor extends ComponentEditor<Behavior> implements
 			@Override
 			public void clicked(InputEvent event, float x, float y) {
 				sceneSelector.prepare(LinkEditor.this, sceneId);
-				sceneSelector.addAction(Actions.moveTo(0, 0, 0.57f,
+				float duration = 0.57f;
+				sceneSelector.addAction(Actions.moveTo(0, 0, duration,
 						Interpolation.exp5Out));
-				controller.getViews().addToModalsContainer(sceneSelector);
+				Views views = controller.getViews();
+				views.addToModalsContainer(sceneSelector);
+				views.getViewsContainer().addAction(
+						Actions.delay(duration, Actions.visible(false)));
 			}
 
 		});
@@ -203,7 +210,7 @@ public class LinkEditor extends ComponentEditor<Behavior> implements
 
 		transition = Transition.FADE_IN;
 		transitionName = new TextButton(i18N.m(transition.toString()),
-				controller.getApplicationAssets().getSkin());
+				applicationAssets.getSkin());
 		transitionName.getLabel().setEllipsis(true);
 		transitionName.getLabelCell().width(0);
 		list.add(transitionName).expandX();
@@ -211,17 +218,22 @@ public class LinkEditor extends ComponentEditor<Behavior> implements
 		transitionName.addListener(new ClickListener() {
 			@Override
 			public void clicked(InputEvent event, float x, float y) {
-				transitionSelector.addAction(Actions.moveTo(0, 0, 0.57f,
+				float duration = 0.57f;
+				transitionSelector.addAction(Actions.moveTo(0, 0, duration,
 						Interpolation.exp5Out));
-				controller.getViews().addToModalsContainer(transitionSelector);
+				Views views = controller.getViews();
+				views.addToModalsContainer(transitionSelector);
 				transitionSelector.prepare(transitionSelectorListener,
 						transition.toString(), sceneId);
+				views.getViewsContainer().addAction(
+						Actions.delay(duration, Actions.visible(false)));
 			}
 		});
 
 	}
 
 	private void hideSelector(Actor actor) {
+		controller.getViews().getViewsContainer().setVisible(true);
 		actor.addAction(Actions.sequence(Actions.moveTo(
 				Gdx.graphics.getWidth(), 0, 0.57f, Interpolation.exp5Out),
 				Actions.removeActor()));
