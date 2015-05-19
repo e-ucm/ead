@@ -36,7 +36,6 @@
  */
 package es.eucm.ead.editor.view.builders.scene;
 
-import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.math.Interpolation;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
@@ -54,14 +53,10 @@ import es.eucm.ead.editor.control.Selection.Context;
 import es.eucm.ead.editor.control.actions.editor.*;
 import es.eucm.ead.editor.control.actions.editor.ShowInfoPanel.TypePanel;
 import es.eucm.ead.editor.control.actions.model.AddInteractiveZone;
-import es.eucm.ead.editor.control.actions.model.AddSceneElement;
 import es.eucm.ead.editor.control.actions.model.SetSelection;
-import es.eucm.ead.editor.control.actions.model.TakePicture;
 import es.eucm.ead.editor.model.Model.SelectionListener;
 import es.eucm.ead.editor.model.Q;
 import es.eucm.ead.editor.model.events.SelectionEvent;
-import es.eucm.ead.editor.platform.Platform.FileChooserListener;
-import es.eucm.ead.editor.utils.ProjectUtils;
 import es.eucm.ead.editor.view.ModelView;
 import es.eucm.ead.editor.view.SkinConstants;
 import es.eucm.ead.editor.view.builders.ResourcesView;
@@ -77,12 +72,10 @@ import es.eucm.ead.editor.view.widgets.baseview.BaseView;
 import es.eucm.ead.editor.view.widgets.baseview.Navigation;
 import es.eucm.ead.engine.I18N;
 import es.eucm.ead.engine.gdx.AbstractWidget;
-import es.eucm.ead.schema.components.controls.Label;
 import es.eucm.ead.schema.editor.components.GameData;
-import es.eucm.ead.schema.entities.ModelEntity;
 
 public class SceneEditor extends BaseView implements ModelView,
-		SelectionListener, BackListener, FileChooserListener {
+		SelectionListener, BackListener {
 
 	public static final float ANIMATION_TIME = 0.3f;
 
@@ -331,15 +324,12 @@ public class SceneEditor extends BaseView implements ModelView,
 		CirclesMenu circlesMenu = WidgetBuilder.circlesMenu(Align.right,
 				new String[] { SkinConstants.IC_MUSIC, SkinConstants.IC_BLUR,
 						SkinConstants.IC_ZONE, SkinConstants.IC_BRUSH,
-						SkinConstants.IC_TEXT, SkinConstants.IC_CAMERA,
-						SkinConstants.IC_PHOTO, SkinConstants.IC_CLOUD,
+						SkinConstants.IC_TEXT, SkinConstants.IC_CLOUD,
 						SkinConstants.IC_CLOSE }, new Class[] {
 						ShowMusic.class, ChangeView.class,
 						AddInteractiveZone.class, null, AddLabel.class,
-						TakePicture.class, ChooseFile.class, ChangeView.class,
-						null }, new Object[][] { null,
+						ChangeView.class, null }, new Object[][] { null,
 						new Object[] { ShadersView.class }, null, null, null,
-						null, new Object[] { false, this },
 						new Object[] { ResourcesView.class }, null });
 
 		Actor zone = circlesMenu.findActor(SkinConstants.IC_ZONE);
@@ -355,30 +345,6 @@ public class SceneEditor extends BaseView implements ModelView,
 		});
 
 		return circlesMenu;
-	}
-
-	@Override
-	public void fileChosen(String path, Result result) {
-		if (path == null || path.trim().isEmpty()) {
-			return;
-		}
-
-		FileHandle fh = controller.getEditorGameAssets().absolute(path);
-		if (ProjectUtils.isSupportedImage(fh)) {
-			addElement(path);
-		} else if (ProjectUtils.isSupportedText(fh)) {
-			Label label = new Label();
-			label.setText(fh.readString());
-			controller.action(AddLabel.class, label);
-		} else {
-			controller.action(ShowToast.class, i18N.m("invalid.resource"));
-		}
-	}
-
-	private void addElement(String elemPath) {
-		ModelEntity sceneElement = controller.getTemplates()
-				.createSceneElement(elemPath, false);
-		controller.action(AddSceneElement.class, sceneElement);
 	}
 
 }
