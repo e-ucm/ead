@@ -213,5 +213,10 @@ public class FieldName {
 	/**
 	 * Refers to {@link es.eucm.ead.schema.effects.PlaySound#uri}
 	 */
-	URI = "uri";
+	URI = "uri",
+
+	/**
+	 * Refers to {@link es.eucm.ead.schema.renderers.EmptyRenderer#hitAll}
+	 */
+	HIT_ALL = "hitAll";
 }

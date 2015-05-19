@@ -44,6 +44,7 @@ gallery = Gallery
 group.create = Create group
 go.previous.scene = Go to previous scene
 go.to = Go to: {}
+hit.all = Fill the scene
 image = Image
 images= Images
 importing = Importing
