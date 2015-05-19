@@ -46,6 +46,7 @@ gallery = Galería
 group.create = Crear grupo
 go.previous.scene = A escena anterior
 go.to = Ir a: {}
+hit.all = Ocupar toda la escena
 image = Imagen
 images = Imágenes
 importing = Importando

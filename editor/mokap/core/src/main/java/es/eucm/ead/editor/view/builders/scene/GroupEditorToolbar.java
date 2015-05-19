@@ -74,13 +74,7 @@ import es.eucm.ead.editor.view.builders.scene.draw.BrushStrokes;
 import es.eucm.ead.editor.view.builders.scene.draw.BrushStrokes.ModeEvent;
 import es.eucm.ead.editor.view.builders.scene.draw.BrushStrokes.ModeListener;
 import es.eucm.ead.editor.view.listeners.VisibleListener;
-import es.eucm.ead.editor.view.widgets.ContextMenu;
-import es.eucm.ead.editor.view.widgets.IconButton;
-import es.eucm.ead.editor.view.widgets.ImageEditor;
-import es.eucm.ead.editor.view.widgets.LabelTextEditor;
-import es.eucm.ead.editor.view.widgets.MultiWidget;
-import es.eucm.ead.editor.view.widgets.Switch;
-import es.eucm.ead.editor.view.widgets.WidgetBuilder;
+import es.eucm.ead.editor.view.widgets.*;
 import es.eucm.ead.editor.view.widgets.draw.BrushStrokesPicker;
 import es.eucm.ead.editor.view.widgets.draw.BrushStrokesPicker.SizeEvent;
 import es.eucm.ead.editor.view.widgets.draw.BrushStrokesPicker.SizeListener;
@@ -93,6 +87,7 @@ import es.eucm.ead.engine.I18N;
 import es.eucm.ead.schema.components.Reference;
 import es.eucm.ead.schema.components.controls.Label;
 import es.eucm.ead.schema.entities.ModelEntity;
+import es.eucm.ead.schema.renderers.EmptyRenderer;
 
 public class GroupEditorToolbar extends MultiWidget implements ModelView {
 
@@ -240,6 +235,8 @@ public class GroupEditorToolbar extends MultiWidget implements ModelView {
 		final ImageEditor imageEditor = new ImageEditor(controller);
 		final IconButton edit = WidgetBuilder.toolbarIcon(
 				SkinConstants.IC_EDIT, i18N.m("edit"));
+		final EmptyRendererEditor emptyRendererEditor = new EmptyRendererEditor(
+				controller);
 
 		edit.addCaptureListener(new ClickListener() {
 			@Override
@@ -254,6 +251,10 @@ public class GroupEditorToolbar extends MultiWidget implements ModelView {
 						|| Q.hasComponent(sceneElement, Reference.class)) {
 					controller.action(ShowContextMenu.class, edit, imageEditor);
 					imageEditor.prepare(sceneEditor);
+				} else if (Q.hasComponent(sceneElement, EmptyRenderer.class)) {
+					controller.action(ShowContextMenu.class, edit,
+							emptyRendererEditor);
+					emptyRendererEditor.prepare(sceneEditor);
 				} else if (Q.isGroup(sceneElement)) {
 					event.stop();
 					Actor actor = sceneEditor.getGroupEditor().findActor(
@@ -295,6 +296,8 @@ public class GroupEditorToolbar extends MultiWidget implements ModelView {
 		transform.pack();
 		imageEditor.pack();
 		imageEditor.setOrigin(Align.topLeft);
+		emptyRendererEditor.pack();
+		emptyRendererEditor.setOrigin(Align.topLeft);
 		textFontPane.setOrigin(textFontPane.getWidth()
 				- (transform.getWidth() - editButton.getX()),
 				textFontPane.getHeight());
@@ -474,7 +477,8 @@ public class GroupEditorToolbar extends MultiWidget implements ModelView {
 					&& (Q.hasImage(entity)
 							|| Q.hasComponent(entity, Reference.class)
 							|| Q.hasComponent(entity, Label.class) || entity
-							.getChildren().size > 1));
+							.getChildren().size > 1)
+					|| Q.hasComponent(entity, EmptyRenderer.class));
 		}
 	}
 

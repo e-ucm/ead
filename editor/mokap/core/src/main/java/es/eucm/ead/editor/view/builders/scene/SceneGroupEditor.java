@@ -53,6 +53,7 @@ import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.Pools;
 import com.badlogic.gdx.utils.Predicate;
+import es.eucm.ead.editor.components.EditorEmptyActor;
 import es.eucm.ead.editor.control.Controller;
 import es.eucm.ead.editor.control.MokapController.BackListener;
 import es.eucm.ead.editor.control.Preferences;
@@ -86,6 +87,7 @@ import es.eucm.ead.schema.components.ModelComponent;
 import es.eucm.ead.schema.editor.components.GameData;
 import es.eucm.ead.schema.editor.components.SceneEditState;
 import es.eucm.ead.schema.entities.ModelEntity;
+import es.eucm.ead.schema.renderers.EmptyRenderer;
 import es.eucm.ead.schemax.FieldName;
 
 public class SceneGroupEditor extends GroupEditor implements ModelView,
@@ -110,6 +112,8 @@ public class SceneGroupEditor extends GroupEditor implements ModelView,
 	private ChildrenListListener childrenListListener = new ChildrenListListener();
 
 	private LabelFieldListener labelListener = new LabelFieldListener();
+
+	private EmptyRendererFieldListener emptyRendererListener = new EmptyRendererFieldListener();
 
 	private ModelEntityPredicate entityPredicate = new ModelEntityPredicate();
 
@@ -236,6 +240,7 @@ public class SceneGroupEditor extends GroupEditor implements ModelView,
 		model.removeListenerFromAllTargets(transformationListener);
 		model.removeListenerFromAllTargets(childrenListListener);
 		model.removeListenerFromAllTargets(labelListener);
+		model.removeListenerFromAllTargets(emptyRendererListener);
 		if (scene != null) {
 			removeListeners(Q.getModelEntity(scene.getGroup()));
 		}
@@ -331,7 +336,11 @@ public class SceneGroupEditor extends GroupEditor implements ModelView,
 		if (entity != null) {
 			model.addFieldListener(entity, transformationListener);
 			model.addListListener(entity.getChildren(), childrenListListener);
-
+			if (Q.hasComponent(entity, EmptyRenderer.class)) {
+				model.addFieldListener(
+						Q.getComponent(entity, EmptyRenderer.class),
+						emptyRendererListener);
+			}
 			if (actor instanceof Group) {
 				for (Actor child : ((Group) actor).getChildren()) {
 					if (child instanceof Label) {
@@ -556,6 +565,25 @@ public class SceneGroupEditor extends GroupEditor implements ModelView,
 			}
 			label.pack();
 			refreshSelectionBox();
+		}
+	}
+
+	public class EmptyRendererFieldListener implements FieldListener {
+
+		@Override
+		public boolean listenToField(String fieldName) {
+			return fieldName.equals(FieldName.HIT_ALL);
+		}
+
+		@Override
+		public void modelChanged(FieldEvent event) {
+			componentPredicate.setComponent((ModelComponent) event.getTarget());
+			Actor actor = findActor(scene.getGroup(), componentPredicate);
+			EditorEmptyActor emptyActor = (EditorEmptyActor) ((EntityGroup) actor)
+					.getChildren().get(0);
+			Object value = event.getValue();
+
+			emptyActor.setHitAll((Boolean) value);
 		}
 	}
 
