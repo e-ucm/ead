@@ -7,8 +7,10 @@
 # Each '{}' will be interpreted as a placeholder for the next argument
 
 accept = Aceptar
+add_condition = Añadir condición {}
 always = Siempre
 amount = Cantidad
+and = Y
 animations = Animaciones
 animation.in = Animaciones de entrada
 application.title = Mokap
@@ -39,8 +41,10 @@ edit = Editar
 edit.Pixlr = Editar con Pixlr
 element = Elemento
 erase = Borrar
+exchange_and_or = Intercambiar Y y O
 fadeIn = Aparecer
 fadeOut = Desaparecer
+false = Falso
 fast = Rápido
 fx = Ambientación
 gallery = Galería
@@ -101,6 +105,7 @@ project.is.corrupted = Se ha tratado de abrir el proyecto ({}), pero parece que 
 project.not.found = Se ha tratado de abrir el proyecto ({}), pero parece que ya no existe. ¿Quizá se borró manualmente?
 project.prepare = Preparando mokap para compartir
 ok = OK
+or = O
 redo = Rehacer
 repeats = Repeticiones
 rename = Renombrar
@@ -149,9 +154,11 @@ toolbar.text.input = Introduce un texto
 to.back = Enviar detrás
 to.front = Enviar delante
 transition = Transición
+true = Verdadero
 undo = Deshacer
 ungroup = Desagrupar
 untitled = Sin título
+variable = Variable
 
 
 
