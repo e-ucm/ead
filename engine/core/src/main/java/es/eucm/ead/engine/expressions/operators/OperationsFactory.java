@@ -61,6 +61,10 @@ public class OperationsFactory {
 		this.gameLoop = gameLoop;
 	}
 
+	public OperationsFactory() {
+
+	}
+
 	public Operation createOperation(String name) {
 		Operation op = null;
 		if ("and".equals(name)) {

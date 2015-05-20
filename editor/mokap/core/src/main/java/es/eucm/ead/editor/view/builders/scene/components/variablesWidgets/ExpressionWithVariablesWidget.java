@@ -34,25 +34,19 @@
  *      You should have received a copy of the GNU Lesser General Public License
  *      along with eAdventure.  If not, see <http://www.gnu.org/licenses/>.
  */
-package es.eucm.ead.editor.view.builders.scene.components;
+package es.eucm.ead.editor.view.builders.scene.components.variablesWidgets;
 
-import com.badlogic.gdx.scenes.scene2d.ui.Skin;
+import es.eucm.ead.editor.view.widgets.layouts.LinearLayout;
+import es.eucm.ead.engine.expressions.Expression;
 
-import es.eucm.ead.editor.control.Controller;
-import es.eucm.ead.editor.view.builders.scene.components.transformanimations.AnimationsEditor;
-import es.eucm.ead.editor.view.builders.scene.context.SceneElementContext;
+public abstract class ExpressionWithVariablesWidget extends LinearLayout {
 
-public class InteractionContext extends SceneElementContext {
-
-	public InteractionContext(Controller controller, Skin skin) {
-		super(controller, skin);
+	public ExpressionWithVariablesWidget(boolean horizontal) {
+		super(horizontal);
 	}
 
-	protected void addContent() {
-		addComponentEditor(new LinkEditor(controller));
-		addComponentEditor(new AnimationsEditor(controller));
-		addComponentEditor(new SoundEditor(controller));
-		addComponentEditor(new VisibilityEditor(controller));
-	}
+	public abstract String getExpression();
+
+	public abstract void loadExpression(Expression expression);
 
 }

@@ -34,25 +34,26 @@
  *      You should have received a copy of the GNU Lesser General Public License
  *      along with eAdventure.  If not, see <http://www.gnu.org/licenses/>.
  */
-package es.eucm.ead.editor.view.builders.scene.components;
+package es.eucm.ead.editor.view.builders.scene.components.variablesWidgets;
 
-import com.badlogic.gdx.scenes.scene2d.ui.Skin;
-
+import com.badlogic.gdx.scenes.scene2d.utils.Drawable;
 import es.eucm.ead.editor.control.Controller;
-import es.eucm.ead.editor.view.builders.scene.components.transformanimations.AnimationsEditor;
-import es.eucm.ead.editor.view.builders.scene.context.SceneElementContext;
 
-public class InteractionContext extends SceneElementContext {
+public class Level1LogicExpressionWithWidget extends
+		LogicExpressionWithWidget<BooleanExpressionWidget> {
 
-	public InteractionContext(Controller controller, Skin skin) {
-		super(controller, skin);
+	public Level1LogicExpressionWithWidget(Controller controller,
+			OpValue defaultValue, Drawable drawable) {
+		super(controller, defaultValue, drawable);
 	}
 
-	protected void addContent() {
-		addComponentEditor(new LinkEditor(controller));
-		addComponentEditor(new AnimationsEditor(controller));
-		addComponentEditor(new SoundEditor(controller));
-		addComponentEditor(new VisibilityEditor(controller));
+	@Override
+	public BooleanExpressionWidget variableWidget() {
+		return new BooleanExpressionWidget(controller);
 	}
 
+	@Override
+	public void invertOperation() {
+		op = op.getOppositte();
+	}
 }

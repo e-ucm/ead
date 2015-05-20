@@ -51,4 +51,6 @@ public interface ComponentIds {
 	public static final String LINK = "_link";
 	public static final String SOUND = "_sound";
 	public static final String MUSIC = "_music";
+	public static final String VISIBILITY = "_visibility";
+
 }

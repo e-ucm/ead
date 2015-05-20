@@ -34,25 +34,35 @@
  *      You should have received a copy of the GNU Lesser General Public License
  *      along with eAdventure.  If not, see <http://www.gnu.org/licenses/>.
  */
-package es.eucm.ead.editor.view.builders.scene.components;
+package es.eucm.ead.editor.view.builders.scene.components.variablesWidgets;
 
-import com.badlogic.gdx.scenes.scene2d.ui.Skin;
-
+import com.badlogic.gdx.scenes.scene2d.Actor;
 import es.eucm.ead.editor.control.Controller;
-import es.eucm.ead.editor.view.builders.scene.components.transformanimations.AnimationsEditor;
-import es.eucm.ead.editor.view.builders.scene.context.SceneElementContext;
+import es.eucm.ead.editor.view.SkinConstants;
 
-public class InteractionContext extends SceneElementContext {
+public class Level2LogicExpressionWithWidget extends
+		LogicExpressionWithWidget<Level1LogicExpressionWithWidget> {
 
-	public InteractionContext(Controller controller, Skin skin) {
-		super(controller, skin);
+	public Level2LogicExpressionWithWidget(Controller controller,
+			OpValue defaultValue) {
+		super(controller, defaultValue);
 	}
 
-	protected void addContent() {
-		addComponentEditor(new LinkEditor(controller));
-		addComponentEditor(new AnimationsEditor(controller));
-		addComponentEditor(new SoundEditor(controller));
-		addComponentEditor(new VisibilityEditor(controller));
+	@Override
+	public Level1LogicExpressionWithWidget variableWidget() {
+		return new Level1LogicExpressionWithWidget(controller,
+				op.getOppositte(),
+				skin.getDrawable(SkinConstants.DRAWABLE_PAGE));
 	}
 
+	@Override
+	public void invertOperation() {
+		op = op.getOppositte();
+
+		for (Actor actor : getChildren()) {
+			if (actor instanceof Level1LogicExpressionWithWidget) {
+				((Level1LogicExpressionWithWidget) actor).invertOperation();
+			}
+		}
+	}
 }

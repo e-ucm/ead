@@ -5,8 +5,10 @@
 # Each '{}' will be interpreted as a placeholder for the next argument
 
 accept = Accept
+add_condition = Add {} condition
 always = Always
 amount = Amount
+and = And
 animations = Animations
 animation.in = Init animations
 application.title = Mokap
@@ -37,8 +39,10 @@ edit = Edit
 edit.Pixlr = Edit with Pixlr
 element = Element
 erase = Erase
+exchange_and_or = Exchange And and Or
 fadeIn = Fade in
 fadeOut = Fade out
+false = False
 fast = Fast
 fx = FX Settings
 gallery = Gallery
@@ -89,6 +93,7 @@ not.found = Not found
 nothing_to_select = Nothing to select in the area
 number.input = Enter a number
 ok = OK
+or = Or
 pass.horizontal = Pass horizontally
 pass.vertical = Pass vertically
 paste = Paste
@@ -149,9 +154,11 @@ toolbar.text.input = Enter text
 to.back = To back
 to.front = To front
 transition = Transition
+true = True
 undo = Undo
 ungroup = Ungroup
 untitled = Untitled
+variable = Variable
 
 
 

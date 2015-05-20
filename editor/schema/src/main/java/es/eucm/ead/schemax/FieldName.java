@@ -218,5 +218,12 @@ public class FieldName {
 	/**
 	 * Refers to {@link es.eucm.ead.schema.renderers.EmptyRenderer#hitAll}
 	 */
-	HIT_ALL = "hitAll";
+	HIT_ALL = "hitAll",
+
+	/**
+	 * Refers to
+	 * {@link es.eucm.ead.schema.components.ModelConditionedComponent#condition}
+	 */
+	CONDITION = "condition";
+
 }
