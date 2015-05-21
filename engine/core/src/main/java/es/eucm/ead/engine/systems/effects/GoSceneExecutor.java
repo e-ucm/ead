@@ -42,6 +42,7 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.Group;
 
+import com.badlogic.gdx.scenes.scene2d.Stage;
 import es.eucm.ead.engine.EntitiesLoader;
 import es.eucm.ead.engine.EntitiesLoader.EntityLoadedCallback;
 import es.eucm.ead.engine.GameView;
@@ -110,8 +111,9 @@ public class GoSceneExecutor extends EffectExecutor<GoScene> implements
 
 		if (sceneLayer.getChildren().size == 1) {
 			Actor currentScene = sceneLayer.getChildren().get(0);
-			transitionManager.setCurrentScene(currentScene.getStage()
-					.getBatch(), currentScene);
+			transitionManager.setCurrentScene(
+					((Stage) Gdx.input.getInputProcessor()).getBatch(),
+					currentScene);
 		}
 
 		gameView.clearLayer(Layer.SCENE_CONTENT, true);
