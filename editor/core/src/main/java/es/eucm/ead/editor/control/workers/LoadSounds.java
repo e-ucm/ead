@@ -61,7 +61,6 @@ import java.io.FileFilter;
 public class LoadSounds extends Worker {
 
 	private Array<FileHandle> projectPaths;
-	private Skin skin;
 
 	public LoadSounds() {
 		super(true);
@@ -71,7 +70,6 @@ public class LoadSounds extends Worker {
 	public void setController(Controller controller) {
 		super.setController(controller);
 		projectPaths = new Array<FileHandle>();
-		skin = controller.getApplicationAssets().getSkin();
 	}
 
 	@Override

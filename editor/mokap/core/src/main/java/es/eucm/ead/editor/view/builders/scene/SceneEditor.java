@@ -216,7 +216,7 @@ public class SceneEditor extends BaseView implements ModelView,
 
 	private void createSceneThumbnail() {
 		controller.action(CreateSceneThumbnail.class, getGroupEditor()
-				.getRootGroup());
+				.getSceneEntity());
 	}
 
 	@Override
@@ -255,7 +255,7 @@ public class SceneEditor extends BaseView implements ModelView,
 			brushStrokes.hide(true);
 			return true;
 		}
-		return false;
+		return sceneGroupEditor.onBackPressed();
 	}
 
 	public void setMode(Mode mode) {

@@ -254,6 +254,7 @@ public class SceneGroupEditor extends GroupEditor implements ModelView,
 		model.removeListenerFromAllTargets(emptyRendererListener);
 		if (scene != null) {
 			removeListeners(Q.getModelEntity(scene.getGroup()));
+			controller.getEngine().getGameLoop().removeEntity(scene);
 		}
 		controller.getModel().removeSelectionListener(sceneSelectionListener);
 	}
@@ -390,6 +391,10 @@ public class SceneGroupEditor extends GroupEditor implements ModelView,
 		} else {
 			return endGroupEdition();
 		}
+	}
+
+	public ModelEntity getSceneEntity() {
+		return sceneEntity;
 	}
 
 	/**
