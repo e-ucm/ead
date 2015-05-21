@@ -47,6 +47,10 @@ public interface SkinConstants {
 
 	String COLOR_SEMI_BLACK = "black_semi";
 	String COLOR_GRAY = "gray";
+	String COLOR_DEEP_ORANGE_SEMI = "deep_orange_semi";
+	String COLOR_GREEN_100 = "green_100";
+	String COLOR_LIGHT_GRAY = "light_gray";
+	String COLOR_RED_100 = "red_100";
 
 	String DRAWABLE_LOGO = "logo";
 	String DRAWABLE_BLANK = "blank";
@@ -65,6 +69,7 @@ public interface SkinConstants {
 	String DRAWABLE_CUP = "cup";
 	String DRAWABLE_PENCIL = "pencil";
 	String DRAWABLE_SEMI_TRANSPARENT = "semi_transparent_bg";
+	String DRAWABLE_CIRCLE = "circle";
 
 	String STYLE_DEFAULT = "default";
 	String STYLE_CONTEXT = "context";
@@ -129,6 +134,7 @@ public interface SkinConstants {
 	String IC_PHOTO = "ic_photo";
 	String IC_SOUND = "ic_sound";
 	String IC_MUSIC = "ic_music";
+	String IC_SCENE = "ic_scene";
 
 	String IC_SINGLE_SELECTION = "ic_single_selection";
 	String IC_MULTIPLE_SELECTION = "ic_multiple_selection";
@@ -146,6 +152,7 @@ public interface SkinConstants {
 	String IC_MIRROR_VERTICAL = "ic_mirror_vertical";
 	String IC_MIRROR_HORIZONTAL = "ic_mirror_horizontal";
 	String IC_DELETE = "ic_delete";
+	String IC_VARIABLE = "ic_variable";
 
 	String IC_COMPOSE = "ic_compose";
 	String IC_FX = "ic_fx";
@@ -205,6 +212,7 @@ public interface SkinConstants {
 	String IC_IMAGE = "ic_image";
 
 	String IC_REFRESH = "ic_refresh";
+	String IC_SETTINGS = "ic_settings";
 
 	String IC_VISIBILITY = "ic_visibility";
 

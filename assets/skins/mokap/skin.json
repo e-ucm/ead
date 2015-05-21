@@ -1,780 +1,893 @@
 {
-    "com.badlogic.gdx.graphics.g2d.BitmapFont": {
-        "default_font": {
-            "file": "Roboto-Regular.ttf",
-            "dpSize": 16
-        },
-        "default_bold": {
-            "file": "Roboto-Bold.ttf",
-            "dpSize": 16
-        },
-        "small_font": {
-            "file": "Roboto-Regular.ttf",
-            "dpSize": 12
-        },
-        "small_bold": {
-            "file": "Roboto-Bold.ttf",
-            "dpSize": 12
-        },
-        "big_font": {
-            "file": "Roboto-Regular.ttf",
-            "dpSize": 36
-        },
-        "big_bold": {
-            "file": "Roboto-Bold.ttf",
-            "dpSize": 36
-        }
+  "com.badlogic.gdx.graphics.g2d.BitmapFont": {
+    "default_font": {
+      "file": "Roboto-Regular.ttf",
+      "dpSize": 16
     },
-    "com.badlogic.gdx.graphics.Color": {
-        "transparent": {
-            "a": 0,
-            "r": 0,
-            "g": 0,
-            "b": 0
-        },
-        "semi_transparent": {
-            "a": 0.5,
-            "r": 0.5,
-            "g": 0.5,
-            "b": 0.5
-        },
-        "black_semi": {
-            "a": 0.5,
-            "r": 0.0,
-            "g": 0.0,
-            "b": 0.0
-        },
-        "white": {
-            "r": 1,
-            "g": 1,
-            "b": 1,
-            "a": 1
-        },
-        "semi_white": {
-            "r": 1,
-            "g": 1,
-            "b": 1,
-            "a": 0.5
-        },
-        "white_semi6": {
-            "r": 1,
-            "g": 1,
-            "b": 1,
-            "a": 0.6
-        },
-        "black": {
-            "r": 0,
-            "g": 0,
-            "b": 0,
-            "a": 1
-        },
-        "gray": {
-            "r": 0.6,
-            "g": 0.6,
-            "b": 0.6,
-            "a": 1
-        },
-        "dark_gray": {
-            "r": 0.196,
-            "g": 0.196,
-            "b": 0.196,
-            "a": 1
-        },
-        "light_gray": {
-            "r": 0.8627,
-            "g": 0.8627,
-            "b": 0.8627,
-            "a": 1.0
-        },
-        "gray_100": {
-            "r": 0.9607843,
-            "g": 0.9607843,
-            "b": 0.9607843,
-            "a": 1
-        },
-        "brown_moka": {
-            "r": 0.5245,
-            "g": 0.3333,
-            "b": 0.2823,
-            "a": 1
-        },
-        "dark_brown_moka": {
-            "r": 0.2431,
-            "g": 0.1529,
-            "b": 0.1372,
-            "a": 1
-        },
-        "light_brown_moka": {
-            "r": 0.7176,
-            "g": 0.3529,
-            "b": 0.2392,
-            "a": 1
-        },
-        "semi_light_brown_moka": {
-            "r": 0.7176,
-            "g": 0.3529,
-            "b": 0.2392,
-            "a": 0.5
-        },
-        "semi_dark_brown_moka": {
-          "r": 0.2431,
-          "g": 0.1529,
-          "b": 0.1372,
-          "a": 0.5
-        },
-        "light_blue": {
-            "r": 0.011764706,
-            "g": 0.6627451,
-            "b": 0.95686275,
-            "a": 1.0
-        },
-        "light_yellow": {
-            "r": 1,
-            "g": 1,
-            "b": 0.55294118,
-            "a": 1
-        },
-        "light_blue_semi": {
-            "r": 0.011764706,
-            "g": 0.6627451,
-            "b": 0.95686275,
-            "a": 0.5
-        },
-        "light_blue_900": {
-            "r": 0.003921569,
-            "g": 0.34117648,
-            "b": 0.60784316,
-            "a": 1
-        },
-        "light_yellow_semi": {
-            "r": 1,
-            "g": 1,
-            "b": 0.55294118,
-            "a": 0.5
-        },
-        "deep_orange": {
-            "r": 1.0,
-            "g": 0.34117648,
-            "b": 0.13333334,
-            "a": 1.0
-        },
-        "deep_orange_semi": {
-            "r": 1.0,
-            "g": 0.34117648,
-            "b": 0.13333334,
-            "a": 0.5
-        },
-        "deep_orange_900": {
-            "r": 0.7490196,
-            "g": 0.21176471,
-            "b": 0.047058824,
-            "a": 1
-        },
-        "purple": {
-            "r": 0.6117647,
-            "g": 0.15294118,
-            "b": 0.6901961,
-            "a": 1
-        }
+    "default_bold": {
+      "file": "Roboto-Bold.ttf",
+      "dpSize": 16
     },
-    "com.badlogic.gdx.scenes.scene2d.ui.Skin$TintedDrawable": {
-        "black_bg": {
-            "name": "blank",
-            "color": "black"
-        },
-        "progress_bar_bg": {
-            "name": "selected_tab",
-            "color": "semi_dark_brown_moka"
-        },
-        "progress_bar_knob_before": {
-            "name": "selected_tab",
-            "color": "light_brown_moka"
-        },
-        "transparent_bg": {
-            "name": "blank",
-            "color": "transparent"
-        },
-        "while_semi_bg": {
-            "name": "blank",
-            "color": "semi_white"
-        },
-        "black_semi_bg": {
-            "name": "blank",
-            "color": "black_semi"
-        },
-        "semi_transparent_bg": {
-            "name": "blank",
-            "color": "semi_transparent"
-        },
-        "light_yellow_semi_bg": {
-            "name": "blank",
-            "color": "light_yellow_semi"
-        },
-        "light_gray_bg": {
-            "name": "blank",
-            "color": "light_gray"
-        },
-        "light_blue_semi_bg": {
-            "name": "blank",
-            "color": "light_blue_semi"
-        },
-        "transparent_48_bg": {
-            "name": "bg48",
-            "color": "transparent"
-        },
-        "pressed_48_bg": {
-            "name": "bg48",
-            "color": "dark_brown_moka"
-        },
-        "edition_pressed_48_bg": {
-            "name": "bg48",
-            "color": "semi_transparent"
-        },
-        "page_pressed": {
-            "name": "page",
-            "color": "gray"
-        },
-        "page_checked": {
-            "name": "page",
-            "color": "dark_brown_moka"
-        },
-        "page_semi_transparent": {
-            "name": "page",
-            "color": "semi_transparent"
-        },
-        "deep_orange_semi_bg": {
-            "name": "blank_grey_border",
-            "color": "deep_orange_semi"
-        },
-        "deep_orange_circle": {
-            "name": "circle",
-            "color": "deep_orange"
-        },
-        "deep_orange_900_circle": {
-            "name": "circle",
-            "color": "deep_orange_900"
-        },
-        "semi_white_circle": {
-            "name": "circle",
-            "color": "semi_white"
-        },
-        "semi_transparent_circle": {
-            "name": "circle",
-            "color": "semi_transparent"
-        },
-        "black_spinner": {
-            "name": "spinner_default",
-            "color": "black"
-        },
-        "orange_arrow_up": {
-            "name": "ic_arrow_up",
-            "color": "deep_orange"
-        },
-        "orange_arrow_down": {
-            "name": "ic_arrow_down",
-            "color": "deep_orange"
-        },
-        "gray_100_bg": {
-            "name": "blank",
-            "color": "gray_100"
-        },
-        "brown_toolbar": {
-            "name": "toolbar",
-            "color": "brown_moka"
-        }
+    "small_font": {
+      "file": "Roboto-Regular.ttf",
+      "dpSize": 12
     },
-    "com.badlogic.gdx.scenes.scene2d.ui.Label$LabelStyle": {
-        "default": {
-            "font": "default_font",
-            "fontColor": "black"
-        },
-        "big": {
-            "font": "big_font",
-            "fontColor": "black"
-        },
-        "performance": {
-            "font": "small_font",
-            "fontColor": "white",
-            "background": "semi_transparent_bg"
-        },
-        "context": {
-            "font": "default_font",
-            "fontColor": "gray"
-        },
-        "toast": {
-            "font": "default_font",
-            "fontColor": "white"
-        },
-        "toolbar": {
-            "font": "default_font",
-            "fontColor": "white",
-            "background": "transparent_48_bg"
-        },
-        "edition": {
-            "font": "default_font",
-            "fontColor": "gray"
-        },
-        "toast_action": {
-            "font": "default_font",
-            "fontColor": "deep_orange"
-        },
-        "dialog": {
-            "font": "big_font",
-            "fontColor": "gray"
-        }
+    "small_bold": {
+      "file": "Roboto-Bold.ttf",
+      "dpSize": 12
     },
-    "com.badlogic.gdx.scenes.scene2d.ui.Button$ButtonStyle": {
-        "default": {
-
-        },
-        "context": {
-            "down": "light_gray_bg"
-        },
-        "add": {
-            "up": "button_add",
-            "down": "button_add_pressed"
-        },
-        "circle": {
-            "up": "deep_orange_circle",
-            "down": "deep_orange_900_circle"
-        },
-        "secondary_circle": {
-            "up": "semi_transparent_circle",
-            "down": "semi_white_circle"
-        }
+    "big_font": {
+      "file": "Roboto-Regular.ttf",
+      "dpSize": 36
     },
-    "com.badlogic.gdx.scenes.scene2d.ui.TextButton$TextButtonStyle": {
-        "default": {
-            "up": "button_up",
-            "down": "button_down",
-            "font": "default_font",
-            "fontColor": "white",
-            "downFontColor": "white",
-            "disabledFontColor": "gray"
-        },
-        "tab": {
-            "down": "light_yellow_semi_bg",
-            "font": "small_bold",
-            "fontColor": "white"
-        },
-        "dialog": {
-            "up": "transparent_bg",
-            "down": "light_gray_bg",
-            "font": "default_bold",
-            "fontColor": "deep_orange"
-        },
-        "toolbar": {
-            "down": "pressed_48_bg",
-            "font": "default_font",
-            "fontColor": "white"
-        },
-        "template": {
-            "down": "pressed_48_bg",
-            "font": "default_font",
-            "fontColor": "light_gray"
-        },
-        "category": {
-          "up": "button",
-          "down": "button",
-          "font": "small_bold",
-          "fontColor": "white",
-          "downFontColor": "white",
-          "disabledFontColor": "gray"
-        }
+    "big_bold": {
+      "file": "Roboto-Bold.ttf",
+      "dpSize": 36
+    }
+  },
+  "com.badlogic.gdx.graphics.Color": {
+    "transparent": {
+      "a": 0,
+      "r": 0,
+      "g": 0,
+      "b": 0
     },
-    "com.badlogic.gdx.scenes.scene2d.ui.ImageButton$ImageButtonStyle": {
-        "scene": {
-            "up": "page",
-            "down": "page_pressed"
-        },
-        "navigation_scene": {
-            "up": "page",
-            "down": "page_pressed",
-            "checked": "page_checked"
-        },
-        "check": {
-            "up": "deep_orange_circle",
-            "down": "deep_orange_900_circle",
-            "imageUp": "ic_check"
-        },
-        "marker": {
-            "up": "semi_transparent_bg"
-        }
+    "semi_transparent": {
+      "a": 0.5,
+      "r": 0.5,
+      "g": 0.5,
+      "b": 0.5
     },
-    "com.badlogic.gdx.scenes.scene2d.ui.CheckBox$CheckBoxStyle": {
-        "default": {
-            "font": "default_font",
-            "fontColor": "black",
-            "downFontColor": "black",
-            "overFontColor": "black",
-            "checkedFontColor": "black",
-            "checkedOverFontColor": "black",
-            "disabledFontColor": "gray",
-            "checkboxOn": "button_check_on",
-            "checkboxOff": "button_check_off",
-            "checkboxOver": "button_check_off_focused"
-        },
-        "default_radio": {
-            "font": "default_font",
-            "fontColor": "black",
-            "downFontColor": "black",
-            "overFontColor": "black",
-            "checkedFontColor": "black",
-            "checkedOverFontColor": "black",
-            "disabledFontColor": "gray",
-            "checkboxOn": "button_radio_on",
-            "checkboxOff": "button_radio_off",
-            "checkboxOver": "button_radio_off_focused"
-        },
-        "context_radio": {
-            "font": "default_font",
-            "fontColor": "gray",
-            "downFontColor": "gray",
-            "overFontColor": "gray",
-            "checkedFontColor": "gray",
-            "checkedOverFontColor": "gray",
-            "disabledFontColor": "gray",
-            "checkboxOn": "button_radio_on",
-            "checkboxOff": "button_radio_off",
-            "checkboxOver": "button_radio_off_focused"
-        }
-
+    "black_semi": {
+      "a": 0.5,
+      "r": 0.0,
+      "g": 0.0,
+      "b": 0.0
     },
-    "com.badlogic.gdx.scenes.scene2d.ui.Slider$SliderStyle": {
-        "default-horizontal": {
-            "background": "knob_after",
-            "knob": "knob",
-            "knobBefore": "knob_before"
-        },
-        "colorPicker": {
-            "knob": "color_picker_knob"
-        },
-        "template": {
-            "background": "knob_background",
-            "knobBefore": "knob_before_mokap"
-        }
+    "white": {
+      "r": 1,
+      "g": 1,
+      "b": 1,
+      "a": 1
     },
-    "es.eucm.ead.editor.view.widgets.RangeSlider$RangeSliderStyle":{
-    	"default-horizontal": {
-            "background": "knob_after",
-            "knobBetween": "knob_before",
-            "knob": "knob"
-        }
-    },      
-    "es.eucm.ead.editor.view.widgets.draw.SlideColorPicker$SlideColorPickerStyle": {
-        "default": {
-            "slider": "colorPicker"
-        }
+    "semi_white": {
+      "r": 1,
+      "g": 1,
+      "b": 1,
+      "a": 0.5
     },
-    "com.badlogic.gdx.scenes.scene2d.ui.List$ListStyle": {
-        "default": {
-            "font": "default_font",
-            "fontColorSelected": "black",
-            "selection": "list_selection",
-            "fontColorUnselected": "dark_gray"
-        }
+    "white_semi6": {
+      "r": 1,
+      "g": 1,
+      "b": 1,
+      "a": 0.6
     },
-    "com.badlogic.gdx.scenes.scene2d.ui.ScrollPane$ScrollPaneStyle": {
-        "default": {
-
-        },
-        "navigation": {
-            "background": "page_left"
-        },
-        "pane": {
-            "background": "page"
-        }
+    "black": {
+      "r": 0,
+      "g": 0,
+      "b": 0,
+      "a": 1
     },
-    "com.badlogic.gdx.scenes.scene2d.ui.SelectBox$SelectBoxStyle": {
-        "default": {
-            "background": "black_spinner",
-            "backgroundOver": "black_spinner",
-            "backgroundOpen": "black_spinner",
-            "font": "default_font",
-            "fontColor": "black",
-            "scrollStyle": "pane",
-            "listStyle": "default"
-        },
-        "toolbar": {
-            "background": "spinner_default",
-            "backgroundOver": "spinner_default",
-            "backgroundOpen": "spinner_default",
-            "font": "default_font",
-            "fontColor": "white",
-            "scrollStyle": "pane",
-            "listStyle": "default"
-        },
-        "context": {
-            "background": "black_spinner",
-            "backgroundOver": "black_spinner",
-            "backgroundOpen": "black_spinner",
-            "font": "default_font",
-            "fontColor": "gray",
-            "scrollStyle": "pane",
-            "listStyle": "default"
-        }
+    "gray": {
+      "r": 0.6,
+      "g": 0.6,
+      "b": 0.6,
+      "a": 1
     },
-    "com.badlogic.gdx.scenes.scene2d.ui.TextField$TextFieldStyle": {
-        "default": {
-            "selection": "while_semi_bg",
-            "background": "text_field",
-            "cursor": "text_field_cursor",
-            "font": "default_font",
-            "fontColor": "white"
-        },
-        "gray": {
-            "selection": "black_semi_bg",
-            "background": "text_field",
-            "cursor": "text_field_cursor",
-            "font": "default_font",
-            "fontColor": "gray"
-        }
+    "dark_gray": {
+      "r": 0.196,
+      "g": 0.196,
+      "b": 0.196,
+      "a": 1
     },
-    "es.eucm.ead.editor.view.widgets.Tabs$TabsStyle": {
-        "default": {
-            "textButtonStyle": "tab",
-            "selectedDrawable": "selected_tab",
-            "selectedDrawableColor": "light_yellow",
-            "disablexTextColor": "white_semi6",
-            "activeTextColor": "white"
-        }
+    "light_gray": {
+      "r": 0.8627,
+      "g": 0.8627,
+      "b": 0.8627,
+      "a": 1.0
     },
-    "es.eucm.ead.editor.view.widgets.LoadingBar$LoadingBarStyle": {
-        "default": {
-            "background": "progress_bar_bg",
-            "knobBefore": "progress_bar_knob_before"
-        }
+    "gray_100": {
+      "r": 0.9607843,
+      "g": 0.9607843,
+      "b": 0.9607843,
+      "a": 1
     },
-    "es.eucm.ead.editor.view.widgets.IconButton$IconButtonStyle": {
-        "default": {
-            "disabledColor": "gray",
-            "color": "black"
-        },
-        "gray": {
-            "color": "gray",
-            "up": "transparent_48_bg"
-        },
-        "switch": {
-            "disabledColor": "white",
-            "color": "brown_moka"
-        },
-        "pages": {
-            "disabledColor": "black",
-            "color": "brown_moka",
-            "up": "transparent_48_bg"
-        },
-        "toolbar": {
-            "disabledColor": "gray",
-            "color": "white",
-            "up": "transparent_48_bg",
-            "down": "pressed_48_bg"
-        },
-        "edition": {
-            "color": "gray",
-            "up": "transparent_48_bg",
-            "down": "edition_pressed_48_bg"
-        },
-        "component": {
-            "color": "gray",
-            "checkedColor": "deep_orange",
-            "down": "edition_pressed_48_bg",
-            "up": "transparent_48_bg"
-        },
-        "context": {
-            "color": "gray",
-            "up": "transparent_48_bg"
-        },
-        "drop_down": {
-            "color": "white",
-            "up": "drop_down_bg",
-            "down": "pressed_48_bg"
-        },
-        "recent_color": {
-            "color": "white",
-            "up": "transparent_48_bg",
-            "down": "pressed_48_bg"
-        },
-        "orange": {
-            "up": "transparent_48_bg",
-            "down": "edition_pressed_48_bg",
-            "color": "deep_orange"
-        }
+    "brown_moka": {
+      "r": 0.5245,
+      "g": 0.3333,
+      "b": 0.2823,
+      "a": 1
     },
-    "es.eucm.ead.editor.view.widgets.draw.ColorPickerPanel$ColorPickerPanelStyle": {
-        "default": {
-            "recentColorIcon": "color_picker_recent_color",
-            "recentColorStyle": "recent_color",
-            "slider": "colorPicker",
-            "background": "page",
-            "colorsPerRow": 4,
-            "rows": 4,
-            "sliderSpace": 12,
-            "pad": 12
-        },
-        "default_no_background": {
-            "recentColorIcon": "color_picker_recent_color",
-            "recentColorStyle": "recent_color",
-            "slider": "colorPicker",
-            "colorsPerRow": 4,
-            "rows": 4,
-            "sliderSpace": 12,
-            "pad": 12
-        }
+    "dark_brown_moka": {
+      "r": 0.2431,
+      "g": 0.1529,
+      "b": 0.1372,
+      "a": 1
     },
-    "es.eucm.ead.editor.view.widgets.draw.BrushStrokesPicker$BrushStrokesPickerStyle": {
-        "default": {
-            "background": "page",
-            "sizeSliderStyleName": "default-horizontal",
-            "colorPickerStyle": "default_no_background",
-            "sizeSliderPad": 12
-        }
+    "light_brown_moka": {
+      "r": 0.7176,
+      "g": 0.3529,
+      "b": 0.2392,
+      "a": 1
     },
-    "es.eucm.ead.editor.view.widgets.TextEditor$TextEditorStyle": {
-        "default": {
-            "background": "page",
-            "colorPickerStyle": "default_no_background"
-        }
+    "semi_light_brown_moka": {
+      "r": 0.7176,
+      "g": 0.3529,
+      "b": 0.2392,
+      "a": 0.5
     },
-    "es.eucm.ead.editor.view.widgets.ImageEditor$ImageEditorStyle": {
-      "default": {
-        "background": "page",
-        "colorPickerStyle": "default_no_background"
+    "semi_dark_brown_moka": {
+      "r": 0.2431,
+      "g": 0.1529,
+      "b": 0.1372,
+      "a": 0.5
+    },
+    "light_blue": {
+      "r": 0.011764706,
+      "g": 0.6627451,
+      "b": 0.95686275,
+      "a": 1.0
+    },
+    "light_yellow": {
+      "r": 1,
+      "g": 1,
+      "b": 0.55294118,
+      "a": 1
+    },
+    "light_blue_semi": {
+      "r": 0.011764706,
+      "g": 0.6627451,
+      "b": 0.95686275,
+      "a": 0.5
+    },
+    "light_blue_900": {
+      "r": 0.003921569,
+      "g": 0.34117648,
+      "b": 0.60784316,
+      "a": 1
+    },
+    "light_yellow_semi": {
+      "r": 1,
+      "g": 1,
+      "b": 0.55294118,
+      "a": 0.5
+    },
+    "deep_orange": {
+      "r": 1.0,
+      "g": 0.34117648,
+      "b": 0.13333334,
+      "a": 1.0
+    },
+    "deep_orange_semi": {
+      "r": 1.0,
+      "g": 0.34117648,
+      "b": 0.13333334,
+      "a": 0.5
+    },
+    "green_100": {
+      "r": 0.78431374,
+      "g": 0.9019608,
+      "b": 0.7882353,
+      "a": 1
+    },
+    "red_100": {
+      "r": 1.0,
+      "g": 0.8039216,
+      "b": 0.8235294,
+      "a": 1
+    },
+    "deep_orange_900": {
+      "r": 0.7490196,
+      "g": 0.21176471,
+      "b": 0.047058824,
+      "a": 1
+    },
+    "purple": {
+      "r": 0.6117647,
+      "g": 0.15294118,
+      "b": 0.6901961,
+      "a": 1
+    }
+  },
+  "com.badlogic.gdx.scenes.scene2d.ui.Skin$TintedDrawable": {
+    "black_bg": {
+      "name": "blank",
+      "color": "black"
+    },
+    "progress_bar_bg": {
+      "name": "selected_tab",
+      "color": "semi_dark_brown_moka"
+    },
+    "progress_bar_knob_before": {
+      "name": "selected_tab",
+      "color": "light_brown_moka"
+    },
+    "transparent_bg": {
+      "name": "blank",
+      "color": "transparent"
+    },
+    "while_semi_bg": {
+      "name": "blank",
+      "color": "semi_white"
+    },
+    "black_semi_bg": {
+      "name": "blank",
+      "color": "black_semi"
+    },
+    "semi_transparent_bg": {
+      "name": "blank",
+      "color": "semi_transparent"
+    },
+    "light_yellow_semi_bg": {
+      "name": "blank",
+      "color": "light_yellow_semi"
+    },
+    "light_gray_bg": {
+      "name": "blank",
+      "color": "light_gray"
+    },
+    "light_blue_semi_bg": {
+      "name": "blank",
+      "color": "light_blue_semi"
+    },
+    "transparent_48_bg": {
+      "name": "bg48",
+      "color": "transparent"
+    },
+    "pressed_48_bg": {
+      "name": "bg48",
+      "color": "dark_brown_moka"
+    },
+    "edition_pressed_48_bg": {
+      "name": "bg48",
+      "color": "semi_transparent"
+    },
+    "page_pressed": {
+      "name": "page",
+      "color": "gray"
+    },
+    "page_checked": {
+      "name": "page",
+      "color": "dark_brown_moka"
+    },
+    "page_semi_transparent": {
+      "name": "page",
+      "color": "semi_transparent"
+    },
+    "node_pressed": {
+      "name": "page",
+      "color": "light_gray"
+    },
+    "node_over": {
+      "name": "page",
+      "color": "light_gray"
+    },
+    "node_checked_over": {
+      "name": "page_orange",
+      "color": "light_gray"
+    },
+    "deep_orange_semi_bg": {
+      "name": "blank_grey_border",
+      "color": "deep_orange_semi"
+    },
+    "deep_orange_circle": {
+      "name": "circle",
+      "color": "deep_orange"
+    },
+    "deep_orange_900_circle": {
+      "name": "circle",
+      "color": "deep_orange_900"
+    },
+    "semi_white_circle": {
+      "name": "circle",
+      "color": "semi_white"
+    },
+    "semi_transparent_circle": {
+      "name": "circle",
+      "color": "semi_transparent"
+    },
+    "black_spinner": {
+      "name": "spinner_default",
+      "color": "black"
+    },
+    "orange_arrow_up": {
+      "name": "ic_arrow_up",
+      "color": "deep_orange"
+    },
+    "orange_arrow_down": {
+      "name": "ic_arrow_down",
+      "color": "deep_orange"
+    },
+    "gray_100_bg": {
+      "name": "blank",
+      "color": "gray_100"
+    },
+    "brown_toolbar": {
+      "name": "toolbar",
+      "color": "brown_moka"
+    }
+  },
+  "com.badlogic.gdx.scenes.scene2d.ui.Label$LabelStyle": {
+    "default": {
+      "font": "default_font",
+      "fontColor": "black"
+    },
+    "big": {
+      "font": "big_font",
+      "fontColor": "black"
+    },
+    "performance": {
+      "font": "small_font",
+      "fontColor": "white",
+      "background": "semi_transparent_bg"
+    },
+    "context": {
+      "font": "default_font",
+      "fontColor": "gray"
+    },
+    "toast": {
+      "font": "default_font",
+      "fontColor": "white"
+    },
+    "toolbar": {
+      "font": "default_font",
+      "fontColor": "white",
+      "background": "transparent_48_bg"
+    },
+    "edition": {
+      "font": "default_font",
+      "fontColor": "gray"
+    },
+    "toast_action": {
+      "font": "default_font",
+      "fontColor": "deep_orange"
+    },
+    "dialog": {
+      "font": "big_font",
+      "fontColor": "gray"
+    }
+  },
+  "com.badlogic.gdx.scenes.scene2d.ui.Button$ButtonStyle": {
+    "default": {},
+    "context": {
+      "down": "light_gray_bg"
+    },
+    "add": {
+      "up": "button_add",
+      "down": "button_add_pressed"
+    },
+    "circle": {
+      "up": "deep_orange_circle",
+      "down": "deep_orange_900_circle"
+    },
+    "secondary_circle": {
+      "up": "semi_transparent_circle",
+      "down": "semi_white_circle"
+    },
+    "node": {
+      "up": "page",
+      "down": "node_pressed",
+      "over": "node_over",
+      "checked": "page_orange",
+      "checkedOver": "node_checked_over"
+    }
+  },
+  "com.badlogic.gdx.scenes.scene2d.ui.TextButton$TextButtonStyle": {
+    "default": {
+      "up": "button_up",
+      "down": "button_down",
+      "font": "default_font",
+      "fontColor": "white",
+      "downFontColor": "white",
+      "disabledFontColor": "gray"
+    },
+    "tab": {
+      "down": "light_yellow_semi_bg",
+      "font": "small_bold",
+      "fontColor": "white"
+    },
+    "dialog": {
+      "up": "transparent_bg",
+      "down": "light_gray_bg",
+      "font": "default_bold",
+      "fontColor": "deep_orange"
+    },
+    "toolbar": {
+      "down": "pressed_48_bg",
+      "font": "default_font",
+      "fontColor": "white"
+    },
+    "template": {
+      "down": "pressed_48_bg",
+      "font": "default_font",
+      "fontColor": "light_gray"
+    },
+    "category": {
+      "up": "button",
+      "down": "button",
+      "font": "small_bold",
+      "fontColor": "white",
+      "downFontColor": "white",
+      "disabledFontColor": "gray"
+    }
+  },
+  "com.badlogic.gdx.scenes.scene2d.ui.ImageButton$ImageButtonStyle": {
+    "scene": {
+      "up": "page",
+      "down": "page_pressed"
+    },
+    "navigation_scene": {
+      "up": "page",
+      "down": "page_pressed",
+      "checked": "page_checked"
+    },
+    "check": {
+      "up": "deep_orange_circle",
+      "down": "deep_orange_900_circle",
+      "imageUp": "ic_check"
+    },
+    "marker": {
+      "up": "semi_transparent_bg"
+    }
+  },
+  "com.badlogic.gdx.scenes.scene2d.ui.CheckBox$CheckBoxStyle": {
+    "default": {
+      "font": "default_font",
+      "fontColor": "black",
+      "downFontColor": "black",
+      "overFontColor": "black",
+      "checkedFontColor": "black",
+      "checkedOverFontColor": "black",
+      "disabledFontColor": "gray",
+      "checkboxOn": "button_check_on",
+      "checkboxOff": "button_check_off",
+      "checkboxOver": "button_check_off_focused"
+    },
+    "default_radio": {
+      "font": "default_font",
+      "fontColor": "black",
+      "downFontColor": "black",
+      "overFontColor": "black",
+      "checkedFontColor": "black",
+      "checkedOverFontColor": "black",
+      "disabledFontColor": "gray",
+      "checkboxOn": "button_radio_on",
+      "checkboxOff": "button_radio_off",
+      "checkboxOver": "button_radio_off_focused"
+    },
+    "context_radio": {
+      "font": "default_font",
+      "fontColor": "gray",
+      "downFontColor": "gray",
+      "overFontColor": "gray",
+      "checkedFontColor": "gray",
+      "checkedOverFontColor": "gray",
+      "disabledFontColor": "gray",
+      "checkboxOn": "button_radio_on",
+      "checkboxOff": "button_radio_off",
+      "checkboxOver": "button_radio_off_focused"
+    }
+  },
+  "com.badlogic.gdx.scenes.scene2d.ui.Slider$SliderStyle": {
+    "default-horizontal": {
+      "background": "knob_after",
+      "knob": "knob",
+      "knobBefore": "knob_before"
+    },
+    "colorPicker": {
+      "knob": "color_picker_knob"
+    },
+    "template": {
+      "background": "knob_background",
+      "knobBefore": "knob_before_mokap"
+    }
+  },
+  "es.eucm.ead.editor.view.widgets.RangeSlider$RangeSliderStyle": {
+    "default-horizontal": {
+      "background": "knob_after",
+      "knobBetween": "knob_before",
+      "knob": "knob"
+    }
+  },
+  "es.eucm.ead.editor.view.widgets.draw.SlideColorPicker$SlideColorPickerStyle": {
+    "default": {
+      "slider": "colorPicker"
+    }
+  },
+  "com.badlogic.gdx.scenes.scene2d.ui.List$ListStyle": {
+    "default": {
+      "font": "default_font",
+      "fontColorSelected": "black",
+      "selection": "list_selection",
+      "fontColorUnselected": "dark_gray"
+    }
+  },
+  "com.badlogic.gdx.scenes.scene2d.ui.ScrollPane$ScrollPaneStyle": {
+    "default": {},
+    "navigation": {
+      "background": "page_left"
+    },
+    "pane": {
+      "background": "page"
+    }
+  },
+  "com.badlogic.gdx.scenes.scene2d.ui.SelectBox$SelectBoxStyle": {
+    "default": {
+      "background": "black_spinner",
+      "backgroundOver": "black_spinner",
+      "backgroundOpen": "black_spinner",
+      "font": "default_font",
+      "fontColor": "black",
+      "scrollStyle": "pane",
+      "listStyle": "default"
+    },
+    "toolbar": {
+      "background": "spinner_default",
+      "backgroundOver": "spinner_default",
+      "backgroundOpen": "spinner_default",
+      "font": "default_font",
+      "fontColor": "white",
+      "scrollStyle": "pane",
+      "listStyle": "default"
+    },
+    "context": {
+      "background": "black_spinner",
+      "backgroundOver": "black_spinner",
+      "backgroundOpen": "black_spinner",
+      "font": "default_font",
+      "fontColor": "gray",
+      "scrollStyle": "pane",
+      "listStyle": "default"
+    }
+  },
+  "com.badlogic.gdx.scenes.scene2d.ui.TextField$TextFieldStyle": {
+    "default": {
+      "selection": "while_semi_bg",
+      "background": "text_field",
+      "cursor": "text_field_cursor",
+      "font": "default_font",
+      "fontColor": "white"
+    },
+    "gray": {
+      "selection": "black_semi_bg",
+      "background": "text_field",
+      "cursor": "text_field_cursor",
+      "font": "default_font",
+      "fontColor": "gray"
+    }
+  },
+  "es.eucm.ead.editor.view.widgets.Tabs$TabsStyle": {
+    "default": {
+      "textButtonStyle": "tab",
+      "selectedDrawable": "selected_tab",
+      "selectedDrawableColor": "light_yellow",
+      "disablexTextColor": "white_semi6",
+      "activeTextColor": "white"
+    }
+  },
+  "es.eucm.ead.editor.view.widgets.LoadingBar$LoadingBarStyle": {
+    "default": {
+      "background": "progress_bar_bg",
+      "knobBefore": "progress_bar_knob_before"
+    }
+  },
+  "es.eucm.ead.editor.view.widgets.IconButton$IconButtonStyle": {
+    "default": {
+      "disabledColor": "gray",
+      "color": "black"
+    },
+    "gray": {
+      "color": "gray",
+      "up": "transparent_48_bg"
+    },
+    "switch": {
+      "disabledColor": "white",
+      "color": "brown_moka"
+    },
+    "pages": {
+      "disabledColor": "black",
+      "color": "brown_moka",
+      "up": "transparent_48_bg"
+    },
+    "toolbar": {
+      "disabledColor": "gray",
+      "color": "white",
+      "up": "transparent_48_bg",
+      "down": "pressed_48_bg"
+    },
+    "edition": {
+      "color": "gray",
+      "up": "transparent_48_bg",
+      "down": "edition_pressed_48_bg"
+    },
+    "component": {
+      "color": "gray",
+      "checkedColor": "deep_orange",
+      "down": "edition_pressed_48_bg",
+      "up": "transparent_48_bg"
+    },
+    "context": {
+      "color": "gray",
+      "up": "transparent_48_bg"
+    },
+    "drop_down": {
+      "color": "white",
+      "up": "drop_down_bg",
+      "down": "pressed_48_bg"
+    },
+    "recent_color": {
+      "color": "white",
+      "up": "transparent_48_bg",
+      "down": "pressed_48_bg"
+    },
+    "orange": {
+      "up": "transparent_48_bg",
+      "down": "edition_pressed_48_bg",
+      "color": "deep_orange"
+    }
+  },
+  "es.eucm.ead.editor.view.widgets.draw.ColorPickerPanel$ColorPickerPanelStyle": {
+    "default": {
+      "recentColorIcon": "color_picker_recent_color",
+      "recentColorStyle": "recent_color",
+      "slider": "colorPicker",
+      "background": "page",
+      "colorsPerRow": 4,
+      "rows": 4,
+      "sliderSpace": 12,
+      "pad": 12
+    },
+    "default_no_background": {
+      "recentColorIcon": "color_picker_recent_color",
+      "recentColorStyle": "recent_color",
+      "slider": "colorPicker",
+      "colorsPerRow": 4,
+      "rows": 4,
+      "sliderSpace": 12,
+      "pad": 12
+    }
+  },
+  "es.eucm.ead.editor.view.widgets.draw.BrushStrokesPicker$BrushStrokesPickerStyle": {
+    "default": {
+      "background": "page",
+      "sizeSliderStyleName": "default-horizontal",
+      "colorPickerStyle": "default_no_background",
+      "sizeSliderPad": 12
+    }
+  },
+  "es.eucm.ead.editor.view.widgets.TextEditor$TextEditorStyle": {
+    "default": {
+      "background": "page",
+      "colorPickerStyle": "default_no_background"
+    }
+  },
+  "es.eucm.ead.editor.view.widgets.ImageEditor$ImageEditorStyle": {
+    "default": {
+      "background": "page",
+      "colorPickerStyle": "default_no_background"
+    }
+  },
+  "es.eucm.ead.editor.view.widgets.baseview.BaseView$BaseViewStyle": {
+    "default": {
+      "navigationBackground": "black_bg"
+    }
+  },
+  "es.eucm.ead.editor.view.widgets.MultiWidget$MultiWidgetStyle": {
+    "default": {
+      "color": "white"
+    },
+    "toolbar": {
+      "background": "toolbar",
+      "color": "brown_moka"
+    }
+  },
+  "es.eucm.ead.editor.view.widgets.Toast$ToastStyle": {
+    "default": {
+      "background": "page",
+      "color": "dark_gray",
+      "label": "toast"
+    },
+    "tooltip": {
+      "background": "page",
+      "color": "dark_gray",
+      "label": "toast"
+    }
+  },
+  "es.eucm.ead.editor.view.widgets.Switch$SwitchStyle": {
+    "default": {
+      "background": "switch_bar",
+      "knob": "switch_circle",
+      "checkedColor": "light_brown_moka",
+      "uncheckedColor": "dark_brown_moka"
+    },
+    "selection": {
+      "background": "switch_bar",
+      "knob": "switch_circle",
+      "checkedColor": "light_brown_moka",
+      "uncheckedColor": "dark_brown_moka",
+      "checkedDrawable": "ic_multiple_selection",
+      "uncheckedDrawable": "ic_single_selection",
+      "checkedDrawableColor": "white",
+      "uncheckedDrawableColor": "white"
+    }
+  },
+  "es.eucm.ead.editor.view.builders.scene.groupeditor.GroupEditor$GroupEditorStyle": {
+    "default": {
+      "background": "light_gray_bg",
+      "layersBackground": "page_semi_transparent",
+      "layerButtonStyle": {
+        "down": "light_gray_bg",
+        "checked": "blank_grey_border"
+      },
+      "groupBackground": "page",
+      "selectedBackground": "blank",
+      "touch": "touch",
+      "pressedColor": "gray",
+      "selectedColor": "light_blue",
+      "movingColor": "light_blue_900",
+      "multiSelectedColor": "deep_orange",
+      "multiMovingColor": "deep_orange_900",
+      "onlySelectionColor": "white",
+      "alpha": 0.45
+    }
+  },
+  "es.eucm.ead.editor.view.widgets.Tile$TileStyle": {
+    "default": {
+      "labelBackground": "semi_transparent_bg",
+      "labelStyle": "toast"
+    }
+  },
+  "es.eucm.ead.editor.view.widgets.layouts.Gallery$GalleryStyle": {
+    "default": {
+      "checked": "light_blue_semi_bg",
+      "pressed": "semi_transparent_bg"
+    },
+    "navigation": {
+      "background": "page_left",
+      "checked": "deep_orange_semi_bg",
+      "pressed": "light_blue_semi_bg"
+    }
+  },
+  "es.eucm.ead.editor.view.builders.scene.context.GroupContext$GroupContextStyle": {
+    "default": {
+      "background": "blank",
+      "iconsBackground": "semi_transparent_bg",
+      "galleryStyle": {
+        "background": "blank"
       }
+    }
+  },
+  "es.eucm.ead.editor.view.widgets.SwitchDropDownPane$SwitchDropDownPaneStyle": {
+    "default": {
+      "switchStyle": "default",
+      "titleStyle": "edition",
+      "openIcon": "ic_arrow_down",
+      "closeIcon": "ic_arrow_up",
+      "iconColor": "gray"
+    }
+  },
+  "es.eucm.ead.editor.view.widgets.StatesButton$StatesButtonStyle": {
+    "default": {
+      "iconColor": "black"
     },
-    "es.eucm.ead.editor.view.widgets.baseview.BaseView$BaseViewStyle": {
-        "default": {
-            "navigationBackground": "black_bg"
-        }
+    "context": {
+      "iconColor": "gray",
+      "down": "light_gray_bg"
+    }
+  },
+  "es.eucm.ead.editor.view.widgets.modals.ModalContainer$ModalContainerStyle": {
+    "default": {
+      "background": "semi_transparent_bg"
+    }
+  },
+  "es.eucm.ead.editor.view.widgets.modals.SpinnerModal$SpinnerModalStyle": {
+    "default": {
+      "background": "page",
+      "textStyle": "dialog",
+      "numberStyle": "big",
+      "upStyle": {
+        "imageUp": "orange_arrow_up",
+        "down": "light_gray_bg"
+      },
+      "downStyle": {
+        "imageUp": "orange_arrow_down",
+        "down": "light_gray_bg"
+      },
+      "buttonsStyle": "dialog"
+    }
+  },
+  "es.eucm.ead.editor.view.widgets.modals.TextDialog$TextDialogStyle": {
+    "default": {
+      "background": "page",
+      "textStyle": "edition",
+      "buttonStyle": "dialog"
+    }
+  },
+  "es.eucm.gdx.widgets.Gallery$GalleryStyle": {
+    "default": {
+      "background": "blank",
+      "checked": "light_blue_semi_bg",
+      "pressed": "semi_transparent_bg"
+    }
+  },
+  "es.eucm.gdx.widgets.IconButton$IconButtonStyle": {
+    "default": {
+      "disabledColor": "gray",
+      "color": "black"
     },
-    "es.eucm.ead.editor.view.widgets.MultiWidget$MultiWidgetStyle": {
-        "default": {
-            "color": "white"
-        },
-        "toolbar": {
-            "background": "toolbar",
-            "color": "brown_moka"
-        }
+    "gray": {
+      "color": "gray",
+      "up": "transparent_48_bg"
     },
-    "es.eucm.ead.editor.view.widgets.Toast$ToastStyle": {
-        "default": {
-            "background": "page",
-            "color": "dark_gray",
-            "label": "toast"
-        },
-        "tooltip": {
-            "background": "page",
-            "color": "dark_gray",
-            "label": "toast"
-        }
+    "switch": {
+      "disabledColor": "white",
+      "color": "brown_moka"
     },
-    "es.eucm.ead.editor.view.widgets.Switch$SwitchStyle": {
-        "default": {
-            "background": "switch_bar",
-            "knob": "switch_circle",
-            "checkedColor": "light_brown_moka",
-            "uncheckedColor": "dark_brown_moka"
-        },
-        "selection": {
-            "background": "switch_bar",
-            "knob": "switch_circle",
-            "checkedColor": "light_brown_moka",
-            "uncheckedColor": "dark_brown_moka",
-            "checkedDrawable": "ic_multiple_selection",
-            "uncheckedDrawable": "ic_single_selection",
-            "checkedDrawableColor": "white",
-            "uncheckedDrawableColor": "white"
-        }
+    "pages": {
+      "disabledColor": "black",
+      "color": "brown_moka",
+      "up": "transparent_48_bg"
     },
-    "es.eucm.ead.editor.view.builders.scene.groupeditor.GroupEditor$GroupEditorStyle": {
-        "default": {
-            "background": "light_gray_bg",
-            "layersBackground": "page_semi_transparent",
-            "layerButtonStyle": {
-                "down": "light_gray_bg",
-                "checked": "blank_grey_border"
-            },
-            "groupBackground": "page",
-            "selectedBackground": "blank",
-            "touch": "touch",
-            "pressedColor": "gray",
-            "selectedColor": "light_blue",
-            "movingColor": "light_blue_900",
-            "multiSelectedColor": "deep_orange",
-            "multiMovingColor": "deep_orange_900",
-            "onlySelectionColor": "white",
-            "alpha": 0.45
-        }
+    "toolbar": {
+      "disabledColor": "gray",
+      "color": "white",
+      "up": "transparent_48_bg",
+      "down": "pressed_48_bg"
     },
-    "es.eucm.ead.editor.view.widgets.Tile$TileStyle": {
-        "default": {
-            "labelBackground": "semi_transparent_bg",
-            "labelStyle": "toast"
-        }
+    "edition": {
+      "color": "gray",
+      "up": "transparent_48_bg",
+      "down": "edition_pressed_48_bg"
     },
-    "es.eucm.ead.editor.view.widgets.layouts.Gallery$GalleryStyle": {
-        "default": {
-            "checked": "light_blue_semi_bg",
-            "pressed": "semi_transparent_bg"
-        },
-        "navigation": {
-            "background": "page_left",
-            "checked": "deep_orange_semi_bg",
-            "pressed": "light_blue_semi_bg"
-        }
+    "component": {
+      "color": "gray",
+      "checkedColor": "deep_orange",
+      "down": "edition_pressed_48_bg",
+      "up": "transparent_48_bg"
     },
-    "es.eucm.ead.editor.view.builders.scene.context.GroupContext$GroupContextStyle": {
-        "default": {
-            "background": "blank",
-            "iconsBackground": "semi_transparent_bg",
-            "galleryStyle": {
-                "background": "blank"
-            }
-        }
+    "context": {
+      "color": "gray",
+      "up": "transparent_48_bg"
     },
-    "es.eucm.ead.editor.view.widgets.SwitchDropDownPane$SwitchDropDownPaneStyle": {
-        "default": {
-            "switchStyle": "default",
-            "titleStyle": "edition",
-            "openIcon": "ic_arrow_down",
-            "closeIcon": "ic_arrow_up",
-            "iconColor": "gray"
-        }
+    "drop_down": {
+      "color": "white",
+      "up": "drop_down_bg",
+      "down": "pressed_48_bg"
     },
-    "es.eucm.ead.editor.view.widgets.StatesButton$StatesButtonStyle": {
-        "default": {
-            "iconColor": "black"
-        },
-        "context": {
-            "iconColor": "gray",
-            "down": "light_gray_bg"
-        }
+    "recent_color": {
+      "color": "white",
+      "up": "transparent_48_bg",
+      "down": "pressed_48_bg"
     },
-    "es.eucm.ead.editor.view.widgets.modals.ModalContainer$ModalContainerStyle": {
-        "default": {
-            "background": "semi_transparent_bg"
-        }
+    "orange": {
+      "up": "transparent_48_bg",
+      "down": "edition_pressed_48_bg",
+      "color": "deep_orange"
     },
-    "es.eucm.ead.editor.view.widgets.modals.SpinnerModal$SpinnerModalStyle": {
-        "default": {
-            "background": "page",
-            "textStyle": "dialog",
-            "numberStyle": "big",
-            "upStyle": {
-                "imageUp": "orange_arrow_up",
-                "down": "light_gray_bg"
-            },
-            "downStyle": {
-                "imageUp": "orange_arrow_down",
-                "down": "light_gray_bg"
-            },
-            "buttonsStyle": "dialog"
-        }
-    } ,
-    "es.eucm.ead.editor.view.widgets.modals.TextDialog$TextDialogStyle": {
-        "default": {
-            "background": "page",
-            "textStyle": "edition",
-            "buttonStyle": "dialog"
-        }
-    }   
+    "white_circle": {
+      "up": "semi_transparent_circle",
+      "down": "circle",
+      "color": "white"
+    },
+    "circle": {
+      "up": "deep_orange_circle",
+      "down": "deep_orange_900_circle",
+      "color": "white"
+    }
+  },
+  "es.eucm.gdx.widgets.Tile$TileStyle": {
+    "default": {
+      "labelBackground": "semi_transparent_bg",
+      "labelStyle": "toast"
+    }
+  },
+  "es.eucm.gdx.widgets.Toolbar$ToolbarStyle": {
+    "default": {
+      "background": "brown_toolbar",
+      "moreIcon": "ic_more",
+      "iconButtonStyle": "toolbar",
+      "contextMenuBackground": "page",
+      "contextStyle": "context"
+    }
+  }
 }

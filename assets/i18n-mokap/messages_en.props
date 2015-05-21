@@ -39,6 +39,7 @@ edit = Edit
 edit.Pixlr = Edit with Pixlr
 element = Element
 erase = Erase
+event.init = When the scene begins...
 exchange_and_or = Exchange And and Or
 fadeIn = Fade in
 fadeOut = Fade out
@@ -66,6 +67,7 @@ info.panel.tool.zone = This colored zones are elements only visible during editi
 install.it = You can edit images directly with Pixlr Express. But you don't have it installed. Would you like to install it from Google Play?
 interaction = Interaction
 interactive.zone = Interactive zone
+invalid.effect = Invalid effect
 invalid.resource = The selected resource can not be imported
 invalid.variable = Variable can only contain letters, numbers and _
 jump = Jump
@@ -87,6 +89,7 @@ new = New
 new.variable = New variable
 no.connection = No connection
 no.mokaps = You don't have any mokap
+no.variables = No variables defined yet.
 none = None
 normal = Normal
 not.found = Not found
@@ -118,6 +121,7 @@ scene.copy = Copy
 scene.deleted = Scene deleted
 scene.initial = Initial scene
 scene.last_scene_deleted = You can't delete the last scene in your mokap
+scene.logic = Scene logic
 scene.none_selected = No scene selected
 search = Search
 select.scene = Select a scene
@@ -125,6 +129,7 @@ send.share = Share with
 send.subject = Mokap
 send.message = Check out this mokap!
 send.to.back = Send to back
+set = Set
 sliceHorizontal = Horizontal slice
 sliceVertical = Vertical slice
 slideDown = Slide down
@@ -150,6 +155,7 @@ speed = Speed
 test = Test
 test.all = Test all
 text = Text
+to = To
 toolbar.text.input = Enter text
 to.back = To back
 to.front = To front
@@ -159,9 +165,4 @@ undo = Undo
 ungroup = Ungroup
 untitled = Untitled
 variable = Variable
-
-
-
-
-
-
+variable.too.long = Name too long

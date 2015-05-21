@@ -38,19 +38,20 @@ package es.eucm.ead.schemax;
 
 public interface ComponentIds {
 
-	public static final String ANIMATIONS = "_animations";
-	public static final String MOVE = "_move";
+	String ANIMATIONS = "_animations";
+	String MOVE = "_move";
 
-	public static final String ANIMATION_IN = "_animation_in";
-	public static final String BLINK = "_blink";
-	public static final String JUMP = "_jump";
-	public static final String PASS_X = "_horizontal_pass";
-	public static final String PASS_Y = "_vertical_pass";
-	public static final String ROTATE = "_rotate";
+	String ANIMATION_IN = "_animation_in";
+	String BLINK = "_blink";
+	String JUMP = "_jump";
+	String PASS_X = "_horizontal_pass";
+	String PASS_Y = "_vertical_pass";
+	String ROTATE = "_rotate";
 
-	public static final String LINK = "_link";
-	public static final String SOUND = "_sound";
-	public static final String MUSIC = "_music";
-	public static final String VISIBILITY = "_visibility";
-
+	String LINK = "_link";
+	String SOUND = "_sound";
+	String MUSIC = "_music";
+	String VISIBILITY = "_visibility";
+	String LOGIC = "_logic";
+	String VARS = "_vars";
 }
