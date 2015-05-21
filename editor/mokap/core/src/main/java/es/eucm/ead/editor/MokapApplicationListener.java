@@ -37,6 +37,7 @@
 package es.eucm.ead.editor;
 
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.scenes.scene2d.Touchable;
 import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.scenes.scene2d.ui.Label.LabelStyle;
@@ -118,6 +119,9 @@ public class MokapApplicationListener extends EditorApplicationListener {
 			perf += controller.getModel().countListeners();
 			perf += "BgTasks: "
 					+ controller.getBackgroundExecutor().countTasks() + "\n";
+			perf += "GameLoopEntities: "
+					+ controller.getEngine().getGameLoop().getEntities().size()
+					+ " \n";
 			performance.setText(perf);
 			performance.pack();
 		}
