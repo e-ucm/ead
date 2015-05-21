@@ -216,7 +216,7 @@ public class SceneEditor extends BaseView implements ModelView,
 
 	private void createSceneThumbnail() {
 		controller.action(CreateSceneThumbnail.class, getGroupEditor()
-				.getRootGroup());
+				.getSceneEntity());
 	}
 
 	@Override
