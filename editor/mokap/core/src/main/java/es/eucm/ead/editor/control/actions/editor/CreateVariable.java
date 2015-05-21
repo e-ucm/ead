@@ -103,7 +103,9 @@ public class CreateVariable extends EditorAction implements TextInputListener {
 
 	@Override
 	public void input(String text) {
-		if (names.contains(text, false)) {
+		if (text.length() > 24) {
+			retry(i18N.m("variable.too.long"), text);
+		} else if (names.contains(text, false)) {
 			retry(i18N.m("duplicated.variable"), text);
 		} else if (text.matches(IDENTIFIER_EXPRESSION)) {
 			VariableDef variableDef = new VariableDef();
@@ -115,6 +117,7 @@ public class CreateVariable extends EditorAction implements TextInputListener {
 			controller.getModel().getResource(ModelStructure.GAME_FILE)
 					.setModified(true);
 			resultListener.input(text);
+			Gdx.graphics.requestRendering();
 		} else {
 			retry(i18N.m("invalid.variable"), text);
 		}
@@ -123,5 +126,6 @@ public class CreateVariable extends EditorAction implements TextInputListener {
 	@Override
 	public void canceled() {
 		resultListener.canceled();
+		Gdx.graphics.requestRendering();
 	}
 }
