@@ -87,7 +87,7 @@ public class TransitionDrawable extends BaseDrawable {
 			if (update) {
 				// ongoing transition
 				float duration = transition.getDuration();
-				// update progress of ongoing transition
+				// updateUI progress of ongoing transition
 				time += Gdx.graphics.getDeltaTime();
 				if (time > duration) {
 					percentageCompletion = 1f;

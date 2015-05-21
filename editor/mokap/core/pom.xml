@@ -13,6 +13,11 @@
             <artifactId>editor-core</artifactId>
             <version>${project.version}</version>
         </dependency>
+        <dependency>
+            <groupId>es.e-ucm</groupId>
+            <artifactId>graph-core</artifactId>
+            <version>1.0-SNAPSHOT</version>
+        </dependency>
         <!-- TEST -->
         <dependency>
             <groupId>junit</groupId>

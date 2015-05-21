@@ -58,6 +58,7 @@ import es.eucm.ead.editor.control.Controller;
 import es.eucm.ead.editor.control.MokapController.BackListener;
 import es.eucm.ead.editor.control.Preferences;
 import es.eucm.ead.editor.control.Selection;
+import es.eucm.ead.editor.control.actions.editor.ChangeView;
 import es.eucm.ead.editor.control.actions.editor.ShowInfoPanel;
 import es.eucm.ead.editor.control.actions.editor.ShowInfoPanel.TypePanel;
 import es.eucm.ead.editor.control.actions.editor.ShowModal;
@@ -75,9 +76,11 @@ import es.eucm.ead.editor.model.events.SelectionEvent.Type;
 import es.eucm.ead.editor.utils.Actions2;
 import es.eucm.ead.editor.view.ModelView;
 import es.eucm.ead.editor.view.SkinConstants;
+import es.eucm.ead.editor.view.builders.graph.LogicView;
 import es.eucm.ead.editor.view.builders.scene.groupeditor.GroupEditor;
 import es.eucm.ead.editor.view.builders.scene.groupeditor.input.EditStateMachine;
 import es.eucm.ead.editor.view.widgets.WidgetBuilder;
+import es.eucm.ead.editor.view.widgets.layouts.LinearLayout;
 import es.eucm.ead.engine.EntitiesLoader;
 import es.eucm.ead.engine.components.renderers.ControlActor;
 import es.eucm.ead.engine.entities.EngineEntity;
@@ -121,7 +124,7 @@ public class SceneGroupEditor extends GroupEditor implements ModelView,
 
 	private SceneSelectionListener sceneSelectionListener = new SceneSelectionListener();
 
-	private AbstractWidget editionButtons;
+	private LinearLayout editionButtons;
 
 	private ImageButton fitButton;
 
@@ -157,6 +160,8 @@ public class SceneGroupEditor extends GroupEditor implements ModelView,
 			}
 		});
 
+		editionButtons = new LinearLayout(false);
+
 		fitButton = WidgetBuilder.imageButton(SkinConstants.IC_FIT,
 				SkinConstants.STYLE_SECONDARY_CIRCLE);
 		fitButton.addListener(new ClickListener() {
@@ -175,8 +180,15 @@ public class SceneGroupEditor extends GroupEditor implements ModelView,
 			}
 		});
 		fitButton.setVisible(false);
-		editionButtons = new AbstractWidget();
-		editionButtons.addActor(fitButton);
+		editionButtons.add(fitButton);
+
+		ImageButton editLogic = WidgetBuilder
+				.imageButton(SkinConstants.IC_SETTINGS,
+						SkinConstants.STYLE_SECONDARY_CIRCLE);
+		WidgetBuilder.actionOnClick(editLogic, ChangeView.class,
+				LogicView.class);
+		editionButtons.add(editLogic);
+
 		addActor(editionButtons);
 	}
 
@@ -206,8 +218,7 @@ public class SceneGroupEditor extends GroupEditor implements ModelView,
 	@Override
 	public void layout() {
 		super.layout();
-		fitButton.pack();
-		setPosition(fitButton, WidgetBuilder.dpToPixels(32),
+		setPosition(editionButtons, WidgetBuilder.dpToPixels(32),
 				WidgetBuilder.dpToPixels(32));
 	}
 
