@@ -140,12 +140,12 @@ public class EditorGameAssets extends GameAssets {
 	 *         if the path doesn't exist
 	 */
 	public String copyToProjectIfNeeded(String path, Class<?> type) {
+		if (path.startsWith(getLoadingPath())) {
+			return path.substring(getLoadingPath().length());
+		}
 		// If resource path is not loaded
 		if (isLoaded(path, type)) {
 			return path;
-		}
-		if (path.startsWith(getLoadingPath())) {
-			return path.substring(getLoadingPath().length());
 		}
 		return copyToProject(path, type);
 	}
