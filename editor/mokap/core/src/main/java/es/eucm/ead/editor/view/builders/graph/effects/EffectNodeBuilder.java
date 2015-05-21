@@ -67,8 +67,9 @@ public abstract class EffectNodeBuilder<T extends Effect> implements
 	}
 
 	@Override
-	public void edit(T content) {
+	public void edit(T content, EditionResult editionResult) {
 		commander.getCommands().pushStack();
+		getModal().setEditionResult(editionResult);
 		getModal().read(content);
 		WidgetUtils.showModal(null, getModal());
 	}

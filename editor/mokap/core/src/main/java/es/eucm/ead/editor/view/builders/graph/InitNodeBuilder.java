@@ -75,8 +75,8 @@ public class InitNodeBuilder implements NodeBuilder<Init> {
 	}
 
 	@Override
-	public void edit(Init content) {
-		// Init event does not have any editable field
+	public void edit(Init content, EditionResult result) {
+
 	}
 
 	@Override

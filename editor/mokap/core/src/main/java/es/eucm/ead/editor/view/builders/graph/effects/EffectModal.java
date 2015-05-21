@@ -60,9 +60,12 @@ import es.eucm.gdx.WidgetUtils;
 import es.eucm.gdx.actions.ExtraActions;
 import es.eucm.gdx.widgets.layouts.LinearLayout;
 import es.eucm.graph.core.NodeBuilder;
+import es.eucm.graph.core.NodeBuilder.EditionResult;
 
 public abstract class EffectModal<T extends Effect> extends Table implements
 		Modal, BackListener {
+
+	private EditionResult editionResult;
 
 	protected Commander commander;
 
@@ -88,6 +91,9 @@ public abstract class EffectModal<T extends Effect> extends Table implements
 			public void clicked(InputEvent event, float x, float y) {
 				commander.perform(ReadGraph.class);
 				WidgetUtils.hideModal();
+				if (editionResult != null) {
+					editionResult.ok();
+				}
 			}
 		});
 
@@ -98,6 +104,9 @@ public abstract class EffectModal<T extends Effect> extends Table implements
 			@Override
 			public void clicked(InputEvent event, float x, float y) {
 				EffectModal.this.cancel();
+				if (editionResult != null) {
+					editionResult.canceled();
+				}
 			}
 		});
 
@@ -106,6 +115,10 @@ public abstract class EffectModal<T extends Effect> extends Table implements
 		add(buildEditor(skin, i18N)).expand().fill();
 		row();
 		add(buttons).pad(WidgetBuilder.dpToPixels(16)).expandX().fillX();
+	}
+
+	public void setEditionResult(EditionResult editionResult) {
+		this.editionResult = editionResult;
 	}
 
 	public void read(T effect) {
@@ -152,11 +165,6 @@ public abstract class EffectModal<T extends Effect> extends Table implements
 				.run(runnable)));
 	}
 
-	@Override
-	public boolean hideAlways() {
-		return false;
-	}
-
 	private void cancel() {
 		while (commander.getCommands().undo())
 			;
@@ -167,5 +175,10 @@ public abstract class EffectModal<T extends Effect> extends Table implements
 	public boolean onBackPressed() {
 		cancel();
 		return true;
+	}
+
+	@Override
+	public HidePolicy getHidePolicy() {
+		return HidePolicy.NO_HIDE;
 	}
 }
