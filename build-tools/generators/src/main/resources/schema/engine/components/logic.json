@@ -1,0 +1,17 @@
+{
+    "additionalProperties": false,
+    "javaType": "es.eucm.ead.schema.components.Logic",
+    "type": "object",
+    "extends": {
+        "$ref": "component.json"
+    },
+    "properties": {
+        "sequences": {
+            "type": "array",
+            "items": {
+                "javaType": "es.eucm.graph.model.Graph",
+                "type": "object"
+            }
+        }
+    }
+}

@@ -34,52 +34,75 @@
  *      You should have received a copy of the GNU Lesser General Public License
  *      along with eAdventure.  If not, see <http://www.gnu.org/licenses/>.
  */
-package es.eucm.ead.engine.tests.systems.effects;
+package es.eucm.ead.engine.tests.systems;
 
-import com.badlogic.gdx.utils.Array;
+import es.eucm.ead.engine.components.GraphComponent;
+import es.eucm.ead.engine.entities.EngineEntity;
 import es.eucm.ead.engine.mock.schema.MockEffect;
 import es.eucm.ead.engine.mock.schema.MockEffect.MockEffectListener;
-import es.eucm.ead.engine.systems.effects.controlstructures.ForEachExecutor;
-import es.eucm.ead.schema.effects.Effect;
-import es.eucm.ead.schema.effects.controlstructures.ForEach;
+import es.eucm.ead.engine.processors.LogicProcessor;
+import es.eucm.ead.engine.systems.GraphSystem;
+import es.eucm.ead.engine.tests.systems.effects.EffectTest;
+import es.eucm.ead.schema.components.Logic;
+import es.eucm.ead.schema.components.behaviors.events.Init;
+import es.eucm.ead.schema.entities.ModelEntity;
+import es.eucm.graph.model.Graph;
+import es.eucm.graph.model.Node;
+import org.junit.Before;
 import org.junit.Test;
 
-import java.util.Arrays;
-
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNull;
 
-public class ForEachTest extends EffectTest implements MockEffectListener {
+public class GraphTest extends EffectTest implements MockEffectListener {
 
-	private int result;
+	private int executed = 0;
+
+	@Before
+	public void setUp() {
+		super.setUp();
+		gameLoop.addSystem(new GraphSystem(gameLoop, variablesManager,
+				effectsSystem));
+		componentLoader.registerComponentProcessor(Logic.class,
+				new LogicProcessor(gameLoop));
+	}
 
 	@Test
-	public void testForEach() {
-		Array<Object> list = new Array<Object>();
+	public void test() {
+		ModelEntity entity = new ModelEntity();
+		Logic logic = new Logic();
+		entity.getComponents().add(logic);
+
+		Graph graph = new Graph(true);
+		graph.getRoot().setContent(new Init());
+		Node parent = graph.getRoot();
 		for (int i = 0; i < 10; i++) {
-			list.add(3);
+			parent = addNode(i, graph, parent);
 		}
 
-		variablesManager.setValue("list", list);
+		logic.getSequences().add(graph);
 
-		ForEach forEach = new ForEach();
-		forEach.setIteratorVar("i");
-		forEach.setListExpression("$list");
+		EngineEntity engineEntity = entitiesLoader.toEngineEntity(entity);
 
-		MockEffect effect = new MockEffect(this);
-		forEach.getEffects().add(effect);
+		for (int i = 0; i < 10; i++) {
+			gameLoop.update(0);
+			assertEquals(i + 1, executed);
+		}
+		assertNull(engineEntity.getComponent(GraphComponent.class));
+	}
 
-		effectsSystem.registerEffectExecutor(ForEach.class,
-				new ForEachExecutor(effectsSystem, variablesManager));
-
-		result = 0;
-		effectsSystem.execute(Arrays.<Effect> asList(forEach));
-
-		assertEquals(30, result);
+	private Node addNode(int count, Graph graph, Node parent) {
+		Node node = new Node();
+		node.setId(count + "");
+		node.setContent(new MockEffect(this));
+		node.addFork("next");
+		parent.getForks().get(0).setNext(node.getId());
+		graph.getNodes().add(node);
+		return node;
 	}
 
 	@Override
 	public void executed() {
-		Integer value = (Integer) variablesManager.getValue("i");
-		result += value;
+		executed++;
 	}
 }

@@ -60,7 +60,7 @@ public class RepeatExecutor extends ControlStructureExecutor<Repeat> {
 		String increment = "(+ $" + effect.getCounter() + " i1)";
 		variablesManager.setVarToExpression(effect.getCounter(), "i0");
 		while (variablesManager.evaluateCondition(condition, false)) {
-			effectsSystem.executeEffectList(effect.getEffects());
+			effectsSystem.execute(effect.getEffects());
 			variablesManager.setVarToExpression(effect.getCounter(), increment);
 		}
 	}

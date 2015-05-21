@@ -68,6 +68,6 @@ public class PlaySoundExecutor extends EffectExecutor<PlaySound> {
 		addSound.setComponent(sound);
 		list.clear();
 		list.add(addSound);
-		system.executeEffectList(list);
+		system.execute(list);
 	}
 }

@@ -53,7 +53,7 @@ public class EffectsRuntimeNode extends SimpleRuntimeNode<EffectsNode> {
 
 	@Override
 	public boolean update(float delta) {
-		effectsSystem.executeEffectList(node.getEffects());
+		effectsSystem.execute(node.getEffects());
 		return true;
 	}
 }

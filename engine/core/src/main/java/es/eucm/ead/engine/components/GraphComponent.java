@@ -34,27 +34,69 @@
  *      You should have received a copy of the GNU Lesser General Public License
  *      along with eAdventure.  If not, see <http://www.gnu.org/licenses/>.
  */
-package es.eucm.ead.engine.systems.effects.controlstructures;
+package es.eucm.ead.engine.components;
 
-import com.badlogic.ashley.core.Entity;
-import es.eucm.ead.engine.systems.EffectsSystem;
-import es.eucm.ead.engine.variables.VariablesManager;
-import es.eucm.ead.schema.effects.controlstructures.If;
+import com.badlogic.ashley.core.Component;
+import com.badlogic.gdx.utils.Array;
+import com.badlogic.gdx.utils.Pool.Poolable;
 
-/**
- * Created by Javier Torrente on 9/06/14.
- */
-public class IfExecutor extends ControlStructureExecutor<If> {
+import com.badlogic.gdx.utils.Pools;
+import es.eucm.graph.model.Graph;
+import es.eucm.graph.model.Node;
 
-	public IfExecutor(EffectsSystem effectsSystem,
-			VariablesManager variablesManager) {
-		super(effectsSystem, variablesManager);
+public class GraphComponent extends Component implements Poolable {
+
+	private Array<RuntimeGraph> graphs = new Array<RuntimeGraph>();
+
+	public Array<RuntimeGraph> getGraphs() {
+		return graphs;
+	}
+
+	public void add(Graph graph, Node currentNode) {
+		graphs.add(new RuntimeGraph(graph, currentNode));
 	}
 
 	@Override
-	public void execute(Entity target, If effect) {
-		if (variablesManager.evaluateCondition(effect.getCondition(), false)) {
-			effectsSystem.execute(effect.getEffects());
+	public boolean combine(Component component) {
+		if (component instanceof GraphComponent) {
+			graphs.addAll(((GraphComponent) component).graphs);
+			return true;
+		}
+		return false;
+	}
+
+	@Override
+	public void reset() {
+		graphs.clear();
+	}
+
+	/**
+	 * Removes graphs finished
+	 */
+	public void clean() {
+		Array<RuntimeGraph> tmp = Pools.obtain(Array.class);
+		for (RuntimeGraph graph : graphs) {
+			if (graph.currentNode == null) {
+				tmp.add(graph);
+			}
+		}
+
+		for (RuntimeGraph graph : tmp) {
+			graphs.removeValue(graph, true);
+		}
+		tmp.clear();
+		Pools.free(tmp);
+	}
+
+	public class RuntimeGraph {
+
+		public Graph graph;
+
+		public Node currentNode;
+
+		public RuntimeGraph(Graph graph, Node currentNode) {
+			this.graph = graph;
+			this.currentNode = currentNode;
 		}
 	}
 }

@@ -67,7 +67,7 @@ public class EffectWithParametersTest extends EffectTest {
 				new ListenerEngineEntity(gameLoop), true);
 		executed = false;
 
-		effectsSystem.executeEffectList(Arrays.<Effect> asList(dynamicEffect));
+		effectsSystem.execute(Arrays.<Effect> asList(dynamicEffect));
 
 		assertTrue(executed);
 	}

@@ -84,52 +84,58 @@ public class EffectsSystem extends ConditionalSystem {
 	@Override
 	public void doProcessEntity(Entity entity, float delta) {
 		EffectsComponent effectsComponent = effects.get(entity);
-		executeEffectList(effectsComponent.getEffectList());
+		execute(effectsComponent.getEffectList());
 		entity.remove(EffectsComponent.class);
 	}
 
 	/**
-	 * Executes a list of effects. This method makes a recursive call for each
-	 * ScriptEffect found.
+	 * Executes a list of effects.
 	 * 
 	 * This method is public since other classes may need to launch effects
 	 * immediately, but generally it's a better choice to queue them into an
 	 * {@link EffectsComponent} to be executed in the next loop.
 	 */
-	public void executeEffectList(Iterable<Effect> effectList) {
+	public void execute(Iterable<Effect> effectList) {
 		for (Effect effect : effectList) {
-			EffectExecutor effectExecutor = effectExecutorMap.get(effect
-					.getClass());
-			if (effectExecutor != null) {
+			execute(effect);
+		}
+	}
 
-				effect = EngineUtils.buildWithParameters(gameAssets,
-						variablesManager, effect);
+	/**
+	 * Executes an effect
+	 */
+	public void execute(Effect effect) {
+		EffectExecutor effectExecutor = effectExecutorMap
+				.get(effect.getClass());
+		if (effectExecutor != null) {
 
-				// Find target entities
-				Object expResult = variablesManager.evaluateExpression(effect
-						.getTarget());
-				// Accepted results: Entity or Iterable<Entity>
-				if (expResult instanceof Entity) {
-					processTarget((Entity) expResult, effect, effectExecutor);
-				} else if (expResult instanceof Iterable) {
-					Iterable targets = (Iterable) expResult;
-					for (Object maybeATarget : targets) {
-						if (!(maybeATarget instanceof Entity)) {
-							Gdx.app.error(
-									"EffectsSystem",
-									"An object returned after expression evaluation is not an Entity. It will be skipped. "
-											+ effect.getClass());
+			effect = EngineUtils.buildWithParameters(gameAssets,
+					variablesManager, effect);
 
-						} else {
-							Entity target = (Entity) maybeATarget;
-							processTarget(target, effect, effectExecutor);
-						}
+			// Find target entities
+			Object expResult = variablesManager.evaluateExpression(effect
+					.getTarget());
+			// Accepted results: Entity or Iterable<Entity>
+			if (expResult instanceof Entity) {
+				processTarget((Entity) expResult, effect, effectExecutor);
+			} else if (expResult instanceof Iterable) {
+				Iterable targets = (Iterable) expResult;
+				for (Object maybeATarget : targets) {
+					if (!(maybeATarget instanceof Entity)) {
+						Gdx.app.error(
+								"EffectsSystem",
+								"An object returned after expression evaluation is not an Entity. It will be skipped. "
+										+ effect.getClass());
+
+					} else {
+						Entity target = (Entity) maybeATarget;
+						processTarget(target, effect, effectExecutor);
 					}
 				}
-			} else {
-				Gdx.app.error("EffectsSystem", "No executor for effect "
-						+ effect.getClass());
 			}
+		} else {
+			Gdx.app.error("EffectsSystem",
+					"No executor for effect " + effect.getClass());
 		}
 	}
 

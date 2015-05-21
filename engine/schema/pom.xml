@@ -25,6 +25,11 @@
             <artifactId>gdx</artifactId>
             <version>${gdx.version}</version>
         </dependency>
+        <dependency>
+            <groupId>es.e-ucm</groupId>
+            <artifactId>graph-model</artifactId>
+            <version>1.0-SNAPSHOT</version>
+        </dependency>
     </dependencies>
     <build>
         <resources>

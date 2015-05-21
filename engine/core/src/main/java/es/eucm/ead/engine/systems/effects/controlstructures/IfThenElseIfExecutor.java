@@ -66,12 +66,12 @@ public class IfThenElseIfExecutor extends
 			}
 		}
 		// Else
-		effectsSystem.executeEffectList(effect.getElse());
+		effectsSystem.execute(effect.getElse());
 	}
 
 	protected boolean checkAndLaunch(If ifBlock) {
 		if (variablesManager.evaluateCondition(ifBlock.getCondition(), false)) {
-			effectsSystem.executeEffectList(ifBlock.getEffects());
+			effectsSystem.execute(ifBlock.getEffects());
 			return true;
 		}
 		return false;

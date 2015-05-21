@@ -154,6 +154,8 @@ public class DefaultEngineInitializer implements EngineInitializer {
 		EffectsSystem effectsSystem = new EffectsSystem(gameLoop,
 				variablesManager, gameAssets);
 		gameLoop.addSystem(effectsSystem);
+		gameLoop.addSystem(new GraphSystem(gameLoop, variablesManager,
+				effectsSystem));
 
 		effectsSystem.registerEffectExecutor(GoScene.class,
 				new GoSceneExecutor(entitiesLoader, gameView, gameAssets));
@@ -316,6 +318,8 @@ public class DefaultEngineInitializer implements EngineInitializer {
 				new ShaderProcessor(gameLoop, gameAssets, variablesManager));
 		componentLoader.registerComponentProcessor(Background.class,
 				new BackgroundProcessor(gameLoop, entitiesLoader));
+		componentLoader.registerComponentProcessor(Logic.class,
+				new LogicProcessor(gameLoop));
 	}
 
 	private static class LanguageVariableListener implements

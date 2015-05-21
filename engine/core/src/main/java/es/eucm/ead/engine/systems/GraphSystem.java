@@ -34,27 +34,47 @@
  *      You should have received a copy of the GNU Lesser General Public License
  *      along with eAdventure.  If not, see <http://www.gnu.org/licenses/>.
  */
-package es.eucm.ead.engine.systems.effects.controlstructures;
+package es.eucm.ead.engine.systems;
 
 import com.badlogic.ashley.core.Entity;
-import es.eucm.ead.engine.systems.EffectsSystem;
+import com.badlogic.ashley.core.Family;
+
+import es.eucm.ead.engine.GameLoop;
+import es.eucm.ead.engine.components.GraphComponent;
+import es.eucm.ead.engine.components.GraphComponent.RuntimeGraph;
 import es.eucm.ead.engine.variables.VariablesManager;
-import es.eucm.ead.schema.effects.controlstructures.If;
+import es.eucm.ead.schema.effects.Effect;
 
-/**
- * Created by Javier Torrente on 9/06/14.
- */
-public class IfExecutor extends ControlStructureExecutor<If> {
+public class GraphSystem extends ConditionalSystem {
 
-	public IfExecutor(EffectsSystem effectsSystem,
-			VariablesManager variablesManager) {
-		super(effectsSystem, variablesManager);
+	private EffectsSystem effectsSystem;
+
+	public GraphSystem(GameLoop gameLoop, VariablesManager variablesManager,
+			EffectsSystem effectsSystem) {
+		super(gameLoop, variablesManager, Family.all(GraphComponent.class)
+				.get());
+		this.effectsSystem = effectsSystem;
 	}
 
 	@Override
-	public void execute(Entity target, If effect) {
-		if (variablesManager.evaluateCondition(effect.getCondition(), false)) {
-			effectsSystem.execute(effect.getEffects());
+	public void doProcessEntity(Entity entity, float deltaTime) {
+		GraphComponent graphComponent = entity
+				.getComponent(GraphComponent.class);
+		for (RuntimeGraph graph : graphComponent.getGraphs()) {
+			Object o = graph.currentNode.getContent();
+			if (o instanceof Effect) {
+				effectsSystem.execute((Effect) o);
+			}
+			if (graph.currentNode.getForks().size() == 1) {
+				graph.currentNode = graph.graph.getNode(graph.currentNode
+						.getForks().get(0).getNext());
+			}
+		}
+
+		graphComponent.clean();
+
+		if (graphComponent.getGraphs().size == 0) {
+			entity.remove(GraphComponent.class);
 		}
 	}
 }

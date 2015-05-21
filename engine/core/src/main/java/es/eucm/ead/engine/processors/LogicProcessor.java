@@ -34,27 +34,36 @@
  *      You should have received a copy of the GNU Lesser General Public License
  *      along with eAdventure.  If not, see <http://www.gnu.org/licenses/>.
  */
-package es.eucm.ead.engine.systems.effects.controlstructures;
+package es.eucm.ead.engine.processors;
 
-import com.badlogic.ashley.core.Entity;
-import es.eucm.ead.engine.systems.EffectsSystem;
-import es.eucm.ead.engine.variables.VariablesManager;
-import es.eucm.ead.schema.effects.controlstructures.If;
+import com.badlogic.ashley.core.Component;
 
-/**
- * Created by Javier Torrente on 9/06/14.
- */
-public class IfExecutor extends ControlStructureExecutor<If> {
+import es.eucm.ead.engine.GameLoop;
+import es.eucm.ead.engine.components.GraphComponent;
+import es.eucm.ead.engine.components.MultiComponent;
+import es.eucm.ead.schema.components.Logic;
+import es.eucm.ead.schema.components.behaviors.events.Init;
+import es.eucm.graph.model.Graph;
+import es.eucm.graph.model.Node;
 
-	public IfExecutor(EffectsSystem effectsSystem,
-			VariablesManager variablesManager) {
-		super(effectsSystem, variablesManager);
+public class LogicProcessor extends ComponentProcessor<Logic> {
+
+	public LogicProcessor(GameLoop gameLoop) {
+		super(gameLoop);
 	}
 
 	@Override
-	public void execute(Entity target, If effect) {
-		if (variablesManager.evaluateCondition(effect.getCondition(), false)) {
-			effectsSystem.execute(effect.getEffects());
+	public Component getComponent(Logic logic) {
+		MultiComponent component = new MultiComponent();
+		GraphComponent graphComponent = new GraphComponent();
+		component.add(graphComponent);
+		for (Graph graph : logic.getSequences()) {
+			if (graph.getRoot().getContent() instanceof Init) {
+				Node nextNode = graph.getNode(graph.getRoot().getForks().get(0)
+						.getNext());
+				graphComponent.add(graph, nextNode);
+			}
 		}
+		return component;
 	}
 }

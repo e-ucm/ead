@@ -108,7 +108,7 @@ public class TrackEffectExecutor extends EffectExecutor<TrackEffect> {
 			array.add(addBehavior);
 
 		}
-		system.executeEffectList(array);
+		system.execute(array);
 	}
 
 }

@@ -60,7 +60,7 @@ public class ForEachExecutor extends ControlStructureExecutor<ForEach> {
 			Array list = (Array) o;
 			for (Object it : list) {
 				variablesManager.setValue(effect.getIteratorVar(), it);
-				effectsSystem.executeEffectList(effect.getEffects());
+				effectsSystem.execute(effect.getEffects());
 			}
 		} else {
 			Gdx.app.error(
