@@ -44,11 +44,12 @@ import es.eucm.ead.engine.assets.Assets;
 import es.eucm.ead.schemax.ModelStructure;
 
 /**
- * Receives a path (args[0]) and loads all its children that are images.
- * Automatically creates thumbnails for each image.
+ * Loads all the images from a project (
+ * {@link es.eucm.ead.schemax.ModelStructure#IMAGES_FOLDER}). Automatically
+ * creates thumbnails for each image.
  * <dl>
  * <dt><strong>The result arguments are</strong></dt>
- * <dd><strong>args[0]</strong> <em>String</em> path to the image.
+ * <dd><strong>args[0]</strong> <em>String</em> path to the image (absolute).
  * <dd><strong>args[1]</strong> <em>String</em> name of the image.</dd>
  * <dd><strong>args[2]</strong> <em>String</em> path to the thumbnail of the
  * image.</dd>
@@ -69,13 +70,15 @@ public class LoadFiles extends Worker {
 	public void setController(Controller controller) {
 		super.setController(controller);
 		assets = controller.getEditorGameAssets();
+		projectPaths = new Array<FileHandle>();
 	}
 
 	@Override
 	protected void prepare() {
-		FileHandle fileFolder = assets.absolute(args[0].toString());
+		projectPaths.clear();
+		FileHandle fileFolder = assets.absolute(controller.getLoadingPath()
+				+ ModelStructure.IMAGES_FOLDER);
 		if (fileFolder.exists()) {
-			projectPaths = new Array<FileHandle>();
 			projectPaths.addAll(fileFolder.list());
 			if (projectPaths.size > 0) {
 				thumbnailsFolder = fileFolder
@@ -94,7 +97,8 @@ public class LoadFiles extends Worker {
 		}
 		FileHandle file = projectPaths.removeIndex(0);
 		if (ProjectUtils.isSupportedImage(file)) {
-			FileHandle thumbnail = thumbnailsFolder.child(file.name());
+			String name = file.name();
+			FileHandle thumbnail = thumbnailsFolder.child(name);
 			String thumbnailPath = thumbnail.path();
 			if (!thumbnail.exists()
 					|| thumbnail.lastModified() < file.lastModified()) {

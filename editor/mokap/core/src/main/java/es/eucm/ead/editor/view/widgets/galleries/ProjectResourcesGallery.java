@@ -71,9 +71,7 @@ public class ProjectResourcesGallery extends ThumbnailsGallery implements
 	@Override
 	public void prepare() {
 		clear();
-		controller.action(ExecuteWorker.class, LoadFiles.class, this,
-				controller.getEditorGameAssets().getLoadingPath()
-						+ ModelStructure.IMAGES_FOLDER);
+		controller.action(ExecuteWorker.class, LoadFiles.class, this);
 	}
 
 	@Override
