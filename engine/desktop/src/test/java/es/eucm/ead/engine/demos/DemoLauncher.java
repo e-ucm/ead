@@ -166,6 +166,7 @@ public class DemoLauncher extends JFrame {
 		registerDemo(new BackgroundShadersDemo());
 		registerDemo(new URLImageDemo());
 		registerDemo(new RenderersDemo());
+		registerDemo(new GravityDemo());
 	}
 
 	private void registerDemo(ExecutableDemoBuilder demoBuilder) {
