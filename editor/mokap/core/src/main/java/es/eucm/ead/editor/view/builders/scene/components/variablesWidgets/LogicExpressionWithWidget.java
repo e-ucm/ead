@@ -212,7 +212,7 @@ public abstract class LogicExpressionWithWidget<T extends ExpressionWithVariable
 	}
 
 	public boolean isEmpty() {
-		return getChildren().size < 2;
+		return !getExpression().contains("$");
 	}
 
 	public OpValue getOp() {
