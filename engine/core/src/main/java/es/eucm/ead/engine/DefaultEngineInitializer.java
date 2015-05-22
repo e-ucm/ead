@@ -123,6 +123,7 @@ public class DefaultEngineInitializer implements EngineInitializer {
 		gameLoop.addSystem(new TouchBehaviorSystem(gameLoop, variablesManager));
 		gameLoop.addSystem(new TimersSystem(gameLoop, variablesManager));
 		gameLoop.addSystem(new KeyBehaviorSystem(gameLoop, variablesManager));
+		gameLoop.addSystem(new AccelerationSystem(gameLoop));
 		gameLoop.addSystem(new VelocitySystem());
 		gameLoop.addSystem(tweenSystem);
 		gameLoop.addSystem(new VisibilitySystem(gameLoop, variablesManager));
@@ -249,6 +250,8 @@ public class DefaultEngineInitializer implements EngineInitializer {
 				new EmptyRendererProcessor(gameLoop, gameAssets));
 		componentLoader.registerComponentProcessor(Velocity.class,
 				new VelocityProcessor(gameLoop));
+		componentLoader.registerComponentProcessor(Acceleration.class,
+				new AccelerationProcessor(gameLoop));
 		componentLoader.registerComponentProcessor(Button.class,
 				new ButtonProcessor(gameLoop, gameAssets));
 		componentLoader.registerComponentProcessor(VerticalLayout.class,
