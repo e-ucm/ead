@@ -126,7 +126,7 @@ public class DefaultEngineInitializer implements EngineInitializer {
 		gameLoop.addSystem(gravitySystem);
 		gameLoop.addSystem(new AccelerationSystem(gameLoop));
 		gameLoop.addSystem(massSystem);
-		gameLoop.addSystem(new VelocitySystem());
+		gameLoop.addSystem(new VelocitySystem(gameLoop));
 		gameLoop.addSystem(tweenSystem);
 		gameLoop.addSystem(new VisibilitySystem(gameLoop, variablesManager));
 		gameLoop.addSystem(new TouchabilitySystem(gameLoop, variablesManager));
