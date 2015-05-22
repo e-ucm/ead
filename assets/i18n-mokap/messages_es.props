@@ -8,6 +8,7 @@
 
 accept = Aceptar
 add_condition = Añadir condición {}
+add_tag = Añadir etiqueta
 always = Siempre
 amount = Cantidad
 and = Y
@@ -147,6 +148,7 @@ small = Pequeño
 sound = Sonido
 sounds = Sonidos
 speed = Velocidad
+tags = Etiquetas
 test = Probar
 test.all = Probar todo
 text = Texto
@@ -159,6 +161,7 @@ undo = Deshacer
 ungroup = Desagrupar
 untitled = Sin título
 variable = Variable
+visibility = Visibilidad
 
 
 

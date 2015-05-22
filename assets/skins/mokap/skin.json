@@ -363,6 +363,11 @@
             "font": "default_bold",
             "fontColor": "deep_orange"
         },
+        "orange": {
+          "down": "pressed_48_bg",
+          "font": "default_bold",
+          "fontColor": "deep_orange"
+        },
         "toolbar": {
             "down": "pressed_48_bg",
             "font": "default_font",

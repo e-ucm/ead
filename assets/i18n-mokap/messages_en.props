@@ -6,6 +6,7 @@
 
 accept = Accept
 add_condition = Add {} condition
+add_tag = Add tag
 always = Always
 amount = Amount
 and = And
@@ -147,6 +148,7 @@ small = Small
 sound = Sound
 sounds = Sounds
 speed = Speed
+tags = Tags
 test = Test
 test.all = Test all
 text = Text
@@ -159,6 +161,7 @@ undo = Undo
 ungroup = Ungroup
 untitled = Untitled
 variable = Variable
+visibility = Visibility
 
 
 

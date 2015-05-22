@@ -207,6 +207,7 @@ public interface SkinConstants {
 	String IC_REFRESH = "ic_refresh";
 
 	String IC_VISIBILITY = "ic_visibility";
+	String IC_TAG = "ic_tag";
 
 	// Categories color
 	Color COLOR_MOKAPS = Color.DARK_GRAY;
