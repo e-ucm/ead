@@ -49,6 +49,7 @@ public class InteractionContext extends SceneElementContext {
 	}
 
 	protected void addContent() {
+		addComponentEditor(new TagsEditor(controller));
 		addComponentEditor(new LinkEditor(controller));
 		addComponentEditor(new AnimationsEditor(controller));
 		addComponentEditor(new SoundEditor(controller));
