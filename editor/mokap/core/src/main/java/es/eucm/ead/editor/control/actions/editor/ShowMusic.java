@@ -190,7 +190,6 @@ public class ShowMusic extends EditorAction implements
 	@Override
 	public void perform(Object... args) {
 		controller.getCommands().pushStack();
-		System.err.println("PUSH STACK");
 		scene = (ModelEntity) controller.getModel().getSelection()
 				.getSingle(Selection.SCENE);
 		ModelComponent component = Q
@@ -281,7 +280,6 @@ public class ShowMusic extends EditorAction implements
 				}
 			}
 			controller.getCommands().popStack(false);
-			System.err.println("POPPPPPPPPPPP STACK");
 		}
 
 		@Override
