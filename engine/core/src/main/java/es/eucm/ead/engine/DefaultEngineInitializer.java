@@ -122,6 +122,8 @@ public class DefaultEngineInitializer implements EngineInitializer {
 		gameLoop.addSystem(new TimersSystem(gameLoop, variablesManager));
 		gameLoop.addSystem(new KeyBehaviorSystem(gameLoop, variablesManager));
 		MassSystem massSystem = new MassSystem(gameLoop);
+		GravitySystem gravitySystem = new GravitySystem(gameLoop, massSystem);
+		gameLoop.addSystem(gravitySystem);
 		gameLoop.addSystem(new AccelerationSystem(gameLoop));
 		gameLoop.addSystem(massSystem);
 		gameLoop.addSystem(new VelocitySystem());
@@ -252,6 +254,8 @@ public class DefaultEngineInitializer implements EngineInitializer {
 				new VelocityProcessor(gameLoop));
 		componentLoader.registerComponentProcessor(Acceleration.class,
 				new AccelerationProcessor(gameLoop));
+		componentLoader.registerComponentProcessor(Gravity.class,
+				new GravityProcessor(gameLoop));
 		componentLoader.registerComponentProcessor(Mass.class,
 				new MassProcessor(gameLoop));
 		componentLoader.registerComponentProcessor(Button.class,
