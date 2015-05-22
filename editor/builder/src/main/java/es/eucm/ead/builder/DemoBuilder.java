@@ -36,6 +36,7 @@
  */
 package es.eucm.ead.builder;
 
+import com.badlogic.gdx.Input;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.reflect.ClassReflection;
 import com.badlogic.gdx.utils.reflect.Field;
@@ -43,9 +44,11 @@ import com.badlogic.gdx.utils.reflect.ReflectionException;
 import es.eucm.ead.schema.components.ModelComponent;
 import es.eucm.ead.schema.components.Reference;
 import es.eucm.ead.schema.components.Tags;
+import es.eucm.ead.schema.components.Visibility;
 import es.eucm.ead.schema.components.behaviors.Behavior;
 import es.eucm.ead.schema.components.behaviors.Event;
 import es.eucm.ead.schema.components.behaviors.events.Init;
+import es.eucm.ead.schema.components.behaviors.events.Key;
 import es.eucm.ead.schema.components.behaviors.events.Timer;
 import es.eucm.ead.schema.components.behaviors.events.Touch;
 import es.eucm.ead.schema.components.conversation.Conversation;
@@ -65,17 +68,9 @@ import es.eucm.ead.schema.data.Script;
 import es.eucm.ead.schema.data.shape.Circle;
 import es.eucm.ead.schema.data.shape.Rectangle;
 import es.eucm.ead.schema.data.shape.Shape;
-import es.eucm.ead.schema.effects.AddComponent;
-import es.eucm.ead.schema.effects.AddEntity;
-import es.eucm.ead.schema.effects.ChangeState;
-import es.eucm.ead.schema.effects.ChangeVar;
+import es.eucm.ead.schema.effects.*;
 import es.eucm.ead.schema.effects.ChangeVar.Context;
-import es.eucm.ead.schema.effects.Effect;
-import es.eucm.ead.schema.effects.GoScene;
 import es.eucm.ead.schema.effects.GoScene.Transition;
-import es.eucm.ead.schema.effects.PlaySound;
-import es.eucm.ead.schema.effects.SetViewport;
-import es.eucm.ead.schema.effects.TriggerConversation;
 import es.eucm.ead.schema.effects.controlstructures.ControlStructure;
 import es.eucm.ead.schema.effects.controlstructures.IfThenElseIf;
 import es.eucm.ead.schema.entities.ModelEntity;
@@ -759,6 +754,31 @@ public abstract class DemoBuilder {
 	}
 
 	/**
+	 * Creates a Visibility component and adds it to the given entity (
+	 * {@code parent})
+	 * 
+	 * @param condition
+	 *            The condition, in Mokap exp language.
+	 * @return This object, for chaining
+	 */
+	public DemoBuilder visibility(ModelEntity parent, String condition) {
+		lastComponent = makeVisibility(condition);
+		parent.getComponents().add(lastComponent);
+		return this;
+	}
+
+	/**
+	 * Creates a Visibility component and adds it to the last entity created
+	 * 
+	 * @param condition
+	 *            The condition, in Mokap exp language.
+	 * @return This object, for chaining
+	 */
+	public DemoBuilder visibility(String condition) {
+		return visibility(getLastEntity(), condition);
+	}
+
+	/**
 	 * Creates a timer that is looping "ad infinitum". Each {@code time} seconds
 	 * it will trigger the {@code effects} provided. The timer is added as a
 	 * component of the {@code parent} entity provided.
@@ -777,6 +797,55 @@ public abstract class DemoBuilder {
 		timer.setRepeat(-1);
 
 		return behavior(parent, timer, effects);
+	}
+
+	/**
+	 * Creates a simple timer that executes the given {@code effects} after the
+	 * specified number of {@code seconds}. The resulting component is added to
+	 * the given {@code parent} entity
+	 */
+	public DemoBuilder simpleTimer(ModelEntity parent, float seconds,
+			Effect... effects) {
+		lastComponent = makeSimpleTimer(seconds, effects);
+		parent.getComponents().add(lastComponent);
+		return this;
+	}
+
+	/**
+	 * Creates a simple timer that executes the given {@code effects} after the
+	 * specified number of {@code seconds}. The resulting component is added to
+	 * the last entity created
+	 */
+	public DemoBuilder simpleTimer(float seconds, Effect... effects) {
+		return simpleTimer(getLastEntity(), seconds, effects);
+	}
+
+	/**
+	 * Creates a new behavior triggered by the stroke of the given key and adds
+	 * it to the entity provided
+	 * 
+	 * @param parent
+	 *            Entity to add the component to
+	 * @param keyCode
+	 *            The code of the key that triggers the effects (see
+	 *            {@link com.badlogic.gdx.Input.Keys} for a list of key codes).
+	 * @param effects
+	 *            Effects to be triggered
+	 * @return This object, for chaining
+	 */
+	public DemoBuilder simpleKeyBehavior(ModelEntity parent, int keyCode,
+			Effect... effects) {
+		lastComponent = makeSimpleKeyBehavior(keyCode, effects);
+		parent.getComponents().add(lastComponent);
+		return this;
+	}
+
+	/**
+	 * Calls {@link #simpleKeyBehavior(ModelEntity, int, Effect...)} passing the
+	 * last entity created as first argument.
+	 */
+	public DemoBuilder simpleKeyBehavior(int keyCode, Effect... effects) {
+		return simpleKeyBehavior(getLastEntity(), keyCode, effects);
 	}
 
 	/**
@@ -825,19 +894,14 @@ public abstract class DemoBuilder {
 		return behavior(parent, new Init(), effects);
 	}
 
-	private DemoBuilder behavior(Event event, Effect... effects) {
+	public DemoBuilder behavior(Event event, Effect... effects) {
 		return behavior(getLastEntity(), event, effects);
 	}
 
-	private DemoBuilder behavior(ModelEntity parent, Event event,
+	public DemoBuilder behavior(ModelEntity parent, Event event,
 			Effect... effects) {
-		Behavior behavior = new Behavior();
-		behavior.setEvent(event);
-		parent.getComponents().add(behavior);
-		for (Effect effect : effects) {
-			behavior.getEffects().add(effect);
-		}
-		lastComponent = behavior;
+		lastComponent = makeBehavior(event, effects);
+		parent.getComponents().add(lastComponent);
 		return this;
 	}
 
@@ -1082,6 +1146,29 @@ public abstract class DemoBuilder {
 	}
 
 	/**
+	 * Creates a {@link RemoveComponent} effect that removes the component of
+	 * type {@code clazz} from entities identified by Mokap expression
+	 * {@code target}. The effect is added to the {@code parent} object provided
+	 */
+	public DemoBuilder removeComponent(Object parent, String target,
+			Class<? extends ModelComponent> clazz) {
+		effect(parent, makeRemoveComponent(target, clazz));
+		return this;
+	}
+
+	/**
+	 * Creates a {@link RemoveComponent} effect that removes the component of
+	 * type {@code clazz} from entities identified by Mokap expression
+	 * {@code target}. The effect is added to the {@code parent} last component
+	 * created, but it should be a Behavior
+	 */
+	public DemoBuilder removeComponent(String target,
+			Class<? extends ModelComponent> clazz) {
+		effect(getLastComponent(), makeRemoveComponent(target, clazz));
+		return this;
+	}
+
+	/**
 	 * Creates an {@link es.eucm.ead.schema.effects.AddComponent} effect with
 	 * the given {@code target} and {@code componentToAdd} and adds it to the
 	 * last component added to {@link #entities}.
@@ -1105,6 +1192,77 @@ public abstract class DemoBuilder {
 	// //////////////////////////////////////////////////////////
 	// Methods for making model pieces (do not modify entities)
 	// /////////////////////////////////////////////////////////
+
+	/**
+	 * Creates a Timer that starts automatically (no condition) and launches the
+	 * {@code effects} provided in {@code seconds} seconds.
+	 */
+	public Behavior makeSimpleTimer(float seconds, Effect... effects) {
+		Timer timer = new Timer();
+		timer.setTime(seconds);
+		return makeBehavior(timer, effects);
+	}
+
+	/**
+	 * Creates a simple behaviour triggered by the press of the given key
+	 * 
+	 * @param keyCode
+	 *            The key that triggers the effects, selected from constants
+	 *            declared in: {@link com.badlogic.gdx.Input.Keys}
+	 * @param effects
+	 *            List with the effects to be triggered
+	 * @return The behavior created
+	 */
+	public Behavior makeSimpleKeyBehavior(int keyCode, Effect... effects) {
+		Key key = new Key();
+		key.setKeycode(keyCode);
+		return makeBehavior(key, effects);
+	}
+
+	/**
+	 * Creates a touch behaviour
+	 * 
+	 * @param effects
+	 *            List with the effects to be triggered
+	 * @return The behavior created
+	 */
+	public Behavior makeTouchBehavior(Effect... effects) {
+		return makeBehavior(new Touch(), effects);
+	}
+
+	/**
+	 * Creates a behaviour launched upon creation of the container entity
+	 * 
+	 * @param effects
+	 *            List with the effects to be triggered
+	 * @return The behavior created
+	 */
+	public Behavior makeInitBehavior(Effect... effects) {
+		return makeBehavior(new Init(), effects);
+	}
+
+	public Behavior makeBehavior(Event event, Effect... effects) {
+		Behavior behavior = new Behavior();
+		behavior.setEvent(event);
+		for (Effect effect : effects) {
+			behavior.getEffects().add(effect);
+		}
+		return behavior;
+	}
+
+	/**
+	 * Creates a component that makes the container entity visible only when the
+	 * given {@code condition} is true
+	 * 
+	 * @param condition
+	 *            The condition, in Mokap exp language
+	 */
+	public Visibility makeVisibility(String condition) {
+		Visibility visibility = new Visibility();
+		visibility.setCondition(condition);
+		return visibility;
+	}
+
 	/**
 	 * Creates a
 	 * {@link es.eucm.ead.schema.effects.controlstructures.ControlStructure}
@@ -1177,6 +1335,40 @@ public abstract class DemoBuilder {
 		changeVar.setExpression(expression);
 		changeVar.setContext(context);
 		return changeVar;
+	}
+
+	/**
+	 * Creates an effect that will remove the component from the given type, if
+	 * any, from an entity or group of entities
+	 * 
+	 * @param target
+	 *            Optional argument (can be null) that identifies, through a
+	 *            Mokap expression, the entity or entities affected
+	 * @param clazz
+	 *            The type of component to remove
+	 * @return The effect created
+	 */
+	public RemoveComponent makeRemoveComponent(String target,
+			Class<? extends ModelComponent> clazz) {
+		RemoveComponent removeComponent = new RemoveComponent();
+		removeComponent.setComponent(clazz.getSimpleName().toLowerCase());
+		if (target != null) {
+			removeComponent.setTarget(target);
+		}
+		return removeComponent;
+	}
+
+	/**
+	 * Creates an effect that will remove the component from the given type, if
+	 * any, from the entity that contains the effect
+	 * 
+	 * @param clazz
+	 *            The type of component to remove
+	 * @return The effect created
+	 */
+	public RemoveComponent makeRemoveComponent(
+			Class<? extends ModelComponent> clazz) {
+		return makeRemoveComponent(null, clazz);
 	}
 
 	/**
@@ -1459,7 +1651,9 @@ public abstract class DemoBuilder {
 		ifEffects.add(ifEffect);
 
 		Array<Effect> elseEffects = new Array<Effect>();
-		elseEffects.add(elseEffect);
+		if (elseEffect != null) {
+			elseEffects.add(elseEffect);
+		}
 		return makeIfElse(condition, ifEffects, elseEffects);
 	}
 
