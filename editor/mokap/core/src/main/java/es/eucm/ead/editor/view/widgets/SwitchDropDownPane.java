@@ -101,6 +101,10 @@ public class SwitchDropDownPane extends DropDownPane {
 		openWidget.setVisible(enable);
 	}
 
+	public boolean isEnable() {
+		return this.enable;
+	}
+
 	@Override
 	public void open(boolean animate) {
 		if (enable) {
