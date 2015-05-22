@@ -1,0 +1,15 @@
+{
+    "type": "object",
+    "javaType": "es.eucm.ead.schema.components.physics.Mass",
+    "additionalProperties": false,
+    "extends": {
+        "$ref": "../component.json"
+    },
+    "properties": {
+        "m": {
+            "type": "number",
+            "default": 1.0
+        }
+    },
+    "description": "Any entity containing a Mass component will be affected by gravity."
+}
