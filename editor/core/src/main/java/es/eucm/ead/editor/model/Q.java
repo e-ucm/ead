@@ -485,4 +485,38 @@ public class Q {
 		}
 		return null;
 	}
+
+	/**
+	 * 
+	 * @param speed
+	 * @return given a speed time of a GoScene effect, returns the i18N
+	 *         equivalent (fast, normal, slow).
+	 */
+	public static String getSpeedTag(float speed) {
+		String speedTag = null;
+		if (speed <= .5f) {
+			speedTag = i18N.m("fast");
+		} else if (speed <= .8f) {
+			speedTag = i18N.m("normal");
+		} else {
+			speedTag = i18N.m("slow");
+		}
+		return speedTag;
+	}
+
+	/**
+	 * 
+	 * @param speedTag
+	 * @return given a speedTag (fast, normal, slow) returns the float
+	 *         equivalent of a GoScene effect.
+	 */
+	public static float getSpeed(String speedTag) {
+		if (speedTag.equals(i18N.m("fast"))) {
+			return .4f;
+		} else if (speedTag.equals(i18N.m("normal"))) {
+			return .8f;
+		} else {
+			return 1.6f;
+		}
+	}
 }
