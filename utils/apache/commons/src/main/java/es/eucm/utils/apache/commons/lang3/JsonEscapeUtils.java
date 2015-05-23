@@ -234,7 +234,7 @@ public class JsonEscapeUtils {
 	 *         {@link StringEscapeUtils#escapeJson(String)}.
 	 */
 	public static String escapeJsonString(String strToEscape) {
-		if (strToEscape == null){
+		if (strToEscape == null) {
 			return null;
 		}
 		String str = StringEscapeUtils.escapeJson(strToEscape);
@@ -247,7 +247,7 @@ public class JsonEscapeUtils {
 	 *         {@link #escapeJsonString(String)}
 	 */
 	public static String unEscapeJsonString(String strToUnEscape) {
-		if (strToUnEscape == null){
+		if (strToUnEscape == null) {
 			return null;
 		}
 		String str = strToUnEscape;

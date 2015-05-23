@@ -159,8 +159,8 @@ public abstract class PlaygroundLibrary extends RepoLibraryBuilder {
 		elementWithFrames(id, nFrames, "", "");
 	}
 
-	protected void elementWithSpineAnimation(String id, String initialState, float x, float scale,
-			String descriptionEn, String descriptionEs) {
+	protected void elementWithSpineAnimation(String id, String initialState,
+			float x, float scale, String descriptionEn, String descriptionEs) {
 		descriptionEn = buildDescriptionEn(descriptionEn);
 		descriptionEs = buildDescriptionEs(descriptionEs);
 		repoEntity(id, id, descriptionEn, descriptionEs, id + "/thumbnail.png",

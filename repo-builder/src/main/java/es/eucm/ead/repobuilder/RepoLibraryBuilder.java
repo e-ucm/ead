@@ -117,7 +117,7 @@ public abstract class RepoLibraryBuilder extends ExecutableDemoBuilder {
 
 	public static final String RESOURCES = "resources";
 
-	public static final String SOUND_THUMBNAIL="sound.png";
+	public static final String SOUND_THUMBNAIL = "sound.png";
 
 	public static final String VERSION = "Version";
 
@@ -197,8 +197,8 @@ public abstract class RepoLibraryBuilder extends ExecutableDemoBuilder {
 		convertPNGs = true;
 	}
 
-	public RepoLibraryBuilder(String root){
-		this(root,new ImgMagickUtils());
+	public RepoLibraryBuilder(String root) {
+		this(root, new ImgMagickUtils());
 	}
 
 	public String getRoot() {
@@ -403,17 +403,18 @@ public abstract class RepoLibraryBuilder extends ExecutableDemoBuilder {
 	}
 
 	/*
-	Before exporting, repoElements are fully escaped so descriptors can always be parsed by any json reader
+	 * Before exporting, repoElements are fully escaped so descriptors can
+	 * always be parsed by any json reader
 	 */
-	protected void escapeRepoElements(){
-		for (ModelEntity entity: repoEntities){
-			for (ModelComponent component: entity.getComponents()){
-				if (component instanceof  RepoElement){
+	protected void escapeRepoElements() {
+		for (ModelEntity entity : repoEntities) {
+			for (ModelComponent component : entity.getComponents()) {
+				if (component instanceof RepoElement) {
 					JsonEscapeUtils.escapeObject(component);
-					RepoElement re =
-							((RepoElement) component);
+					RepoElement re = ((RepoElement) component);
 					re.setId(JsonEscapeUtils.unEscapeJsonString(re.getId()));
-					re.setLibraryId(JsonEscapeUtils.unEscapeJsonString(re.getLibraryId()));
+					re.setLibraryId(JsonEscapeUtils.unEscapeJsonString(re
+							.getLibraryId()));
 				}
 			}
 		}
@@ -514,7 +515,8 @@ public abstract class RepoLibraryBuilder extends ExecutableDemoBuilder {
 			// Copy thumbnail paths
 			FileHandle zipThumbnails = tempFolder.child(ZIP_THUMBNAILS_SUBPATH);
 			zipThumbnails.mkdirs();
-			for (FileHandle thumbnail : rootFolder.child(getTempSubfolderForThumbnails(id)).list()) {
+			for (FileHandle thumbnail : rootFolder.child(
+					getTempSubfolderForThumbnails(id)).list()) {
 				thumbnail.moveTo(zipThumbnails);
 			}
 
@@ -533,11 +535,11 @@ public abstract class RepoLibraryBuilder extends ExecutableDemoBuilder {
 	}
 
 	/*
-	 Returns the internal subfolder where thumbnails are generated.
-	 This lives within the temp folder generated when elements are exported.
+	 * Returns the internal subfolder where thumbnails are generated. This lives
+	 * within the temp folder generated when elements are exported.
 	 */
-	private String getTempSubfolderForThumbnails(String id){
-		return "thumbnails_"+id+"/";
+	private String getTempSubfolderForThumbnails(String id) {
+		return "thumbnails_" + id + "/";
 	}
 
 	private void exportRepoLibrary(RepoLibrary repoLibrary, FileHandle outputFH) {
@@ -604,26 +606,48 @@ public abstract class RepoLibraryBuilder extends ExecutableDemoBuilder {
 
 	/**
 	 * Creates a sound that can be stored in the repository.
-	 *
-	 * The sound is created as an "empty" entity that only contains a {@link Touch} {@link Behavior} with a {@link PlaySound} effect that actually contains the sound.
-	 *
+	 * 
+	 * The sound is created as an "empty" entity that only contains a
+	 * {@link Touch} {@link Behavior} with a {@link PlaySound} effect that
+	 * actually contains the sound.
+	 * 
 	 * A thumbnail is automatically assigned to the entity
-	 *
-	 * @param nameEn	English name for the repo entry
-	 * @param nameEs	Spanish name for the repo entry
-	 * @param descriptionEn	English description
-	 * @param descriptionEs	Spanish description
-	 * @param backgroundMusic	True if the sound must be categorized into {@link RepoCategories#SOUNDS_MUSIC}, false if it must be categorized into {@link RepoCategories#SOUNDS_EFFECTS}
-	 * @param soundUri	The relative uri of the sound to be stored (e.g. "sound.mp3"). Supported formats: "mp3", "ogg", "wav"
-	 * @return	This very RepoLibraryBuilder object for chaining calls
+	 * 
+	 * @param nameEn
+	 *            English name for the repo entry
+	 * @param nameEs
+	 *            Spanish name for the repo entry
+	 * @param descriptionEn
+	 *            English description
+	 * @param descriptionEs
+	 *            Spanish description
+	 * @param backgroundMusic
+	 *            True if the sound must be categorized into
+	 *            {@link RepoCategories#SOUNDS_MUSIC}, false if it must be
+	 *            categorized into {@link RepoCategories#SOUNDS_EFFECTS}
+	 * @param soundUri
+	 *            The relative uri of the sound to be stored (e.g. "sound.mp3").
+	 *            Supported formats: "mp3", "ogg", "wav"
+	 * @return This very RepoLibraryBuilder object for chaining calls
 	 */
-	public RepoLibraryBuilder repoSound(String nameEn, String nameEs, String descriptionEn, String descriptionEs,
-										boolean backgroundMusic, String soundUri){
-		String sourceThumbnailPath = (properties.get(THUMBNAILS)==null? "" : properties.get(THUMBNAILS)) + SOUND_THUMBNAIL;
-		gameAssets.resolve(SOUND_THUMBNAIL).copyTo(rootFolder.child(sourceThumbnailPath));
-		repoEntity(nameEn, nameEs, descriptionEn, descriptionEs, SOUND_THUMBNAIL,
-				RepoCategories.SOUNDS.toString() + MAIN_SEPARATOR +
-						(backgroundMusic ? RepoCategories.SOUNDS_MUSIC.toString():RepoCategories.SOUNDS_EFFECTS.toString()), (String) null);
+	public RepoLibraryBuilder repoSound(String nameEn, String nameEs,
+			String descriptionEn, String descriptionEs,
+			boolean backgroundMusic, String soundUri) {
+		String sourceThumbnailPath = (properties.get(THUMBNAILS) == null ? ""
+				: properties.get(THUMBNAILS)) + SOUND_THUMBNAIL;
+		gameAssets.resolve(SOUND_THUMBNAIL).copyTo(
+				rootFolder.child(sourceThumbnailPath));
+		repoEntity(
+				nameEn,
+				nameEs,
+				descriptionEn,
+				descriptionEs,
+				SOUND_THUMBNAIL,
+				RepoCategories.SOUNDS.toString()
+						+ MAIN_SEPARATOR
+						+ (backgroundMusic ? RepoCategories.SOUNDS_MUSIC
+								.toString() : RepoCategories.SOUNDS_EFFECTS
+								.toString()), (String) null);
 		touchBehavior().playSound(soundUri);
 		return this;
 	}
@@ -689,7 +713,8 @@ public abstract class RepoLibraryBuilder extends ExecutableDemoBuilder {
 		adjustEntity(parent);
 
 		// Write thumbnails
-		FileHandle thumbnailsTempPathForElement = rootFolder.child(getTempSubfolderForThumbnails(id));
+		FileHandle thumbnailsTempPathForElement = rootFolder
+				.child(getTempSubfolderForThumbnails(id));
 		thumbnailsTempPathForElement.mkdirs();
 		getThumbnailPaths(rootFolder,
 				thumbnail == null ? null : properties.get(THUMBNAILS)
@@ -917,8 +942,7 @@ public abstract class RepoLibraryBuilder extends ExecutableDemoBuilder {
 			for (String tag : commonTags.split(MAIN_SEPARATOR)) {
 				String[] i18ntag = tag.split(I18N_SEPARATOR);
 				String en = i18ntag[0];
-				String es = i18ntag.length > 1 ? i18ntag[1]
-						: i18ntag[0];
+				String es = i18ntag.length > 1 ? i18ntag[1] : i18ntag[0];
 				if (!repoElement.getTagList().contains(en, false)) {
 					repoElement.getTagList().add(en);
 				}
@@ -1076,7 +1100,6 @@ public abstract class RepoLibraryBuilder extends ExecutableDemoBuilder {
 		}
 	}
 
-
 	private void getThumbnailPaths(FileHandle sourceDir, String thumbnailPath,
 			FileHandle targetDir) {
 		if (!thumbnailPath.contains(".")) {
@@ -1124,7 +1147,8 @@ public abstract class RepoLibraryBuilder extends ExecutableDemoBuilder {
 					String originPath = origin.path();
 					String outputPath = targetDir.child(path).path();
 					targetDir.child(path).parent().mkdirs();
-					demoBuilerImgUtils.thumbnail(originPath, outputPath, width, height);
+					demoBuilerImgUtils.thumbnail(originPath, outputPath, width,
+							height);
 				}
 
 			}

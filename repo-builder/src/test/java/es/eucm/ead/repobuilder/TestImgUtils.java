@@ -42,19 +42,20 @@ import es.eucm.ead.engine.demobuilder.img.ImgUtils;
 /**
  * Created by jtorrente on 15/05/2015.
  */
-public class TestImgUtils implements ImgUtils{
-    @Override
-    public void thumbnail(String originPath, String outputPath, int width, int height) {
-        new FileHandle(originPath).copyTo(new FileHandle(outputPath));
-    }
+public class TestImgUtils implements ImgUtils {
+	@Override
+	public void thumbnail(String originPath, String outputPath, int width,
+			int height) {
+		new FileHandle(originPath).copyTo(new FileHandle(outputPath));
+	}
 
-    @Override
-    public void convertPNGs(FileHandle fileOrDir) {
-        // Do nothing
-    }
+	@Override
+	public void convertPNGs(FileHandle fileOrDir) {
+		// Do nothing
+	}
 
-    @Override
-    public void showImageProperties(String imagePath) {
-        // Do nothing
-    }
+	@Override
+	public void showImageProperties(String imagePath) {
+		// Do nothing
+	}
 }

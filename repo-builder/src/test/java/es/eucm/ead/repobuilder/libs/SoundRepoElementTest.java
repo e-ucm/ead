@@ -46,26 +46,26 @@ import org.junit.Test;
  */
 public class SoundRepoElementTest extends RepoLibraryTest {
 
-    public SoundRepoElementTest() {
-        super("sound");
-    }
+	public SoundRepoElementTest() {
+		super("sound");
+	}
 
-    @Override
-    protected void doBuild() {
+	@Override
+	protected void doBuild() {
 
-        String nameEn="Sound - test";
-        String nameEs=nameEn;
-        repoSound(nameEn, nameEs, "", "", false, "applause.mp3");
-        touchBehavior().playSound("applause.mp3");
+		String nameEn = "Sound - test";
+		String nameEs = nameEn;
+		repoSound(nameEn, nameEs, "", "", false, "applause.mp3");
+		touchBehavior().playSound("applause.mp3");
 
-        repoLib(nameEn, nameEs, "", "", "sound.png");
-    }
+		repoLib(nameEn, nameEs, "", "", "sound.png");
+	}
 
-    @Test
-    public void test(){
-        // Check contents of outputFolder
-        checkNumberOfElements(1);
-        FileHandle elementFolder = checkElement("Sound___test.zip");
-        checkContents(elementFolder, "applause.mp3", "Sound___test.json");
-    }
+	@Test
+	public void test() {
+		// Check contents of outputFolder
+		checkNumberOfElements(1);
+		FileHandle elementFolder = checkElement("Sound___test.zip");
+		checkContents(elementFolder, "applause.mp3", "Sound___test.json");
+	}
 }

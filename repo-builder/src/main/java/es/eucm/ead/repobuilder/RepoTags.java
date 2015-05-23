@@ -75,7 +75,7 @@ public enum RepoTags {
 
 	/*-----------------------------------------------
 	 | Metalic-like, shinny style
- 	*-----------------------------------------------*/
+	 *-----------------------------------------------*/
 	DESIGN_METALIC("metalic-style", "estilo-metalico"),
 
 	/*-----------------------------------------------
@@ -94,7 +94,7 @@ public enum RepoTags {
 			+ RepoLibraryBuilder.I18N_SEPARATOR + "hablar"
 			+ RepoLibraryBuilder.MAIN_SEPARATOR + "use"
 			+ RepoLibraryBuilder.I18N_SEPARATOR + "usar"), TYPE_OBJECT(
-			"object", "objeto"), TYPE_BACKGROUND("background","fondo");
+			"object", "objeto"), TYPE_BACKGROUND("background", "fondo");
 
 	private String tag;
 
