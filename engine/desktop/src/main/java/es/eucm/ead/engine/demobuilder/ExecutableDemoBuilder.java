@@ -48,6 +48,8 @@ import com.vividsolutions.jts.geom.Geometry;
 import es.eucm.ead.builder.DemoBuilder;
 import es.eucm.ead.engine.EngineDesktop;
 import es.eucm.ead.engine.assets.GameAssets;
+import es.eucm.ead.engine.demobuilder.img.ImgMagickUtils;
+import es.eucm.ead.engine.demobuilder.img.ImgUtils;
 import es.eucm.ead.engine.utils.DesktopImageUtils;
 import es.eucm.ead.engine.utils.GeometryUtils;
 import es.eucm.ead.schema.components.ModelComponent;
@@ -110,28 +112,23 @@ public abstract class ExecutableDemoBuilder extends DemoBuilder {
 	protected DesktopImageUtils imageUtils;
 
 	/*
-	 * Parameter that indicates whether image magick (www.imagemagick.org)
-	 * should be used to transform png images to ensure libgdx can read them.
-	 * Before this parameter is set to true, the installation path of
-	 * imagemagick must be set by invoking the next instruction:
-	 * 
-	 * ProcessStarter.setGlobalSearchPath(imageMagickDir);
-	 * 
-	 * e.g.:
-	 * 
-	 * ProcessStarter.setGlobalSearchPath("C:\Development\ImageMagick");
+	 * Parameter that indicates whether the png files must be converted using
+	 * demoBuilderImgUtils to a format that is known to work with libgdx
 	 */
 	protected boolean convertPNGs = false;
 
-	/**
-	 * Creates the object but does not actually build the game. Just creates the
-	 * temp folder and unzips the the contents of the file specified by the
-	 * relative path {@code root}
-	 * 
-	 * @param root
+	/*
+	 * Used to
 	 */
-	public ExecutableDemoBuilder(String root) {
+	protected ImgUtils demoBuilerImgUtils;
+
+	public ExecutableDemoBuilder(String root, ImgUtils demoBuilerImgUtils) {
 		this.root = root;
+		this.demoBuilerImgUtils = demoBuilerImgUtils;
+	}
+
+	public ExecutableDemoBuilder(String root) {
+		this(root, new ImgMagickUtils());
 	}
 
 	public void prepare() {
@@ -163,7 +160,8 @@ public abstract class ExecutableDemoBuilder extends DemoBuilder {
 					"An error occurred creating the collider for the next image: "
 							+ imageUri
 							+ ". Sometimes that's to do with unsupported PNG features. Image properties will be shown.");
-			ImgUtils.showImageProperties(gameAssets.resolve(imageUri).path());
+			demoBuilerImgUtils.showImageProperties(gameAssets.resolve(imageUri)
+					.path());
 			return null;
 		}
 	}
@@ -315,7 +313,7 @@ public abstract class ExecutableDemoBuilder extends DemoBuilder {
 			ZipUtils.unzip(zip, rootFolder);
 
 			if (convertPNGs) {
-				ImgUtils.convertPNGs(rootFolder);
+				demoBuilerImgUtils.convertPNGs(rootFolder);
 			}
 
 		}

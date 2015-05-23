@@ -34,7 +34,7 @@
  *      You should have received a copy of the GNU Lesser General Public License
  *      along with eAdventure.  If not, see <http://www.gnu.org/licenses/>.
  */
-package es.eucm.ead.engine.demobuilder;
+package es.eucm.ead.engine.demobuilder.img;
 
 import com.badlogic.gdx.files.FileHandle;
 import org.im4java.core.ConvertCmd;
@@ -61,7 +61,7 @@ import java.io.Reader;
  * 
  * Created by jtorrente on 18/11/14.
  */
-public class ImgUtils {
+public class ImgMagickUtils implements ImgUtils {
 
 	private static final ConvertCmd convertCmd = new ConvertCmd();
 
@@ -89,7 +89,7 @@ public class ImgUtils {
 
 	/**
 	 * This method should be invoked first of all before using
-	 * {@link es.eucm.ead.engine.demobuilder.ImgUtils}.
+	 * {@link ImgMagickUtils}.
 	 * 
 	 * It just tells the Im4Java wrapper where ImageMagick is installed on disk.
 	 * 
@@ -104,9 +104,9 @@ public class ImgUtils {
 		FileHandle dir = new FileHandle(path);
 		if (path == null || !dir.exists() || !dir.isDirectory()) {
 			System.err
-					.println("[ImgUtils] "
+					.println("[ImgMagickUtils] "
 							+ path
-							+ " is not a valid installation path for ImageMagick. ImgUtils will not work properly. Exceptions may be thrown.");
+							+ " is not a valid installation path for ImageMagick. ImgMagickUtils will not work properly. Exceptions may be thrown.");
 			return;
 		}
 		ProcessStarter.setGlobalSearchPath(path);
@@ -130,8 +130,8 @@ public class ImgUtils {
 	 * @param height
 	 *            The height of the output image, in pixels.
 	 */
-	public static void thumbnail(String originPath, String outputPath,
-			int width, int height) {
+	public void thumbnail(String originPath, String outputPath, int width,
+			int height) {
 		IMOperation op = new IMOperation();
 		if (originPath.toLowerCase().endsWith(".png")) {
 			fillPNGOptions(op);
@@ -158,7 +158,7 @@ public class ImgUtils {
 	 *            will scan it recursively and convert all png images found in
 	 *            it.
 	 */
-	public static void convertPNGs(FileHandle fileOrDir) {
+	public void convertPNGs(FileHandle fileOrDir) {
 
 		if (fileOrDir.isDirectory()) {
 			for (FileHandle child : fileOrDir.list()) {
@@ -195,7 +195,7 @@ public class ImgUtils {
 	 * @param imagePath
 	 *            The path to the image to analyze
 	 */
-	public static void showImageProperties(String imagePath) {
+	public void showImageProperties(String imagePath) {
 		IdentifyCmd identifyCmd = new IdentifyCmd();
 		IMOperation op = new IMOperation();
 		op.verbose();

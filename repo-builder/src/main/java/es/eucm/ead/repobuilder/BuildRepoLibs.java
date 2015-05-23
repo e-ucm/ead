@@ -38,7 +38,7 @@ package es.eucm.ead.repobuilder;
 
 import com.badlogic.gdx.backends.lwjgl.LwjglNativesLoader;
 import com.badlogic.gdx.files.FileHandle;
-import es.eucm.ead.engine.demobuilder.ImgUtils;
+import es.eucm.ead.engine.demobuilder.img.ImgMagickUtils;
 import es.eucm.ead.engine.mock.MockApplication;
 import es.eucm.ead.repobuilder.libs.*;
 
@@ -132,7 +132,7 @@ public class BuildRepoLibs {
 		LwjglNativesLoader.load();
 		MockApplication.initStatics();
 
-		ImgUtils.imageMagickPath(imageMagickDir);
+		ImgMagickUtils.imageMagickPath(imageMagickDir);
 
 		System.out.println();
 
