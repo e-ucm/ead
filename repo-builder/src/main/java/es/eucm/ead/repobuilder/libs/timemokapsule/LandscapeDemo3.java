@@ -34,7 +34,7 @@
  *      You should have received a copy of the GNU Lesser General Public License
  *      along with eAdventure.  If not, see <http://www.gnu.org/licenses/>.
  */
-package es.eucm.ead.engine.demos;
+package es.eucm.ead.repobuilder.libs.timemokapsule;
 
 import es.eucm.ead.engine.demobuilder.ExecutableDemoBuilder;
 import es.eucm.ead.schema.components.ModelComponent;

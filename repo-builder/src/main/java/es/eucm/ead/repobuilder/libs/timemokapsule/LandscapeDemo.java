@@ -34,21 +34,11 @@
  *      You should have received a copy of the GNU Lesser General Public License
  *      along with eAdventure.  If not, see <http://www.gnu.org/licenses/>.
  */
-package es.eucm.ead.engine.demos;
+package es.eucm.ead.repobuilder.libs.timemokapsule;
 
 import es.eucm.ead.engine.demobuilder.ExecutableDemoBuilder;
-import es.eucm.ead.engine.variables.VarsContext;
 import es.eucm.ead.schema.components.tweens.*;
-import es.eucm.ead.schema.data.Script;
-import es.eucm.ead.schema.effects.AddComponent;
-import es.eucm.ead.schema.effects.AddEntity;
-import es.eucm.ead.schema.effects.AlphaEffect;
-import es.eucm.ead.schema.effects.controlstructures.If;
-import es.eucm.ead.schema.effects.controlstructures.IfThenElseIf;
-import es.eucm.ead.schema.effects.controlstructures.ScriptCall;
 import es.eucm.ead.schema.entities.ModelEntity;
-
-import java.util.Random;
 
 public class LandscapeDemo extends ExecutableDemoBuilder {
 
