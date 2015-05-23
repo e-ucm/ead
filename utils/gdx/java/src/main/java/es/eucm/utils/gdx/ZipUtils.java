@@ -38,6 +38,7 @@ package es.eucm.utils.gdx;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.files.FileHandle;
+import com.badlogic.gdx.utils.Array;
 
 import java.io.BufferedInputStream;
 import java.io.IOException;
@@ -351,5 +352,42 @@ public class ZipUtils {
 			canonical = childName;
 		}
 		return canonical;
+	}
+
+	/**
+	 * Returns an array with all the entries in a zip-compressed file or
+	 * {@code null} if the file is not a valid zip, or an error occurs
+	 * 
+	 * @param source
+	 *            The compressed zip file
+	 * @return The list of entries or {@code null}
+	 */
+	public static Array<String> listEntries(FileHandle source) {
+		Array<String> entries = new Array<String>();
+		try {
+			// If it is a jar or zip file
+			if (hasCompressedFileExtension(source)) {
+				InputStream fis = source.read();
+				CheckedInputStream checksum = new CheckedInputStream(fis,
+						new Adler32());
+				ZipInputStream zis = new ZipInputStream(
+						new BufferedInputStream(checksum));
+				ZipEntry entry = null;
+				// Write the contents of the origin zip file to the destiny
+				// output
+				while ((entry = zis.getNextEntry()) != null) {
+					entries.add(entry.getName());
+				}
+				zis.close();
+			} else {
+				return null;
+			}
+
+		} catch (Exception e) {
+			Gdx.app.debug("ZipUtils exception",
+					"An error occurred while analyzing " + source.name(), e);
+			return null;
+		}
+		return entries;
 	}
 }
