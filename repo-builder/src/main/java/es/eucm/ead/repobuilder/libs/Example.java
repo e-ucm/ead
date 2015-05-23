@@ -172,8 +172,9 @@ public class Example extends RepoLibraryBuilder {
 		 */
 		repoEntity("Animated element with two animations",
 				"Elmento animado con dos animaciones", "", "",
-				"thumbnail_animated.png", null).tagFullyAnimatedCharacter()
-				.category(RepoCategories.ELEMENTS_CHARACTERS);
+				"thumbnail_animated.png", null)
+				.tagFullyAnimatedEad1xCharacter().category(
+						RepoCategories.ELEMENTS_CHARACTERS);
 
 		/*
 		 * The frameState() method receives as inputs the duration of each frame

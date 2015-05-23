@@ -41,11 +41,14 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.utils.Array;
 import es.eucm.ead.engine.demobuilder.ExecutableDemoBuilder;
-import es.eucm.ead.engine.demobuilder.ImgUtils;
+import es.eucm.ead.engine.demobuilder.img.ImgMagickUtils;
 import es.eucm.ead.editor.exporter.ExportCallback;
 import es.eucm.ead.editor.exporter.Exporter;
 import es.eucm.ead.editor.utils.ProjectUtils;
+import es.eucm.ead.engine.demobuilder.img.ImgUtils;
 import es.eucm.ead.schema.components.ModelComponent;
+import es.eucm.ead.schema.components.behaviors.Behavior;
+import es.eucm.ead.schema.components.behaviors.events.Touch;
 import es.eucm.ead.schema.data.Dimension;
 import es.eucm.ead.schema.data.shape.Circle;
 import es.eucm.ead.schema.data.shape.Rectangle;
@@ -55,21 +58,18 @@ import es.eucm.ead.schema.editor.components.repo.RepoElement;
 import es.eucm.ead.schema.editor.components.repo.RepoLibrary;
 import es.eucm.ead.schema.editor.components.repo.licenses.DefaultLicenses;
 import es.eucm.ead.schema.effects.GoScene;
+import es.eucm.ead.schema.effects.PlaySound;
 import es.eucm.ead.schema.entities.ModelEntity;
 import es.eucm.ead.schema.renderers.Frames;
 import es.eucm.ead.schema.renderers.Renderer;
 import es.eucm.ead.schema.renderers.ShapeRenderer;
+import es.eucm.utils.apache.commons.lang3.JsonEscapeUtils;
 import es.eucm.utils.gdx.ZipUtils;
 
 import javax.imageio.ImageIO;
 import java.awt.image.BufferedImage;
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.Calendar;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Random;
+import java.util.*;
 
 /**
  * Extend this class to create libraries for the mokap repo.
@@ -77,6 +77,16 @@ import java.util.Random;
  * Created by Javier Torrente on 23/09/14.
  */
 public abstract class RepoLibraryBuilder extends ExecutableDemoBuilder {
+
+	/**
+	 * String used to separate tags, descriptions, etc
+	 */
+	public static final String MAIN_SEPARATOR = ",";
+	/**
+	 * String used to separate the English/Spanish versions of a string (e.g.
+	 * tag, description, etc)
+	 */
+	public static final String I18N_SEPARATOR = ";";
 
 	/*
 	 * Properties that can be set
@@ -107,6 +117,8 @@ public abstract class RepoLibraryBuilder extends ExecutableDemoBuilder {
 
 	public static final String RESOURCES = "resources";
 
+	public static final String SOUND_THUMBNAIL="sound.png";
+
 	public static final String VERSION = "Version";
 
 	public static final String TAGS = "Tags";
@@ -117,12 +129,36 @@ public abstract class RepoLibraryBuilder extends ExecutableDemoBuilder {
 
 	public static final String AUTHOR_URL = "aurl";
 
+	/**
+	 * This property is only used by {@link #adjustEntity(ModelEntity)}. If set,
+	 * it will adjust the entity's scale to make sure its width is no higher
+	 * than the max width specified
+	 */
 	public static final String MAX_WIDTH = "mwidth";
 
+	/**
+	 * Equivalent to {@link #MAX_WIDTH} but with height.
+	 */
 	public static final String MAX_HEIGHT = "mheight";
 
 	public static final String LIB_NAME = "LibName";
 
+	/**
+	 * If this property is defined (set to something that is not null), the
+	 * system will generate identifiers automatically for both repo elements and
+	 * repo libraries following the next pattern:
+	 * <ul>
+	 * <li>Libraries: They are given as an id the escaped version of the
+	 * {@link #LIB_NAME} property if this is not null, or the {@link #root}
+	 * otherwise (name of the zip folder contaning the resources). (See
+	 * {@link #makeLibraryId} for more details.)</li>
+	 * <li>Elements: They are given the id of their libraries (see bullet above)
+	 * plus an auto-incremental number starting from 0 (e.g. example0, example1,
+	 * example2...)</li>
+	 * </ul>
+	 * If the property is not defined, the English version of the name of the
+	 * item or the library will be used as id.
+	 */
 	public static final String AUTO_IDS = "AutoIds";
 
 	public static final String PUBLISHER = "Publisher";
@@ -145,15 +181,8 @@ public abstract class RepoLibraryBuilder extends ExecutableDemoBuilder {
 
 	protected List<ModelEntity> repoEntities = new ArrayList<ModelEntity>();
 
-	/**
-	 * Creates the object but does not actually build the game. Just creates the
-	 * temp folder and unzips the the contents of the file specified by the
-	 * relative path {@code root}
-	 * 
-	 * @param root
-	 */
-	public RepoLibraryBuilder(String root) {
-		super(root);
+	public RepoLibraryBuilder(String root, ImgUtils imgUtils) {
+		super(root, imgUtils);
 		setCommonProperty(THUMBNAIL_QUALITIES, "512,256,128,72");
 		setCommonProperty(THUMBNAILS, DEFAULT_THUMBNAILS_FOLDER);
 		setCommonProperty(RESOURCES, DEFAULT_RESOURCES_FOLDER);
@@ -166,6 +195,10 @@ public abstract class RepoLibraryBuilder extends ExecutableDemoBuilder {
 				+ Integer.toString(calendar.get(Calendar.HOUR_OF_DAY));
 		setCommonProperty(VERSION, defaultVersion);
 		convertPNGs = true;
+	}
+
+	public RepoLibraryBuilder(String root){
+		this(root,new ImgMagickUtils());
 	}
 
 	public String getRoot() {
@@ -203,6 +236,7 @@ public abstract class RepoLibraryBuilder extends ExecutableDemoBuilder {
 		FileHandle tempFolder = FileHandle.tempDirectory("jarbundle");
 		tempFolder.mkdirs();
 		ZipUtils.unzip(previewZip, tempFolder);
+
 		Map<String, Object> allEntities = new HashMap<String, Object>();
 		for (String key : entities.keySet()) {
 			allEntities.put(key, entities.get(key));
@@ -222,9 +256,12 @@ public abstract class RepoLibraryBuilder extends ExecutableDemoBuilder {
 		}
 
 		if (properties.get(ENGINE_JAR_FOR_PREVIEW) != null) {
+			int screenWidth = Integer.parseInt(properties.get(PREVIEW_WIDTH));
+			int screenHeight = Integer.parseInt(properties.get(PREVIEW_HEIGHT));
 			exporter.exportAsJar(destiny.path(), tempFolder.path(),
 					properties.get(ENGINE_JAR_FOR_PREVIEW),
-					allEntities.entrySet(), null, null, new ExportCallback() {
+					allEntities.entrySet(), screenWidth, screenHeight,
+					new ExportCallback() {
 						@Override
 						public void error(String errorMessage) {
 
@@ -249,12 +286,20 @@ public abstract class RepoLibraryBuilder extends ExecutableDemoBuilder {
 	public FileHandle createPreviewGame() {
 		int width = Integer.parseInt(properties.get(PREVIEW_WIDTH));
 		int height = Integer.parseInt(properties.get(PREVIEW_HEIGHT));
-		String libId = makeLibraryId();
+		String libId = makeLibraryId(null);
 
 		game(width, height);
 
 		// Create a scene for each element
 		for (int i = 0; i < repoEntities.size(); i++) {
+			String entityId = libId + (i + 1);
+			for (ModelComponent component : repoEntities.get(i).getComponents()) {
+				if (component instanceof RepoElement) {
+					RepoElement repoElement = (RepoElement) component;
+					entityId = repoElement.getId();
+					break;
+				}
+			}
 			scene(null);
 
 			// Background
@@ -269,8 +314,7 @@ public abstract class RepoLibraryBuilder extends ExecutableDemoBuilder {
 			getLastScene().getChildren().add(background);
 
 			// Load element to preview
-			initBehavior(getLastScene(), makeAddEntity(libId + (i + 1)
-					+ ".json"));
+			initBehavior(getLastScene(), makeAddEntity(entityId + ".json"));
 
 			// Next scene
 			if (i < repoEntities.size() - 1) {
@@ -317,6 +361,7 @@ public abstract class RepoLibraryBuilder extends ExecutableDemoBuilder {
 		// Copy
 
 		doBuild();
+		escapeRepoElements();
 
 		// Update version code in entities
 		for (ModelEntity modelEntity : repoEntities) {
@@ -357,10 +402,28 @@ public abstract class RepoLibraryBuilder extends ExecutableDemoBuilder {
 		gameAssets.toJson(lastLibrary, null, outputJson);
 	}
 
+	/*
+	Before exporting, repoElements are fully escaped so descriptors can always be parsed by any json reader
+	 */
+	protected void escapeRepoElements(){
+		for (ModelEntity entity: repoEntities){
+			for (ModelComponent component: entity.getComponents()){
+				if (component instanceof  RepoElement){
+					JsonEscapeUtils.escapeObject(component);
+					RepoElement re =
+							((RepoElement) component);
+					re.setId(JsonEscapeUtils.unEscapeJsonString(re.getId()));
+					re.setLibraryId(JsonEscapeUtils.unEscapeJsonString(re.getLibraryId()));
+				}
+			}
+		}
+	}
+
 	public FileHandle export(String outputDir) {
 		setCommonProperty(OUTPUT, outputDir);
 
 		// Copy and unzip resources
+		prepare();
 		createOutputFolder();
 		FileHandle outputFH = new FileHandle(outputDir);
 		outputFH.mkdirs();
@@ -368,6 +431,7 @@ public abstract class RepoLibraryBuilder extends ExecutableDemoBuilder {
 		entitiesDir.mkdirs();
 
 		doBuild();
+		escapeRepoElements();
 
 		// Iterate through entities
 		List<FileHandle> entityTempFolders = new ArrayList<FileHandle>();
@@ -450,7 +514,7 @@ public abstract class RepoLibraryBuilder extends ExecutableDemoBuilder {
 			// Copy thumbnail paths
 			FileHandle zipThumbnails = tempFolder.child(ZIP_THUMBNAILS_SUBPATH);
 			zipThumbnails.mkdirs();
-			for (FileHandle thumbnail : rootFolder.child(id).list()) {
+			for (FileHandle thumbnail : rootFolder.child(getTempSubfolderForThumbnails(id)).list()) {
 				thumbnail.moveTo(zipThumbnails);
 			}
 
@@ -466,6 +530,14 @@ public abstract class RepoLibraryBuilder extends ExecutableDemoBuilder {
 		}
 
 		return tempFolder;
+	}
+
+	/*
+	 Returns the internal subfolder where thumbnails are generated.
+	 This lives within the temp folder generated when elements are exported.
+	 */
+	private String getTempSubfolderForThumbnails(String id){
+		return "thumbnails_"+id+"/";
 	}
 
 	private void exportRepoLibrary(RepoLibrary repoLibrary, FileHandle outputFH) {
@@ -513,24 +585,46 @@ public abstract class RepoLibraryBuilder extends ExecutableDemoBuilder {
 	public RepoLibraryBuilder repoLib(String nameEn, String nameEs,
 			String descriptionEn, String descriptionEs, String thumbnail) {
 		lastLibrary = makeRepoLibrary(nameEn, nameEs, descriptionEn,
-				descriptionEs, thumbnail);
-		String libraryId = null;
-		if (properties.get(AUTO_IDS) != null) {
-			libraryId = makeLibraryId();
-		} else {
-			libraryId = nameEn;
-		}
+				descriptionEs);
+		String libraryId = makeLibraryId(nameEn);
+
 		lastLibrary.setId(libraryId);
 
 		if (thumbnail == null) {
 			thumbnail = root + ".png";
 		}
 		// Copy thumbnail source file to temp folder
-		FileHandle libraryFolder = rootFolder.child(makeLibraryId());
+		FileHandle libraryFolder = rootFolder.child(makeLibraryId(nameEn));
 		libraryFolder.mkdirs();
 		gameAssets.resolve(thumbnail).copyTo(rootFolder);
 		getThumbnailPaths(rootFolder, thumbnail, libraryFolder);
 
+		return this;
+	}
+
+	/**
+	 * Creates a sound that can be stored in the repository.
+	 *
+	 * The sound is created as an "empty" entity that only contains a {@link Touch} {@link Behavior} with a {@link PlaySound} effect that actually contains the sound.
+	 *
+	 * A thumbnail is automatically assigned to the entity
+	 *
+	 * @param nameEn	English name for the repo entry
+	 * @param nameEs	Spanish name for the repo entry
+	 * @param descriptionEn	English description
+	 * @param descriptionEs	Spanish description
+	 * @param backgroundMusic	True if the sound must be categorized into {@link RepoCategories#SOUNDS_MUSIC}, false if it must be categorized into {@link RepoCategories#SOUNDS_EFFECTS}
+	 * @param soundUri	The relative uri of the sound to be stored (e.g. "sound.mp3"). Supported formats: "mp3", "ogg", "wav"
+	 * @return	This very RepoLibraryBuilder object for chaining calls
+	 */
+	public RepoLibraryBuilder repoSound(String nameEn, String nameEs, String descriptionEn, String descriptionEs,
+										boolean backgroundMusic, String soundUri){
+		String sourceThumbnailPath = (properties.get(THUMBNAILS)==null? "" : properties.get(THUMBNAILS)) + SOUND_THUMBNAIL;
+		gameAssets.resolve(SOUND_THUMBNAIL).copyTo(rootFolder.child(sourceThumbnailPath));
+		repoEntity(nameEn, nameEs, descriptionEn, descriptionEs, SOUND_THUMBNAIL,
+				RepoCategories.SOUNDS.toString() + MAIN_SEPARATOR +
+						(backgroundMusic ? RepoCategories.SOUNDS_MUSIC.toString():RepoCategories.SOUNDS_EFFECTS.toString()), (String) null);
+		touchBehavior().playSound(soundUri);
 		return this;
 	}
 
@@ -554,21 +648,39 @@ public abstract class RepoLibraryBuilder extends ExecutableDemoBuilder {
 		ModelEntity parent = entity(null,
 				image == null ? null : properties.get(RESOURCES) + image, 0, 0)
 				.getLastEntity();
-		repoEntities.add(parent);
-		lastElement = makeRepoElement(nameEn, nameEs, descriptionEn,
-				descriptionEs, categories);
+		if (!repoEntities.contains(parent)) {
+			repoEntities.add(parent);
+		}
+		return repoEntity(nameEn, nameEs, descriptionEn, descriptionEs,
+				thumbnail, categories, parent);
+	}
+
+	public RepoLibraryBuilder repoEntity(String nameEn, String nameEs,
+			String descriptionEn, String descriptionEs, String thumbnail,
+			String categories, ModelEntity parent) {
+
+		lastComponent = lastElement = makeRepoElement(nameEn, nameEs,
+				descriptionEn, descriptionEs, categories);
 		parent.getComponents().add(lastElement);
 
 		// Create default id, based on library name, if the option is selected
 		String id = null;
-		if (properties.get(AUTO_IDS) != null) {
-			String libraryId = makeLibraryId();
+		String libraryId = makeLibraryId(null);
+		if (properties.get(AUTO_IDS) != null
+				&& !properties.get(AUTO_IDS).toLowerCase().equals("false")) {
 			id = libraryId + repoEntities.size();
-			lastElement.setId(id);
-			lastElement.setLibraryId(libraryId);
 		} else {
-			id = nameEn;
+			id = "";
+			for (int i = 0; i < nameEn.length(); i++) {
+				if (Character.isLetterOrDigit(nameEn.charAt(i))) {
+					id += nameEn.charAt(i);
+				} else {
+					id += "_";
+				}
+			}
 		}
+		lastElement.setId(id);
+		lastElement.setLibraryId(libraryId);
 		// Add publisher, if present
 		if (properties.get(PUBLISHER) != null) {
 			lastElement.setPublisher(properties.get(PUBLISHER));
@@ -577,7 +689,7 @@ public abstract class RepoLibraryBuilder extends ExecutableDemoBuilder {
 		adjustEntity(parent);
 
 		// Write thumbnails
-		FileHandle thumbnailsTempPathForElement = rootFolder.child(id + "/");
+		FileHandle thumbnailsTempPathForElement = rootFolder.child(getTempSubfolderForThumbnails(id));
 		thumbnailsTempPathForElement.mkdirs();
 		getThumbnailPaths(rootFolder,
 				thumbnail == null ? null : properties.get(THUMBNAILS)
@@ -668,44 +780,44 @@ public abstract class RepoLibraryBuilder extends ExecutableDemoBuilder {
 
 	public RepoLibraryBuilder authorUrl(String authorUrl) {
 		if (lastLibrary != null) {
-			lastLibrary.setAuthorUrl("'" + authorUrl + "'");
+			lastLibrary.setAuthorUrl(authorUrl);
 		} else if (lastElement != null) {
-			lastElement.setAuthorUrl("'" + authorUrl + "'");
+			lastElement.setAuthorUrl(authorUrl);
+		}
+		return this;
+	}
+
+	public RepoLibraryBuilder tag(RepoTags tag) {
+		return tag(tag.toString());
+	}
+
+	public RepoLibraryBuilder tag(String i18nStrTag) {
+		String[] strTags = i18nStrTag.toString().split(I18N_SEPARATOR);
+		for (String strTag : strTags) {
+			if (lastLibrary != null) {
+				if (!lastLibrary.getTagList().contains(strTag, false)) {
+					lastLibrary.getTagList().add(strTag);
+				}
+			} else if (lastElement != null) {
+				if (!lastElement.getTagList().contains(strTag, false)) {
+					lastElement.getTagList().add(strTag);
+				}
+			}
 		}
 		return this;
 	}
 
 	public RepoLibraryBuilder tag(String tagEn, String tagEs) {
-		if (lastLibrary != null) {
-			if (!lastLibrary.getTagList().contains(tagEn, false)) {
-				lastLibrary.getTagList().add(tagEn);
-			}
-			if (!lastLibrary.getTagList().contains(tagEs, false)) {
-				lastLibrary.getTagList().add(tagEs);
-			}
-		} else if (lastElement != null) {
-			if (!lastElement.getTagList().contains(tagEn, false)) {
-				lastElement.getTagList().add(tagEn);
-			}
-			if (!lastElement.getTagList().contains(tagEs, false)) {
-				lastElement.getTagList().add(tagEs);
-			}
-		}
-		return this;
+		return tag(tagEn + I18N_SEPARATOR + tagEs);
 	}
 
-	public RepoLibraryBuilder tagFullyAnimatedCharacter() {
-		return tagAnimatedCharacter().tag("walk", "andar")
-				.tag("grab", "agarrar").tag("talk", "hablar")
-				.tag("use", "usar");
+	public RepoLibraryBuilder tagFullyAnimatedEad1xCharacter() {
+		return tagAnimatedCharacter().tag(RepoTags.EAD1X_FULL_CHARACTER);
 	}
 
 	public RepoLibraryBuilder tagAnimatedCharacter() {
-		return tagCharacter().tag("animated", "animado");
-	}
-
-	public RepoLibraryBuilder tagCharacter() {
-		return tag("character", "personaje");
+		return tag(RepoTags.TYPE_CHARACTER).tag(
+				RepoTags.CHARACTERISTIC_ANIMATED);
 	}
 
 	public RepoLibraryBuilder license(String strLicense) {
@@ -726,22 +838,34 @@ public abstract class RepoLibraryBuilder extends ExecutableDemoBuilder {
 	}
 
 	public RepoLibraryBuilder category(RepoCategories category) {
-		if (lastLibrary != null) {
-			if (!lastLibrary.getCategoryList().contains(category, false)) {
-				lastLibrary.getCategoryList().add(category);
-			}
-		} else if (lastElement != null) {
-			if (!lastElement.getCategoryList().contains(category, false)) {
-				lastElement.getCategoryList().add(category);
-			}
+		if (lastLibrary != null || lastElement != null) {
+			category(lastLibrary != null ? lastLibrary.getCategoryList()
+					: lastElement.getCategoryList(), category);
 		}
 		return this;
 	}
 
 	public RepoLibraryBuilder category(String strCategory) {
+		if (lastLibrary != null || lastElement != null) {
+			category(lastLibrary != null ? lastLibrary.getCategoryList()
+					: lastElement.getCategoryList(), strCategory);
+		}
+		return this;
+	}
+
+	public RepoLibraryBuilder category(Array<RepoCategories> parent,
+			RepoCategories category) {
+		if (parent != null && !parent.contains(category, false)) {
+			parent.add(category);
+		}
+		return this;
+	}
+
+	public RepoLibraryBuilder category(Array<RepoCategories> parent,
+			String strCategory) {
 		try {
 			RepoCategories category = RepoCategories.fromValue(strCategory);
-			return category(category);
+			return category(parent, category);
 		} catch (IllegalArgumentException e) {
 			System.err.println("Invalid category: " + strCategory);
 		}
@@ -769,8 +893,8 @@ public abstract class RepoLibraryBuilder extends ExecutableDemoBuilder {
 			String descriptionEn, String descriptionEs, String categories,
 			int width, int height) {
 		// Create repo element with default options, if necessary
-		RepoElement repoElement = lastElement = new RepoElement();
-		enEsString(lastElement.getNameList(), lastElement.getNameI18nList(),
+		RepoElement repoElement = new RepoElement();
+		enEsString(repoElement.getNameList(), repoElement.getNameI18nList(),
 				nameEn, nameEs);
 		enEsString(repoElement.getDescriptionList(),
 				repoElement.getDescriptionI18nList(), descriptionEn,
@@ -784,16 +908,17 @@ public abstract class RepoLibraryBuilder extends ExecutableDemoBuilder {
 		}
 
 		if (properties.get(AUTHOR_URL) != null) {
-			repoElement.setAuthorUrl("'" + properties.get(AUTHOR_URL) + "'");
+			repoElement.setAuthorUrl(properties.get(AUTHOR_URL));
 		}
 
 		// Add default tags, if any
 		if (properties.get(TAGS) != null) {
 			String commonTags = properties.get(TAGS);
-			for (String tag : commonTags.split(",")) {
-				String en = tag.split(";")[0];
-				String es = tag.split(";").length > 1 ? tag.split(";")[1] : tag
-						.split(";")[0];
+			for (String tag : commonTags.split(MAIN_SEPARATOR)) {
+				String[] i18ntag = tag.split(I18N_SEPARATOR);
+				String en = i18ntag[0];
+				String es = i18ntag.length > 1 ? i18ntag[1]
+						: i18ntag[0];
 				if (!repoElement.getTagList().contains(en, false)) {
 					repoElement.getTagList().add(en);
 				}
@@ -805,27 +930,29 @@ public abstract class RepoLibraryBuilder extends ExecutableDemoBuilder {
 
 		// Add default license, if any
 		if (properties.get(LICENSE) != null) {
-			for (String commonLicense : properties.get(LICENSE).split(",")) {
+			for (String commonLicense : properties.get(LICENSE).split(
+					MAIN_SEPARATOR)) {
 				license(commonLicense);
 			}
 		}
 
 		// Add default & custom categories
 		if (properties.get(CATEGORIES) != null) {
-			for (String category : properties.get(CATEGORIES).split(",")) {
-				category(category);
+			for (String category : properties.get(CATEGORIES).split(
+					MAIN_SEPARATOR)) {
+				category(repoElement.getCategoryList(), category);
 			}
 		}
 		if (categories != null) {
-			for (String category : categories.split(",")) {
-				category(category);
+			for (String category : categories.split(MAIN_SEPARATOR)) {
+				category(repoElement.getCategoryList(), category);
 			}
 		}
 		return repoElement;
 	}
 
 	public RepoLibrary makeRepoLibrary(String nameEn, String nameEs,
-			String descriptionEn, String descriptionEs, String thumbnail) {
+			String descriptionEn, String descriptionEs) {
 		RepoLibrary repoLibrary = new RepoLibrary();
 		enEsString(repoLibrary.getNameList(), repoLibrary.getNameI18nList(),
 				nameEn, nameEs);
@@ -861,7 +988,7 @@ public abstract class RepoLibraryBuilder extends ExecutableDemoBuilder {
 			}
 		}
 		repoLibrary.setAuthorName(uniqueAuthors.toString());
-		repoLibrary.setAuthorUrl("'" + uniqueUrls.toString() + "'");
+		repoLibrary.setAuthorUrl(uniqueUrls.toString());
 		for (String license : uniqueLicenses) {
 			repoLibrary.getLicenseNameList().add(license);
 		}
@@ -886,24 +1013,37 @@ public abstract class RepoLibraryBuilder extends ExecutableDemoBuilder {
 
 	protected List<String> parseI18NTag(String string) {
 		List<String> parsedTags = new ArrayList<String>();
-		for (String tag : string.split(",")) {
-			String en = tag.split(";")[0];
-			String es = tag.split(";").length > 1 ? tag.split(";")[1] : tag
-					.split(";")[0];
+		for (String tag : string.split(MAIN_SEPARATOR)) {
+			String[] i18ntag = tag.split(I18N_SEPARATOR);
+			String en = i18ntag[0];
+			String es = i18ntag.length > 1 ? i18ntag[1] : i18ntag[0];
 			parsedTags.add(en);
 			parsedTags.add(es);
 		}
 		return parsedTags;
 	}
 
-	/*
-	 * Returns a valid id (0-9 and a-z lowercase only) from the given libName.
-	 * Unsupported characters are replaced by _
+	/**
+	 * Returns a valid id (0-9 and a-z lowercase only) for the library. If
+	 * property AUTO_ID is not set to true, then parameter nameEn is used as
+	 * base id. If AUTO_ID is true, then if property {@link #LIB_NAME} is set up
+	 * (not null), this is used as base id. Otherwise, the name of the root
+	 * folder/zip file is used. This is the name of the file that contains the
+	 * resources (e.g. example.zip).
+	 * 
+	 * Once the base id is selected, unsupported characters are replaced by _
 	 */
-	private String makeLibraryId() {
+	private String makeLibraryId(String nameEn) {
+		String id = "";
+		if (properties.get(AUTO_IDS) == null
+				|| !properties.get(AUTO_IDS).toLowerCase().equals("true")
+				&& nameEn != null) {
+			id = nameEn;
+			return id;
+		}
 		String libName = properties.get(LIB_NAME) != null ? properties
 				.get(LIB_NAME) : root;
-		String id = "";
+
 		for (int i = 0; i < libName.length(); i++) {
 			if (Character.isLetterOrDigit(libName.charAt(i))) {
 				id += libName.charAt(i);
@@ -914,26 +1054,16 @@ public abstract class RepoLibraryBuilder extends ExecutableDemoBuilder {
 		return id;
 	}
 
-	private String nameToPath(String name) {
-		if (name == null || name.equals("")) {
-			return "undef" + new Random().nextInt(100000000);
-		}
-
-		String path = "";
-		for (int i = 0; i < name.length(); i++) {
-			if (Character.isLetterOrDigit(name.charAt(i))) {
-				path += name.charAt(i);
-			} else {
-				path += "_";
-			}
-		}
-
-		return path;
-	}
-
 	private String[] enEquivalents = { "en", "en_EN", "en_US", "en_UK" };
 	private String[] esEquivalents = { "es", "es_ES" };
 
+	/**
+	 * Adds a bilingual (English/Spanish) term to a list of I18NStrings. The
+	 * bilingual word is defined by @param enValue and @param esValue. The List
+	 * of I18N strings is represented by @param values and @param langs.
+	 * values.get(i) returns one of the words in the list while langs.get(i)
+	 * returns the language code of the word.
+	 */
 	protected void enEsString(Array<String> values, Array<String> langs,
 			String enValue, String esValue) {
 		for (String enLang : enEquivalents) {
@@ -946,8 +1076,9 @@ public abstract class RepoLibraryBuilder extends ExecutableDemoBuilder {
 		}
 	}
 
-	private/* RepoThumbnail */void getThumbnailPaths(FileHandle sourceDir,
-			String thumbnailPath, FileHandle targetDir) {
+
+	private void getThumbnailPaths(FileHandle sourceDir, String thumbnailPath,
+			FileHandle targetDir) {
 		if (!thumbnailPath.contains(".")) {
 			thumbnailPath += ".png";
 		}
@@ -967,16 +1098,14 @@ public abstract class RepoLibraryBuilder extends ExecutableDemoBuilder {
 					+ thumbnailPath);
 		}
 
-		// RepoThumbnail repoThumbnail = new RepoThumbnail();
-
 		if (originalWidth == -1) {
 			Thumbnail thumbnail = new Thumbnail();
 			thumbnail.setWidth(-1);
 			thumbnail.setHeight(-1);
 			thumbnail.setPath(thumbnailPath);
 		} else {
-			for (String quality : properties.get(THUMBNAIL_QUALITIES)
-					.split(",")) {
+			for (String quality : properties.get(THUMBNAIL_QUALITIES).split(
+					MAIN_SEPARATOR)) {
 				int width = Integer.parseInt(quality);
 				int height = Math.round(width * originalRate);
 
@@ -986,28 +1115,17 @@ public abstract class RepoLibraryBuilder extends ExecutableDemoBuilder {
 
 				String path;
 				if (width == originalWidth) {
-					// path = thumbnailPath;
 					path = originalWidth + "x" + originalHeight + ".png";
 					if (!targetDir.child(path).exists()) {
 						origin.copyTo(targetDir.child(path));
 					}
 				} else {
-					// targetDir.child(quality).mkdirs();
-					// path = quality + "/" + thumbnailPath;
 					path = width + "x" + height + ".png";
 					String originPath = origin.path();
 					String outputPath = targetDir.child(path).path();
 					targetDir.child(path).parent().mkdirs();
-					ImgUtils.thumbnail(originPath, outputPath, width, height);
+					demoBuilerImgUtils.thumbnail(originPath, outputPath, width, height);
 				}
-
-				/*
-				 * Thumbnail thumbnail = new Thumbnail();
-				 * thumbnail.setWidth(width); thumbnail.setHeight(height);
-				 * thumbnail.setPath(path);
-				 * 
-				 * repoThumbnail.getThumbnails().add(thumbnail);
-				 */
 
 			}
 
@@ -1015,18 +1133,7 @@ public abstract class RepoLibraryBuilder extends ExecutableDemoBuilder {
 				origin.copyTo(targetDir.child(originalWidth + "x"
 						+ originalHeight + ".png"));
 			}
-
-			/*
-			 * if (repoThumbnail.getThumbnails().size == 0) { Thumbnail
-			 * thumbnail = new Thumbnail(); thumbnail.setWidth(originalWidth);
-			 * thumbnail.setHeight(originalHeight);
-			 * thumbnail.setPath(thumbnailPath);
-			 * 
-			 * repoThumbnail.getThumbnails().add(thumbnail); }
-			 */
 		}
-
-		// return repoThumbnail;
 	}
 
 	private static class NoRepetitionList<T> extends ArrayList<T> {
@@ -1046,9 +1153,9 @@ public abstract class RepoLibraryBuilder extends ExecutableDemoBuilder {
 		public String toString() {
 			String str = "";
 			for (T t : this) {
-				str += t.toString() + ",";
+				str += t.toString() + MAIN_SEPARATOR;
 			}
-			if (str.endsWith(",")) {
+			if (str.endsWith(MAIN_SEPARATOR)) {
 				str = str.substring(0, str.length() - 1);
 			}
 			return str;

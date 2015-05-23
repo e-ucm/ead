@@ -40,7 +40,6 @@ package es.eucm.ead.repobuilder.libs;
 import es.eucm.ead.repobuilder.RepoLibraryBuilder;
 import es.eucm.ead.schema.editor.components.repo.RepoCategories;
 import es.eucm.ead.schema.editor.components.repo.licenses.DefaultLicenses;
-import es.eucm.ead.schema.editor.components.repo.licenses.RepoLicense;
 
 /**
  * Created by Javier Torrente on 23/09/14.
@@ -66,7 +65,7 @@ public class Monejos extends RepoLibraryBuilder {
 		float d = 0.8F;
 		repoEntity("Monejo", "Monejo", "A beautiful simple animated character",
 				"Un sencillo personajillo", "monejo.png", null)
-				.tagFullyAnimatedCharacter()
+				.tagFullyAnimatedEad1xCharacter()
 				.category(RepoCategories.ELEMENTS_CHARACTERS)
 				.frameState(2, d, WALK, RIGHT, "Monejo2 andando_10",
 						"Monejo2 andando_04");
@@ -96,7 +95,7 @@ public class Monejos extends RepoLibraryBuilder {
 		repoEntity("Blond lab guy", "Chico de laboratorio rubio",
 				"A lab coated guy with blond hair",
 				"Un personaje de laboratorio rubio", "labguy1.png",
-				"Lab2_DeFrente_01").tagCharacter()
+				"Lab2_DeFrente_01").tagAnimatedCharacter()
 				.tag("lab coat", "bata laboratorio").tag("lab", "laboratorio")
 				.tag("blond", "rubio").tag("scientist", "científico")
 				.category(RepoCategories.ELEMENTS_CHARACTERS)
@@ -104,7 +103,7 @@ public class Monejos extends RepoLibraryBuilder {
 
 		repoEntity("Dark hair lab guy with glasses",
 				"Chico de laboratorio moreno con gafas", "", "", "labguy2.png",
-				"Lab_DeFrente_01").tagCharacter()
+				"Lab_DeFrente_01").tagAnimatedCharacter()
 				.tag("lab coat", "bata de laboratorio")
 				.tag("lab", "laboratorio").tag("dark hair", "moreno")
 				.tag("glasses", "gafas").tag("scientist", "científico")
@@ -114,7 +113,7 @@ public class Monejos extends RepoLibraryBuilder {
 		repoEntity("<e-Adventure> doctor", "Médico <e-Adventure>",
 				"A freky doctor fan of <e-Adventure>",
 				"Un médico fan de <e-Adventure>, un poco friqui",
-				"freakdoctor.png", null).tagFullyAnimatedCharacter()
+				"freakdoctor.png", null).tagFullyAnimatedEad1xCharacter()
 				.tag("doctor", "médico").tag("scientist", "científico")
 				.tag("red hair", "pelirojo").tag("glasses", "gafas")
 				.category(RepoCategories.ELEMENTS_CHARACTERS);
