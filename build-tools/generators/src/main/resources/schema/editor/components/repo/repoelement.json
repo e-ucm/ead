@@ -70,6 +70,12 @@
             "description":"Float value representing the height of the element on screen"
         },
 
+        "editable":{
+            "type":"boolean",
+            "default":"false",
+            "description":"If true, the Mokap app will copy the entity into the project when imported, instead of referencing to it, and will make it editable."
+        },
+
         "categoryList":{
             "type":"array",
             "items":{
