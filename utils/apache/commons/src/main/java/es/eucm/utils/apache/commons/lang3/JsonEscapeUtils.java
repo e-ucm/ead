@@ -200,8 +200,7 @@ public class JsonEscapeUtils {
 						continue;
 					}
 					if (child.getClass() == String.class) {
-						map.replace(
-								key,
+						map.put(key,
 								escapeOrUnescapeJsonString((String) child,
 										escape));
 					} else {

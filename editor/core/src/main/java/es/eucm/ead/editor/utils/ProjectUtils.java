@@ -46,7 +46,6 @@ import com.badlogic.gdx.utils.reflect.ReflectionException;
 import es.eucm.ead.editor.model.Model;
 import es.eucm.ead.schema.renderers.SpineAnimation;
 import es.eucm.ead.schemax.ModelStructure;
-import sun.security.provider.ConfigFile;
 
 import java.io.File;
 import java.util.List;
