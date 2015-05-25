@@ -50,9 +50,10 @@ public class MassProcessor extends ComponentProcessor<Mass> {
 		super(engine);
 	}
 
-	public Component getComponent(Mass component) {
-		MassComponent mass = gameLoop.createComponent(MassComponent.class);
-		mass.setM(component.getM());
-		return mass;
+	public Component getComponent(Mass mass) {
+		MassComponent massComponent = gameLoop
+				.createComponent(MassComponent.class);
+		massComponent.setM(mass.getM());
+		return massComponent;
 	}
 }

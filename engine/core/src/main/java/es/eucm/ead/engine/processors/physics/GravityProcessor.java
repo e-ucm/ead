@@ -50,10 +50,10 @@ public class GravityProcessor extends ComponentProcessor<Gravity> {
 		super(engine);
 	}
 
-	public Component getComponent(Gravity component) {
-		GravityComponent gravity = gameLoop
+	public Component getComponent(Gravity gravity) {
+		GravityComponent gravityComponent = gameLoop
 				.createComponent(GravityComponent.class);
-		gravity.setG(component.getG());
-		return gravity;
+		gravityComponent.setG(gravity.getG());
+		return gravityComponent;
 	}
 }

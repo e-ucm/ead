@@ -50,11 +50,11 @@ public class AccelerationProcessor extends ComponentProcessor<Acceleration> {
 		super(engine);
 	}
 
-	public Component getComponent(Acceleration component) {
-		AccelerationComponent acceleration = gameLoop
+	public Component getComponent(Acceleration acceleration) {
+		AccelerationComponent accelerationComponent = gameLoop
 				.createComponent(AccelerationComponent.class);
-		acceleration.setX(component.getX());
-		acceleration.setY(component.getY());
-		return acceleration;
+		accelerationComponent.setX(acceleration.getX());
+		accelerationComponent.setY(acceleration.getY());
+		return accelerationComponent;
 	}
 }
