@@ -144,7 +144,7 @@ public class ImportProject extends EditorAction {
 			outputFolder.deleteDirectory();
 
 			FileHandle library = projectFolder
-					.child(ModelStructure.LIBRARY_FOLDER);
+					.child(ModelStructure.EXPORT_LIBRARY_FOLDER);
 			FileHandle[] references = library.list(new FileFilter() {
 				@Override
 				public boolean accept(File pathname) {

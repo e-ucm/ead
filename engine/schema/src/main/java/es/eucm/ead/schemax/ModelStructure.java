@@ -72,6 +72,8 @@ public interface ModelStructure {
 
 	public static final String EXPORT_PATH = METADATA_PATH + "export/";
 
+	public static final String LIBRARY_FOLDER = "library/";
+
 	/**
 	 * Internal folder where the game is stored when it is exported as a Jar.
 	 * This constant should be the same than the one defined in EngineJarGame,
@@ -88,7 +90,7 @@ public interface ModelStructure {
 	 * Library Structure files
 	 */
 
-	public static final String LIBRARY_FOLDER = "library/";
+	public static final String EXPORT_LIBRARY_FOLDER = "exportLibrary/";
 
 	public static final String CONTENTS_FOLDER = "contents/";
 

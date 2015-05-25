@@ -43,7 +43,6 @@ import com.badlogic.gdx.utils.GdxRuntimeException;
 import es.eucm.ead.editor.assets.EditorGameAssets;
 import es.eucm.ead.editor.model.Model;
 import es.eucm.ead.editor.model.Q;
-import es.eucm.ead.editor.utils.ProjectUtils;
 import es.eucm.ead.schema.components.Reference;
 import es.eucm.ead.schema.entities.ModelEntity;
 import es.eucm.ead.schemax.ModelStructure;
@@ -51,9 +50,7 @@ import es.eucm.ead.schemax.entities.ResourceCategory;
 import es.eucm.utils.gdx.ZipUtils;
 
 import java.io.File;
-import java.io.FileFilter;
 import java.io.FilenameFilter;
-import java.text.Normalizer;
 import java.util.Map;
 
 /**
@@ -171,7 +168,8 @@ public class ExportProject extends StatesWorker {
 		public void init(Object... args) {
 			references.clear();
 			tempDirectory = (FileHandle) args[0];
-			tempLibFolder = tempDirectory.child(ModelStructure.LIBRARY_FOLDER);
+			tempLibFolder = tempDirectory
+					.child(ModelStructure.EXPORT_LIBRARY_FOLDER);
 			projectLibraryFolder = controller.getLibraryManager()
 					.getLibraryFolder();
 

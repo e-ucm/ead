@@ -89,7 +89,7 @@ public class ReferenceProcessor extends ComponentProcessor<Reference> {
 	}
 
 	protected String getLibraryPath() {
-		return ModelStructure.LIBRARY_FOLDER;
+		return ModelStructure.EXPORT_LIBRARY_FOLDER;
 	}
 
 	private class ReferenceLoadedCallback implements
