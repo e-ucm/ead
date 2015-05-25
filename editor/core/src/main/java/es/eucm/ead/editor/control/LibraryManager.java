@@ -150,6 +150,22 @@ public class LibraryManager {
 	/**
 	 * 
 	 * @param element
+	 * @return the {@link FileHandle} where a given {@link RepoElement} should
+	 *         be located inside a given project.
+	 */
+	public FileHandle getRepoElementProjectFolder(RepoElement element) {
+		FileHandle libraryFolder = controller.getEditorGameAssets().absolute(
+				controller.getEditorGameAssets().getLoadingPath()
+						+ ModelStructure.LIBRARY_FOLDER);
+
+		String repoElementFolder = getRepoElementFolder(element);
+		FileHandle result = libraryFolder.child(repoElementFolder);
+		return result;
+	}
+
+	/**
+	 * 
+	 * @param element
 	 * @return true if the minimum required files of a given {@link RepoElement}
 	 *         have been downloaded and are stored in the correct place.
 	 */

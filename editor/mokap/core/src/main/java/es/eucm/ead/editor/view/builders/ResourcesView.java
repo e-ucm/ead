@@ -49,6 +49,7 @@ import es.eucm.ead.editor.control.MokapController.BackListener;
 import es.eucm.ead.editor.control.actions.editor.*;
 import es.eucm.ead.editor.control.actions.model.AddLibraryReference;
 import es.eucm.ead.editor.control.actions.model.AddSceneElement;
+import es.eucm.ead.editor.control.actions.model.ImportRepoElement;
 import es.eucm.ead.editor.control.actions.model.TakePicture;
 import es.eucm.ead.editor.platform.Platform;
 import es.eucm.ead.editor.utils.ProjectUtils;
@@ -114,7 +115,7 @@ public class ResourcesView implements ViewBuilder, BackListener,
 				actor.addListener(new ClickListener() {
 					@Override
 					public void clicked(InputEvent event, float x, float y) {
-						controller.action(AddLibraryReference.class, elem);
+						controller.action(ImportRepoElement.class, elem);
 						controller.action(ChangeView.class, SceneView.class);
 					}
 				});
@@ -128,7 +129,7 @@ public class ResourcesView implements ViewBuilder, BackListener,
 				actor.addListener(new RepoTile.RepoTileListener() {
 					@Override
 					public void clickedInLibrary(RepoTileEvent event) {
-						controller.action(AddLibraryReference.class,
+						controller.action(ImportRepoElement.class,
 								event.getRepoElement());
 						controller.action(ChangeView.class, SceneView.class);
 					}
