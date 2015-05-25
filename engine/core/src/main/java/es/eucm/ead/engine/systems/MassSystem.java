@@ -39,40 +39,35 @@ package es.eucm.ead.engine.systems;
 import com.badlogic.ashley.core.Entity;
 import com.badlogic.ashley.core.Family;
 import com.badlogic.ashley.systems.IteratingSystem;
-import com.badlogic.gdx.scenes.scene2d.Group;
 import es.eucm.ead.engine.GameLoop;
-import es.eucm.ead.engine.components.physics.PositionComponent;
+import es.eucm.ead.engine.components.physics.MassComponent;
 import es.eucm.ead.engine.components.physics.VelocityComponent;
-import es.eucm.ead.engine.entities.EngineEntity;
 
-public class VelocitySystem extends IteratingSystem {
+/**
+ * Iterates through all entities with mass ({@link MassComponent}) and updates
+ * their velocity according to the acceleration determined by G.
+ * 
+ * Created by jtorrente on 22/05/2015.
+ */
+public class MassSystem extends IteratingSystem {
+	protected GameLoop gameLoop;
+	protected float g;
 
-	private GameLoop gameLoop;
+	/**
+	 * Sets the G value to be used. This is set up by the GravitySystem.
+	 */
+	public void setG(float g) {
+		this.g = Math.abs(g);
+	}
 
-	public VelocitySystem(GameLoop gameLoop) {
-		super(Family.all(VelocityComponent.class).get());
+	public MassSystem(GameLoop gameLoop) {
+		super(Family.all(MassComponent.class).get());
 		this.gameLoop = gameLoop;
 	}
 
-	@Override
 	public void processEntity(Entity entity, float delta) {
-		VelocityComponent velocity = entity
-				.getComponent(VelocityComponent.class);
-		PositionComponent positionComponent = entity
-				.getComponent(PositionComponent.class);
-		if (positionComponent == null) {
-			positionComponent = gameLoop
-					.createComponent(PositionComponent.class);
-			positionComponent.set((EngineEntity) entity);
-			entity.add(positionComponent);
-		}
-
-		Group actor = ((EngineEntity) entity).getGroup();
-
-		positionComponent.incRealX(velocity.getX() * delta);
-		positionComponent.incRealY(velocity.getY() * delta);
-
-		actor.setX(positionComponent.getRealX());
-		actor.setY(positionComponent.getRealY());
+		VelocityComponent velocity = gameLoop.addAndGetComponent(entity,
+				VelocityComponent.class);
+		velocity.setY(velocity.getY() - this.g * delta);
 	}
 }

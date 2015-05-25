@@ -49,8 +49,7 @@ import es.eucm.ead.engine.processors.controls.ImageButtonProcessor;
 import es.eucm.ead.engine.processors.controls.LabelProcessor;
 import es.eucm.ead.engine.processors.controls.TextButtonProcessor;
 import es.eucm.ead.engine.processors.controls.layouts.VerticalLayoutProcessor;
-import es.eucm.ead.engine.processors.physics.BoundingAreaProcessor;
-import es.eucm.ead.engine.processors.physics.VelocityProcessor;
+import es.eucm.ead.engine.processors.physics.*;
 import es.eucm.ead.engine.processors.positiontracking.ChaseEntityProcessor;
 import es.eucm.ead.engine.processors.positiontracking.MoveByEntityProcessor;
 import es.eucm.ead.engine.processors.positiontracking.ParallaxProcessor;
@@ -83,8 +82,7 @@ import es.eucm.ead.schema.components.controls.Label;
 import es.eucm.ead.schema.components.controls.TextButton;
 import es.eucm.ead.schema.components.controls.layouts.VerticalLayout;
 import es.eucm.ead.schema.components.conversation.*;
-import es.eucm.ead.schema.components.physics.BoundingArea;
-import es.eucm.ead.schema.components.physics.Velocity;
+import es.eucm.ead.schema.components.physics.*;
 import es.eucm.ead.schema.components.positiontracking.ChaseEntity;
 import es.eucm.ead.schema.components.positiontracking.MoveByEntity;
 import es.eucm.ead.schema.components.positiontracking.Parallax;
@@ -123,7 +121,12 @@ public class DefaultEngineInitializer implements EngineInitializer {
 		gameLoop.addSystem(new TouchBehaviorSystem(gameLoop, variablesManager));
 		gameLoop.addSystem(new TimersSystem(gameLoop, variablesManager));
 		gameLoop.addSystem(new KeyBehaviorSystem(gameLoop, variablesManager));
-		gameLoop.addSystem(new VelocitySystem());
+		MassSystem massSystem = new MassSystem(gameLoop);
+		GravitySystem gravitySystem = new GravitySystem(gameLoop, massSystem);
+		gameLoop.addSystem(gravitySystem);
+		gameLoop.addSystem(new AccelerationSystem(gameLoop));
+		gameLoop.addSystem(massSystem);
+		gameLoop.addSystem(new VelocitySystem(gameLoop));
 		gameLoop.addSystem(tweenSystem);
 		gameLoop.addSystem(new VisibilitySystem(gameLoop, variablesManager));
 		gameLoop.addSystem(new TouchabilitySystem(gameLoop, variablesManager));
@@ -249,6 +252,12 @@ public class DefaultEngineInitializer implements EngineInitializer {
 				new EmptyRendererProcessor(gameLoop, gameAssets));
 		componentLoader.registerComponentProcessor(Velocity.class,
 				new VelocityProcessor(gameLoop));
+		componentLoader.registerComponentProcessor(Acceleration.class,
+				new AccelerationProcessor(gameLoop));
+		componentLoader.registerComponentProcessor(Gravity.class,
+				new GravityProcessor(gameLoop));
+		componentLoader.registerComponentProcessor(Mass.class,
+				new MassProcessor(gameLoop));
 		componentLoader.registerComponentProcessor(Button.class,
 				new ButtonProcessor(gameLoop, gameAssets));
 		componentLoader.registerComponentProcessor(VerticalLayout.class,

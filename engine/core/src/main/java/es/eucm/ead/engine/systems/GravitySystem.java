@@ -39,40 +39,28 @@ package es.eucm.ead.engine.systems;
 import com.badlogic.ashley.core.Entity;
 import com.badlogic.ashley.core.Family;
 import com.badlogic.ashley.systems.IteratingSystem;
-import com.badlogic.gdx.scenes.scene2d.Group;
 import es.eucm.ead.engine.GameLoop;
-import es.eucm.ead.engine.components.physics.PositionComponent;
-import es.eucm.ead.engine.components.physics.VelocityComponent;
-import es.eucm.ead.engine.entities.EngineEntity;
+import es.eucm.ead.engine.components.physics.GravityComponent;
 
-public class VelocitySystem extends IteratingSystem {
+/**
+ * Simple system that retrieves the G constant from a component, that can be
+ * defined anywhere but that should ideally be placed as a scene component, and
+ * communicates that G to the mass system.
+ * 
+ * Created by jtorrente on 22/05/2015.
+ */
+public class GravitySystem extends IteratingSystem {
+	protected GameLoop gameLoop;
+	protected MassSystem massSystem;
 
-	private GameLoop gameLoop;
-
-	public VelocitySystem(GameLoop gameLoop) {
-		super(Family.all(VelocityComponent.class).get());
+	public GravitySystem(GameLoop gameLoop, MassSystem massSystem) {
+		super(Family.all(GravityComponent.class).get());
 		this.gameLoop = gameLoop;
+		this.massSystem = massSystem;
 	}
 
-	@Override
 	public void processEntity(Entity entity, float delta) {
-		VelocityComponent velocity = entity
-				.getComponent(VelocityComponent.class);
-		PositionComponent positionComponent = entity
-				.getComponent(PositionComponent.class);
-		if (positionComponent == null) {
-			positionComponent = gameLoop
-					.createComponent(PositionComponent.class);
-			positionComponent.set((EngineEntity) entity);
-			entity.add(positionComponent);
-		}
-
-		Group actor = ((EngineEntity) entity).getGroup();
-
-		positionComponent.incRealX(velocity.getX() * delta);
-		positionComponent.incRealY(velocity.getY() * delta);
-
-		actor.setX(positionComponent.getRealX());
-		actor.setY(positionComponent.getRealY());
+		this.massSystem.setG((entity.getComponent(GravityComponent.class))
+				.getG());
 	}
 }

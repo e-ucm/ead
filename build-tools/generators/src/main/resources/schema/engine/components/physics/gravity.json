@@ -1,0 +1,16 @@
+{
+    "type": "object",
+    "javaType": "es.eucm.ead.schema.components.physics.Gravity",
+    "additionalProperties": false,
+    "extends": {
+        "$ref": "../component.json"
+    },
+    "properties": {
+        "g": {
+            "type": "number",
+            "default": 980.0,
+            "description":"G value is expressed in pixels/s^2. Default value assumes 1 metre = 100 pixels."
+        }
+    },
+    "description": "The Gravity component specifies the G constant to be applied on each entity with a mass. This component is expected to appear no more than once in a scene. It can be defined only once for the whole game."
+}

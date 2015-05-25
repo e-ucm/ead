@@ -39,40 +39,30 @@ package es.eucm.ead.engine.systems;
 import com.badlogic.ashley.core.Entity;
 import com.badlogic.ashley.core.Family;
 import com.badlogic.ashley.systems.IteratingSystem;
-import com.badlogic.gdx.scenes.scene2d.Group;
 import es.eucm.ead.engine.GameLoop;
-import es.eucm.ead.engine.components.physics.PositionComponent;
+import es.eucm.ead.engine.components.physics.AccelerationComponent;
 import es.eucm.ead.engine.components.physics.VelocityComponent;
-import es.eucm.ead.engine.entities.EngineEntity;
 
-public class VelocitySystem extends IteratingSystem {
+/**
+ * Iterates through entities with {@link AccelerationComponent}s and modifies
+ * their current velocity.
+ * 
+ * Created by jtorrente on 22/05/2015.
+ */
+public class AccelerationSystem extends IteratingSystem {
+	protected GameLoop gameLoop;
 
-	private GameLoop gameLoop;
-
-	public VelocitySystem(GameLoop gameLoop) {
-		super(Family.all(VelocityComponent.class).get());
+	public AccelerationSystem(GameLoop gameLoop) {
+		super(Family.all(AccelerationComponent.class).get());
 		this.gameLoop = gameLoop;
 	}
 
-	@Override
 	public void processEntity(Entity entity, float delta) {
-		VelocityComponent velocity = entity
-				.getComponent(VelocityComponent.class);
-		PositionComponent positionComponent = entity
-				.getComponent(PositionComponent.class);
-		if (positionComponent == null) {
-			positionComponent = gameLoop
-					.createComponent(PositionComponent.class);
-			positionComponent.set((EngineEntity) entity);
-			entity.add(positionComponent);
-		}
-
-		Group actor = ((EngineEntity) entity).getGroup();
-
-		positionComponent.incRealX(velocity.getX() * delta);
-		positionComponent.incRealY(velocity.getY() * delta);
-
-		actor.setX(positionComponent.getRealX());
-		actor.setY(positionComponent.getRealY());
+		AccelerationComponent acceleration = entity
+				.getComponent(AccelerationComponent.class);
+		VelocityComponent velocity = gameLoop.addAndGetComponent(entity,
+				VelocityComponent.class);
+		velocity.setX(velocity.getX() + acceleration.getX() * delta);
+		velocity.setY(velocity.getY() + acceleration.getY() * delta);
 	}
 }

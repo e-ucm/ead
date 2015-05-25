@@ -42,6 +42,7 @@ import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import es.eucm.ead.builder.DemoBuilder;
 import es.eucm.ead.engine.assets.GameAssets;
+import es.eucm.ead.engine.entities.EngineEntity;
 import es.eucm.ead.engine.expressions.operators.OperationsFactory;
 import es.eucm.ead.engine.mock.MockApplication;
 import es.eucm.ead.engine.mock.MockComponentProcessor;
@@ -49,6 +50,7 @@ import es.eucm.ead.engine.mock.MockFiles;
 import es.eucm.ead.engine.mock.MockImageUtils;
 import es.eucm.ead.engine.mock.schema.MockEffect;
 import es.eucm.ead.engine.mock.schema.MockModelComponent;
+import es.eucm.ead.engine.utils.EngineUtils;
 import es.eucm.ead.engine.variables.VariablesManager;
 import es.eucm.ead.schema.entities.ModelEntity;
 import es.eucm.ead.schemax.ModelStructure;
@@ -56,6 +58,8 @@ import org.junit.Before;
 import org.junit.BeforeClass;
 
 import java.util.Map.Entry;
+
+import static org.junit.Assert.assertEquals;
 
 /**
  * Created by angel on 24/06/14.
@@ -157,5 +161,14 @@ public class EngineTest extends DemoBuilder {
 	@Override
 	protected void doBuild() {
 
+	}
+
+	public EngineEntity entityAtPosition(float stageX, float stageY) {
+		Actor actor = hit(stageX, stageY);
+		return EngineUtils.getActorEntity(actor);
+	}
+
+	public ModelEntity modelEntityAtPosition(float stageX, float stageY) {
+		return entityAtPosition(stageX, stageY).getModelEntity();
 	}
 }

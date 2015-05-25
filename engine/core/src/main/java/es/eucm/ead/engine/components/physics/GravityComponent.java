@@ -34,45 +34,24 @@
  *      You should have received a copy of the GNU Lesser General Public License
  *      along with eAdventure.  If not, see <http://www.gnu.org/licenses/>.
  */
-package es.eucm.ead.engine.systems;
+package es.eucm.ead.engine.components.physics;
 
-import com.badlogic.ashley.core.Entity;
-import com.badlogic.ashley.core.Family;
-import com.badlogic.ashley.systems.IteratingSystem;
-import com.badlogic.gdx.scenes.scene2d.Group;
-import es.eucm.ead.engine.GameLoop;
-import es.eucm.ead.engine.components.physics.PositionComponent;
-import es.eucm.ead.engine.components.physics.VelocityComponent;
-import es.eucm.ead.engine.entities.EngineEntity;
+import com.badlogic.ashley.core.Component;
 
-public class VelocitySystem extends IteratingSystem {
+/**
+ * Created by jtorrente on 22/05/2015.
+ */
+public class GravityComponent extends Component {
+	private float g;
 
-	private GameLoop gameLoop;
-
-	public VelocitySystem(GameLoop gameLoop) {
-		super(Family.all(VelocityComponent.class).get());
-		this.gameLoop = gameLoop;
+	public GravityComponent() {
 	}
 
-	@Override
-	public void processEntity(Entity entity, float delta) {
-		VelocityComponent velocity = entity
-				.getComponent(VelocityComponent.class);
-		PositionComponent positionComponent = entity
-				.getComponent(PositionComponent.class);
-		if (positionComponent == null) {
-			positionComponent = gameLoop
-					.createComponent(PositionComponent.class);
-			positionComponent.set((EngineEntity) entity);
-			entity.add(positionComponent);
-		}
+	public float getG() {
+		return this.g;
+	}
 
-		Group actor = ((EngineEntity) entity).getGroup();
-
-		positionComponent.incRealX(velocity.getX() * delta);
-		positionComponent.incRealY(velocity.getY() * delta);
-
-		actor.setX(positionComponent.getRealX());
-		actor.setY(positionComponent.getRealY());
+	public void setG(float g) {
+		this.g = g;
 	}
 }
