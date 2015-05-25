@@ -675,6 +675,13 @@ public abstract class RepoLibraryBuilder extends ExecutableDemoBuilder {
 		return this;
 	}
 
+	public RepoLibraryBuilder editable(boolean editable) {
+		if (lastElement != null) {
+			lastElement.setEditable(editable);
+		}
+		return this;
+	}
+
 	public RepoLibraryBuilder tag(String tagEn, String tagEs) {
 		if (lastLibrary != null) {
 			if (!lastLibrary.getTagList().contains(tagEn, false)) {
