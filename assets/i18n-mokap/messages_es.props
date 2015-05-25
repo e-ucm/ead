@@ -8,6 +8,7 @@
 
 accept = Aceptar
 add_condition = Añadir condición {}
+add_tag = Añadir etiqueta
 always = Siempre
 amount = Cantidad
 and = Y
@@ -37,6 +38,7 @@ drawing = Dibujo
 drawing.save = Guardar dibujo
 drawing.discard = Descartar dibujo
 duplicated.variable = La variable ya existe
+duplicated_tag = La etiqueta ya existe
 edit = Editar
 edit.Pixlr = Editar con Pixlr
 element = Elemento
@@ -70,6 +72,7 @@ interaction = Interacción
 interactive.zone = Zona interactiva
 invalid.resource = El recurso seleccionado no se puede importar
 invalid.variable = Variable solo debe contener letras, números o _
+invalid_tag = La etiqueta tiene que contener algún carácter
 jump = Saltar
 link = Enlace
 little = Poco
@@ -147,6 +150,7 @@ small = Pequeño
 sound = Sonido
 sounds = Sonidos
 speed = Velocidad
+tags = Etiquetas
 test = Probar
 test.all = Probar todo
 text = Texto
@@ -159,6 +163,7 @@ undo = Deshacer
 ungroup = Desagrupar
 untitled = Sin título
 variable = Variable
+visibility = Visibilidad
 
 
 

@@ -41,6 +41,8 @@ import com.badlogic.gdx.utils.ObjectMap;
 import com.badlogic.gdx.utils.ObjectMap.Entry;
 
 import es.eucm.ead.editor.control.Controller;
+import es.eucm.ead.editor.control.Selection;
+import es.eucm.ead.editor.control.actions.model.generic.RemoveFromArray;
 import es.eucm.ead.editor.model.Q;
 import es.eucm.ead.editor.view.SkinConstants;
 import es.eucm.ead.editor.view.builders.scene.components.ComponentEditor;
@@ -91,6 +93,30 @@ public class AnimationsEditor extends ComponentEditor<ModelComponent> {
 			entry.value.close(false);
 		}
 
+	}
+
+	@Override
+	public void release() {
+		super.release();
+		for (TransformAnimationEditor t : editors.values()) {
+			if (t.isEnable()) {
+				return;
+			}
+		}
+
+		ModelEntity entity = (ModelEntity) controller.getModel().getSelection()
+				.getSingle(Selection.SCENE_ELEMENT);
+		ModelComponent animation = Q.getComponentById(entity, getComponentId());
+		if (animation != null) {
+			controller.action(RemoveFromArray.class, entity,
+					entity.getComponents(), animation);
+		}
+
+	}
+
+	@Override
+	public String getTooltip() {
+		return i18N.m("animations");
 	}
 
 	@Override

@@ -42,7 +42,10 @@ import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import es.eucm.ead.editor.control.Controller;
+import es.eucm.ead.editor.control.Selection;
+import es.eucm.ead.editor.control.actions.model.generic.RemoveFromArray;
 import es.eucm.ead.editor.control.actions.model.generic.SetField;
+import es.eucm.ead.editor.model.Q;
 import es.eucm.ead.editor.view.SkinConstants;
 import es.eucm.ead.editor.view.builders.scene.components.variablesWidgets.Level2LogicExpressionWithWidget;
 import es.eucm.ead.editor.view.builders.scene.components.variablesWidgets.LogicExpressionWithWidget;
@@ -52,6 +55,7 @@ import es.eucm.ead.editor.view.widgets.selectors.Selector;
 import es.eucm.ead.engine.expressions.Operation;
 import es.eucm.ead.engine.expressions.Parser;
 import es.eucm.ead.engine.expressions.operators.OperationsFactory;
+import es.eucm.ead.schema.components.ModelComponent;
 import es.eucm.ead.schema.components.Visibility;
 import es.eucm.ead.schema.entities.ModelEntity;
 import es.eucm.ead.schemax.ComponentIds;
@@ -134,11 +138,27 @@ public class VisibilityEditor extends ComponentEditor<Visibility> implements
 	}
 
 	@Override
+	public void release() {
+		super.release();
+		ModelEntity sceneElement = (ModelEntity) controller.getModel()
+				.getSelection().getSingle(Selection.SCENE_ELEMENT);
+		if (sceneElement != null && operationWidget.isEmpty()) {
+			controller.action(RemoveFromArray.class, sceneElement,
+					sceneElement.getComponents(), visibility);
+		}
+	}
+
+	@Override
 	protected Visibility buildNewComponent() {
 		visibility = new Visibility();
 		visibility.setCondition("btrue");
 
 		return visibility;
+	}
+
+	@Override
+	public String getTooltip() {
+		return i18N.m("visibility");
 	}
 
 	@Override

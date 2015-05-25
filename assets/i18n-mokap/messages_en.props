@@ -6,6 +6,7 @@
 
 accept = Accept
 add_condition = Add {} condition
+add_tag = Add tag
 always = Always
 amount = Amount
 and = And
@@ -35,6 +36,7 @@ drawing = Drawing
 drawing.save = Save drawing
 drawing.discard = Discard drawing
 duplicated.variable = Variable already exists
+duplicated_tag = Tag already exists
 edit = Edit
 edit.Pixlr = Edit with Pixlr
 element = Element
@@ -68,6 +70,7 @@ interaction = Interaction
 interactive.zone = Interactive zone
 invalid.resource = The selected resource can not be imported
 invalid.variable = Variable can only contain letters, numbers and _
+invalid_tag = The tag have to contain some character
 jump = Jump
 library = Library
 link = Link
@@ -147,6 +150,7 @@ small = Small
 sound = Sound
 sounds = Sounds
 speed = Speed
+tags = Tags
 test = Test
 test.all = Test all
 text = Text
@@ -159,6 +163,7 @@ undo = Undo
 ungroup = Ungroup
 untitled = Untitled
 variable = Variable
+visibility = Visibility
 
 
 

@@ -80,17 +80,27 @@ public class BooleanExpressionWidget extends ExpressionWithVariablesWidget
 
 	private I18N i18N;
 
-	public BooleanExpressionWidget(Controller controller) {
+	public BooleanExpressionWidget(Controller cont) {
 		super(true);
+		this.controller = cont;
 		this.i18N = controller.getApplicationAssets().getI18N();
 		this.skin = controller.getApplicationAssets().getSkin();
-		this.controller = controller;
 
 		ModelEntity game = controller.getModel().getGame();
 		variables = Q.getComponent(game, Variables.class);
 		variablesList = variables.getVariablesDefinitions();
 
 		variablesBox = new SelectBox<String>(skin);
+		variablesBox.addListener(new ChangeListener() {
+			@Override
+			public void changed(ChangeEvent event, Actor actor) {
+				if (variablesBox.getSelected().equals(
+						i18N.m("new.variable") + "...")) {
+					controller.action(CreateVariable.class,
+							BooleanExpressionWidget.this);
+				}
+			}
+		});
 		loadItems();
 
 		Array states = new Array();
@@ -100,14 +110,27 @@ public class BooleanExpressionWidget extends ExpressionWithVariablesWidget
 		value = new MultiStateButton(skin, states, colors, PAD * 2);
 
 		add(variablesBox).expandX().marginRight(PAD);
-		add(value).expandX().marginRight(PAD);
+		add(value).marginRight(PAD);
+		value.setVisible(false);
 
 		controller.getModel().addListListener(variablesList, this);
+
+		setComputeInvisibles(true);
+		variablesBox.addListener(new ChangeListener() {
+			@Override
+			public void changed(ChangeEvent event, Actor actor) {
+				if (variablesBox.getSelected().toString().equals(" ")) {
+					value.setVisible(false);
+				} else {
+					value.setVisible(true);
+				}
+			}
+		});
 	}
 
 	@Override
 	public String getExpression() {
-		if (variablesBox.getSelected().equals(i18N.m("variable"))) {
+		if (variablesBox.getSelected().equals(" ")) {
 			return "";
 		}
 
@@ -132,7 +155,8 @@ public class BooleanExpressionWidget extends ExpressionWithVariablesWidget
 			return;
 		}
 
-		if (operation.getName().equals(OP)) {
+		if (operation.getName().equals(OP)
+				&& operation.first().toString() != "") {
 			variablesBox.setSelected(operation.first().toString()
 					.replace("$", ""));
 			value.selectText(i18N.m(operation.second().toString()
@@ -141,29 +165,19 @@ public class BooleanExpressionWidget extends ExpressionWithVariablesWidget
 			return;
 		}
 
-		variablesBox.setSelected(i18N.m("variable"));
+		variablesBox.setSelected(" ");
 		value.selectText(i18N.m("true"));
 	}
 
 	public void loadItems() {
 		Array<String> items = new Array<String>();
-		items.add(i18N.m("variable"));
+		items.add(" ");
 		for (VariableDef v : variablesList) {
 			items.add(v.getName());
 		}
-		items.add(i18N.m("new.variable"));
+		items.add(i18N.m("new.variable") + "...");
 
 		variablesBox.setItems(items);
-
-		variablesBox.addListener(new ChangeListener() {
-			@Override
-			public void changed(ChangeEvent event, Actor actor) {
-				if (variablesBox.getSelected().equals(i18N.m("new.variable"))) {
-					controller.action(CreateVariable.class,
-							BooleanExpressionWidget.this);
-				}
-			}
-		});
 	}
 
 	@Override
@@ -173,7 +187,7 @@ public class BooleanExpressionWidget extends ExpressionWithVariablesWidget
 
 	@Override
 	public void canceled() {
-		variablesBox.setSelected(i18N.m("variable"));
+		variablesBox.setSelected(" ");
 	}
 
 	@Override

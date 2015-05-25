@@ -1,0 +1,8 @@
+{
+  "additionalProperties": false,
+  "javaType": "es.eucm.ead.schema.components.TagsList",
+  "type": "object",
+  "extends": {
+    "$ref": "../../engine/components/tags.json"
+  }
+}
