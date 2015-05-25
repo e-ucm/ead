@@ -61,18 +61,15 @@ import es.eucm.ead.schema.entities.ModelEntity;
 public class LabelTextEditor extends TextEditor implements
 		Input.TextInputListener {
 
-	private Controller controller;
-
 	private Label labelActor;
 
 	private EditorGameAssets editorGameAssets;
 
 	private es.eucm.ead.schema.components.controls.Label modelLabel;
 
-	public LabelTextEditor(final Skin skin, Controller c) {
-		super(skin, c.getApplicationAssets().getI18N(), c.getPreferences());
+	public LabelTextEditor(Controller c) {
+		super(c);
 
-		this.controller = c;
 		this.editorGameAssets = c.getEditorGameAssets();
 
 		top.addListener(new ClickListener() {

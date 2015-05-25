@@ -230,8 +230,7 @@ public class GroupEditorToolbar extends MultiWidget implements ModelView {
 
 		ungroupVisible = new VisibleListener(ungroupButton);
 
-		final LabelTextEditor textFontPane = new LabelTextEditor(skin,
-				controller);
+		final LabelTextEditor textFontPane = new LabelTextEditor(controller);
 		final ImageEditor imageEditor = new ImageEditor(controller);
 		final IconButton edit = WidgetBuilder.toolbarIcon(
 				SkinConstants.IC_EDIT, i18N.m("edit"));

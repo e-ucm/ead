@@ -47,6 +47,8 @@ import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.scenes.scene2d.utils.Drawable;
 import com.badlogic.gdx.utils.Array;
 
+import es.eucm.ead.editor.assets.ApplicationAssets;
+import es.eucm.ead.editor.control.Controller;
 import es.eucm.ead.editor.control.Preferences;
 import es.eucm.ead.editor.control.Views;
 import es.eucm.ead.editor.view.SkinConstants;
@@ -60,6 +62,7 @@ import es.eucm.ead.engine.I18N;
 
 public class TextEditor extends ContextMenu {
 
+	protected Controller controller;
 	private ColorPickerPanel colorPicker;
 
 	private Label label;
@@ -74,12 +77,15 @@ public class TextEditor extends ContextMenu {
 
 	protected Table top;
 
-	public TextEditor(Skin skin, I18N i18n, Preferences prefs) {
-		this(skin, skin.get(TextEditorStyle.class), i18n, prefs);
-	}
+	public TextEditor(Controller control) {
+		this.controller = control;
 
-	public TextEditor(Skin skin, TextEditorStyle style, I18N i18n,
-			Preferences prefs) {
+		ApplicationAssets applicationAssets = controller.getApplicationAssets();
+		Skin skin = applicationAssets.getSkin();
+		I18N i18n = applicationAssets.getI18N();
+		Preferences prefs = controller.getPreferences();
+
+		TextEditorStyle style = skin.get(TextEditorStyle.class);
 
 		float pad = WidgetBuilder.dpToPixels(8);
 		pad(pad);
@@ -174,11 +180,37 @@ public class TextEditor extends ContextMenu {
 
 	public void updateSelectedStyle(String style) {
 		String[] keys = style.split("-");
-		selectTypo.setSelected(keys[0]);
-		if (keys[1].equalsIgnoreCase("small"))
-			selectSize.setSelectedIndex(0);
-		else if (keys[1].equalsIgnoreCase("big")) {
-			selectSize.setSelectedIndex(1);
+		if (keys.length == 1) {
+			Skin skin = controller.getEditorGameAssets().getSkin();
+			Label.LabelStyle labelStyle = skin.get(style,
+					Label.LabelStyle.class);
+			String fontString = skin.find(labelStyle.font);
+			if (fontString == null || fontString.isEmpty()) {
+				selectTypo.setSelectedIndex(0);
+				selectSize.setSelectedIndex(0);
+			} else {
+				Array<String> items = selectSize.getItems();
+				for (int i = 0; i < items.size; i++) {
+					if (fontString.contains(items.get(i))) {
+						selectSize.setSelectedIndex(i);
+						break;
+					}
+				}
+				items = selectTypo.getItems();
+				for (int i = 0; i < items.size; i++) {
+					if (fontString.contains(items.get(i))) {
+						selectTypo.setSelectedIndex(i);
+						break;
+					}
+				}
+			}
+		} else {
+			selectTypo.setSelected(keys[0]);
+			if (keys[1].equalsIgnoreCase("small"))
+				selectSize.setSelectedIndex(0);
+			else if (keys[1].equalsIgnoreCase("big")) {
+				selectSize.setSelectedIndex(1);
+			}
 		}
 	}
 
