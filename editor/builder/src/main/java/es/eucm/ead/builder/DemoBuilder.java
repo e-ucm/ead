@@ -74,14 +74,7 @@ import es.eucm.ead.schema.effects.GoScene.Transition;
 import es.eucm.ead.schema.effects.controlstructures.ControlStructure;
 import es.eucm.ead.schema.effects.controlstructures.IfThenElseIf;
 import es.eucm.ead.schema.entities.ModelEntity;
-import es.eucm.ead.schema.renderers.EmptyRenderer;
-import es.eucm.ead.schema.renderers.Frame;
-import es.eucm.ead.schema.renderers.Frames;
-import es.eucm.ead.schema.renderers.Image;
-import es.eucm.ead.schema.renderers.Renderer;
-import es.eucm.ead.schema.renderers.ShapeRenderer;
-import es.eucm.ead.schema.renderers.State;
-import es.eucm.ead.schema.renderers.States;
+import es.eucm.ead.schema.renderers.*;
 import es.eucm.ead.schemax.ModelStructure;
 
 import java.util.HashMap;
@@ -1618,6 +1611,49 @@ public abstract class DemoBuilder {
 			frames.getFrames().add(frame);
 		}
 		return frames;
+	}
+
+	/**
+	 * Creates a renderer for a {@link SpineAnimation}.
+	 * 
+	 * @param uri
+	 *            Names of the files, without any extension, as produced by the
+	 *            Spine software package. Example: "skeleton". Cannot be null.
+	 * @param initialState
+	 *            Optional argument. If set, changes the initial animation used
+	 *            by the engine. The value provided must be a valid spine state
+	 *            defined in the file.
+	 * @return The SpineAnimation object
+	 */
+	public SpineAnimation makeSpine(String uri, String initialState) {
+		SpineAnimation spine = new SpineAnimation();
+		if (initialState != null) {
+			spine.setInitialState(initialState);
+		}
+		spine.setUri(uri);
+		return spine;
+	}
+
+	/**
+	 * Creates a {@link SpineAnimation} renderer component with the arguments
+	 * provided using {@link #makeSpine(String, String)} and adds it to the
+	 * {@code entity} given as an argument.
+	 */
+	public DemoBuilder spine(ModelEntity entity, String uri, String initialState) {
+		lastComponent = makeSpine(uri, initialState);
+		entity.getComponents().add(lastComponent);
+		return this;
+	}
+
+	/**
+	 * Creates a {@link SpineAnimation} renderer component with the arguments
+	 * provided using {@link #makeSpine(String, String)} and adds it to the last
+	 * entity created.
+	 * 
+	 * Equivalent to {@code spine(getLastEntity(), uri, initialState}
+	 */
+	public DemoBuilder spine(String uri, String initialState) {
+		return spine(getLastEntity(), uri, initialState);
 	}
 
 	public DemoBuilder circle(int radius) {

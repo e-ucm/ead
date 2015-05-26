@@ -44,6 +44,7 @@ import com.badlogic.gdx.utils.reflect.ClassReflection;
 import com.badlogic.gdx.utils.reflect.Field;
 import com.badlogic.gdx.utils.reflect.ReflectionException;
 import es.eucm.ead.editor.model.Model;
+import es.eucm.ead.schema.renderers.SpineAnimation;
 import es.eucm.ead.schemax.ModelStructure;
 
 import java.io.File;
@@ -66,6 +67,44 @@ public class ProjectUtils {
 	// To detect sound and video extensions
 	private static final Array<String> videoExtensions = new Array<String>(
 			new String[] { "mpg", "mpeg", "avi" });
+
+	/**
+	 * Checks if the given String has a binary extension. That is, if the String
+	 * ends with "." followed by a spine animation file (".json" or ".atlas"),
+	 * an image file extension ({@link #imageExtensions}), an audio file
+	 * extension ({@link #audioExtensions}), or a video file extension (
+	 * {@link #videoExtensions}). The comparison is case insensitive
+	 * 
+	 * @param strValue
+	 *            The String value to be checked
+	 * @return True if the value ends with binary format extension, false
+	 *         otherwise (or if null)
+	 */
+	public static boolean hasBinaryExtension(String strValue) {
+		if (strValue == null)
+			return false;
+		String strValueLowerCase = strValue.toLowerCase();
+		if (strValueLowerCase.endsWith(".json")
+				|| strValueLowerCase.endsWith(".atlas")) {
+			return true;
+		}
+		for (String imageExtension : imageExtensions) {
+			if (strValueLowerCase.endsWith("." + imageExtension.toLowerCase())) {
+				return true;
+			}
+		}
+		for (String binaryExtension : videoExtensions) {
+			if (strValueLowerCase.endsWith("." + binaryExtension.toLowerCase())) {
+				return true;
+			}
+		}
+		for (String binaryExtension : audioExtensions) {
+			if (strValueLowerCase.endsWith("." + binaryExtension.toLowerCase())) {
+				return true;
+			}
+		}
+		return false;
+	}
 
 	/**
 	 * @return an array with paths of all the projects inside the given folder
@@ -116,9 +155,9 @@ public class ProjectUtils {
 	 *            The object to search binary references in.
 	 */
 	public static Array<String> listRefBinaries(Object object) {
-		Array<String> binaryPaths = new Array<String>();
+		BinaryReferences binaryPaths = new BinaryReferences();
 		listRefBinaries(object, null, binaryPaths);
-		return binaryPaths;
+		return binaryPaths.getReferences();
 	}
 
 	/**
@@ -131,7 +170,7 @@ public class ProjectUtils {
 	}
 
 	private static void listRefBinaries(Object object, Class clazz,
-			Array<String> binaryPaths) {
+			BinaryReferences binaryPaths) {
 		if (clazz == null) {
 			clazz = object.getClass();
 		}
@@ -147,31 +186,25 @@ public class ProjectUtils {
 		// If the object is a String (leaf)
 		// Leaf: String
 		if (ClassReflection.isAssignableFrom(String.class, clazz)) {
-			String strValue = ((String) object).toLowerCase();
-			boolean hasBinaryExtension = false;
-			for (String imageExtension : imageExtensions) {
-				if (strValue.endsWith("." + imageExtension.toLowerCase())) {
-					hasBinaryExtension = true;
-					break;
+			String strValue = (String) object;
+			binaryPaths.checkAndAdd(strValue);
+		}
+		// Special case: SpineAnimation does not store extension, and therefore
+		// it needs to be treated differently
+		else if (ClassReflection.isAssignableFrom(SpineAnimation.class, clazz)) {
+			SpineAnimation spineAnimation = (SpineAnimation) object;
+			String baseUri = spineAnimation.getUri();
+			if (baseUri != null) {
+				if (baseUri.toLowerCase().endsWith(".json")) {
+					baseUri = baseUri.substring(0, baseUri.length() - 5);
 				}
-			}
-			if (!hasBinaryExtension) {
-				for (String binaryExtension : videoExtensions) {
-					if (strValue.endsWith("." + binaryExtension.toLowerCase())) {
-						hasBinaryExtension = true;
-						break;
-					}
-				}
-				for (String binaryExtension : audioExtensions) {
-					if (strValue.endsWith("." + binaryExtension.toLowerCase())) {
-						hasBinaryExtension = true;
-						break;
-					}
-				}
-			}
-			// Avoid adding the same reference twice
-			if (hasBinaryExtension && !binaryPaths.contains(strValue, false)) {
-				binaryPaths.add(strValue);
+				String pngUri = baseUri + ".png";
+				String jsonUri = baseUri + ".json";
+				String atlasUri = baseUri + ".atlas";
+				// Avoid adding the same reference twice
+				binaryPaths.checkAndAdd(pngUri);
+				binaryPaths.checkAndAdd(jsonUri);
+				binaryPaths.checkAndAdd(atlasUri);
 			}
 		}
 
@@ -246,6 +279,26 @@ public class ProjectUtils {
 				|| clazz == Character.class || clazz == Long.class
 				|| clazz == Short.class) {
 			return;
+		}
+
+		// Special case: SpineAnimation does not store extension, and therefore
+		// it needs to be treated differently
+		else if (ClassReflection.isAssignableFrom(SpineAnimation.class, clazz)) {
+			SpineAnimation spineAnimation = (SpineAnimation) object;
+			String baseUri = spineAnimation.getUri();
+			if (baseUri != null) {
+				baseUri = baseUri.toLowerCase();
+				oldRef = oldRef.toLowerCase();
+				if (baseUri.endsWith(".json")) {
+					baseUri = baseUri.substring(0, baseUri.length() - 5);
+				}
+				if (oldRef.endsWith(".json")) {
+					oldRef = oldRef.substring(0, oldRef.length() - 5);
+				}
+				if (baseUri.equals(oldRef)) {
+					spineAnimation.setUri(newRef);
+				}
+			}
 		}
 
 		// Iterate through fields
@@ -422,5 +475,44 @@ public class ProjectUtils {
 		int separatorIndex = path.lastIndexOf(File.separator);
 		return (separatorIndex < 0) ? path : path.substring(separatorIndex + 1,
 				path.length());
+	}
+
+	/**
+	 * List of unique String references (case-insensitive). Only Strings that
+	 * are not in the list are actually added (case-insensitive comparison)
+	 */
+	private static class BinaryReferences {
+		private Array<String> lowerCaseReferences;
+		private Array<String> originalReferences;
+
+		public BinaryReferences() {
+			lowerCaseReferences = new Array<String>();
+			originalReferences = new Array<String>();
+		}
+
+		/**
+		 * Adds the given String reference to the list if it is not still
+		 * present and it is a binary file
+		 * 
+		 * @param binaryReference
+		 *            The reference to be added (e.g. "image.png" or
+		 *            "sound.wav")
+		 * @return True if added, false otherwise
+		 */
+		public boolean checkAndAdd(String binaryReference) {
+			if (binaryReference == null
+					|| !hasBinaryExtension(binaryReference)
+					|| lowerCaseReferences.contains(
+							binaryReference.toLowerCase(), false)) {
+				return false;
+			}
+			lowerCaseReferences.add(binaryReference.toLowerCase());
+			originalReferences.add(binaryReference);
+			return true;
+		}
+
+		public Array<String> getReferences() {
+			return originalReferences;
+		}
 	}
 }

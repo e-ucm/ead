@@ -41,6 +41,7 @@ import com.badlogic.gdx.backends.lwjgl.LwjglApplicationConfiguration;
 import com.badlogic.gdx.backends.lwjgl.LwjglFrame;
 import es.eucm.ead.engine.effects.VideoEngineObject;
 import es.eucm.ead.engine.utils.DesktopImageUtils;
+import es.eucm.ead.engine.utils.SwingEDTUtils;
 
 import javax.swing.JFrame;
 import java.awt.Image;
@@ -125,8 +126,12 @@ public class EngineDesktop {
 			}
 		});
 		setSize(width, height);
-		frame.setVisible(true);
-
+		SwingEDTUtils.invokeLater(new Runnable() {
+			@Override
+			public void run() {
+				frame.setVisible(true);
+			}
+		});
 	}
 
 	public void setSize(int width, int height) {

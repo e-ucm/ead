@@ -351,6 +351,7 @@
                 <module>build-tools/generators</module>
                 <module>build-tools/maven</module>
                 <module>utils/gdx/java</module>
+                <module>utils/apache/commons</module>
                 <module>engine/schema</module>
                 <module>engine/core</module>
                 <module>engine/desktop</module>

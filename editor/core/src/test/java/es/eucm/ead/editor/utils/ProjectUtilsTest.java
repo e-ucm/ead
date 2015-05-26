@@ -37,6 +37,7 @@
 package es.eucm.ead.editor.utils;
 
 import com.badlogic.gdx.utils.Array;
+import es.eucm.ead.schema.renderers.SpineAnimation;
 import org.junit.Test;
 
 import java.util.ArrayList;
@@ -45,6 +46,7 @@ import java.util.List;
 import java.util.Map;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
 
 /**
  * Created by jtorrente on 26/11/14.
@@ -55,7 +57,7 @@ public class ProjectUtilsTest {
 		return new Array<String>(new String[] { "images/image1.png",
 				"images/image2.JPEG", "videos/video1.mpg", "video2.avi",
 				"sounds/sound1.mp3", "sounds/sound2.WAV", "icons/icon1.bmp",
-				"icons/icon2.jpg" });
+				"icons/icon2.jpg", "skeleton" });
 	}
 
 	@Test
@@ -80,8 +82,13 @@ public class ProjectUtilsTest {
 				}
 			}
 		}
-		assertEquals(0, uris.size);
-		assertEquals(0, binaryReferences.size);
+		assertEquals(1, uris.size);
+		assertTrue(uris.contains("skeleton", false));
+
+		assertEquals(3, binaryReferences.size);
+		assertTrue(binaryReferences.contains("skeleton.json", false));
+		assertTrue(binaryReferences.contains("skeleton.png", false));
+		assertTrue(binaryReferences.contains("skeleton.atlas", false));
 	}
 
 	@Test
@@ -101,6 +108,10 @@ public class ProjectUtilsTest {
 		ProjectUtils.replaceBinaryRef(binRefContainer, uris.get(4), str);
 		ProjectUtils.replaceBinaryRef(binRefContainer, uris.get(5), str);
 		ProjectUtils.replaceBinaryRef(binRefContainer, uris.get(6), str);
+		ProjectUtils
+				.replaceBinaryRef(binRefContainer, uris.get(8), "skeleton3");
+		ProjectUtils.replaceBinaryRef(binRefContainer, "skeleton3.json",
+				"skeleton2");
 		assertEquals(binRefContainer.refHolder.uri, str);
 		assertEquals(binRefContainer.list.get(0).uri, str);
 		assertEquals(binRefContainer.list.get(1).uri, str);
@@ -108,6 +119,7 @@ public class ProjectUtilsTest {
 		assertEquals(binRefContainer.array.get(1).uri, uris.get(0));
 		assertEquals(binRefContainer.uriMap.get("uri1"), str);
 		assertEquals(binRefContainer.uriMap.get("uri2"), uris.get(7));
+		assertEquals(binRefContainer.animation.getUri(), "skeleton2");
 	}
 
 	private static class BinRefContainer extends RefContainer {
@@ -122,9 +134,15 @@ public class ProjectUtilsTest {
 		private List<SimpleRefHolder> list = new ArrayList<SimpleRefHolder>();
 		private SimpleRefHolder refHolder;
 		private Object anotherNull = null;
+		/*
+		 * SpineAnimation is a special case and has to be treated differently.
+		 * It is different because one baseUri is used to determine uris for
+		 * three different files (atlas, skeleton, png)
+		 */
+		private SpineAnimation animation;
 
 		public BinRefContainer(Array<String> uris) {
-			uriRef2 = uris.get(1).toLowerCase();
+			uriRef2 = uris.get(1);
 			refHolder = new SimpleRefHolder(uris.get(2));
 			list.add(new SimpleRefHolder(uris.get(3)));
 			list.add(new SimpleRefHolder(uris.get(4)));
@@ -132,6 +150,8 @@ public class ProjectUtilsTest {
 			array.add(new SimpleRefHolder(uris.get(0)));
 			uriMap.put("uri1", uris.get(6));
 			uriMap.put("uri2", uris.get(7));
+			animation = new SpineAnimation();
+			animation.setUri(uris.get(8));
 		}
 	}
 
