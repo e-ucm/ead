@@ -57,6 +57,7 @@ import es.eucm.ead.editor.model.Q;
 import es.eucm.ead.editor.view.SkinConstants;
 import es.eucm.ead.editor.view.builders.ViewBuilder;
 import es.eucm.ead.editor.view.builders.graph.effects.ChangeVarNodeBuilder;
+import es.eucm.ead.editor.view.builders.graph.effects.GoSceneNodeBuilder;
 import es.eucm.ead.editor.view.builders.graph.effects.PlaySoundNodeBuilder;
 import es.eucm.ead.engine.I18N;
 import es.eucm.ead.schema.components.Logic;
@@ -91,6 +92,7 @@ public class LogicView implements ViewBuilder, BackListener {
 		grapher = new Grapher(commander, skin, new LogicGraphBuilder(),
 				new InitNodeBuilder(skin, i18N), new ChangeVarNodeBuilder(
 						commander, controller), new PlaySoundNodeBuilder(
+						commander, controller), new GoSceneNodeBuilder(
 						commander, controller));
 
 		grapher.getGallery()
