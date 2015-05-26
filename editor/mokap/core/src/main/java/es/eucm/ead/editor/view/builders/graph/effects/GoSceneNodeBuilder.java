@@ -45,6 +45,7 @@ import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.scenes.scene2d.utils.Drawable;
 import es.eucm.commander.Commander;
 import es.eucm.ead.editor.control.Controller;
+import es.eucm.ead.editor.control.Selection;
 import es.eucm.ead.editor.model.Q;
 import es.eucm.ead.editor.utils.ProjectUtils;
 import es.eucm.ead.editor.view.SkinConstants;
@@ -85,11 +86,23 @@ public class GoSceneNodeBuilder extends EffectNodeBuilder<GoScene> implements
 		Node node = new Node();
 		GoScene goScene = new GoScene();
 		goScene.setTransition(GoScene.Transition.FADE_IN);
-		goScene.setSceneId(null);
+		goScene.setSceneId(pickNextScene());
 		goScene.setDuration(.8f);
 		node.setContent(goScene);
 		node.addFork("next");
 		return node;
+	}
+
+	public String pickNextScene() {
+		String currentSceneId = (String) controller.getModel().getSelection()
+				.getSingle(Selection.MOKAP_RESOURCE);
+		for (String key : controller.getModel()
+				.getResources(ResourceCategory.SCENE).keySet()) {
+			if (!currentSceneId.equals(key)) {
+				return key;
+			}
+		}
+		return null;
 	}
 
 	@Override

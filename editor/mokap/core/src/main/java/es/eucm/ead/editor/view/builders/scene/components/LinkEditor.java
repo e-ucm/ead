@@ -174,12 +174,11 @@ public class LinkEditor extends ComponentEditor<Behavior> implements
 		previousSceneRow.add(nextSceneLabel);
 		previousSceneRow.addSpace();
 		previousSceneRow.add(previousScene);
-		list.add(previousSceneRow).expandX()
-				.margin(WidgetBuilder.dpToPixels(8));
+		float halfPad = WidgetBuilder.dpToPixels(8);
+		list.add(previousSceneRow).expandX().margin(halfPad);
 
 		Table transitionHeader = new Table();
-		transitionHeader.pad(WidgetBuilder.dpToPixels(8), 0,
-				WidgetBuilder.dpToPixels(8), 0);
+		transitionHeader.pad(halfPad, 0, halfPad, 0);
 		transitionHeader.add(WidgetBuilder.label(i18N.m("transition"),
 				SkinConstants.STYLE_EDITION));
 		list.add(transitionHeader);
@@ -201,10 +200,10 @@ public class LinkEditor extends ComponentEditor<Behavior> implements
 						duration);
 			}
 		});
+		float pad = WidgetBuilder.dpToPixels(16);
 		velTable.add(new Label(i18N.m("speed") + ":", skin)).expandX()
-				.margin(WidgetBuilder.dpToPixels(16), 0, 0, 0);
-		velTable.add(duration).expandX()
-				.margin(0, 0, WidgetBuilder.dpToPixels(16), 0);
+				.margin(pad, 0, 0, 0);
+		velTable.add(duration).expandX().margin(0, 0, pad, 0);
 
 		list.add(velTable).expandX();
 

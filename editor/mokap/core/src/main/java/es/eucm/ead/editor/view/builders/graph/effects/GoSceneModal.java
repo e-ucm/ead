@@ -50,6 +50,7 @@ import es.eucm.commander.Commander;
 import es.eucm.ead.editor.control.Controller;
 import es.eucm.ead.editor.control.Selection;
 import es.eucm.ead.editor.control.Views;
+import es.eucm.ead.editor.control.actions.model.generic.SetField;
 import es.eucm.ead.editor.model.Q;
 import es.eucm.ead.editor.view.SkinConstants;
 import es.eucm.ead.editor.view.drawables.TextureDrawable;
@@ -77,6 +78,8 @@ public class GoSceneModal extends EffectModal<GoScene> implements
 	private Switch previousScene;
 
 	private Label nextSceneLabel;
+
+	private LinearLayout list;
 
 	private Tile tile;
 
@@ -125,7 +128,7 @@ public class GoSceneModal extends EffectModal<GoScene> implements
 	protected Actor buildEditor(Skin skin, I18N i18n) {
 		this.i18N = i18n;
 
-		LinearLayout list = new LinearLayout(false);
+		list = new LinearLayout(false);
 		float pad = WidgetBuilder.dpToPixels(16);
 		list.pad(pad);
 
@@ -159,20 +162,19 @@ public class GoSceneModal extends EffectModal<GoScene> implements
 				if (previousScene.isChecked()) {
 					sceneId = null;
 				} else {
-					sceneId = pickNextScene();
+					sceneId = ((GoSceneNodeBuilder) nodeBuilder)
+							.pickNextScene();
 				}
 				updateScenePreview(sceneId);
-				controller
-						.action(es.eucm.ead.editor.control.actions.model.generic.SetField.class,
-								goScene, FieldName.SCENE_ID, sceneId);
+				controller.action(SetField.class, goScene, FieldName.SCENE_ID,
+						sceneId);
 			}
 		});
 
 		nextSceneLabel = new Label(i18N.m("go.previous.scene"), skin,
 				SkinConstants.STYLE_CONTEXT);
 
-		es.eucm.ead.editor.view.widgets.layouts.LinearLayout previousSceneRow = new es.eucm.ead.editor.view.widgets.layouts.LinearLayout(
-				true);
+		LinearLayout previousSceneRow = new LinearLayout(true);
 		previousSceneRow.add(nextSceneLabel);
 		previousSceneRow.addSpace();
 		previousSceneRow.add(previousScene);
@@ -182,8 +184,7 @@ public class GoSceneModal extends EffectModal<GoScene> implements
 				WidgetBuilder.label(i18N.m("transition"),
 						SkinConstants.STYLE_EDITION)).marginBottom(pad);
 
-		es.eucm.ead.editor.view.widgets.layouts.LinearLayout velTable = new es.eucm.ead.editor.view.widgets.layouts.LinearLayout(
-				true);
+		LinearLayout velTable = new LinearLayout(true);
 
 		Array<String> speedOptions = new Array<String>();
 		speedOptions.add(i18N.m("fast"));
@@ -196,9 +197,8 @@ public class GoSceneModal extends EffectModal<GoScene> implements
 			@Override
 			public void changed(ChangeEvent event, Actor actor) {
 				float duration = getDuration();
-				controller
-						.action(es.eucm.ead.editor.control.actions.model.generic.SetField.class,
-								goScene, FieldName.DURATION, duration);
+				controller.action(SetField.class, goScene, FieldName.DURATION,
+						duration);
 			}
 		});
 		velTable.add(new Label(i18N.m("speed") + ":", skin)).expandX()
@@ -231,18 +231,6 @@ public class GoSceneModal extends EffectModal<GoScene> implements
 
 		ScrollPane scroll = new ScrollPane(list);
 		return scroll;
-	}
-
-	private String pickNextScene() {
-		String currentSceneId = (String) controller.getModel().getSelection()
-				.getSingle(Selection.MOKAP_RESOURCE);
-		for (String key : controller.getModel()
-				.getResources(ResourceCategory.SCENE).keySet()) {
-			if (!currentSceneId.equals(key)) {
-				return key;
-			}
-		}
-		return null;
 	}
 
 	@Override
@@ -286,15 +274,14 @@ public class GoSceneModal extends EffectModal<GoScene> implements
 
 			Q.getThumbnailTexture(scene, this);
 		}
-		invalidateHierarchy();
+		list.invalidateHierarchy();
 		Gdx.graphics.requestRendering();
 	}
 
 	@Override
 	public void selected(String selected) {
 		controller
-				.action(es.eucm.ead.editor.control.actions.model.generic.SetField.class,
-						goScene, FieldName.SCENE_ID, selected);
+				.action(SetField.class, goScene, FieldName.SCENE_ID, selected);
 		updateScenePreview(selected);
 		hideSelector(sceneSelector);
 	}
@@ -323,10 +310,8 @@ public class GoSceneModal extends EffectModal<GoScene> implements
 			transition = GoScene.Transition.fromValue(selected);
 			updateTransitionName();
 
-			controller
-					.action(es.eucm.ead.editor.control.actions.model.generic.SetField.class,
-							goScene, FieldName.TRANSITION,
-							GoScene.Transition.fromValue(selected));
+			controller.action(SetField.class, goScene, FieldName.TRANSITION,
+					transition);
 			hideSelector(transitionSelector);
 
 		}
