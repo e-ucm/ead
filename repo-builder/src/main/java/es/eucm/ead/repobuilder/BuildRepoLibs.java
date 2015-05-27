@@ -41,6 +41,8 @@ import com.badlogic.gdx.files.FileHandle;
 import es.eucm.ead.engine.demobuilder.img.ImgMagickUtils;
 import es.eucm.ead.engine.mock.MockApplication;
 import es.eucm.ead.repobuilder.libs.*;
+import es.eucm.ead.repobuilder.libs.sound.SoundImageOrg;
+import es.eucm.ead.repobuilder.libs.sound.SwampSounds;
 import es.eucm.ead.repobuilder.libs.timemokapsule.TimeMokapsule;
 
 import java.util.ArrayList;
@@ -56,7 +58,7 @@ public class BuildRepoLibs {
 			MockupIconsLib.class.getName(), VectorCharacters.class.getName(),
 			Monejos.class.getName(), FindingAJob.class.getName(),
 			EatingOut.class.getName(), TimeMokapsule.class.getName(),
-			SoundImageOrg.class.getName() };
+			SoundImageOrg.class.getName(), SwampSounds.class.getName() };
 
 	public static void main(String[] args) {
 		String outDir = null;
