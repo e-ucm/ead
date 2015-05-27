@@ -40,6 +40,7 @@ package es.eucm.ead.repobuilder;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.utils.Array;
+import es.eucm.ead.builder.DemoBuilder;
 import es.eucm.ead.engine.demobuilder.ExecutableDemoBuilder;
 import es.eucm.ead.engine.demobuilder.img.ImgMagickUtils;
 import es.eucm.ead.editor.exporter.ExportCallback;
@@ -648,7 +649,7 @@ public abstract class RepoLibraryBuilder extends ExecutableDemoBuilder {
 						+ (backgroundMusic ? RepoCategories.SOUNDS_MUSIC
 								.toString() : RepoCategories.SOUNDS_EFFECTS
 								.toString()), (String) null);
-		touchBehavior().playSound(soundUri);
+		initBehavior().playSound(soundUri);
 		return this;
 	}
 
