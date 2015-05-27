@@ -55,7 +55,8 @@ public class BuildRepoLibs {
 	private static final String[] LIBRARIES_IN_REPO = {
 			MockupIconsLib.class.getName(), VectorCharacters.class.getName(),
 			Monejos.class.getName(), FindingAJob.class.getName(),
-			EatingOut.class.getName(), TimeMokapsule.class.getName() };
+			EatingOut.class.getName(), TimeMokapsule.class.getName(),
+			SoundImageOrg.class.getName() };
 
 	public static void main(String[] args) {
 		String outDir = null;
