@@ -36,6 +36,8 @@
  */
 package es.eucm.ead.engine.assets;
 
+import java.util.Map.Entry;
+
 import com.badlogic.gdx.Files;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.assets.AssetDescriptor;
@@ -63,16 +65,17 @@ import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.GdxRuntimeException;
 import com.badlogic.gdx.utils.Json;
 import com.badlogic.gdx.utils.JsonValue;
+import com.badlogic.gdx.utils.ObjectMap;
 import com.badlogic.gdx.utils.SerializationException;
-
 import com.esotericsoftware.spine.SkeletonData;
-import es.eucm.ead.engine.I18N;
+
 import es.eucm.ead.engine.assets.loaders.ExtendedSkinLoader;
 import es.eucm.ead.engine.assets.loaders.SkeletonLoader;
 import es.eucm.ead.engine.assets.loaders.SkeletonLoader.SkeletonAssetParameter;
 import es.eucm.ead.engine.gdx.URLFileHandle;
 import es.eucm.ead.engine.gdx.URLTextureLoader;
 import es.eucm.ead.engine.gdx.URLTextureLoader.URLTextureParameter;
+import es.eucm.i18n.I18N;
 
 /**
  * Abstract class for managing assets. In this context, any file required for
@@ -117,13 +120,19 @@ public abstract class Assets extends Json implements FileHandleResolver,
 
 	private Array<AssetLoadingListener> listeners;
 
+	private String language;
+
+	private ObjectMap<String, String> languages;
+
+	private String i18nPath = "i18n/";
+
 	public Assets(Files files) {
 		setEnumNames(false);
 		this.files = files;
 		listeners = new Array<AssetLoadingListener>();
 		assetManager = new AssetManager(this);
 		assetManager.setErrorListener(this);
-		i18n = new I18N(this);
+		i18n = new I18N();
 		setLoader(Skin.class, new ExtendedSkinLoader(this));
 		setLoader(Texture.class, new URLTextureLoader(this));
 		setLoader(SkeletonData.class, new SkeletonLoader(this));
@@ -143,6 +152,41 @@ public abstract class Assets extends Json implements FileHandleResolver,
 				}
 			}
 		});
+	}
+
+	public String getLang() {
+		return language;
+	}
+
+	public void setI18nPath(String i18nPath) {
+		this.i18nPath = i18nPath;
+	}
+
+	private ObjectMap<String, String> getLanguages() {
+		if (languages == null) {
+			i18n.addMessages(Gdx.files.internal(i18nPath + "i18n.props")
+					.readString());
+			languages = new ObjectMap<String, String>();
+			for (Entry<String, String> entry : i18n.getMessages().entrySet()) {
+				languages.put(entry.getKey(), entry.getValue());
+			}
+		}
+		return languages;
+	}
+
+	public void setLang(String lang) {
+		if (getLanguages().containsKey(lang)) {
+			load(lang);
+		} else {
+			load(getLanguages().get("default"));
+		}
+	}
+
+	private void load(String lang) {
+		this.language = lang;
+		i18n.clearMessages();
+		i18n.addMessages(files.internal(
+				i18nPath + "messages_" + lang + ".props").readString());
 	}
 
 	/**
