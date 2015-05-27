@@ -47,7 +47,7 @@ import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.ui.Image;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import es.eucm.ead.editor.view.widgets.WidgetBuilder;
-import es.eucm.ead.engine.I18N;
+import es.eucm.i18n.I18N;
 
 import java.io.File;
 import java.io.IOException;

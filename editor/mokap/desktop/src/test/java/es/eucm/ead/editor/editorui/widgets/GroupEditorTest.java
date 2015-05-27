@@ -50,7 +50,7 @@ import com.badlogic.gdx.scenes.scene2d.utils.Drawable;
 import es.eucm.ead.editor.editorui.UITest;
 import es.eucm.ead.editor.view.SkinConstants;
 import es.eucm.ead.editor.view.builders.scene.groupeditor.GroupEditor;
-import es.eucm.ead.engine.I18N;
+import es.eucm.i18n.I18N;
 
 /**
  * Created by angel on 20/03/14.

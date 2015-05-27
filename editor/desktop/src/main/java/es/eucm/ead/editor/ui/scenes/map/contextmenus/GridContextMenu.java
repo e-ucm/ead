@@ -50,7 +50,7 @@ import es.eucm.ead.editor.view.widgets.layouts.GridLayout;
 import es.eucm.ead.editor.view.widgets.layouts.GridLayout.Cell;
 import es.eucm.ead.editor.view.widgets.menu.ContextMenu;
 import es.eucm.ead.editor.view.widgets.menu.ContextMenuItem;
-import es.eucm.ead.engine.I18N;
+import es.eucm.i18n.I18N;
 
 /**
  * This {@link ContextMenu} will be displayed over a {@link SceneWidget}.

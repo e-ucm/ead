@@ -51,7 +51,7 @@ import com.badlogic.gdx.utils.Timer.Task;
 import es.eucm.ead.editor.editorui.UITest;
 import es.eucm.ead.editor.view.drawables.TextureDrawable;
 import es.eucm.ead.editor.view.widgets.layouts.Gallery;
-import es.eucm.ead.engine.I18N;
+import es.eucm.i18n.I18N;
 
 public class GalleryTest extends UITest {
 

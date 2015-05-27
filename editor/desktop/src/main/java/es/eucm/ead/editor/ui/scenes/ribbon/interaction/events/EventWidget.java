@@ -41,7 +41,7 @@ import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import es.eucm.ead.editor.control.Controller;
 import es.eucm.ead.editor.view.controllers.ClassOptionsController;
 import es.eucm.ead.editor.view.widgets.layouts.LinearLayout;
-import es.eucm.ead.engine.I18N;
+import es.eucm.i18n.I18N;
 import es.eucm.ead.schema.components.behaviors.Event;
 
 /**

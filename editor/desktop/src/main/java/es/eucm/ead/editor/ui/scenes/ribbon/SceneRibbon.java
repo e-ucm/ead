@@ -44,7 +44,7 @@ import es.eucm.ead.editor.model.events.SelectionEvent.Type;
 import es.eucm.ead.editor.ui.scenes.ribbon.interaction.InteractionTab;
 import es.eucm.ead.editor.view.tabs.TabWidget;
 import es.eucm.ead.editor.view.tabs.TabsPanel;
-import es.eucm.ead.engine.I18N;
+import es.eucm.i18n.I18N;
 
 /**
  * Created by angel on 22/05/14.

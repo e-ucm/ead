@@ -46,7 +46,7 @@ import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
 
 import es.eucm.ead.editor.editorui.UITest;
 import es.eucm.ead.editor.view.widgets.RangeSlider;
-import es.eucm.ead.engine.I18N;
+import es.eucm.i18n.I18N;
 
 public class MultiRangeSliderTest extends UITest {
 

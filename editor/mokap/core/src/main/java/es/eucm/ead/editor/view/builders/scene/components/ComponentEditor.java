@@ -53,13 +53,13 @@ import es.eucm.ead.editor.model.Q;
 import es.eucm.ead.editor.view.ModelView;
 import es.eucm.ead.editor.view.SkinConstants;
 import es.eucm.ead.editor.view.builders.scene.context.SceneElementContext;
-import es.eucm.ead.engine.gdx.AbstractWidget;
 import es.eucm.ead.editor.view.widgets.IconButton;
 import es.eucm.ead.editor.view.widgets.WidgetBuilder;
 import es.eucm.ead.editor.view.widgets.layouts.LinearLayout;
-import es.eucm.ead.engine.I18N;
+import es.eucm.ead.engine.gdx.AbstractWidget;
 import es.eucm.ead.schema.components.ModelComponent;
 import es.eucm.ead.schema.entities.ModelEntity;
+import es.eucm.i18n.I18N;
 
 public abstract class ComponentEditor<T extends ModelComponent> extends
 		ScrollPane implements ModelView {

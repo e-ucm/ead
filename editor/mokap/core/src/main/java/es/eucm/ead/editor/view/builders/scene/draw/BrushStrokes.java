@@ -55,13 +55,13 @@ import com.badlogic.gdx.utils.Pools;
 import es.eucm.ead.editor.assets.EditorGameAssets;
 import es.eucm.ead.editor.control.Controller;
 import es.eucm.ead.editor.view.builders.scene.SceneEditor;
-import es.eucm.ead.engine.gdx.AbstractWidget;
-import es.eucm.ead.engine.I18N;
 import es.eucm.ead.engine.entities.EngineEntity;
+import es.eucm.ead.engine.gdx.AbstractWidget;
 import es.eucm.ead.engine.systems.effects.transitions.Region;
 import es.eucm.ead.engine.utils.EngineUtils;
 import es.eucm.ead.schema.entities.ModelEntity;
 import es.eucm.ead.schemax.ModelStructure;
+import es.eucm.i18n.I18N;
 
 /**
  * Wrapper around {@link MeshHelper}. A widget that draws lines renders them to

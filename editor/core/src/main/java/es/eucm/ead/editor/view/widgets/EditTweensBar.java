@@ -54,7 +54,7 @@ import com.badlogic.gdx.utils.Align;
 import es.eucm.ead.editor.control.Controller;
 import es.eucm.ead.editor.view.widgets.IconTextButton.Position;
 import es.eucm.ead.editor.view.widgets.layouts.LinearLayout;
-import es.eucm.ead.engine.I18N;
+import es.eucm.i18n.I18N;
 
 /**
  * UI for add tweens

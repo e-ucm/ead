@@ -42,7 +42,7 @@ import es.eucm.ead.editor.control.Controller;
 import es.eucm.ead.editor.control.actions.EditorAction;
 import es.eucm.ead.editor.view.builders.classic.dialogs.InfoDialogBuilder;
 import es.eucm.ead.editor.view.controllers.DialogController.DialogButtonListener;
-import es.eucm.ead.engine.I18N;
+import es.eucm.i18n.I18N;
 
 /**
  * <p>

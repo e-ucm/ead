@@ -49,7 +49,7 @@ import es.eucm.ead.editor.control.appdata.UpdatePlatformInfo;
 import es.eucm.ead.editor.control.background.BackgroundExecutor;
 import es.eucm.ead.editor.control.background.BackgroundTask;
 import es.eucm.ead.editor.view.builders.classic.dialogs.ConfirmationDialogBuilder;
-import es.eucm.ead.engine.I18N;
+import es.eucm.i18n.I18N;
 
 /**
  * This system deals with auto-updates of the application.

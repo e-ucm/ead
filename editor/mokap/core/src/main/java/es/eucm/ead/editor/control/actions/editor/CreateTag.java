@@ -38,19 +38,17 @@ package es.eucm.ead.editor.control.actions.editor;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
-import com.badlogic.gdx.utils.Array;
+
 import es.eucm.ead.editor.control.Controller;
 import es.eucm.ead.editor.control.actions.EditorAction;
 import es.eucm.ead.editor.control.actions.model.generic.AddToArray;
 import es.eucm.ead.editor.model.Q;
-import es.eucm.ead.engine.I18N;
 import es.eucm.ead.schema.components.TagsList;
 import es.eucm.ead.schema.entities.ModelEntity;
 import es.eucm.ead.schemax.ModelStructure;
+import es.eucm.i18n.I18N;
 
 public class CreateTag extends EditorAction implements Input.TextInputListener {
-
-	private static final String IDENTIFIER_EXPRESSION = "^[^\\d\\W]\\w*\\Z";
 
 	private Input.TextInputListener resultListener;
 

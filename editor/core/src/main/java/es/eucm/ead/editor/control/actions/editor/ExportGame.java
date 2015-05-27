@@ -38,15 +38,15 @@ package es.eucm.ead.editor.control.actions.editor;
 
 import com.badlogic.gdx.Gdx;
 
+import es.eucm.ead.editor.control.Controller;
 import es.eucm.ead.editor.control.actions.EnabledOnLoadAction;
 import es.eucm.ead.editor.control.background.BackgroundExecutor;
+import es.eucm.ead.editor.control.background.BackgroundTask;
 import es.eucm.ead.editor.exporter.ExportCallback;
 import es.eucm.ead.editor.exporter.Exporter;
-import es.eucm.ead.editor.control.Controller;
-import es.eucm.ead.editor.control.background.BackgroundTask;
 import es.eucm.ead.editor.platform.Platform;
 import es.eucm.ead.editor.view.builders.classic.dialogs.InfoDialogBuilder;
-import es.eucm.ead.engine.I18N;
+import es.eucm.i18n.I18N;
 
 /**
  * Simple action that exports the current model to the given destiny file

@@ -50,8 +50,13 @@ import es.eucm.ead.editor.control.MokapController.BackListener;
 import es.eucm.ead.editor.control.Preferences;
 import es.eucm.ead.editor.control.Selection;
 import es.eucm.ead.editor.control.Selection.Context;
-import es.eucm.ead.editor.control.actions.editor.*;
+import es.eucm.ead.editor.control.actions.editor.AddLabel;
+import es.eucm.ead.editor.control.actions.editor.ChangeView;
+import es.eucm.ead.editor.control.actions.editor.CreateSceneThumbnail;
+import es.eucm.ead.editor.control.actions.editor.ShowContextMenu;
+import es.eucm.ead.editor.control.actions.editor.ShowInfoPanel;
 import es.eucm.ead.editor.control.actions.editor.ShowInfoPanel.TypePanel;
+import es.eucm.ead.editor.control.actions.editor.ShowMusic;
 import es.eucm.ead.editor.control.actions.model.AddInteractiveZone;
 import es.eucm.ead.editor.control.actions.model.SetSelection;
 import es.eucm.ead.editor.model.Model.SelectionListener;
@@ -70,9 +75,9 @@ import es.eucm.ead.editor.view.widgets.MultiWidget;
 import es.eucm.ead.editor.view.widgets.WidgetBuilder;
 import es.eucm.ead.editor.view.widgets.baseview.BaseView;
 import es.eucm.ead.editor.view.widgets.baseview.Navigation;
-import es.eucm.ead.engine.I18N;
 import es.eucm.ead.engine.gdx.AbstractWidget;
 import es.eucm.ead.schema.editor.components.GameData;
+import es.eucm.i18n.I18N;
 
 public class SceneEditor extends BaseView implements ModelView,
 		SelectionListener, BackListener {

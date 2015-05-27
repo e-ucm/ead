@@ -62,9 +62,7 @@ import es.eucm.ead.editor.control.actions.editor.Undo;
 import es.eucm.ead.editor.control.actions.model.EditScene;
 import es.eucm.ead.editor.model.Model;
 import es.eucm.ead.editor.model.Model.Resource;
-import es.eucm.ead.editor.model.Q;
-import es.eucm.ead.editor.view.widgets.WidgetBuilder;
-import es.eucm.ead.engine.I18N;
+import es.eucm.i18n.I18N;
 import es.eucm.ead.schemax.entities.ResourceCategory;
 
 import java.util.Map;

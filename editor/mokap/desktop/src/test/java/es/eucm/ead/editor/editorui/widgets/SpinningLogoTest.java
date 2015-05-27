@@ -44,7 +44,7 @@ import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import es.eucm.ead.editor.editorui.UITest;
 import es.eucm.ead.editor.view.widgets.SpinningLogo;
-import es.eucm.ead.engine.I18N;
+import es.eucm.i18n.I18N;
 
 /**
  * Created by jtorrente on 25/12/2014.

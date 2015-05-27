@@ -72,7 +72,7 @@ import es.eucm.ead.editor.platform.Platform;
 import es.eucm.ead.editor.ui.DesktopViewsRoot;
 import es.eucm.ead.editor.ui.EditorWindow;
 import es.eucm.ead.editor.view.tooltips.TooltipManager;
-import es.eucm.ead.engine.I18N;
+import es.eucm.i18n.I18N;
 import es.eucm.ead.engine.utils.SwingEDTUtils;
 import es.eucm.ead.schema.editor.components.Documentation;
 import es.eucm.ead.schemax.FieldName;

@@ -40,6 +40,7 @@ import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.ui.Button;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
+
 import es.eucm.ead.editor.control.Controller;
 import es.eucm.ead.editor.control.actions.editor.ShowModal;
 import es.eucm.ead.editor.view.listeners.LongPressListener;
@@ -49,9 +50,9 @@ import es.eucm.ead.editor.view.widgets.WidgetBuilder;
 import es.eucm.ead.editor.view.widgets.galleries.basegalleries.ThumbnailsGallery;
 import es.eucm.ead.editor.view.widgets.layouts.Gallery.Cell;
 import es.eucm.ead.editor.view.widgets.layouts.Gallery.GalleryStyle;
-import es.eucm.ead.engine.I18N;
 import es.eucm.ead.engine.assets.Assets;
 import es.eucm.ead.engine.utils.EngineUtils;
+import es.eucm.i18n.I18N;
 
 /**
  * A thumbnail gallery that provides a context menu when long pressing the

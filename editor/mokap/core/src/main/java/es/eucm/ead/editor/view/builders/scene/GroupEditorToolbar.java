@@ -46,6 +46,7 @@ import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.utils.Align;
+
 import es.eucm.ead.editor.control.Controller;
 import es.eucm.ead.editor.control.Preferences;
 import es.eucm.ead.editor.control.Selection;
@@ -74,7 +75,14 @@ import es.eucm.ead.editor.view.builders.scene.draw.BrushStrokes;
 import es.eucm.ead.editor.view.builders.scene.draw.BrushStrokes.ModeEvent;
 import es.eucm.ead.editor.view.builders.scene.draw.BrushStrokes.ModeListener;
 import es.eucm.ead.editor.view.listeners.VisibleListener;
-import es.eucm.ead.editor.view.widgets.*;
+import es.eucm.ead.editor.view.widgets.ContextMenu;
+import es.eucm.ead.editor.view.widgets.EmptyRendererEditor;
+import es.eucm.ead.editor.view.widgets.IconButton;
+import es.eucm.ead.editor.view.widgets.ImageEditor;
+import es.eucm.ead.editor.view.widgets.LabelTextEditor;
+import es.eucm.ead.editor.view.widgets.MultiWidget;
+import es.eucm.ead.editor.view.widgets.Switch;
+import es.eucm.ead.editor.view.widgets.WidgetBuilder;
 import es.eucm.ead.editor.view.widgets.draw.BrushStrokesPicker;
 import es.eucm.ead.editor.view.widgets.draw.BrushStrokesPicker.SizeEvent;
 import es.eucm.ead.editor.view.widgets.draw.BrushStrokesPicker.SizeListener;
@@ -83,11 +91,11 @@ import es.eucm.ead.editor.view.widgets.draw.ColorPickerPanel.ColorClickedListene
 import es.eucm.ead.editor.view.widgets.draw.SlideColorPicker.ColorEvent;
 import es.eucm.ead.editor.view.widgets.draw.SlideColorPicker.ColorListener;
 import es.eucm.ead.editor.view.widgets.layouts.LinearLayout;
-import es.eucm.ead.engine.I18N;
 import es.eucm.ead.schema.components.Reference;
 import es.eucm.ead.schema.components.controls.Label;
 import es.eucm.ead.schema.entities.ModelEntity;
 import es.eucm.ead.schema.renderers.EmptyRenderer;
+import es.eucm.i18n.I18N;
 
 public class GroupEditorToolbar extends MultiWidget implements ModelView {
 

@@ -77,7 +77,6 @@ public class GameLoader implements AssetLoadedCallback<Object> {
 	public void loadGame(String path, boolean internal) {
 		gameAssets.setLoadingPath(path, internal);
 		gameAssets.loadSkin(DEFAULT_SKIN);
-		gameAssets.getI18N().setLang(null);
 		gameAssets.get(ModelStructure.GAME_FILE, Object.class, this);
 	}
 

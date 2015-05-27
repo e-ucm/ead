@@ -44,12 +44,12 @@ import es.eucm.ead.editor.control.Controller;
 import es.eucm.ead.editor.control.actions.EditorAction;
 import es.eucm.ead.editor.control.actions.model.generic.AddToArray;
 import es.eucm.ead.editor.model.Q;
-import es.eucm.ead.engine.I18N;
 import es.eucm.ead.schema.editor.components.VariableDef;
 import es.eucm.ead.schema.editor.components.VariableDef.Type;
 import es.eucm.ead.schema.editor.components.Variables;
 import es.eucm.ead.schema.entities.ModelEntity;
 import es.eucm.ead.schemax.ModelStructure;
+import es.eucm.i18n.I18N;
 
 public class CreateVariable extends EditorAction implements TextInputListener {
 

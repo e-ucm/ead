@@ -40,9 +40,10 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.reflect.ClassReflection;
 import com.badlogic.gdx.utils.reflect.ReflectionException;
+
 import es.eucm.ead.editor.control.Controller;
-import es.eucm.ead.engine.I18N;
 import es.eucm.ead.engine.assets.GameAssets;
+import es.eucm.i18n.I18N;
 
 public abstract class ModelIndex extends ControllerIndex {
 

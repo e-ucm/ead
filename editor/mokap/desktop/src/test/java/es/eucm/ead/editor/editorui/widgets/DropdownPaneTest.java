@@ -50,7 +50,7 @@ import com.badlogic.gdx.utils.Array;
 import es.eucm.ead.editor.editorui.UITest;
 import es.eucm.ead.editor.view.widgets.DropDownPane;
 import es.eucm.ead.editor.view.widgets.SwitchDropDownPane;
-import es.eucm.ead.engine.I18N;
+import es.eucm.i18n.I18N;
 
 public class DropdownPaneTest extends UITest {
 

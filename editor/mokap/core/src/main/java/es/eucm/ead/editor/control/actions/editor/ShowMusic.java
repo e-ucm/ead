@@ -37,17 +37,18 @@
 package es.eucm.ead.editor.control.actions.editor;
 
 import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.audio.Music;
 import com.badlogic.gdx.math.Interpolation;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
-import com.badlogic.gdx.scenes.scene2d.InputListener;
-import com.badlogic.gdx.scenes.scene2d.Touchable;
 import com.badlogic.gdx.scenes.scene2d.actions.Actions;
-import com.badlogic.gdx.scenes.scene2d.ui.*;
+import com.badlogic.gdx.scenes.scene2d.ui.Button;
+import com.badlogic.gdx.scenes.scene2d.ui.Label;
+import com.badlogic.gdx.scenes.scene2d.ui.Skin;
+import com.badlogic.gdx.scenes.scene2d.ui.Table;
+import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
 import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
-import com.badlogic.gdx.scenes.scene2d.utils.Layout;
+
 import es.eucm.ead.editor.assets.ApplicationAssets;
 import es.eucm.ead.editor.control.Controller;
 import es.eucm.ead.editor.control.Selection;
@@ -57,8 +58,6 @@ import es.eucm.ead.editor.control.actions.model.generic.RemoveFromArray;
 import es.eucm.ead.editor.control.actions.model.generic.SetField;
 import es.eucm.ead.editor.control.actions.model.scene.AddComponent;
 import es.eucm.ead.editor.model.Q;
-import es.eucm.ead.editor.platform.MokapPlatform;
-import es.eucm.ead.editor.platform.Platform;
 import es.eucm.ead.editor.utils.Actions2;
 import es.eucm.ead.editor.utils.ProjectUtils;
 import es.eucm.ead.editor.view.Modal;
@@ -67,9 +66,7 @@ import es.eucm.ead.editor.view.builders.SoundsView;
 import es.eucm.ead.editor.view.widgets.Slider;
 import es.eucm.ead.editor.view.widgets.WidgetBuilder;
 import es.eucm.ead.editor.view.widgets.layouts.LinearLayout;
-import es.eucm.ead.editor.view.widgets.modals.ModalContainer;
 import es.eucm.ead.editor.view.widgets.selectors.Selector;
-import es.eucm.ead.engine.I18N;
 import es.eucm.ead.schema.components.ModelComponent;
 import es.eucm.ead.schema.components.behaviors.Behavior;
 import es.eucm.ead.schema.components.behaviors.events.Init;
@@ -77,6 +74,7 @@ import es.eucm.ead.schema.effects.PlaySound;
 import es.eucm.ead.schema.entities.ModelEntity;
 import es.eucm.ead.schemax.ComponentIds;
 import es.eucm.ead.schemax.FieldName;
+import es.eucm.i18n.I18N;
 
 public class ShowMusic extends EditorAction implements
 		Selector.SelectorListener<String> {

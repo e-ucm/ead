@@ -54,19 +54,19 @@ import es.eucm.ead.editor.control.Selection;
 import es.eucm.ead.editor.model.Model;
 import es.eucm.ead.editor.model.Q;
 import es.eucm.ead.editor.view.SkinConstants;
-import es.eucm.ead.engine.gdx.AbstractWidget;
 import es.eucm.ead.editor.view.widgets.MultiWidget;
 import es.eucm.ead.editor.view.widgets.WidgetBuilder;
 import es.eucm.ead.editor.view.widgets.layouts.LinearGallery;
 import es.eucm.ead.editor.view.widgets.layouts.LinearGallery.FocusEvent;
 import es.eucm.ead.editor.view.widgets.layouts.LinearGallery.FocusListener;
 import es.eucm.ead.editor.view.widgets.layouts.LinearLayout;
-import es.eucm.ead.engine.I18N;
 import es.eucm.ead.engine.assets.Assets;
 import es.eucm.ead.engine.assets.Assets.AssetLoadedCallback;
+import es.eucm.ead.engine.gdx.AbstractWidget;
 import es.eucm.ead.schema.effects.GoScene.Transition;
 import es.eucm.ead.schema.entities.ModelEntity;
 import es.eucm.ead.schemax.entities.ResourceCategory;
+import es.eucm.i18n.I18N;
 
 public class TransitionSelector extends LinearLayout implements
 		Selector<String>, BackListener {

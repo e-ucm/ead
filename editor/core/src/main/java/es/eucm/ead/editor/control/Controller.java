@@ -391,8 +391,7 @@ public class Controller {
 	}
 
 	public void setLanguage(String language) {
-		getApplicationAssets().getI18N().setLang(language);
-		getEditorGameAssets().getI18N().setLang(language);
+		getApplicationAssets().setLang(language);
 		views.reinitializeAllViews();
 		preferences.putString(Preferences.EDITOR_LANGUAGE, language);
 	}

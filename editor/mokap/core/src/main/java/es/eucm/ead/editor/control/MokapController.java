@@ -109,7 +109,7 @@ public class MokapController extends Controller {
 
 	@Override
 	protected void loadPreferences() {
-		getApplicationAssets().getI18N().setI18nPath("i18n-mokap");
+		getApplicationAssets().setI18nPath("i18n-mokap/");
 		super.loadPreferences();
 	}
 

@@ -43,7 +43,7 @@ import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 
 import es.eucm.ead.editor.control.actions.editor.ShowTextDialog;
 import es.eucm.ead.editor.editorui.UITest;
-import es.eucm.ead.engine.I18N;
+import es.eucm.i18n.I18N;
 
 public class TextDialogTest extends UITest {
 

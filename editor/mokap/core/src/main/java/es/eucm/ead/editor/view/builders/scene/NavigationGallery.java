@@ -49,7 +49,7 @@ import es.eucm.ead.editor.view.builders.PlayView;
 import es.eucm.ead.editor.view.widgets.WidgetBuilder;
 import es.eucm.ead.editor.view.widgets.galleries.ScenesGallery;
 import es.eucm.ead.editor.view.widgets.layouts.Gallery.Cell;
-import es.eucm.ead.engine.I18N;
+import es.eucm.i18n.I18N;
 
 public class NavigationGallery extends ScenesGallery {
 

@@ -43,6 +43,7 @@ import com.badlogic.gdx.scenes.scene2d.ui.SelectBox;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
 import com.badlogic.gdx.utils.Array;
+
 import es.eucm.ead.editor.control.Controller;
 import es.eucm.ead.editor.control.actions.editor.CreateVariable;
 import es.eucm.ead.editor.model.Model;
@@ -50,12 +51,12 @@ import es.eucm.ead.editor.model.Q;
 import es.eucm.ead.editor.model.events.ListEvent;
 import es.eucm.ead.editor.view.widgets.MultiStateButton;
 import es.eucm.ead.editor.view.widgets.WidgetBuilder;
-import es.eucm.ead.engine.I18N;
 import es.eucm.ead.engine.expressions.Expression;
 import es.eucm.ead.engine.expressions.Operation;
 import es.eucm.ead.schema.editor.components.VariableDef;
 import es.eucm.ead.schema.editor.components.Variables;
 import es.eucm.ead.schema.entities.ModelEntity;
+import es.eucm.i18n.I18N;
 
 public class BooleanExpressionWidget extends ExpressionWithVariablesWidget
 		implements Input.TextInputListener, Model.ModelListener<ListEvent> {

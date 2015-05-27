@@ -46,7 +46,7 @@ import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import es.eucm.ead.editor.editorui.UITest;
 import es.eucm.ead.editor.view.widgets.LoadingBar;
 import es.eucm.ead.editor.view.widgets.WidgetBuilder;
-import es.eucm.ead.engine.I18N;
+import es.eucm.i18n.I18N;
 
 public class LoadingBarTest extends UITest {
 

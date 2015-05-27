@@ -44,29 +44,27 @@ import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.ui.Button;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
+
 import es.eucm.ead.editor.assets.ApplicationAssets;
 import es.eucm.ead.editor.control.Controller;
 import es.eucm.ead.editor.control.MokapController.BackListener;
-import es.eucm.ead.editor.control.actions.editor.ChangeView;
 import es.eucm.ead.editor.control.actions.editor.ShowToast;
-import es.eucm.ead.editor.control.actions.model.AddLibraryReference;
-import es.eucm.ead.editor.model.Model;
 import es.eucm.ead.editor.model.Q;
 import es.eucm.ead.editor.view.SkinConstants;
-import es.eucm.ead.editor.view.builders.scene.SceneView;
 import es.eucm.ead.editor.view.widgets.RepoTile;
 import es.eucm.ead.editor.view.widgets.WidgetBuilder;
-import es.eucm.ead.editor.view.widgets.galleries.*;
+import es.eucm.ead.editor.view.widgets.galleries.CategoryLibrary;
+import es.eucm.ead.editor.view.widgets.galleries.CategoryRepository;
+import es.eucm.ead.editor.view.widgets.galleries.ProjectSoundsGallery;
+import es.eucm.ead.editor.view.widgets.galleries.TabsGallery;
 import es.eucm.ead.editor.view.widgets.selectors.Selector;
-import es.eucm.ead.engine.I18N;
-import es.eucm.ead.schema.components.ModelComponent;
 import es.eucm.ead.schema.components.behaviors.Behavior;
 import es.eucm.ead.schema.editor.components.repo.RepoCategories;
 import es.eucm.ead.schema.editor.components.repo.RepoElement;
-import es.eucm.ead.schema.effects.Effect;
 import es.eucm.ead.schema.effects.PlaySound;
 import es.eucm.ead.schema.entities.ModelEntity;
 import es.eucm.ead.schemax.ModelStructure;
+import es.eucm.i18n.I18N;
 
 /**
  * Audio view. A list with the audio files from the project, library and

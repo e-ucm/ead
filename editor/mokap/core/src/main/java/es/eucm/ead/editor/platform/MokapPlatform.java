@@ -39,9 +39,10 @@ package es.eucm.ead.editor.platform;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.math.Vector2;
+
 import es.eucm.ead.editor.control.Controller;
 import es.eucm.ead.editor.control.Tracker;
-import es.eucm.ead.engine.I18N;
+import es.eucm.i18n.I18N;
 
 public abstract class MokapPlatform extends AbstractPlatform {
 

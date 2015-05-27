@@ -51,7 +51,7 @@ import es.eucm.ead.editor.view.controllers.DialogController.DialogButtonListener
 import es.eucm.ead.editor.view.controllers.OptionsController.ChangeListener;
 import es.eucm.ead.editor.view.widgets.Dialog;
 import es.eucm.ead.editor.view.widgets.layouts.LinearLayout;
-import es.eucm.ead.engine.I18N;
+import es.eucm.i18n.I18N;
 import es.eucm.ead.schema.editor.components.Documentation;
 import es.eucm.ead.schema.editor.components.EditState;
 import es.eucm.ead.schema.editor.components.GameData;

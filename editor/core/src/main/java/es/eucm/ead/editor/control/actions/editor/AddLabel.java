@@ -40,14 +40,15 @@ import com.badlogic.gdx.Input;
 import com.badlogic.gdx.graphics.g2d.GlyphLayout;
 import com.badlogic.gdx.scenes.scene2d.ui.Label.LabelStyle;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
+
 import es.eucm.ead.editor.control.Controller;
 import es.eucm.ead.editor.control.actions.EditorAction;
 import es.eucm.ead.editor.control.actions.model.AddSceneElement;
 import es.eucm.ead.editor.model.Q;
-import es.eucm.ead.engine.I18N;
 import es.eucm.ead.schema.components.controls.Label;
 import es.eucm.ead.schema.data.Color;
 import es.eucm.ead.schema.entities.ModelEntity;
+import es.eucm.i18n.I18N;
 
 /**
  * 

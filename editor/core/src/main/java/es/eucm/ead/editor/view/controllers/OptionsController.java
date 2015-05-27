@@ -66,8 +66,8 @@ import es.eucm.ead.editor.view.widgets.SearchWidget;
 import es.eucm.ead.editor.view.widgets.ToggleImagesList;
 import es.eucm.ead.editor.view.widgets.options.Option;
 import es.eucm.ead.editor.view.widgets.options.OptionsPanel;
-import es.eucm.ead.engine.I18N;
 import es.eucm.ead.engine.gdx.Spinner;
+import es.eucm.i18n.I18N;
 
 import java.util.HashMap;
 import java.util.Map;

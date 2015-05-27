@@ -45,7 +45,7 @@ import es.eucm.ead.editor.control.actions.model.scene.transform.RotateSelection.
 import es.eucm.ead.editor.view.widgets.WidgetsUtils;
 import es.eucm.ead.editor.view.widgets.Separator;
 import es.eucm.ead.editor.view.widgets.layouts.LinearLayout;
-import es.eucm.ead.engine.I18N;
+import es.eucm.i18n.I18N;
 
 public class FormatTab extends LinearLayout {
 

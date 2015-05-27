@@ -27,7 +27,7 @@ import es.eucm.ead.editor.model.events.FieldEvent;
 import es.eucm.ead.editor.ui.resources.frames.AnimationEditor.FrameEditionListener;
 import es.eucm.ead.editor.view.widgets.IconButton;
 import es.eucm.ead.editor.view.widgets.dragndrop.focus.FocusButton;
-import es.eucm.ead.engine.I18N;
+import es.eucm.i18n.I18N;
 import es.eucm.ead.engine.assets.Assets.AssetLoadedCallback;
 import es.eucm.ead.schema.renderers.Frame;
 import es.eucm.ead.schemax.FieldName;

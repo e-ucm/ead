@@ -47,16 +47,17 @@ import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.scenes.scene2d.utils.Drawable;
 import com.badlogic.gdx.utils.Array;
+
 import es.eucm.ead.editor.control.Controller;
 import es.eucm.ead.editor.model.Model;
 import es.eucm.ead.editor.model.Model.FieldListener;
 import es.eucm.ead.editor.model.events.FieldEvent;
-import es.eucm.ead.editor.view.controllers.ParameterOptionsController;
 import es.eucm.ead.editor.view.controllers.ClassOptionsController;
+import es.eucm.ead.editor.view.controllers.ParameterOptionsController;
 import es.eucm.ead.editor.view.widgets.layouts.LinearLayout;
-import es.eucm.ead.engine.I18N;
 import es.eucm.ead.schema.effects.Effect;
 import es.eucm.ead.schemax.FieldName;
+import es.eucm.i18n.I18N;
 
 public abstract class EffectWidget<T extends Effect> extends LinearLayout
 		implements FieldListener {

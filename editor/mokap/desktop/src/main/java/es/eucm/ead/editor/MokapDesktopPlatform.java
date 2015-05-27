@@ -43,7 +43,7 @@ import com.badlogic.gdx.files.FileHandle;
 import es.eucm.ead.editor.control.Controller;
 import es.eucm.ead.editor.platform.MokapPlatform;
 import es.eucm.ead.editor.platform.MokapPlatform.ImageCapturedListener.Result;
-import es.eucm.ead.engine.I18N;
+import es.eucm.i18n.I18N;
 import es.eucm.ead.engine.assets.GameAssets.ImageUtils;
 import es.eucm.ead.engine.utils.DesktopImageUtils;
 

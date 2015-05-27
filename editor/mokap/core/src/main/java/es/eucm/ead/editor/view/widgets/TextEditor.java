@@ -56,7 +56,7 @@ import es.eucm.ead.editor.view.widgets.draw.ColorPickerPanel.ColorPickerPanelSty
 import es.eucm.ead.editor.view.widgets.draw.SlideColorPicker.ColorEvent;
 import es.eucm.ead.editor.view.widgets.draw.SlideColorPicker.ColorListener;
 import es.eucm.ead.editor.view.widgets.layouts.LinearLayout;
-import es.eucm.ead.engine.I18N;
+import es.eucm.i18n.I18N;
 
 public class TextEditor extends ContextMenu {
 

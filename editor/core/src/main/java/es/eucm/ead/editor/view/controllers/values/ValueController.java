@@ -43,7 +43,7 @@ import es.eucm.ead.editor.control.Controller;
 import es.eucm.ead.editor.view.controllers.OptionController;
 import es.eucm.ead.editor.view.controllers.constraints.Constraint;
 import es.eucm.ead.editor.view.widgets.options.Option;
-import es.eucm.ead.engine.I18N;
+import es.eucm.i18n.I18N;
 
 /**
  * Controls an option's value

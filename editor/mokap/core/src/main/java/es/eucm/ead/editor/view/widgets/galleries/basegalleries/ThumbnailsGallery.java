@@ -37,20 +37,21 @@
 package es.eucm.ead.editor.view.widgets.galleries.basegalleries;
 
 import com.badlogic.gdx.Gdx;
-import es.eucm.ead.editor.view.widgets.WidgetBuilder;
-import es.eucm.ead.editor.view.widgets.layouts.Gallery;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.ui.Button;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.utils.ObjectMap;
+
 import es.eucm.ead.editor.view.drawables.TextureDrawable;
-import es.eucm.ead.engine.gdx.AbstractWidget;
 import es.eucm.ead.editor.view.widgets.Tile;
+import es.eucm.ead.editor.view.widgets.WidgetBuilder;
+import es.eucm.ead.editor.view.widgets.layouts.Gallery;
 import es.eucm.ead.editor.view.widgets.layouts.Gallery.Cell;
 import es.eucm.ead.editor.view.widgets.layouts.Gallery.GalleryStyle;
-import es.eucm.ead.engine.I18N;
 import es.eucm.ead.engine.assets.Assets;
+import es.eucm.ead.engine.gdx.AbstractWidget;
+import es.eucm.i18n.I18N;
 
 public abstract class ThumbnailsGallery extends AbstractWidget implements
 		Assets.AssetLoadedCallback<Texture> {

@@ -51,6 +51,7 @@ import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
 import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.utils.Array;
+
 import es.eucm.ead.editor.assets.ApplicationAssets;
 import es.eucm.ead.editor.control.Controller;
 import es.eucm.ead.editor.control.Selection;
@@ -67,7 +68,6 @@ import es.eucm.ead.editor.view.widgets.layouts.LinearLayout;
 import es.eucm.ead.editor.view.widgets.selectors.SceneSelector;
 import es.eucm.ead.editor.view.widgets.selectors.Selector.SelectorListener;
 import es.eucm.ead.editor.view.widgets.selectors.TransitionSelector;
-import es.eucm.ead.engine.I18N;
 import es.eucm.ead.engine.assets.Assets;
 import es.eucm.ead.engine.assets.Assets.AssetLoadedCallback;
 import es.eucm.ead.engine.assets.Assets.AssetLoadingListener;
@@ -79,6 +79,7 @@ import es.eucm.ead.schema.entities.ModelEntity;
 import es.eucm.ead.schemax.ComponentIds;
 import es.eucm.ead.schemax.FieldName;
 import es.eucm.ead.schemax.entities.ResourceCategory;
+import es.eucm.i18n.I18N;
 
 public class LinkEditor extends ComponentEditor<Behavior> implements
 		SelectorListener<String>, AssetLoadedCallback<Texture>,

@@ -44,7 +44,6 @@ import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.reflect.ClassReflection;
 import com.badlogic.gdx.utils.reflect.ReflectionException;
 import es.eucm.ead.editor.control.Controller;
-import es.eucm.ead.engine.I18N;
 import es.eucm.ead.engine.assets.Assets.AssetLoadedCallback;
 import es.eucm.ead.engine.entities.EngineEntity;
 import es.eucm.ead.schema.components.ModelComponent;
@@ -67,6 +66,7 @@ import es.eucm.ead.schema.editor.data.Cell;
 import es.eucm.ead.schema.entities.ModelEntity;
 import es.eucm.ead.schema.renderers.Image;
 import es.eucm.ead.schemax.ModelStructure;
+import es.eucm.i18n.I18N;
 
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -347,7 +347,8 @@ public class Q {
 	public static String getRepoElementName(RepoElement elem) {
 		I18N i18N = controller.getApplicationAssets().getI18N();
 		Array<String> nameI18nList = elem.getNameI18nList();
-		int langIdx = nameI18nList.indexOf(i18N.getLang(), false);
+		int langIdx = nameI18nList.indexOf(controller.getApplicationAssets()
+				.getLang(), false);
 		if (langIdx < 0) {
 			langIdx = 0;
 		}

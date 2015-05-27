@@ -37,10 +37,11 @@
 package es.eucm.ead.editor.view.widgets.galleries;
 
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
+
 import es.eucm.ead.editor.view.SkinConstants;
 import es.eucm.ead.editor.view.widgets.Tabs;
 import es.eucm.ead.editor.view.widgets.galleries.basegalleries.ThumbnailsGallery;
-import es.eucm.ead.engine.I18N;
+import es.eucm.i18n.I18N;
 
 public class TabsCategoryGallery extends TabsGallery {
 

@@ -54,16 +54,6 @@ public class ChangeLanguage extends EditorAction {
 	}
 
 	@Override
-	public boolean validate(Object... args) {
-		if (super.validate(args)) {
-			String language = args[0].toString();
-			return controller.getApplicationAssets().getI18N()
-					.isAvailable(language);
-		}
-		return false;
-	}
-
-	@Override
 	public void perform(Object... args) {
 		controller.setLanguage(args[0].toString());
 	}

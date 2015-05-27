@@ -52,7 +52,7 @@ import es.eucm.ead.editor.view.widgets.baseview.BaseView.BaseViewStyle;
 import es.eucm.ead.editor.assets.ApplicationAssets;
 import es.eucm.ead.editor.view.widgets.IconButton;
 import es.eucm.ead.editor.view.widgets.layouts.LinearLayout;
-import es.eucm.ead.engine.I18N;
+import es.eucm.i18n.I18N;
 
 public class BaseViewTest extends UITest {
 

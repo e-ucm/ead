@@ -40,6 +40,7 @@ import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
+
 import es.eucm.ead.editor.control.Controller;
 import es.eucm.ead.editor.control.MokapController.BackListener;
 import es.eucm.ead.editor.control.Preferences;
@@ -49,13 +50,17 @@ import es.eucm.ead.editor.control.actions.editor.ShowInfoPanel.TypePanel;
 import es.eucm.ead.editor.control.workers.SearchRepo;
 import es.eucm.ead.editor.view.SkinConstants;
 import es.eucm.ead.editor.view.builders.ViewBuilder;
-import es.eucm.ead.engine.gdx.AbstractWidget;
-import es.eucm.ead.editor.view.widgets.galleries.*;
-import es.eucm.ead.editor.view.widgets.galleries.gallerieswithcategories.MyLibraryGallery;
+import es.eucm.ead.editor.view.widgets.galleries.CategoryLibrary;
+import es.eucm.ead.editor.view.widgets.galleries.CategoryRepository;
+import es.eucm.ead.editor.view.widgets.galleries.ProjectsGallery;
+import es.eucm.ead.editor.view.widgets.galleries.TabsCategoryGallery;
+import es.eucm.ead.editor.view.widgets.galleries.TabsGallery;
 import es.eucm.ead.editor.view.widgets.galleries.basegalleries.ThumbnailsGallery;
 import es.eucm.ead.editor.view.widgets.galleries.gallerieswithcategories.CommunityGallery;
-import es.eucm.ead.engine.I18N;
+import es.eucm.ead.editor.view.widgets.galleries.gallerieswithcategories.MyLibraryGallery;
+import es.eucm.ead.engine.gdx.AbstractWidget;
 import es.eucm.ead.schema.editor.components.repo.RepoCategories;
+import es.eucm.i18n.I18N;
 
 public class HomeView implements ViewBuilder, BackListener {
 

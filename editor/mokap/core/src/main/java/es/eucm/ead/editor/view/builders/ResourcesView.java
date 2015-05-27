@@ -61,7 +61,7 @@ import es.eucm.ead.editor.view.widgets.galleries.CategoryLibrary;
 import es.eucm.ead.editor.view.widgets.galleries.CategoryRepository;
 import es.eucm.ead.editor.view.widgets.galleries.ProjectResourcesGallery;
 import es.eucm.ead.editor.view.widgets.galleries.TabsGallery;
-import es.eucm.ead.engine.I18N;
+import es.eucm.i18n.I18N;
 import es.eucm.ead.schema.components.controls.Label;
 import es.eucm.ead.schema.editor.components.repo.RepoCategories;
 import es.eucm.ead.schema.entities.ModelEntity;

@@ -54,7 +54,7 @@ import es.eucm.ead.editor.control.Views;
 import es.eucm.ead.editor.utils.Actions2;
 import es.eucm.ead.editor.view.Modal;
 import es.eucm.ead.editor.view.widgets.WidgetBuilder;
-import es.eucm.ead.engine.I18N;
+import es.eucm.i18n.I18N;
 
 public class TextDialog extends Table implements Modal {
 

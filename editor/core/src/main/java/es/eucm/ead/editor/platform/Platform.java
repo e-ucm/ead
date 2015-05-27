@@ -43,8 +43,8 @@ import com.badlogic.gdx.math.Vector2;
 import es.eucm.ead.editor.control.Controller;
 import es.eucm.ead.editor.control.Tracker;
 import es.eucm.ead.editor.utils.ProjectUtils;
-import es.eucm.ead.engine.I18N;
 import es.eucm.ead.engine.assets.GameAssets.ImageUtils;
+import es.eucm.i18n.I18N;
 
 import java.io.IOException;
 import java.net.HttpURLConnection;

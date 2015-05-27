@@ -50,7 +50,7 @@ import es.eucm.ead.editor.control.Tracker;
 import es.eucm.ead.editor.platform.AbstractPlatform;
 import es.eucm.ead.editor.platform.Platform.FileChooserListener;
 import es.eucm.ead.editor.view.widgets.dialogs.FileChooserDialog;
-import es.eucm.ead.engine.I18N;
+import es.eucm.i18n.I18N;
 import es.eucm.ead.engine.assets.GameAssets;
 import es.eucm.ead.engine.utils.DesktopImageUtils;
 

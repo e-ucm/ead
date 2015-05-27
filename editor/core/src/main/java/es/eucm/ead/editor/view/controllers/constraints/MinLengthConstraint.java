@@ -36,7 +36,7 @@
  */
 package es.eucm.ead.editor.view.controllers.constraints;
 
-import es.eucm.ead.engine.I18N;
+import es.eucm.i18n.I18N;
 
 /**
  * Constraint to test if a string length is less than a value
