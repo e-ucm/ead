@@ -177,6 +177,8 @@ public abstract class Assets extends Json implements FileHandleResolver,
 	public void setLang(String lang) {
 		if (getLanguages().containsKey(lang)) {
 			load(lang);
+		} else if (lang.contains("_")) {
+			setLang(lang.substring(0, lang.indexOf("_")));
 		} else {
 			load(getLanguages().get("default"));
 		}

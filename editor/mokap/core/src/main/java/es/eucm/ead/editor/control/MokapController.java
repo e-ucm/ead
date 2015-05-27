@@ -111,6 +111,7 @@ public class MokapController extends Controller {
 	protected void loadPreferences() {
 		getApplicationAssets().setI18nPath("i18n-mokap/");
 		super.loadPreferences();
+		setLanguage(getPlatform().getLocale());
 	}
 
 	@Override

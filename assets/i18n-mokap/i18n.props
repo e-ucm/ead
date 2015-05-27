@@ -17,6 +17,6 @@
 # it = Italiano
 # pt = Portugués
 #
-default = es
+default = en
 es = Español
 en = English
