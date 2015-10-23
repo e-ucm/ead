@@ -617,6 +617,37 @@ public class Accessor {
 			return o;
 		}
 
+		if (castClass.isEnum()) {
+			for (Object enumConstant : castClass.getEnumConstants()) {
+				if (o.getClass() == String.class) { // String
+					try {
+						java.lang.reflect.Field field = enumConstant.getClass()
+								.getSuperclass().getDeclaredField("name");
+						field.setAccessible(true);
+						String constantName = (String) (field.get(enumConstant));
+						if (constantName.equalsIgnoreCase(o.toString())) {
+							return enumConstant;
+						}
+					} catch (IllegalAccessException e) {
+					} catch (NoSuchFieldException e) {
+					}
+				} else if (Number.class.isAssignableFrom(o.getClass())) { // Number
+					try {
+						java.lang.reflect.Field field = enumConstant.getClass()
+								.getSuperclass().getDeclaredField("ordinal");
+						field.setAccessible(true);
+						Integer constantOrdinal = (Integer) (field
+								.get(enumConstant));
+						if (constantOrdinal.equals(o)) {
+							return enumConstant;
+						}
+					} catch (IllegalAccessException e) {
+					} catch (NoSuchFieldException e) {
+					}
+				}
+			}
+		}
+
 		if (castClass == Array.class || castClass == Iterable.class) {
 			Array array = new Array();
 			if (o instanceof Iterable) {
@@ -646,7 +677,10 @@ public class Accessor {
 
 		Gdx.app.error("EngineUtils", "Impossible to cast " + o + " to "
 				+ castClass);
-		return null;
+
+		String message = "Error in cast. Impossible to cast " + o + " to "
+				+ castClass;
+		throw new AccessorException("", message);
 	}
 
 	/**
@@ -854,8 +888,14 @@ public class Accessor {
 
 		@Override
 		public void set(Object value) {
-			value = cast(field.getType(), value);
+			try {
+				value = cast(field.getType(), value);
+			} catch (AccessorException e) {
+				e.setFullyQualifiedId(fullyQualifiedId);
+				throw e;
+			}
 			field.setAccessible(true);
+
 			try {
 				field.set(object, value);
 			} catch (ReflectionException e) {

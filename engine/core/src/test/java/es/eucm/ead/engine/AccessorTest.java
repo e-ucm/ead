@@ -351,6 +351,44 @@ public class AccessorTest extends EngineTest {
 
 	}
 
+	@Test
+	public void testEnums() {
+		Object2 object2 = new Object2(0, 0);
+		Map<String, Object> rootObjects = new HashMap<String, Object>();
+		rootObjects.put("o2", object2);
+		accessor.setRootObjects(rootObjects);
+
+		// Test write enum
+		// assertEquals(1, accessor.get("o2.c2"));
+		accessor.set("o2.c2", 1);
+		assertEquals(Enum1.CONSTANT2, object2.c2);
+		try {
+			accessor.set("o2.c2", 4);
+			fail("An exception should have been thrown");
+		} catch (Accessor.AccessorException e) {
+		}
+		assertEquals(Enum1.CONSTANT2, object2.c2);
+		accessor.set("o2.c2", "CONSTANT3");
+		assertEquals(Enum1.CONSTANT3, object2.c2);
+		accessor.set("o2.c2", "constant2");
+		assertEquals(Enum1.CONSTANT2, object2.c2);
+		try {
+			accessor.set("o2.c2", "c1");
+			fail("An exception should have been thrown");
+		} catch (Accessor.AccessorException e) {
+		}
+		assertEquals(Enum1.CONSTANT2, accessor.get("o2.c2"));
+	}
+
+	private enum Enum1 {
+		CONSTANT1("c1"), CONSTANT2("c2"), CONSTANT3("c3");
+		private String val;
+
+		private Enum1(String v) {
+			this.val = v;
+		}
+	}
+
 	private class Object1 {
 		public int a1;
 		public Object2 o2;
@@ -367,10 +405,12 @@ public class AccessorTest extends EngineTest {
 
 		public int a2;
 		public int b2;
+		public Enum1 c2;
 
 		public Object2(int a, int b) {
 			this.a2 = a;
 			this.b2 = b;
+			this.c2 = Enum1.CONSTANT1;
 		}
 	}
 
