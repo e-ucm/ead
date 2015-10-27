@@ -156,6 +156,16 @@ public abstract class DemoBuilder {
 	private ModelEntity game;
 	private Behavior initGame;
 
+	// Helper class to create expressions
+	protected ExpressionBuilder eb = new ExpressionBuilder();
+
+	/**
+	 * @return An object that helps create expressions with Mokap's syntax
+	 */
+	public ExpressionBuilder getEb() {
+		return eb;
+	}
+
 	public DemoBuilder() {
 		entities = new HashMap<String, ModelEntity>();
 		sceneCount = 0;
@@ -1504,13 +1514,6 @@ public abstract class DemoBuilder {
 		triggerConversation.setNodeId(startingNodeId);
 		triggerConversation.setConversationId(conversationId);
 		return triggerConversation;
-	}
-
-	/**
-	 * Creates an expression for retrieving all entities with a given tag.
-	 */
-	public String makeEntitiesWithTagExp(String tag) {
-		return "(collection (hastag $entity s" + tag + "))";
 	}
 
 	public GoScene makeGoScene(String sceneId, Transition transition,

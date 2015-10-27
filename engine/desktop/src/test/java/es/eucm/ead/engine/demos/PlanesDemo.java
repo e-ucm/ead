@@ -227,7 +227,7 @@ public class PlanesDemo extends ExecutableDemoBuilder {
 		centerOrigin();
 
 		touchBehavior().changeVar(chasedPlaneVar, "$" + VarsContext.THIS_VAR)
-				.addComponent(makeEntitiesWithTagExp("star"),
+				.addComponent(eb.allEntitiesWithTag("star"),
 						makeStarChaseAfterSpaceship());
 		return uri;
 	}
