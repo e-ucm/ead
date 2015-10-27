@@ -125,8 +125,8 @@ public class ApkResource {
 			packageName = appNameToPackage(appName);
 		}
 		return ANDROID_MANIFEST.replaceAll(PACKAGE_PLACEHOLDER, packageName)
-				.replaceAll(CANVAS_WIDTH_VALUE, "" + canvasWidth)
-				.replaceAll(CANVAS_HEIGHT_VALUE, "" + canvasHeight);
+				.replaceAll(CANVAS_WIDTH_PLACEHOLDER, "" + canvasWidth)
+				.replaceAll(CANVAS_HEIGHT_PLACEHOLDER, "" + canvasHeight);
 	}
 
 	/**
@@ -167,8 +167,8 @@ public class ApkResource {
 	private static final String ARTIFACTID_PLACEHOLDER = "##ARTIFACTID##";
 	private static final String PACKAGE_PLACEHOLDER = "##PACKAGE##";
 	private static final String APPNAME_PLACEHOLDER = "##APPNAME##";
-	private static final String CANVAS_WIDTH_VALUE = "##CANVASWIDTH##";
-	private static final String CANVAS_HEIGHT_VALUE = "##CANVASHEIGHT##";
+	private static final String CANVAS_WIDTH_PLACEHOLDER = "##CANVASWIDTH##";
+	private static final String CANVAS_HEIGHT_PLACEHOLDER = "##CANVASHEIGHT##";
 	private static final String LIBGDX_VERSION_PLACEHOLDER = "##LIBGDXVERSION##";
 
 	// ///////////////////////////////
@@ -230,12 +230,12 @@ public class ApkResource {
 			+ "            <meta-data android:name=\""
 			+ CANVAS_WIDTH_KEY
 			+ "\" android:value=\""
-			+ CANVAS_WIDTH_VALUE
+			+ CANVAS_WIDTH_PLACEHOLDER
 			+ "\" />"
 			+ "            <meta-data android:name=\""
 			+ CANVAS_HEIGHT_KEY
 			+ "\" android:value=\""
-			+ CANVAS_HEIGHT_VALUE
+			+ CANVAS_HEIGHT_PLACEHOLDER
 			+ "\" />"
 			+ "        </activity>\n" + "    </application>\n" + "</manifest>";
 
