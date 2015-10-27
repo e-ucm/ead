@@ -1669,13 +1669,87 @@ public abstract class DemoBuilder {
 		return goScene;
 	}
 
-	public DemoBuilder color(float r, float g, float b, float a) {
+	public Color makeColor(float r, float g, float b, float a) {
 		Color color = new Color();
 		color.setR(r);
 		color.setG(g);
 		color.setB(b);
 		color.setA(a);
-		getLastEntity().setColor(color);
+		return color;
+	}
+
+	/**
+	 * Creates an effect that will change one of the four color attributes (red,
+	 * green, blue, alpha) of all the entities found to have the given tag.
+	 * 
+	 * @param tag
+	 *            The tag that identifies the entities
+	 * @param colorComponent
+	 *            "r", "g", "b", or "a". Lowercase and uppercase allowed.
+	 * @param value
+	 *            float value between 0 and 1 that will be given to the
+	 *            particular color attribute
+	 * @return The effect
+	 */
+	public Effect makeChangeColorAttributeEffect(String tag,
+			String colorComponent, float value) {
+		if (!colorComponent.equals("a") && !colorComponent.equals("A")
+				&& !colorComponent.equals("r") && !colorComponent.equals("R")
+				&& !colorComponent.equals("g") && !colorComponent.equals("G")
+				&& !colorComponent.equals("b") && !colorComponent.equals("B")) {
+			throw new RuntimeException("The selected color attribute: "
+					+ colorComponent
+					+ " is not supported. Only a, r, g, b accepted");
+		}
+		ChangeEntityProperty setColor = new ChangeEntityProperty();
+		setColor.setTarget(eb.entityWithTag(tag));
+		setColor.setProperty("group.color." + colorComponent);
+		setColor.setExpression("f" + value);
+		return setColor;
+	}
+
+	/**
+	 * Creates an effect that will change the color of all the entities that
+	 * have the given tag
+	 * 
+	 * @param tag
+	 *            The tag that identifies entities to be affected by the effect
+	 * @param r
+	 *            The red component in range [0,1]
+	 * @param g
+	 *            The green component in range [0,1]
+	 * @param b
+	 *            The blue component in range [0,1]
+	 * @param a
+	 *            The alpha component in range [0,1]
+	 * @return The effect created
+	 */
+	public Effect makeChangeColorEffect(String tag, Float r, Float g, Float b,
+			Float a) {
+		Script script = new Script();
+		if (r != null) {
+			script.getEffects()
+					.add(makeChangeColorAttributeEffect(tag, "r", r));
+		}
+		if (g != null) {
+			script.getEffects()
+					.add(makeChangeColorAttributeEffect(tag, "g", g));
+		}
+		if (b != null) {
+			script.getEffects()
+					.add(makeChangeColorAttributeEffect(tag, "b", b));
+		}
+		if (a != null) {
+			script.getEffects()
+					.add(makeChangeColorAttributeEffect(tag, "a", a));
+		}
+		ScriptCall scriptCall = new ScriptCall();
+		scriptCall.setScript(script);
+		return scriptCall;
+	}
+
+	public DemoBuilder color(float r, float g, float b, float a) {
+		getLastEntity().setColor(makeColor(r, g, b, a));
 		return this;
 	}
 
