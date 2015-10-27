@@ -42,8 +42,8 @@ import es.eucm.ead.schema.editor.components.repo.RepoCategories;
 import es.eucm.ead.schema.editor.components.repo.licenses.DefaultLicenses;
 
 /**
- * Created by eucm on 27/05/15.
- * An abstract class used to create sound and music libraries.
+ * Created by eucm on 27/05/15. An abstract class used to create sound and music
+ * libraries.
  */
 public abstract class SoundLibrary extends RepoLibraryBuilder {
 
