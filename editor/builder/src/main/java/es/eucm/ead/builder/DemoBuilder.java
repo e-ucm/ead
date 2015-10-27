@@ -73,6 +73,7 @@ import es.eucm.ead.schema.effects.ChangeVar.Context;
 import es.eucm.ead.schema.effects.GoScene.Transition;
 import es.eucm.ead.schema.effects.controlstructures.ControlStructure;
 import es.eucm.ead.schema.effects.controlstructures.IfThenElseIf;
+import es.eucm.ead.schema.effects.controlstructures.ScriptCall;
 import es.eucm.ead.schema.entities.ModelEntity;
 import es.eucm.ead.schema.renderers.*;
 import es.eucm.ead.schemax.ModelStructure;
@@ -119,13 +120,13 @@ public abstract class DemoBuilder {
 
 	protected static final String LOG_TAG = "DemoBuilder";
 
-	public static final String LIBRARY_PATH = "library/";
 	/*
 	 * A special empty entity is created to hold timers for scheduled effects,
 	 * infinite timers, etc on the scene
 	 */
 	protected static final String SPECIAL_TIMERS_TAG = "_SCENE_TIMERS";
 
+	public static final String LIBRARY_PATH = "library/";
 	public static final String WALK = "walk";
 	public static final String TALK = "talk";
 	public static final String GRAB = "grab";
@@ -343,31 +344,6 @@ public abstract class DemoBuilder {
 		return this;
 	}
 
-	public DemoBuilder image(ModelEntity entity, String uri) {
-		if (uri != null) {
-			entity.getComponents().add(createImage(uri));
-		}
-		return this;
-	}
-
-	public ConversationBuilder conversation(ModelEntity entity, String id) {
-		Conversation conversation = new Conversation();
-		entity.getComponents().add(conversation);
-		conversation.setConversationId(id);
-		return new ConversationBuilder(conversation);
-	}
-
-	public DemoBuilder image(String uri) {
-		image(getLastEntity(), uri);
-		return this;
-	}
-
-	protected Image createImage(String uri) {
-		Image image = new Image();
-		image.setUri(uri);
-		return image;
-	}
-
 	/**
 	 * Creates a new entity with the given screen alignment as a child of the
 	 * {@code parent} entity provided.
@@ -501,6 +477,25 @@ public abstract class DemoBuilder {
 		}
 		return this;
 	}
+
+	public ConversationBuilder conversation(ModelEntity entity, String id) {
+		Conversation conversation = new Conversation();
+		entity.getComponents().add(conversation);
+		conversation.setConversationId(id);
+		return new ConversationBuilder(conversation);
+	}
+
+	public DemoBuilder image(String uri) {
+		image(getLastEntity(), uri);
+		return this;
+	}
+
+	protected Image createImage(String uri) {
+		Image image = new Image();
+		image.setUri(uri);
+		return image;
+	}
+
 	public DemoBuilder states() {
 		return states(getLastEntity());
 	}
