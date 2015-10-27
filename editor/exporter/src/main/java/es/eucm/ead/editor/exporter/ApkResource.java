@@ -76,12 +76,29 @@ public class ApkResource {
 	 * @param appName
 	 *            The name of the application, in a user-friendly format (e.g.
 	 *            Game Of Thrones). Cannot be {@code null}.
+	 * @param gdxVersion
+	 *            The standard maven-like version of Libgdx to be used (e.g.
+	 *            "1.5.3"). If {@code null}, defalut value
+	 *            {@value #DEFAULT_GDX_VERSION} will be used
 	 */
-	public static String getPom(String artifactId, String appName) {
+	public static String getPom(String artifactId, String appName,
+			String gdxVersion) {
 		if (artifactId == null) {
 			artifactId = appNameToArtifactId(appName);
 		}
-		return POM.replaceAll(ARTIFACTID_PLACEHOLDER, artifactId);
+		if (gdxVersion == null) {
+			gdxVersion = DEFAULT_GDX_VERSION;
+		}
+		return POM.replaceAll(ARTIFACTID_PLACEHOLDER, artifactId).replaceAll(
+				LIBGDX_VERSION_PLACEHOLDER, gdxVersion);
+	}
+
+	/**
+	 * Equivalent to {@code #getPom(artifactId, appName, null)}. See
+	 * {@link #getPom(String, String, String)}.
+	 */
+	public static String getPom(String artifactId, String appName) {
+		return getPom(artifactId, appName, null);
 	}
 
 	/**
@@ -143,6 +160,8 @@ public class ApkResource {
 	private static final String CANVAS_HEIGHT_KEY = "CanvasHeight";
 
 	private static final String DEFAULT_PACKAGE_PARENT = "es.eucm.mokaps";
+	private static final String DEFAULT_GDX_VERSION = "1.6.1"; // 1.5.3
+																// previously
 
 	// Placeholders
 	private static final String ARTIFACTID_PLACEHOLDER = "##ARTIFACTID##";
@@ -150,6 +169,7 @@ public class ApkResource {
 	private static final String APPNAME_PLACEHOLDER = "##APPNAME##";
 	private static final String CANVAS_WIDTH_VALUE = "##CANVASWIDTH##";
 	private static final String CANVAS_HEIGHT_VALUE = "##CANVASHEIGHT##";
+	private static final String LIBGDX_VERSION_PLACEHOLDER = "##LIBGDXVERSION##";
 
 	// ///////////////////////////////
 	// PRIVATE METHODS
@@ -250,7 +270,9 @@ public class ApkResource {
 			+ "    <packaging>apk</packaging>\n"
 			+ "    <properties>\n"
 			+ "        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>\n"
-			+ "        <gdx.version>1.5.3</gdx.version>\n"
+			+ "        <gdx.version>"
+			+ LIBGDX_VERSION_PLACEHOLDER
+			+ "</gdx.version>\n"
 			+ "        <android.version>4.1.1.4</android.version>\n"
 			+ "        <android.platform.version>19</android.platform.version>\n"
 			+ "        <android.editor.version>4.1.1.4</android.editor.version>\n"
