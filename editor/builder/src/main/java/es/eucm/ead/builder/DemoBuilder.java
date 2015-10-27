@@ -120,6 +120,11 @@ public abstract class DemoBuilder {
 	protected static final String LOG_TAG = "DemoBuilder";
 
 	public static final String LIBRARY_PATH = "library/";
+	/*
+	 * A special empty entity is created to hold timers for scheduled effects,
+	 * infinite timers, etc on the scene
+	 */
+	protected static final String SPECIAL_TIMERS_TAG = "_SCENE_TIMERS";
 
 	public static final String WALK = "walk";
 	public static final String TALK = "talk";
@@ -436,6 +441,66 @@ public abstract class DemoBuilder {
 		return this;
 	}
 
+	/**
+	 * Just adds an entity created elswhere (passed as argument) to the map of
+	 * reusable entities.
+	 * 
+	 * @param path
+	 *            The relative path where the entity should be stored (e.g.
+	 *            "animals/dog.json")
+	 * @param entity
+	 *            The entity to store
+	 * @return This DemoBuilder object, for chaining calls
+	 */
+	public DemoBuilder addReusableEntity(String path, ModelEntity entity) {
+		entities.put(path, entity);
+		return this;
+	}
+
+	/*
+	 * Searches in the scene for the empty child entity that holds infinite
+	 * timers and delayed effects. If it is not found, it is created and added.
+	 * 
+	 * See temporalStateChange, delayedEffect and infiniteTimer for more details
+	 */
+	protected ModelEntity sceneTimers(ModelEntity scene) {
+		ModelEntity specialTimers = null;
+		for (ModelEntity child : scene.getChildren()) {
+			for (ModelComponent component : child.getComponents()) {
+				if (!(component instanceof Tags)) {
+					continue;
+				}
+				Tags tags = (Tags) component;
+				for (String tag : tags.getTags()) {
+					if (SPECIAL_TIMERS_TAG.equals(tag)) {
+						specialTimers = child;
+						break;
+					}
+				}
+			}
+		}
+
+		if (specialTimers == null) {
+			specialTimers = new ModelEntity();
+			tags(specialTimers, SPECIAL_TIMERS_TAG);
+			scene.getChildren().add(specialTimers);
+		}
+		return specialTimers;
+	}
+
+	/*
+	 * Equivalent to sceneTimers(getLastScene())
+	 */
+	private ModelEntity sceneTimers() {
+		return sceneTimers(getLastScene());
+	}
+
+	public DemoBuilder image(ModelEntity entity, String uri) {
+		if (uri != null) {
+			entity.getComponents().add(createImage(uri));
+		}
+		return this;
+	}
 	public DemoBuilder states() {
 		return states(getLastEntity());
 	}
@@ -803,6 +868,44 @@ public abstract class DemoBuilder {
 	}
 
 	/**
+	 * Schedules the given set of effects for execution after the specified
+	 * number of seconds. The whole cycle (waiting + effect execution) is
+	 * repeated the number of times specified (-1 for infinite repetitions).
+	 * 
+	 * Internally, this results in a timer added to a special empty entity in
+	 * the scene.
+	 * 
+	 * @param delay
+	 *            Time elapsed before the effects are triggered, in seconds
+	 * @param repeat
+	 *            Number of times the effects have to be triggered. If -1,
+	 *            effects are scheduled for execution ad infinitum
+	 * @param effects
+	 *            Effects to launch after {@code delay} seconds.
+	 */
+	public DemoBuilder scheduleEffects(float delay, int repeat,
+			Effect... effects) {
+		return behavior(sceneTimers(),
+				makeDelayedEffect(delay, repeat, effects).getEvent(), effects);
+	}
+
+	/**
+	 * Schedules the given set of effects for execution after the specified
+	 * number of seconds. The whole cycle (waiting + effect execution) is
+	 * repeated ad infinitum
+	 * 
+	 * This is equivalent to {@code scheduleEffects(delay, -1, effects)}
+	 * 
+	 * @param delay
+	 *            Time duration of the cycle, in seconds
+	 * @param effects
+	 *            Effects to launch each {@code delay} seconds.
+	 */
+	public DemoBuilder scheduleEffectsForever(float delay, Effect... effects) {
+		return scheduleEffects(delay, -1, effects);
+	}
+
+	/**
 	 * Creates a simple timer that executes the given {@code effects} after the
 	 * specified number of {@code seconds}. The resulting component is added to
 	 * the given {@code parent} entity
@@ -817,10 +920,10 @@ public abstract class DemoBuilder {
 	/**
 	 * Creates a simple timer that executes the given {@code effects} after the
 	 * specified number of {@code seconds}. The resulting component is added to
-	 * the last entity created
+	 * the scene's timers container entity
 	 */
 	public DemoBuilder simpleTimer(float seconds, Effect... effects) {
-		return simpleTimer(getLastEntity(), seconds, effects);
+		return simpleTimer(sceneTimers(getLastScene()), seconds, effects);
 	}
 
 	/**
@@ -1251,6 +1354,41 @@ public abstract class DemoBuilder {
 			behavior.getEffects().add(effect);
 		}
 		return behavior;
+	}
+
+	/**
+	 * Creates a behaviour that will trigger the given set of effects after the
+	 * given time lapse.
+	 * 
+	 * @param delay
+	 *            The time to wait before triggering the effects (in seconds)
+	 * @param repeat
+	 *            Number of times the effects have to be triggered
+	 * @param effects
+	 *            The set of effects to trigger.
+	 * @return A Behavior component
+	 */
+	public Behavior makeDelayedEffect(float delay, int repeat,
+			Effect... effects) {
+		Timer t = new Timer();
+		t.setCondition("btrue");
+		t.setRepeat(repeat);
+		t.setTime(delay);
+		return makeBehavior(t, effects);
+	}
+
+	/**
+	 * Creates a behaviour that will trigger the given set of effects after the
+	 * given time lapse. Effects are triggered exactly once.
+	 * 
+	 * @param delay
+	 *            The time to wait before triggering the effects (in seconds)
+	 * @param effects
+	 *            The set of effects to trigger.
+	 * @return A Behavior component
+	 */
+	public Behavior makeDelayedEffect(float delay, Effect... effects) {
+		return makeDelayedEffect(delay, 1, effects);
 	}
 
 	/**
