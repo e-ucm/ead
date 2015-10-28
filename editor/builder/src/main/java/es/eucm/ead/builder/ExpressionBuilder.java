@@ -36,8 +36,6 @@
  */
 package es.eucm.ead.builder;
 
-import es.eucm.ead.schemax.Layer;
-
 /**
  * Helper to build recurrent expressions following the syntax specified by
  * OperationsFactory.
@@ -73,7 +71,8 @@ public class ExpressionBuilder {
 	 *            "<", "<=", "=", ">" or ">="
 	 * @param value
 	 *            The numeric value to compare to. Both integers and floats are
-	 *            supported. Doubles and Longs trigger exceptions.
+	 *            supported. Other types of numbers (e.g. doubles and longs)
+	 *            trigger exceptions.
 	 */
 	public String variableComparedTo(String var, String comparison, Number value) {
 		String number;
@@ -91,7 +90,7 @@ public class ExpressionBuilder {
 			var = "$" + var;
 		}
 
-		String operator = "eq";
+		String operator = null;
 		if (comparison.equals("<")) {
 			operator = "lt";
 		} else if (comparison.equals("<=") || comparison.equals("=<")) {
@@ -102,6 +101,9 @@ public class ExpressionBuilder {
 			operator = "gt";
 		} else if (comparison.equals(">=") || comparison.equals("=>")) {
 			operator = "ge";
+		} else {
+			throw new RuntimeException("Operator \"" + comparison
+					+ "\" is not supported");
 		}
 
 		return "(" + operator + " " + var + " " + number + ")";
@@ -124,11 +126,41 @@ public class ExpressionBuilder {
 	}
 
 	/**
-	 * Variable = value. equivalent to
+	 * Variable == value. equivalent to
 	 * {@code variableComparedTo(var, "=", value)}
 	 */
 	public String variableEqualsTo(String var, Number value) {
 		return variableComparedTo(var, "=", value);
+	}
+
+	/**
+	 * @return An expression that checks if the given variable is true or false,
+	 *         depending on the value provided
+	 * @param var
+	 *            Name of the variable, with or without starting variable
+	 *            reference symbol ("$")
+	 * @param value
+	 *            The value to be checked against (True or False)
+	 */
+	public String variableEqualsTo(String var, Boolean value) {
+		if (!var.startsWith("$")) {
+			var = "$" + var;
+		}
+		return "(eq " + var + " b" + value.toString() + ")";
+	}
+
+	/**
+	 * Variable == true. Equivalent to {@code variableEqualsTo(var, true)}
+	 */
+	public String variableIsTrue(String var) {
+		return variableEqualsTo(var, true);
+	}
+
+	/**
+	 * Variable == false. Equivalent to {@code variableEqualsTo(var, false)}
+	 */
+	public String variableIsFalse(String var) {
+		return variableEqualsTo(var, false);
 	}
 
 	/**
@@ -154,4 +186,5 @@ public class ExpressionBuilder {
 	public String layerSceneContent() {
 		return "(layer sSCENE_CONTENT)";
 	}
+
 }
