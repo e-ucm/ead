@@ -618,32 +618,26 @@ public class Accessor {
 		}
 
 		if (castClass.isEnum()) {
-			for (Object enumConstant : castClass.getEnumConstants()) {
-				if (o.getClass() == String.class) { // String
-					try {
-						java.lang.reflect.Field field = enumConstant.getClass()
-								.getSuperclass().getDeclaredField("name");
-						field.setAccessible(true);
-						String constantName = (String) (field.get(enumConstant));
-						if (constantName.equalsIgnoreCase(o.toString())) {
-							return enumConstant;
-						}
-					} catch (IllegalAccessException e) {
-					} catch (NoSuchFieldException e) {
-					}
-				} else if (Number.class.isAssignableFrom(o.getClass())) { // Number
-					try {
-						java.lang.reflect.Field field = enumConstant.getClass()
-								.getSuperclass().getDeclaredField("ordinal");
-						field.setAccessible(true);
-						Integer constantOrdinal = (Integer) (field
-								.get(enumConstant));
-						if (constantOrdinal.equals(o)) {
-							return enumConstant;
-						}
-					} catch (IllegalAccessException e) {
-					} catch (NoSuchFieldException e) {
-					}
+			if (o.getClass() == String.class) { // String
+				String fieldName = o.toString();
+				Enum enumToReturn = null;
+				try {
+					enumToReturn = Enum.valueOf(castClass, fieldName);
+				} catch (IllegalArgumentException e) {
+				}
+				try {
+					enumToReturn = Enum.valueOf(castClass,
+							fieldName.toLowerCase());
+				} catch (IllegalArgumentException e) {
+				}
+				try {
+					enumToReturn = Enum.valueOf(castClass,
+							fieldName.toUpperCase());
+				} catch (IllegalArgumentException e) {
+				}
+
+				if (enumToReturn != null) {
+					return enumToReturn;
 				}
 			}
 		}
