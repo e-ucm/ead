@@ -39,7 +39,10 @@ package es.eucm.ead.engine.systems.tweens.tweencreators;
 import aurelienribon.tweenengine.Timeline;
 import aurelienribon.tweenengine.Tween;
 import com.badlogic.gdx.utils.Array;
+import es.eucm.ead.engine.assets.GameAssets;
 import es.eucm.ead.engine.entities.EngineEntity;
+import es.eucm.ead.engine.utils.EngineUtils;
+import es.eucm.ead.engine.variables.VariablesManager;
 import es.eucm.ead.schema.components.tweens.BaseTween;
 import es.eucm.ead.schema.components.tweens.Timeline.Mode;
 
@@ -52,9 +55,15 @@ public class TimelineCreator extends
 		BaseTweenCreator<es.eucm.ead.schema.components.tweens.Timeline> {
 
 	private Map<Class, BaseTweenCreator> creators;
+	private GameAssets gameAssets;
+	private VariablesManager variableManager;
 
-	public TimelineCreator(Map<Class, BaseTweenCreator> creators) {
+	public TimelineCreator(GameAssets gameAssets,
+			VariablesManager variablesManager,
+			Map<Class, BaseTweenCreator> creators) {
 		this.creators = creators;
+		this.gameAssets = gameAssets;
+		this.variableManager = variablesManager;
 	}
 
 	@Override
@@ -78,7 +87,8 @@ public class TimelineCreator extends
 			BaseTweenCreator creator = creators.get(child.getClass());
 			if (creator != null) {
 				aurelienribon.tweenengine.BaseTween baseTween = creator
-						.createTween(owner, child);
+						.createTween(owner, EngineUtils.buildWithParameters(
+								gameAssets, variableManager, child));
 				if (baseTween instanceof Tween) {
 					timeline = timeline.push((Tween) baseTween);
 				} else {

@@ -116,7 +116,8 @@ public class AddEntityTest extends EngineTest implements EntityListener {
 		creators.put(ScaleTween.class, scaleTweenCreator);
 		MoveTweenCreator moveTweenCreator = new MoveTweenCreator();
 		creators.put(MoveTween.class, moveTweenCreator);
-		TimelineCreator timelineCreator = new TimelineCreator(creators);
+		TimelineCreator timelineCreator = new TimelineCreator(gameAssets,
+				variablesManager, creators);
 		creators.put(Timeline.class, timelineCreator);
 
 		TweenSystem tweenSystem = new TweenSystem();

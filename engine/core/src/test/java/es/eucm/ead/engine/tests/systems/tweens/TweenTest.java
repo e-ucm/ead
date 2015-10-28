@@ -40,8 +40,8 @@ import es.eucm.ead.engine.EngineTest;
 import es.eucm.ead.engine.entities.EngineEntity;
 import es.eucm.ead.engine.processors.tweens.TweensProcessor;
 import es.eucm.ead.engine.systems.tweens.TweenSystem;
-import es.eucm.ead.engine.systems.tweens.tweencreators.TweenCreator;
-import es.eucm.ead.schema.components.tweens.BaseTween;
+import es.eucm.ead.engine.systems.tweens.tweencreators.BaseTweenCreator;
+import es.eucm.ead.schema.components.tweens.*;
 import org.junit.Before;
 
 /**
@@ -56,11 +56,23 @@ public abstract class TweenTest extends EngineTest {
 	@Before
 	public void setUp() {
 		super.setUp();
+		tweensProcessor = new TweensProcessor(gameLoop);
+		componentLoader.registerComponentProcessor(AlphaTween.class,
+				tweensProcessor);
+		componentLoader.registerComponentProcessor(FieldTween.class,
+				tweensProcessor);
+		componentLoader.registerComponentProcessor(MoveTween.class,
+				tweensProcessor);
+		componentLoader.registerComponentProcessor(RotateTween.class,
+				tweensProcessor);
+		componentLoader.registerComponentProcessor(ScaleTween.class,
+				tweensProcessor);
+		componentLoader.registerComponentProcessor(Timeline.class,
+				tweensProcessor);
 		tweenSystem = new TweenSystem();
 		gameLoop.addSystem(tweenSystem);
 		tweenSystem
 				.registerBaseTweenCreator(getTweenClass(), getTweenCreator());
-		tweensProcessor = new TweensProcessor(gameLoop);
 	}
 
 	/**
@@ -72,7 +84,7 @@ public abstract class TweenTest extends EngineTest {
 	 * @return tween creator to be registered associated with the class returned
 	 *         in {@link #getTweenClass()}
 	 */
-	public abstract TweenCreator getTweenCreator();
+	public abstract BaseTweenCreator getTweenCreator();
 
 	/**
 	 * Creates an entity with the given tween and adds it to the gameloop
@@ -80,7 +92,7 @@ public abstract class TweenTest extends EngineTest {
 	protected EngineEntity addEntityWithTweens(BaseTween... tweens) {
 		EngineEntity entity = gameLoop.createEntity();
 		for (BaseTween tween : tweens) {
-			entity.add(tweensProcessor.getComponent(tween));
+			entity.add(componentLoader.toEngineComponent(tween));
 		}
 		gameLoop.addEntity(entity);
 		return entity;

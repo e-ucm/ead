@@ -617,6 +617,31 @@ public class Accessor {
 			return o;
 		}
 
+		if (castClass.isEnum()) {
+			if (o.getClass() == String.class) { // String
+				String fieldName = o.toString();
+				Enum enumToReturn = null;
+				try {
+					enumToReturn = Enum.valueOf(castClass, fieldName);
+				} catch (IllegalArgumentException e) {
+				}
+				try {
+					enumToReturn = Enum.valueOf(castClass,
+							fieldName.toLowerCase());
+				} catch (IllegalArgumentException e) {
+				}
+				try {
+					enumToReturn = Enum.valueOf(castClass,
+							fieldName.toUpperCase());
+				} catch (IllegalArgumentException e) {
+				}
+
+				if (enumToReturn != null) {
+					return enumToReturn;
+				}
+			}
+		}
+
 		if (castClass == Array.class || castClass == Iterable.class) {
 			Array array = new Array();
 			if (o instanceof Iterable) {
@@ -646,7 +671,10 @@ public class Accessor {
 
 		Gdx.app.error("EngineUtils", "Impossible to cast " + o + " to "
 				+ castClass);
-		return null;
+
+		String message = "Error in cast. Impossible to cast " + o + " to "
+				+ castClass;
+		throw new AccessorException("", message);
 	}
 
 	/**
@@ -854,8 +882,14 @@ public class Accessor {
 
 		@Override
 		public void set(Object value) {
-			value = cast(field.getType(), value);
+			try {
+				value = cast(field.getType(), value);
+			} catch (AccessorException e) {
+				e.setFullyQualifiedId(fullyQualifiedId);
+				throw e;
+			}
 			field.setAccessible(true);
+
 			try {
 				field.set(object, value);
 			} catch (ReflectionException e) {
