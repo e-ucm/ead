@@ -45,8 +45,8 @@ import es.eucm.ead.engine.GameView;
 import es.eucm.ead.engine.components.CamerasComponent;
 import es.eucm.ead.engine.components.TweensComponent;
 import es.eucm.ead.engine.entities.EngineEntity;
+import es.eucm.ead.engine.variables.ReservedVariableNames;
 import es.eucm.ead.engine.variables.VariablesManager;
-import es.eucm.ead.engine.variables.VarsContext;
 import es.eucm.ead.schema.components.cameras.Camera;
 import es.eucm.ead.schema.components.tweens.MoveTween;
 import es.eucm.ead.schema.components.tweens.RotateTween;
@@ -156,9 +156,9 @@ public class SetCameraExecutor extends EffectExecutor<SetCamera> {
 		// Calculate new values
 		// ///////////////////////////
 		Float viewportWidth = (float) (Integer) variablesManager
-				.getValue(VarsContext.RESERVED_VIEWPORT_WIDTH_VAR);
+				.getValue(ReservedVariableNames.RESERVED_VIEWPORT_WIDTH_VAR);
 		Float viewportHeight = (float) (Integer) variablesManager
-				.getValue(VarsContext.RESERVED_VIEWPORT_HEIGHT_VAR);
+				.getValue(ReservedVariableNames.RESERVED_VIEWPORT_HEIGHT_VAR);
 
 		// Camera width and height
 		float w = camera.getWidth();

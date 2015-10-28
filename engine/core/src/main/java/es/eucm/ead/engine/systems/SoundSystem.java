@@ -41,17 +41,14 @@ import com.badlogic.ashley.core.Family;
 import com.badlogic.ashley.systems.IteratingSystem;
 import es.eucm.ead.engine.components.assets.SoundComponent;
 import es.eucm.ead.engine.entities.EngineEntity;
+import es.eucm.ead.engine.variables.ReservedVariableNames;
 import es.eucm.ead.engine.variables.VariablesManager;
-import es.eucm.ead.engine.variables.VarsContext;
 import es.eucm.ead.schema.assets.Sound;
 
 /**
  * A system that plays back sounds and music.
  */
 public class SoundSystem extends IteratingSystem {
-
-	public static final String EFFECTS_VOLUME = VarsContext.RESERVED_VAR_PREFIX
-			+ "effects_volume";
 
 	private boolean initialized = false;
 
@@ -64,13 +61,14 @@ public class SoundSystem extends IteratingSystem {
 
 	private void checkInitialization() {
 		if (!initialized) {
-			variablesManager.registerVar(EFFECTS_VOLUME, 1F, true);
+			variablesManager.registerVar(ReservedVariableNames.EFFECTS_VOLUME,
+					1F, true);
 			initialized = true;
 		}
 	}
 
 	private float calculateVolume(Sound config) {
-		String volumeVar = EFFECTS_VOLUME;
+		String volumeVar = ReservedVariableNames.EFFECTS_VOLUME;
 		return (Float) variablesManager.getValue(volumeVar)
 				* config.getVolume();
 	}

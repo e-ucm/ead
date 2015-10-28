@@ -38,7 +38,7 @@ package es.eucm.ead.engine.demos;
 
 import com.badlogic.gdx.graphics.glutils.ShaderProgram;
 import es.eucm.ead.engine.demobuilder.ExecutableDemoBuilder;
-import es.eucm.ead.engine.systems.MainSystem;
+import es.eucm.ead.engine.variables.ReservedVariableNames;
 import es.eucm.ead.schema.components.Shader;
 import es.eucm.ead.schema.components.controls.Label;
 import es.eucm.ead.schema.data.Color;
@@ -98,10 +98,11 @@ public class BackgroundShadersDemo extends ExecutableDemoBuilder {
 
 		Shader shader = new Shader();
 		shader.setUri("test" + i + ".fragment");
-		shader.getUniforms().add(param("time", "$" + MainSystem.TIME));
 		shader.getUniforms().add(
-				param("resolution", "$" + MainSystem.FRAME_WIDTH + ",$"
-						+ MainSystem.FRAME_HEIGHT));
+				param("time", "$" + ReservedVariableNames.TIME));
+		shader.getUniforms().add(
+				param("resolution", "$" + ReservedVariableNames.FRAME_WIDTH
+						+ ",$" + ReservedVariableNames.FRAME_HEIGHT));
 
 		background.getComponents().add(shader);
 

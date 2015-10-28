@@ -70,8 +70,8 @@ import es.eucm.ead.engine.systems.positiontracking.ChaseEntitySystem;
 import es.eucm.ead.engine.systems.positiontracking.MoveByEntitySystem;
 import es.eucm.ead.engine.systems.tweens.TweenSystem;
 import es.eucm.ead.engine.systems.tweens.tweencreators.*;
+import es.eucm.ead.engine.variables.ReservedVariableNames;
 import es.eucm.ead.engine.variables.VariablesManager;
-import es.eucm.ead.engine.variables.VarsContext;
 import es.eucm.ead.schema.assets.Sound;
 import es.eucm.ead.schema.components.*;
 import es.eucm.ead.schema.components.behaviors.Behavior;
@@ -135,7 +135,7 @@ public class DefaultEngineInitializer implements EngineInitializer {
 		gameLoop.addSystem(new TouchedSystem());
 		gameLoop.addSystem(new KeyPressedSystem());
 		gameLoop.addSystem(new SoundSystem(variablesManager));
-		gameLoop.addSystem(new MainSystem(variablesManager));
+		gameLoop.addSystem(new UpdateVarsEachCycleSystem(variablesManager));
 		gameLoop.addSystem(new ChaseEntitySystem(gameLoop, variablesManager));
 		gameLoop.addSystem(new MoveByEntitySystem(gameLoop, variablesManager));
 
@@ -344,7 +344,7 @@ public class DefaultEngineInitializer implements EngineInitializer {
 
 		@Override
 		public boolean listensTo(String variableName) {
-			return VarsContext.LANGUAGE_VAR.equals(variableName);
+			return ReservedVariableNames.LANGUAGE_VAR.equals(variableName);
 		}
 
 		@Override
