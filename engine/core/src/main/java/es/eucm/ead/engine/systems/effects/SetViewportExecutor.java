@@ -38,8 +38,8 @@ package es.eucm.ead.engine.systems.effects;
 
 import com.badlogic.ashley.core.Entity;
 import es.eucm.ead.engine.GameView;
+import es.eucm.ead.engine.variables.ReservedVariableNames;
 import es.eucm.ead.engine.variables.VariablesManager;
-import es.eucm.ead.engine.variables.VarsContext;
 import es.eucm.ead.schema.effects.SetViewport;
 
 /**
@@ -60,9 +60,11 @@ public class SetViewportExecutor extends EffectExecutor<SetViewport> {
 	@Override
 	public void execute(Entity target, SetViewport effect) {
 		// Setup viewport
-		variablesManager.setValue(VarsContext.RESERVED_VIEWPORT_WIDTH_VAR,
+		variablesManager.setValue(
+				ReservedVariableNames.RESERVED_VIEWPORT_WIDTH_VAR,
 				effect.getWidth(), true);
-		variablesManager.setValue(VarsContext.RESERVED_VIEWPORT_HEIGHT_VAR,
+		variablesManager.setValue(
+				ReservedVariableNames.RESERVED_VIEWPORT_HEIGHT_VAR,
 				effect.getHeight(), true);
 		gameView.updateWorldSize(effect.getWidth(), effect.getHeight());
 	}

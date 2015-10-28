@@ -40,8 +40,8 @@ import es.eucm.ead.engine.GameLoop;
 import es.eucm.ead.engine.components.renderers.OptionsComponent;
 import es.eucm.ead.engine.systems.EffectsSystem;
 import es.eucm.ead.engine.systems.conversations.NodeSystem.RuntimeNode;
+import es.eucm.ead.engine.variables.ReservedVariableNames;
 import es.eucm.ead.engine.variables.VariablesManager;
-import es.eucm.ead.engine.variables.VarsContext;
 import es.eucm.ead.schema.components.conversation.Conversation;
 import es.eucm.ead.schema.components.conversation.OptionNode;
 
@@ -77,7 +77,7 @@ public class OptionRuntimeNode extends RuntimeNode<OptionNode> {
 	}
 
 	public static String getOptionSelectedVar(Conversation conversation) {
-		return VarsContext.RESERVED_VAR_PREFIX
+		return ReservedVariableNames.RESERVED_VAR_PREFIX
 				+ conversation.getConversationId() + OPTION_SELECTED_VAR_SUFFIX;
 	}
 

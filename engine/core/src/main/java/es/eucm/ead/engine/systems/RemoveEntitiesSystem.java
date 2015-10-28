@@ -41,8 +41,8 @@ import com.badlogic.ashley.core.Family;
 import com.badlogic.ashley.systems.IteratingSystem;
 import es.eucm.ead.engine.GameLoop;
 import es.eucm.ead.engine.components.RemoveEntityComponent;
+import es.eucm.ead.engine.variables.ReservedVariableNames;
 import es.eucm.ead.engine.variables.VariablesManager;
-import es.eucm.ead.engine.variables.VarsContext;
 
 /**
  * Removes entities that have been marked for removal.
@@ -70,7 +70,8 @@ public class RemoveEntitiesSystem extends IteratingSystem {
 		// Just remove the entity and check if "newest" reserved var has to be
 		// set to null
 		gameLoop.removeEntity(entity);
-		if (variablesManager.getValue(VarsContext.RESERVED_NEWEST_ENTITY_VAR) == entity) {
+		if (variablesManager
+				.getValue(ReservedVariableNames.RESERVED_NEWEST_ENTITY_VAR) == entity) {
 			variablesManager.globalNewestEntityVar(null);
 		}
 	}

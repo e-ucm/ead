@@ -40,7 +40,7 @@ import es.eucm.ead.engine.EngineTest;
 import es.eucm.ead.engine.mock.schema.MockEffect;
 import es.eucm.ead.engine.mock.schema.MockEffectExecutor;
 import es.eucm.ead.engine.systems.EffectsSystem;
-import es.eucm.ead.engine.variables.VarsContext;
+import es.eucm.ead.engine.variables.ReservedVariableNames;
 import org.junit.Before;
 
 public abstract class EffectTest extends EngineTest {
@@ -54,8 +54,8 @@ public abstract class EffectTest extends EngineTest {
 				gameAssets);
 		effectsSystem.registerEffectExecutor(MockEffect.class,
 				new MockEffectExecutor());
-		variablesManager
-				.setValue(VarsContext.THIS_VAR, gameLoop.createEntity());
+		variablesManager.setValue(ReservedVariableNames.THIS_VAR,
+				gameLoop.createEntity());
 		gameLoop.addSystem(effectsSystem);
 
 		effectsSystem.registerEffectExecutor(MockEffect.class,

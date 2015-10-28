@@ -37,7 +37,7 @@
 package es.eucm.ead.engine.demos;
 
 import es.eucm.ead.engine.demobuilder.ExecutableDemoBuilder;
-import es.eucm.ead.engine.variables.VarsContext;
+import es.eucm.ead.engine.variables.ReservedVariableNames;
 import es.eucm.ead.schema.components.positiontracking.ChaseEntity;
 import es.eucm.ead.schema.components.positiontracking.MoveByEntity;
 import es.eucm.ead.schema.components.tweens.AlphaTween;
@@ -58,7 +58,7 @@ public class PlanesDemo extends ExecutableDemoBuilder {
 	private static final String chasedPlaneVar = "chasedEntity";
 	private static final String chasedPlaneVarRef = "$" + chasedPlaneVar;
 	private static final String newestEntityRef = "$"
-			+ VarsContext.RESERVED_NEWEST_ENTITY_VAR;
+			+ ReservedVariableNames.RESERVED_NEWEST_ENTITY_VAR;
 
 	public PlanesDemo() {
 		super("planes-demo");
@@ -226,9 +226,9 @@ public class PlanesDemo extends ExecutableDemoBuilder {
 
 		centerOrigin();
 
-		touchBehavior().changeVar(chasedPlaneVar, "$" + VarsContext.THIS_VAR)
-				.addComponent(eb.allEntitiesWithTag("star"),
-						makeStarChaseAfterSpaceship());
+		touchBehavior().changeVar(chasedPlaneVar,
+				"$" + ReservedVariableNames.THIS_VAR).addComponent(
+				eb.allEntitiesWithTag("star"), makeStarChaseAfterSpaceship());
 		return uri;
 	}
 

@@ -40,7 +40,7 @@ import es.eucm.ead.engine.GameLoop;
 import es.eucm.ead.engine.entities.EngineEntity;
 import es.eucm.ead.engine.mock.schema.MockEffect;
 import es.eucm.ead.engine.mock.schema.MockEffect.MockEffectListener;
-import es.eucm.ead.engine.variables.VarsContext;
+import es.eucm.ead.engine.variables.ReservedVariableNames;
 import es.eucm.ead.schema.data.Parameter;
 import es.eucm.ead.schema.effects.Effect;
 import org.junit.Test;
@@ -63,7 +63,7 @@ public class EffectWithParametersTest extends EffectTest {
 
 		dynamicEffect.getParameters().add(parameter);
 
-		variablesManager.registerVar(VarsContext.THIS_VAR,
+		variablesManager.registerVar(ReservedVariableNames.THIS_VAR,
 				new ListenerEngineEntity(gameLoop), true);
 		executed = false;
 

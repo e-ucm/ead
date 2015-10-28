@@ -40,8 +40,8 @@ import es.eucm.ead.engine.GameLoop;
 import es.eucm.ead.engine.components.LineComponent;
 import es.eucm.ead.engine.systems.EffectsSystem;
 import es.eucm.ead.engine.systems.conversations.NodeSystem.SimpleRuntimeNode;
+import es.eucm.ead.engine.variables.ReservedVariableNames;
 import es.eucm.ead.engine.variables.VariablesManager;
-import es.eucm.ead.engine.variables.VarsContext;
 import es.eucm.ead.schema.components.conversation.Conversation;
 import es.eucm.ead.schema.components.conversation.LineNode;
 
@@ -74,7 +74,7 @@ public class LineRuntimeNode extends SimpleRuntimeNode<LineNode> {
 	}
 
 	public static String getLineEndedVar(Conversation conversation) {
-		return VarsContext.RESERVED_VAR_PREFIX
+		return ReservedVariableNames.RESERVED_VAR_PREFIX
 				+ conversation.getConversationId() + LINE_ENDED_VAR_SUFFIX;
 	}
 

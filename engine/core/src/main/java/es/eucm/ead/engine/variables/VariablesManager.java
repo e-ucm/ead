@@ -58,13 +58,14 @@ import es.eucm.ead.engine.expressions.operators.OperationsFactory;
  * <p/>
  * It also handles local and global {@link VarsContext}. By default, it creates
  * a global {@code VarsContext} to hold user-defined variables and global scope
- * variables like current language ({@link VarsContext#LANGUAGE_VAR}). New local
- * contexts can be created to register local variables by calling
+ * variables like current language ({@link ReservedVariableNames#LANGUAGE_VAR}).
+ * New local contexts can be created to register local variables by calling
  * {@link #push()} and {@link #registerVar(String, Object, boolean)} afterwards.
  * This is useful for setting the current owner {@code Entity} that is being
- * processed as a variable ({@link VarsContext#THIS_VAR}) so its properties can
- * be referenced in expressions to be evaluated. Once the current local context
- * is not needed anymore, {@link #pop()} must be called to get it removed.
+ * processed as a variable ({@link ReservedVariableNames#THIS_VAR}) so its
+ * properties can be referenced in expressions to be evaluated. Once the current
+ * local context is not needed anymore, {@link #pop()} must be called to get it
+ * removed.
  * <p/>
  * This is a typical usage example: Let's suppose the expression
  * "(hastag $_this sTag1)" has to be evaluated, where "$_this" refers to the
@@ -246,8 +247,8 @@ public class VariablesManager {
 	 * 
 	 * @param name
 	 *            The name of the variable. Examples:
-	 *            {@link VarsContext#THIS_VAR},
-	 *            {@link VarsContext#RESERVED_ENTITY_VAR}.
+	 *            {@link ReservedVariableNames#THIS_VAR},
+	 *            {@link ReservedVariableNames#RESERVED_ENTITY_VAR}.
 	 * @param value
 	 *            The object value for the variable.
 	 * @param global
@@ -280,13 +281,13 @@ public class VariablesManager {
 	 *         {@link #setVarToExpression(String, String)} calls can be chained.
 	 */
 	public VariablesManager localOwnerVar(Entity owner) {
-		registerVar(VarsContext.THIS_VAR, owner, false);
+		registerVar(ReservedVariableNames.THIS_VAR, owner, false);
 		return this;
 	}
 
 	/**
 	 * Registers the {@code otherEntity} to the "
-	 * {@value VarsContext#RESERVED_ENTITY_VAR}" reserved variable.
+	 * {@value ReservedVariableNames#RESERVED_ENTITY_VAR}" reserved variable.
 	 * 
 	 * @param otherEntity
 	 *            Other entity whose properties may be needed for later
@@ -296,13 +297,15 @@ public class VariablesManager {
 	 *         {@link #setVarToExpression(String, String)} calls can be chained.
 	 */
 	public VariablesManager localEntityVar(Entity otherEntity) {
-		registerVar(VarsContext.RESERVED_ENTITY_VAR, otherEntity, false);
+		registerVar(ReservedVariableNames.RESERVED_ENTITY_VAR, otherEntity,
+				false);
 		return this;
 	}
 
 	/**
 	 * Registers the {@code newestEntity} to the "
-	 * {@value VarsContext#RESERVED_NEWEST_ENTITY_VAR}" reserved variable.
+	 * {@value ReservedVariableNames#RESERVED_NEWEST_ENTITY_VAR}" reserved
+	 * variable.
 	 * 
 	 * @param newestEntity
 	 *            A global variable that points to the newest entity (the entity
@@ -313,7 +316,7 @@ public class VariablesManager {
 	 *         {@link #setVarToExpression(String, String)} calls can be chained.
 	 */
 	public VariablesManager globalNewestEntityVar(Entity newestEntity) {
-		varsContext.setValue(VarsContext.RESERVED_NEWEST_ENTITY_VAR,
+		varsContext.setValue(ReservedVariableNames.RESERVED_NEWEST_ENTITY_VAR,
 				newestEntity);
 		return this;
 	}
@@ -537,9 +540,10 @@ public class VariablesManager {
 	 */
 	private void registerReservedVars() {
 		// use a dummy value; the engine initializer will overwrite it later
-		globalContext.registerVariable(VarsContext.LANGUAGE_VAR, "");
-		globalContext.registerVariable(VarsContext.RESERVED_NEWEST_ENTITY_VAR,
-				null, EngineEntity.class);
+		globalContext.registerVariable(ReservedVariableNames.LANGUAGE_VAR, "");
+		globalContext.registerVariable(
+				ReservedVariableNames.RESERVED_NEWEST_ENTITY_VAR, null,
+				EngineEntity.class);
 	}
 
 	/**

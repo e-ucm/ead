@@ -42,7 +42,7 @@ import es.eucm.ead.editor.control.actions.ModelAction;
 import es.eucm.ead.editor.control.commands.CompositeCommand;
 import es.eucm.ead.editor.control.commands.ListCommand.AddToListCommand;
 import es.eucm.ead.editor.model.Q;
-import es.eucm.ead.engine.systems.MainSystem;
+import es.eucm.ead.engine.variables.ReservedVariableNames;
 import es.eucm.ead.schema.components.Background;
 import es.eucm.ead.schema.components.ModelComponent;
 import es.eucm.ead.schema.components.Shader;
@@ -100,10 +100,11 @@ public class ChangeSceneBackgroundShader extends ModelAction {
 
 			Shader shader = new Shader();
 			shader.setUri(shaderUri);
-			shader.getUniforms().add(param("time", "$" + MainSystem.TIME));
 			shader.getUniforms().add(
-					param("resolution", "$" + MainSystem.FRAME_WIDTH + ",$"
-							+ MainSystem.FRAME_HEIGHT));
+					param("time", "$" + ReservedVariableNames.TIME));
+			shader.getUniforms().add(
+					param("resolution", "$" + ReservedVariableNames.FRAME_WIDTH
+							+ ",$" + ReservedVariableNames.FRAME_HEIGHT));
 
 			entityBackground.getComponents().add(shader);
 

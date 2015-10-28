@@ -61,7 +61,7 @@ import es.eucm.ead.engine.systems.tweens.tweencreators.BaseTweenCreator;
 import es.eucm.ead.engine.systems.tweens.tweencreators.MoveTweenCreator;
 import es.eucm.ead.engine.systems.tweens.tweencreators.ScaleTweenCreator;
 import es.eucm.ead.engine.systems.tweens.tweencreators.TimelineCreator;
-import es.eucm.ead.engine.variables.VarsContext;
+import es.eucm.ead.engine.variables.ReservedVariableNames;
 import es.eucm.ead.schema.components.tweens.AlphaTween;
 import es.eucm.ead.schema.components.tweens.BaseTween;
 import es.eucm.ead.schema.components.tweens.FieldTween;
@@ -184,7 +184,7 @@ public class AddEntityTest extends EngineTest implements EntityListener {
 				.toEngineEntity(new ModelEntity());
 		// Check "newest entity" points to null
 		assertNull(variablesManager
-				.getValue(VarsContext.RESERVED_NEWEST_ENTITY_VAR));
+				.getValue(ReservedVariableNames.RESERVED_NEWEST_ENTITY_VAR));
 		addEntityExecutor.execute(parentEntity, addEntity);
 		gameAssets.getAssetManager().finishLoading();
 		gameLoop.update(0);
@@ -193,9 +193,11 @@ public class AddEntityTest extends EngineTest implements EntityListener {
 		EngineEntity entityAdded = (EngineEntity) parentEntity.getGroup()
 				.getChildren().get(0).getUserObject();
 		// Now "newestEntity" should point to the entity that was added
-		assertEquals("Newest entity did not update", entityAdded,
+		assertEquals(
+				"Newest entity did not update",
+				entityAdded,
 				variablesManager
-						.getValue(VarsContext.RESERVED_NEWEST_ENTITY_VAR));
+						.getValue(ReservedVariableNames.RESERVED_NEWEST_ENTITY_VAR));
 		assertEquals("Entity added should have no components", 0, entityAdded
 				.getComponents().size());
 		// Check x and y are not overriden
@@ -246,7 +248,7 @@ public class AddEntityTest extends EngineTest implements EntityListener {
 				.toEngineEntity(new ModelEntity());
 		// Check "newest entity" points to null
 		assertNull(variablesManager
-				.getValue(VarsContext.RESERVED_NEWEST_ENTITY_VAR));
+				.getValue(ReservedVariableNames.RESERVED_NEWEST_ENTITY_VAR));
 		addEntityExecutor.execute(parentEntity, addEntity);
 		gameAssets.getAssetManager().finishLoading();
 		gameLoop.update(0);
@@ -255,9 +257,11 @@ public class AddEntityTest extends EngineTest implements EntityListener {
 		EngineEntity entityAdded = (EngineEntity) parentEntity.getGroup()
 				.getChildren().get(0).getUserObject();
 		// Now "newestEntity" should point to the entity that was added
-		assertEquals("Newest entity did not update", entityAdded,
+		assertEquals(
+				"Newest entity did not update",
+				entityAdded,
 				variablesManager
-						.getValue(VarsContext.RESERVED_NEWEST_ENTITY_VAR));
+						.getValue(ReservedVariableNames.RESERVED_NEWEST_ENTITY_VAR));
 		assertNotNull(
 				"Entity added should have a timers component to get the entity removed",
 				entityAdded.getComponent(TimersComponent.class));
@@ -269,7 +273,7 @@ public class AddEntityTest extends EngineTest implements EntityListener {
 		assertEquals("There should be only 1 entity", 1, count);
 		// Check "newest entity" points to null again
 		assertNull(variablesManager
-				.getValue(VarsContext.RESERVED_NEWEST_ENTITY_VAR));
+				.getValue(ReservedVariableNames.RESERVED_NEWEST_ENTITY_VAR));
 	}
 
 	@Test
