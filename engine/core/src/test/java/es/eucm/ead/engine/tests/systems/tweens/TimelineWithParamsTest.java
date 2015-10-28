@@ -86,7 +86,7 @@ public class TimelineWithParamsTest extends TweenTest {
 		addParam(moveTween, "duration", "(* i2 i4)");
 		addParam(moveTween, "yoyo", "btrue");
 		addParam(moveTween, "easeType", "sINOUT");
-		addParam(moveTween, "easeEquation", "i6");
+		addParam(moveTween, "easeEquation", "ssine");
 
 		EngineEntity engineEntity = addEntityWithTweens(moveTween);
 

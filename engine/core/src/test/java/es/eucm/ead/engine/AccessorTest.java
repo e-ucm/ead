@@ -359,15 +359,14 @@ public class AccessorTest extends EngineTest {
 		accessor.setRootObjects(rootObjects);
 
 		// Test write enum
-		// assertEquals(1, accessor.get("o2.c2"));
-		accessor.set("o2.c2", 1);
-		assertEquals(Enum1.CONSTANT2, object2.c2);
+		// accessor.set("o2.c2", 1);
+		// assertEquals(Enum1.CONSTANT2, object2.c2);
 		try {
-			accessor.set("o2.c2", 4);
+			accessor.set("o2.c2", 1);
 			fail("An exception should have been thrown");
 		} catch (Accessor.AccessorException e) {
 		}
-		assertEquals(Enum1.CONSTANT2, object2.c2);
+		assertEquals(Enum1.CONSTANT1, object2.c2);
 		accessor.set("o2.c2", "CONSTANT3");
 		assertEquals(Enum1.CONSTANT3, object2.c2);
 		accessor.set("o2.c2", "constant2");
@@ -384,7 +383,7 @@ public class AccessorTest extends EngineTest {
 		CONSTANT1("c1"), CONSTANT2("c2"), CONSTANT3("c3");
 		private String val;
 
-		private Enum1(String v) {
+		Enum1(String v) {
 			this.val = v;
 		}
 	}
