@@ -38,49 +38,40 @@ package es.eucm.ead.engine.systems;
 
 import com.badlogic.ashley.core.EntitySystem;
 import com.badlogic.gdx.Gdx;
+import es.eucm.ead.engine.variables.ReservedVariableNames;
 import es.eucm.ead.engine.variables.VariablesManager;
 import es.eucm.ead.engine.variables.VarsContext;
 
 /**
- * A system in which variables can get initialized and updated every frame if
- * needed.
+ * This system makes available to {@link VariablesManager} several internal
+ * properties that are useful, like the time elapsed since the game was launched
+ * ({@link ReservedVariableNames#TIME}), or the width and height of the display
+ * surface ({@link ReservedVariableNames#FRAME_WIDTH},
+ * {@link ReservedVariableNames#FRAME_HEIGHT})
  */
-public class MainSystem extends EntitySystem {
-
-	/**
-	 * Counts in seconds the elapsed time from the moment we've started playing
-	 */
-	public static final String TIME = VarsContext.RESERVED_VAR_PREFIX + "time";
-
-	/**
-	 * The width in pixels of the display surface
-	 */
-	public static final String FRAME_WIDTH = VarsContext.RESERVED_VAR_PREFIX
-			+ "width";
-
-	/**
-	 * The height in pixels of the display surface
-	 */
-	public static final String FRAME_HEIGHT = VarsContext.RESERVED_VAR_PREFIX
-			+ "height";
+public class UpdateVarsEachCycleSystem extends EntitySystem {
 
 	public VariablesManager variablesManager;
 
-	public MainSystem(VariablesManager variablesManager) {
+	public UpdateVarsEachCycleSystem(VariablesManager variablesManager) {
 		this.variablesManager = variablesManager;
-		variablesManager.registerVar(TIME, 0f, true);
-		variablesManager
-				.registerVar(FRAME_WIDTH, Gdx.graphics.getWidth(), true);
-		variablesManager.registerVar(FRAME_HEIGHT, Gdx.graphics.getHeight(),
-				true);
+		variablesManager.registerVar(ReservedVariableNames.TIME, 0f, true);
+		variablesManager.registerVar(ReservedVariableNames.FRAME_WIDTH,
+				Gdx.graphics.getWidth(), true);
+		variablesManager.registerVar(ReservedVariableNames.FRAME_HEIGHT,
+				Gdx.graphics.getHeight(), true);
 	}
 
 	@Override
 	public void update(float delta) {
-		variablesManager.setValue(FRAME_WIDTH, Gdx.graphics.getWidth(), true);
-		variablesManager.setValue(FRAME_HEIGHT, Gdx.graphics.getHeight(), true);
+		variablesManager.setValue(ReservedVariableNames.FRAME_WIDTH,
+				Gdx.graphics.getWidth(), true);
+		variablesManager.setValue(ReservedVariableNames.FRAME_HEIGHT,
+				Gdx.graphics.getHeight(), true);
 
-		Float value = (Float) variablesManager.getValue(TIME);
-		variablesManager.setValue(TIME, value + delta, true);
+		Float value = (Float) variablesManager
+				.getValue(ReservedVariableNames.TIME);
+		variablesManager.setValue(ReservedVariableNames.TIME, value + delta,
+				true);
 	}
 }
