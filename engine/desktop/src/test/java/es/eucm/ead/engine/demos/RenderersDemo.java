@@ -101,12 +101,12 @@ public class RenderersDemo extends ExecutableDemoBuilder {
 		entity(group, -20, 30).image("chameleon.png").tags("rotate");
 
 		entity(getLastScene(), 0, 0).emptyRectangle(800, 600).touchBehavior(
-				makeAddComponent(makeEntitiesWithTagExp("rotate"),
+				makeAddComponent(eb.allEntitiesWithTag("rotate"),
 						makeRotateTween(360.0f, 1.0f)));
 		touchBehavior(makeChangeVar("state", "(not $state)"));
 		touchBehavior(makeIfElse("$state",
-				makeChangeState(makeEntitiesWithTagExp("states"), "stand"),
-				makeChangeState(makeEntitiesWithTagExp("states"), "walk")));
+				makeChangeState(eb.allEntitiesWithTag("states"), "stand"),
+				makeChangeState(eb.allEntitiesWithTag("states"), "walk")));
 	}
 
 }
