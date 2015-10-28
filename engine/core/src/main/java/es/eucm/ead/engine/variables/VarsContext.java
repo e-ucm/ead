@@ -49,53 +49,6 @@ import java.util.Map;
  */
 public class VarsContext implements Pool.Poolable {
 
-	/**
-	 * Prefix for variables are created and managed by the engine. This is a
-	 * naming convention, intended to avoid name clashes with user-defined
-	 * variables.
-	 */
-	public static final String RESERVED_VAR_PREFIX = "_";
-
-	/**
-	 * Current game language. See @see es.eucm.ead.engine.I18N for details on
-	 * possible values
-	 */
-	public static final String LANGUAGE_VAR = RESERVED_VAR_PREFIX + "lang";
-
-	/**
-	 * Reserved keyword for the owner entity. It is a local variable (changes
-	 * over time depending on what entity is being processed).
-	 */
-	public static final String THIS_VAR = RESERVED_VAR_PREFIX + "this";
-
-	/**
-	 * Reserved keyword for other entity involved in any expression or condition
-	 * evaluation. It is a local variable.
-	 */
-	public static final String RESERVED_ENTITY_VAR = RESERVED_VAR_PREFIX
-			+ "target";
-
-	/**
-	 * Reserved keyword pointing to the newest entity (the last entity added to
-	 * game). It is a global variable.
-	 */
-	public static final String RESERVED_NEWEST_ENTITY_VAR = RESERVED_VAR_PREFIX
-			+ "newest";
-
-	/**
-	 * Reserved variable that is set with the viewport width (defined in
-	 * game.json)
-	 */
-	public static final String RESERVED_VIEWPORT_WIDTH_VAR = RESERVED_VAR_PREFIX
-			+ "gameWidth";
-
-	/**
-	 * Reserved variable that is set with the viewport height (defined in
-	 * game.json)
-	 */
-	public static final String RESERVED_VIEWPORT_HEIGHT_VAR = RESERVED_VAR_PREFIX
-			+ "gameHeight";
-
 	private Map<String, Variable> variables;
 
 	private VarsContext parent;
