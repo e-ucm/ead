@@ -241,9 +241,9 @@ public class VariablesManager {
 	 * evaluation.
 	 * <p/>
 	 * The context of the variable is determined by argument {@code global}. If
-	 * true, the global context is used and the variable will be persistent. If
-	 * false, the local context on top of the stack is used, and the variable
-	 * will be volatile.
+	 * true, the global context is used and the variable will be accessible
+	 * after the current local context is disposed. If false, the local context
+	 * on top of the stack is used, and the variable will be volatile.
 	 * 
 	 * @param name
 	 *            The name of the variable. Examples:
@@ -353,10 +353,25 @@ public class VariablesManager {
 	}
 
 	/**
-	 * @return true if the variable with the given name exists, false otherwise
+	 * @return true if the variable with the given name exists, false otherwise.
+	 *         In contrast to {@link #isVariableDefinedAs(String, boolean)},
+	 *         this method does not perform any checks on the variable's scope
+	 *         (local/global).
 	 */
 	public boolean isVariableDefined(String variable) {
 		return getValue(variable) != null;
+	}
+
+	/**
+	 * @return true if the variable with the given name exists and its scope
+	 *         matches the one given (local or global).
+	 */
+	public boolean isVariableDefinedAs(String variable, boolean global) {
+		if (global) {
+			return globalContext.getValue(variable) != null;
+		}
+		return globalContext.getValue(variable) == null
+				&& varsContext.getValue(variable) != null;
 	}
 
 	/**
@@ -396,8 +411,7 @@ public class VariablesManager {
 
 	/**
 	 * Assigns the given value to the given local {@code variable}. If the
-	 * variable does not exist, it is created, locally or globally, depending on
-	 * the {@code global} argument.
+	 * variable does not exist, it is created in the local context.
 	 * <p/>
 	 * If the variable is actually assigned, listeners are notified immediately
 	 * 
@@ -431,8 +445,7 @@ public class VariablesManager {
 			if (value != null) {
 				// Check variable is registered
 				if (!contextToUse.hasVariable(variable)) {
-					contextToUse.registerVariable(variable, value);
-					notify(variable, contextToUse.getValue(variable));
+					registerVar(variable, value, global);
 				} else {
 					Object oldValue = contextToUse.getValue(variable);
 					if (!value.equals(oldValue)) {
@@ -517,7 +530,6 @@ public class VariablesManager {
 		while (globalContext != varsContext) {
 			pop();
 		}
-		// Clear variables
 		globalContext.reset();
 		// Register default variables (e.g. lang)
 		registerReservedVars();
