@@ -50,6 +50,7 @@ import es.eucm.ead.engine.mock.MockFiles;
 import es.eucm.ead.engine.mock.MockImageUtils;
 import es.eucm.ead.engine.mock.schema.MockEffect;
 import es.eucm.ead.engine.mock.schema.MockModelComponent;
+import es.eucm.ead.engine.systems.gamestatepersistence.PersistentGameStateSystem;
 import es.eucm.ead.engine.utils.EngineUtils;
 import es.eucm.ead.engine.variables.VariablesManager;
 import es.eucm.ead.schema.entities.ModelEntity;
@@ -77,6 +78,8 @@ public class EngineTest extends DemoBuilder {
 	protected GameAssets gameAssets;
 
 	protected VariablesManager variablesManager;
+
+	protected PersistentGameStateSystem persistentGameStateSystem;
 
 	protected ComponentLoader componentLoader;
 
@@ -108,6 +111,8 @@ public class EngineTest extends DemoBuilder {
 		operationsFactory = new OperationsFactory(gameLoop, accessor, gameView);
 		variablesManager = new VariablesManager(accessor, operationsFactory);
 		componentLoader = new ComponentLoader(gameAssets, variablesManager);
+		persistentGameStateSystem = new PersistentGameStateSystem(
+				variablesManager);
 		accessor.setComponentLoader(componentLoader);
 		entitiesLoader = new EntitiesLoader(gameLoop, gameAssets,
 				componentLoader);

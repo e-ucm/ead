@@ -48,6 +48,7 @@ import es.eucm.ead.engine.GameLoader;
 import es.eucm.ead.engine.GameLoop;
 import es.eucm.ead.engine.GameView;
 import es.eucm.ead.engine.expressions.operators.OperationsFactory;
+import es.eucm.ead.engine.systems.gamestatepersistence.PersistentGameStateSystem;
 import es.eucm.ead.engine.variables.ReservedVariableNames;
 import es.eucm.ead.engine.variables.VariablesManager;
 
@@ -69,6 +70,7 @@ public class Engine {
 	private GameLoader gameLoader;
 
 	private boolean running;
+	private final PersistentGameStateSystem persistentGameStateSystem;
 
 	public Engine(Controller controller) {
 		this.gameLoop = new GameLoop();
@@ -80,6 +82,8 @@ public class Engine {
 		OperationsFactory operationsFactory = new OperationsFactory(gameLoop,
 				accessor, gameView);
 		variablesManager = new VariablesManager(accessor, operationsFactory);
+		persistentGameStateSystem = new PersistentGameStateSystem(
+				variablesManager);
 
 		ComponentLoader componentLoader = new EditorComponentLoader(
 				editorGameAssets, variablesManager);
@@ -92,7 +96,7 @@ public class Engine {
 
 	public void init(EngineInitializer engineInitializer) {
 		engineInitializer.init(editorGameAssets, gameLoop, entitiesLoader,
-				gameView, variablesManager);
+				gameView, variablesManager, persistentGameStateSystem);
 	}
 
 	public EntitiesLoader getEntitiesLoader() {
