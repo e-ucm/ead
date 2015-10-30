@@ -1,0 +1,18 @@
+{
+  "additionalProperties": false,
+  "javaType": "es.eucm.ead.schema.engine.components.PersistentGameState",
+  "type": "object",
+  "extends": {
+    "$ref": "component.json"
+  },
+  "properties": {
+    "persistentVariables": {
+      "type": "array",
+      "items": {
+        "$ref": "persistentvar.json"
+      },
+      "description": "List of global variables that are to be made persistent across executions"
+    }
+  },
+  "description": "Game-level component that is used to configure what part of the game state must be persistent. "
+}
