@@ -37,11 +37,13 @@
 package es.eucm.ead.engine;
 
 import es.eucm.ead.engine.assets.GameAssets;
+import es.eucm.ead.engine.systems.gamestatepersistence.PersistentGameStateSystem;
 import es.eucm.ead.engine.variables.VariablesManager;
 
 public interface EngineInitializer {
 
-	public void init(GameAssets assets, GameLoop gameLoop,
+	void init(GameAssets assets, GameLoop gameLoop,
 			EntitiesLoader entitiesLoader, GameView gameView,
-			VariablesManager variablesManager);
+			VariablesManager variablesManager,
+			PersistentGameStateSystem persistentGameStateSystem);
 }
