@@ -37,6 +37,7 @@
 package es.eucm.ead.engine;
 
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.Stage;
@@ -51,13 +52,23 @@ import es.eucm.ead.engine.mock.MockImageUtils;
 import es.eucm.ead.engine.mock.schema.MockEffect;
 import es.eucm.ead.engine.mock.schema.MockModelComponent;
 import es.eucm.ead.engine.systems.gamestatepersistence.PersistentGameStateSystem;
+import es.eucm.ead.engine.systems.GleanerSystem;
 import es.eucm.ead.engine.utils.EngineUtils;
 import es.eucm.ead.engine.variables.VariablesManager;
 import es.eucm.ead.schema.entities.ModelEntity;
+import es.eucm.ead.schema.gleaner.components.GleanerLocalStorage;
+import es.eucm.ead.schema.gleaner.components.GleanerNetStorage;
 import es.eucm.ead.schemax.ModelStructure;
+import es.eucm.gleaner.tracker.Tracker;
+import es.eucm.gleaner.tracker.http.SimpleHttpResponse;
+import es.eucm.gleaner.tracker.storage.LocalStorage;
+import es.eucm.gleaner.tracker.storage.NetStorage;
+import es.eucm.gleaner.tracker.storage.Storage;
+import org.junit.After;
 import org.junit.Before;
 import org.junit.BeforeClass;
 
+import java.io.IOException;
 import java.util.Map.Entry;
 
 import static org.junit.Assert.assertEquals;
@@ -75,6 +86,8 @@ public class EngineTest extends DemoBuilder {
 
 	protected GameLoop gameLoop;
 
+	protected GleanerSystem gleanerSystem;
+
 	protected GameAssets gameAssets;
 
 	protected VariablesManager variablesManager;
@@ -88,6 +101,8 @@ public class EngineTest extends DemoBuilder {
 	protected EntitiesLoader entitiesLoader;
 
 	protected Stage stage;
+
+	protected FileHandle gleanerFile;
 
 	@BeforeClass
 	public static void initStatics() {
@@ -104,7 +119,36 @@ public class EngineTest extends DemoBuilder {
 				stage.draw();
 			}
 		};
-		gameView = new DefaultGameView(gameLoop);
+		gleanerSystem = new GleanerSystem() {
+			@Override
+			protected FileHandle fileHandleForFolder() {
+				FileHandle folder = FileHandle
+						.tempDirectory("mokap-test-gleaner");
+				folder.mkdirs();
+				return folder;
+			}
+
+			@Override
+			protected FileHandle fileHandleForLocalStorage(String prefix) {
+				gleanerFile = super.fileHandleForLocalStorage(prefix);
+				return gleanerFile;
+			}
+
+			@Override
+			protected Storage buildGleanerStorage() {
+				LocalStorage storage = new LocalStorage(
+						fileHandleForLocalStorage("test")) {
+					@Override
+					public void send(String data,
+							Tracker.FlushListener flushListener) {
+						super.send(data, flushListener);
+						dataStored(data);
+					}
+				};
+				return storage;
+			}
+		};
+		gameView = new DefaultGameView(gameLoop, gleanerSystem);
 		stage = new Stage();
 		stage.addActor(gameView);
 		accessor = new Accessor();
@@ -145,6 +189,10 @@ public class EngineTest extends DemoBuilder {
 		}
 	}
 
+	protected void dataStored(String data) {
+
+	}
+
 	public void prepareEngine() {
 	}
 
@@ -166,6 +214,13 @@ public class EngineTest extends DemoBuilder {
 	@Override
 	protected void doBuild() {
 
+	}
+
+	@After
+	public void cleanup() {
+		if (gleanerFile != null) {
+			gleanerFile.delete();
+		}
 	}
 
 	public EngineEntity entityAtPosition(float stageX, float stageY) {
