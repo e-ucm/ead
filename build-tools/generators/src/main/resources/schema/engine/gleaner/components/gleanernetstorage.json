@@ -1,0 +1,26 @@
+{
+  "additionalProperties": false,
+  "javaType": "es.eucm.ead.schema.gleaner.components.GleanerNetStorage",
+  "type": "object",
+  "extends": {
+    "$ref": "gleanerstorage.json"
+  },
+  "description": "Store traces over the net",
+  "properties": {
+    "host": {
+      "type": "string",
+      "description": "url that locates the analysis server on the net",
+      "required": true
+    },
+    "trackingCode": {
+      "type": "string",
+      "description": "code used to associated the traces logged to a particular game/project and/or experiment",
+      "required":true
+    },
+    "authorization:": {
+      "type": "string",
+      "description": "code used to validate the request on the analysis server",
+      "required":true
+    }
+  }
+}
