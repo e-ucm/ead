@@ -213,6 +213,7 @@ public class ApkResource {
 			+ "                  android:required=\"true\"/>\n"
 			+ "    <uses-feature android:name=\"android.hardware.camera\"\n"
 			+ "                  android:required=\"false\"/>\n"
+			+ "	   <uses-permission android:name=\"android.permission.WRITE_EXTERNAL_STORAGE\"/>"
 			+ "\n"
 			+ "\n"
 			+ "    <application android:allowBackup=\"false\" android:debuggable=\"false\" android:label=\"@string/app_name\" android:icon=\"@drawable/"
