@@ -53,7 +53,11 @@ import es.eucm.ead.engine.components.KeyPressedComponent;
 import es.eucm.ead.engine.components.TouchedComponent;
 import es.eucm.ead.engine.components.behaviors.events.RuntimeKey;
 import es.eucm.ead.engine.entities.EngineEntity;
+import es.eucm.ead.engine.systems.GleanerSystem;
+import es.eucm.ead.schema.components.ModelComponent;
 import es.eucm.ead.schema.components.behaviors.events.Touch.Type;
+import es.eucm.ead.schema.entities.ModelEntity;
+import es.eucm.ead.schema.renderers.Renderer;
 import es.eucm.ead.schemax.Layer;
 
 import java.util.HashMap;
@@ -84,15 +88,18 @@ public class DefaultGameView extends WidgetGroup implements GameView {
 
 	private GameLoop gameLoop;
 
+	private GleanerSystem gleanerSystem;
+
 	private Map<Layer, EngineLayer> layers;
 
 	protected int worldWidth;
 
 	protected int worldHeight;
 
-	public DefaultGameView(GameLoop gameLoop) {
+	public DefaultGameView(GameLoop gameLoop, GleanerSystem gleanerSystem) {
 		layers = new HashMap<Layer, EngineLayer>();
 		this.gameLoop = gameLoop;
+		this.gleanerSystem = gleanerSystem;
 		initializeLayers();
 		initKeyboardListener();
 		addListener(new TouchListener());
@@ -270,17 +277,18 @@ public class DefaultGameView extends WidgetGroup implements GameView {
 		@Override
 		public void touchUp(InputEvent event, float x, float y, int pointer,
 				int button) {
-			process(event.getTarget(), Type.CLICK);
+			process(event.getTarget(), Type.CLICK, x, y);
 		}
 
 		@Override
 		public boolean touchDown(InputEvent event, float x, float y,
 				int pointer, int button) {
-			process(event.getTarget(), Type.PRESS);
+			process(event.getTarget(), Type.PRESS, x, y);
 			return true;
 		}
 
-		private void process(Actor actor, Type type) {
+		private void process(Actor actor, Type type, float x, float y) {
+			String target = null; // For logging the interaction
 			if (gameLoop.isPlaying()) {
 				while (actor != null) {
 					Object o = actor.getUserObject();
@@ -289,10 +297,27 @@ public class DefaultGameView extends WidgetGroup implements GameView {
 								.addAndGetComponent(((EngineEntity) o),
 										TouchedComponent.class);
 						component.event(type);
+						target = updateTargetForLog(target, (EngineEntity) o);
 					}
 					actor = actor.getParent();
 				}
 			}
+			if (type == Type.CLICK) {
+				gleanerSystem.click(x, y, target);
+			} else if (type == Type.PRESS) {
+				gleanerSystem.press(x, y, target);
+			}
+		}
+
+		private String updateTargetForLog(String target, EngineEntity entity) {
+			if (target == null && entity != null
+					&& entity.getModelEntity() != null) {
+				String name = entity.getModelEntity().getName();
+				if (name != null) {
+					target = name;
+				}
+			}
+			return target;
 		}
 	}
 }
