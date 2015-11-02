@@ -40,6 +40,8 @@ import com.badlogic.ashley.core.Entity;
 import com.badlogic.ashley.core.Family;
 import es.eucm.ead.engine.assets.GameAssets;
 import es.eucm.ead.engine.components.I18nTextComponent;
+import es.eucm.ead.engine.gleaner.effects.LogTraceExecutor;
+import es.eucm.ead.engine.gleaner.processors.SettingsProcessor;
 import es.eucm.ead.engine.processors.*;
 import es.eucm.ead.engine.processors.assets.ReferenceProcessor;
 import es.eucm.ead.engine.processors.assets.SoundProcessor;
@@ -91,6 +93,8 @@ import es.eucm.ead.schema.components.tweens.*;
 import es.eucm.ead.schema.effects.*;
 import es.eucm.ead.schema.effects.controlstructures.*;
 import es.eucm.ead.schema.engine.components.PersistentGameState;
+import es.eucm.ead.schema.gleaner.components.GleanerSettings;
+import es.eucm.ead.schema.gleaner.effects.LogTrace;
 import es.eucm.ead.schema.renderers.*;
 
 /**
@@ -104,18 +108,20 @@ public class DefaultEngineInitializer implements EngineInitializer {
 	public void init(GameAssets assets, GameLoop gameLoop,
 			EntitiesLoader entitiesLoader, GameView gameView,
 			VariablesManager variablesManager,
-			PersistentGameStateSystem persistentGameStateSystem) {
+			PersistentGameStateSystem persistentGameStateSystem,
+			GleanerSystem gleanerSystem) {
 
 		registerComponents(entitiesLoader.getComponentLoader(), assets,
 				gameLoop, variablesManager, entitiesLoader);
 		registerSystems(assets, gameLoop, entitiesLoader, gameView,
-				variablesManager, persistentGameStateSystem);
+				variablesManager, persistentGameStateSystem, gleanerSystem);
 	}
 
 	protected void registerSystems(final GameAssets gameAssets,
 			final GameLoop gameLoop, final EntitiesLoader entitiesLoader,
 			final GameView gameView, final VariablesManager variablesManager,
-			final PersistentGameStateSystem persistentGameStateSystem) {
+			final PersistentGameStateSystem persistentGameStateSystem,
+			final GleanerSystem gleanerSystem) {
 
 		final ComponentLoader componentLoader = entitiesLoader
 				.getComponentLoader();
@@ -143,6 +149,7 @@ public class DefaultEngineInitializer implements EngineInitializer {
 		gameLoop.addSystem(new UpdateVarsEachCycleSystem(variablesManager));
 		gameLoop.addSystem(new ChaseEntitySystem(gameLoop, variablesManager));
 		gameLoop.addSystem(new MoveByEntitySystem(gameLoop, variablesManager));
+		gameLoop.addSystem(gleanerSystem);
 
 		// Register nodes
 		NodeSystem nodeSystem = new NodeSystem(gameLoop);
@@ -160,15 +167,16 @@ public class DefaultEngineInitializer implements EngineInitializer {
 
 		// Register effects
 		EffectsSystem effectsSystem = new EffectsSystem(gameLoop,
-				variablesManager, gameAssets);
+				variablesManager, gameAssets, gleanerSystem);
 		gameLoop.addSystem(effectsSystem);
 
 		effectsSystem.registerEffectExecutor(GoScene.class,
-				new GoSceneExecutor(entitiesLoader, gameView, gameAssets));
+				new GoSceneExecutor(entitiesLoader, gameView, gameAssets,
+						gleanerSystem));
 		effectsSystem.registerEffectExecutor(EndGame.class,
 				new EndGameExecutor());
 		effectsSystem.registerEffectExecutor(ChangeVar.class,
-				new ChangeVarExecutor(variablesManager));
+				new ChangeVarExecutor(variablesManager, gleanerSystem));
 		effectsSystem.registerEffectExecutor(AddComponent.class,
 				new AddComponentExecutor(componentLoader));
 		effectsSystem.registerEffectExecutor(GoTo.class, new GoToExecutor());
@@ -219,6 +227,10 @@ public class DefaultEngineInitializer implements EngineInitializer {
 				new TriggerConversationExecutor());
 		effectsSystem.registerEffectExecutor(ChangeState.class,
 				new ChangeStateExecutor());
+
+		// Gleaner effects
+		effectsSystem.registerEffectExecutor(LogTrace.class,
+				new LogTraceExecutor(gleanerSystem));
 
 		// Register tweens
 		tweenSystem.registerBaseTweenCreator(MoveTween.class,
@@ -334,6 +346,8 @@ public class DefaultEngineInitializer implements EngineInitializer {
 				new ShaderProcessor(gameLoop, gameAssets, variablesManager));
 		componentLoader.registerComponentProcessor(Background.class,
 				new BackgroundProcessor(gameLoop, entitiesLoader));
+		componentLoader.registerComponentProcessor(GleanerSettings.class,
+				new SettingsProcessor(gameLoop));
 	}
 
 	private static class LanguageVariableListener implements
