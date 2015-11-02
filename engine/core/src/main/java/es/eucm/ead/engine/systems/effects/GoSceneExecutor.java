@@ -48,6 +48,7 @@ import es.eucm.ead.engine.EntitiesLoader.EntityLoadedCallback;
 import es.eucm.ead.engine.GameView;
 import es.eucm.ead.engine.assets.GameAssets;
 import es.eucm.ead.engine.entities.EngineEntity;
+import es.eucm.ead.engine.systems.GleanerSystem;
 import es.eucm.ead.engine.systems.effects.transitions.Fade;
 import es.eucm.ead.engine.systems.effects.transitions.None;
 import es.eucm.ead.engine.systems.effects.transitions.ScaleAndFade;
@@ -56,6 +57,8 @@ import es.eucm.ead.engine.systems.effects.transitions.Slide;
 import es.eucm.ead.engine.systems.effects.transitions.TransitionManager;
 import es.eucm.ead.engine.systems.effects.transitions.TransitionManager.EndListener;
 import es.eucm.ead.engine.systems.effects.transitions.TransitionManager.Transition;
+import es.eucm.ead.engine.variables.ReservedVariableNames;
+import es.eucm.ead.engine.variables.VariablesManager;
 import es.eucm.ead.schema.effects.GoScene;
 import es.eucm.ead.schemax.Layer;
 
@@ -70,11 +73,14 @@ public class GoSceneExecutor extends EffectExecutor<GoScene> implements
 
 	private GameView gameView;
 
+	private GleanerSystem gleanerSystem;
+
 	public GoSceneExecutor(EntitiesLoader entitiesLoader, GameView gameView,
-			GameAssets gameAssets) {
+			GameAssets gameAssets, GleanerSystem gleanerSystem) {
 		this.transitionManager = new TransitionManager(gameAssets);
 		this.entitiesLoader = entitiesLoader;
 		this.gameView = gameView;
+		this.gleanerSystem = gleanerSystem;
 		transitionManager.addListener(new EndListener() {
 			@Override
 			public void transitionFinished() {
@@ -130,6 +136,10 @@ public class GoSceneExecutor extends EffectExecutor<GoScene> implements
 	@Override
 	public void loaded(String path, EngineEntity nextScene) {
 		gameView.addEntityToLayer(Layer.SCENE_CONTENT, nextScene);
+
+		gleanerSystem.screen(this.nextScene, false);
+		gleanerSystem.zone(this.nextScene, false);
+
 		transitionManager.toFront();
 		transitionManager.setNextScene(nextScene.getGroup());
 	}
