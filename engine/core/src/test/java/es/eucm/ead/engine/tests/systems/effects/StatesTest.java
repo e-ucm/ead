@@ -80,7 +80,7 @@ public class StatesTest extends EngineTest implements EntityListener {
 		componentLoader.registerComponentProcessor(MockRenderer.class,
 				new MockRendererProcessor(gameLoop));
 		EffectsSystem effectsSystem = new EffectsSystem(gameLoop,
-				variablesManager, gameAssets);
+				variablesManager, gameAssets, gleanerSystem);
 		changeStateExecutor = new ChangeStateExecutor();
 		effectsSystem.registerEffectExecutor(ChangeState.class,
 				changeStateExecutor);

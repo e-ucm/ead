@@ -37,6 +37,7 @@
 package es.eucm.ead.engine.tests.systems.effects;
 
 import com.badlogic.gdx.scenes.scene2d.Group;
+import es.eucm.ead.engine.systems.GleanerSystem;
 import es.eucm.ead.engine.systems.effects.GoSceneExecutor;
 import es.eucm.ead.schema.effects.GoScene;
 import org.junit.Before;
@@ -53,7 +54,7 @@ public class GoSceneTest extends EffectTest {
 		super.setUp();
 		effectsSystem.registerEffectExecutor(GoScene.class,
 				goSceneExecutor = new GoSceneExecutor(entitiesLoader, gameView,
-						gameAssets) {
+						gameAssets, new GleanerSystem()) {
 					protected int getScreenWidth(Group layer) {
 						return 0;
 					}

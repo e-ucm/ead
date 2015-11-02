@@ -49,6 +49,7 @@ import es.eucm.ead.engine.GameLoop;
 import es.eucm.ead.engine.GameView;
 import es.eucm.ead.engine.expressions.operators.OperationsFactory;
 import es.eucm.ead.engine.systems.gamestatepersistence.PersistentGameStateSystem;
+import es.eucm.ead.engine.systems.GleanerSystem;
 import es.eucm.ead.engine.variables.ReservedVariableNames;
 import es.eucm.ead.engine.variables.VariablesManager;
 
@@ -65,6 +66,8 @@ public class Engine {
 
 	private GameLoop gameLoop;
 
+	private GleanerSystem gleanerSystem;
+
 	private FacadeGameView gameView;
 
 	private GameLoader gameLoader;
@@ -76,6 +79,7 @@ public class Engine {
 		this.gameLoop = new GameLoop();
 		gameLoop.setPlaying(false);
 		this.gameView = new FacadeGameView();
+		gleanerSystem = new GleanerSystem();
 
 		editorGameAssets = controller.getEditorGameAssets();
 		Accessor accessor = new Accessor();
@@ -96,7 +100,7 @@ public class Engine {
 
 	public void init(EngineInitializer engineInitializer) {
 		engineInitializer.init(editorGameAssets, gameLoop, entitiesLoader,
-				gameView, variablesManager, persistentGameStateSystem);
+				gameView, variablesManager, persistentGameStateSystem, gleanerSystem);
 	}
 
 	public EntitiesLoader getEntitiesLoader() {
