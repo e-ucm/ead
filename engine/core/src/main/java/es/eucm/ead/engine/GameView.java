@@ -68,7 +68,7 @@ public interface GameView {
 	 * @return The engine entity wrapping the content of the {@code layer}
 	 *         specified
 	 */
-	public EngineEntity getLayer(Layer layer);
+	EngineEntity getLayer(Layer layer);
 
 	/**
 	 * Updates the game view world size
