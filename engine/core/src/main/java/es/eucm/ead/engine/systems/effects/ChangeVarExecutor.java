@@ -38,6 +38,7 @@ package es.eucm.ead.engine.systems.effects;
 
 import com.badlogic.ashley.core.Entity;
 import com.badlogic.gdx.Gdx;
+import es.eucm.ead.engine.systems.GleanerSystem;
 import es.eucm.ead.engine.variables.VariablesManager;
 import es.eucm.ead.schema.effects.ChangeVar;
 
@@ -47,9 +48,12 @@ import es.eucm.ead.schema.effects.ChangeVar;
 public class ChangeVarExecutor extends EffectExecutor<ChangeVar> {
 
 	private VariablesManager variablesManager;
+	private GleanerSystem gleanerSystem;
 
-	public ChangeVarExecutor(VariablesManager variablesManager) {
+	public ChangeVarExecutor(VariablesManager variablesManager,
+			GleanerSystem gleanerSystem) {
 		this.variablesManager = variablesManager;
+		this.gleanerSystem = gleanerSystem;
 	}
 
 	@Override
@@ -63,5 +67,8 @@ public class ChangeVarExecutor extends EffectExecutor<ChangeVar> {
 		variablesManager.setVarToExpression(effect.getVariable(),
 				effect.getExpression(),
 				effect.getContext() == ChangeVar.Context.GLOBAL);
+
+		gleanerSystem.var(effect.getVariable(),
+				variablesManager.getValue(effect.getVariable()), false);
 	}
 }
