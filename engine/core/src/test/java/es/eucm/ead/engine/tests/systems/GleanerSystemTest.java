@@ -40,6 +40,7 @@ import com.badlogic.gdx.scenes.scene2d.EventListener;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import es.eucm.ead.engine.EngineTest;
+import es.eucm.ead.engine.GleanerSystemForTest;
 import es.eucm.ead.engine.entities.EngineEntity;
 import es.eucm.ead.engine.gleaner.effects.LogTraceExecutor;
 import es.eucm.ead.engine.gleaner.processors.SettingsProcessor;
@@ -95,15 +96,7 @@ public class GleanerSystemTest extends EngineTest {
 	@Test
 	public void testDefaultSettings() {
 		// Zone is not logged by default
-		setDataStored(false);
 		traces(0, C.SCREEN, C.ZONE, C.CHOICE, C.VAR, C.CLICK);
-		while (!isDataStored()) {
-			try {
-				Thread.sleep(1);
-			} catch (InterruptedException e) {
-				e.printStackTrace();
-			}
-		}
 		checkLocalStorage(5, C.SCREEN, C.CHOICE, C.VAR, C.CLICK);
 	}
 
@@ -148,7 +141,7 @@ public class GleanerSystemTest extends EngineTest {
 
 	@Test
 	public void testEffect() {
-		gleanerSettings.setEffect(GleanerSettings.Effect.AUTO);
+		gleanerSettings.setEffect(true);
 		LogTrace logTrace = new LogTrace();
 		logTrace.setTag("custom");
 		logTrace.getValues().add("val1");
@@ -172,45 +165,36 @@ public class GleanerSystemTest extends EngineTest {
 	private void traces(float seconds, String... types) {
 		for (String type : types) {
 			if (type.equals(C.SCREEN)) {
-				gleanerSystem.screen("testScreenId", false);
+				gleanerSystem.screen("testScreenId");
 			} else if (type.equals(C.ZONE)) {
-				gleanerSystem.zone("testZoneId", false);
+				gleanerSystem.zone("testZoneId");
 			} else if (type.equals(C.CHOICE)) {
 				gleanerSystem.choice("testChoiceId", "testOptionId");
 			} else if (type.equals(C.CLICK)) {
 				gleanerSystem.click(0, 0, "testClickTarget");
 			} else if (type.equals(C.VAR)) {
-				gleanerSystem.var("testVarName", "testValue", false);
+				gleanerSystem.var("testVarName", "testValue");
 			}
 		}
 		gameLoop.update(seconds);
 	}
 
-	private void checkLocalStorage(int expectedNumberOfLines,
-			String... piecesOfContent) {
-		String contents = gleanerFile.readString();
+	private void checkLocalStorage(final int expectedNumberOfLines,
+			final String... piecesOfContent) {
+		gleanerSystem.setListener(new GleanerSystemForTest.DataSentListener() {
+			@Override
+			public void dataSent(String data) {
+				String contents = gleanerSystem.getGleanerFile().readString();
 
-		for (String line : contents.split("\\n")) {
-			System.out.println(line);
-		}
-		assertEquals(expectedNumberOfLines, contents.split("\\n").length);
-		for (String pieceOfContent : piecesOfContent) {
-			assertTrue(contents.contains(pieceOfContent));
-		}
-	}
-
-	private boolean dataStored;
-
-	public synchronized boolean isDataStored() {
-		return dataStored;
-	}
-
-	public synchronized void setDataStored(boolean dataStored) {
-		this.dataStored = dataStored;
-	}
-
-	@Override
-	protected void dataStored(String data) {
-		setDataStored(true);
+				for (String line : contents.split("\\n")) {
+					System.out.println(line);
+				}
+				assertEquals(expectedNumberOfLines,
+						contents.split("\\n").length);
+				for (String pieceOfContent : piecesOfContent) {
+					assertTrue(contents.contains(pieceOfContent));
+				}
+			}
+		});
 	}
 }

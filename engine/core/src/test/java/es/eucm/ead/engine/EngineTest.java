@@ -56,22 +56,12 @@ import es.eucm.ead.engine.systems.GleanerSystem;
 import es.eucm.ead.engine.utils.EngineUtils;
 import es.eucm.ead.engine.variables.VariablesManager;
 import es.eucm.ead.schema.entities.ModelEntity;
-import es.eucm.ead.schema.gleaner.components.GleanerLocalStorage;
-import es.eucm.ead.schema.gleaner.components.GleanerNetStorage;
 import es.eucm.ead.schemax.ModelStructure;
-import es.eucm.gleaner.tracker.Tracker;
-import es.eucm.gleaner.tracker.http.SimpleHttpResponse;
-import es.eucm.gleaner.tracker.storage.LocalStorage;
-import es.eucm.gleaner.tracker.storage.NetStorage;
-import es.eucm.gleaner.tracker.storage.Storage;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.BeforeClass;
 
-import java.io.IOException;
 import java.util.Map.Entry;
-
-import static org.junit.Assert.assertEquals;
 
 /**
  * Created by angel on 24/06/14.
@@ -86,7 +76,7 @@ public class EngineTest extends DemoBuilder {
 
 	protected GameLoop gameLoop;
 
-	protected GleanerSystem gleanerSystem;
+	protected GleanerSystemForTest gleanerSystem;
 
 	protected GameAssets gameAssets;
 
@@ -101,8 +91,6 @@ public class EngineTest extends DemoBuilder {
 	protected EntitiesLoader entitiesLoader;
 
 	protected Stage stage;
-
-	protected FileHandle gleanerFile;
 
 	@BeforeClass
 	public static void initStatics() {
@@ -119,35 +107,7 @@ public class EngineTest extends DemoBuilder {
 				stage.draw();
 			}
 		};
-		gleanerSystem = new GleanerSystem() {
-			@Override
-			protected FileHandle fileHandleForFolder() {
-				FileHandle folder = FileHandle
-						.tempDirectory("mokap-test-gleaner");
-				folder.mkdirs();
-				return folder;
-			}
-
-			@Override
-			protected FileHandle fileHandleForLocalStorage(String prefix) {
-				gleanerFile = super.fileHandleForLocalStorage(prefix);
-				return gleanerFile;
-			}
-
-			@Override
-			protected Storage buildGleanerStorage() {
-				LocalStorage storage = new LocalStorage(
-						fileHandleForLocalStorage("test")) {
-					@Override
-					public void send(String data,
-							Tracker.FlushListener flushListener) {
-						super.send(data, flushListener);
-						dataStored(data);
-					}
-				};
-				return storage;
-			}
-		};
+		gleanerSystem = new GleanerSystemForTest();
 		gameView = new DefaultGameView(gameLoop, gleanerSystem);
 		stage = new Stage();
 		stage.addActor(gameView);
@@ -189,10 +149,6 @@ public class EngineTest extends DemoBuilder {
 		}
 	}
 
-	protected void dataStored(String data) {
-
-	}
-
 	public void prepareEngine() {
 	}
 
@@ -218,8 +174,8 @@ public class EngineTest extends DemoBuilder {
 
 	@After
 	public void cleanup() {
-		if (gleanerFile != null) {
-			gleanerFile.delete();
+		if (gleanerSystem != null) {
+			gleanerSystem.cleanup();
 		}
 	}
 
