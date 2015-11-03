@@ -207,11 +207,8 @@ public class GleanerSystem extends EntitySystem {
 	 * 
 	 * @param screenId
 	 *            The id of the scene (e.g. scenes/s0.json)
-	 * @param manual
-	 *            True if it was invoked "manually" by the user (i.e. via
-	 *            effect), false if it was invoked automatically by the engine
 	 */
-	public void screen(final String screenId, boolean manual) {
+	public void screen(String screenId) {
 		if (settings == null) {
 			Gdx.app.debug(
 					"GLEANER",
@@ -219,9 +216,7 @@ public class GleanerSystem extends EntitySystem {
 							+ screenId
 							+ ") could not be logged because the system has not been initialized");
 		}
-		if (settings == null
-				|| settings.getScreen() == GleanerSettings.Screen.DISABLED
-				|| (settings.getScreen() == GleanerSettings.Screen.MANUAL && !manual)) {
+		if (settings == null || !settings.isScreen()) {
 			return;
 		}
 		tracker.screen(screenId);
@@ -229,18 +224,15 @@ public class GleanerSystem extends EntitySystem {
 	}
 
 	/**
-	 * Equivalent to {@link #screen(String, boolean)}, but disabled by default.
+	 * Equivalent to {@link #screen(String)}, but disabled by default.
 	 * 
 	 * Zone events are also considered high priority, and therefore a flush is
 	 * requested.
 	 * 
 	 * @param zoneId
 	 *            The id of the zone/scene (e.g. scenes/s0.json)
-	 * @param manual
-	 *            True if it was invoked "manually" by the user (i.e. via
-	 *            effect), false if it was invoked automatically by the engine
 	 */
-	public void zone(final String zoneId, boolean manual) {
+	public void zone(String zoneId) {
 		if (settings == null) {
 			Gdx.app.debug(
 					"GLEANER",
@@ -248,9 +240,7 @@ public class GleanerSystem extends EntitySystem {
 							+ zoneId
 							+ ") could not be logged because the system has not been initialized");
 		}
-		if (settings == null
-				|| settings.getZone() == GleanerSettings.Zone.DISABLED
-				|| (settings.getZone() == GleanerSettings.Zone.MANUAL && !manual)) {
+		if (settings == null || !settings.isZone()) {
 			return;
 		}
 		tracker.zone(zoneId);
@@ -267,12 +257,8 @@ public class GleanerSystem extends EntitySystem {
 	 *            The ID of the variable
 	 * @param value
 	 *            The new value of the variable
-	 * @param manual
-	 *            True if it was invoked "manually" by the user (i.e. via
-	 *            {@link es.eucm.ead.schema.gleaner.effects.LogTrace} effect),
-	 *            false if it was invoked automatically by the engine
 	 */
-	public void var(final String variable, final Object value, boolean manual) {
+	public void var(String variable, Object value) {
 		if (settings == null) {
 			Gdx.app.debug(
 					"GLEANER",
@@ -282,9 +268,7 @@ public class GleanerSystem extends EntitySystem {
 							+ value.toString()
 							+ ") could not be logged because the system has not been initialized");
 		}
-		if (settings == null
-				|| settings.getVar() == GleanerSettings.Var.DISABLED
-				|| (settings.getVar() == GleanerSettings.Var.MANUAL && !manual)) {
+		if (settings == null || !settings.isVar()) {
 			return;
 		}
 		tracker.var(variable, value);
@@ -314,9 +298,6 @@ public class GleanerSystem extends EntitySystem {
 							+ ","
 							+ optionId
 							+ ") could not be logged because the system has not been initialized");
-		}
-		if (settings == null
-				|| settings.getChoice() == GleanerSettings.Choice.DISABLED) {
 			return;
 		}
 		tracker.choice(choiceId, optionId);
@@ -347,8 +328,7 @@ public class GleanerSystem extends EntitySystem {
 							+ y
 							+ ") could not be logged because the system has not been initialized");
 		}
-		if (settings == null
-				|| settings.getClick() == GleanerSettings.Click.DISABLED) {
+		if (settings == null || !settings.isClick()) {
 			return;
 		}
 
@@ -375,8 +355,7 @@ public class GleanerSystem extends EntitySystem {
 							+ y
 							+ ") could not be logged because the system has not been initialized");
 		}
-		if (settings == null
-				|| settings.getClick() == GleanerSettings.Click.DISABLED) {
+		if (settings == null || !settings.isPress()) {
 			return;
 		}
 
@@ -424,7 +403,7 @@ public class GleanerSystem extends EntitySystem {
 					"Effect could not be logged because the system has not been initialized");
 			return;
 		}
-		if (settings.getEffect() == GleanerSettings.Effect.AUTO) {
+		if (settings.isEffect()) {
 			trace("effect", json.toJson(effect, (Class) null));
 		}
 	}

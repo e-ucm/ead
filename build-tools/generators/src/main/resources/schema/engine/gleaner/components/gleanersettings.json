@@ -17,46 +17,33 @@
             "description": "Determines the interval between each chunk of data is sent to storage. Default value is 30 seconds"
         },
         "screen": {
-            "type": "string",
-            "enum": ["auto", "manual", "disabled"],
-            "default": "auto",
-            "description": "Sets the policy for tracking events of type \"screen\". \n1)auto (default): Creates a screen event each time a GoScene effect is executed, using the target scene path/id as screenId.\n2)manual: screen events will only be created by using the screen effect.\n3)disabled:no screen events will be tracked"
+            "type": "boolean",
+            "default": true,
+            "description": "Sets the policy for tracking events of type \"screen\".\nIf true (default option), it creates a screen event each time a GoScene effect is executed, using the target scene path/id as screenId.\nIf false, screen events will only be created by using the LogTrace effect."
         },
         "var": {
-            "type": "string",
-            "enum": ["auto", "manual", "disabled"],
-            "default": "auto",
-            "description": "Sets the policy for tracking events of type \"var\". \n1)auto (default option): Creates a var event each time a ChangeVar effect is executed.\n2)manual: var events will only be created by using the var effect.\n3)disabled:no var events will be tracked"
+            "type": "boolean",
+            "default": true,
+            "description": "Sets the policy for tracking events of type \"var\". \nIf true (default option), it creates a var event each time a ChangeVar effect is executed.\nIf false, var events will only be created by using the LogTrace effect."
         },
         "zone": {
-            "type": "string",
-            "enum": ["auto", "manual", "disabled"],
-            "default": "manual",
-            "description": "Sets the policy for tracking events of type \"zone\" in the same way that screen events can be configured. The only difference is that by default, zone events are set up to \"manual\". This way, it is both possible to use zone and screen events indistinctly, depending on the game designer's choice"
-        },
-        "choice": {
-            "type": "string",
-            "enum": ["manual", "disabled"],
-            "default": "manual",
-            "description": "Sets the policy for tracking events of type \"choice\". \n1)manual (default option): choice events will only be created by using the choice effect.\n2)disabled:no choice events will be tracked"
-        },
-        "click": {
-            "type": "string",
-            "enum": ["auto", "disabled"],
-            "default": "auto",
-            "description": "Sets the policy for tracking events of type \"click\". \n1)auto (default option): Every time user clicks the mouse, the x,y position in game coordinates (0,0 is the bottom-left corner) is logged, followed by the name of the entity that was hit (if any, and if the entity's name is available).\n2)disabled:no click events will be tracked"
+            "type": "boolean",
+            "default": false,
+            "description": "Sets the policy for tracking events of type \"zone\" in the same way that screen events can be configured.\nThe only difference is that by default, zone events are not logged. This way, it is both possible to use zone and screen events indistinctly, depending on the game designer's choice"
+        },"click": {
+            "type": "boolean",
+            "default": true,
+            "description": "Sets the policy for tracking events of type \"click\".\nIf true (default option), every time user clicks the mouse, the x,y position in game coordinates (0,0 is the bottom-left corner) is logged, followed by the name of the entity that was hit (if any, and if the entity's name is available).\n. If false, no click events will be tracked"
         },
         "press": {
-            "type": "string",
-            "enum": ["auto", "disabled"],
-            "default": "auto",
-            "description": "Sets the policy for tracking events of type \"press\". Works similarly to click"
+            "type": "boolean",
+            "default": false,
+            "description": "Sets the policy for tracking events of type \"press\".\nWorks similarly to click, but for the touchDown/press type of mouse events."
         },
         "effect": {
-            "type": "string",
-            "enum": ["auto", "disabled"],
-            "default": "disabled",
-            "description": "Sets the policy for tracking the execution of effects. If activated, it will log a serialized version of any effect (in json format) that gets executed. Effects get logged only once, even if they are executed on multiple targets. This feature is disabled by default"
+            "type": "boolean",
+            "default": false,
+            "description": "Sets the policy for tracking the execution of effects.\nIf true (not the default option), it will log a serialized version of any effect (in json format) that gets executed.\nEffects get logged only once, even if they are executed on multiple targets. This feature is disabled by default"
         }
     }
 }

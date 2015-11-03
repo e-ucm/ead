@@ -69,6 +69,6 @@ public class ChangeVarExecutor extends EffectExecutor<ChangeVar> {
 				effect.getContext() == ChangeVar.Context.GLOBAL);
 
 		gleanerSystem.var(effect.getVariable(),
-				variablesManager.getValue(effect.getVariable()), false);
+				variablesManager.getValue(effect.getVariable()));
 	}
 }

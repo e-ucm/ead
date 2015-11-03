@@ -137,8 +137,8 @@ public class GoSceneExecutor extends EffectExecutor<GoScene> implements
 	public void loaded(String path, EngineEntity nextScene) {
 		gameView.addEntityToLayer(Layer.SCENE_CONTENT, nextScene);
 
-		gleanerSystem.screen(this.nextScene, false);
-		gleanerSystem.zone(this.nextScene, false);
+		gleanerSystem.screen(this.nextScene);
+		gleanerSystem.zone(this.nextScene);
 
 		transitionManager.toFront();
 		transitionManager.setNextScene(nextScene.getGroup());
