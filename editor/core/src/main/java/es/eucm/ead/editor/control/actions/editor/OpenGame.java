@@ -60,7 +60,7 @@ import es.eucm.ead.schema.editor.components.Parent;
 import es.eucm.ead.schema.editor.components.SceneMap;
 import es.eucm.ead.schema.editor.data.Cell;
 import es.eucm.ead.schema.entities.ModelEntity;
-import es.eucm.ead.schemax.JsonExtension;
+import es.eucm.ead.engine.utils.JsonExtension;
 import es.eucm.ead.schemax.entities.ResourceCategory;
 
 import java.util.Map.Entry;
