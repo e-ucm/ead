@@ -39,14 +39,15 @@ package es.eucm.ead.editor.view.widgets;
 import com.badlogic.gdx.graphics.g2d.Batch;
 import es.eucm.ead.engine.DefaultGameView;
 import es.eucm.ead.engine.GameLoop;
+import es.eucm.ead.engine.systems.GleanerSystem;
 
 /**
  * A widget to contain a working instance of the engine
  */
 public class EnginePlayer extends DefaultGameView {
 
-	public EnginePlayer(GameLoop gameLoop) {
-		super(gameLoop);
+	public EnginePlayer(GameLoop gameLoop, GleanerSystem gleanerSystem) {
+		super(gameLoop, gleanerSystem);
 	}
 
 	@Override

@@ -62,7 +62,7 @@ public class SimplePhysicsTest extends EngineTest {
 	public void prepareEngine() {
 		new DefaultEngineInitializer().init(gameAssets, gameLoop,
 				entitiesLoader, gameView, variablesManager,
-				persistentGameStateSystem);
+				persistentGameStateSystem, gleanerSystem);
 	}
 
 	@Override

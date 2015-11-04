@@ -34,60 +34,25 @@
  *      You should have received a copy of the GNU Lesser General Public License
  *      along with eAdventure.  If not, see <http://www.gnu.org/licenses/>.
  */
-package es.eucm.ead.engine;
+package es.eucm.ead.engine.gleaner.effects;
 
-import es.eucm.ead.engine.entities.EngineEntity;
-import es.eucm.ead.schemax.Layer;
+import com.badlogic.ashley.core.Entity;
+import es.eucm.ead.engine.systems.GleanerSystem;
+import es.eucm.ead.engine.systems.effects.EffectExecutor;
+import es.eucm.ead.schema.gleaner.effects.LogTrace;
 
-public interface GameView {
+/**
+ * Created by jtorrente on 29/10/2015.
+ */
+public class LogTraceExecutor extends EffectExecutor<LogTrace> {
+	protected GleanerSystem gleanerSystem;
 
-	/**
-	 * Empties the given layer, getting all children entities removed from the
-	 * engine as well. All children layers are preserved.
-	 * 
-	 * @param layer
-	 *            The layer to empty
-	 * @param clearChildrenLayers
-	 *            If true, it works recursively, clearing also any layer in its
-	 *            subtree
-	 */
-	void clearLayer(Layer layer, boolean clearChildrenLayers);
+	public LogTraceExecutor(GleanerSystem gleanerSystem) {
+		this.gleanerSystem = gleanerSystem;
+	}
 
-	/**
-	 * Adds the given layer to the given entity. It just attaches the given
-	 * {@code entity}'s group to the layer's group
-	 * 
-	 * @param layer
-	 *            The layer
-	 * @param entity
-	 *            The entity to attach
-	 */
-	void addEntityToLayer(Layer layer, EngineEntity entity);
-
-	/**
-	 * @return The engine entity wrapping the content of the {@code layer}
-	 *         specified
-	 */
-	EngineEntity getLayer(Layer layer);
-
-	/**
-	 * Updates the game view world size
-	 */
-	void updateWorldSize(int width, int height);
-
-	int getWorldWidth();
-
-	int getWorldHeight();
-
-	int getPixelsWidth();
-
-	int getPixelsHeight();
-
-	int getScreenX();
-
-	int getScreenY();
-
-	int getScreenWidth();
-
-	int getScreenHeight();
+	@Override
+	public void execute(Entity target, LogTrace effect) {
+		gleanerSystem.trace(effect.getTag(), effect.getValues());
+	}
 }

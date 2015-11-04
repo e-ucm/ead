@@ -116,7 +116,7 @@ public class AnimationTest extends EngineTest implements MockEffectListener {
 		animationProcessor = new AnimationProcessor(gameLoop);
 
 		effectsSystem = new EffectsSystem(gameLoop, variablesManager,
-				gameAssets);
+				gameAssets, gleanerSystem);
 
 		timelineExecutor = new TrackEffectExecutor(effectsSystem);
 

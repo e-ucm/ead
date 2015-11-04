@@ -51,6 +51,7 @@ import es.eucm.ead.engine.assets.GameAssets.ImageUtils;
 import es.eucm.ead.engine.assets.GameAssets;
 import es.eucm.ead.engine.expressions.operators.OperationsFactory;
 import es.eucm.ead.engine.systems.gamestatepersistence.PersistentGameStateSystem;
+import es.eucm.ead.engine.systems.GleanerSystem;
 import es.eucm.ead.engine.variables.VariablesManager;
 
 import java.util.HashMap;
@@ -73,6 +74,8 @@ public class EngineApplicationListener implements ApplicationListener {
 
 	private PersistentGameStateSystem persistentGameStateSystem;
 
+	private GleanerSystem gleanerSystem;
+
 	public EngineApplicationListener(ImageUtils imageUtils) {
 		this.imageUtils = imageUtils;
 	}
@@ -84,7 +87,8 @@ public class EngineApplicationListener implements ApplicationListener {
 		Gdx.gl.glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
 
 		gameLoop = new GameLoop();
-		gameView = new DefaultGameView(gameLoop);
+		gleanerSystem = new GleanerSystem();
+		gameView = new DefaultGameView(gameLoop, gleanerSystem);
 
 		gameAssets = new GameAssets(Gdx.files, imageUtils);
 
@@ -108,7 +112,7 @@ public class EngineApplicationListener implements ApplicationListener {
 
 		DefaultEngineInitializer initializer = new DefaultEngineInitializer();
 		initializer.init(gameAssets, gameLoop, entitiesLoader, gameView,
-				variablesManager, persistentGameStateSystem);
+				variablesManager, persistentGameStateSystem, gleanerSystem);
 
 		stage = createStage();
 		Gdx.input.setInputProcessor(stage);

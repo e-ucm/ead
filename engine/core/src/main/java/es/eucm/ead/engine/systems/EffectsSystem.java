@@ -64,15 +64,18 @@ public class EffectsSystem extends ConditionalSystem {
 
 	private GameAssets gameAssets;
 
+	private GleanerSystem gleanerSystem;
+
 	private final ComponentMapper<EffectsComponent> effects = ComponentMapper
 			.getFor(EffectsComponent.class);
 
 	public EffectsSystem(GameLoop engine, VariablesManager variablesManager,
-			GameAssets gameAssets) {
+			GameAssets gameAssets, GleanerSystem gleanerSystem) {
 		super(engine, variablesManager, Family.all(EffectsComponent.class)
 				.get(), Integer.MAX_VALUE);
 		effectExecutorMap = new HashMap<Class, EffectExecutor>();
 		this.gameAssets = gameAssets;
+		this.gleanerSystem = gleanerSystem;
 	}
 
 	public void registerEffectExecutor(Class<? extends Effect> effectClass,
@@ -110,8 +113,10 @@ public class EffectsSystem extends ConditionalSystem {
 						.getTarget());
 				// Accepted results: Entity or Iterable<Entity>
 				if (expResult instanceof Entity) {
+					gleanerSystem.effect(effect);
 					processTarget((Entity) expResult, effect, effectExecutor);
 				} else if (expResult instanceof Iterable) {
+					gleanerSystem.effect(effect);
 					Iterable targets = (Iterable) expResult;
 					for (Object maybeATarget : targets) {
 						if (!(maybeATarget instanceof Entity)) {

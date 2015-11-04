@@ -42,6 +42,7 @@ import com.badlogic.gdx.scenes.scene2d.Group;
 import com.badlogic.gdx.scenes.scene2d.utils.ScissorStack;
 import es.eucm.ead.engine.DefaultGameView;
 import es.eucm.ead.engine.GameLoop;
+import es.eucm.ead.engine.systems.GleanerSystem;
 import es.eucm.ead.schemax.Layer;
 
 public class TestGameView extends DefaultGameView {
@@ -51,7 +52,7 @@ public class TestGameView extends DefaultGameView {
 	private Rectangle stageViewport = new Rectangle();
 
 	public TestGameView(GameLoop gameLoop) {
-		super(gameLoop);
+		super(gameLoop, new GleanerSystem());
 		setFillParent(true);
 		// Avoid creation of FrameBuffer of 0, 0 width and height
 		gameViewport.set(0, 0, 1, 1);

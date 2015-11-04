@@ -51,7 +51,7 @@ public abstract class EffectTest extends EngineTest {
 	public void setUp() {
 		super.setUp();
 		effectsSystem = new EffectsSystem(gameLoop, variablesManager,
-				gameAssets);
+				gameAssets, gleanerSystem);
 		effectsSystem.registerEffectExecutor(MockEffect.class,
 				new MockEffectExecutor());
 		variablesManager.setValue(ReservedVariableNames.THIS_VAR,

@@ -47,6 +47,7 @@ import es.eucm.ead.engine.mock.schema.MockEffect.MockEffectListener;
 import es.eucm.ead.engine.mock.schema.MockEffectExecutor;
 import es.eucm.ead.engine.mock.schema.MockModelComponent;
 import es.eucm.ead.engine.processors.behaviors.BehaviorsProcessor;
+import es.eucm.ead.engine.systems.GleanerSystem;
 import es.eucm.ead.engine.systems.behaviors.TimersSystem;
 import es.eucm.ead.engine.systems.effects.ChangeEntityPropertyExecutor;
 import es.eucm.ead.engine.systems.effects.ChangeVarExecutor;
@@ -104,7 +105,7 @@ public class ControlStructuresTest extends EffectTest implements
 		effectsSystem.registerEffectExecutor(MockEffect.class,
 				new MockEffectExecutor());
 		effectsSystem.registerEffectExecutor(ChangeVar.class,
-				new ChangeVarExecutor(variablesManager));
+				new ChangeVarExecutor(variablesManager, new GleanerSystem()));
 		gameLoop.addSystem(effectsSystem);
 		TimersSystem timersSystem = new TimersSystem(gameLoop, variablesManager);
 		gameLoop.addSystem(timersSystem);

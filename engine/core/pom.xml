@@ -83,6 +83,11 @@
             <version>${project.version}</version>
             <scope>test</scope>
         </dependency>
+        <dependency>
+            <groupId>es.e-ucm.gleaner</groupId>
+            <artifactId>tracker</artifactId>
+            <version>1.0-SNAPSHOT</version>
+        </dependency>
         <!-- Commons-lang: added to use class EqualsBuilder for executing equals 
 			on two objects by reflection -->
         <dependency>

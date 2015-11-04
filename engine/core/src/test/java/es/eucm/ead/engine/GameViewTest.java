@@ -72,7 +72,7 @@ public class GameViewTest extends EngineTest {
 			}
 		});
 
-		DefaultGameView gameView = new DefaultGameView(gameLoop);
+		DefaultGameView gameView = new DefaultGameView(gameLoop, gleanerSystem);
 
 		// Populate layers with entities
 		int entitiesPerLayer = 10;

@@ -45,6 +45,7 @@ import es.eucm.ead.engine.components.NodeComponent;
 import es.eucm.ead.engine.components.renderers.OptionsComponent;
 import es.eucm.ead.engine.processors.ConversationProcessor;
 import es.eucm.ead.engine.processors.behaviors.BehaviorsProcessor;
+import es.eucm.ead.engine.systems.GleanerSystem;
 import es.eucm.ead.engine.systems.conversations.ConditionedRuntimeNode;
 import es.eucm.ead.engine.systems.conversations.EffectsRuntimeNode;
 import es.eucm.ead.engine.systems.conversations.LineRuntimeNode;
@@ -98,7 +99,7 @@ public class ConversationsTest extends EffectTest {
 		 */
 
 		effectsSystem.registerEffectExecutor(ChangeVar.class,
-				new ChangeVarExecutor(variablesManager));
+				new ChangeVarExecutor(variablesManager, new GleanerSystem()));
 		effectsSystem.registerEffectExecutor(TriggerConversation.class,
 				new TriggerConversationExecutor());
 

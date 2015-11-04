@@ -45,6 +45,7 @@ import es.eucm.ead.engine.GameLoop;
 import es.eucm.ead.engine.GameView;
 import es.eucm.ead.engine.components.TagsComponent;
 import es.eucm.ead.engine.expressions.operators.OperationsFactory;
+import es.eucm.ead.engine.systems.GleanerSystem;
 import es.eucm.ead.engine.variables.VariablesManager;
 import es.eucm.ead.schemax.Layer;
 import junit.framework.Assert;
@@ -77,7 +78,7 @@ public class ExpressionBuilderTest {
 		Accessor accessor = new Accessor(new HashMap<String, Object>());
 		gameLoop = new GameLoop();
 		OperationsFactory operationsFactory = new OperationsFactory(gameLoop,
-				accessor, new DefaultGameView(gameLoop));
+				accessor, new DefaultGameView(gameLoop, new GleanerSystem()));
 		variablesManager = new VariablesManager(accessor, operationsFactory);
 		variablesManager.registerVar(VAR_NAME, 1F, true);
 		variablesManager.registerVar(VAR_NAME2, false, true);

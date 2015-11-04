@@ -142,7 +142,7 @@ public class EffectTweenTest extends TweenTest implements MockEffectListener {
 	@Override
 	public TweenCreator getTweenCreator() {
 		effectsSystem = new EffectsSystem(gameLoop, variablesManager,
-				gameAssets);
+				gameAssets, gleanerSystem);
 		effectsSystem.registerEffectExecutor(MockEffect.class,
 				new MockEffectExecutor());
 

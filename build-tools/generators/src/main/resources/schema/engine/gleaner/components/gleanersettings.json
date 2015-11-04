@@ -1,0 +1,49 @@
+{
+    "additionalProperties": false,
+    "javaType": "es.eucm.ead.schema.gleaner.components.GleanerSettings",
+    "type": "object",
+    "description": "A one-time component that configures the gleaner tracking system. This is expected to appear on the game main entity",
+    "extends": {
+        "$ref": "../../components/component.json"
+    },
+    "properties": {
+        "storage": {
+            "$ref": "gleanerstorage.json",
+            "description": "How data should be stored. Either locally or in the analysis server"
+        },
+        "flushInterval": {
+            "type": "number",
+            "default": 30.0,
+            "description": "Determines the interval between each chunk of data is sent to storage. Default value is 30 seconds"
+        },
+        "screen": {
+            "type": "boolean",
+            "default": true,
+            "description": "Sets the policy for tracking events of type \"screen\".\nIf true (default option), it creates a screen event each time a GoScene effect is executed, using the target scene path/id as screenId.\nIf false, screen events will only be created by using the LogTrace effect."
+        },
+        "var": {
+            "type": "boolean",
+            "default": true,
+            "description": "Sets the policy for tracking events of type \"var\". \nIf true (default option), it creates a var event each time a ChangeVar effect is executed.\nIf false, var events will only be created by using the LogTrace effect."
+        },
+        "zone": {
+            "type": "boolean",
+            "default": false,
+            "description": "Sets the policy for tracking events of type \"zone\" in the same way that screen events can be configured.\nThe only difference is that by default, zone events are not logged. This way, it is both possible to use zone and screen events indistinctly, depending on the game designer's choice"
+        },"click": {
+            "type": "boolean",
+            "default": true,
+            "description": "Sets the policy for tracking events of type \"click\".\nIf true (default option), every time user clicks the mouse, the x,y position in game coordinates (0,0 is the bottom-left corner) is logged, followed by the name of the entity that was hit (if any, and if the entity's name is available).\n. If false, no click events will be tracked"
+        },
+        "press": {
+            "type": "boolean",
+            "default": false,
+            "description": "Sets the policy for tracking events of type \"press\".\nWorks similarly to click, but for the touchDown/press type of mouse events."
+        },
+        "effect": {
+            "type": "boolean",
+            "default": false,
+            "description": "Sets the policy for tracking the execution of effects.\nIf true (not the default option), it will log a serialized version of any effect (in json format) that gets executed.\nEffects get logged only once, even if they are executed on multiple targets. This feature is disabled by default"
+        }
+    }
+}
