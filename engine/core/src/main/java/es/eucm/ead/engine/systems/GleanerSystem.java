@@ -44,8 +44,6 @@ import com.badlogic.ashley.utils.ImmutableArray;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.utils.Json;
-import com.badlogic.gdx.utils.async.AsyncExecutor;
-import com.badlogic.gdx.utils.async.AsyncTask;
 import es.eucm.ead.engine.gleaner.components.GleanerSettingsComponent;
 import es.eucm.ead.schema.effects.Effect;
 import es.eucm.ead.schema.gleaner.components.GleanerLocalStorage;
@@ -72,13 +70,12 @@ public class GleanerSystem extends EntitySystem {
 
 	public static final String LOCAL_TRACES_FOLDER = "gleaner_traces";
 
-	private GleanerSettings settings = null;
+	protected GleanerSettings settings = null;
 	private ImmutableArray<Entity> entities;
-	private Tracker tracker;
-	private Storage storage;
+	protected Tracker tracker;
+	protected Storage storage;
 
 	private Json json = new Json(); // To serialize effects
-	private AsyncExecutor asyncExecutor; // To save/send data on the background
 
 	@Override
 	public void addedToEngine(Engine engine) {
@@ -95,7 +92,6 @@ public class GleanerSystem extends EntitySystem {
 		}
 		tracker = null;
 		storage = null;
-		asyncExecutor = null;
 	}
 
 	@Override
@@ -104,22 +100,15 @@ public class GleanerSystem extends EntitySystem {
 			init();
 		}
 		if (settings != null) {
-			asyncExecutor.submit(new AsyncTask<Void>() {
-				@Override
-				public Void call() throws Exception {
-					tracker.update(deltaTime);
-					return null;
-				}
-			});
+			tracker.update(deltaTime);
 		}
 	}
 
-	private void init() {
+	protected void init() {
 		if (entities.size() > 0) {
 			settings = entities.get(0)
 					.getComponent(GleanerSettingsComponent.class).getSettings();
 			storage = buildGleanerStorage();
-			asyncExecutor = new AsyncExecutor(1);
 			tracker = new Tracker(storage, settings.getFlushInterval());
 			tracker.start();
 		}

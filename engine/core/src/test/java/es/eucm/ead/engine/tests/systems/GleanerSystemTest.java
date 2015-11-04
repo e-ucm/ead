@@ -157,7 +157,7 @@ public class GleanerSystemTest extends EngineTest {
 		EngineEntity engineEntity = entitiesLoader.toEngineEntity(modelEntity);
 		gameLoop.addEntity(engineEntity);
 		gameLoop.update(0);
-		checkLocalStorage(1, "new session");
+		checkLocalStorage(1, "session");
 		gameLoop.update(30); // By default, traces are flushed every 3 seconds
 		checkLocalStorage(3, "custom", "effect");
 	}

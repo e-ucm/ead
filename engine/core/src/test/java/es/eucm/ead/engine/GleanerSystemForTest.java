@@ -36,11 +36,17 @@
  */
 package es.eucm.ead.engine;
 
+import com.badlogic.gdx.Net;
 import com.badlogic.gdx.files.FileHandle;
+import es.eucm.ead.engine.gleaner.components.GleanerSettingsComponent;
 import es.eucm.ead.engine.systems.GleanerSystem;
 import es.eucm.gleaner.tracker.Tracker;
 import es.eucm.gleaner.tracker.storage.LocalStorage;
 import es.eucm.gleaner.tracker.storage.Storage;
+
+import java.lang.reflect.Field;
+
+import static org.junit.Assert.fail;
 
 /**
  * Created by jtorrente on 03/11/2015.
@@ -49,6 +55,7 @@ public class GleanerSystemForTest extends GleanerSystem {
 
 	private DataSentListener listener = null;
 	private FileHandle gleanerFile;
+	public String data;
 
 	public DataSentListener getListener() {
 		return listener;
@@ -64,6 +71,31 @@ public class GleanerSystemForTest extends GleanerSystem {
 
 	public void setGleanerFile(FileHandle gleanerFile) {
 		this.gleanerFile = gleanerFile;
+	}
+
+	@Override
+	protected void init() {
+		super.init();
+		if (tracker != null) {
+			setFlushListenerAdapter();
+		}
+	}
+
+	private void setFlushListenerAdapter() {
+		try {
+			Field field = Tracker.class.getDeclaredField("flushListener");
+			field.setAccessible(true);
+			Tracker.FlushListener current = (Tracker.FlushListener) field
+					.get(tracker);
+			TrackerAdapter trackerAdpter = new TrackerAdapter(current);
+			field.set(this.tracker, trackerAdpter.flushListenerAdapter);
+		} catch (NoSuchFieldException e) {
+			e.printStackTrace();
+			fail();
+		} catch (IllegalAccessException e) {
+			e.printStackTrace();
+			fail();
+		}
 	}
 
 	@Override
@@ -83,12 +115,11 @@ public class GleanerSystemForTest extends GleanerSystem {
 	protected Storage buildGleanerStorage() {
 		LocalStorage storage = new LocalStorage(
 				fileHandleForLocalStorage("test")) {
+
 			@Override
-			public void send(String data, Tracker.FlushListener flushListener) {
+			public void send(String data, Net.HttpResponseListener flushListener) {
+				GleanerSystemForTest.this.data = data;
 				super.send(data, flushListener);
-				if (listener != null) {
-					listener.dataSent(data);
-				}
 			}
 		};
 		return storage;
@@ -103,5 +134,62 @@ public class GleanerSystemForTest extends GleanerSystem {
 
 	public interface DataSentListener {
 		void dataSent(String data);
+	}
+
+	private class TrackerAdapter extends Tracker {
+
+		FlushListenerAdapter flushListenerAdapter;
+
+		public TrackerAdapter(Tracker.FlushListener flushListener) {
+			super(new Storage() {
+				@Override
+				public void setTracker(Tracker tracker) {
+
+				}
+
+				@Override
+				public void start(Net.HttpResponseListener startListener) {
+
+				}
+
+				@Override
+				public void send(String data,
+						Net.HttpResponseListener flushListener) {
+
+				}
+
+				@Override
+				public void close() {
+
+				}
+			});
+			this.flushListenerAdapter = new FlushListenerAdapter(flushListener);
+		}
+
+		public class FlushListenerAdapter extends Tracker.FlushListener {
+			Tracker.FlushListener flushListener;
+
+			public FlushListenerAdapter(Tracker.FlushListener flushListener) {
+				this.flushListener = flushListener;
+			}
+
+			@Override
+			public void handleHttpResponse(Net.HttpResponse httpResponse) {
+				flushListener.handleHttpResponse(httpResponse);
+				if (listener != null) {
+					listener.dataSent(data);
+				}
+			}
+
+			@Override
+			public void failed(Throwable t) {
+				flushListener.failed(t);
+			}
+
+			@Override
+			public void cancelled() {
+				flushListener.cancelled();
+			}
+		}
 	}
 }
