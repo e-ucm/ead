@@ -34,16 +34,35 @@
  *      You should have received a copy of the GNU Lesser General Public License
  *      along with eAdventure.  If not, see <http://www.gnu.org/licenses/>.
  */
-package es.eucm.ead.engine;
+package es.eucm.ead.engine.systems.gamestatepersistence;
 
-import es.eucm.ead.engine.assets.GameAssets;
-import es.eucm.ead.engine.systems.gamestatepersistence.PersistentGameStateSystem;
-import es.eucm.ead.engine.variables.VariablesManager;
+import java.io.Serializable;
+import java.util.HashMap;
 
-public interface EngineInitializer {
+/**
+ * Main class to represent the game state for serialization.
+ * 
+ * Currently it just contains a list of persistent variables.
+ * 
+ * Created by jtorrente on 30/10/2015.
+ */
+class SerializableGameState implements Serializable {
+	private HashMap<String, SerializableVariable> persistentVariables;
 
-	void init(GameAssets assets, GameLoop gameLoop,
-			EntitiesLoader entitiesLoader, GameView gameView,
-			VariablesManager variablesManager,
-			PersistentGameStateSystem persistentGameStateSystem);
+	public SerializableGameState() {
+		persistentVariables = new HashMap<String, SerializableVariable>();
+	}
+
+	public HashMap<String, SerializableVariable> getPersistentVariables() {
+		return persistentVariables;
+	}
+
+	public void setPersistentVariables(
+			HashMap<String, SerializableVariable> persistentVariables) {
+		this.persistentVariables = persistentVariables;
+	}
+
+	public void addPersistentVariable(String varName, Object value) {
+		persistentVariables.put(varName, new SerializableVariable(value));
+	}
 }

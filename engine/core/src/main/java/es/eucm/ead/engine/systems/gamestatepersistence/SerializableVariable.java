@@ -34,16 +34,29 @@
  *      You should have received a copy of the GNU Lesser General Public License
  *      along with eAdventure.  If not, see <http://www.gnu.org/licenses/>.
  */
-package es.eucm.ead.engine;
+package es.eucm.ead.engine.systems.gamestatepersistence;
 
-import es.eucm.ead.engine.assets.GameAssets;
-import es.eucm.ead.engine.systems.gamestatepersistence.PersistentGameStateSystem;
-import es.eucm.ead.engine.variables.VariablesManager;
+import java.io.Serializable;
 
-public interface EngineInitializer {
+/**
+ * Just keeps track of a persistent variable's value Created by jtorrente on
+ * 30/10/2015.
+ */
+class SerializableVariable implements Serializable {
+	private Object value;
 
-	void init(GameAssets assets, GameLoop gameLoop,
-			EntitiesLoader entitiesLoader, GameView gameView,
-			VariablesManager variablesManager,
-			PersistentGameStateSystem persistentGameStateSystem);
+	public SerializableVariable() {
+	}
+
+	public SerializableVariable(Object value) {
+		this.value = value;
+	}
+
+	public Object getValue() {
+		return value;
+	}
+
+	public void setValue(Object value) {
+		this.value = value;
+	}
 }

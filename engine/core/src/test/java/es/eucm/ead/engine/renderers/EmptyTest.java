@@ -49,7 +49,8 @@ public class EmptyTest extends EngineTest {
 	@Override
 	public void prepareEngine() {
 		new DefaultEngineInitializer().init(gameAssets, gameLoop,
-				entitiesLoader, gameView, variablesManager);
+				entitiesLoader, gameView, variablesManager,
+				persistentGameStateSystem);
 	}
 
 	@Override

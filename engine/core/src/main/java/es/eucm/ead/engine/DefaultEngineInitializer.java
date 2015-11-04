@@ -66,6 +66,7 @@ import es.eucm.ead.engine.systems.effects.effecttotween.AlphaEffectToTween;
 import es.eucm.ead.engine.systems.effects.effecttotween.MoveEffectToTween;
 import es.eucm.ead.engine.systems.effects.effecttotween.RotateEffectToTween;
 import es.eucm.ead.engine.systems.effects.effecttotween.ScaleEffectToTween;
+import es.eucm.ead.engine.systems.gamestatepersistence.PersistentGameStateSystem;
 import es.eucm.ead.engine.systems.positiontracking.ChaseEntitySystem;
 import es.eucm.ead.engine.systems.positiontracking.MoveByEntitySystem;
 import es.eucm.ead.engine.systems.tweens.TweenSystem;
@@ -89,6 +90,7 @@ import es.eucm.ead.schema.components.positiontracking.Parallax;
 import es.eucm.ead.schema.components.tweens.*;
 import es.eucm.ead.schema.effects.*;
 import es.eucm.ead.schema.effects.controlstructures.*;
+import es.eucm.ead.schema.engine.components.PersistentGameState;
 import es.eucm.ead.schema.renderers.*;
 
 /**
@@ -101,23 +103,26 @@ public class DefaultEngineInitializer implements EngineInitializer {
 	@Override
 	public void init(GameAssets assets, GameLoop gameLoop,
 			EntitiesLoader entitiesLoader, GameView gameView,
-			VariablesManager variablesManager) {
+			VariablesManager variablesManager,
+			PersistentGameStateSystem persistentGameStateSystem) {
 
 		registerComponents(entitiesLoader.getComponentLoader(), assets,
 				gameLoop, variablesManager, entitiesLoader);
 		registerSystems(assets, gameLoop, entitiesLoader, gameView,
-				variablesManager);
+				variablesManager, persistentGameStateSystem);
 	}
 
 	protected void registerSystems(final GameAssets gameAssets,
 			final GameLoop gameLoop, final EntitiesLoader entitiesLoader,
-			final GameView gameView, final VariablesManager variablesManager) {
+			final GameView gameView, final VariablesManager variablesManager,
+			final PersistentGameStateSystem persistentGameStateSystem) {
 
 		final ComponentLoader componentLoader = entitiesLoader
 				.getComponentLoader();
 
 		TweenSystem tweenSystem = new TweenSystem();
 
+		gameLoop.addSystem(persistentGameStateSystem);
 		gameLoop.addSystem(new TouchBehaviorSystem(gameLoop, variablesManager));
 		gameLoop.addSystem(new TimersSystem(gameLoop, variablesManager));
 		gameLoop.addSystem(new KeyBehaviorSystem(gameLoop, variablesManager));
@@ -298,6 +303,8 @@ public class DefaultEngineInitializer implements EngineInitializer {
 		componentLoader.registerComponentProcessor(Animation.class,
 				new AnimationProcessor(gameLoop));
 
+		componentLoader.registerComponentProcessor(PersistentGameState.class,
+				new PersistentGameStateProcessor(gameLoop));
 		componentLoader.registerComponentProcessor(Visibility.class,
 				new VisibilityProcessor(gameLoop));
 		componentLoader.registerComponentProcessor(Touchability.class,

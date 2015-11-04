@@ -50,6 +50,7 @@ import com.badlogic.gdx.utils.viewport.Viewport;
 import es.eucm.ead.engine.assets.GameAssets.ImageUtils;
 import es.eucm.ead.engine.assets.GameAssets;
 import es.eucm.ead.engine.expressions.operators.OperationsFactory;
+import es.eucm.ead.engine.systems.gamestatepersistence.PersistentGameStateSystem;
 import es.eucm.ead.engine.variables.VariablesManager;
 
 import java.util.HashMap;
@@ -69,6 +70,8 @@ public class EngineApplicationListener implements ApplicationListener {
 	private DefaultGameView gameView;
 
 	protected ImageUtils imageUtils;
+
+	private PersistentGameStateSystem persistentGameStateSystem;
 
 	public EngineApplicationListener(ImageUtils imageUtils) {
 		this.imageUtils = imageUtils;
@@ -90,6 +93,9 @@ public class EngineApplicationListener implements ApplicationListener {
 				accessor, gameView);
 		VariablesManager variablesManager = new VariablesManager(accessor,
 				operationsFactory);
+		persistentGameStateSystem = new PersistentGameStateSystem(
+				variablesManager);
+		persistentGameStateSystem.read();
 
 		componentLoader = new ComponentLoader(gameAssets, variablesManager);
 
@@ -102,7 +108,7 @@ public class EngineApplicationListener implements ApplicationListener {
 
 		DefaultEngineInitializer initializer = new DefaultEngineInitializer();
 		initializer.init(gameAssets, gameLoop, entitiesLoader, gameView,
-				variablesManager);
+				variablesManager, persistentGameStateSystem);
 
 		stage = createStage();
 		Gdx.input.setInputProcessor(stage);
@@ -115,8 +121,8 @@ public class EngineApplicationListener implements ApplicationListener {
 	 * {@link PolygonSpriteBatch} instead of {@link SpriteBatch}
 	 * 
 	 * PolygonSpriteBatch must be used for
-	 * {@link es.eucm.ead.engine.components.renderers.SpineAnimationComponent}
-	 * to work properly.
+	 * {@link es.eucm.ead.engine.components.renderers.SpineActor} to work
+	 * properly.
 	 */
 	protected Stage createStage() {
 		Viewport viewport = new ScalingViewport(Scaling.stretch,
@@ -169,6 +175,7 @@ public class EngineApplicationListener implements ApplicationListener {
 
 	@Override
 	public void pause() {
+		persistentGameStateSystem.save();
 	}
 
 	@Override

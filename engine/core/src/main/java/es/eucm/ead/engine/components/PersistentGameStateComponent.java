@@ -34,16 +34,35 @@
  *      You should have received a copy of the GNU Lesser General Public License
  *      along with eAdventure.  If not, see <http://www.gnu.org/licenses/>.
  */
-package es.eucm.ead.engine;
+package es.eucm.ead.engine.components;
 
-import es.eucm.ead.engine.assets.GameAssets;
-import es.eucm.ead.engine.systems.gamestatepersistence.PersistentGameStateSystem;
-import es.eucm.ead.engine.variables.VariablesManager;
+import com.badlogic.ashley.core.Component;
+import com.badlogic.gdx.utils.Array;
+import es.eucm.ead.schema.engine.components.PersistentGameState;
+import es.eucm.ead.schema.engine.components.PersistentVariable;
 
-public interface EngineInitializer {
+/**
+ * Engine equivalent to {@link PersistentGameState}. Created by jtorrente on
+ * 29/10/2015.
+ */
+public class PersistentGameStateComponent extends Component {
+	private Array<PersistentVariable> persistentVariables;
 
-	void init(GameAssets assets, GameLoop gameLoop,
-			EntitiesLoader entitiesLoader, GameView gameView,
-			VariablesManager variablesManager,
-			PersistentGameStateSystem persistentGameStateSystem);
+	public PersistentGameStateComponent() {
+		persistentVariables = new Array<PersistentVariable>();
+	}
+
+	public PersistentGameStateComponent(
+			Array<PersistentVariable> persistentVariables) {
+		this.persistentVariables = persistentVariables;
+	}
+
+	public Array<PersistentVariable> getPersistentVariables() {
+		return persistentVariables;
+	}
+
+	public void setPersistentVariables(
+			Array<PersistentVariable> persistentVariables) {
+		this.persistentVariables = persistentVariables;
+	}
 }

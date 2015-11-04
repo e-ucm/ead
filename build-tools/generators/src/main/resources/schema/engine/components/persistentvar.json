@@ -1,0 +1,16 @@
+{
+  "additionalProperties": false,
+  "javaType": "es.eucm.ead.schema.engine.components.PersistentVariable",
+  "type": "object",
+  "properties": {
+    "variable": {
+      "type": "string",
+      "description": "The name of the variable to make persistent. ",
+      "required": "true"
+    },
+    "initValue": {
+      "type": "string",
+      "description": "Expression that defines the first value that the variable will get when it cannot be retrieved from persistence level"
+    }
+  }
+}
