@@ -38,7 +38,6 @@ package es.eucm.ead.engine;
 
 import com.badlogic.gdx.Net;
 import com.badlogic.gdx.files.FileHandle;
-import es.eucm.ead.engine.gleaner.components.GleanerSettingsComponent;
 import es.eucm.ead.engine.systems.GleanerSystem;
 import es.eucm.gleaner.tracker.Tracker;
 import es.eucm.gleaner.tracker.storage.LocalStorage;

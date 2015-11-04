@@ -100,7 +100,8 @@ public class Engine {
 
 	public void init(EngineInitializer engineInitializer) {
 		engineInitializer.init(editorGameAssets, gameLoop, entitiesLoader,
-				gameView, variablesManager, persistentGameStateSystem, gleanerSystem);
+				gameView, variablesManager, persistentGameStateSystem,
+				gleanerSystem);
 	}
 
 	public EntitiesLoader getEntitiesLoader() {

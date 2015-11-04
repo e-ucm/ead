@@ -46,5 +46,6 @@ public interface EngineInitializer {
 	void init(GameAssets assets, GameLoop gameLoop,
 			EntitiesLoader entitiesLoader, GameView gameView,
 			VariablesManager variablesManager,
-			PersistentGameStateSystem persistentGameStateSystem, GleanerSystem gleanerSystem);
+			PersistentGameStateSystem persistentGameStateSystem,
+			GleanerSystem gleanerSystem);
 }
