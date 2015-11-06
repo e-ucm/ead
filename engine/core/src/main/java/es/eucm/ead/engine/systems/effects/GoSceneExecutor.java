@@ -150,6 +150,11 @@ public class GoSceneExecutor extends EffectExecutor<GoScene> implements
 		finish();
 	}
 
+	@Override
+	public boolean toEngine() {
+		return true;
+	}
+
 	protected void finish() {
 		transitionManager.remove();
 		gameLoop.setPlaying(true);
