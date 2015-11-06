@@ -158,9 +158,9 @@ public abstract class DemoBuilder {
 	protected int sceneCount;
 	protected float gameWidth;
 	protected float gameHeight;
-	private String lastSceneId;
-	private ModelEntity game;
-	private Behavior initGame;
+	protected String lastSceneId;
+	protected ModelEntity game;
+	protected Behavior initGame;
 
 	// Helper class to create expressions
 	protected ExpressionBuilder eb = new ExpressionBuilder();
@@ -1140,6 +1140,17 @@ public abstract class DemoBuilder {
 	 * {@link es.eucm.ead.schema.components.conversation.Node} or
 	 * {@link es.eucm.ead.schema.effects.controlstructures.ControlStructure}.
 	 */
+	public DemoBuilder effect(Effect effect) {
+		return effect(getLastComponent(), effect);
+	}
+
+	/**
+	 * Adds the given {@code effect} to the given {@code container}, which can
+	 * be {@link es.eucm.ead.schema.components.behaviors.Behavior},
+	 * {@link es.eucm.ead.schema.data.Script},
+	 * {@link es.eucm.ead.schema.components.conversation.Node} or
+	 * {@link es.eucm.ead.schema.effects.controlstructures.ControlStructure}.
+	 */
 	public DemoBuilder effect(Object container, Effect effect) {
 		if (container instanceof Behavior) {
 			Behavior behavior = (Behavior) container;
@@ -1786,6 +1797,67 @@ public abstract class DemoBuilder {
 	public DemoBuilder name(String name) {
 		getLastEntity().setName(name);
 		return this;
+	}
+
+	/**
+	 * Builds a {@link PreloadEntity} effect that will load in the background
+	 * the given entity, plus all the binary resources referenced in it (e.g.
+	 * images and sounds). When the process is complete, the given set of
+	 * post-effects will be launched. This can be used as a callback, or to
+	 * schedule background loading tasks in separate chunks.
+	 * 
+	 * @param entityUri
+	 *            The path of the entity to be loaded in the background (e.g.
+	 *            scenes/s1.json)
+	 * @param effects
+	 *            The set of effects to be launched once all the resources of
+	 *            the entity have been loaded (i.e. callback)
+	 */
+	public PreloadEntity makePreloadEntity(String entityUri, Effect... effects) {
+		PreloadEntity preloadEntity = new PreloadEntity();
+		preloadEntity.setEntityUri(entityUri);
+		for (Effect effect : effects) {
+			preloadEntity.getEffects().add(effect);
+		}
+		return preloadEntity;
+	}
+
+	/**
+	 * Creates a {@link PreloadEntity} object using
+	 * {@link #makePreloadEntity(String, Effect...)} and adds it to the last
+	 * component created, which is expected to be a Behavior.
+	 * 
+	 * @param entityUri
+	 *            The path of the entity to be loaded in the background (e.g.
+	 *            scenes/s1.json)
+	 * @param effects
+	 *            The set of effects to be launched once all the resources of
+	 *            the entity have been loaded (i.e. callback)
+	 * @return This DemoBuilder object, so calls can be chained
+	 */
+	public DemoBuilder preloadEntity(String entityUri, Effect... effects) {
+		return effect(makePreloadEntity(entityUri, effects));
+	}
+
+	/**
+	 * Creates a {@link PreloadEntity} object using
+	 * {@link #makePreloadEntity(String, Effect...)} and adds it to the given
+	 * container. For a list of types of containers supported, see
+	 * {@link #effect(Object, Effect)}.
+	 * 
+	 * @param container
+	 *            The object the effect will be added to
+	 * @param entityUri
+	 *            The path of the entity to be loaded in the background (e.g.
+	 *            scenes/s1.json)
+	 * @param effects
+	 *            The set of effects to be launched once all the resources of
+	 *            the entity have been loaded (i.e. callback)
+	 * @return This DemoBuilder object, so calls can be chained
+	 */
+	public DemoBuilder preloadEntity(Object container, String entityUri,
+			Effect... effects) {
+		return effect(container, makePreloadEntity(entityUri, effects));
 	}
 
 	public DemoBuilder reference(String referenceUri) {
