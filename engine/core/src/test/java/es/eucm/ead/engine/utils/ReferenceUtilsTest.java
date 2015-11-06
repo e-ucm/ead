@@ -59,6 +59,11 @@ public class ReferenceUtilsTest {
 				"icons/icon2.jpg", "skeleton" });
 	}
 
+	private static Array<String> buildEntityUris() {
+		return new Array<String>(new String[] { "scenes/scene1.JSON",
+				"scenes/s2.json", "reusable1.jsn" });
+	}
+
 	@Test
 	/**
 	 * Tests {@link es.eucm.ead.engine.utils.ReferenceUtils#listRefBinaries(Object)}
@@ -141,16 +146,17 @@ public class ReferenceUtilsTest {
 		private SpineAnimation animation;
 
 		public BinRefContainer(Array<String> uris) {
-			uriRef2 = uris.get(1);
-			refHolder = new SimpleRefHolder(uris.get(2));
-			list.add(new SimpleRefHolder(uris.get(3)));
-			list.add(new SimpleRefHolder(uris.get(4)));
-			array.add(new SimpleRefHolder(uris.get(5)));
-			array.add(new SimpleRefHolder(uris.get(0)));
-			uriMap.put("uri1", uris.get(6));
-			uriMap.put("uri2", uris.get(7));
+			int s = uris.size;
+			uriRef2 = uris.get(1 % s);
+			refHolder = new SimpleRefHolder(uris.get(2 % s));
+			list.add(new SimpleRefHolder(uris.get(3 % s)));
+			list.add(new SimpleRefHolder(uris.get(4 % s)));
+			array.add(new SimpleRefHolder(uris.get(5 % s)));
+			array.add(new SimpleRefHolder(uris.get(0 % s)));
+			uriMap.put("uri1", uris.get(6 % s));
+			uriMap.put("uri2", uris.get(7 % s));
 			animation = new SpineAnimation();
-			animation.setUri(uris.get(8));
+			animation.setUri(uris.get(8 % s));
 		}
 	}
 

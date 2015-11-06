@@ -80,16 +80,76 @@ public class ReferenceUtils {
 				|| strValueLowerCase.endsWith(".atlas")) {
 			return true;
 		}
+		if (hasImageExtension(strValue)) {
+			return true;
+		}
+		if (hasVideoExtension(strValue)) {
+			return true;
+		}
+		if (hasAudioExtension(strValue)) {
+			return true;
+		}
+		return false;
+	}
+
+	/**
+	 * Checks if the given String has image extension. That is, if the String
+	 * ends with "." followed by a one of the file extensions in
+	 * {@link #imageExtensions}. The comparison is case insensitive
+	 * 
+	 * @param strValue
+	 *            The String value to be checked
+	 * @return True if the value ends with image format extension, false
+	 *         otherwise (or if null)
+	 */
+	public static boolean hasImageExtension(String strValue) {
+		if (strValue == null)
+			return false;
+		String strValueLowerCase = strValue.toLowerCase();
 		for (String imageExtension : imageExtensions) {
 			if (strValueLowerCase.endsWith("." + imageExtension.toLowerCase())) {
 				return true;
 			}
 		}
+		return false;
+	}
+
+	/**
+	 * Checks if the given String has a video extension. That is, if the String
+	 * ends with "." followed by one of the extensions in
+	 * {@link #videoExtensions}. The comparison is case insensitive
+	 * 
+	 * @param strValue
+	 *            The String value to be checked
+	 * @return True if the value ends with video format extension, false
+	 *         otherwise (or if null)
+	 */
+	public static boolean hasVideoExtension(String strValue) {
+		if (strValue == null)
+			return false;
+		String strValueLowerCase = strValue.toLowerCase();
 		for (String binaryExtension : videoExtensions) {
 			if (strValueLowerCase.endsWith("." + binaryExtension.toLowerCase())) {
 				return true;
 			}
 		}
+		return false;
+	}
+
+	/**
+	 * Checks if the given String has audio extension. That is, if the String
+	 * ends with "." followed by a one of the extensions in (
+	 * {@link #audioExtensions}). The comparison is case insensitive
+	 * 
+	 * @param strValue
+	 *            The String value to be checked
+	 * @return True if the value ends with audio format extension, false
+	 *         otherwise (or if null)
+	 */
+	public static boolean hasAudioExtension(String strValue) {
+		if (strValue == null)
+			return false;
+		String strValueLowerCase = strValue.toLowerCase();
 		for (String binaryExtension : audioExtensions) {
 			if (strValueLowerCase.endsWith("." + binaryExtension.toLowerCase())) {
 				return true;
@@ -377,6 +437,26 @@ public class ReferenceUtils {
 		public boolean checkAndAdd(String binaryReference) {
 			if (binaryReference == null
 					|| !hasBinaryExtension(binaryReference)
+					|| lowerCaseReferences.contains(
+							binaryReference.toLowerCase(), false)) {
+				return false;
+			}
+			lowerCaseReferences.add(binaryReference.toLowerCase());
+			originalReferences.add(binaryReference);
+			return true;
+		}
+
+		/**
+		 * Adds the given String reference to the list if it is not still
+		 * present and it has json extension
+		 * 
+		 * @param binaryReference
+		 *            The Json reference to be added (e.g. "scenes/s1.json")
+		 * @return True if added, false otherwise
+		 */
+		public boolean checkAndAddJson(String binaryReference) {
+			if (binaryReference == null
+					|| !JsonExtension.hasJsonEnd(binaryReference)
 					|| lowerCaseReferences.contains(
 							binaryReference.toLowerCase(), false)) {
 				return false;
