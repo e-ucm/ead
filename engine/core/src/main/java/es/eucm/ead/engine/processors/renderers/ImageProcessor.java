@@ -42,6 +42,7 @@ import com.badlogic.gdx.utils.Array;
 import es.eucm.ead.engine.GameLoop;
 import es.eucm.ead.engine.assets.Assets.AssetLoadedCallback;
 import es.eucm.ead.engine.assets.GameAssets;
+import es.eucm.ead.engine.assets.MediaResourcesLoader;
 import es.eucm.ead.engine.assets.ScaledTexture;
 import es.eucm.ead.engine.components.renderers.ImageActor;
 import es.eucm.ead.engine.components.renderers.RendererComponent;
@@ -61,7 +62,7 @@ public class ImageProcessor extends RendererProcessor<Image> {
 		imageActor.setName(image.getUri());
 		rendererComponent.setRenderer(imageActor);
 
-		gameAssets.get(image.getUri() + ".tex", ScaledTexture.class,
+		MediaResourcesLoader.loadImage(image.getUri(), gameAssets,
 				new AssetLoadedCallback<ScaledTexture>() {
 					@Override
 					public void loaded(String fileName, ScaledTexture asset) {
