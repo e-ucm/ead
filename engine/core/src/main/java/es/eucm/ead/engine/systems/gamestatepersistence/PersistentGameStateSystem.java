@@ -184,7 +184,7 @@ public class PersistentGameStateSystem extends IteratingSystem {
 	}
 
 	/**
-	 * Reads persistent game state from disk. This inlcudes persistent
+	 * Reads persistent game state from disk. This includes persistent
 	 * variables, which are read and their value updated accordingly. If
 	 * variables read from disk have not been yet initialized in global context,
 	 * it is done so.
