@@ -40,7 +40,6 @@ import com.badlogic.ashley.core.Entity;
 import com.badlogic.ashley.core.Family;
 import es.eucm.ead.engine.GameLoop;
 import es.eucm.ead.engine.components.VisibilityComponent;
-import es.eucm.ead.engine.entities.EngineEntity;
 import es.eucm.ead.engine.variables.VariablesManager;
 
 /**
@@ -60,13 +59,6 @@ public class VisibilitySystem extends ConditionalSystem {
 	public void doProcessEntity(Entity entity, float deltaTime) {
 		VisibilityComponent visibilityComponent = entity
 				.getComponent(VisibilityComponent.class);
-
-		if (entity instanceof EngineEntity) {
-			boolean condition = evaluateCondition(visibilityComponent
-					.getCondition());
-			// Change the visibility
-			EngineEntity engineEntity = (EngineEntity) entity;
-			engineEntity.getGroup().setVisible(condition);
-		}
+		visibilityComponent.update();
 	}
 }

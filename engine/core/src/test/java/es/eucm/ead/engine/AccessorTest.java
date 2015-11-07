@@ -46,6 +46,7 @@ import com.badlogic.gdx.utils.ObjectMap;
 import es.eucm.ead.engine.components.VisibilityComponent;
 import es.eucm.ead.engine.processors.TagsProcessor;
 import es.eucm.ead.engine.processors.VisibilityProcessor;
+import es.eucm.ead.engine.systems.VisibilitySystem;
 import es.eucm.ead.schema.components.ModelComponent;
 import es.eucm.ead.schema.components.Tags;
 import es.eucm.ead.schema.components.Visibility;
@@ -181,7 +182,7 @@ public class AccessorTest extends EngineTest {
 		Map<String, Object> rootObjects = getRootObjects();
 
 		componentLoader.registerComponentProcessor(Visibility.class,
-				new VisibilityProcessor(gameLoop));
+				new VisibilityProcessor(gameLoop, variablesManager));
 		componentLoader.registerComponentProcessor(Tags.class,
 				new TagsProcessor(gameLoop));
 

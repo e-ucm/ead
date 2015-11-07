@@ -36,9 +36,42 @@
  */
 package es.eucm.ead.engine.components;
 
+import es.eucm.ead.engine.entities.EngineEntity;
+import es.eucm.ead.engine.variables.VariablesManager;
+
 /**
  * Engine equivalent for {@link es.eucm.ead.schema.components.Visibility}
  * Created by Javier Torrente on 17/04/14.
  */
 public class VisibilityComponent extends ConditionedComponent {
+
+	private VariablesManager variablesManager;
+
+	public void setVariablesManager(VariablesManager variablesManager) {
+		this.variablesManager = variablesManager;
+	}
+
+	/*
+	 * Method init() is overriden to make sure that entity's visibility is
+	 * updated BEFORE it is attached to the gameView. Otherwise a nasty
+	 * "flickering" effect happens when visibility is false, as the entity is
+	 * added and then hidden, leaving it visible for a fraction of a second
+	 */
+	@Override
+	public void init() {
+		update();
+	}
+
+	/**
+	 * Evaluates condition and applies its changes to the parent entity's group
+	 */
+	public void update() {
+		if (parent instanceof EngineEntity) {
+			boolean condition = variablesManager.evaluateCondition(
+					getCondition(), true);
+			// Change the visibility
+			EngineEntity engineEntity = (EngineEntity) parent;
+			engineEntity.getGroup().setVisible(condition);
+		}
+	}
 }
