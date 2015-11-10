@@ -68,9 +68,11 @@ public class VisibilityTest extends EngineTest {
 	@Before
 	public void setUp() {
 		super.setUp();
-		gameLoop.addSystem(new VisibilitySystem(gameLoop, variablesManager));
+		VisibilitySystem visibilitySystem = new VisibilitySystem(gameLoop,
+				variablesManager);
+		gameLoop.addSystem(visibilitySystem);
 		componentLoader.registerComponentProcessor(Visibility.class,
-				new VisibilityProcessor(gameLoop));
+				new VisibilityProcessor(gameLoop, variablesManager));
 
 		// Add a variable that will be referenced in the expressions of this
 		// test
@@ -92,10 +94,9 @@ public class VisibilityTest extends EngineTest {
 				.all(VisibilityComponent.class).get());
 		EngineEntity engineEntity = (EngineEntity) entityIntMap.iterator()
 				.next();
-		assertTrue(engineEntity.getGroup().isVisible());
+		assertFalse(engineEntity.getGroup().isVisible());
 
 		gameLoop.update(1);
-		assertFalse(engineEntity.getGroup().isVisible());
 
 		variablesManager.setVarToExpression(variableDef, "i1");
 		gameLoop.update(1);

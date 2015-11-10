@@ -115,7 +115,7 @@ public class GoSceneExecutor extends EffectExecutor<GoScene> implements
 						false));
 		gameLoop.setPlaying(effect.isUpdateGameLoop());
 
-		if (sceneLayer.getChildren().size == 1) {
+		if (sceneLayer.getChildren().size >= 1) {
 			Actor currentScene = sceneLayer.getChildren().get(0);
 			transitionManager.setCurrentScene(
 					((Stage) Gdx.input.getInputProcessor()).getBatch(),

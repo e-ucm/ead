@@ -39,6 +39,8 @@ package es.eucm.ead.engine.processors;
 import com.badlogic.ashley.core.Component;
 import es.eucm.ead.engine.GameLoop;
 import es.eucm.ead.engine.components.VisibilityComponent;
+import es.eucm.ead.engine.systems.VisibilitySystem;
+import es.eucm.ead.engine.variables.VariablesManager;
 import es.eucm.ead.schema.components.Visibility;
 
 /**
@@ -46,14 +48,20 @@ import es.eucm.ead.schema.components.Visibility;
  * engine components. Created by Javier Torrente on 17/04/14.
  */
 public class VisibilityProcessor extends ComponentProcessor<Visibility> {
-	public VisibilityProcessor(GameLoop engine) {
+
+	private VariablesManager variablesManager;
+
+	public VisibilityProcessor(GameLoop engine,
+			VariablesManager variablesManager) {
 		super(engine);
+		this.variablesManager = variablesManager;
 	}
 
 	@Override
 	public Component getComponent(Visibility component) {
 		VisibilityComponent visibilityComponent = gameLoop
 				.createComponent(VisibilityComponent.class);
+		visibilityComponent.setVariablesManager(variablesManager);
 		visibilityComponent.setCondition(component.getCondition());
 		return visibilityComponent;
 	}

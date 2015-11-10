@@ -318,7 +318,7 @@ public class DefaultEngineInitializer implements EngineInitializer {
 		componentLoader.registerComponentProcessor(PersistentGameState.class,
 				new PersistentGameStateProcessor(gameLoop));
 		componentLoader.registerComponentProcessor(Visibility.class,
-				new VisibilityProcessor(gameLoop));
+				new VisibilityProcessor(gameLoop, variablesManager));
 		componentLoader.registerComponentProcessor(Touchability.class,
 				new TouchabilityProcessor(gameLoop));
 		componentLoader.registerComponentProcessor(PathBoundary.class,
