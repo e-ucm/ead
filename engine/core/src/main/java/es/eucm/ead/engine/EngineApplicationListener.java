@@ -87,7 +87,7 @@ public class EngineApplicationListener implements ApplicationListener {
 		Gdx.gl.glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
 
 		gameLoop = new GameLoop();
-		gleanerSystem = new GleanerSystem();
+		gleanerSystem = new GleanerSystem(gameLoop);
 		gameView = new DefaultGameView(gameLoop, gleanerSystem);
 
 		gameAssets = new GameAssets(Gdx.files, imageUtils);
@@ -97,7 +97,7 @@ public class EngineApplicationListener implements ApplicationListener {
 				accessor, gameView);
 		VariablesManager variablesManager = new VariablesManager(accessor,
 				operationsFactory);
-		persistentGameStateSystem = new PersistentGameStateSystem(
+		persistentGameStateSystem = new PersistentGameStateSystem(gameLoop,
 				variablesManager);
 		persistentGameStateSystem.read();
 

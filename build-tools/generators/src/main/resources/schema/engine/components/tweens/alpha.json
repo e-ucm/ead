@@ -11,4 +11,5 @@
             "type": "number",
             "description": "alpha value, between 0 (not visible) to 1 (fully visible)"
         }
-    }}
+    }
+}

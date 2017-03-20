@@ -36,43 +36,21 @@
  */
 package es.eucm.ead.engine.systems.tweens.tweencreators;
 
-import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.graphics.Color;
-import com.badlogic.gdx.utils.reflect.ClassReflection;
-import com.badlogic.gdx.utils.reflect.Field;
-import com.badlogic.gdx.utils.reflect.ReflectionException;
-
-import es.eucm.ead.engine.entities.EngineEntity;
-import es.eucm.ead.engine.systems.tweens.FieldAccessor.FieldWrapper;
 import es.eucm.ead.schema.components.tweens.AlphaTween;
 import es.eucm.ead.schema.components.tweens.FieldTween;
 
 /**
  * Creates tweens for {@link FieldTween}
  */
-public class AlphaTweenCreator extends TweenCreator<AlphaTween> {
+public class AlphaTweenCreator extends ColorAttributeTweenCreator<AlphaTween> {
 
 	@Override
-	public Object getTarget(EngineEntity entity, AlphaTween fieldTween) {
-		try {
-			Class clazz = Color.class;
-			Field field = ClassReflection.getDeclaredField(clazz, "a");
-			field.setAccessible(true);
-			return new FieldWrapper(field, entity.getGroup().getColor());
-		} catch (ReflectionException e) {
-			Gdx.app.error("FieldTweenCreator", "Error creating field wrapper",
-					e);
-		}
-		return null;
+	protected float getColorAttribute(AlphaTween tween) {
+		return tween.getAlpha();
 	}
 
 	@Override
-	public int getTweenType(AlphaTween tween) {
-		return 0;
-	}
-
-	@Override
-	public float[] getTargets(int tweenType, AlphaTween tween) {
-		return new float[] { tween.getAlpha() };
+	protected String getColorAttributeName() {
+		return "a";
 	}
 }

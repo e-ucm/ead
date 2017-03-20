@@ -54,7 +54,7 @@ public class IfThenElseIfExecutor extends
 	}
 
 	@Override
-	public void execute(Entity target, IfThenElseIf effect) {
+	public void doExecute(IfThenElseIf effect) {
 		// If part
 		if (checkAndLaunch(effect)) {
 			return;

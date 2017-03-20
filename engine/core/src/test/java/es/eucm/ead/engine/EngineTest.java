@@ -107,7 +107,7 @@ public class EngineTest extends DemoBuilder {
 				stage.draw();
 			}
 		};
-		gleanerSystem = new GleanerSystemForTest();
+		gleanerSystem = new GleanerSystemForTest(gameLoop);
 		gameView = new DefaultGameView(gameLoop, gleanerSystem);
 		stage = new Stage();
 		stage.addActor(gameView);
@@ -115,7 +115,7 @@ public class EngineTest extends DemoBuilder {
 		operationsFactory = new OperationsFactory(gameLoop, accessor, gameView);
 		variablesManager = new VariablesManager(accessor, operationsFactory);
 		componentLoader = new ComponentLoader(gameAssets, variablesManager);
-		persistentGameStateSystem = new PersistentGameStateSystem(
+		persistentGameStateSystem = new PersistentGameStateSystem(gameLoop,
 				variablesManager);
 		accessor.setComponentLoader(componentLoader);
 		entitiesLoader = new EntitiesLoader(gameLoop, gameAssets,

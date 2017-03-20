@@ -39,6 +39,7 @@ package es.eucm.ead.engine.systems.effects.controlstructures;
 import com.badlogic.ashley.core.Entity;
 import es.eucm.ead.engine.systems.EffectsSystem;
 import es.eucm.ead.engine.systems.effects.EffectExecutor;
+import es.eucm.ead.engine.variables.ReservedVariableNames;
 import es.eucm.ead.engine.variables.VariablesManager;
 import es.eucm.ead.schema.effects.controlstructures.ControlStructure;
 
@@ -58,5 +59,15 @@ public abstract class ControlStructureExecutor<T extends ControlStructure>
 		this.variablesManager = variablesManager;
 	}
 
-	public abstract void execute(Entity target, T effect);
+	@Override
+	public void execute(Entity target, T effect) {
+		// Push new this
+		variablesManager.push();
+		variablesManager.registerVar(ReservedVariableNames.THIS_VAR, target,
+				false);
+		doExecute(effect);
+		variablesManager.pop();
+	}
+
+	public abstract void doExecute(T effect);
 }

@@ -36,16 +36,13 @@
  */
 package es.eucm.ead.engine.collision;
 
-import com.badlogic.gdx.math.Intersector;
-import com.badlogic.gdx.math.Polygon;
-import com.badlogic.gdx.math.Rectangle;
-import com.badlogic.gdx.math.Vector2;
+import com.badlogic.gdx.math.*;
 import com.badlogic.gdx.utils.Pools;
 
 /**
  * Created by Javier Torrente on 5/07/14.
  */
-public class RectangleWrapper extends AreaWrapper {
+public class RectangleWrapper extends AreaWrapper<Rectangle> {
 	Rectangle rectangle;
 
 	public void set(Rectangle rectangle) {
@@ -77,6 +74,11 @@ public class RectangleWrapper extends AreaWrapper {
 		Pools.free(v2);
 		Pools.free(rectPol);
 		return intersected;
+	}
+
+	@Override
+	public Rectangle getInnerShape() {
+		return rectangle;
 	}
 
 	private void toPolygon(Polygon polygon) {

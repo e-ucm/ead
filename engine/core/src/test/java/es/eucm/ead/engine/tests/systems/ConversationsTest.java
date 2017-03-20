@@ -40,12 +40,12 @@ import com.badlogic.ashley.core.Entity;
 import com.badlogic.ashley.core.Family;
 import com.badlogic.ashley.systems.IteratingSystem;
 import com.badlogic.ashley.utils.ImmutableArray;
+import es.eucm.ead.engine.GleanerSystemForTest;
 import es.eucm.ead.engine.components.LineComponent;
 import es.eucm.ead.engine.components.NodeComponent;
 import es.eucm.ead.engine.components.renderers.OptionsComponent;
 import es.eucm.ead.engine.processors.ConversationProcessor;
 import es.eucm.ead.engine.processors.behaviors.BehaviorsProcessor;
-import es.eucm.ead.engine.systems.GleanerSystem;
 import es.eucm.ead.engine.systems.conversations.ConditionedRuntimeNode;
 import es.eucm.ead.engine.systems.conversations.EffectsRuntimeNode;
 import es.eucm.ead.engine.systems.conversations.LineRuntimeNode;
@@ -99,7 +99,8 @@ public class ConversationsTest extends EffectTest {
 		 */
 
 		effectsSystem.registerEffectExecutor(ChangeVar.class,
-				new ChangeVarExecutor(variablesManager, new GleanerSystem()));
+				new ChangeVarExecutor(variablesManager,
+						new GleanerSystemForTest(gameLoop)));
 		effectsSystem.registerEffectExecutor(TriggerConversation.class,
 				new TriggerConversationExecutor());
 

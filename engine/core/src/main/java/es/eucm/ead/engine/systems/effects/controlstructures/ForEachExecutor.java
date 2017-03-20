@@ -53,7 +53,7 @@ public class ForEachExecutor extends ControlStructureExecutor<ForEach> {
 	}
 
 	@Override
-	public void execute(Entity target, ForEach effect) {
+	public void doExecute(ForEach effect) {
 		Object o = variablesManager.evaluateExpression(effect
 				.getListExpression());
 		if (o instanceof Array) {

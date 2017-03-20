@@ -99,10 +99,11 @@ public class BackgroundShadersDemo extends ExecutableDemoBuilder {
 		Shader shader = new Shader();
 		shader.setUri("test" + i + ".fragment");
 		shader.getUniforms().add(
-				param("time", "$" + ReservedVariableNames.TIME));
+				makeParameter("time", "$" + ReservedVariableNames.TIME));
 		shader.getUniforms().add(
-				param("resolution", "$" + ReservedVariableNames.FRAME_WIDTH
-						+ ",$" + ReservedVariableNames.FRAME_HEIGHT));
+				makeParameter("resolution", "$"
+						+ ReservedVariableNames.FRAME_WIDTH + ",$"
+						+ ReservedVariableNames.FRAME_HEIGHT));
 
 		background.getComponents().add(shader);
 

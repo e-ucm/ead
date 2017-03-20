@@ -56,6 +56,10 @@ public class GleanerSystemForTest extends GleanerSystem {
 	private FileHandle gleanerFile;
 	public String data;
 
+	public GleanerSystemForTest(GameLoop gameLoop) {
+		super(gameLoop);
+	}
+
 	public DataSentListener getListener() {
 		return listener;
 	}

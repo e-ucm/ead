@@ -1,0 +1,22 @@
+{
+    "additionalProperties": false,
+    "javaType": "es.eucm.ead.schema.components.tweens.ColorTween",
+    "type": "object",
+    "extends": {
+        "$ref": "tween.json"
+    },
+    "description": "Tweens the alpha of the entity",
+    "properties": {
+        "red": {
+            "type": "number",
+            "description": "alpha value, between 0 (not visible) to 1 (fully visible)"
+        },
+        "green": {
+            "type": "number",
+            "description": "alpha value, between 0 (not visible) to 1 (fully visible)"
+        },
+        "blue": {
+            "type": "number",
+            "description": "alpha value, between 0 (not visible) to 1 (fully visible)"
+        }
+    }}

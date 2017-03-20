@@ -43,10 +43,13 @@ import com.badlogic.ashley.systems.IteratingSystem;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.utils.Json;
+import es.eucm.ead.engine.GameLoop;
 import es.eucm.ead.engine.components.PersistentGameStateComponent;
+import es.eucm.ead.engine.systems.GameEntitySystem;
 import es.eucm.ead.engine.systems.gamestatepersistence.SerializableGameState;
 import es.eucm.ead.engine.systems.gamestatepersistence.SerializableVariable;
 import es.eucm.ead.engine.variables.VariablesManager;
+import es.eucm.ead.schema.engine.components.PersistentGameState;
 import es.eucm.ead.schema.engine.components.PersistentVariable;
 
 import java.util.HashSet;
@@ -65,7 +68,7 @@ import java.util.HashSet;
  * 
  * Created by jtorrente on 29/10/2015.
  */
-public class PersistentGameStateSystem extends IteratingSystem {
+public class PersistentGameStateSystem extends GameEntitySystem {
 
 	/**
 	 * Name of the file in the app's internal (private) space that will store
@@ -86,8 +89,9 @@ public class PersistentGameStateSystem extends IteratingSystem {
 																		// the
 																		// system.
 
-	public PersistentGameStateSystem(VariablesManager varManager) {
-		super(Family.all(PersistentGameStateComponent.class).get());
+	public PersistentGameStateSystem(GameLoop gameLoop,
+			VariablesManager varManager) {
+		super(gameLoop, PersistentGameStateComponent.class);
 		persistentVariables = new HashSet<String>();
 		json = new Json();
 		this.variablesManager = varManager;
@@ -104,15 +108,26 @@ public class PersistentGameStateSystem extends IteratingSystem {
 	}
 
 	@Override
-	protected void processEntity(Entity entity, float v) {
-		persistentGameStateComponent = entity
-				.getComponent(PersistentGameStateComponent.class);
-		for (PersistentVariable pv : persistentGameStateComponent
-				.getPersistentVariables()) {
-			makeVariablePersistent(pv.getVariable(), pv.getInitValue());
+	protected void init() {
+		super.init();
+		if (isInit()) {
+			persistentGameStateComponent = (PersistentGameStateComponent) gameComponent;
+			for (PersistentVariable pv : persistentGameStateComponent
+					.getPersistentVariables()) {
+				makeVariablePersistent(pv.getVariable(), pv.getInitValue());
+			}
+			setProcessing(false);
 		}
-		setProcessing(false);
 	}
+
+	/*
+	 * @Override protected void processEntity(Entity entity, float v) {
+	 * persistentGameStateComponent = entity
+	 * .getComponent(PersistentGameStateComponent.class); for
+	 * (PersistentVariable pv : persistentGameStateComponent
+	 * .getPersistentVariables()) { makeVariablePersistent(pv.getVariable(),
+	 * pv.getInitValue()); } setProcessing(false); }
+	 */
 
 	/**
 	 * @return The FileHandle pointing to the local file (app's private storage

@@ -55,8 +55,10 @@ import es.eucm.ead.engine.utils.GeometryUtils;
 import es.eucm.ead.schema.components.ModelComponent;
 import es.eucm.ead.schema.data.Dimension;
 import es.eucm.ead.schema.data.Parameter;
+import es.eucm.ead.schema.data.shape.Circle;
 import es.eucm.ead.schema.data.shape.Polygon;
 import es.eucm.ead.schema.data.shape.Rectangle;
+import es.eucm.ead.schema.data.shape.Shape;
 import es.eucm.ead.schema.entities.ModelEntity;
 import es.eucm.ead.schema.renderers.Frame;
 import es.eucm.ead.schema.renderers.Frames;
@@ -186,6 +188,29 @@ public abstract class ExecutableDemoBuilder extends DemoBuilder {
 				Dimension stateDim = getRendererDimension(state.getRenderer());
 				width = Math.max(width, stateDim.getWidth());
 				height = Math.max(height, stateDim.getHeight());
+			}
+		} else if (component instanceof ShapeRenderer) {
+			ShapeRenderer shapeRenderer = (ShapeRenderer) component;
+			Shape shape = shapeRenderer.getShape();
+			if (shape instanceof Circle) {
+				width = height = ((Circle) shape).getRadius() * 2;
+			} else if (shape instanceof Polygon) {
+				float minX = Integer.MAX_VALUE;
+				float maxX = Integer.MIN_VALUE;
+				float minY = Integer.MAX_VALUE;
+				float maxY = Integer.MIN_VALUE;
+				Array<Float> points = ((Polygon) shape).getPoints();
+				for (int i = 0; i < points.size; i += 2) {
+					minX = Math.min(minX, points.get(i));
+					maxX = Math.max(maxX, points.get(i));
+					minY = Math.min(minY, points.get(i + 1));
+					maxY = Math.max(maxY, points.get(i + 1));
+				}
+				width = (int) (maxX - minX);
+				height = (int) (maxY - minY);
+			} else if (shape instanceof Rectangle) {
+				width = ((Rectangle) shape).getWidth();
+				height = ((Rectangle) shape).getHeight();
 			}
 		}
 		Dimension dimension = new Dimension();
@@ -470,21 +495,5 @@ public abstract class ExecutableDemoBuilder extends DemoBuilder {
 		Image image = super.createImage(uri);
 		image.setCollider(createSchemaCollider(uri));
 		return image;
-	}
-
-	protected ShapeRenderer rectangle(int width, int height) {
-		ShapeRenderer shapeRenderer = new ShapeRenderer();
-		Rectangle rectangle = new Rectangle();
-		rectangle.setWidth(width);
-		rectangle.setHeight(height);
-		shapeRenderer.setShape(rectangle);
-		return shapeRenderer;
-	}
-
-	protected Parameter param(String name, String value) {
-		Parameter parameter = new Parameter();
-		parameter.setName(name);
-		parameter.setValue(value);
-		return parameter;
 	}
 }

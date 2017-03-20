@@ -57,7 +57,7 @@ import es.eucm.ead.schema.effects.GoScene;
 import es.eucm.ead.schema.effects.SetViewport;
 import es.eucm.ead.schema.entities.ModelEntity;
 import es.eucm.ead.schemax.FieldName;
-import es.eucm.ead.schemax.JsonExtension;
+import es.eucm.ead.engine.utils.JsonExtension;
 import es.eucm.ead.schemax.Layer;
 import es.eucm.ead.schemax.ModelStructure;
 import es.eucm.utils.gdx.ZipUtils;

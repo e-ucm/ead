@@ -58,9 +58,7 @@ import es.eucm.ead.engine.processors.positiontracking.ParallaxProcessor;
 import es.eucm.ead.engine.processors.renderers.*;
 import es.eucm.ead.engine.processors.tweens.TweensProcessor;
 import es.eucm.ead.engine.systems.*;
-import es.eucm.ead.engine.systems.behaviors.KeyBehaviorSystem;
-import es.eucm.ead.engine.systems.behaviors.TimersSystem;
-import es.eucm.ead.engine.systems.behaviors.TouchBehaviorSystem;
+import es.eucm.ead.engine.systems.behaviors.*;
 import es.eucm.ead.engine.systems.conversations.*;
 import es.eucm.ead.engine.systems.effects.*;
 import es.eucm.ead.engine.systems.effects.controlstructures.*;
@@ -85,6 +83,7 @@ import es.eucm.ead.schema.components.controls.Label;
 import es.eucm.ead.schema.components.controls.TextButton;
 import es.eucm.ead.schema.components.controls.layouts.VerticalLayout;
 import es.eucm.ead.schema.components.conversation.*;
+import es.eucm.ead.schema.components.drag.Sticky;
 import es.eucm.ead.schema.components.physics.*;
 import es.eucm.ead.schema.components.positiontracking.ChaseEntity;
 import es.eucm.ead.schema.components.positiontracking.MoveByEntity;
@@ -92,6 +91,7 @@ import es.eucm.ead.schema.components.positiontracking.Parallax;
 import es.eucm.ead.schema.components.tweens.*;
 import es.eucm.ead.schema.effects.*;
 import es.eucm.ead.schema.effects.controlstructures.*;
+import es.eucm.ead.schema.engine.components.AndroidSettings;
 import es.eucm.ead.schema.engine.components.PersistentGameState;
 import es.eucm.ead.schema.gleaner.components.GleanerSettings;
 import es.eucm.ead.schema.gleaner.effects.LogTrace;
@@ -138,6 +138,8 @@ public class DefaultEngineInitializer implements EngineInitializer {
 		gameLoop.addSystem(new AccelerationSystem(gameLoop));
 		gameLoop.addSystem(massSystem);
 		gameLoop.addSystem(new VelocitySystem(gameLoop));
+		gameLoop.addSystem(new AngularAccelerationSystem(gameLoop));
+		gameLoop.addSystem(new AngularVelocitySystem(gameLoop));
 		gameLoop.addSystem(tweenSystem);
 		gameLoop.addSystem(new VisibilitySystem(gameLoop, variablesManager));
 		gameLoop.addSystem(new TouchabilitySystem(gameLoop, variablesManager));
@@ -145,10 +147,14 @@ public class DefaultEngineInitializer implements EngineInitializer {
 		gameLoop.addSystem(new RemoveEntitiesSystem(gameLoop, variablesManager));
 		gameLoop.addSystem(new TouchedSystem());
 		gameLoop.addSystem(new KeyPressedSystem());
-		gameLoop.addSystem(new SoundSystem(variablesManager));
+		gameLoop.addSystem(new SoundSystem(variablesManager, gameAssets));
 		gameLoop.addSystem(new UpdateVarsEachCycleSystem(variablesManager));
 		gameLoop.addSystem(new ChaseEntitySystem(gameLoop, variablesManager));
 		gameLoop.addSystem(new MoveByEntitySystem(gameLoop, variablesManager));
+		gameLoop.addSystem(new CollisionSystem(gameLoop, variablesManager));
+		gameLoop.addSystem(new MoveBehaviorSystem(gameLoop, variablesManager));
+		gameLoop.addSystem(new StickySystem(gameLoop));
+		gameLoop.addSystem(new AndroidSettingsSystem(gameLoop));
 		gameLoop.addSystem(gleanerSystem);
 
 		// Register nodes
@@ -170,6 +176,8 @@ public class DefaultEngineInitializer implements EngineInitializer {
 				variablesManager, gameAssets, gleanerSystem);
 		gameLoop.addSystem(effectsSystem);
 
+		effectsSystem.registerEffectExecutor(ChangeParent.class,
+				new ChangeParentExecutor(variablesManager));
 		effectsSystem.registerEffectExecutor(GoScene.class,
 				new GoSceneExecutor(entitiesLoader, gameView, gameAssets,
 						gleanerSystem));
@@ -186,6 +194,14 @@ public class DefaultEngineInitializer implements EngineInitializer {
 				new RemoveEntityExecutor());
 		effectsSystem.registerEffectExecutor(ChangeEntityProperty.class,
 				new ChangeEntityPropertyExecutor(variablesManager));
+		AddToPropertyExecutor addToPropertyExecutor = new AddToPropertyExecutor(
+				variablesManager);
+		effectsSystem.registerEffectExecutor(AddToProperty.class,
+				addToPropertyExecutor);
+		effectsSystem.registerEffectExecutor(AddTag.class, new AddTagExecutor(
+				addToPropertyExecutor));
+		effectsSystem.registerEffectExecutor(RemoveTag.class,
+				new RemoveTagExecutor());
 		effectsSystem.registerEffectExecutor(ScriptCall.class,
 				new ScriptCallExecutor(effectsSystem, variablesManager));
 		effectsSystem.registerEffectExecutor(AddEntity.class,
@@ -194,6 +210,11 @@ public class DefaultEngineInitializer implements EngineInitializer {
 				new SetCameraExecutor(gameView, variablesManager));
 		effectsSystem.registerEffectExecutor(PlaySound.class,
 				new PlaySoundExecutor(effectsSystem));
+		effectsSystem.registerEffectExecutor(SetSoundVolume.class,
+				new SetSoundVolumeExecutor());
+		effectsSystem.registerEffectExecutor(PreloadEntity.class,
+				new PreloadEntityExecutor(entitiesLoader, effectsSystem,
+						variablesManager, gameAssets));
 
 		TrackEffectExecutor timelineExecutor = new TrackEffectExecutor(
 				effectsSystem);
@@ -243,12 +264,19 @@ public class DefaultEngineInitializer implements EngineInitializer {
 				new FieldTweenCreator(componentLoader));
 		tweenSystem.registerBaseTweenCreator(AlphaTween.class,
 				new AlphaTweenCreator());
+		tweenSystem.registerBaseTweenCreator(RedTween.class,
+				new RedTweenCreator());
+		tweenSystem.registerBaseTweenCreator(GreenTween.class,
+				new GreenTweenCreator());
+		tweenSystem.registerBaseTweenCreator(BlueTween.class,
+				new BlueTweenCreator());
 		tweenSystem.registerBaseTweenCreator(EffectTween.class,
 				new EffectTweenCreator(gameLoop, effectsSystem));
-		tweenSystem.registerBaseTweenCreator(
-				Timeline.class,
-				new TimelineCreator(gameAssets, variablesManager, tweenSystem
-						.getBaseTweenCreators()));
+		TimelineCreator timelineCreator = new TimelineCreator(gameAssets,
+				variablesManager, tweenSystem.getBaseTweenCreators());
+		tweenSystem.registerBaseTweenCreator(Timeline.class, timelineCreator);
+		tweenSystem.registerBaseTweenCreator(ColorTween.class,
+				new ColorTweenCreator(timelineCreator));
 
 		// Variables listeners
 		variablesManager.addListener(new LanguageVariableListener(gameLoop,
@@ -273,6 +301,10 @@ public class DefaultEngineInitializer implements EngineInitializer {
 				new VelocityProcessor(gameLoop));
 		componentLoader.registerComponentProcessor(Acceleration.class,
 				new AccelerationProcessor(gameLoop));
+		componentLoader.registerComponentProcessor(AngularVelocity.class,
+				new AngularVelocityProcessor(gameLoop));
+		componentLoader.registerComponentProcessor(AngularAcceleration.class,
+				new AngularAccelerationProcessor(gameLoop));
 		componentLoader.registerComponentProcessor(Gravity.class,
 				new GravityProcessor(gameLoop));
 		componentLoader.registerComponentProcessor(Mass.class,
@@ -291,6 +323,8 @@ public class DefaultEngineInitializer implements EngineInitializer {
 				new LabelProcessor(gameLoop, gameAssets, variablesManager));
 		componentLoader.registerComponentProcessor(Behavior.class,
 				new BehaviorsProcessor(gameLoop));
+		componentLoader.registerComponentProcessor(Sticky.class,
+				new StickyProcessor(gameLoop));
 
 		componentLoader.registerComponentProcessor(States.class,
 				new StatesProcessor(gameLoop, gameAssets, componentLoader));
@@ -300,6 +334,14 @@ public class DefaultEngineInitializer implements EngineInitializer {
 
 		TweensProcessor tweensProcessor = new TweensProcessor(gameLoop);
 		componentLoader.registerComponentProcessor(AlphaTween.class,
+				tweensProcessor);
+		componentLoader.registerComponentProcessor(RedTween.class,
+				tweensProcessor);
+		componentLoader.registerComponentProcessor(GreenTween.class,
+				tweensProcessor);
+		componentLoader.registerComponentProcessor(BlueTween.class,
+				tweensProcessor);
+		componentLoader.registerComponentProcessor(ColorTween.class,
 				tweensProcessor);
 		componentLoader.registerComponentProcessor(FieldTween.class,
 				tweensProcessor);
@@ -317,6 +359,8 @@ public class DefaultEngineInitializer implements EngineInitializer {
 
 		componentLoader.registerComponentProcessor(PersistentGameState.class,
 				new PersistentGameStateProcessor(gameLoop));
+		componentLoader.registerComponentProcessor(AndroidSettings.class,
+				new AndroidSettingsProcessor(gameLoop));
 		componentLoader.registerComponentProcessor(Visibility.class,
 				new VisibilityProcessor(gameLoop, variablesManager));
 		componentLoader.registerComponentProcessor(Touchability.class,

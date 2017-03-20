@@ -41,13 +41,13 @@ import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.reflect.ClassReflection;
 import com.badlogic.gdx.utils.reflect.ReflectionException;
 import es.eucm.ead.engine.Accessor;
+import es.eucm.ead.engine.GleanerSystemForTest;
 import es.eucm.ead.engine.entities.EngineEntity;
 import es.eucm.ead.engine.mock.schema.MockEffect;
 import es.eucm.ead.engine.mock.schema.MockEffect.MockEffectListener;
 import es.eucm.ead.engine.mock.schema.MockEffectExecutor;
 import es.eucm.ead.engine.mock.schema.MockModelComponent;
 import es.eucm.ead.engine.processors.behaviors.BehaviorsProcessor;
-import es.eucm.ead.engine.systems.GleanerSystem;
 import es.eucm.ead.engine.systems.behaviors.TimersSystem;
 import es.eucm.ead.engine.systems.effects.ChangeEntityPropertyExecutor;
 import es.eucm.ead.engine.systems.effects.ChangeVarExecutor;
@@ -105,7 +105,8 @@ public class ControlStructuresTest extends EffectTest implements
 		effectsSystem.registerEffectExecutor(MockEffect.class,
 				new MockEffectExecutor());
 		effectsSystem.registerEffectExecutor(ChangeVar.class,
-				new ChangeVarExecutor(variablesManager, new GleanerSystem()));
+				new ChangeVarExecutor(variablesManager,
+						new GleanerSystemForTest(gameLoop)));
 		gameLoop.addSystem(effectsSystem);
 		TimersSystem timersSystem = new TimersSystem(gameLoop, variablesManager);
 		gameLoop.addSystem(timersSystem);

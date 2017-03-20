@@ -36,6 +36,9 @@
  */
 package es.eucm.ead.builder;
 
+import es.eucm.ead.schemax.Layer;
+import es.eucm.ead.schemax.OperationsNames;
+
 /**
  * Helper to build recurrent expressions following the syntax specified by
  * OperationsFactory.
@@ -44,21 +47,55 @@ package es.eucm.ead.builder;
  * 
  * Created by jtorrente on 27/10/2015.
  */
-public class ExpressionBuilder {
+public class ExpressionBuilder extends OperationsNames {
 
 	/**
 	 * Creates an expression that will return a list with all the entities found
 	 * to have the given tag
 	 */
 	public String allEntitiesWithTag(String tag) {
-		return "(collection (hastag $entity s" + tag + "))";
+		return op(ENTITY_COLLECTION, hasTag(tag));
+	}
+
+	public String hasTag(String tag) {
+		return op(ENTITY_HAS_TAG, varReference("entity"), string(tag));
+	}
+
+	public String varReference(String varName) {
+		if (varName.startsWith("$")) {
+			return varName;
+		}
+		return "$" + varName;
+	}
+
+	public String integer(String n) {
+		return "i" + n;
+	}
+
+	public String integer(int n) {
+		return integer("" + n);
+	}
+
+	public String float_(String f) {
+		return "f" + f;
+	}
+
+	public String float_(float f) {
+		return float_("" + f);
+	}
+
+	public String string(Object s) {
+		if (s == null) {
+			return "snull";
+		}
+		return "s" + s.toString();
 	}
 
 	/**
 	 * Expression that retrieves the first entity that has the given tag
 	 */
 	public String entityWithTag(String tag) {
-		return "(get " + allEntitiesWithTag(tag) + ")";
+		return op(GET_FROM_COLLECTION, allEntitiesWithTag(tag));
 	}
 
 	/**
@@ -77,9 +114,9 @@ public class ExpressionBuilder {
 	public String variableComparedTo(String var, String comparison, Number value) {
 		String number;
 		if (Integer.class.isAssignableFrom(value.getClass())) {
-			number = "i" + value.intValue();
+			number = integer(value.intValue());
 		} else if (Float.class.isAssignableFrom(value.getClass())) {
-			number = "f" + value.floatValue();
+			number = float_(value.floatValue());
 		} else {
 			throw new RuntimeException(
 					"Method variableEqualsTo does not accept double or long values,"
@@ -87,26 +124,28 @@ public class ExpressionBuilder {
 		}
 
 		if (!var.startsWith("$")) {
-			var = "$" + var;
+			var = varReference(var);
 		}
 
 		String operator = null;
 		if (comparison.equals("<")) {
-			operator = "lt";
+			operator = LOWER_THAN;
 		} else if (comparison.equals("<=") || comparison.equals("=<")) {
-			operator = "le";
+			operator = LOWER_EQUALS;
 		} else if (comparison.equals("=") || comparison.equals("==")) {
-			operator = "eq";
+			operator = EQUALS;
 		} else if (comparison.equals(">")) {
-			operator = "gt";
+			operator = GREATER_THAN;
 		} else if (comparison.equals(">=") || comparison.equals("=>")) {
-			operator = "ge";
+			operator = GREATER_EQUALS;
+		} else if (comparison.equals("!=") || comparison.equals("<>")) {
+			operator = DIFFERENT;
 		} else {
 			throw new RuntimeException("Operator \"" + comparison
 					+ "\" is not supported");
 		}
 
-		return "(" + operator + " " + var + " " + number + ")";
+		return op(operator, var, number);
 	}
 
 /**
@@ -144,9 +183,9 @@ public class ExpressionBuilder {
 	 */
 	public String variableEqualsTo(String var, Boolean value) {
 		if (!var.startsWith("$")) {
-			var = "$" + var;
+			var = varReference(var);
 		}
-		return "(eq " + var + " b" + value.toString() + ")";
+		return op(EQUALS, var, bool(value));
 	}
 
 	/**
@@ -184,7 +223,127 @@ public class ExpressionBuilder {
 	 * content
 	 */
 	public String layerSceneContent() {
-		return "(layer sSCENE_CONTENT)";
+		return op(GET_LAYER, string(Layer.SCENE_CONTENT));
 	}
 
+	public String variableDifferentTo(String var, Number value) {
+		return variableComparedTo(var, "!=", value);
+	}
+
+	public String variableDifferentTo(String var, Boolean value) {
+		return not(variableEqualsTo(var, value));
+	}
+
+	public String variableDifferentTo(String variable, String value) {
+		if (value.startsWith("b")) {
+			return variableDifferentTo(variable,
+					Boolean.parseBoolean(value.substring(1)));
+		}
+		if (value.startsWith("i")) {
+			return variableDifferentTo(variable,
+					Integer.parseInt(value.substring(1)));
+		}
+		if (value.startsWith("f")) {
+			return variableDifferentTo(variable,
+					Float.parseFloat(value.substring(1)));
+		}
+		return null;
+	}
+
+	public String or(String... subExpressions) {
+		return op(OR, subExpressions);
+	}
+
+	public String and(String... subExpressions) {
+		return op(AND, subExpressions);
+	}
+
+	public String not(String expression) {
+		return op(NOT, expression);
+	}
+
+	public String bool(boolean value) {
+		if (value) {
+			return "btrue";
+		}
+		return "bfalse";
+	}
+
+	public String thisEntity() {
+		return varReference("_this");
+	}
+
+	public String op(String operand, String... arguments) {
+		StringBuilder builder = new StringBuilder();
+		builder.append("(");
+		builder.append(operand);
+		for (String arg : arguments) {
+			builder.append(" ");
+			builder.append(arg);
+		}
+		builder.append(")");
+		return builder.toString();
+	}
+
+	public String entityX() {
+		return string("group.x");
+	}
+
+	public String entityY() {
+		return string("group.y");
+	}
+
+	public String entityVarProperty(String var, String property) {
+		return op(PROPERTY_IN_OBJECT, varReference(var), property);
+	}
+
+	public String entityVarX(String var) {
+		return entityVarProperty(var, entityX());
+	}
+
+	public String entityVarY(String var) {
+		return entityVarProperty(var, entityY());
+	}
+
+	public String sum(Object... operands) {
+		String[] convertedOperands = new String[operands.length];
+		for (int i = 0; i < operands.length; i++) {
+			if (operands[i] instanceof Integer) {
+				convertedOperands[i] = integer((Integer) operands[i]);
+			} else if (operands[i] instanceof Float) {
+				convertedOperands[i] = float_((Float) operands[i]);
+			} else {
+				convertedOperands[i] = operands[i].toString();
+			}
+		}
+		return op(SUM, convertedOperands);
+	}
+
+	public String intersectsThisByTag(String tag) {
+		return op(ENTITIES_INTERSECT, thisEntity(), entityWithTag(tag));
+	}
+
+	public String intersectsThisAnyByTag(String tag) {
+		return op(ENTITIES_INTERSECT, thisEntity(), allEntitiesWithTag(tag));
+	}
+
+	public String intersectionSetThisByTag(String tag) {
+		return op(ENTITY_INTERSECTION_SET, thisEntity(), entityWithTag(tag));
+	}
+
+	public String firstToIntersectThisByTag(String tag) {
+		return op(GET_FROM_COLLECTION, intersectionSetThisByTag(tag));
+	}
+
+	public String plusOne(String varName) {
+		return increment(varName, 1);
+	}
+
+	public String minusOne(String varName) {
+		return increment(varName, -1);
+	}
+
+	public String increment(String varName, int increment) {
+		return sum(varReference(varName), integer(increment));
+	}
 }

@@ -36,6 +36,7 @@
  */
 package es.eucm.ead.engine.collision;
 
+import com.badlogic.gdx.math.Shape2D;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.utils.Pool;
 import com.badlogic.gdx.utils.Pools;
@@ -46,7 +47,7 @@ import com.badlogic.gdx.utils.Pools;
  * 
  * Created by Javier Torrente on 5/07/14.
  */
-public abstract class AreaWrapper implements Pool.Poolable {
+public abstract class AreaWrapper<T extends Shape2D> implements Pool.Poolable {
 
 	/**
 	 * Calculates the geometric center of the area and stores it into
@@ -70,6 +71,13 @@ public abstract class AreaWrapper implements Pool.Poolable {
 	 */
 	protected abstract boolean intersectToSegment(Vector2 start, Vector2 end,
 			Vector2 intersection);
+
+	/**
+	 * @return The inner libgdx's shape used to make calculations (e.g.
+	 *         {@link com.badlogic.gdx.math.Rectangle} or
+	 *         {@link com.badlogic.gdx.math.Circle}).
+	 */
+	public abstract T getInnerShape();
 
 	/**
 	 * Calculates distance from {@code this area} to {@code end}, stores the

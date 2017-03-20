@@ -42,6 +42,7 @@ import es.eucm.ead.engine.GameLoop;
 import es.eucm.ead.engine.components.KeyPressedComponent;
 import es.eucm.ead.engine.components.behaviors.KeysComponent;
 import es.eucm.ead.engine.components.behaviors.events.RuntimeKey;
+import es.eucm.ead.engine.systems.GameEntitySystem;
 import es.eucm.ead.engine.variables.VariablesManager;
 
 /**
@@ -50,26 +51,45 @@ import es.eucm.ead.engine.variables.VariablesManager;
 
 public class KeyBehaviorSystem extends BehaviorSystem {
 
+	private KeyPressedComponent gameComponent;
+
 	public KeyBehaviorSystem(GameLoop engine, VariablesManager variablesSystem) {
-		super(engine, variablesSystem, Family.all(KeyPressedComponent.class)
-				.get());
+		super(engine, variablesSystem, Family.all(KeysComponent.class).get());
+	}
+
+	@Override
+	public void update(float deltaTime) {
+		init();
+		if (isInit()) {
+			super.update(deltaTime);
+		}
+	}
+
+	protected boolean isInit() {
+		return gameComponent != null;
+	}
+
+	protected void init() {
+		if (isInit()) {
+			return;
+		}
+		gameComponent = GameEntitySystem.getGameComponent(
+				KeyPressedComponent.class, gameLoop);
 	}
 
 	@Override
 	public void doProcessEntity(Entity entity, float delta) {
-		KeyPressedComponent pressed = entity
-				.getComponent(KeyPressedComponent.class);
+		/*
+		 * KeyPressedComponent pressed = entity
+		 * .getComponent(KeyPressedComponent.class);
+		 */
 
-		for (RuntimeKey keyEvent : pressed.getKeyEvents()) {
-			for (Entity currentEntity : gameLoop.getEntitiesFor(Family.all(
-					KeysComponent.class).get())) {
-				KeysComponent keysComponent = currentEntity
-						.getComponent((KeysComponent.class));
-				for (RuntimeKey runtimeKeys : keysComponent.getBehaviors()) {
-
-					if (keyEvent.compareEvents(runtimeKeys)) {
-						addEffects(currentEntity, runtimeKeys.getEffects());
-					}
+		KeysComponent keysComponent = entity
+				.getComponent((KeysComponent.class));
+		for (RuntimeKey keyEvent : gameComponent.getKeyEvents()) {
+			for (RuntimeKey runtimeKeys : keysComponent.getBehaviors()) {
+				if (keyEvent.compareEvents(runtimeKeys)) {
+					addEffects(entity, runtimeKeys.getEffects());
 				}
 			}
 		}

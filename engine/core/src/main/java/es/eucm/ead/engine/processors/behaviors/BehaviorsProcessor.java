@@ -40,17 +40,11 @@ import com.badlogic.ashley.core.Component;
 import com.badlogic.gdx.Gdx;
 import es.eucm.ead.engine.GameLoop;
 import es.eucm.ead.engine.components.EffectsComponent;
-import es.eucm.ead.engine.components.behaviors.BehaviorComponent;
-import es.eucm.ead.engine.components.behaviors.KeysComponent;
-import es.eucm.ead.engine.components.behaviors.TimersComponent;
-import es.eucm.ead.engine.components.behaviors.TouchesComponent;
+import es.eucm.ead.engine.components.behaviors.*;
 import es.eucm.ead.engine.processors.ComponentProcessor;
 import es.eucm.ead.schema.components.behaviors.Behavior;
 import es.eucm.ead.schema.components.behaviors.Event;
-import es.eucm.ead.schema.components.behaviors.events.Init;
-import es.eucm.ead.schema.components.behaviors.events.Key;
-import es.eucm.ead.schema.components.behaviors.events.Timer;
-import es.eucm.ead.schema.components.behaviors.events.Touch;
+import es.eucm.ead.schema.components.behaviors.events.*;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -70,14 +64,25 @@ public class BehaviorsProcessor extends ComponentProcessor<Behavior> {
 		eventsToComponents.put(Timer.class, TimersComponent.class);
 		eventsToComponents.put(Init.class, EffectsComponent.class);
 		eventsToComponents.put(Key.class, KeysComponent.class);
+		eventsToComponents.put(Collision.class, CollisionComponent.class);
+		eventsToComponents.put(Move.class, MovesComponent.class);
+	}
+
+	/**
+	 * @return The type of Component that a certain event type will be converted
+	 *         to
+	 */
+	public Class<? extends BehaviorComponent> componentClassForEvent(
+			Class<? extends Event> eventClass) {
+		return eventsToComponents.get(eventClass);
 	}
 
 	@SuppressWarnings("unchecked")
 	@Override
 	public Component getComponent(Behavior behavior) {
 		Event event = behavior.getEvent();
-		Class<? extends BehaviorComponent> componentClass = eventsToComponents
-				.get(event.getClass());
+		Class<? extends BehaviorComponent> componentClass = componentClassForEvent(event
+				.getClass());
 
 		if (componentClass != null) {
 			BehaviorComponent component = gameLoop

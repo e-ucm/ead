@@ -37,8 +37,9 @@
 package es.eucm.ead.engine.components.physics;
 
 import com.badlogic.ashley.core.Component;
+import com.badlogic.gdx.utils.Pool;
 
-public class VelocityComponent extends Component {
+public class VelocityComponent extends Component implements Pool.Poolable {
 
 	private float x;
 
@@ -59,5 +60,10 @@ public class VelocityComponent extends Component {
 
 	public void setY(float y) {
 		this.y = y;
+	}
+
+	@Override
+	public void reset() {
+		x = y = 0;
 	}
 }

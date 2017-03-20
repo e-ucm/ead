@@ -52,7 +52,7 @@ public class TestGameView extends DefaultGameView {
 	private Rectangle stageViewport = new Rectangle();
 
 	public TestGameView(GameLoop gameLoop) {
-		super(gameLoop, new GleanerSystem());
+		super(gameLoop, new GleanerSystem(gameLoop));
 		setFillParent(true);
 		// Avoid creation of FrameBuffer of 0, 0 width and height
 		gameViewport.set(0, 0, 1, 1);

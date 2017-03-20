@@ -54,6 +54,7 @@ import es.eucm.ead.engine.variables.VariablesManager;
 public class ChaseEntitySystem extends MoveByEntitySystem {
 
 	private static final float CONSTANT = 1.05f;
+	public static final String LOG_TAG = "ChaseEntitySystem";
 
 	public ChaseEntitySystem(GameLoop gameLoop,
 			VariablesManager variablesManager) {
@@ -68,7 +69,7 @@ public class ChaseEntitySystem extends MoveByEntitySystem {
 		updateTarget(chaseEntityComponent);
 		if (chaseEntityComponent.getTrackedEntity() == null) {
 			Gdx.app.error(
-					"ChaseEntitySystem",
+					LOG_TAG,
 					"Invalid entity target defined for chase component. Entity will not be processed.");
 			return;
 		}
@@ -83,7 +84,7 @@ public class ChaseEntitySystem extends MoveByEntitySystem {
 				.getTrackedEntity());
 		if (!chasing.isInit() || !target.isInit()) {
 			Gdx.app.error(
-					"ChaseEntitySystem",
+					LOG_TAG,
 					"Either chasing or target entities are not valid (they may be the camera or the hud, for example)");
 			return;
 		}

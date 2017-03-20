@@ -53,7 +53,7 @@ public class ScriptCallExecutor extends ControlStructureExecutor<ScriptCall> {
 	}
 
 	@Override
-	public void execute(Entity target, ScriptCall effect) {
+	public void doExecute(ScriptCall effect) {
 		pushInputArguments(effect);
 		effectsSystem.executeEffectList(effect.getScript().getEffects());
 		popInputArguments();
@@ -72,7 +72,7 @@ public class ScriptCallExecutor extends ControlStructureExecutor<ScriptCall> {
 							+ ") for this script ");
 		}
 
-		variablesManager.push();
+		// variablesManager.push();
 		for (int i = 0; i < Math.min(
 				effect.getScript().getInputArguments().size,
 				effect.getInputArgumentValues().size); i++) {
@@ -83,6 +83,6 @@ public class ScriptCallExecutor extends ControlStructureExecutor<ScriptCall> {
 	}
 
 	private void popInputArguments() {
-		variablesManager.pop();
+		/* variablesManager.pop(); */
 	}
 }

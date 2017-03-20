@@ -37,6 +37,7 @@
 package es.eucm.ead.engine.components.renderers;
 
 import com.badlogic.gdx.utils.Array;
+import es.eucm.ead.engine.EngineStage;
 import es.eucm.ead.engine.entities.actors.EntityGroup;
 
 public class StatesActor extends EntityGroup {
@@ -81,9 +82,17 @@ public class StatesActor extends EntityGroup {
 	}
 
 	private void setState(StateData state) {
+		if (currentState != null) {
+			removeActor(currentState.renderer.getEntityGroup());
+		}
+		if (getStage() instanceof EngineStage) {
+			EngineStage engineStage = (EngineStage) getStage();
+			engineStage.updateTarget(currentState.renderer.getEntityGroup(),
+					state.renderer.getEntityGroup());
+		}
 		currentState = state;
 		currentState.renderer.restart();
-		clearChildren();
+		// clearChildren();
 		addActor(currentState.renderer.getEntityGroup());
 	}
 

@@ -79,14 +79,14 @@ public class Engine {
 		this.gameLoop = new GameLoop();
 		gameLoop.setPlaying(false);
 		this.gameView = new FacadeGameView();
-		gleanerSystem = new GleanerSystem();
+		gleanerSystem = new GleanerSystem(gameLoop);
 
 		editorGameAssets = controller.getEditorGameAssets();
 		Accessor accessor = new Accessor();
 		OperationsFactory operationsFactory = new OperationsFactory(gameLoop,
 				accessor, gameView);
 		variablesManager = new VariablesManager(accessor, operationsFactory);
-		persistentGameStateSystem = new PersistentGameStateSystem(
+		persistentGameStateSystem = new PersistentGameStateSystem(gameLoop,
 				variablesManager);
 
 		ComponentLoader componentLoader = new EditorComponentLoader(

@@ -117,7 +117,11 @@ public class BoundingAreaBuilder {
 		Vector2 y = Pools.obtain(Vector2.class);
 		x.set(Float.POSITIVE_INFINITY, Float.NEGATIVE_INFINITY);
 		y.set(Float.POSITIVE_INFINITY, Float.NEGATIVE_INFINITY);
-		Group sceneContentGroup = getSceneContentAncestor(entity).getGroup();
+		EngineEntity sceneContentAncestor = getSceneContentAncestor(entity);
+		if (sceneContentAncestor == null) {
+			return null;
+		}
+		Group sceneContentGroup = sceneContentAncestor.getGroup();
 		if (sceneContentGroup == null) {
 			return null;
 		}
@@ -216,7 +220,7 @@ public class BoundingAreaBuilder {
 	 *         {@link Layer#SCENE_CONTENT} layer. May return {@code null} if
 	 *         this entity is not a descendant of {@link Layer#SCENE_CONTENT}.
 	 */
-	static Polygon getBoundingPolygon(EngineEntity entity) {
+	public static Polygon getBoundingPolygon(EngineEntity entity) {
 		Array<Vector2> points = new Array<Vector2>();
 		int count = 0;
 		Group sceneContentGroup = getSceneContentAncestor(entity).getGroup();

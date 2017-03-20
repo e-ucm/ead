@@ -1,0 +1,15 @@
+{
+    "additionalProperties": false,
+    "javaType": "es.eucm.ead.schema.effects.RemoveTag",
+    "type": "object",
+    "extends": {
+        "$ref": "effect.json"
+    },
+    "properties": {
+        "tag": {
+            "type": "string",
+            "description": "The tag to be removed"
+        }
+    },
+    "description":"Removes a tag from the target entity or group of entities."
+}

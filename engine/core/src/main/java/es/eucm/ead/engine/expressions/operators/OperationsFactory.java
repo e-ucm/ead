@@ -40,6 +40,7 @@ import es.eucm.ead.engine.Accessor;
 import es.eucm.ead.engine.GameView;
 import es.eucm.ead.engine.GameLoop;
 import es.eucm.ead.engine.expressions.Operation;
+import es.eucm.ead.schemax.OperationsNames;
 
 /**
  * A factory class for all recognized operations.
@@ -67,72 +68,82 @@ public class OperationsFactory {
 
 	public Operation createOperation(String name) {
 		Operation op = null;
-		if ("and".equals(name)) {
+		if (OperationsNames.AND.equals(name)) {
 			op = new And();
-		} else if ("or".equals(name)) {
+		} else if (OperationsNames.OR.equals(name)) {
 			op = new Or();
-		} else if ("not".equals(name)) {
+		} else if (OperationsNames.NOT.equals(name)) {
 			op = new Not();
-		} else if ("xor".equals(name)) {
+		} else if (OperationsNames.XOR.equals(name)) {
 			op = new Xor();
-		} else if ("+".equals(name)) {
+		} else if (OperationsNames.SUM.equals(name)) {
 			op = new Add();
-		} else if ("-".equals(name)) {
+		} else if (OperationsNames.SUBTRACTION.equals(name)) {
 			op = new Sub();
-		} else if ("*".equals(name)) {
+		} else if (OperationsNames.MULTIPLICATION.equals(name)) {
 			op = new Mul();
-		} else if ("/".equals(name)) {
+		} else if (OperationsNames.DIVISION.equals(name)) {
 			op = new Div();
-		} else if ("%".equals(name)) {
+		} else if (OperationsNames.MODULUS.equals(name)) {
 			op = new Mod();
-		} else if ("pow".equals(name)) {
+		} else if (OperationsNames.POW.equals(name)) {
 			op = new Pow();
-		} else if ("sqrt".equals(name)) {
+		} else if (OperationsNames.SQRT.equals(name)) {
 			op = new Sqrt();
-		} else if ("min".equals(name)) {
+		} else if (OperationsNames.MIN.equals(name)) {
 			op = new Min();
-		} else if ("max".equals(name)) {
+		} else if (OperationsNames.MAX.equals(name)) {
 			op = new Max();
-		} else if ("rand".equals(name)) {
+		} else if (OperationsNames.RAND.equals(name)) {
 			op = new Rand();
-		} else if ("eq".equals(name)) {
+		} else if (OperationsNames.EQUALS.equals(name)) {
 			op = new EquivalenceOperation();
-		} else if ("le".equals(name)) {
+		} else if (OperationsNames.DIFFERENT.equals(name)) {
+			op = new DifferentOperation();
+		} else if (OperationsNames.LOWER_EQUALS.equals(name)) {
 			op = new LowerEqual();
-		} else if ("lt".equals(name)) {
+		} else if (OperationsNames.LOWER_THAN.equals(name)) {
 			op = new LowerThan();
-		} else if ("ge".equals(name)) {
+		} else if (OperationsNames.GREATER_EQUALS.equals(name)) {
 			op = new GreaterEqual();
-		} else if ("gt".equals(name)) {
+		} else if (OperationsNames.GREATER_THAN.equals(name)) {
 			op = new GreaterThan();
-		} else if ("int".equals(name)) {
+		} else if (OperationsNames.INTEGER.equals(name)) {
 			op = new AsInt();
-		} else if ("f".equals(name)) {
+		} else if (OperationsNames.FLOAT.equals(name)) {
 			op = new AsFloat();
-		} else if ("bool".equals(name)) {
+		} else if (OperationsNames.BOOLEAN.equals(name)) {
 			op = new AsBoolean();
-		} else if ("string".equals(name)) {
+		} else if (OperationsNames.STRING.equals(name)) {
 			op = new AsString();
-		} else if ("concat".equals(name)) {
+		} else if (OperationsNames.CONCATENATION.equals(name)) {
 			op = new Concat();
-		} else if ("hastag".equals(name)) {
+		} else if (OperationsNames.ENTITY_HAS_TAG.equals(name)) {
 			op = new HasTag();
-		} else if ("prop".equals(name)) {
+		} else if (OperationsNames.PROPERTY_IN_OBJECT.equals(name)) {
 			op = new AccessProperty(accessor);
-		} else if ("layer".equals(name)) {
+		} else if (OperationsNames.GET_LAYER.equals(name)) {
 			op = new GetLayerOperation(gameView);
-		} else if ("collection".equals(name)) {
+		} else if (OperationsNames.ENTITY_COLLECTION.equals(name)) {
 			op = new EntityCollection(gameLoop);
-		} else if ("get".equals(name)) {
+		} else if (OperationsNames.GET_FROM_COLLECTION.equals(name)) {
 			op = new GetFromCollection();
-		} else if ("size".equals(name)) {
+		} else if (OperationsNames.COLLECTION_SIZE.equals(name)) {
 			op = new CollectionSize();
-		} else if ("list".equals(name)) {
+		} else if (OperationsNames.LIST.equals(name)) {
 			op = new List();
-		} else if ("randlist".equals(name)) {
+		} else if (OperationsNames.RANDOM_LIST.equals(name)) {
 			op = new RandomList();
-		} else if ("?".equals(name)) {
+		} else if (OperationsNames.TERNARY_OPERATOR.equals(name)) {
 			op = new IfOperator();
+		} else if (OperationsNames.ENTITY_ID.equals(name)) {
+			op = new Id();
+		} else if (OperationsNames.GET_ENTITY_FROM_ID.equals(name)) {
+			op = new FromId(gameLoop);
+		} else if (OperationsNames.ENTITIES_INTERSECT.equals(name)) {
+			op = new Intersects(gameLoop);
+		} else if (OperationsNames.ENTITY_INTERSECTION_SET.equals(name)) {
+			op = new Intersection(gameLoop);
 		}
 
 		if (op != null) {

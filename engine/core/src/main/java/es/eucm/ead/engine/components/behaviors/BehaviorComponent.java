@@ -103,7 +103,8 @@ public abstract class BehaviorComponent<S extends Event, T extends RuntimeBehavi
 			if (get.getName().startsWith("get")
 					|| get.getName().startsWith("is")) {
 				// Search equivalent set method in runtimeBehavior
-				String setMethodName = get.getName().replace(getPrefix, "set");
+				String setMethodName = "set"
+						+ get.getName().substring(getPrefix.length());
 				Class returningType = get.getReturnType();
 				try {
 					Method set = ClassReflection.getDeclaredMethod(

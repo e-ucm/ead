@@ -47,6 +47,7 @@ import es.eucm.ead.editor.exporter.ExportCallback;
 import es.eucm.ead.editor.exporter.Exporter;
 import es.eucm.ead.editor.utils.ProjectUtils;
 import es.eucm.ead.engine.demobuilder.img.ImgUtils;
+import es.eucm.ead.engine.utils.ReferenceUtils;
 import es.eucm.ead.schema.components.ModelComponent;
 import es.eucm.ead.schema.components.behaviors.Behavior;
 import es.eucm.ead.schema.components.behaviors.events.Touch;
@@ -478,7 +479,7 @@ public abstract class RepoLibraryBuilder extends ExecutableDemoBuilder {
 	private FileHandle exportElement(ModelEntity modelEntity,
 			FileHandle outputFH) {
 		// Make a list of all binaries referenced by this modelEntity
-		Array<String> binaryPaths = ProjectUtils.listRefBinaries(modelEntity);
+		Array<String> binaryPaths = ReferenceUtils.listRefBinaries(modelEntity);
 		// Copy all binaries to a temp folder
 		FileHandle tempFolder = FileHandle.tempDirectory("modelentity");
 		tempFolder.mkdirs();

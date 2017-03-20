@@ -70,7 +70,7 @@ public class PersistentGameStateTest extends EngineTest {
 	@Before
 	public void setUp() {
 		super.setUp();
-		persistentGameStateSystem = new PersistentGameStateSystem(
+		persistentGameStateSystem = new PersistentGameStateSystem(gameLoop,
 				variablesManager);
 		gameLoop.addSystem(persistentGameStateSystem);
 		componentLoader.registerComponentProcessor(PersistentGameState.class,
@@ -121,7 +121,7 @@ public class PersistentGameStateTest extends EngineTest {
 		VariablesManager variablesManager2 = new VariablesManager(null,
 				new OperationsFactory());
 		PersistentGameStateSystem persistentGameStateSystem2 = new PersistentGameStateSystem(
-				variablesManager2);
+				gameLoop, variablesManager2);
 		persistentGameStateSystem2.read();
 		assertFalse(variablesManager2.isVariableDefined("v1"));
 		assertFalse(variablesManager2.isVariableDefined("v2"));

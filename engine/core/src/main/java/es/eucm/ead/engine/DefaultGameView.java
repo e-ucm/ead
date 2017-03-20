@@ -37,12 +37,11 @@
 package es.eucm.ead.engine;
 
 import com.badlogic.ashley.core.ComponentMapper;
+import com.badlogic.ashley.core.Entity;
+import com.badlogic.ashley.core.Family;
+import com.badlogic.ashley.utils.ImmutableArray;
 import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.scenes.scene2d.Actor;
-import com.badlogic.gdx.scenes.scene2d.Group;
-import com.badlogic.gdx.scenes.scene2d.InputEvent;
-import com.badlogic.gdx.scenes.scene2d.InputListener;
-import com.badlogic.gdx.scenes.scene2d.Touchable;
+import com.badlogic.gdx.scenes.scene2d.*;
 import com.badlogic.gdx.scenes.scene2d.ui.WidgetGroup;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.scenes.scene2d.utils.UIUtils;
@@ -51,13 +50,11 @@ import com.badlogic.gdx.utils.SnapshotArray;
 import com.badlogic.gdx.utils.viewport.FitViewport;
 import es.eucm.ead.engine.components.KeyPressedComponent;
 import es.eucm.ead.engine.components.TouchedComponent;
+import es.eucm.ead.engine.components.behaviors.PointerPositionComponent;
 import es.eucm.ead.engine.components.behaviors.events.RuntimeKey;
 import es.eucm.ead.engine.entities.EngineEntity;
 import es.eucm.ead.engine.systems.GleanerSystem;
-import es.eucm.ead.schema.components.ModelComponent;
 import es.eucm.ead.schema.components.behaviors.events.Touch.Type;
-import es.eucm.ead.schema.entities.ModelEntity;
-import es.eucm.ead.schema.renderers.Renderer;
 import es.eucm.ead.schemax.Layer;
 
 import java.util.HashMap;
@@ -277,14 +274,58 @@ public class DefaultGameView extends WidgetGroup implements GameView {
 		@Override
 		public void touchUp(InputEvent event, float x, float y, int pointer,
 				int button) {
+			super.touchUp(event, x, y, pointer, button);
 			process(event.getTarget(), Type.CLICK, x, y);
 		}
 
 		@Override
 		public boolean touchDown(InputEvent event, float x, float y,
 				int pointer, int button) {
+			super.touchDown(event, x, y, pointer, button);
 			process(event.getTarget(), Type.PRESS, x, y);
 			return true;
+		}
+
+		@Override
+		public void touchDragged(InputEvent event, float x, float y, int pointer) {
+			super.touchDragged(event, x, y, pointer);
+			System.out.println("[Touch Dragged]");
+			updatePointerPosition(x, y, true);
+		}
+
+		@Override
+		public boolean mouseMoved(InputEvent event, float x, float y) {
+			updatePointerPosition(x, y, false);
+			return super.mouseMoved(event, x, y);
+		}
+
+		private void updatePointerPosition(float x, float y, boolean drag) {
+			PointerPositionComponent pointerPositionComponent = getPointerPosition();
+			pointerPositionComponent.update(x, y, drag);
+		}
+
+		private void setDraggingOffset(float x, float y) {
+			PointerPositionComponent pointerPositionComponent = getPointerPosition();
+			pointerPositionComponent.start(x, y);
+		}
+
+		private void resetDraggingOffset() {
+			PointerPositionComponent pointerPositionComponent = getPointerPosition();
+			pointerPositionComponent.reset();
+		}
+
+		private PointerPositionComponent getPointerPosition() {
+			ImmutableArray<Entity> entities = gameLoop.getEntitiesFor(Family
+					.all(PointerPositionComponent.class).get());
+			Entity entity = null;
+			if (entities.size() == 0) {
+				entity = new Entity();
+				gameLoop.addEntity(entity);
+			} else {
+				entity = entities.first();
+			}
+			return gameLoop.addAndGetComponent(entity,
+					PointerPositionComponent.class);
 		}
 
 		private void process(Actor actor, Type type, float x, float y) {
@@ -302,10 +343,13 @@ public class DefaultGameView extends WidgetGroup implements GameView {
 					actor = actor.getParent();
 				}
 			}
+
 			if (type == Type.CLICK) {
 				gleanerSystem.click(x, y, target);
+				resetDraggingOffset();
 			} else if (type == Type.PRESS) {
 				gleanerSystem.press(x, y, target);
+				setDraggingOffset(x, y);
 			}
 		}
 

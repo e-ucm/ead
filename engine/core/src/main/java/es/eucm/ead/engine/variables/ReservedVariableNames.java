@@ -109,4 +109,22 @@ public class ReservedVariableNames {
 	public static final String EFFECTS_VOLUME = RESERVED_VAR_PREFIX
 			+ "effects_volume";
 
+	/**
+	 * Used to expose to the behavior the entity that has been detected to
+	 * intersect a given second entity
+	 */
+	public static final String COLLISION_TARGET = RESERVED_VAR_PREFIX
+			+ "collision_target";
+
+	public static final String INPUT_EVENT_X = RESERVED_VAR_PREFIX + "eventX";
+	public static final String INPUT_EVENT_Y = RESERVED_VAR_PREFIX + "eventY";
+	public static final String INPUT_EVENT_MOVE_DELTA_X = RESERVED_VAR_PREFIX
+			+ "eventDeltaX";
+	public static final String INPUT_EVENT_MOVE_DELTA_Y = RESERVED_VAR_PREFIX
+			+ "eventDeltaY";
+	public static final String INPUT_EVENT_INITIAL_X = RESERVED_VAR_PREFIX
+			+ "initialX";
+	public static final String INPUT_EVENT_INITIAL_Y = RESERVED_VAR_PREFIX
+			+ "initialY";
+
 }

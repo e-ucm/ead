@@ -44,7 +44,7 @@ import es.eucm.ead.schema.effects.RemoveEntity;
  * Marks an entity to be removed. The effect does not actually remove the entity
  * since this clears its components, which may interfere with the effect
  * processing loop:
- * {@link es.eucm.ead.engine.systems.EffectsSystem#doProcessEntity(ashley.core.Entity, float)}
+ * {@link es.eucm.ead.engine.systems.EffectsSystem#doProcessEntity(com.badlogic.ashley.core.Entity, float)}
  */
 public class RemoveEntityExecutor extends EffectExecutor<RemoveEntity> {
 

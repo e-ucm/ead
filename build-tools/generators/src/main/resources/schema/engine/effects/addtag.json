@@ -1,0 +1,15 @@
+{
+    "additionalProperties": false,
+    "javaType": "es.eucm.ead.schema.effects.AddTag",
+    "type": "object",
+    "extends": {
+        "$ref": "effect.json"
+    },
+    "properties": {
+        "tag": {
+            "type": "string",
+            "description": "The new tag to be added"
+        }
+    },
+    "description":"Adds a new tag to the target entity or group of entities."
+}

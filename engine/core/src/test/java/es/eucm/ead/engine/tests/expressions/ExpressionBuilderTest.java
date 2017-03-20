@@ -39,13 +39,9 @@ package es.eucm.ead.engine.tests.expressions;
 import com.badlogic.ashley.core.Entity;
 import com.badlogic.gdx.utils.Array;
 import es.eucm.ead.builder.ExpressionBuilder;
-import es.eucm.ead.engine.Accessor;
-import es.eucm.ead.engine.DefaultGameView;
-import es.eucm.ead.engine.GameLoop;
-import es.eucm.ead.engine.GameView;
+import es.eucm.ead.engine.*;
 import es.eucm.ead.engine.components.TagsComponent;
 import es.eucm.ead.engine.expressions.operators.OperationsFactory;
-import es.eucm.ead.engine.systems.GleanerSystem;
 import es.eucm.ead.engine.variables.VariablesManager;
 import es.eucm.ead.schemax.Layer;
 import junit.framework.Assert;
@@ -78,7 +74,8 @@ public class ExpressionBuilderTest {
 		Accessor accessor = new Accessor(new HashMap<String, Object>());
 		gameLoop = new GameLoop();
 		OperationsFactory operationsFactory = new OperationsFactory(gameLoop,
-				accessor, new DefaultGameView(gameLoop, new GleanerSystem()));
+				accessor, new DefaultGameView(gameLoop,
+						new GleanerSystemForTest(gameLoop)));
 		variablesManager = new VariablesManager(accessor, operationsFactory);
 		variablesManager.registerVar(VAR_NAME, 1F, true);
 		variablesManager.registerVar(VAR_NAME2, false, true);
@@ -144,7 +141,7 @@ public class ExpressionBuilderTest {
 
 		// Test wrong operator triggers exception
 		try {
-			testVariableExpression(eb.variableComparedTo(VAR_NAME, "<>", 1),
+			testVariableExpression(eb.variableComparedTo(VAR_NAME, ">>", 1),
 					null);
 			fail("An exception should have been thrown");
 		} catch (RuntimeException e) {
@@ -183,6 +180,14 @@ public class ExpressionBuilderTest {
 	@Test
 	public void testVariableGreaterEquals() {
 		testVariableExpression(eb.variableGreaterEquals(VAR_NAME, 1), true);
+	}
+
+	@Test
+	public void testVariableDifferentTo() {
+		testVariableExpression(eb.variableDifferentTo(VAR_NAME, 0), true);
+		testVariableExpression(eb.variableDifferentTo(VAR_NAME, 1), false);
+		testVariableExpression(eb.variableDifferentTo(VAR_NAME2, false), false);
+		testVariableExpression(eb.variableDifferentTo(VAR_NAME2, true), true);
 	}
 
 	@Test
