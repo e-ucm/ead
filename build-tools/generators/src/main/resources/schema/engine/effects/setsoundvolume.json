@@ -1,0 +1,15 @@
+{
+    "additionalProperties": false,
+    "extends": {
+        "$ref": "effect.json"
+    },
+    "javaType": "es.eucm.ead.schema.effects.SetSoundVolume",
+    "type": "object",
+    "properties": {
+        "volume": {
+            "type": "number",
+            "description": "The volume of the sound. [0..1]",
+            "default": 1.0
+        }
+    }
+}

@@ -34,7 +34,7 @@
  *      You should have received a copy of the GNU Lesser General Public License
  *      along with eAdventure.  If not, see <http://www.gnu.org/licenses/>.
  */
-package es.eucm.ead.editor.utils;
+package es.eucm.ead.engine.utils;
 
 import com.badlogic.gdx.utils.Array;
 import es.eucm.ead.schema.renderers.SpineAnimation;
@@ -49,10 +49,9 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
 /**
- * Created by jtorrente on 26/11/14.
+ * Created by jtorrente on 04/11/2015.
  */
-public class ProjectUtilsTest {
-
+public class ReferenceUtilsTest {
 	private static Array<String> buildUris() {
 		return new Array<String>(new String[] { "images/image1.png",
 				"images/image2.JPEG", "videos/video1.mpg", "video2.avi",
@@ -60,15 +59,20 @@ public class ProjectUtilsTest {
 				"icons/icon2.jpg", "skeleton" });
 	}
 
+	private static Array<String> buildEntityUris() {
+		return new Array<String>(new String[] { "scenes/scene1.JSON",
+				"scenes/s2.json", "reusable1.jsn" });
+	}
+
 	@Test
 	/**
-	 * Tests {@link es.eucm.ead.editor.utils.ProjectUtils#listRefBinaries(Object)}
+	 * Tests {@link es.eucm.ead.engine.utils.ReferenceUtils#listRefBinaries(Object)}
 	 */
 	public void testBinaryReferencesSearch() {
 		Array<String> uris = buildUris();
 		// Create a simple object
 		BinRefContainer binRefContainer = new BinRefContainer(uris);
-		Array<String> binaryReferences = ProjectUtils
+		Array<String> binaryReferences = ReferenceUtils
 				.listRefBinaries(binRefContainer);
 		for (int i = 0; i < uris.size; i++) {
 			String current = uris.get(i);
@@ -93,24 +97,24 @@ public class ProjectUtilsTest {
 
 	@Test
 	/**
-	 * Tests {@link es.eucm.ead.editor.utils.ProjectUtils#replaceBinaryRef(Object, String, String)}
+	 * Tests {@link es.eucm.ead.engine.utils.ReferenceUtils#replaceBinaryRef(Object, String, String)}
 	 */
 	public void testReplaceBinaryRef() {
 		Array<String> uris = buildUris();
 		// Create a simple object
 		BinRefContainer binRefContainer = new BinRefContainer(uris);
-		ProjectUtils
-				.replaceBinaryRef(binRefContainer, "A test", "Another test");
+		ReferenceUtils.replaceBinaryRef(binRefContainer, "A test",
+				"Another test");
 		assertEquals(binRefContainer.notAnUri, "Another test");
 		String str = "simple test";
-		ProjectUtils.replaceBinaryRef(binRefContainer, uris.get(2), str);
-		ProjectUtils.replaceBinaryRef(binRefContainer, uris.get(3), str);
-		ProjectUtils.replaceBinaryRef(binRefContainer, uris.get(4), str);
-		ProjectUtils.replaceBinaryRef(binRefContainer, uris.get(5), str);
-		ProjectUtils.replaceBinaryRef(binRefContainer, uris.get(6), str);
-		ProjectUtils
-				.replaceBinaryRef(binRefContainer, uris.get(8), "skeleton3");
-		ProjectUtils.replaceBinaryRef(binRefContainer, "skeleton3.json",
+		ReferenceUtils.replaceBinaryRef(binRefContainer, uris.get(2), str);
+		ReferenceUtils.replaceBinaryRef(binRefContainer, uris.get(3), str);
+		ReferenceUtils.replaceBinaryRef(binRefContainer, uris.get(4), str);
+		ReferenceUtils.replaceBinaryRef(binRefContainer, uris.get(5), str);
+		ReferenceUtils.replaceBinaryRef(binRefContainer, uris.get(6), str);
+		ReferenceUtils.replaceBinaryRef(binRefContainer, uris.get(8),
+				"skeleton3");
+		ReferenceUtils.replaceBinaryRef(binRefContainer, "skeleton3.json",
 				"skeleton2");
 		assertEquals(binRefContainer.refHolder.uri, str);
 		assertEquals(binRefContainer.list.get(0).uri, str);
@@ -142,16 +146,17 @@ public class ProjectUtilsTest {
 		private SpineAnimation animation;
 
 		public BinRefContainer(Array<String> uris) {
-			uriRef2 = uris.get(1);
-			refHolder = new SimpleRefHolder(uris.get(2));
-			list.add(new SimpleRefHolder(uris.get(3)));
-			list.add(new SimpleRefHolder(uris.get(4)));
-			array.add(new SimpleRefHolder(uris.get(5)));
-			array.add(new SimpleRefHolder(uris.get(0)));
-			uriMap.put("uri1", uris.get(6));
-			uriMap.put("uri2", uris.get(7));
+			int s = uris.size;
+			uriRef2 = uris.get(1 % s);
+			refHolder = new SimpleRefHolder(uris.get(2 % s));
+			list.add(new SimpleRefHolder(uris.get(3 % s)));
+			list.add(new SimpleRefHolder(uris.get(4 % s)));
+			array.add(new SimpleRefHolder(uris.get(5 % s)));
+			array.add(new SimpleRefHolder(uris.get(0 % s)));
+			uriMap.put("uri1", uris.get(6 % s));
+			uriMap.put("uri2", uris.get(7 % s));
 			animation = new SpineAnimation();
-			animation.setUri(uris.get(8));
+			animation.setUri(uris.get(8 % s));
 		}
 	}
 
@@ -167,4 +172,5 @@ public class ProjectUtilsTest {
 			this.uri = uri;
 		}
 	}
+
 }

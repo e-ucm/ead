@@ -43,7 +43,7 @@ import com.badlogic.gdx.utils.Json;
 import com.badlogic.gdx.utils.SerializationException;
 import es.eucm.ead.engine.assets.GameAssets;
 import es.eucm.ead.schema.entities.ModelEntity;
-import es.eucm.ead.schemax.JsonExtension;
+import es.eucm.ead.engine.utils.JsonExtension;
 import es.eucm.ead.schemax.ModelStructure;
 import es.eucm.utils.gdx.ZipUtils;
 

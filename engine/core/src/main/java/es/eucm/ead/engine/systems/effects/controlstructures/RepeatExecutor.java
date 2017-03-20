@@ -53,7 +53,7 @@ public class RepeatExecutor extends ControlStructureExecutor<Repeat> {
 	}
 
 	@Override
-	public void execute(Entity target, Repeat effect) {
+	public void doExecute(Repeat effect) {
 		// Calculate condition
 		String condition = "(lt $" + effect.getCounter() + " i"
 				+ effect.getTimes() + ")";

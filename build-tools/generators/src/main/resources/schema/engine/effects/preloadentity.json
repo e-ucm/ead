@@ -1,0 +1,22 @@
+{
+    "additionalProperties": false,
+    "extends": {
+        "$ref": "effect.json"
+    },
+    "javaType": "es.eucm.ead.schema.effects.PreloadEntity",
+    "properties": {
+        "entityUri":{
+            "type":"string",
+            "description": "The entity whose assets are to be loaded in memory"
+        },
+        "effects": {
+            "type": "array",
+            "items": {
+                "$ref": "effect.json"
+            },
+            "description": "A list of additional effects that can be executed once the entity has been loadad and is available in memory. Useful to improve heavy loading experiences with mini games and the such"
+        }
+    },
+    "description": "Starts loading assets of a particular entity onto memory.\nThe load runs in the background, so it does not affect or block the user interface.\nThis is useful for speeding up load of large scenes, if it can be anticipated when the scene is about to be needed.",
+    "type": "object"
+}

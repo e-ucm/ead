@@ -1,0 +1,17 @@
+{
+    "additionalProperties": false,
+    "javaType": "es.eucm.ead.schema.components.behaviors.events.Move",
+    "type": "object",
+    "extends": {
+        "$ref": "../event.json"
+    },
+    "description": "Defines a mouse moved/drag event.",
+    "properties": {
+        "type": {
+            "type": "string",
+            "enum": ["mouseMoved", "drag", "any"],
+            "description": "\n<strong>drag</strong> is equivalent to touchDragged, and it is generated when the mouse or the finger are moved between a press and a click event.",
+            "default": "any"
+        }
+    }
+}

@@ -37,13 +37,14 @@
 package es.eucm.ead.engine.collision;
 
 import com.badlogic.gdx.math.Circle;
+import com.badlogic.gdx.math.Shape2D;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.utils.Pools;
 
 /**
  * Created by Javier Torrente on 5/07/14.
  */
-public class CircleWrapper extends AreaWrapper {
+public class CircleWrapper extends AreaWrapper<Circle> {
 	Circle circle;
 
 	public void set(Circle circle) {
@@ -75,6 +76,11 @@ public class CircleWrapper extends AreaWrapper {
 		intersection.add(v);
 		Pools.free(v);
 		return true;
+	}
+
+	@Override
+	public Circle getInnerShape() {
+		return circle;
 	}
 
 	@Override

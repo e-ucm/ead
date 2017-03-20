@@ -1,0 +1,13 @@
+{
+    "additionalProperties": false,
+    "javaType": "es.eucm.ead.schema.components.tweens.RedTween",
+    "type": "object",
+    "extends": {
+        "$ref": "tween.json"
+    },
+    "properties": {
+        "red": {
+            "type": "number"
+        }
+    }
+}

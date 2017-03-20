@@ -1,0 +1,16 @@
+{
+  "additionalProperties": false,
+  "javaType": "es.eucm.ead.schema.engine.components.AndroidSettings",
+  "type": "object",
+  "extends": {
+    "$ref": "component.json"
+  },
+  "properties": {
+    "catchBackButton": {
+      "type": "boolean",
+      "default": false,
+      "description": "If true, the system will not halt the app and get back to the home menu when the back button is pressed. To further define what to do with the back button, use KeyBehaviors"
+    }
+  },
+  "description": "Game-level component that is used to provide additional configurations for the Android platform."
+}

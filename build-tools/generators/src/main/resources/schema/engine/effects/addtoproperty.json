@@ -1,0 +1,21 @@
+{
+    "additionalProperties": false,
+    "javaType": "es.eucm.ead.schema.effects.AddToProperty",
+    "type": "object",
+    "extends": {
+        "$ref": "effect.json"
+    },
+    "properties": {
+        "property": {
+            "type": "string",
+            "description": "An accessor expression identifying the property to be modified, which must be of a type that supports the add() function, like Array or List. The expression should be relative to the target entity",
+            "required": "true"
+        },
+
+        "expression": {
+            "type": "string",
+            "description": "An expression used to determine the new value to be added to the property"
+        }
+    },
+    "description":"Adds a new element to a property related to an entity using Accessor. The property must be an Array or a List"
+}

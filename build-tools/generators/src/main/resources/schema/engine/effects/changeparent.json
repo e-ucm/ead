@@ -1,0 +1,15 @@
+{
+    "description": "Removes an entity from its current parent and adds it to another entity.\nThe entity's coordinates are transformed to the new parent coordinates' so its position on screen remains unchainged.\nUses: this effect is useful for changing the z-value of a given object, for example.",
+    "additionalProperties": false,
+    "javaType": "es.eucm.ead.schema.effects.ChangeParent",
+    "type": "object",
+    "extends": {
+        "$ref": "effect.json"
+    },
+    "properties" : {
+        "newParent": {
+            "type": "string",
+            "description": "Expression in mokap language that selects the new parent entity for the entity or set of entities defined by the 'target' expression.\nNote: Take into account that this expression must return only one entity - if multiple entities are returned, only the first one be considered. If no entities are returned, nothing will happen"
+        }
+    }
+}

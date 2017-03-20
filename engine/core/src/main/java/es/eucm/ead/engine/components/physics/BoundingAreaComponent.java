@@ -37,12 +37,19 @@
 package es.eucm.ead.engine.components.physics;
 
 import com.badlogic.ashley.core.Component;
+import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.math.Circle;
+import com.badlogic.gdx.math.Intersector;
+import com.badlogic.gdx.math.Polygon;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.utils.Pools;
 import es.eucm.ead.engine.collision.AreaWrapper;
 import es.eucm.ead.engine.collision.BoundingAreaBuilder;
+import es.eucm.ead.engine.collision.CircleWrapper;
+import es.eucm.ead.engine.collision.RectangleWrapper;
 import es.eucm.ead.engine.entities.EngineEntity;
 import es.eucm.ead.schema.components.physics.BoundingArea;
+import es.eucm.ead.schema.data.shape.Rectangle;
 
 /**
  * See {@link BoundingArea} for more details.
@@ -56,6 +63,7 @@ public class BoundingAreaComponent extends Component {
 	// coordinates.
 	private boolean rect = true;
 	private AreaWrapper area;
+	private Polygon convexHull;
 
 	/**
 	 * Calculates the {@code float} distance to another bounding area.
@@ -128,5 +136,42 @@ public class BoundingAreaComponent extends Component {
 		}
 		area = rect ? BoundingAreaBuilder.getBoundingRectangle(entity)
 				: BoundingAreaBuilder.getBoundingCircle(entity);
+	}
+
+	public boolean overlaps(BoundingAreaComponent other,
+			boolean precisionEnhanced) {
+		/*
+		 * boolean overlapsSimple = false; if (area instanceof RectangleWrapper
+		 * && other.area instanceof RectangleWrapper) { overlapsSimple =
+		 * Intersector.overlaps(((RectangleWrapper)area).getInnerShape(),
+		 * ((RectangleWrapper)other.area).getInnerShape()); } else if (area
+		 * instanceof RectangleWrapper && other.area instanceof CircleWrapper) {
+		 * overlapsSimple =
+		 * Intersector.overlaps(((CircleWrapper)other.area).getInnerShape(),
+		 * ((RectangleWrapper)area).getInnerShape()); } else if (area instanceof
+		 * CircleWrapper && other.area instanceof CircleWrapper) {
+		 * overlapsSimple =
+		 * Intersector.overlaps(((CircleWrapper)other.area).getInnerShape(),
+		 * ((CircleWrapper)area).getInnerShape()); } else if (area instanceof
+		 * CircleWrapper && other.area instanceof RectangleWrapper) {
+		 * overlapsSimple =
+		 * Intersector.overlaps(((CircleWrapper)area).getInnerShape(),
+		 * ((RectangleWrapper)other.area).getInnerShape()); }
+		 * 
+		 * if (!precisionEnhanced || !overlapsSimple) { return false; }
+		 * 
+		 * if (precisionEnhanced && (convexHull==null ||
+		 * other.convexHull==null)) { Gdx.app.debug("BoundingAreaComponent",
+		 * "overlaps() with precisionEnhanced=true was invoked, but the convexHull was not created. Please invoke updateConvexHull() on this entity first"
+		 * ); return overlapsSimple; }
+		 */
+
+		boolean overlaps = Intersector.overlapConvexPolygons(convexHull,
+				other.convexHull);
+		return overlaps;
+	}
+
+	public void updateConvexHull(EngineEntity entity) {
+		convexHull = BoundingAreaBuilder.getBoundingPolygon(entity);
 	}
 }

@@ -41,14 +41,14 @@ import com.badlogic.gdx.Gdx;
 import es.eucm.ead.engine.GameLoop;
 import es.eucm.ead.engine.assets.Assets.AssetLoadedCallback;
 import es.eucm.ead.engine.assets.GameAssets;
+import es.eucm.ead.engine.assets.MediaResourcesLoader;
 import es.eucm.ead.engine.components.assets.SoundComponent;
 import es.eucm.ead.engine.processors.ComponentProcessor;
 import es.eucm.ead.schema.assets.Sound;
 
 public class SoundProcessor extends ComponentProcessor<Sound> {
+	public static final String LOG_TAG = "SoundProcessor";
 	protected GameAssets gameAssets;
-
-	private static final long MAX_COMPRESSED_SOUND_SIZE = 15 * 1024;
 
 	public SoundProcessor(GameLoop engine, GameAssets gameAssets) {
 		super(engine);
@@ -58,43 +58,31 @@ public class SoundProcessor extends ComponentProcessor<Sound> {
 	@Override
 	public Component getComponent(Sound sound) {
 		final SoundComponent soundComponent = createComponent();
+		MediaResourcesLoader.loadAudio(sound.getUri(), gameAssets,
+				new AssetLoadedCallback() {
+					@Override
+					public void loaded(String fileName, Object asset) {
+						if (asset instanceof com.badlogic.gdx.audio.Sound) {
+							soundComponent
+									.setSound((com.badlogic.gdx.audio.Sound) asset);
+						} else if (asset instanceof com.badlogic.gdx.audio.Music) {
+							soundComponent
+									.setMusic((com.badlogic.gdx.audio.Music) asset);
+						}
+					}
 
-		// files over 150k should be streamed as music; asume ~ 10x compression
-		if (gameAssets.resolve(sound.getUri()).length() < MAX_COMPRESSED_SOUND_SIZE) {
-			gameAssets.get(sound.getUri(), com.badlogic.gdx.audio.Sound.class,
-					new AssetLoadedCallback<com.badlogic.gdx.audio.Sound>() {
-						@Override
-						public void loaded(String fileName,
-								com.badlogic.gdx.audio.Sound asset) {
-							soundComponent.setSound(asset);
+					@Override
+					public void error(String fileName, Class type,
+							Throwable exception) {
+						if (type == com.badlogic.gdx.audio.Sound.class) {
+							Gdx.app.error(LOG_TAG, "Impossible to play sound "
+									+ fileName, exception);
+						} else if (type == com.badlogic.gdx.audio.Music.class) {
+							Gdx.app.error(LOG_TAG, "Impossible to play music "
+									+ fileName, exception);
 						}
-
-						@Override
-						public void error(String fileName, Class type,
-								Throwable exception) {
-							Gdx.app.error("SoundProcessor",
-									"Impossible to play sound " + fileName,
-									exception);
-						}
-					});
-		} else {
-			gameAssets.get(sound.getUri(), com.badlogic.gdx.audio.Music.class,
-					new AssetLoadedCallback<com.badlogic.gdx.audio.Music>() {
-						@Override
-						public void loaded(String fileName,
-								com.badlogic.gdx.audio.Music asset) {
-							soundComponent.setMusic(asset);
-						}
-
-						@Override
-						public void error(String fileName, Class type,
-								Throwable exception) {
-							Gdx.app.error("SoundProcessor",
-									"Impossible to play music " + fileName,
-									exception);
-						}
-					});
-		}
+					}
+				});
 
 		soundComponent.setConfig(sound);
 		return soundComponent;

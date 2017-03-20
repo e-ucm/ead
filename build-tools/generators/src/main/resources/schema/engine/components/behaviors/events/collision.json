@@ -1,0 +1,20 @@
+{
+    "additionalProperties": false,
+    "javaType": "es.eucm.ead.schema.components.behaviors.events.Collision",
+    "type": "object",
+    "description": "Determines if the effects associated to the behavior must be launched based on the intersection between the \"this\" entity with other entities",
+    "extends": {
+        "$ref": "../event.json"
+    },
+    "properties": {
+        "target": {
+            "type": "string",
+            "description": "Expression that determines the entity or group of entities that, upon intersection with the \"this\" entity, will result in the launch of the effects associated to the behavior this event belongs to. If the expression after evaluation does not return an entity or arrays of entities, nothing happens"
+        },
+        "default": {
+            "type": "boolean",
+            "description": "When set to true, target will be ignored and the effects of this behavior will be launched. It is useful to get some effects launched by default if no other Collision Event matches.",
+            "default": false
+        }
+    }
+}

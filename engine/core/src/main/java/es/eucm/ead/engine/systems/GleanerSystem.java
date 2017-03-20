@@ -36,14 +36,12 @@
  */
 package es.eucm.ead.engine.systems;
 
-import com.badlogic.ashley.core.Engine;
-import com.badlogic.ashley.core.Entity;
-import com.badlogic.ashley.core.EntitySystem;
-import com.badlogic.ashley.core.Family;
+import com.badlogic.ashley.core.*;
 import com.badlogic.ashley.utils.ImmutableArray;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.utils.Json;
+import es.eucm.ead.engine.GameLoop;
 import es.eucm.ead.engine.gleaner.components.GleanerSettingsComponent;
 import es.eucm.ead.schema.effects.Effect;
 import es.eucm.ead.schema.gleaner.components.GleanerLocalStorage;
@@ -66,27 +64,32 @@ import java.util.Calendar;
  * 
  * Created by jtorrente on 29/10/2015.
  */
-public class GleanerSystem extends EntitySystem {
+public class GleanerSystem extends GameEntitySystem {
 
 	public static final String LOCAL_TRACES_FOLDER = "gleaner_traces";
 
 	protected GleanerSettings settings = null;
-	private ImmutableArray<Entity> entities;
+	// private ImmutableArray<Entity> entities;
 	protected Tracker tracker;
 	protected Storage storage;
 
 	private Json json = new Json(); // To serialize effects
 
-	@Override
-	public void addedToEngine(Engine engine) {
-		entities = engine.getEntitiesFor(Family.all(
-				GleanerSettingsComponent.class).get());
+	public GleanerSystem(GameLoop gameLoop) {
+		super(gameLoop, GleanerSettingsComponent.class);
 	}
+
+	/*
+	 * @Override public void addedToEngine(Engine engine) { entities =
+	 * engine.getEntitiesFor(Family.all( GleanerSettingsComponent.class).get());
+	 * }
+	 */
 
 	@Override
 	public void removedFromEngine(Engine engine) {
-		settings = null;
-		entities = null;
+		super.removedFromEngine(engine);
+		// settings = null;
+		// entities = null;
 		if (tracker != null) {
 			tracker.close();
 		}
@@ -96,21 +99,34 @@ public class GleanerSystem extends EntitySystem {
 
 	@Override
 	public void update(final float deltaTime) {
-		if (settings == null) {
-			init();
-		}
-		if (settings != null) {
+		super.update(deltaTime);
+		if (isInit()) {
 			tracker.update(deltaTime);
 		}
+		/*
+		 * if (settings == null) { init(); } if (settings != null) {
+		 * tracker.update(deltaTime); }
+		 */
 	}
 
+	/*
+	 * protected void init() { if (entities.size() > 0) { settings =
+	 * entities.get(0)
+	 * .getComponent(GleanerSettingsComponent.class).getSettings(); storage =
+	 * buildGleanerStorage(); tracker = new Tracker(storage,
+	 * settings.getFlushInterval()); tracker.start(); } }
+	 */
+
+	@Override
 	protected void init() {
-		if (entities.size() > 0) {
-			settings = entities.get(0)
-					.getComponent(GleanerSettingsComponent.class).getSettings();
+		if (isInit()) {
+			return;
+		}
+		super.init();
+		if (isInit()) {
+			settings = ((GleanerSettingsComponent) gameComponent).getSettings();
 			storage = buildGleanerStorage();
 			tracker = new Tracker(storage, settings.getFlushInterval());
-			tracker.start();
 		}
 	}
 

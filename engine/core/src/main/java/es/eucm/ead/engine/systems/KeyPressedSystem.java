@@ -42,8 +42,8 @@ import com.badlogic.ashley.systems.IteratingSystem;
 import es.eucm.ead.engine.components.KeyPressedComponent;
 
 /**
- * Removed touched components from all entities. This system has the lowest
- * priority possible
+ * Removes {@link KeyPressedComponent}s from all entities. This system has the
+ * lowest priority possible
  */
 public class KeyPressedSystem extends IteratingSystem {
 

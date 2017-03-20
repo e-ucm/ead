@@ -37,6 +37,7 @@
 package es.eucm.ead.engine.components.physics;
 
 import com.badlogic.ashley.core.Component;
+import com.badlogic.gdx.utils.Pool;
 import es.eucm.ead.engine.entities.EngineEntity;
 import es.eucm.ead.engine.systems.VelocitySystem;
 
@@ -45,7 +46,7 @@ import es.eucm.ead.engine.systems.VelocitySystem;
  * system ({@link VelocitySystem}) more accurately than using the entity's group
  * position. Created by jtorrente on 22/05/2015.
  */
-public class PositionComponent extends Component {
+public class PositionComponent extends Component implements Pool.Poolable {
 	private float realX;
 	private float realY;
 
@@ -68,5 +69,11 @@ public class PositionComponent extends Component {
 
 	public void incRealY(float realYInc) {
 		this.realY += realYInc;
+	}
+
+	@Override
+	public void reset() {
+		realX = 0;
+		realY = 0;
 	}
 }

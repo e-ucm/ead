@@ -44,6 +44,7 @@ import com.badlogic.gdx.utils.IntMap;
 import com.badlogic.gdx.utils.ObjectMap;
 import com.badlogic.gdx.utils.Pool;
 import com.badlogic.gdx.utils.Pools;
+import com.badlogic.gdx.utils.reflect.ArrayReflection;
 import com.badlogic.gdx.utils.reflect.ClassReflection;
 import com.badlogic.gdx.utils.reflect.Field;
 import com.badlogic.gdx.utils.reflect.ReflectionException;
@@ -59,7 +60,7 @@ import java.util.Map;
 
 /**
  * This class is meant to provide a convenient utility for accessing a model
- * through a namespace. It provides four public methods for <b>reading</b> or
+ * through a namespace. It provides six public methods for <b>reading</b> or
  * <b>writing</b> a property in the model object tree, identified by a String:
  * <p/>
  * 
@@ -69,6 +70,8 @@ import java.util.Map;
  *     <li>{@link #get(Object, String)}</li>
  *     <li>{@link #set(String, Object)}</li>
  *     <li>{@link #set(Object, String, Object)}</li>
+ *     <li>{@link #add(String, Object)}</li>
+ *     <li>{@link #add(Object, String, Object)}</li>
  * </ul>
  * </pre>
  * <p/>
@@ -224,6 +227,45 @@ public class Accessor {
 	public void set(Object parent, String fullId, Object value) {
 		Property property = resolve(parent, fullId);
 		property.set(value);
+		Pools.free(property);
+	}
+
+	/**
+	 * Adds a new element ({@code value}) to the property identified by
+	 * {@code fullId} in the given {@code parent} object. The property must
+	 * point to an object that supports the add() operation, like {@link Array}
+	 * or {@link List}. {@link #rootObjects} is not used. See
+	 * {@link #resolve(Object, String)} for more details.
+	 */
+	public void add(Object parent, String fullId, Object value) {
+		Property property = resolve(parent, fullId);
+		try {
+			Object container = property.get();
+			obtainArrayWrapper(container, fullId, fullId.length()).add(value);
+		} catch (UnsupportedOperationException e) {
+			throw new AccessorException(
+					fullId,
+					"add() operation is not supported for this type of property on the parent object");
+		}
+		Pools.free(property);
+	}
+
+	/**
+	 * Adds a new element ({@code value}) to the property identified by
+	 * {@code fullId} in the root parent object. The property must point to an
+	 * object that supports the add() operation, like {@link Array} or
+	 * {@link List}. See {@link #resolve(String)} for more details.
+	 */
+	public void add(String fullId, Object value) {
+		Property property = resolve(fullId);
+		try {
+			Object container = property.get();
+			obtainArrayWrapper(container, fullId, fullId.length()).add(value);
+		} catch (UnsupportedOperationException e) {
+			throw new AccessorException(
+					fullId,
+					"add() operation is not supported for this type of property on the root parent object");
+		}
 		Pools.free(property);
 	}
 
@@ -1043,6 +1085,11 @@ public class Accessor {
 		public void set(Object object, int index);
 
 		/**
+		 * Adds an element to the end of the array/list.
+		 */
+		public void add(Object object);
+
+		/**
 		 * @return The size of the underlying array
 		 */
 		public int size();
@@ -1088,7 +1135,7 @@ public class Accessor {
 
 		public void setBag(Bag bag) {
 			map.clear();
-			for (int i = 0; i < bag.size(); i++) {
+			for (int i = 0; i < bag.getCapacity(); i++) {
 				if (bag.get(i) != null) {
 					map.put(bag.get(i).getClass(), bag.get(i));
 				}
@@ -1200,6 +1247,11 @@ public class Accessor {
 		}
 
 		@Override
+		public void add(Object object) {
+			array.add(object);
+		}
+
+		@Override
 		public int size() {
 			return array.size;
 		}
@@ -1224,6 +1276,11 @@ public class Accessor {
 		@Override
 		public void set(Object object, int index) {
 			list.set(index, object);
+		}
+
+		@Override
+		public void add(Object object) {
+			list.add(object);
 		}
 
 		@Override

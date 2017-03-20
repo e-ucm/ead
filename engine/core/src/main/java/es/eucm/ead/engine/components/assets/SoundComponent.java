@@ -43,6 +43,8 @@ import com.badlogic.gdx.audio.Sound;
 import com.badlogic.gdx.utils.GdxRuntimeException;
 import com.badlogic.gdx.utils.Pool;
 import com.badlogic.gdx.utils.TimeUtils;
+import es.eucm.ead.engine.assets.GameAssets;
+import es.eucm.ead.engine.assets.MediaResourcesLoader;
 
 /**
  * Sound playback for elements
@@ -70,29 +72,29 @@ public class SoundComponent extends Component implements Pool.Poolable {
 		return config;
 	}
 
-	public void setMusic(Music music) {
+	public synchronized void setMusic(Music music) {
 		this.music = music;
 	}
 
-	public void setSound(Sound sound) {
+	public synchronized void setSound(Sound sound) {
 		this.sound = sound;
 	}
 
 	/**
 	 * @return true if play has already been called.
 	 */
-	public boolean isStarted() {
+	public synchronized boolean isStarted() {
 		return started;
 	}
 
-	public boolean isLoaded() {
+	public synchronized boolean isLoaded() {
 		return music != null || sound != null;
 	}
 
 	/**
 	 * @return true if finished. Finished sounds can be removed & recycled.
 	 */
-	public boolean isFinished() {
+	public synchronized boolean isFinished() {
 		if (!finished) {
 			// there is no API for LibGDX sound-effect-finished; assume 2s
 			// duration
@@ -114,7 +116,7 @@ public class SoundComponent extends Component implements Pool.Poolable {
 	 * @param volume
 	 *            absolute volume.
 	 */
-	public void play(float volume) {
+	public synchronized void play(float volume) {
 		if (sound != null) {
 			soundId = sound.play();
 			soundStart = TimeUtils.millis();
@@ -144,7 +146,7 @@ public class SoundComponent extends Component implements Pool.Poolable {
 	 * @param volume
 	 *            absolute volume.
 	 */
-	public void changeVolume(float volume) {
+	public synchronized void changeVolume(float volume) {
 		if (!started || finished) {
 			return;
 		}
@@ -166,7 +168,7 @@ public class SoundComponent extends Component implements Pool.Poolable {
 	 * @return
 	 */
 	@Override
-	public boolean combine(Component other) {
+	public synchronized boolean combine(Component other) {
 		this.reset();
 		SoundComponent otherSound = (SoundComponent) other;
 		if (otherSound.sound != null) {
@@ -183,14 +185,34 @@ public class SoundComponent extends Component implements Pool.Poolable {
 	}
 
 	@Override
-	public void reset() {
+	public synchronized void reset() {
 		started = finished = false;
+		config = null;
 		if (sound != null) {
 			sound.stop(soundId);
 			sound = null;
 		} else if (music != null) {
 			music.stop();
 			music = null;
+		}
+	}
+
+	public synchronized void checkIfLoaded(GameAssets gameAssets) {
+		if (config == null || config.getUri() == null) {
+			return;
+		}
+		if (gameAssets.isLoaded(config.getUri())) {
+			try {
+				sound = gameAssets.get(config.getUri(),
+						com.badlogic.gdx.audio.Sound.class);
+			} catch (Exception e) {
+				try {
+					music = gameAssets.get(config.getUri(),
+							com.badlogic.gdx.audio.Music.class);
+				} catch (Exception e2) {
+
+				}
+			}
 		}
 	}
 }

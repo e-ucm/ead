@@ -41,6 +41,7 @@ import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.reflect.ClassReflection;
 import com.badlogic.gdx.utils.reflect.Field;
 import com.badlogic.gdx.utils.reflect.ReflectionException;
+import es.eucm.ead.schema.assets.Sound;
 import es.eucm.ead.schema.components.ModelComponent;
 import es.eucm.ead.schema.components.Reference;
 import es.eucm.ead.schema.components.Tags;
@@ -51,6 +52,10 @@ import es.eucm.ead.schema.components.behaviors.events.Init;
 import es.eucm.ead.schema.components.behaviors.events.Key;
 import es.eucm.ead.schema.components.behaviors.events.Timer;
 import es.eucm.ead.schema.components.behaviors.events.Touch;
+import es.eucm.ead.schema.components.controls.Control;
+import es.eucm.ead.schema.components.controls.ImageButton;
+import es.eucm.ead.schema.components.controls.Label;
+import es.eucm.ead.schema.components.controls.TextButton;
 import es.eucm.ead.schema.components.conversation.Conversation;
 import es.eucm.ead.schema.components.conversation.EffectsNode;
 import es.eucm.ead.schema.components.positiontracking.Parallax;
@@ -72,8 +77,12 @@ import es.eucm.ead.schema.effects.*;
 import es.eucm.ead.schema.effects.ChangeVar.Context;
 import es.eucm.ead.schema.effects.GoScene.Transition;
 import es.eucm.ead.schema.effects.controlstructures.ControlStructure;
+import es.eucm.ead.schema.effects.controlstructures.If;
 import es.eucm.ead.schema.effects.controlstructures.IfThenElseIf;
 import es.eucm.ead.schema.effects.controlstructures.ScriptCall;
+import es.eucm.ead.schema.engine.components.AndroidSettings;
+import es.eucm.ead.schema.engine.components.PersistentGameState;
+import es.eucm.ead.schema.engine.components.PersistentVariable;
 import es.eucm.ead.schema.entities.ModelEntity;
 import es.eucm.ead.schema.renderers.*;
 import es.eucm.ead.schemax.ModelStructure;
@@ -158,12 +167,19 @@ public abstract class DemoBuilder {
 	protected int sceneCount;
 	protected float gameWidth;
 	protected float gameHeight;
-	private String lastSceneId;
-	private ModelEntity game;
-	private Behavior initGame;
+	protected String lastSceneId;
+	protected ModelEntity game;
+	protected Behavior initGame;
 
 	// Helper class to create expressions
 	protected ExpressionBuilder eb = new ExpressionBuilder();
+
+	// To build automatic variables
+	protected int autoVarCount = 0;
+
+	public String newAutoVar() {
+		return "DemoBuilderVar" + (autoVarCount++);
+	}
 
 	/**
 	 * @return An object that helps create expressions with Mokap's syntax
@@ -683,7 +699,10 @@ public abstract class DemoBuilder {
 	 * @param modelEntity
 	 *            The entity to add a frame to
 	 * @param frameUri
-	 *            The relative uri for the image of the frame
+	 *            The relative uri for the image of the frame. If blank or null,
+	 *            then an empty renderer will be created for the frame. This
+	 *            allows for interleaving frames and "blank spaces" in
+	 *            animations.
 	 * @param duration
 	 *            The frame duration
 	 * @param sequence
@@ -696,7 +715,9 @@ public abstract class DemoBuilder {
 
 		Frame frame = new Frame();
 		frame.setTime(duration);
-		frame.setRenderer(createImage(frameUri));
+		Renderer renderer = frameUri != null && frameUri.length() != 0 ? createImage(frameUri)
+				: makeEmptyRenderer(0, 0, false);
+		frame.setRenderer(renderer);
 
 		for (ModelComponent modelComponent : modelEntity.getComponents()) {
 			if (modelComponent instanceof Frames) {
@@ -737,12 +758,53 @@ public abstract class DemoBuilder {
 	 */
 	public DemoBuilder frameState(States states, int nTags, float duration,
 			String... tagsAndUris) {
+		return frameState(states, Frames.Sequence.LINEAR, nTags, duration,
+				tagsAndUris);
+	}
+
+	public DemoBuilder frameState(int nTags, float duration,
+			String... tagsAndUris) {
+		return frameState(getLastEntity(), nTags, duration, tagsAndUris);
+	}
+
+	public DemoBuilder frameState(Frames.Sequence sequence, int nTags,
+			float duration, String... tagsAndUris) {
+		return frameState(getLastEntity(), sequence, nTags, duration,
+				tagsAndUris);
+	}
+
+	public DemoBuilder frameState(ModelEntity parent, int nTags,
+			float duration, String... tagsAndUris) {
+		return frameState(parent, Frames.Sequence.LINEAR, nTags, duration,
+				tagsAndUris);
+	}
+
+	public DemoBuilder frameState(ModelEntity parent, Frames.Sequence sequence,
+			int nTags, float duration, String... tagsAndUris) {
+		States states = null;
+		for (ModelComponent modelComponent : parent.getComponents()) {
+			if (modelComponent instanceof States) {
+				states = (States) modelComponent;
+				break;
+			}
+		}
+
+		if (states == null) {
+			lastComponent = states = new States();
+			parent.getComponents().add(states);
+		}
+
+		return frameState(states, sequence, nTags, duration, tagsAndUris);
+	}
+
+	public DemoBuilder frameState(States states, Frames.Sequence sequence,
+			int nTags, float duration, String... tagsAndUris) {
 		State state = null;
 		Frames frames = null;
 
 		frames = new Frames();
 		lastComponent = frames;
-		frames.setSequence(Frames.Sequence.LINEAR);
+		frames.setSequence(sequence);
 		state = new State();
 		state.setRenderer(frames);
 		states.getStates().add(state);
@@ -765,29 +827,6 @@ public abstract class DemoBuilder {
 		}
 
 		return this;
-	}
-
-	public DemoBuilder frameState(ModelEntity parent, int nTags,
-			float duration, String... tagsAndUris) {
-		States states = null;
-		for (ModelComponent modelComponent : parent.getComponents()) {
-			if (modelComponent instanceof States) {
-				states = (States) modelComponent;
-				break;
-			}
-		}
-
-		if (states == null) {
-			lastComponent = states = new States();
-			parent.getComponents().add(states);
-		}
-
-		return frameState(states, nTags, duration, tagsAndUris);
-	}
-
-	public DemoBuilder frameState(int nTags, float duration,
-			String... tagsAndUris) {
-		return frameState(getLastEntity(), nTags, duration, tagsAndUris);
 	}
 
 	/**
@@ -923,7 +962,11 @@ public abstract class DemoBuilder {
 
 	/**
 	 * Creates a new behavior triggered by the stroke of the given key and adds
-	 * it to the entity provided
+	 * it to the entity provided.
+	 * 
+	 * If {@code keyCode} is the BACK_BUTTON, it will add an
+	 * {@link AndroidSettings} component automatically so it can be captured and
+	 * used in Android.
 	 * 
 	 * @param parent
 	 *            Entity to add the component to
@@ -936,9 +979,36 @@ public abstract class DemoBuilder {
 	 */
 	public DemoBuilder simpleKeyBehavior(ModelEntity parent, int keyCode,
 			Effect... effects) {
+		if (keyCode == Input.Keys.BACK) {
+			setAndroidSettings(true);
+		}
 		lastComponent = makeSimpleKeyBehavior(keyCode, effects);
 		parent.getComponents().add(lastComponent);
 		return this;
+	}
+
+	public DemoBuilder setAndroidSettings(boolean captureBackButton) {
+		AndroidSettings androidSettings = null;
+		for (ModelComponent gameComponent : game.getComponents()) {
+			if (gameComponent instanceof AndroidSettings) {
+				androidSettings = (AndroidSettings) gameComponent;
+				break;
+			}
+		}
+
+		if (androidSettings == null) {
+			androidSettings = makeAndroidSettings(captureBackButton);
+			game.getComponents().add(androidSettings);
+		} else {
+			androidSettings.setCatchBackButton(captureBackButton);
+		}
+		return this;
+	}
+
+	public AndroidSettings makeAndroidSettings(boolean captureBackButton) {
+		AndroidSettings androidSettings = new AndroidSettings();
+		androidSettings.setCatchBackButton(captureBackButton);
+		return androidSettings;
 	}
 
 	/**
@@ -1122,15 +1192,31 @@ public abstract class DemoBuilder {
 	 */
 	public DemoBuilder parameter(Object container, String param,
 			String expression) {
-		Parameter parameter = new Parameter();
-		parameter.setName(param);
-		parameter.setValue(expression);
+		Parameter parameter = makeParameter(param, expression);
 		if (container instanceof Effect) {
 			((Effect) container).getParameters().add(parameter);
 		} else if (container instanceof ModelComponent) {
 			((ModelComponent) container).getParameters().add(parameter);
 		}
 		return this;
+	}
+
+	public Parameter makeParameter(String param, String expression) {
+		Parameter parameter = new Parameter();
+		parameter.setName(param);
+		parameter.setValue(expression);
+		return parameter;
+	}
+
+	/**
+	 * Adds the given {@code effect} to the given {@code container}, which can
+	 * be {@link es.eucm.ead.schema.components.behaviors.Behavior},
+	 * {@link es.eucm.ead.schema.data.Script},
+	 * {@link es.eucm.ead.schema.components.conversation.Node} or
+	 * {@link es.eucm.ead.schema.effects.controlstructures.ControlStructure}.
+	 */
+	public DemoBuilder effect(Effect effect) {
+		return effect(getLastComponent(), effect);
 	}
 
 	/**
@@ -1481,11 +1567,11 @@ public abstract class DemoBuilder {
 	 *            Optional argument (can be null) that identifies, through a
 	 *            Mokap expression, the entity or entities affected
 	 * @param clazz
-	 *            The type of component to remove
+	 *            The type of component to remove. Can be either a
+	 *            {@link ModelComponent} or an {@link Event}.
 	 * @return The effect created
 	 */
-	public RemoveComponent makeRemoveComponent(String target,
-			Class<? extends ModelComponent> clazz) {
+	public RemoveComponent makeRemoveComponent(String target, Class clazz) {
 		RemoveComponent removeComponent = new RemoveComponent();
 		removeComponent.setComponent(clazz.getSimpleName().toLowerCase());
 		if (target != null) {
@@ -1502,8 +1588,7 @@ public abstract class DemoBuilder {
 	 *            The type of component to remove
 	 * @return The effect created
 	 */
-	public RemoveComponent makeRemoveComponent(
-			Class<? extends ModelComponent> clazz) {
+	public RemoveComponent makeRemoveComponent(Class clazz) {
 		return makeRemoveComponent(null, clazz);
 	}
 
@@ -1520,6 +1605,19 @@ public abstract class DemoBuilder {
 		addComponent.setComponent(component);
 		addComponent.setTarget(target);
 		return addComponent;
+	}
+
+	/**
+	 * Creates a {@link es.eucm.ead.schema.effects.AddComponent} effect with
+	 * target pointing to the current entity.
+	 * 
+	 * Equivalent to {@code makeAddComponent("$_this", component)}
+	 * 
+	 * @param component
+	 *            {@link es.eucm.ead.schema.effects.AddComponent#component}
+	 */
+	public AddComponent makeAddComponent(ModelComponent component) {
+		return makeAddComponent(eb.thisEntity(), component);
 	}
 
 	/**
@@ -1688,6 +1786,12 @@ public abstract class DemoBuilder {
 	 */
 	public Effect makeChangeColorAttributeEffect(String tag,
 			String colorComponent, float value) {
+		return makeChangeColorAttributeEffect2(eb.entityWithTag(tag),
+				colorComponent, value);
+	}
+
+	public Effect makeChangeColorAttributeEffect2(String targetExp,
+			String colorComponent, float value) {
 		if (!colorComponent.equals("a") && !colorComponent.equals("A")
 				&& !colorComponent.equals("r") && !colorComponent.equals("R")
 				&& !colorComponent.equals("g") && !colorComponent.equals("G")
@@ -1697,10 +1801,11 @@ public abstract class DemoBuilder {
 					+ " is not supported. Only a, r, g, b accepted");
 		}
 		ChangeEntityProperty setColor = new ChangeEntityProperty();
-		setColor.setTarget(eb.entityWithTag(tag));
+		setColor.setTarget(targetExp);
 		setColor.setProperty("group.color." + colorComponent);
 		setColor.setExpression("f" + value);
 		return setColor;
+
 	}
 
 	/**
@@ -1721,26 +1826,68 @@ public abstract class DemoBuilder {
 	 */
 	public Effect makeChangeColorEffect(String tag, Float r, Float g, Float b,
 			Float a) {
+		return makeChangeColorEffect2(eb.entityWithTag(tag), r, g, b, a);
+	}
+
+	public Effect makeChangeColorEffect2(String targetExp, Float r, Float g,
+			Float b, Float a) {
 		Script script = new Script();
 		if (r != null) {
-			script.getEffects()
-					.add(makeChangeColorAttributeEffect(tag, "r", r));
+			script.getEffects().add(
+					makeChangeColorAttributeEffect2(targetExp, "r", r));
 		}
 		if (g != null) {
-			script.getEffects()
-					.add(makeChangeColorAttributeEffect(tag, "g", g));
+			script.getEffects().add(
+					makeChangeColorAttributeEffect2(targetExp, "g", g));
 		}
 		if (b != null) {
-			script.getEffects()
-					.add(makeChangeColorAttributeEffect(tag, "b", b));
+			script.getEffects().add(
+					makeChangeColorAttributeEffect2(targetExp, "b", b));
 		}
 		if (a != null) {
-			script.getEffects()
-					.add(makeChangeColorAttributeEffect(tag, "a", a));
+			script.getEffects().add(
+					makeChangeColorAttributeEffect2(targetExp, "a", a));
 		}
 		ScriptCall scriptCall = new ScriptCall();
 		scriptCall.setScript(script);
 		return scriptCall;
+	}
+
+	/**
+	 * Makes a {@link PersistentGameState} component that will make the given
+	 * list of global variables persistent across executions. If any of these
+	 * variables have not been registered in the VariablesManager when this
+	 * component is processed, it will be initialized as an integer variable
+	 * with value 0.
+	 * 
+	 * Since only one component of this type is processed per gameplay, it is
+	 * recommended to use {@link #persistentGameState(String...)} instead.
+	 * 
+	 * @param variables
+	 *            The list of global variables to make persistent
+	 * @return The component
+	 */
+	public PersistentGameState makePersistentGameState(String... variables) {
+		PersistentGameState persistentGameState = new PersistentGameState();
+		for (String variable : variables) {
+			PersistentVariable persistentVariable = new PersistentVariable();
+			persistentVariable.setInitValue("i0");
+			persistentVariable.setVariable(variable);
+			persistentGameState.getPersistentVariables()
+					.add(persistentVariable);
+		}
+		return persistentGameState;
+	}
+
+	/**
+	 * Ensures persistence across executions of the game of the given list of
+	 * global variables. This is done by adding a {@link PersistentGameState}
+	 * component to the main game entity.
+	 */
+	public DemoBuilder persistentGameState(String... variables) {
+		lastComponent = makePersistentGameState(variables);
+		game.getComponents().add(lastComponent);
+		return this;
 	}
 
 	public DemoBuilder color(float r, float g, float b, float a) {
@@ -1754,14 +1901,20 @@ public abstract class DemoBuilder {
 	}
 
 	public DemoBuilder emptyRectangle(int width, int height, boolean hitAll) {
+		EmptyRenderer emptyRenderer = makeEmptyRenderer(width, height, hitAll);
+		getLastEntity().getComponents().add(emptyRenderer);
+		return this;
+	}
+
+	private EmptyRenderer makeEmptyRenderer(int width, int height,
+			boolean hitAll) {
 		EmptyRenderer emptyRenderer = new EmptyRenderer();
 		Rectangle rectangle = new Rectangle();
 		emptyRenderer.setShape(rectangle);
 		emptyRenderer.setHitAll(hitAll);
 		rectangle.setWidth(width);
 		rectangle.setHeight(height);
-		getLastEntity().getComponents().add(emptyRenderer);
-		return this;
+		return emptyRenderer;
 	}
 
 	public DemoBuilder origin(float originX, float originY) {
@@ -1777,15 +1930,105 @@ public abstract class DemoBuilder {
 
 	public DemoBuilder frames(float frameTime, String prefix, String suffix,
 			int init, int end, int numberCharacters) {
-		getLastEntity().getComponents().add(
-				makeFrames(frameTime, prefix, suffix, init, end,
-						numberCharacters));
+		Frames component = makeFrames(frameTime, prefix, suffix, init, end,
+				numberCharacters);
+		lastComponent = component;
+		getLastEntity().getComponents().add(component);
 		return this;
 	}
 
 	public DemoBuilder name(String name) {
 		getLastEntity().setName(name);
 		return this;
+	}
+
+	public DemoBuilder button(ModelEntity container, float x, float y,
+			String imgPressed, String imgUnpressed, String text,
+			Color textColor, float adjX, float adjY) {
+		ModelEntity main = entity(container, x, y).getLastEntity();
+		if (imgPressed != null && imgUnpressed != null) {
+			ModelEntity imgButton = entity(main, 0, 0).getLastEntity();
+			ImageButton imgButtonComp = new ImageButton();
+			imgButtonComp.setImageDown(imgPressed);
+			imgButtonComp.setImageUp(imgUnpressed);
+			imgButton.getComponents().add(imgButtonComp);
+
+			if (text != null) {
+				ModelEntity label = entity(main, adjX, adjY).getLastEntity();
+				Label labelComp = new Label();
+				labelComp.setText(text);
+				labelComp.setColor(textColor);
+				label.getComponents().add(labelComp);
+			}
+
+		} else if (text != null) {
+			TextButton textButtonComp = new TextButton();
+			textButtonComp.setText(text);
+			main.getComponents().add(textButtonComp);
+		}
+		lastEntity = main;
+		return this;
+	}
+
+	/**
+	 * Builds a {@link PreloadEntity} effect that will load in the background
+	 * the given entity, plus all the binary resources referenced in it (e.g.
+	 * images and sounds). When the process is complete, the given set of
+	 * post-effects will be launched. This can be used as a callback, or to
+	 * schedule background loading tasks in separate chunks.
+	 * 
+	 * @param entityUri
+	 *            The path of the entity to be loaded in the background (e.g.
+	 *            scenes/s1.json)
+	 * @param effects
+	 *            The set of effects to be launched once all the resources of
+	 *            the entity have been loaded (i.e. callback)
+	 */
+	public PreloadEntity makePreloadEntity(String entityUri, Effect... effects) {
+		PreloadEntity preloadEntity = new PreloadEntity();
+		preloadEntity.setEntityUri(entityUri);
+		for (Effect effect : effects) {
+			preloadEntity.getEffects().add(effect);
+		}
+		return preloadEntity;
+	}
+
+	/**
+	 * Creates a {@link PreloadEntity} object using
+	 * {@link #makePreloadEntity(String, Effect...)} and adds it to the last
+	 * component created, which is expected to be a Behavior.
+	 * 
+	 * @param entityUri
+	 *            The path of the entity to be loaded in the background (e.g.
+	 *            scenes/s1.json)
+	 * @param effects
+	 *            The set of effects to be launched once all the resources of
+	 *            the entity have been loaded (i.e. callback)
+	 * @return This DemoBuilder object, so calls can be chained
+	 */
+	public DemoBuilder preloadEntity(String entityUri, Effect... effects) {
+		return effect(makePreloadEntity(entityUri, effects));
+	}
+
+	/**
+	 * Creates a {@link PreloadEntity} object using
+	 * {@link #makePreloadEntity(String, Effect...)} and adds it to the given
+	 * container. For a list of types of containers supported, see
+	 * {@link #effect(Object, Effect)}.
+	 * 
+	 * @param container
+	 *            The object the effect will be added to
+	 * @param entityUri
+	 *            The path of the entity to be loaded in the background (e.g.
+	 *            scenes/s1.json)
+	 * @param effects
+	 *            The set of effects to be launched once all the resources of
+	 *            the entity have been loaded (i.e. callback)
+	 * @return This DemoBuilder object, so calls can be chained
+	 */
+	public DemoBuilder preloadEntity(Object container, String entityUri,
+			Effect... effects) {
+		return effect(container, makePreloadEntity(entityUri, effects));
 	}
 
 	public DemoBuilder reference(String referenceUri) {
@@ -1915,6 +2158,258 @@ public abstract class DemoBuilder {
 	public void initVar(String var, String expression) {
 		initGame.getEffects().add(
 				makeChangeVar(var, expression, Context.GLOBAL));
+	}
+
+	public DemoBuilder entityRandomImage(ModelEntity parent, String prefix,
+			String suffix, int from, int to, float x, float y) {
+		ModelEntity entity = entity(parent, prefix + "1" + suffix, x, y)
+				.getLastEntity();
+		String imgExp = "(concat s" + prefix + " s(rand i" + from + " i"
+				+ (to + 1) + ") s" + suffix + ")";
+		parameter(entity.getComponents().get(0), "uri", imgExp);
+		return this;
+	}
+
+	public DemoBuilder sound(boolean loop, String uri) {
+		return sound(getLastEntity(), loop, uri);
+	}
+
+	public DemoBuilder sound(ModelEntity parent, boolean loop, String uri) {
+		Sound sound = makeSound(loop, uri);
+		parent.getComponents().add(sound);
+		return this;
+	}
+
+	public Sound makeSound(boolean loop, String uri) {
+		Sound sound = new Sound();
+		sound.setLoop(loop);
+		sound.setUri(uri);
+		return sound;
+	}
+
+	public Effect makeCase(Array<Effect> defaultEffects, String var,
+			int initialValue, Array<Effect>... effectLists) {
+		IfThenElseIf ifThenElseIf = new IfThenElseIf();
+		if (effectLists.length > 0) {
+			ifThenElseIf.setCondition(eb.variableEqualsTo(var, initialValue));
+			ifThenElseIf.getEffects().addAll(effectLists[0]);
+		}
+		for (int i = 1; i < effectLists.length; i++) {
+			If elseIf = new If();
+			elseIf.setCondition(eb.variableEqualsTo(var, initialValue + i));
+			elseIf.getEffects().addAll(effectLists[i]);
+			ifThenElseIf.getElseIfList().add(elseIf);
+		}
+		if (defaultEffects != null) {
+			ifThenElseIf.getElse().addAll(defaultEffects);
+		}
+		return ifThenElseIf;
+	}
+
+	public Effect makeCase(String var, Array<Effect>... effectLists) {
+		return makeCase(var, 0, effectLists);
+	}
+
+	public Effect makeCase(String var, Effect... effectLists) {
+		return makeCase(var, 0, effectLists);
+	}
+
+	public Effect makeCase(String var, int startIndex,
+			Array<Effect>... effectLists) {
+		return makeCase(null, var, startIndex, effectLists);
+	}
+
+	public Effect makeCase(String var, int startIndex, Effect... effectLists) {
+		Array<Effect>[] effects = new Array[effectLists.length];
+		for (int i = 0; i < effectLists.length; i++) {
+			Effect effect = effectLists[i];
+			effects[i] = new Array<Effect>();
+			effects[i].add(effect);
+		}
+		return makeCase(null, var, startIndex, effects);
+	}
+
+	public DemoBuilder imageState(States states, String img, String... tags) {
+		if (!img.toLowerCase().endsWith(".png")
+				&& !img.toLowerCase().endsWith("jpg")
+				&& !img.toLowerCase().endsWith("jpeg")) {
+			img += ".png";
+		}
+
+		State state;
+		Image frames = createImage(img);
+
+		lastComponent = frames;
+		state = new State();
+		state.setRenderer(frames);
+		states.getStates().add(state);
+
+		for (String tag : tags) {
+			state.getStates().add(tag);
+		}
+
+		return this;
+	}
+
+	public DemoBuilder imageState(ModelEntity parent, String img,
+			String... tags) {
+		States states = null;
+		for (ModelComponent modelComponent : parent.getComponents()) {
+			if (modelComponent instanceof States) {
+				states = (States) modelComponent;
+				break;
+			}
+		}
+
+		if (states == null) {
+			lastComponent = states = new States();
+			parent.getComponents().add(states);
+		}
+
+		return imageState(states, img, tags);
+	}
+
+	public DemoBuilder imageState(String img, String... tags) {
+		return imageState(getLastEntity(), img, tags);
+	}
+
+	public DemoBuilder conditionalTouch(ModelEntity parent, String condition,
+			Effect... effects) {
+		If ifEffect = new If();
+		ifEffect.setCondition(condition);
+		for (Effect effect : effects) {
+			ifEffect.getEffects().add(effect);
+		}
+		touchBehavior(parent, ifEffect);
+		return this;
+	}
+
+	public DemoBuilder conditionalTouch(String condition, Effect... effects) {
+		return conditionalTouch(getLastEntity(), condition, effects);
+	}
+
+	public Effect makeEffectsGroup(Effect... effects) {
+		If container = new If();
+		container.setCondition("btrue");
+		for (Effect e : effects) {
+			container.getEffects().add(e);
+		}
+		return container;
+	}
+
+	public Effect makeRandomEffect(float probability, Effect... effects) {
+		int value = (int) (probability * 100);
+		String tmpVar = "___randomVar";
+		ChangeVar initLocalVar = this.makeChangeVar(tmpVar, "(rand i1 i101)",
+				ChangeVar.Context.LOCAL);
+		Array<Effect> array = new Array<Effect>();
+		for (Effect effect : effects) {
+			array.add(effect);
+		}
+		return makeEffectsGroup(
+				initLocalVar,
+				makeIfElse(eb.variableLowerThan(tmpVar, value), array,
+						new Array<Effect>()));
+	}
+
+	public Effect makeRandomEffectFromList(Effect... effects) {
+		String tmpVar = "___randomVar";
+		ChangeVar initLocalVar = this.makeChangeVar(tmpVar, "(rand i0 i"
+				+ effects.length + ")", ChangeVar.Context.LOCAL);
+		return makeEffectsGroup(initLocalVar, makeCase(tmpVar, effects));
+	}
+
+	public Effect makeFadeInSoundEffect(String entityTag, float duration) {
+		return makeFadeInOutSoundEffect(entityTag, duration, 1.0F);
+	}
+
+	public Effect makeFadeOutSoundEffect(String entityTag, float duration) {
+		return makeFadeInOutSoundEffect(entityTag, duration, 0.0F);
+	}
+
+	public Effect makeFadeInOutSoundEffect(String entityTag, float duration,
+			float targetValue) {
+		float inc = 0.05F;
+		Timer t = new Timer();
+		int steps = (int) (duration / inc);
+		t.setRepeat(steps);
+		t.setTime(inc);
+		float startVolume = targetValue == 0 ? 1 : 0;
+		float volumeInc = (targetValue - startVolume) / steps;
+		String var = "soundVolumeAutoVar_" + entityTag;
+		SetSoundVolume setSoundVolume = new SetSoundVolume();
+		setSoundVolume.setTarget(eb.entityWithTag(entityTag));
+		setSoundVolume.setVolume(targetValue);
+		parameter(setSoundVolume, "volume", eb.varReference(var));
+		Behavior b = makeBehavior(
+				t,
+				makeChangeVar(var,
+						eb.sum(eb.varReference(var), eb.float_(volumeInc)),
+						Context.GLOBAL), setSoundVolume);
+
+		SetSoundVolume setSoundVolumeFinal = new SetSoundVolume();
+		setSoundVolumeFinal.setTarget(eb.entityWithTag(entityTag));
+		setSoundVolumeFinal.setVolume(targetValue);
+
+		return makeEffectsGroup(
+				makeChangeVar(var, eb.float_(startVolume), Context.GLOBAL),
+				makeAddComponent(eb.entityWithTag(entityTag), b),
+				makeAddComponent(eb.entityWithTag(entityTag),
+						makeSimpleTimer(duration + inc, setSoundVolumeFinal)));
+	}
+
+	public Frame makeFrame(float duration, String uri) {
+		Frame f = new Frame();
+		f.setRenderer(createImage(uri));
+		f.setTime(duration);
+		return f;
+	}
+
+	public DemoBuilder rectangle(ModelEntity entity, int width, int height) {
+		lastComponent = makeRectangle(width, height);
+		entity.getComponents().add(lastComponent);
+		return this;
+	}
+
+	public DemoBuilder rectangle(int width, int height) {
+		return rectangle(getLastEntity(), width, height);
+	}
+
+	public ShapeRenderer makeRectangle(int width, int height) {
+		ShapeRenderer shapeRenderer = new ShapeRenderer();
+		Rectangle rectangle = new Rectangle();
+		rectangle.setWidth(width);
+		rectangle.setHeight(height);
+		shapeRenderer.setShape(rectangle);
+		return shapeRenderer;
+	}
+
+	public ChangeVar makePlusOne(String varName) {
+		return makeIncrementVar(varName, 1);
+	}
+
+	public ChangeVar makeMinusOne(String varName) {
+		return makeIncrementVar(varName, -1);
+	}
+
+	public ChangeVar makeIncrementVar(String varName, int increment) {
+		return makeChangeVar(varName, eb.increment(varName, increment),
+				Context.GLOBAL);
+	}
+
+	public ChangeVar makeInitGlobalVarEffect(String varName, Number initialValue) {
+		return makeChangeVar(varName, eb.integer(initialValue.intValue()),
+				Context.GLOBAL);
+	}
+
+	public ChangeVar makeInitGlobalVarEffect(String varName,
+			Boolean initialValue) {
+		return makeChangeVar(varName, eb.bool(initialValue.booleanValue()),
+				Context.GLOBAL);
+	}
+
+	public ChangeVar makeInitGlobalVarEffect(String varName, String initialValue) {
+		return makeChangeVar(varName, eb.string(initialValue), Context.GLOBAL);
 	}
 
 	public enum HorizontalAlign {

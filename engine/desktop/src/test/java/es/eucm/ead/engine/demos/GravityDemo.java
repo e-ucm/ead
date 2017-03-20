@@ -114,7 +114,7 @@ public class GravityDemo extends ExecutableDemoBuilder {
 		// Max acceleration is achieved when angle=0
 		String exp = "(+ (* (/ (- i" + max + " i" + min
 				+ ") i90) (+ i90 $angle)) i" + min + ")";
-		acceleration.getParameters().add(param("y", exp));
+		acceleration.getParameters().add(makeParameter("y", exp));
 
 		/*
 		 * Create the key behavior that ignites the rocket: 1) Stops handle

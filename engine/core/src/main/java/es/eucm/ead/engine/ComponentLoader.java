@@ -48,9 +48,12 @@ import es.eucm.ead.engine.components.ShaderComponent;
 import es.eucm.ead.engine.components.renderers.RendererComponent;
 import es.eucm.ead.engine.entities.EngineEntity;
 import es.eucm.ead.engine.processors.ComponentProcessor;
+import es.eucm.ead.engine.processors.behaviors.BehaviorsProcessor;
 import es.eucm.ead.engine.utils.EngineUtils;
 import es.eucm.ead.engine.variables.VariablesManager;
 import es.eucm.ead.schema.components.ModelComponent;
+import es.eucm.ead.schema.components.behaviors.Behavior;
+import es.eucm.ead.schema.components.behaviors.Event;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -63,19 +66,20 @@ public class ComponentLoader {
 	private static final String LOG_TAG = "ComponentLoader";
 
 	// Needed to convert model components to engine components
-	private Map<Class<? extends ModelComponent>, Class<? extends Component>> modelToEngineComponents;
+	private Map<Class, Class<? extends Component>> modelToEngineComponents;
 
 	private GameAssets gameAssets;
 
 	private VariablesManager variablesManager;
 
 	private Map<Class, ComponentProcessor> componentProcessorMap;
+	private Behavior tmp = new Behavior();
 
 	public ComponentLoader(GameAssets gameAssets,
 			VariablesManager variablesManager) {
 		this.gameAssets = gameAssets;
 		this.variablesManager = variablesManager;
-		modelToEngineComponents = new HashMap<Class<? extends ModelComponent>, Class<? extends Component>>();
+		modelToEngineComponents = new HashMap<Class, Class<? extends Component>>();
 		componentProcessorMap = new HashMap<Class, ComponentProcessor>();
 	}
 
@@ -90,22 +94,35 @@ public class ComponentLoader {
 	 * infer the engine's component class.
 	 * 
 	 * @param modelClass
-	 *            The class that is to be mapped to engine class.
+	 *            The class that is to be mapped to engine class. Can be either
+	 *            of type {@link ModelComponent} or {@link Event}
 	 * @return The {@link Component} engine equivalent class, if found,
 	 *         {@code null} otherwise.
 	 */
-	public Class<? extends Component> toEngineComponent(
-			Class<? extends ModelComponent> modelClass) {
+	public Class<? extends Component> toEngineComponent(Class modelClass) {
 		Class<? extends Component> component = null;
 
 		if (!modelToEngineComponents.containsKey(modelClass)) {
 			try {
-				ModelComponent modelComponent = ClassReflection
-						.newInstance(modelClass);
+				if (ClassReflection.isAssignableFrom(ModelComponent.class,
+						modelClass)) {
+					ModelComponent modelComponent = (ModelComponent) ClassReflection
+							.newInstance(modelClass);
 
-				Component componentObject = toEngineComponent(modelComponent);
-				if (componentObject != null) {
-					component = componentObject.getClass();
+					Component componentObject = toEngineComponent(modelComponent);
+					if (componentObject != null) {
+						component = componentObject.getClass();
+					}
+				} // Behaviors are a special case
+				else if (ClassReflection.isAssignableFrom(Event.class,
+						modelClass)) {
+					Event event = (Event) ClassReflection
+							.newInstance(modelClass);
+					tmp.setEvent(event);
+					Component componentObject = toEngineComponent(tmp);
+					if (componentObject != null) {
+						component = componentObject.getClass();
+					}
 				}
 				Pools.free(component);
 			} catch (ReflectionException e) {
@@ -142,6 +159,10 @@ public class ComponentLoader {
 	 * 
 	 * @param alias
 	 *            The alias of the class that is to be mapped to engine class.
+	 *            It must be compulsorily either of type {@line ModelComponent}
+	 *            or {@link Event}, as {@link Behavior}s are handled in a
+	 *            special way (each event type is mapped to a different
+	 *            component type).
 	 * @return The {@link Component} engine equivalent class, if found,
 	 *         {@code null} otherwise.
 	 */
@@ -154,8 +175,8 @@ public class ComponentLoader {
 		}
 
 		if (modelClass == null
-				|| !ClassReflection.isAssignableFrom(ModelComponent.class,
-						modelClass)) {
+				|| (!ClassReflection.isAssignableFrom(Event.class, modelClass) && !ClassReflection
+						.isAssignableFrom(ModelComponent.class, modelClass))) {
 			return null;
 		} else {
 			return toEngineComponent(modelClass);

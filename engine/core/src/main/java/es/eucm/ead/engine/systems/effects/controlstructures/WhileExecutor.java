@@ -52,7 +52,7 @@ public class WhileExecutor extends ControlStructureExecutor<While> {
 	}
 
 	@Override
-	public void execute(Entity target, While effect) {
+	public void doExecute(While effect) {
 		while (variablesManager.evaluateCondition(effect.getCondition(), false)) {
 			effectsSystem.executeEffectList(effect.getEffects());
 		}

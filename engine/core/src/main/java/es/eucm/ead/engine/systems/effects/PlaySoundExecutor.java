@@ -65,6 +65,7 @@ public class PlaySoundExecutor extends EffectExecutor<PlaySound> {
 		sound.setVolume(effect.getVolume());
 
 		AddComponent addSound = new AddComponent();
+		addSound.setTarget(effect.getTarget());
 		addSound.setComponent(sound);
 		list.clear();
 		list.add(addSound);

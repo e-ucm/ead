@@ -44,7 +44,7 @@ import es.eucm.ead.editor.model.Model.Resource;
 import es.eucm.ead.editor.model.Q;
 import es.eucm.ead.schema.editor.components.Versions;
 import es.eucm.ead.schema.entities.ModelEntity;
-import es.eucm.ead.schemax.JsonExtension;
+import es.eucm.ead.engine.utils.JsonExtension;
 
 import java.util.Map;
 

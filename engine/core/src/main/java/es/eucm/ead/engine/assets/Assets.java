@@ -398,10 +398,22 @@ public abstract class Assets extends Json implements FileHandleResolver,
 	/**
 	 * @param fileName
 	 *            the file name of the asset
-	 * @return whether the asset is already loaded
+	 * @param type
+	 *            They type (class) the asset must have
+	 * @return whether the asset is already loaded with the given type (will
+	 *         return false if loaded but has other type)
 	 */
 	public boolean isLoaded(String fileName, Class<?> type) {
 		return assetManager.isLoaded(fileName, type);
+	}
+
+	/**
+	 * @param fileName
+	 *            the file name of the asset
+	 * @return whether the asset is already loaded
+	 */
+	public boolean isLoaded(String fileName) {
+		return assetManager.isLoaded(fileName);
 	}
 
 	/**
@@ -444,7 +456,7 @@ public abstract class Assets extends Json implements FileHandleResolver,
 	/**
 	 * Clear and disposes all loaded assets. This method is used from
 	 * {@link GameAssets} and also to dispose the loaded thumbnails from
-	 * {@link AplicationAssets}.
+	 * {@code AplicationAssets}.
 	 */
 	public void clear() {
 		Gdx.app.debug("Assets", "Clearing " + assetManager.getDiagnostics());

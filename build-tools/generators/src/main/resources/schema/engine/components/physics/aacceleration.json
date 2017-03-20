@@ -1,0 +1,15 @@
+{
+    "type": "object",
+    "javaType": "es.eucm.ead.schema.components.physics.AngularAcceleration",
+    "additionalProperties": false,
+    "extends": {
+        "$ref": "../component.json"
+    },
+    "properties": {
+        "alpha": {
+            "type": "number",
+            "default": 0
+        }
+    },
+    "description": "Acceleration components will affect the angular velocity component of the container entity"
+}

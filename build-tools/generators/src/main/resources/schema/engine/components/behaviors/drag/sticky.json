@@ -1,0 +1,16 @@
+{
+  "additionalProperties": false,
+  "javaType": "es.eucm.ead.schema.components.drag.Sticky",
+  "type": "object",
+  "extends": {
+    "$ref": "../../component.json"
+  },
+  "description": "Property of an entity that makes it stick to the mouse/finger on screen.\nNot really meant to be used directly by users, but automatically added by the engine.",
+  "properties": {
+    "center": {
+      "description":"If true, the entity's center (the origin) will always be directly under the mouse/finger. If false (default option), the pixel that was under the cursor when the last press event occurred will remain just behind the cursor.",
+      "type": "boolean",
+      "default": false
+    }
+  }
+}

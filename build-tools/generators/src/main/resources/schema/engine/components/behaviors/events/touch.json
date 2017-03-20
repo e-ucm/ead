@@ -10,7 +10,7 @@
         "type": {
             "type": "string",
             "enum": ["press", "click"],
-            "description": "The type of touch interaction",
+            "description": "The type of touch interaction\n1)<strong>press</strong> is the equivalent to a touchDown event, i.e. when the mouse is pressed (but not released) on desktop or the finger touches the screen on mobile.\n2)<strong>click</strong> is equivalent to touchDown: events of this type are produced when the mouse button is released or the finger is lifted from the touch screen.",
             "default": "click"
         }
     }

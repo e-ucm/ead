@@ -39,6 +39,7 @@ package es.eucm.ead.engine.systems;
 import com.badlogic.ashley.core.Entity;
 import com.badlogic.ashley.core.Family;
 import com.badlogic.ashley.systems.IteratingSystem;
+import es.eucm.ead.engine.assets.GameAssets;
 import es.eucm.ead.engine.components.assets.SoundComponent;
 import es.eucm.ead.engine.entities.EngineEntity;
 import es.eucm.ead.engine.variables.ReservedVariableNames;
@@ -52,11 +53,14 @@ public class SoundSystem extends IteratingSystem {
 
 	private boolean initialized = false;
 
-	public VariablesManager variablesManager;
+	private VariablesManager variablesManager;
 
-	public SoundSystem(VariablesManager variablesManager) {
+	private GameAssets gameAssets;
+
+	public SoundSystem(VariablesManager variablesManager, GameAssets gameAssets) {
 		super(Family.all(SoundComponent.class).get());
 		this.variablesManager = variablesManager;
+		this.gameAssets = gameAssets;
 	}
 
 	private void checkInitialization() {
@@ -80,6 +84,9 @@ public class SoundSystem extends IteratingSystem {
 		final EngineEntity actor = (EngineEntity) entity;
 		SoundComponent soundComponent = actor
 				.getComponent(SoundComponent.class);
+		if (!soundComponent.isLoaded()) {
+			soundComponent.checkIfLoaded(gameAssets);
+		}
 		if (soundComponent.isLoaded()) {
 			Sound config = soundComponent.getConfig();
 			if (!soundComponent.isStarted()) {

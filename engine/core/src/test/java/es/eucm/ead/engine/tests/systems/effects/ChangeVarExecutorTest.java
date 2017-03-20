@@ -37,7 +37,7 @@
 package es.eucm.ead.engine.tests.systems.effects;
 
 import com.badlogic.ashley.core.Entity;
-import es.eucm.ead.engine.systems.GleanerSystem;
+import es.eucm.ead.engine.GleanerSystemForTest;
 import es.eucm.ead.engine.systems.effects.ChangeVarExecutor;
 import es.eucm.ead.engine.variables.VariablesManager;
 import es.eucm.ead.schema.effects.ChangeVar;
@@ -57,7 +57,7 @@ public class ChangeVarExecutorTest extends EffectTest {
 	public void setUp() {
 		super.setUp();
 		changeVarExecutor = new ChangeVarExecutor(variablesManager,
-				new GleanerSystem());
+				new GleanerSystemForTest(gameLoop));
 		variablesManager.registerVar("boolean", false, true);
 	}
 
