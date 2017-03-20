@@ -89,11 +89,8 @@ public class VisibilityTest extends EngineTest {
 		visibility.setCondition("(eq $" + variableDef + " i1)");
 		entity.getComponents().add(visibility);
 
-		entitiesLoader.toEngineEntity(entity);
-		ImmutableArray<Entity> entityIntMap = gameLoop.getEntitiesFor(Family
-				.all(VisibilityComponent.class).get());
-		EngineEntity engineEntity = (EngineEntity) entityIntMap.iterator()
-				.next();
+		EngineEntity engineEntity = entitiesLoader.toEngineEntity(entity);
+		gameLoop.update(1);
 		assertFalse(engineEntity.getGroup().isVisible());
 
 		gameLoop.update(1);
