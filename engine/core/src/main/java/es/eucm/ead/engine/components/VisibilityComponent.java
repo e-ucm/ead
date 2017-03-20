@@ -57,7 +57,6 @@ public class VisibilityComponent extends ConditionedComponent {
 	 * "flickering" effect happens when visibility is false, as the entity is
 	 * added and then hidden, leaving it visible for a fraction of a second
 	 */
-	@Override
 	public void init() {
 		update();
 	}
