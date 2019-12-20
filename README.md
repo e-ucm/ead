@@ -1,11 +1,5 @@
 # Mokap Android App  [![Build Status](https://travis-ci.org/e-ucm/ead.png)](https://travis-ci.org/e-ucm/ead)
 
-[![Google Play](http://developer.android.com/images/brand/en_generic_rgb_wo_45.png)](https://play.google.com/store/apps/details?id=es.eucm.mokap) 
-
-[![Download from Google Play](https://cloud.githubusercontent.com/assets/5658058/6525540/d9b428c0-c406-11e4-9066-019ad2a98ab0.jpg)](https://play.google.com/store/apps/details?id=es.eucm.mokap)
-
-[Official web page](http://mokap.es/)
-
 Please see the [issues](https://github.com/e-ucm/ead/issues) section to
 report any bugs or feature requests and to see the list of known issues.
 
@@ -60,4 +54,3 @@ but will be thoroughly reviewed and discussed.
 ## More info.
 
 * [Documentation](https://github.com/e-ucm/ead/wiki)
-* [Developers blog](http://www.e-ucm.es/ead2blog/) With weekly news and updates about the eAdventure development
